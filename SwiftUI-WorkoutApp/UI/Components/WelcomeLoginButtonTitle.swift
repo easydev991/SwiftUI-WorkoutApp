@@ -10,7 +10,8 @@ import SwiftUI
 struct WelcomeLoginButtonTitle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .frame(width: 250, height: 48)
+            .frame(height: 48)
+            .frame(maxWidth: .infinity)
             .foregroundColor(.black)
             .font(.headline)
             .background(Color.white.cornerRadius(8))

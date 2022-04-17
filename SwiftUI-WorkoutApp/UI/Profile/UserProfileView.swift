@@ -21,6 +21,7 @@ struct UserProfileView: View {
                     Text("Выйти")
                         .roundedRectangleStyle()
                 }
+                .padding()
             }
             .navigationTitle("Профиль")
             .toolbar {

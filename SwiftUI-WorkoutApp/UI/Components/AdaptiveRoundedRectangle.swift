@@ -10,7 +10,8 @@ import SwiftUI
 struct AdaptiveRoundedRectangle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .frame(width: 250, height: 48)
+            .frame(height: 48)
+            .frame(maxWidth: .infinity)
             .foregroundColor(Color("ButtonTitle"))
             .font(.headline)
             .background(Color("ButtonBackground").cornerRadius(8))

@@ -30,7 +30,7 @@ private extension WelcomeAuthView {
             loginButton()
             skipLoginButton()
         }
-        .padding(.bottom, 24)
+        .padding()
     }
 
     func registerButton() -> some View {
@@ -55,6 +55,7 @@ private extension WelcomeAuthView {
                 .frame(width: 250, height: 48)
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .padding(.bottom, 8)
         }
     }
 }
