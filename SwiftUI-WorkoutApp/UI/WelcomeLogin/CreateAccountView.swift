@@ -31,7 +31,7 @@ struct CreateAccountView: View {
                 birthdayPicker()
             }
             Section {
-                license()
+                rulesOfService()
             }
             Section {
                 registerButton()
@@ -122,8 +122,8 @@ private extension CreateAccountView {
         }
     }
 
-    func license() -> some View {
-        Link(destination: URL(string: "https://workout.su/pravila")!) {
+    func rulesOfService() -> some View {
+        Link(destination: URL(string: Constants.rulesOfService)!) {
             HStack {
                 Spacer()
                 Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")

@@ -9,4 +9,5 @@ import Foundation
 
 struct Constants {
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
+    static let rulesOfService = "https://workout.su/pravila"
 }
