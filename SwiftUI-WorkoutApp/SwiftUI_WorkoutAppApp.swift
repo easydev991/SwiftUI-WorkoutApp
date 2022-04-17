@@ -9,9 +9,25 @@ import SwiftUI
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appState)
+        }
+        .onChange(of: scenePhase) { newValue in
+            switch newValue {
+            case .background:
+                print("---background")
+            case .inactive:
+                print("---inactive")
+            case .active:
+                print("---active")
+            @unknown default:
+                print("---unknown")
+            }
         }
     }
 }
