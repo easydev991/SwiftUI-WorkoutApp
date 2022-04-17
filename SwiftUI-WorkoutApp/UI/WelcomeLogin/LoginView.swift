@@ -11,6 +11,8 @@ struct LoginView: View {
     @EnvironmentObject var appState: AppState
     @State private var loginEmailText = ""
     @State private var passwordText = ""
+    @FocusState private var focus: FocusableField?
+
     var body: some View {
         Form {
             Section {
@@ -22,16 +24,27 @@ struct LoginView: View {
                 forgotPasswordButton()
             }
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                focus = .username
+            }
+        }
         .navigationTitle("Вход по email")
     }
 }
 
 private extension LoginView {
+    enum FocusableField: Hashable {
+        case username
+        case password
+    }
+
     func loginField() -> some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
             TextField("Логин или email", text: $loginEmailText)
+                .focused($focus, equals: .username)
         }
     }
 
@@ -40,6 +53,7 @@ private extension LoginView {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
             SecureField("Пароль", text: $passwordText)
+                .focused($focus, equals: .password)
         }
     }
 
@@ -49,6 +63,7 @@ private extension LoginView {
             print("--- Выполняем вход")
             appState.isUserAuthorized = true
             appState.showWelcome = false
+            focus = nil
         } label: {
             HStack {
                 Spacer()
@@ -64,6 +79,7 @@ private extension LoginView {
         Button {
             #warning("Запросить восстановление пароля или показать алерт")
             print("--- Запрашиваем восстановление пароля")
+            focus = .username
         } label: {
             HStack {
                 Spacer()
@@ -72,7 +88,6 @@ private extension LoginView {
                 Spacer()
             }
         }
-        .disabled(loginEmailText.isEmpty)
     }
 }
 struct LoginView_Previews: PreviewProvider {

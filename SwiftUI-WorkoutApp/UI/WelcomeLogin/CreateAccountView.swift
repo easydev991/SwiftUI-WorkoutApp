@@ -14,6 +14,7 @@ struct CreateAccountView: View {
     @State private var passwordText = ""
     @State private var nameText = ""
     @State private var birthDate = Date()
+    @FocusState private var focus: FocusableField?
     private var maxDate: Date {
         Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
     }
@@ -42,11 +43,16 @@ struct CreateAccountView: View {
 }
 
 private extension CreateAccountView {
+    enum FocusableField: Hashable {
+        case login, email, password
+    }
+
     func loginField() -> some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
             TextField("Логин", text: $loginText)
+                .focused($focus, equals: .login)
         }
     }
 
@@ -55,6 +61,7 @@ private extension CreateAccountView {
             Image(systemName: "envelope")
                 .foregroundColor(.secondary)
             TextField("email", text: $emailText)
+                .focused($focus, equals: .email)
         }
     }
 
@@ -63,6 +70,7 @@ private extension CreateAccountView {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
             SecureField("Пароль (минимум 6 символов)", text: $passwordText)
+                .focused($focus, equals: .password)
         }
     }
 
@@ -138,6 +146,7 @@ private extension CreateAccountView {
         Button {
             #warning("Проверить введенные данные и начать регистрацию")
             print("--- Проверяем введенные данные и начинаем регистрацию")
+            focus = nil
         } label: {
             HStack {
                 Spacer()

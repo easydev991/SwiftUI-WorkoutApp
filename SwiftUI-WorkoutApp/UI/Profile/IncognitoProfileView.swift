@@ -12,19 +12,37 @@ struct IncognitoProfileView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Зарегистрируйтесь или выполните вход, чтобы иметь доступ ко всем возможностям")
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                NavigationLink(destination: LoginView(), label: {
-                    Label("Войти через email", systemImage: "envelope")
-                        .roundedRectangleStyle()
-                })
+            VStack(spacing: 16) {
+                incognitoInformer()
+                registerButton()
+                loginButton()
             }
             .padding()
             .navigationTitle("Профиль")
         }
+    }
+}
+
+private extension IncognitoProfileView {
+    func incognitoInformer() -> some View {
+        Text("Зарегистрируйтесь или выполните вход, чтобы иметь доступ ко всем возможностям")
+            .font(.title3)
+            .multilineTextAlignment(.center)
+            .padding()
+    }
+
+    func registerButton() -> some View {
+        NavigationLink(destination: CreateAccountView()) {
+            Label("Создать аккаунт", systemImage: "person.badge.plus")
+                .roundedRectangleStyle()
+        }
+    }
+
+    func loginButton() -> some View {
+        NavigationLink(destination: LoginView(), label: {
+            Label("Войти через email", systemImage: "envelope")
+                .roundedRectangleStyle()
+        })
     }
 }
 
