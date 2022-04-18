@@ -16,7 +16,11 @@ struct CreateAccountView: View {
     @State private var birthDate = Date()
     @FocusState private var focus: FocusableField?
     private var maxDate: Date {
-        Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
+        Calendar.current.date(
+            byAdding: .year,
+            value: Constants.minimumUserAge,
+            to: .now
+        ) ?? .now
     }
 
     var body: some View {
