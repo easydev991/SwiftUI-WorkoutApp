@@ -8,24 +8,33 @@
 import SwiftUI
 
 struct CountriesView: View {
-    @EnvironmentObject var appState: AppState
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var appState: AppState
     @State private var searchQuery = ""
+    private let countriesList = Bundle.main.decodeJson(
+        [CountryElement].self,
+        fileName: "countries.json"
+    ).sorted { $0.name < $1.name }
+
+    private var results: [CountryElement] {
+        searchQuery.isEmpty
+        ? countriesList
+        : countriesList.filter { $0.name.contains(searchQuery) }
+    }
 
     var body: some View {
-        Form {
-            #warning("Добавить фильтр по алфавиту справа https://stackoverflow.com/questions/65185161/swiftui-how-to-add-letters-sections-and-alphabet-jumper-in-a-form")
-            List($appState.countries, id: \.self) { element in
+        List {
+            ForEach(results, id: \.self) { element in
                 Button {
-                    appState.select(country: element.wrappedValue)
+                    appState.select(country: element)
                     presentationMode.wrappedValue.dismiss()
                 } label: {
                     HStack {
-                        Text(element.wrappedValue.name)
+                        Text(element.name)
                         Spacer()
                         Image(systemName: "checkmark")
                             .opacity(
-                                element.wrappedValue.name == $appState.selectedCountry.wrappedValue.name
+                                element.name == $appState.selectedCountry.wrappedValue.name
                                 ? 1
                                 : .zero
                             )
@@ -33,6 +42,7 @@ struct CountriesView: View {
                 }
             }
         }
+        .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Поиск"))
         .navigationTitle("Выбери страну")
     }
 }
