@@ -25,16 +25,16 @@ final class AppState: ObservableObject {
         makeCountryAndCityData()
     }
 
-    func select(tab: ContentView.Tab) {
+    func selectTab(_ tab: ContentView.Tab) {
         selectedTab = tab.rawValue
     }
 
-    func select(country: CountryElement) {
+    func selectCountry(_ country: CountryElement) {
         selectedCountry = country
         updateCityIfNeeded(for: country)
     }
 
-    func select(city: City) {
+    func selectCity(_ city: City) {
         selectedCity = city
     }
 }

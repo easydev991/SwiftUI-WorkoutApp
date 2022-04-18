@@ -52,10 +52,9 @@ private extension WelcomeAuthView {
             appState.showWelcome = false
         } label: {
             Text("Пропустить")
-                .frame(width: 250, height: 48)
+                .frame(height: 48)
                 .font(.subheadline)
                 .foregroundColor(.gray)
-                .padding(.bottom, 8)
         }
     }
 }

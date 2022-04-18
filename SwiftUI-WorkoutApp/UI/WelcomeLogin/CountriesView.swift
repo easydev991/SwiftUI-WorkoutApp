@@ -23,7 +23,7 @@ struct CountriesView: View {
         List {
             ForEach(filteredCountries, id: \.self) { country in
                 Button {
-                    appState.select(country: country)
+                    appState.selectCountry(country)
                     presentationMode.wrappedValue.dismiss()
                 } label: {
                     TextWithCheckmark(

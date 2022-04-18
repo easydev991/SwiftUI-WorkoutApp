@@ -37,31 +37,31 @@ private extension ContentView {
     func tabView() -> some View {
         TabView(selection: $appState.selectedTab) {
             EventsView()
-                .onAppear { appState.select(tab: .events) }
+                .onAppear { appState.selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events.rawValue)
             MessagesView()
-                .onAppear { appState.select(tab: .messages) }
+                .onAppear { appState.selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages.rawValue)
             JournalsView()
-                .onAppear { appState.select(tab: .journal) }
+                .onAppear { appState.selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal.rawValue)
             SportsGroundsView()
-                .onAppear { appState.select(tab: .map) }
+                .onAppear { appState.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map.rawValue)
             ProfileView()
-                .onAppear { appState.select(tab: .profile) }
+                .onAppear { appState.selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }

@@ -22,7 +22,7 @@ struct CitiesView: View {
     var body: some View {
         List(filteredCities, id: \.self) { city in
             Button {
-                appState.select(city: city)
+                appState.selectCity(city)
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 TextWithCheckmark(
