@@ -12,6 +12,7 @@ final class AppState: ObservableObject {
     @AppStorage("isUserAuthorized") var isUserAuthorized = false
     @AppStorage("showWelcome") var showWelcome = true
     @Published var selectedTab = ContentView.Tab.events.rawValue
+    @Published var countries = [CountryElement]()
     @Published var selectedCountry = CountryElement(
         cities: [], id: "", name: ""
     )
@@ -48,6 +49,7 @@ private extension AppState {
               let moscow = russia.cities.first(where: { $0.name == "Москва" }) else {
             fatalError("Россия и Москва должны быть в файле countries.json")
         }
+        countries = _countries.sorted { $0.name < $1.name }
         selectedCountry = russia
         cities = russia.cities.sorted { $0.name < $1.name }
         selectedCity = moscow

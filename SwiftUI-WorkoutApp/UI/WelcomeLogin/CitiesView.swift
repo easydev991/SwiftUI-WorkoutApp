@@ -8,33 +8,27 @@
 import SwiftUI
 
 struct CitiesView: View {
-    @EnvironmentObject var appState: AppState
     @Environment(\.presentationMode) var presentationMode
-    @State private var searchQuery = ""
+    @EnvironmentObject var appState: AppState
 
     let cities: [City]
-    private var results: [City] {
+    @State private var searchQuery = ""
+    private var filteredCities: [City] {
         searchQuery.isEmpty
         ? cities
         : cities.filter { $0.name.contains(searchQuery) }
     }
 
     var body: some View {
-        List(results, id: \.self) { city in
+        List(filteredCities, id: \.self) { city in
             Button {
                 appState.select(city: city)
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                HStack {
-                    Text(city.name)
-                    Spacer()
-                    Image(systemName: "checkmark")
-                        .opacity(
-                            city.name == $appState.selectedCity.wrappedValue.name
-                            ? 1
-                            : .zero
-                        )
-                }
+                TextWithCheckmark(
+                    title: city.name,
+                    showMark: city.name == $appState.selectedCity.wrappedValue.name
+                )
             }
         }
         .searchable(
@@ -48,7 +42,7 @@ struct CitiesView: View {
 
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        CountriesView()
+        CitiesView(cities: AppState().cities)
             .environmentObject(AppState())
     }
 }

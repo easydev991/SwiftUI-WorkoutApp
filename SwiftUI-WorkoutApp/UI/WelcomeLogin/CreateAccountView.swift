@@ -87,7 +87,7 @@ private extension CreateAccountView {
     }
 
     func countryPicker() -> some View {
-        NavigationLink(destination: CountriesView()) {
+        NavigationLink(destination: CountriesView(countriesList: appState.countries)) {
             HStack {
                 Image(systemName: "globe")
                     .foregroundColor(.secondary)
