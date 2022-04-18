@@ -100,7 +100,7 @@ private extension CreateAccountView {
     }
 
     func cityPicker() -> some View {
-        NavigationLink(destination: CitiesView()) {
+        NavigationLink(destination: CitiesView(cities: appState.cities)) {
             HStack {
                 Image(systemName: "signpost.right")
                     .foregroundColor(.secondary)
