@@ -7,9 +7,6 @@
 
 import Foundation
 
-// To parse the JSON, add this file to your project and do:
-// let response = try? newJSONDecoder().decode(SportsGroundsResponse.self, from: jsonData)
-
 struct SportsGroundsResponse: Codable {
     let data: [SportsGround]
 }
