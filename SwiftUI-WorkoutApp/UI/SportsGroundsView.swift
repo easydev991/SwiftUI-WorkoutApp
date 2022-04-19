@@ -10,6 +10,7 @@ import SwiftUI
 struct SportsGroundsView: View {
     var body: some View {
         NavigationView {
+#warning("Показать карту с площадками")
             Text("Площадки")
                 .navigationTitle("Площадки")
         }
