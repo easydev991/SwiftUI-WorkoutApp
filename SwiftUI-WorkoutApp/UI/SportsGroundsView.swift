@@ -9,7 +9,6 @@ import SwiftUI
 import MapKit
 
 struct SportsGroundsView: View {
-    @EnvironmentObject var appState: AppState
     @State private var locationManager = LocationManager()
 
     var body: some View {
@@ -32,7 +31,6 @@ struct SportsGroundsView: View {
 struct SportsGroundsView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsView()
-            .environmentObject(AppState())
     }
 }
 
