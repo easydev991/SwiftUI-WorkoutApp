@@ -1,5 +1,5 @@
 //
-//  SportsGroundsResponse.swift
+//  SportsGround.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,21 +7,17 @@
 
 import Foundation
 
-struct SportsGroundsResponse: Codable {
-    let data: [SportsGround]
-}
-
 struct SportsGround: Codable {
     let address: String
     let author: Author
     let canEdit: Bool
     let cityID, classID, commentsCount, countryID: Int
-    let createDate: Date
+    let createDate: String?
     let equipmentIDS: [Int]
     let id: Int
     let latitude, longitude: String
     let mine: Bool
-    let modifyDate: Date
+    let modifyDate: String?
     let name: String
     let photos: [Photo]
     let preview: String
