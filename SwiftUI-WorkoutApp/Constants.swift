@@ -9,6 +9,7 @@ import Foundation
 
 struct Constants {
     static let minimumUserAge = -5
+    static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"
 }

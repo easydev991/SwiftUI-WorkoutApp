@@ -1,0 +1,69 @@
+//
+//  ProfileSettingsView.swift
+//  SwiftUI-WorkoutApp
+//
+//  Created by Олег Еременко on 19.04.2022.
+//
+
+import SwiftUI
+import StoreKit
+
+struct ProfileSettingsView: View {
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        Form {
+            Section("Профиль") {
+                editAccountView()
+#warning("TODO: открыть экран для смены пароля")
+                Text("Изменить пароль")
+                Button {
+#warning("TODO: выход из учетной записи")
+                    appState.isUserAuthorized = false
+                } label: {
+                    Text("Выйти")
+                        .foregroundColor(.pink)
+                }
+            }
+            Section("Информация о приложении") {
+                HStack {
+                    Text("Версия")
+                    Spacer()
+                    Text(Constants.appVersion)
+                        .foregroundColor(.secondary)
+                }
+                Button {
+#warning("TODO: сообщить об ошибке")
+                    print("--- сообщить об ошибке")
+                } label: {
+                    Text("Отправить обратную связь")
+                }
+                Button {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        SKStoreReviewController.requestReview(in: windowScene)
+                    }
+                } label: {
+                    Text("Оценить приложение")
+                }
+            }
+        }.navigationTitle("Настройки")
+    }
+}
+
+private extension ProfileSettingsView {
+    func editAccountView() -> some View {
+        NavigationLink {
+#warning("TODO: открыть экран для редактирования данных существующего пользователя")
+            CreateAccountView()
+        } label: {
+            Text("Редактировать данные")
+        }
+    }
+}
+
+struct ProfileSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ProfileSettingsView()
+            .environmentObject(AppState())
+    }
+}

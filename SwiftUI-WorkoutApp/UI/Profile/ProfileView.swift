@@ -11,15 +11,21 @@ struct ProfileView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        ZStack {
-            if appState.isUserAuthorized {
-                UserProfileView()
-            } else {
-                IncognitoProfileView()
-            }
+        NavigationView {
+            content()
+                .navigationTitle("Профиль")
         }
         .animation(.default, value: appState.isUserAuthorized)
         .ignoresSafeArea()
+    }
+
+    func content() -> AnyView {
+        switch appState.isUserAuthorized {
+        case true:
+            return AnyView(UserProfileView())
+        case false:
+            return AnyView(IncognitoProfileView())
+        }
     }
 }
 

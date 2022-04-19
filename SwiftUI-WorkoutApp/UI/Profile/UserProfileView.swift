@@ -11,25 +11,22 @@ struct UserProfileView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Вы вошли")
-                    .padding()
-                Button {
-                    appState.isUserAuthorized = false
-                } label: {
-                    Text("Выйти")
-                        .roundedRectangleStyle()
-                }
+        VStack {
+            Text("Вы вошли")
                 .padding()
+            NavigationLink {
+                ProfileSettingsView()
+            } label: {
+                Label("Настройки", systemImage: "gear")
+                    .roundedRectangleStyle()
             }
-            .navigationTitle("Профиль")
-            .toolbar {
-                Button {
-                    appState.showWelcome = true
-                } label: {
-                    Text("Выход для разработчика")
-                }
+            .padding()
+        }
+        .toolbar {
+            Button {
+                appState.showWelcome = true
+            } label: {
+                Text("Выход для разработчика")
             }
         }
     }

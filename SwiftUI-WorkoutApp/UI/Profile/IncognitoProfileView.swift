@@ -11,15 +11,12 @@ struct IncognitoProfileView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 16) {
-                incognitoInformer()
-                registerButton()
-                loginButton()
-            }
-            .padding()
-            .navigationTitle("Профиль")
+        VStack(spacing: 16) {
+            incognitoInformer()
+            registerButton()
+            loginButton()
         }
+        .padding()
     }
 }
 

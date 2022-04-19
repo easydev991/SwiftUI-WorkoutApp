@@ -152,12 +152,7 @@ private extension CreateAccountView {
             print("--- Проверяем введенные данные и начинаем регистрацию")
             focus = nil
         } label: {
-            HStack {
-                Spacer()
-                Text("Зарегистрироваться")
-                    .font(.headline)
-                Spacer()
-            }
+            ButtonInFormLabel(title: "Зарегистрироваться")
         }
         .disabled(
             loginText.isEmpty || emailText.isEmpty || passwordText.count < 6

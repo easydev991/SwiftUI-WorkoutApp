@@ -65,12 +65,7 @@ private extension LoginView {
             appState.showWelcome = false
             focus = nil
         } label: {
-            HStack {
-                Spacer()
-                Text("Войти")
-                    .font(.headline)
-                Spacer()
-            }
+            ButtonInFormLabel(title: "Войти")
         }
         .disabled(loginEmailText.isEmpty || passwordText.count < 6)
     }
