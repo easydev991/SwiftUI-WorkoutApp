@@ -10,6 +10,7 @@ import SwiftUI
 struct EventsView: View {
     var body: some View {
         NavigationView {
+#warning("Показать экран с мероприятиями или заглушку")
             Text("Мероприятия")
                 .navigationTitle("Мероприятия")
         }

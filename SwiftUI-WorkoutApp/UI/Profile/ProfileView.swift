@@ -18,7 +18,9 @@ struct ProfileView: View {
         .animation(.default, value: appState.isUserAuthorized)
         .ignoresSafeArea()
     }
+}
 
+private extension ProfileView {
     func content() -> AnyView {
         switch appState.isUserAuthorized {
         case true:

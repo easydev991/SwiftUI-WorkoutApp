@@ -8,10 +8,24 @@
 import SwiftUI
 
 struct JournalsView: View {
+    @EnvironmentObject var appState: AppState
+
     var body: some View {
         NavigationView {
-            Text("Дневники")
+            content()
                 .navigationTitle("Дневники")
+        }
+    }
+}
+
+private extension JournalsView {
+    func content() -> AnyView {
+        switch appState.isUserAuthorized {
+        case true:
+#warning("Показать экран с дневниками или заглушку")
+            return AnyView(Text("Дневники"))
+        case false:
+            return AnyView(IncognitoProfileView())
         }
     }
 }
@@ -19,5 +33,6 @@ struct JournalsView: View {
 struct JournalsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsView()
+            .environmentObject(AppState())
     }
 }
