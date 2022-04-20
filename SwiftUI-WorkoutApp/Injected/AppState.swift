@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MapKit
 
 final class AppState: ObservableObject {
     @AppStorage("isUserAuthorized") var isUserAuthorized = false
@@ -21,12 +22,15 @@ final class AppState: ObservableObject {
     @Published var selectedGender = "Мужской"
     @Published var genders = ["Мужской", "Женский"]
 
+    fileprivate let locationManager = LocationManager()
+
     init() {
         makeCountryAndCityData()
     }
 
     func selectTab(_ tab: ContentView.Tab) {
         selectedTab = tab.rawValue
+        locationManager.setEnabled(tab == .map)
     }
 
     func selectCountry(_ country: CountryElement) {
@@ -36,6 +40,15 @@ final class AppState: ObservableObject {
 
     func selectCity(_ city: City) {
         selectedCity = city
+    }
+
+    var mapRegion: MKCoordinateRegion {
+        get { locationManager.region }
+        set { locationManager.region = newValue }
+    }
+
+    func mapAnnotations() -> [SportsGround] {
+        locationManager.annotations
     }
 }
 
@@ -60,6 +73,44 @@ private extension AppState {
            let firstCity = country.cities.first {
             selectedCity = firstCity
             cities = country.cities
+        }
+    }
+}
+
+private extension AppState {
+    final class LocationManager: NSObject, CLLocationManagerDelegate {
+        private let manager = CLLocationManager()
+        var region = MKCoordinateRegion()
+        let annotations = Bundle.main.decodeJson(
+            [SportsGround].self,
+            fileName: "areas.json"
+        )
+
+        override init() {
+            super.init()
+            manager.delegate = self
+            manager.requestWhenInUseAuthorization()
+            manager.startUpdatingLocation()
+        }
+
+        func setEnabled(_ enabled: Bool) {
+            if enabled {
+                manager.startUpdatingLocation()
+            } else {
+                manager.stopUpdatingLocation()
+            }
+        }
+
+        func locationManager(
+            _ manager: CLLocationManager,
+            didUpdateLocations locations: [CLLocation]
+        ) {
+            if let location = locations.last {
+                region = .init(
+                    center: location.coordinate,
+                    span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                )
+            }
         }
     }
 }

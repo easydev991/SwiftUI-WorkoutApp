@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import CoreLocation
 
-struct SportsGround: Codable {
+struct SportsGround: Codable, Identifiable {
     let address: String
     let author: Author
     let canEdit: Bool
@@ -23,6 +24,12 @@ struct SportsGround: Codable {
     let preview: String
     let trainings: Trainings
     let typeID: Int
+    var coordinate: CLLocationCoordinate2D {
+        .init(
+            latitude: .init(Double(latitude) ?? .zero),
+            longitude: .init(Double(longitude) ?? .zero)
+        )
+    }
 
     enum CodingKeys: String, CodingKey {
         case address, author
