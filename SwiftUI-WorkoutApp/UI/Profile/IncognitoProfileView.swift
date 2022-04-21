@@ -29,7 +29,7 @@ private extension IncognitoProfileView {
     }
 
     func registerButton() -> some View {
-        NavigationLink(destination: CreateAccountView()) {
+        NavigationLink(destination: EditAccountView()) {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
                 .roundedRectangleStyle()
         }

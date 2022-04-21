@@ -55,7 +55,7 @@ private extension ProfileSettingsView {
     func editAccountView() -> some View {
         NavigationLink {
 #warning("TODO: открыть экран для редактирования данных существующего пользователя")
-            CreateAccountView()
+            EditAccountView()
         } label: {
             Text("Редактировать данные")
         }

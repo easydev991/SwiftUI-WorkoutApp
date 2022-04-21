@@ -1,5 +1,5 @@
 //
-//  CreateAccountView.swift
+//  EditAccountView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 17.04.2022.
@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct CreateAccountView: View {
+struct EditAccountView: View {
+    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var appState: AppState
     @State private var loginText = ""
     @State private var emailText = ""
@@ -25,31 +26,43 @@ struct CreateAccountView: View {
 
     var body: some View {
         Form {
-            Section("Данные входа") {
+            Section {
                 loginField()
                 emailField()
-                passwordField()
+                if !appState.isUserAuthorized {
+                    passwordField()
+                }
                 nameField()
                 countryPicker()
                 cityPicker()
                 genderPicker()
                 birthdayPicker()
             }
-            Section {
-                rulesOfService()
-            }
-            Section {
-                registerButton()
+            if !appState.isUserAuthorized {
+                Section {
+                    rulesOfService()
+                }
+                Section {
+                    registerButton()
+                }
+            } else {
+                Section {
+                    saveChangesButton()
+                }
             }
         }
-        .navigationTitle("Регистрация")
+        .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-private extension CreateAccountView {
+private extension EditAccountView {
     enum FocusableField: Hashable {
         case login, email, password
+    }
+
+    var viewTitle: String {
+        appState.isUserAuthorized ? "Изменить профиль" : "Регистрация"
     }
 
     func loginField() -> some View {
@@ -149,7 +162,7 @@ private extension CreateAccountView {
 
     func registerButton() -> some View {
         Button {
-            #warning("Проверить введенные данные и начать регистрацию")
+#warning("Проверить введенные данные и начать регистрацию")
             print("--- Проверяем введенные данные и начинаем регистрацию")
             focus = nil
         } label: {
@@ -159,11 +172,20 @@ private extension CreateAccountView {
             loginText.isEmpty || emailText.isEmpty || passwordText.count < 6
         )
     }
+
+    func saveChangesButton() -> some View {
+        Button {
+#warning("Сохранить изменения профиля")
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            ButtonInFormLabel(title: "Сохранить")
+        }
+    }
 }
 
-struct CreateAccountView_Previews: PreviewProvider {
+struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView()
+        EditAccountView()
             .environmentObject(AppState())
     }
 }
