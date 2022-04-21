@@ -15,8 +15,7 @@ struct ProfileSettingsView: View {
         Form {
             Section("Профиль") {
                 editAccountView()
-#warning("TODO: открыть экран для смены пароля")
-                Text("Изменить пароль")
+                changePasswordView()
                 Button {
 #warning("TODO: выход из учетной записи")
                     appState.isUserAuthorized = false
@@ -46,7 +45,8 @@ struct ProfileSettingsView: View {
                     Text("Оценить приложение")
                 }
             }
-        }.navigationTitle("Настройки")
+        }
+        .navigationTitle("Настройки")
     }
 }
 
@@ -57,6 +57,14 @@ private extension ProfileSettingsView {
             CreateAccountView()
         } label: {
             Text("Редактировать данные")
+        }
+    }
+
+    func changePasswordView() -> some View {
+        NavigationLink {
+            ChangePasswordView()
+        } label: {
+            Text("Изменить пароль")
         }
     }
 }
