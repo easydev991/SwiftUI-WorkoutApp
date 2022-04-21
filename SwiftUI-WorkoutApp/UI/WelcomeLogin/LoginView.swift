@@ -11,6 +11,8 @@ struct LoginView: View {
     @EnvironmentObject var appState: AppState
     @State private var loginEmailText = ""
     @State private var passwordText = ""
+    @State private var isForgotPasswordAlertShown = false
+    @State private var forgotPasswordAlertTitle = "Для восстановления пароля введите логин или email"
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -60,7 +62,7 @@ private extension LoginView {
 
     func loginButton() -> some View {
         Button {
-            #warning("Выполнить авторизацию")
+#warning("Выполнить авторизацию")
             print("--- Выполняем вход")
             appState.isUserAuthorized = true
             appState.showWelcome = false
@@ -73,9 +75,10 @@ private extension LoginView {
 
     func forgotPasswordButton() -> some View {
         Button {
-            #warning("Запросить восстановление пароля или показать алерт")
+#warning("Запросить восстановление пароля или показать алерт")
             print("--- Запрашиваем восстановление пароля")
             focus = .username
+            isForgotPasswordAlertShown.toggle()
         } label: {
             HStack {
                 Spacer()
@@ -83,6 +86,9 @@ private extension LoginView {
                     .tint(.blue)
                 Spacer()
             }
+        }
+        .alert(forgotPasswordAlertTitle, isPresented: $isForgotPasswordAlertShown) {
+            Text("Ok")
         }
     }
 }
