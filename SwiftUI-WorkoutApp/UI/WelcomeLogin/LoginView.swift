@@ -30,6 +30,7 @@ struct LoginView: View {
             }
         }
         .navigationTitle("Вход по email")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

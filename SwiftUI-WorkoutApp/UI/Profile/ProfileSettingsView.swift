@@ -47,6 +47,7 @@ struct ProfileSettingsView: View {
             }
         }
         .navigationTitle("Настройки")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

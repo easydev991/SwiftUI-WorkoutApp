@@ -43,6 +43,7 @@ struct CreateAccountView: View {
             }
         }
         .navigationTitle("Регистрация")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
