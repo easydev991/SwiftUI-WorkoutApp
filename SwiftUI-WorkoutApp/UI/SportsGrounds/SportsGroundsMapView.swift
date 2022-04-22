@@ -1,5 +1,5 @@
 //
-//  SportsGroundsView.swift
+//  SportsGroundsMapView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct SportsGroundsView: View {
+struct SportsGroundsMapView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
@@ -21,7 +21,7 @@ struct SportsGroundsView: View {
                 annotationContent: { item in
                     MapAnnotation(coordinate: item.coordinate) {
                         NavigationLink {
-                            Text(item.name)
+                            SportsGroundView(model: item)
                         } label: {
                             Image(systemName: "mappin.circle.fill")
                                 .font(.title)
@@ -36,9 +36,9 @@ struct SportsGroundsView: View {
     }
 }
 
-struct SportsGroundsView_Previews: PreviewProvider {
+struct SportsGroundsMapView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundsView()
+        SportsGroundsMapView()
             .environmentObject(AppState())
     }
 }

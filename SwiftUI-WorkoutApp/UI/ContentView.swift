@@ -54,7 +54,7 @@ private extension ContentView {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal.rawValue)
-            SportsGroundsView()
+            SportsGroundsMapView()
                 .onAppear { appState.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")

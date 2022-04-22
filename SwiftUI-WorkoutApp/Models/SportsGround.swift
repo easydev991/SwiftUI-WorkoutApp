@@ -12,7 +12,7 @@ struct SportsGround: Codable, Identifiable {
     let address: String
     let author: Author
     let canEdit: Bool
-    let cityID, classID, commentsCount, countryID: Int
+    let cityID, sizeID, commentsCount, countryID: Int
     let createDate: String?
     let equipmentIDS: [Int]
     let id: Int
@@ -30,12 +30,20 @@ struct SportsGround: Codable, Identifiable {
             longitude: .init(Double(longitude) ?? .zero)
         )
     }
+    var title: String {
+        "№ \(id)"
+    }
+    var subtitle: String {
+        let grade = SportsGroundGrade(id: typeID).grade.rawValue
+        let size = SportsGroundSize(id: sizeID).size.rawValue
+        return grade + " / " + size
+    }
 
     enum CodingKeys: String, CodingKey {
         case address, author
         case canEdit = "can_edit"
         case cityID = "city_id"
-        case classID = "class_id"
+        case sizeID = "class_id"
         case commentsCount = "comments_count"
         case countryID = "country_id"
         case createDate = "create_date"
@@ -89,4 +97,45 @@ enum Trainings: Codable {
             try container.encode(x)
         }
     }
+}
+
+extension SportsGround {
+    static let mock = SportsGround(
+        address: "ул. Шоссе Нефтянников 11/1",
+        author: .init(
+            id: 22377,
+            image: "https://workout.su/uploads/avatars/1442580670.jpg",
+            name: "Albert_88"
+        ),
+        canEdit: false,
+        cityID: 67,
+        sizeID: 1,
+        commentsCount: .zero,
+        countryID: 17,
+        createDate: "2016-10-14T15:13:25+03:00",
+        equipmentIDS: [3, 5, 6, 8, 21],
+        id: 5828,
+        latitude: "45.058418265072795",
+        longitude: "38.98097947239876",
+        mine: false,
+        modifyDate: "2017-12-28T23:45:54+03:00",
+        name: "№5828 Маленькая Советская",
+        photos: [
+            .init(
+                id: 1,
+                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-22-gmw.jpg"
+            ),
+            .init(
+                id: 2,
+                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-38-px8.jpg"
+            ),
+            .init(
+                id: 3,
+                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-51-4e4.jpg"
+            )
+        ],
+        preview: "https://workout.su/uploads/userfiles/2016/10/2016-10-14-15-10-13-qwt.jpg",
+        trainings: .string("1"),
+        typeID: 1
+    )
 }
