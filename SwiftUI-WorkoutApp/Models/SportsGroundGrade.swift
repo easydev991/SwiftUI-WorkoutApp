@@ -29,7 +29,7 @@ struct SportsGroundGrade {
         case 4:
             grade = .underTheHood
         default:
-            grade = .legendary
+            grade = .legendary // id = 6
         }
     }
 }

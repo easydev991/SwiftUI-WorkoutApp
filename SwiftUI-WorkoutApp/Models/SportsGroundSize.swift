@@ -23,7 +23,7 @@ struct SportsGroundSize {
         case 2:
             size = .medium
         default:
-            size = .large
+            size = .large // id = 3
         }
     }
 }
