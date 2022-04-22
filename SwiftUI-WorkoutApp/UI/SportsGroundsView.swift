@@ -19,10 +19,15 @@ struct SportsGroundsView: View {
                 showsUserLocation: true,
                 annotationItems: appState.mapAnnotations(),
                 annotationContent: { item in
-                    MapMarker(
-                        coordinate: item.coordinate,
-                        tint: .red
-                    )
+                    MapAnnotation(coordinate: item.coordinate) {
+                        NavigationLink {
+                            Text(item.name)
+                        } label: {
+                            Image(systemName: "mappin.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
             )
             .navigationTitle("Площадки")
