@@ -47,8 +47,9 @@ final class AppState: ObservableObject {
         set { locationManager.region = newValue }
     }
 
-    func mapAnnotations() -> [SportsGround] {
-        locationManager.annotations
+    var mapAnnotations: [SportsGround] {
+        get { locationManager.annotations }
+        set { locationManager.annotations = newValue }
     }
 }
 
@@ -81,7 +82,7 @@ private extension AppState {
     final class LocationManager: NSObject, CLLocationManagerDelegate {
         private let manager = CLLocationManager()
         var region = MKCoordinateRegion()
-        let annotations = Bundle.main.decodeJson(
+        var annotations = Bundle.main.decodeJson(
             [SportsGround].self,
             fileName: "areas.json"
         )

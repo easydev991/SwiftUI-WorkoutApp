@@ -11,7 +11,7 @@ import SwiftUI
 struct MapViewUI: UIViewRepresentable {
     let viewKey: String
     @Binding var region: MKCoordinateRegion
-    let annotations: [SportsGround]
+    @Binding var annotations: [SportsGround]
     @Binding var selectedPlace: SportsGround
     @Binding var openDetails: Bool
 

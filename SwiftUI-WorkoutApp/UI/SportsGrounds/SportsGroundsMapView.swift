@@ -24,7 +24,7 @@ struct SportsGroundsMapView: View {
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
                     region: $appState.mapRegion,
-                    annotations: appState.mapAnnotations(),
+                    annotations: $appState.mapAnnotations,
                     selectedPlace: $selectedPlace,
                     openDetails: $openDetails
                 )
