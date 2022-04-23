@@ -8,26 +8,61 @@
 import SwiftUI
 
 struct CreateCommentView: View {
+    @Environment(\.presentationMode) var presentationMode
     @State private var commentText = ""
+    @State private var alertTitle = "Комментарий отправлен!"
+    @State private var isCommentSent = false
+    @FocusState private var isFocused
 
     var body: some View {
         VStack(spacing: 24) {
-            TextEditor(text: $commentText)
-                .frame(height: 200)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray.opacity(0.5), lineWidth: 2)
-                )
-            Button {
-#warning("Отправить комментарий на сервер")
-            } label: {
-                Text("Отправить")
-                    .roundedRectangleStyle()
-            }
+            textView()
             Spacer()
         }
         .padding()
         .navigationTitle("Комментарий")
+        .toolbar {
+            sendButton()
+        }
+    }
+}
+
+private extension CreateCommentView {
+    func textView() -> some View {
+        TextEditor(text: $commentText)
+            .frame(height: 200)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.gray.opacity(0.5), lineWidth: 2)
+            )
+            .focused($isFocused)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused.toggle()
+                }
+            }
+    }
+
+    func sendButton() -> some View {
+        Button {
+#warning("Отправить комментарий на сервер")
+            isFocused.toggle()
+            isCommentSent.toggle()
+        } label: {
+            Text("Отправить")
+        }
+        .disabled(commentText.count < 5)
+        .alert(alertTitle, isPresented: $isCommentSent) {
+            closeButton()
+        }
+    }
+
+    func closeButton() -> some View {
+        Button {
+            presentationMode.wrappedValue.dismiss()
+        } label: {
+            Text("Закрыть")
+        }
     }
 }
 

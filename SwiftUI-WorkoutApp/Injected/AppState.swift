@@ -112,5 +112,26 @@ private extension AppState {
                 )
             }
         }
+
+        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+            switch manager.authorizationStatus {
+            case .notDetermined:
+                manager.requestWhenInUseAuthorization()
+            case .authorizedAlways, .authorizedWhenInUse:
+                manager.requestLocation()
+            case .restricted:
+                print("--- Restricted location")
+            case .denied:
+                print("--- Denied location")
+            @unknown default: break
+            }
+        }
+
+        func locationManager(
+            _ manager: CLLocationManager,
+            didFailWithError error: Error
+        ) {
+            print("--- LocationManager did fail with error: \(error.localizedDescription)")
+        }
     }
 }

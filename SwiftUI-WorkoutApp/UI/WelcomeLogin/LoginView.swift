@@ -26,11 +26,6 @@ struct LoginView: View {
                 forgotPasswordButton()
             }
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                focus = .username
-            }
-        }
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -48,6 +43,11 @@ private extension LoginView {
                 .foregroundColor(.secondary)
             TextField("Логин или email", text: $loginEmailText)
                 .focused($focus, equals: .username)
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                focus = .username
+            }
         }
     }
 

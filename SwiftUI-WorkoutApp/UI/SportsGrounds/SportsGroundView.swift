@@ -25,10 +25,6 @@ struct SportsGroundView: View {
         .onAppear {
             isMySportsGround = model.mine
             showParticipants = model.peopleTrainHereCount > .zero
-            let mirror = Mirror(reflecting: model)
-            mirror.children.forEach { element in
-                print("key: \(element.label ?? ""), value: \(element.value)")
-            }
         }
     }
 }
@@ -37,10 +33,10 @@ private extension SportsGroundView {
     func titlePhotoAddressSection() -> some View {
         Section {
             HStack {
-                Text(model.title)
+                Text(model.shortTitle)
                     .font(.title2.bold())
                 Spacer()
-                Text(model.subtitle)
+                Text(model.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
             photosCollection()

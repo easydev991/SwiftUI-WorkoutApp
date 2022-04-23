@@ -7,8 +7,9 @@
 
 import Foundation
 import CoreLocation
+import MapKit.MKGeometry
 
-struct SportsGround: Codable, Identifiable {
+final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let address: String
     let author: Author
     let canEdit: Bool
@@ -24,19 +25,16 @@ struct SportsGround: Codable, Identifiable {
     let preview: String
     let trainings: Trainings
     let typeID: Int
-    var coordinate: CLLocationCoordinate2D {
-        .init(
-            latitude: .init(Double(latitude) ?? .zero),
-            longitude: .init(Double(longitude) ?? .zero)
-        )
+    var title: String? {
+        "Площадка № \(id)"
     }
-    var title: String {
-        "№ \(id)"
-    }
-    var subtitle: String {
+    var subtitle: String? {
         let grade = SportsGroundGrade(id: typeID).grade.rawValue
         let size = SportsGroundSize(id: sizeID).size.rawValue
         return grade + " / " + size
+    }
+    var shortTitle: String {
+        "№ \(id)"
     }
     var peopleTrainHereCount: Int {
         switch trainings {
@@ -45,6 +43,20 @@ struct SportsGround: Codable, Identifiable {
         case let .string(str):
             return Int(str) ?? .zero
         }
+    }
+    private let regionRadius: CLLocationDistance = 1000
+    var coordinate: CLLocationCoordinate2D {
+        .init(
+            latitude: .init(Double(latitude) ?? .zero),
+            longitude: .init(Double(longitude) ?? .zero)
+        )
+    }
+    var region: MKCoordinateRegion {
+        .init(
+            center: coordinate,
+            latitudinalMeters: regionRadius,
+            longitudinalMeters: regionRadius
+        )
     }
 
     enum CodingKeys: String, CodingKey {
@@ -59,6 +71,28 @@ struct SportsGround: Codable, Identifiable {
         case id, latitude, longitude, mine, name, photos, preview, trainings
         case modifyDate = "modify_date"
         case typeID = "type_id"
+    }
+
+    init(address: String, author: Author, canEdit: Bool, cityID: Int, sizeID: Int, commentsCount: Int, countryID: Int, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String, photos: [Photo], preview: String, trainings: Trainings, typeID: Int) {
+        self.address = address
+        self.author = author
+        self.canEdit = canEdit
+        self.cityID = cityID
+        self.sizeID = sizeID
+        self.commentsCount = commentsCount
+        self.countryID = countryID
+        self.createDate = createDate
+        self.equipmentIDS = equipmentIDS
+        self.id = id
+        self.latitude = latitude
+        self.longitude = longitude
+        self.mine = mine
+        self.modifyDate = modifyDate
+        self.name = name
+        self.photos = photos
+        self.preview = preview
+        self.trainings = trainings
+        self.typeID = typeID
     }
 }
 

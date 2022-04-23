@@ -29,11 +29,6 @@ struct ChangePasswordView: View {
                 changePasswordButton()
             }
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                focus = .currentPassword
-            }
-        }
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -50,6 +45,11 @@ private extension ChangePasswordView {
                 .foregroundColor(.secondary)
             SecureField("Текущий пароль", text: $currentPasswordText)
                 .focused($focus, equals: .currentPassword)
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                focus = .currentPassword
+            }
         }
     }
 

@@ -10,26 +10,25 @@ import MapKit
 
 struct SportsGroundsMapView: View {
     @EnvironmentObject var appState: AppState
+    @State private var openDetails = false
+    @State private var selectedPlace = SportsGround.mock
 
     var body: some View {
         NavigationView {
-            Map(
-                coordinateRegion: $appState.mapRegion,
-                interactionModes: .pan,
-                showsUserLocation: true,
-                annotationItems: appState.mapAnnotations(),
-                annotationContent: { item in
-                    MapAnnotation(coordinate: item.coordinate) {
-                        NavigationLink {
-                            SportsGroundView(model: item)
-                        } label: {
-                            Image(systemName: "mappin.circle.fill")
-                                .font(.title)
-                                .foregroundColor(.red)
-                        }
-                    }
+            ZStack {
+                NavigationLink(isActive: $openDetails) {
+                    SportsGroundView(model: selectedPlace)
+                } label: {
+                    Text("Загружаем карту ...")
                 }
-            )
+                MapViewUI(
+                    viewKey: "SportsGroundsMapView",
+                    region: $appState.mapRegion,
+                    annotations: appState.mapAnnotations(),
+                    selectedPlace: $selectedPlace,
+                    openDetails: $openDetails
+                )
+            }
             .navigationTitle("Площадки")
             .navigationBarTitleDisplayMode(.inline)
         }
