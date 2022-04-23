@@ -8,51 +8,144 @@
 import SwiftUI
 
 struct SportsGroundView: View {
+    @State private var isMySportsGround = false
+    @State private var showParticipants = false
+
     let model: SportsGround
 
     var body: some View {
         Form {
-            Section {
-                titleSection()
-            }
-            Section {
-                Text("Горизонтальная коллекция фотографий")
-            }
-            Section {
-                Text("Фото с предпросмотром карты")
-            }
-            Section {
-                Text("Здесь тренируются ХХХ человек с переходом на экран участников")
-            }
-            Section {
-                Text("Свичер 'Тренируюсь здесь'")
-            }
-            Section {
-                Text("Кнопка для создания мероприятия")
-            }
-            Section("Добавил") {
-                Text("Фото и ник автора")
-            }
-            Section("Комментарии") {
-                Text("Список комментариев")
-            }
-            Section {
-                Text("Кнопка для добавления комментария")
-            }
+            titlePhotoAddressSection()
+            participantsAndEventSection()
+            authorSection()
+            commentsSection()
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            isMySportsGround = model.mine
+            showParticipants = model.peopleTrainHereCount > .zero
+            let mirror = Mirror(reflecting: model)
+            mirror.children.forEach { element in
+                print("key: \(element.label ?? ""), value: \(element.value)")
+            }
+        }
     }
 }
 
 private extension SportsGroundView {
-    func titleSection() -> some View {
-        HStack {
-            Text(model.title)
-                .font(.title2.bold())
-            Spacer()
-            Text(model.subtitle)
-                .foregroundColor(.secondary)
+    func titlePhotoAddressSection() -> some View {
+        Section {
+            HStack {
+                Text(model.title)
+                    .font(.title2.bold())
+                Spacer()
+                Text(model.subtitle)
+                    .foregroundColor(.secondary)
+            }
+            photosCollection()
+            Text(model.address)
+        }
+    }
+
+    func photosCollection() -> some View {
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 16) {
+                ForEach(model.photos) {
+                    AsyncImage(url: .init(string: $0.stringURL)) { phase in
+                        switch phase {
+                        case let .success(image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 80, height: 100)
+                                .cornerRadius(8)
+                        case let .failure(error):
+                            Color.secondary
+                                .frame(width: 80, height: 100)
+                                .cornerRadius(8)
+                                .overlay {
+                                    Text(error.localizedDescription)
+                                        .multilineTextAlignment(.center)
+                                }
+                        default:
+                            ProgressView()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func participantsAndEventSection() -> some View {
+        Section {
+            if showParticipants {
+                NavigationLink {
+    #warning("Сделать экран со списком тренирующихся")
+                    Text("Экран со списком тренирующихся")
+                        .navigationTitle("Здесь тренируются")
+                } label: {
+                    HStack {
+                        Text("Здесь тренируются")
+                        Spacer()
+                        Text(
+                            "people_train_here \(model.peopleTrainHereCount)",
+                            tableName: "Plurals"
+                        )
+                        .foregroundColor(.secondary)
+                    }
+                }
+            }
+#warning("Сохранять изменения в базе данных")
+            Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
+            createEventButton()
+        }
+    }
+
+    func authorSection() -> some View {
+        Section("Добавил") {
+            HStack(spacing: 16) {
+                AsyncImage(url: .init(string: model.author.imageStringURL)) { phase in
+                    switch phase {
+                    case let .success(image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 36, height: 36)
+                            .cornerRadius(8)
+                    case .failure:
+                        Image(systemName: "person.fill")
+                    default:
+                        ProgressView()
+                    }
+                }
+                Text(model.author.name)
+                    .fontWeight(.medium)
+            }
+        }
+    }
+
+    func createEventButton() -> some View {
+        NavigationLink {
+#warning("Сделать экран для создания мероприятия")
+            Text("Экран для создания мероприятия")
+                .navigationTitle("Мероприятие")
+        } label: {
+            Text("Создать мероприятие")
+                .fontWeight(.medium)
+        }
+    }
+
+    func commentsSection() -> some View {
+        Section("Комментарии") {
+            VStack(alignment: .leading, spacing: 16) {
+#warning("Скачать с бэка и отобразить список комментариев")
+                NavigationLink {
+                    CreateCommentView()
+                } label: {
+                    Label("Добавить комментарий", systemImage: "plus.message.fill")
+                }
+            }
         }
     }
 }

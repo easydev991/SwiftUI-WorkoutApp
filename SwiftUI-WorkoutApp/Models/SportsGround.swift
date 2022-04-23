@@ -38,6 +38,14 @@ struct SportsGround: Codable, Identifiable {
         let size = SportsGroundSize(id: sizeID).size.rawValue
         return grade + " / " + size
     }
+    var peopleTrainHereCount: Int {
+        switch trainings {
+        case let .integer(int):
+            return int
+        case let .string(str):
+            return Int(str) ?? .zero
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case address, author
@@ -54,15 +62,25 @@ struct SportsGround: Codable, Identifiable {
     }
 }
 
-struct Author: Codable {
+struct Author: Codable, Identifiable {
     let id: Int
-    let image: String
+    let imageStringURL: String
     let name: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, name
+        case imageStringURL = "image"
+    }
 }
 
-struct Photo: Codable {
+struct Photo: Codable, Identifiable {
     let id: Int
-    let photo: String
+    let stringURL: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case stringURL = "photo"
+    }
 }
 
 enum Trainings: Codable {
@@ -91,10 +109,10 @@ enum Trainings: Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
-        case .integer(let x):
-            try container.encode(x)
-        case .string(let x):
-            try container.encode(x)
+        case let .integer(int):
+            try container.encode(int)
+        case let .string(str):
+            try container.encode(str)
         }
     }
 }
@@ -104,7 +122,7 @@ extension SportsGround {
         address: "ул. Шоссе Нефтянников 11/1",
         author: .init(
             id: 22377,
-            image: "https://workout.su/uploads/avatars/1442580670.jpg",
+            imageStringURL: "https://workout.su/uploads/avatars/1442580670.jpg",
             name: "Albert_88"
         ),
         canEdit: false,
@@ -123,15 +141,15 @@ extension SportsGround {
         photos: [
             .init(
                 id: 1,
-                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-22-gmw.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-22-gmw.jpg"
             ),
             .init(
                 id: 2,
-                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-38-px8.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-38-px8.jpg"
             ),
             .init(
                 id: 3,
-                photo: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-51-4e4.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-51-4e4.jpg"
             )
         ],
         preview: "https://workout.su/uploads/userfiles/2016/10/2016-10-14-15-10-13-qwt.jpg",

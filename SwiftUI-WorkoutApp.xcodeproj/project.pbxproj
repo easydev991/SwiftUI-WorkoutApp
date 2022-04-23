@@ -14,6 +14,8 @@
 		6747575928128603002F0A24 /* SportsGroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundView.swift */; };
 		675EC649281289FB00C2E229 /* SportsGroundSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC648281289FB00C2E229 /* SportsGroundSize.swift */; };
 		675EC64B28128B7E00C2E229 /* SportsGroundGrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */; };
+		675EC64D281405A900C2E229 /* Plurals.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 675EC64C281405A900C2E229 /* Plurals.stringsdict */; };
+		675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* CreateCommentView.swift */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
 		6798AA40280AEDC900DB76F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3F280AEDC900DB76F1 /* ContentView.swift */; };
 		6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA41280AEDCA00DB76F1 /* Assets.xcassets */; };
@@ -51,6 +53,8 @@
 		6747575828128603002F0A24 /* SportsGroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundView.swift; sourceTree = "<group>"; };
 		675EC648281289FB00C2E229 /* SportsGroundSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundSize.swift; sourceTree = "<group>"; };
 		675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundGrade.swift; sourceTree = "<group>"; };
+		675EC64C281405A900C2E229 /* Plurals.stringsdict */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; path = Plurals.stringsdict; sourceTree = "<group>"; };
+		675EC64E2814126800C2E229 /* CreateCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentView.swift; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_WorkoutAppApp.swift; sourceTree = "<group>"; };
 		6798AA3F280AEDC900DB76F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -98,6 +102,7 @@
 			children = (
 				6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */,
 				6747575828128603002F0A24 /* SportsGroundView.swift */,
+				675EC64E2814126800C2E229 /* CreateCommentView.swift */,
 			);
 			path = SportsGrounds;
 			sourceTree = "<group>";
@@ -164,6 +169,7 @@
 				6798AA41280AEDCA00DB76F1 /* Assets.xcassets */,
 				6798AA80280BF13100DB76F1 /* Localizable.strings */,
 				6798AA87280C14B800DB76F1 /* Bundle+.swift */,
+				675EC64C281405A900C2E229 /* Plurals.stringsdict */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -171,8 +177,8 @@
 		6798AA5F280AF61700DB76F1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA4D280AF32A00DB76F1 /* SportsGround.swift */,
 				6798AA85280C135E00DB76F1 /* CountryElement.swift */,
+				6798AA4D280AF32A00DB76F1 /* SportsGround.swift */,
 				675EC648281289FB00C2E229 /* SportsGroundSize.swift */,
 				675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */,
 			);
@@ -287,6 +293,7 @@
 				6798AA79280BE8E200DB76F1 /* countries.json in Resources */,
 				6798AA7E280BF13100DB76F1 /* Localizable.strings in Resources */,
 				6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */,
+				675EC64D281405A900C2E229 /* Plurals.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +316,7 @@
 				6798AA68280B23B700DB76F1 /* UserProfileView.swift in Sources */,
 				6798AA88280C14B800DB76F1 /* Bundle+.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* ContentView.swift in Sources */,
+				675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */,
 				6798AA8C280C390F00DB76F1 /* CountriesView.swift in Sources */,
 				675EC64B28128B7E00C2E229 /* SportsGroundGrade.swift in Sources */,
 				6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */,
