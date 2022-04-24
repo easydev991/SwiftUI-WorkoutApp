@@ -10,6 +10,11 @@ import SwiftUI
 struct SportsGroundView: View {
     @State private var isMySportsGround = false
     @State private var showParticipants = false
+    private let columns: [GridItem] = [
+        .init(.flexible()),
+        .init(.flexible()),
+        .init(.flexible())
+    ]
 
     let model: SportsGround
 
@@ -39,39 +44,37 @@ private extension SportsGroundView {
                 Text(model.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
-            photosCollection()
+            gridWithPhotos()
             Text(model.address)
         }
     }
 
-    func photosCollection() -> some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 16) {
-                ForEach(model.photos) {
-                    AsyncImage(url: .init(string: $0.stringURL)) { phase in
-                        switch phase {
-                        case let .success(image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 80, height: 100)
-                                .cornerRadius(8)
-                        case let .failure(error):
-                            Color.secondary
-                                .frame(width: 80, height: 100)
-                                .cornerRadius(8)
-                                .overlay {
-                                    Text(error.localizedDescription)
-                                        .multilineTextAlignment(.center)
-                                }
-                        default:
-                            ProgressView()
-                        }
+    func gridWithPhotos() -> some View {
+        LazyVGrid(columns: columns) {
+            ForEach(model.photos) {
+                AsyncImage(url: .init(string: $0.stringURL)) { phase in
+                    switch phase {
+                    case let .success(image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .cornerRadius(8)
+                    case let .failure(error):
+                        Color.secondary
+                            .frame(width: .infinity, height: 100)
+                            .cornerRadius(8)
+                            .overlay {
+                                Text(error.localizedDescription)
+                                    .multilineTextAlignment(.center)
+                            }
+                    default:
+                        ProgressView()
                     }
                 }
             }
         }
     }
+
 
     func participantsAndEventSection() -> some View {
         Section {
@@ -148,6 +151,11 @@ private extension SportsGroundView {
 
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundView(model: .mock)
+        Group {
+            SportsGroundView(model: .mock)
+                .previewDevice("iPhone 12 Pro Max")
+            SportsGroundView(model: .mock)
+                .previewDevice("iPhone 13 mini")
+        }
     }
 }
