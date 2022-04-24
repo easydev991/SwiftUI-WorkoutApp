@@ -17,7 +17,10 @@ struct SportsGroundView: View {
 
     var body: some View {
         Form {
-            titleAddressPhotoSection()
+            titleAddressSection()
+            if isPhotoGridShown {
+                gridWithPhotosSection()
+            }
             participantsAndEventSection()
             authorSection()
             commentsSection()
@@ -48,7 +51,7 @@ private extension SportsGroundView {
         }
     }
 
-    func titleAddressPhotoSection() -> some View {
+    func titleAddressSection() -> some View {
         Section {
             HStack {
                 Text(model.shortTitle)
@@ -57,6 +60,9 @@ private extension SportsGroundView {
                 Text(model.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
+            MapSnapshotView(model: model)
+                .frame(height: 150)
+                .cornerRadius(8)
             Text(model.address)
             Button {
                 if let url = model.appleMapsURL,
@@ -68,33 +74,31 @@ private extension SportsGroundView {
                     .fontWeight(.medium)
                     .foregroundColor(.blue)
             }
-
-            if isPhotoGridShown {
-                gridWithPhotos()
-            }
         }
     }
 
-    func gridWithPhotos() -> some View {
-        LazyVGrid(columns: photoColumns.items) {
-            ForEach(model.photos) {
-                AsyncImage(url: .init(string: $0.stringURL)) { phase in
-                    switch phase {
-                    case let .success(image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .cornerRadius(8)
-                    case let .failure(error):
-                        Color.secondary
-                            .frame(width: .infinity, height: 100)
-                            .cornerRadius(8)
-                            .overlay {
-                                Text(error.localizedDescription)
-                                    .multilineTextAlignment(.center)
-                            }
-                    default:
-                        ProgressView()
+    func gridWithPhotosSection() -> some View {
+        Section("Фотографии") {
+            LazyVGrid(columns: photoColumns.items) {
+                ForEach(model.photos) {
+                    AsyncImage(url: .init(string: $0.stringURL)) { phase in
+                        switch phase {
+                        case let .success(image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .cornerRadius(8)
+                        case let .failure(error):
+                            Color.secondary
+                                .frame(width: .infinity, height: 100)
+                                .cornerRadius(8)
+                                .overlay {
+                                    Text(error.localizedDescription)
+                                        .multilineTextAlignment(.center)
+                                }
+                        default:
+                            ProgressView()
+                        }
                     }
                 }
             }
