@@ -25,6 +25,7 @@ struct SportsGroundView: View {
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            print(model.author)
             isPhotoGridShown = !model.photos.isEmpty
             photoColumns = .init(model.photos.count)
             isMySportsGround = model.mine
@@ -105,9 +106,7 @@ private extension SportsGroundView {
         Section {
             if showParticipants {
                 NavigationLink {
-#warning("Сделать экран со списком тренирующихся")
-                    Text("Экран со списком тренирующихся")
-                        .navigationTitle("Здесь тренируются")
+                    SportsGroundParticipantsView()
                 } label: {
                     HStack {
                         Text("Здесь тренируются")
@@ -134,9 +133,7 @@ private extension SportsGroundView {
                     case let .success(image):
                         image
                             .resizable()
-                            .scaledToFill()
-                            .frame(width: 36, height: 36)
-                            .cornerRadius(8)
+                            .smallProfileImageRect()
                     case .failure:
                         Image(systemName: "person.fill")
                     default:
