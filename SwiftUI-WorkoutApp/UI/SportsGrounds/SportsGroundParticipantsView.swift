@@ -34,6 +34,7 @@ struct TempPersonModel: Identifiable {
 }
 
 struct SportsGroundParticipantsView: View {
+    let model: SportsGround
     var body: some View {
 #warning("Запрашивать с бэка и отображать список реальных участников")
         List(TempPersonModel.mock) { person in
@@ -76,6 +77,6 @@ private extension SportsGroundParticipantsView {
 
 struct SportsGroundParticipantsView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundParticipantsView()
+        SportsGroundParticipantsView(model: .mock)
     }
 }

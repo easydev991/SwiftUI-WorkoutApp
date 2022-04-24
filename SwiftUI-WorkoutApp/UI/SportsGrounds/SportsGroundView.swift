@@ -25,7 +25,6 @@ struct SportsGroundView: View {
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            print(model.author)
             isPhotoGridShown = !model.photos.isEmpty
             photoColumns = .init(model.photos.count)
             isMySportsGround = model.mine
@@ -105,23 +104,37 @@ private extension SportsGroundView {
     func participantsAndEventSection() -> some View {
         Section {
             if showParticipants {
-                NavigationLink {
-                    SportsGroundParticipantsView()
-                } label: {
-                    HStack {
-                        Text("Здесь тренируются")
-                        Spacer()
-                        Text(
-                            "people_train_here \(model.peopleTrainHereCount)",
-                            tableName: "Plurals"
-                        )
-                        .foregroundColor(.secondary)
-                    }
-                }
+                linkToParticipantsView()
             }
 #warning("Сохранять изменения в базе данных и отправить на бэк")
             Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
-            createEventButton()
+            createEventButton(model)
+        }
+    }
+
+    func linkToParticipantsView() -> some View {
+        NavigationLink {
+            SportsGroundParticipantsView(model: model)
+        } label: {
+            HStack {
+                Text("Здесь тренируются")
+                Spacer()
+                Text(
+                    "people_train_here \(model.peopleTrainHereCount)",
+                    tableName: "Plurals"
+                )
+                .foregroundColor(.secondary)
+            }
+        }
+    }
+
+    func createEventButton(_ model: SportsGround) -> some View {
+        NavigationLink {
+            CreateEventView(model: model)
+        } label: {
+            Text("Создать мероприятие")
+                .fontWeight(.medium)
+                .foregroundColor(.blue)
         }
     }
 
@@ -143,18 +156,6 @@ private extension SportsGroundView {
                 Text(model.author.name)
                     .fontWeight(.medium)
             }
-        }
-    }
-
-    func createEventButton() -> some View {
-        NavigationLink {
-#warning("Сделать экран для создания мероприятия")
-            Text("Экран для создания мероприятия")
-                .navigationTitle("Мероприятие")
-        } label: {
-            Text("Создать мероприятие")
-                .fontWeight(.medium)
-                .foregroundColor(.blue)
         }
     }
 

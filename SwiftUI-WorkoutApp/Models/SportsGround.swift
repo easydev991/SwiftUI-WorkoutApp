@@ -190,15 +190,15 @@ extension SportsGround {
             ),
             .init(
                 id: 4,
-                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-22-gmw.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/2017/10/2017-10-01-22-10-40-ohf.jpg"
             ),
             .init(
                 id: 5,
-                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-38-px8.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/2017/10/2017-10-01-22-10-46-tgp.jpg"
             ),
             .init(
                 id: 6,
-                stringURL: "https://workout.su/uploads/userfiles/2017/09/2017-09-18-12-09-51-4e4.jpg"
+                stringURL: "https://workout.su/uploads/userfiles/62D5DC6C-2E66-471B-B996-B9DD71688BE4.jpg"
             )
         ],
         preview: "https://workout.su/uploads/userfiles/2016/10/2016-10-14-15-10-13-qwt.jpg",

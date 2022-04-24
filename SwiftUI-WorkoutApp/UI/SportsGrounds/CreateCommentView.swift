@@ -51,7 +51,7 @@ private extension CreateCommentView {
         } label: {
             Text("Отправить")
         }
-        .disabled(commentText.count < 5)
+        .disabled(commentText.count < 6)
         .alert(alertTitle, isPresented: $isCommentSent) {
             closeButton()
         }
