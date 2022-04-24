@@ -58,6 +58,9 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
             longitudinalMeters: regionRadius
         )
     }
+    var appleMapsURL: URL? {
+        .init(string: "maps://?saddr=&daddr=\(coordinate.latitude),\(coordinate.longitude)")
+    }
 
     enum CodingKeys: String, CodingKey {
         case address, author

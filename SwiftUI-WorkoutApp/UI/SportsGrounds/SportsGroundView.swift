@@ -58,6 +58,17 @@ private extension SportsGroundView {
                     .foregroundColor(.secondary)
             }
             Text(model.address)
+            Button {
+                if let url = model.appleMapsURL,
+                   UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text("Построить маршрут")
+                    .fontWeight(.medium)
+                    .foregroundColor(.blue)
+            }
+
             if isPhotoGridShown {
                 gridWithPhotos()
             }
@@ -94,7 +105,7 @@ private extension SportsGroundView {
         Section {
             if showParticipants {
                 NavigationLink {
-    #warning("Сделать экран со списком тренирующихся")
+#warning("Сделать экран со списком тренирующихся")
                     Text("Экран со списком тренирующихся")
                         .navigationTitle("Здесь тренируются")
                 } label: {
@@ -109,7 +120,7 @@ private extension SportsGroundView {
                     }
                 }
             }
-#warning("Сохранять изменения в базе данных")
+#warning("Сохранять изменения в базе данных и отправить на бэк")
             Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
             createEventButton()
         }
@@ -146,6 +157,7 @@ private extension SportsGroundView {
         } label: {
             Text("Создать мероприятие")
                 .fontWeight(.medium)
+                .foregroundColor(.blue)
         }
     }
 
@@ -156,7 +168,15 @@ private extension SportsGroundView {
                 NavigationLink {
                     CreateCommentView()
                 } label: {
-                    Label("Добавить комментарий", systemImage: "plus.message.fill")
+                    Label {
+                        Text("Добавить комментарий")
+                            .fontWeight(.medium)
+                            .foregroundColor(.blue)
+                    } icon: {
+                        Image(systemName: "plus.message.fill")
+                            .foregroundColor(.blue)
+                            .font(.title3)
+                    }
                 }
             }
         }
