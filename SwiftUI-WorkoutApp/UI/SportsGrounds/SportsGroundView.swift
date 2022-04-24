@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct SportsGroundView: View {
+    let model: SportsGround
+
     @State private var isMySportsGround = false
     @State private var showParticipants = false
-    private let columns: [GridItem] = [
-        .init(.flexible()),
-        .init(.flexible()),
-        .init(.flexible())
-    ]
-
-    let model: SportsGround
+    @State private var columnsCount = Columns.one
+    private var columns: [GridItem] {
+        .init(
+            repeating: .init(.flexible()),
+            count: columnsCount.rawValue
+        )
+    }
 
     var body: some View {
         Form {
@@ -28,6 +30,7 @@ struct SportsGroundView: View {
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            columnsCount = .init(model.photos.count)
             isMySportsGround = model.mine
             showParticipants = model.peopleTrainHereCount > .zero
         }
@@ -35,6 +38,17 @@ struct SportsGroundView: View {
 }
 
 private extension SportsGroundView {
+    enum Columns: Int {
+        case one = 1, two, three
+        init(_ photosCount: Int) {
+            switch photosCount {
+            case 1: self = .one
+            case 2: self = .two
+            default: self = .three
+            }
+        }
+    }
+
     func titlePhotoAddressSection() -> some View {
         Section {
             HStack {
@@ -44,8 +58,8 @@ private extension SportsGroundView {
                 Text(model.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
-            gridWithPhotos()
             Text(model.address)
+            gridWithPhotos()
         }
     }
 
@@ -74,7 +88,6 @@ private extension SportsGroundView {
             }
         }
     }
-
 
     func participantsAndEventSection() -> some View {
         Section {
@@ -153,9 +166,7 @@ struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SportsGroundView(model: .mock)
-                .previewDevice("iPhone 12 Pro Max")
-            SportsGroundView(model: .mock)
-                .previewDevice("iPhone 13 mini")
+                .previewDevice("iPhone SE (3rd generation)")
         }
     }
 }
