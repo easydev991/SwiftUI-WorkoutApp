@@ -32,8 +32,7 @@ struct ProfileSettingsView: View {
                         .foregroundColor(.secondary)
                 }
                 Button {
-#warning("TODO: сообщить об ошибке")
-                    print("--- сообщить об ошибке")
+                    appState.sendFeedback()
                 } label: {
                     Text("Отправить обратную связь")
                 }

@@ -22,9 +22,11 @@ final class AppState: ObservableObject {
     @Published var selectedGender = "Мужской"
     @Published var genders = ["Мужской", "Женский"]
 
+    private let feedbackHelper: IFeedbackHelper
     fileprivate let locationManager = LocationManager()
 
     init() {
+        feedbackHelper = FeedbackHelper()
         makeCountryAndCityData()
     }
 
@@ -50,6 +52,10 @@ final class AppState: ObservableObject {
     var mapAnnotations: [SportsGround] {
         get { locationManager.annotations }
         set { locationManager.annotations = newValue }
+    }
+
+    func sendFeedback() {
+        feedbackHelper.sendFeedback()
     }
 }
 
