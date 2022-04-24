@@ -14,7 +14,7 @@ struct CreateEventView: View {
     @State private var eventDescription = ""
     @State private var alertTitle = "Мероприятие создано!"
     @State private var isEventCreated = false
-    @FocusState private var isFocused
+    @FocusState private var focus: FocusableField?
     let model: SportsGround
 
     private var maxDate: Date {
@@ -39,13 +39,18 @@ struct CreateEventView: View {
 }
 
 private extension CreateEventView {
+    enum FocusableField: Hashable {
+        case eventName
+        case eventDescription
+    }
+
     func eventNameSection() -> some View {
         Section {
             TextField("Название", text: $eventName)
-                .focused($isFocused)
+                .focused($focus, equals: .eventName)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        isFocused.toggle()
+                        focus = .eventName
                     }
                 }
         }
@@ -68,13 +73,14 @@ private extension CreateEventView {
         Section("Описание") {
             TextEditor(text: $eventDescription)
                 .frame(height: 150)
+                .focused($focus, equals: .eventDescription)
         }
     }
 
     func createEventButton() -> some View {
         Button {
 #warning("Отправить мероприятие на сервер")
-            isFocused.toggle()
+            focus = nil
             isEventCreated.toggle()
         } label: {
             Text("Сохранить")
