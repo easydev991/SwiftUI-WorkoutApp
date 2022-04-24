@@ -10,19 +10,14 @@ import SwiftUI
 struct SportsGroundView: View {
     let model: SportsGround
 
+    @State private var isPhotoGridShown = false
+    @State private var photoColumns = Columns.one
     @State private var isMySportsGround = false
     @State private var showParticipants = false
-    @State private var columnsCount = Columns.one
-    private var columns: [GridItem] {
-        .init(
-            repeating: .init(.flexible()),
-            count: columnsCount.rawValue
-        )
-    }
 
     var body: some View {
         Form {
-            titlePhotoAddressSection()
+            titleAddressPhotoSection()
             participantsAndEventSection()
             authorSection()
             commentsSection()
@@ -30,7 +25,8 @@ struct SportsGroundView: View {
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            columnsCount = .init(model.photos.count)
+            isPhotoGridShown = !model.photos.isEmpty
+            photoColumns = .init(model.photos.count)
             isMySportsGround = model.mine
             showParticipants = model.peopleTrainHereCount > .zero
         }
@@ -40,6 +36,9 @@ struct SportsGroundView: View {
 private extension SportsGroundView {
     enum Columns: Int {
         case one = 1, two, three
+        var items: [GridItem] {
+            .init(repeating: .init(.flexible()), count: rawValue)
+        }
         init(_ photosCount: Int) {
             switch photosCount {
             case 1: self = .one
@@ -49,7 +48,7 @@ private extension SportsGroundView {
         }
     }
 
-    func titlePhotoAddressSection() -> some View {
+    func titleAddressPhotoSection() -> some View {
         Section {
             HStack {
                 Text(model.shortTitle)
@@ -59,12 +58,14 @@ private extension SportsGroundView {
                     .foregroundColor(.secondary)
             }
             Text(model.address)
-            gridWithPhotos()
+            if isPhotoGridShown {
+                gridWithPhotos()
+            }
         }
     }
 
     func gridWithPhotos() -> some View {
-        LazyVGrid(columns: columns) {
+        LazyVGrid(columns: photoColumns.items) {
             ForEach(model.photos) {
                 AsyncImage(url: .init(string: $0.stringURL)) { phase in
                     switch phase {
