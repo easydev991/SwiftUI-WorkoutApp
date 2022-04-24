@@ -45,7 +45,8 @@ private extension CreateCommentView {
 
     func sendButton() -> some View {
         Button {
-#warning("Отправить комментарий на сервер")
+#warning("TODO: интеграция с сервером")
+            // Отправить комментарий на сервер
             isFocused.toggle()
             isCommentSent.toggle()
         } label: {

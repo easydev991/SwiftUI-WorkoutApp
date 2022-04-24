@@ -22,7 +22,8 @@ private extension MessagesView {
     func content() -> AnyView {
         switch appState.isUserAuthorized {
         case true:
-#warning("Показать экран с сообщениями или заглушку")
+#warning("TODO: интеграция с сервером")
+#warning("TODO: сверстать экран с сообщениями и заглушку")
             return AnyView(Text("Сообщения"))
         case false:
             return AnyView(IncognitoProfileView())

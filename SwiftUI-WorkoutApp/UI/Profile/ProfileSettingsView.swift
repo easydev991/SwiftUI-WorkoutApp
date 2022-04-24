@@ -53,7 +53,6 @@ struct ProfileSettingsView: View {
 private extension ProfileSettingsView {
     func editAccountView() -> some View {
         NavigationLink {
-#warning("TODO: открыть экран для редактирования данных существующего пользователя")
             EditAccountView()
         } label: {
             Text("Редактировать данные")

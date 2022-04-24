@@ -73,8 +73,8 @@ private extension ChangePasswordView {
 
     func changePasswordButton() -> some View {
         Button {
-#warning("Выполнить смену пароля")
-            print("--- Изменяем пароль")
+#warning("TODO: интеграция с сервером")
+            // меняем пароль
             focus = nil
             isChangeSuccessful.toggle()
         } label: {
@@ -91,7 +91,7 @@ private extension ChangePasswordView {
     }
 
     var isChangeButtonDisabled: Bool {
-#warning("Вынести проверку из View")
+#warning("TODO: убрать во ViewModel")
         let isCurrentPasswordTooShort = currentPasswordText.count < 6
         let isNewPasswordEmpty = newPasswordText.isEmpty || newPasswordAgainText.isEmpty
         let isNewPasswordTooShort = newPasswordText.count < 6 || newPasswordAgainText.count < 6

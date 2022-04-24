@@ -22,7 +22,8 @@ private extension JournalsView {
     func content() -> AnyView {
         switch appState.isUserAuthorized {
         case true:
-#warning("Показать экран с дневниками или заглушку")
+#warning("TODO: интеграция с сервером")
+#warning("TODO: сверстать экран с дневниками и заглушку")
             return AnyView(Text("Дневники"))
         case false:
             return AnyView(IncognitoProfileView())

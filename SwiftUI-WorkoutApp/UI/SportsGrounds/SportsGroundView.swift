@@ -106,7 +106,7 @@ private extension SportsGroundView {
             if showParticipants {
                 linkToParticipantsView()
             }
-#warning("Сохранять изменения в базе данных и отправить на бэк")
+#warning("TODO: интеграция с сервером")
             Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
             createEventButton(model)
         }
@@ -162,7 +162,8 @@ private extension SportsGroundView {
     func commentsSection() -> some View {
         Section("Комментарии") {
             VStack(alignment: .leading, spacing: 16) {
-#warning("Скачать с бэка и отобразить список комментариев")
+#warning("TODO: интеграция с сервером")
+#warning("TODO: сверстать список комментариев")
                 NavigationLink {
                     CreateCommentView()
                 } label: {

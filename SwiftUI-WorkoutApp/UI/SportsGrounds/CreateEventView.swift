@@ -79,7 +79,7 @@ private extension CreateEventView {
 
     func createEventButton() -> some View {
         Button {
-#warning("Отправить мероприятие на сервер")
+#warning("TODO: интеграция с сервером")
             focus = nil
             isEventCreated.toggle()
         } label: {

@@ -36,7 +36,7 @@ struct TempPersonModel: Identifiable {
 struct SportsGroundParticipantsView: View {
     let model: SportsGround
     var body: some View {
-#warning("Запрашивать с бэка и отображать список реальных участников")
+#warning("TODO: интеграция с сервером")
         List(TempPersonModel.mock) { person in
             NavigationLink {
                 Text(person.name)

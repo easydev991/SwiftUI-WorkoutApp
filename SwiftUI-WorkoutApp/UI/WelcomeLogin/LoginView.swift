@@ -62,7 +62,7 @@ private extension LoginView {
 
     func loginButton() -> some View {
         Button {
-#warning("Выполнить авторизацию")
+#warning("TODO: интеграция с сервером")
             print("--- Выполняем вход")
             appState.isUserAuthorized = true
             appState.showWelcome = false
@@ -75,10 +75,14 @@ private extension LoginView {
 
     func forgotPasswordButton() -> some View {
         Button {
-#warning("Запросить восстановление пароля или показать алерт")
-            print("--- Запрашиваем восстановление пароля")
-            focus = .username
-            isForgotPasswordAlertShown.toggle()
+#warning("TODO: интеграция с сервером")
+            if loginEmailText.isEmpty {
+                focus = .username
+                isForgotPasswordAlertShown.toggle()
+            } else {
+                focus = nil
+                print("--- Запрашиваем восстановление пароля")
+            }
         } label: {
             HStack {
                 Spacer()

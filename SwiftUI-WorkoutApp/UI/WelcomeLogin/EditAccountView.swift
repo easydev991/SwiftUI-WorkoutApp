@@ -162,7 +162,8 @@ private extension EditAccountView {
 
     func registerButton() -> some View {
         Button {
-#warning("Проверить введенные данные и начать регистрацию")
+#warning("TODO: интеграция с сервером")
+#warning("TODO: Проверить введенные данные")
             print("--- Проверяем введенные данные и начинаем регистрацию")
             focus = nil
         } label: {
@@ -175,11 +176,14 @@ private extension EditAccountView {
 
     func saveChangesButton() -> some View {
         Button {
-#warning("Сохранить изменения профиля")
+#warning("TODO: интеграция с сервером")
+#warning("TODO: интеграция с БД")
+            // Сохранить изменения профиля
             presentationMode.wrappedValue.dismiss()
         } label: {
             ButtonInFormLabel(title: "Сохранить")
         }
+        .disabled(true)
     }
 }
 
