@@ -85,6 +85,7 @@ private extension PersonProfileView {
     func addNewFriendButton() -> some View {
         Button {
 #warning("TODO: интеграция с сервером")
+#warning("TODO: добавить алерт об отправленном запросе")
             print("Отправляем запрос на добавление в друзья")
         } label: {
             Text("Предложить дружбу")
@@ -113,6 +114,7 @@ private extension PersonProfileView {
         NavigationLink {
             Text("Площадки (где тренируется)")
                 .navigationTitle("Где тренируется")
+                .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
@@ -127,6 +129,7 @@ private extension PersonProfileView {
         NavigationLink {
             Text("Добавленные площадки")
                 .navigationTitle("Добавленные")
+                .navigationBarTitleDisplayMode(.inline)
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")
             Spacer()
@@ -154,6 +157,7 @@ private extension PersonProfileView {
         NavigationLink {
             Text("Экран с дневниками")
                 .navigationTitle("Дневники")
+                .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
                 Label("Дневники", systemImage: "list.bullet")

@@ -24,7 +24,7 @@ private extension ProfileView {
     func content() -> AnyView {
         switch appState.isUserAuthorized {
         case true:
-            return AnyView(PersonProfileView(model: .mockSingle))
+            return AnyView(PersonProfileView(model: .mockMain))
         case false:
             return AnyView(IncognitoProfileView())
         }
