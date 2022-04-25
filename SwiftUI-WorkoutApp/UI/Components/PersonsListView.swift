@@ -15,6 +15,19 @@ struct TempPersonModel: Identifiable {
     let friendsCount, journalsCount: Int
     let isMainUser: Bool
 
+    static let mockMain = TempPersonModel(
+        id: 22,
+        imageStringURL: "https://workout.su/uploads/avatars/47300ad3563cee8a505e7b68663dc3bd4564c44e.jpg",
+        name: "Admin",
+        genderAge: "Мужчина, 29 лет",
+        shortAddress: "Россия, Москва",
+        usesSportsGrounds: 1,
+        addedSportsGrounds: 2,
+        friendsCount: 3,
+        journalsCount: 4,
+        isMainUser: true
+    )
+
     static let mockSingle = TempPersonModel(
         id: 22,
         imageStringURL: "https://workout.su/uploads/avatars/SL372308.JPG",
@@ -25,7 +38,7 @@ struct TempPersonModel: Identifiable {
         addedSportsGrounds: 0,
         friendsCount: 1,
         journalsCount: 1,
-        isMainUser: true
+        isMainUser: false
     )
 
     static let mockArray: [TempPersonModel] = [

@@ -112,7 +112,7 @@ private extension SportsGroundView {
             }
 #warning("TODO: интеграция с сервером")
             Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
-            createEventButton(model)
+            createEventLink(model)
         }
     }
 
@@ -134,7 +134,7 @@ private extension SportsGroundView {
         }
     }
 
-    func createEventButton(_ model: SportsGround) -> some View {
+    func createEventLink(_ model: SportsGround) -> some View {
         NavigationLink {
             CreateEventView(model: model)
         } label: {

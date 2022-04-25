@@ -14,35 +14,14 @@ struct ProfileSettingsView: View {
     var body: some View {
         Form {
             Section("Профиль") {
-                editAccountView()
-                changePasswordView()
-                Button {
-#warning("TODO: выход из учетной записи")
-                    appState.isUserAuthorized = false
-                } label: {
-                    Text("Выйти")
-                        .foregroundColor(.pink)
-                }
+                editAccountLink()
+                changePasswordLink()
+                logoutButton()
             }
             Section("Информация о приложении") {
-                HStack {
-                    Text("Версия")
-                    Spacer()
-                    Text(Constants.appVersion)
-                        .foregroundColor(.secondary)
-                }
-                Button {
-                    appState.sendFeedback()
-                } label: {
-                    Text("Отправить обратную связь")
-                }
-                Button {
-                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                        SKStoreReviewController.requestReview(in: windowScene)
-                    }
-                } label: {
-                    Text("Оценить приложение")
-                }
+                appVersionView()
+                feedbackButton()
+                rateAppButton()
             }
         }
         .navigationTitle("Настройки")
@@ -51,7 +30,7 @@ struct ProfileSettingsView: View {
 }
 
 private extension ProfileSettingsView {
-    func editAccountView() -> some View {
+    func editAccountLink() -> some View {
         NavigationLink {
             EditAccountView()
         } label: {
@@ -59,11 +38,48 @@ private extension ProfileSettingsView {
         }
     }
 
-    func changePasswordView() -> some View {
+    func changePasswordLink() -> some View {
         NavigationLink {
             ChangePasswordView()
         } label: {
             Text("Изменить пароль")
+        }
+    }
+
+    func logoutButton() -> some View {
+        Button {
+#warning("TODO: выход из учетной записи")
+            appState.isUserAuthorized = false
+        } label: {
+            Text("Выйти")
+                .foregroundColor(.pink)
+        }
+    }
+
+    func appVersionView() -> some View {
+        HStack {
+            Text("Версия")
+            Spacer()
+            Text(Constants.appVersion)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    func feedbackButton() -> some View {
+        Button {
+            appState.sendFeedback()
+        } label: {
+            Text("Отправить обратную связь")
+        }
+    }
+
+    func rateAppButton() -> some View {
+        Button {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                SKStoreReviewController.requestReview(in: windowScene)
+            }
+        } label: {
+            Text("Оценить приложение")
         }
     }
 }

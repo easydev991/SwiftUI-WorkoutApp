@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct PersonProfileView: View {
-    @EnvironmentObject var appState: AppState
     let model: TempPersonModel
 
     var body: some View {
         Form {
             personInfoSection()
+            if !model.isMainUser {
+                communicationSection()
+            }
             socialInfoSection()
         }
         .toolbar {
             if model.isMainUser {
-                settingsButton()
+                settingsLink()
             }
         }
     }
@@ -28,24 +30,7 @@ private extension PersonProfileView {
     func personInfoSection() -> some View {
         Section {
             HStack(spacing: 24) {
-                AsyncImage(url: .init(string: model.imageStringURL)) { phase in
-                    switch phase {
-                    case let .success(image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 120)
-                            .cornerRadius(8)
-                    case .failure:
-                        Image(systemName: "person.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .padding(.leading)
-                    default:
-                        ProgressView()
-                    }
-                }
+                avatarImageView()
                 VStack {
                     Text(model.name)
                         .fontWeight(.bold)
@@ -53,7 +38,57 @@ private extension PersonProfileView {
                     Text(model.shortAddress)
                 }
             }
-#warning("TODO: добавить кнопки для чата и добавления в друзья")
+        }
+    }
+
+    func avatarImageView() -> some View {
+        AsyncImage(url: .init(string: model.imageStringURL)) { phase in
+            switch phase {
+            case let .success(image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 120)
+                    .cornerRadius(8)
+            case .failure:
+                Image(systemName: "person.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+                    .padding(.leading)
+            default:
+                ProgressView()
+            }
+        }
+    }
+
+    func communicationSection() -> some View {
+        Section {
+            sendMessageLink()
+            addNewFriendButton()
+        }
+    }
+
+    func sendMessageLink() -> some View {
+        NavigationLink {
+#warning("TODO: сверстать экран для чата")
+            Text("Экран для отправки сообщения")
+                .navigationTitle(model.name)
+                .navigationBarTitleDisplayMode(.inline)
+        } label: {
+            Text("Отправить сообщение")
+                .fontWeight(.medium)
+        }
+
+    }
+
+    func addNewFriendButton() -> some View {
+        Button {
+#warning("TODO: интеграция с сервером")
+            print("Отправляем запрос на добавление в друзья")
+        } label: {
+            Text("Предложить дружбу")
+                .fontWeight(.medium)
         }
     }
 
@@ -129,7 +164,7 @@ private extension PersonProfileView {
         }
     }
 
-    func settingsButton() -> some View {
+    func settingsLink() -> some View {
         NavigationLink {
             ProfileSettingsView()
         } label: {
@@ -140,8 +175,7 @@ private extension PersonProfileView {
 
 struct PersonProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonProfileView(model: .mockSingle)
+        PersonProfileView(model: .mockMain)
             .previewDevice("iPhone 13 mini")
-        .environmentObject(AppState())
     }
 }
