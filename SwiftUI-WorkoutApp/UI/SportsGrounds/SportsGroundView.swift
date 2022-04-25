@@ -118,7 +118,9 @@ private extension SportsGroundView {
 
     func linkToParticipantsView() -> some View {
         NavigationLink {
-            SportsGroundParticipantsView(model: model)
+            PersonsListView(model: model)
+                .navigationTitle("Здесь тренируются")
+                .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
                 Text("Здесь тренируются")

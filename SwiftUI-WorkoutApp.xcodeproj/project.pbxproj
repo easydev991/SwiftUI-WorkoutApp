@@ -17,7 +17,7 @@
 		675EC64D281405A900C2E229 /* Plurals.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 675EC64C281405A900C2E229 /* Plurals.stringsdict */; };
 		675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* CreateCommentView.swift */; };
 		675EC653281445E500C2E229 /* MapViewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC652281445E500C2E229 /* MapViewUI.swift */; };
-		675EC6572815433600C2E229 /* SportsGroundParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6562815433600C2E229 /* SportsGroundParticipantsView.swift */; };
+		675EC6572815433600C2E229 /* PersonsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6562815433600C2E229 /* PersonsListView.swift */; };
 		675EC6592815472700C2E229 /* SmallProfileImageRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6582815472700C2E229 /* SmallProfileImageRectangle.swift */; };
 		675EC65F2815532800C2E229 /* CreateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC65E2815532800C2E229 /* CreateEventView.swift */; };
 		675EC66128155BF900C2E229 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC66028155BF900C2E229 /* FeedbackHelper.swift */; };
@@ -37,7 +37,7 @@
 		6798AA61280B136800DB76F1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA60280B136800DB76F1 /* AppState.swift */; };
 		6798AA64280B1F0900DB76F1 /* WelcomeAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA63280B1F0900DB76F1 /* WelcomeAuthView.swift */; };
 		6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */; };
-		6798AA68280B23B700DB76F1 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA67280B23B700DB76F1 /* UserProfileView.swift */; };
+		6798AA68280B23B700DB76F1 /* PersonProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA67280B23B700DB76F1 /* PersonProfileView.swift */; };
 		6798AA6E280B2E5800DB76F1 /* AdaptiveRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA6D280B2E5800DB76F1 /* AdaptiveRoundedRectangle.swift */; };
 		6798AA70280B42BC00DB76F1 /* WelcomeLoginButtonTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA6F280B42BC00DB76F1 /* WelcomeLoginButtonTitle.swift */; };
 		6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA72280B43FE00DB76F1 /* LoginView.swift */; };
@@ -63,7 +63,7 @@
 		675EC64E2814126800C2E229 /* CreateCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentView.swift; sourceTree = "<group>"; };
 		675EC652281445E500C2E229 /* MapViewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewUI.swift; sourceTree = "<group>"; };
 		675EC65528153B8200C2E229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		675EC6562815433600C2E229 /* SportsGroundParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundParticipantsView.swift; sourceTree = "<group>"; };
+		675EC6562815433600C2E229 /* PersonsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonsListView.swift; sourceTree = "<group>"; };
 		675EC6582815472700C2E229 /* SmallProfileImageRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallProfileImageRectangle.swift; sourceTree = "<group>"; };
 		675EC65E2815532800C2E229 /* CreateEventView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateEventView.swift; sourceTree = "<group>"; };
 		675EC66028155BF900C2E229 /* FeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackHelper.swift; sourceTree = "<group>"; };
@@ -84,7 +84,7 @@
 		6798AA60280B136800DB76F1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		6798AA63280B1F0900DB76F1 /* WelcomeAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeAuthView.swift; sourceTree = "<group>"; };
 		6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoProfileView.swift; sourceTree = "<group>"; };
-		6798AA67280B23B700DB76F1 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		6798AA67280B23B700DB76F1 /* PersonProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonProfileView.swift; sourceTree = "<group>"; };
 		6798AA6D280B2E5800DB76F1 /* AdaptiveRoundedRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRoundedRectangle.swift; sourceTree = "<group>"; };
 		6798AA6F280B42BC00DB76F1 /* WelcomeLoginButtonTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLoginButtonTitle.swift; sourceTree = "<group>"; };
 		6798AA72280B43FE00DB76F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -117,7 +117,6 @@
 				6747575828128603002F0A24 /* SportsGroundView.swift */,
 				675EC64E2814126800C2E229 /* CreateCommentView.swift */,
 				675EC652281445E500C2E229 /* MapViewUI.swift */,
-				675EC6562815433600C2E229 /* SportsGroundParticipantsView.swift */,
 				675EC65E2815532800C2E229 /* CreateEventView.swift */,
 			);
 			path = SportsGrounds;
@@ -216,7 +215,7 @@
 			children = (
 				6798AA5A280AF4C700DB76F1 /* ProfileView.swift */,
 				6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */,
-				6798AA67280B23B700DB76F1 /* UserProfileView.swift */,
+				6798AA67280B23B700DB76F1 /* PersonProfileView.swift */,
 				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
 				6747575528113419002F0A24 /* ChangePasswordView.swift */,
 			);
@@ -232,6 +231,7 @@
 				670CA19F280E8F9B003914A3 /* ButtonInFormLabel.swift */,
 				675EC6582815472700C2E229 /* SmallProfileImageRectangle.swift */,
 				675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */,
+				675EC6562815433600C2E229 /* PersonsListView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -335,7 +335,7 @@
 				675EC649281289FB00C2E229 /* SportsGroundSize.swift in Sources */,
 				675EC653281445E500C2E229 /* MapViewUI.swift in Sources */,
 				6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */,
-				6798AA68280B23B700DB76F1 /* UserProfileView.swift in Sources */,
+				6798AA68280B23B700DB76F1 /* PersonProfileView.swift in Sources */,
 				6798AA88280C14B800DB76F1 /* Bundle+.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* ContentView.swift in Sources */,
 				675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */,
@@ -357,7 +357,7 @@
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6747575928128603002F0A24 /* SportsGroundView.swift in Sources */,
 				6798AA6E280B2E5800DB76F1 /* AdaptiveRoundedRectangle.swift in Sources */,
-				675EC6572815433600C2E229 /* SportsGroundParticipantsView.swift in Sources */,
+				675EC6572815433600C2E229 /* PersonsListView.swift in Sources */,
 				675EC65F2815532800C2E229 /* CreateEventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
