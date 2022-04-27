@@ -11,7 +11,7 @@ struct EventsView: View {
     var body: some View {
         NavigationView {
 #warning("TODO: интеграция с сервером")
-#warning("TODO: сверстать экран с мероприятиями")
+#warning("TODO: сверстать экран со списком мероприятий")
             dummyView()
                 .navigationTitle("Мероприятия")
         }
@@ -20,17 +20,24 @@ struct EventsView: View {
 
 private extension EventsView {
     func dummyView() -> some View {
-        VStack {
+        VStack(spacing: 16) {
             Text("Нет запланированных мероприятий")
-                .font(.title.weight(.medium))
+                .font(.title)
                 .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-                .padding()
             Image(systemName: "calendar")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundColor(.secondary.opacity(0.5))
-                .frame(width: 200)
+                .foregroundColor(.secondary)
+                .frame(width: 180)
+            NavigationLink {
+#warning("TODO: Сверстать экран для создания мероприятия")
+                Text("Экран для создания мероприятия")
+                    .navigationTitle("Мероприятие")
+                    .navigationBarTitleDisplayMode(.inline)
+            } label: {
+                Text("Создать мероприятие")
+                    .roundedBorderedStyle()
+            }
         }
         .padding()
     }
