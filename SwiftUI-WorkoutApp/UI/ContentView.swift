@@ -41,31 +41,31 @@ private extension ContentView {
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
-                .tag(Tab.events.rawValue)
+                .tag(Tab.events)
             MessagesView()
                 .onAppear { appState.selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
-                .tag(Tab.messages.rawValue)
+                .tag(Tab.messages)
             JournalsView()
                 .onAppear { appState.selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
-                .tag(Tab.journal.rawValue)
+                .tag(Tab.journal)
             SportsGroundsMapView()
                 .onAppear { appState.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
-                .tag(Tab.map.rawValue)
+                .tag(Tab.map)
             ProfileView()
                 .onAppear { appState.selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }
-                .tag(Tab.profile.rawValue)
+                .tag(Tab.profile)
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

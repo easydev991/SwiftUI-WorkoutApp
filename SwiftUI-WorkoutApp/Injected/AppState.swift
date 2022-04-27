@@ -12,7 +12,7 @@ import MapKit
 final class AppState: ObservableObject {
     @AppStorage("isUserAuthorized") var isUserAuthorized = false
     @AppStorage("showWelcome") var showWelcome = true
-    @Published var selectedTab = ContentView.Tab.events.rawValue
+    @Published var selectedTab = ContentView.Tab.events
     @Published var countries = [CountryElement]()
     @Published var selectedCountry = CountryElement(
         cities: [], id: "", name: ""
@@ -31,7 +31,7 @@ final class AppState: ObservableObject {
     }
 
     func selectTab(_ tab: ContentView.Tab) {
-        selectedTab = tab.rawValue
+        selectedTab = tab
         locationManager.setEnabled(tab == .map)
     }
 
