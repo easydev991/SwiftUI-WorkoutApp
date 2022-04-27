@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct PersonProfileView: View {
+    @State private var alertTitle = "Запрос отправлен!"
+    @State private var isFriendRequestSent = false
+#warning("TODO: вынести это свойство во viewModel")
+    @State private var isAddFriendButtonEnabled = true
+
     let model: TempPersonModel
 
     var body: some View {
@@ -65,7 +70,9 @@ private extension PersonProfileView {
     func communicationSection() -> some View {
         Section {
             sendMessageLink()
-            addNewFriendButton()
+            if isAddFriendButtonEnabled {
+                addNewFriendButton()
+            }
         }
     }
 
@@ -85,11 +92,22 @@ private extension PersonProfileView {
     func addNewFriendButton() -> some View {
         Button {
 #warning("TODO: интеграция с сервером")
-#warning("TODO: добавить алерт об отправленном запросе")
             print("Отправляем запрос на добавление в друзья")
+            isFriendRequestSent.toggle()
         } label: {
             Text("Предложить дружбу")
                 .fontWeight(.medium)
+        }
+        .alert(alertTitle, isPresented: $isFriendRequestSent) {
+            okButton()
+        }
+    }
+
+    func okButton() -> some View {
+        Button {
+            isAddFriendButtonEnabled.toggle()
+        } label: {
+            Text("Ок")
         }
     }
 
