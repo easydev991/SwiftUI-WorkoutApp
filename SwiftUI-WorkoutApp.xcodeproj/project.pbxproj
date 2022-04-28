@@ -183,12 +183,12 @@
 		6798AA5E280AF5F900DB76F1 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				6798AA87280C14B800DB76F1 /* Bundle+.swift */,
 				6798AA75280BE8E200DB76F1 /* countries.json */,
 				6798AA77280BE8E200DB76F1 /* areas.json */,
 				6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */,
 				6798AA41280AEDCA00DB76F1 /* Assets.xcassets */,
 				6798AA80280BF13100DB76F1 /* Localizable.strings */,
-				6798AA87280C14B800DB76F1 /* Bundle+.swift */,
 				675EC64C281405A900C2E229 /* Plurals.stringsdict */,
 			);
 			path = Support;
