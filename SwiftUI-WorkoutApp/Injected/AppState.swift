@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import MapKit
+import MapKit.MKGeometry
 
 final class AppState: ObservableObject {
     @AppStorage("isUserAuthorized") var isUserAuthorized = false
@@ -23,16 +23,17 @@ final class AppState: ObservableObject {
     @Published var genders = ["Мужской", "Женский"]
 
     private let feedbackHelper: IFeedbackHelper
-    fileprivate let locationManager = LocationManager()
+    private let locationService: LocationService
 
     init() {
         feedbackHelper = FeedbackHelper()
+        locationService = LocationService()
         makeCountryAndCityData()
     }
 
     func selectTab(_ tab: ContentView.Tab) {
         selectedTab = tab
-        locationManager.setEnabled(tab == .map)
+        locationService.setEnabled(tab == .map)
     }
 
     func selectCountry(_ country: CountryElement) {
@@ -45,13 +46,13 @@ final class AppState: ObservableObject {
     }
 
     var mapRegion: MKCoordinateRegion {
-        get { locationManager.region }
-        set { locationManager.region = newValue }
+        get { locationService.region }
+        set { locationService.region = newValue }
     }
 
     var mapAnnotations: [SportsGround] {
-        get { locationManager.annotations }
-        set { locationManager.annotations = newValue }
+        get { locationService.annotations }
+        set { locationService.annotations = newValue }
     }
 
     func sendFeedback() {
@@ -80,65 +81,6 @@ private extension AppState {
            let firstCity = country.cities.first {
             selectedCity = firstCity
             cities = country.cities
-        }
-    }
-}
-
-private extension AppState {
-    final class LocationManager: NSObject, CLLocationManagerDelegate {
-        private let manager = CLLocationManager()
-        var region = MKCoordinateRegion()
-        var annotations = Bundle.main.decodeJson(
-            [SportsGround].self,
-            fileName: "areas.json"
-        )
-
-        override init() {
-            super.init()
-            manager.delegate = self
-            manager.requestWhenInUseAuthorization()
-            manager.startUpdatingLocation()
-        }
-
-        func setEnabled(_ enabled: Bool) {
-            if enabled {
-                manager.startUpdatingLocation()
-            } else {
-                manager.stopUpdatingLocation()
-            }
-        }
-
-        func locationManager(
-            _ manager: CLLocationManager,
-            didUpdateLocations locations: [CLLocation]
-        ) {
-            if let location = locations.last {
-                region = .init(
-                    center: location.coordinate,
-                    span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                )
-            }
-        }
-
-        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-            switch manager.authorizationStatus {
-            case .notDetermined:
-                manager.requestWhenInUseAuthorization()
-            case .authorizedAlways, .authorizedWhenInUse:
-                manager.requestLocation()
-            case .restricted:
-                print("--- Restricted location")
-            case .denied:
-                print("--- Denied location")
-            @unknown default: break
-            }
-        }
-
-        func locationManager(
-            _ manager: CLLocationManager,
-            didFailWithError error: Error
-        ) {
-            print("--- LocationManager did fail with error: \(error.localizedDescription)")
         }
     }
 }
