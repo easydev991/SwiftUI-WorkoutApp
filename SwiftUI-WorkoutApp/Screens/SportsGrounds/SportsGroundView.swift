@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct SportsGroundView: View {
-    let model: SportsGround
+    @ObservedObject var viewModel: SportsGroundViewModel
 
-    @State private var isPhotoGridShown = false
-    @State private var photoColumns = Columns.one
-    @State private var isMySportsGround = false
-    @State private var showParticipants = false
+    init(model: SportsGroundViewModel) {
+        viewModel = model
+    }
 
     var body: some View {
         Form {
             titleAddressSection()
-            if isPhotoGridShown {
+            if viewModel.isPhotoGridShown {
                 gridWithPhotosSection()
             }
             participantsAndEventSection()
@@ -27,45 +26,25 @@ struct SportsGroundView: View {
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            isPhotoGridShown = !model.photos.isEmpty
-            photoColumns = .init(model.photos.count)
-            isMySportsGround = model.mine
-            showParticipants = model.peopleTrainHereCount > .zero
-        }
     }
 }
 
 private extension SportsGroundView {
-    enum Columns: Int {
-        case one = 1, two, three
-        var items: [GridItem] {
-            .init(repeating: .init(.flexible()), count: rawValue)
-        }
-        init(_ photosCount: Int) {
-            switch photosCount {
-            case 1: self = .one
-            case 2: self = .two
-            default: self = .three
-            }
-        }
-    }
-
     func titleAddressSection() -> some View {
         Section {
             HStack {
-                Text(model.shortTitle)
+                Text(viewModel.ground.shortTitle)
                     .font(.title2.bold())
                 Spacer()
-                Text(model.subtitle ?? "")
+                Text(viewModel.ground.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
-            MapSnapshotView(model: model)
+            MapSnapshotView(model: viewModel.ground)
                 .frame(height: 150)
                 .cornerRadius(8)
-            Text(model.address)
+            Text(viewModel.ground.address)
             Button {
-                if let url = model.appleMapsURL,
+                if let url = viewModel.ground.appleMapsURL,
                    UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url)
                 }
@@ -79,8 +58,8 @@ private extension SportsGroundView {
 
     func gridWithPhotosSection() -> some View {
         Section("Фотографии") {
-            LazyVGrid(columns: photoColumns.items) {
-                ForEach(model.photos) {
+            LazyVGrid(columns: viewModel.photoColumns.items) {
+                ForEach(viewModel.ground.photos) {
                     AsyncImage(url: .init(string: $0.stringURL)) { phase in
                         switch phase {
                         case let .success(image):
@@ -107,18 +86,18 @@ private extension SportsGroundView {
 
     func participantsAndEventSection() -> some View {
         Section {
-            if showParticipants {
+            if viewModel.showParticipants {
                 linkToParticipantsView()
             }
 #warning("TODO: интеграция с сервером")
-            Toggle("Тренируюсь здесь", isOn: $isMySportsGround)
-            createEventLink(model)
+            Toggle("Тренируюсь здесь", isOn: $viewModel.isMySportsGround)
+            createEventLink()
         }
     }
 
     func linkToParticipantsView() -> some View {
         NavigationLink {
-            PersonsListView(model: model)
+            PersonsListView(model: viewModel.ground)
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -126,7 +105,7 @@ private extension SportsGroundView {
                 Text("Здесь тренируются")
                 Spacer()
                 Text(
-                    "people_train_here \(model.peopleTrainHereCount)",
+                    "people_train_here \(viewModel.ground.peopleTrainHereCount)",
                     tableName: "Plurals"
                 )
                 .foregroundColor(.secondary)
@@ -134,9 +113,9 @@ private extension SportsGroundView {
         }
     }
 
-    func createEventLink(_ model: SportsGround) -> some View {
+    func createEventLink() -> some View {
         NavigationLink {
-            CreateEventView(model: model)
+            CreateEventView(viewModel: .init(with: viewModel.ground))
         } label: {
             Text("Создать мероприятие")
                 .fontWeight(.medium)
@@ -147,7 +126,7 @@ private extension SportsGroundView {
     func authorSection() -> some View {
         Section("Добавил") {
             HStack(spacing: 16) {
-                AsyncImage(url: .init(string: model.author.imageStringURL)) { phase in
+                AsyncImage(url: .init(string: viewModel.ground.author.imageStringURL)) { phase in
                     switch phase {
                     case let .success(image):
                         image
@@ -159,7 +138,7 @@ private extension SportsGroundView {
                         ProgressView()
                     }
                 }
-                Text(model.author.name)
+                Text(viewModel.ground.author.name)
                     .fontWeight(.medium)
             }
         }
@@ -191,7 +170,7 @@ private extension SportsGroundView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundView(model: .mock)
+            SportsGroundView(model: .init(with: .mock))
                 .previewDevice("iPhone SE (3rd generation)")
         }
     }

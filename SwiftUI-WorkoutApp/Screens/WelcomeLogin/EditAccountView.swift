@@ -9,7 +9,8 @@ import SwiftUI
 
 struct EditAccountView: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel = EditUserInfoService()
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = EditAccountViewModel()
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -17,7 +18,7 @@ struct EditAccountView: View {
             Section {
                 loginField()
                 emailField()
-                if !viewModel.isUserAuth {
+                if !userDefaults.isUserAuthorized {
                     passwordField()
                 }
                 nameField()
@@ -26,7 +27,7 @@ struct EditAccountView: View {
                 countryPicker()
                 cityPicker()
             }
-            if !viewModel.isUserAuth {
+            if !userDefaults.isUserAuthorized {
                 Section {
                     rulesOfService()
                 }
@@ -39,7 +40,7 @@ struct EditAccountView: View {
                 }
             }
         }
-        .navigationTitle(viewModel.title)
+        .navigationTitle(viewModel.title(userDefaults.isUserAuthorized))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -161,7 +162,7 @@ private extension EditAccountView {
         } label: {
             ButtonInFormLabel(title: "Зарегистрироваться")
         }
-        .disabled(!viewModel.isButtonAvailable)
+        .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
     }
 
     func saveChangesButton() -> some View {
@@ -171,12 +172,13 @@ private extension EditAccountView {
         } label: {
             ButtonInFormLabel(title: "Сохранить")
         }
-        .disabled(!viewModel.isButtonAvailable)
+        .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
     }
 }
 
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
         EditAccountView()
+            .environmentObject(UserDefaultsService())
     }
 }

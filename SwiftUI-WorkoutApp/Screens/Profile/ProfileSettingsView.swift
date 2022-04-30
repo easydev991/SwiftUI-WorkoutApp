@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import StoreKit
 
 struct ProfileSettingsView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = ProfileSettingsViewModel()
 
     var body: some View {
         Form {
@@ -48,8 +48,7 @@ private extension ProfileSettingsView {
 
     func logoutButton() -> some View {
         Button {
-#warning("TODO: выход из учетной записи")
-            appState.setIsUserAuth(false)
+            viewModel.logoutAction(with: userDefaults)
         } label: {
             Text("Выйти")
                 .foregroundColor(.pink)
@@ -67,7 +66,7 @@ private extension ProfileSettingsView {
 
     func feedbackButton() -> some View {
         Button {
-            appState.sendFeedback()
+            viewModel.feedbackAction()
         } label: {
             Text("Отправить обратную связь")
         }
@@ -75,9 +74,7 @@ private extension ProfileSettingsView {
 
     func rateAppButton() -> some View {
         Button {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                SKStoreReviewController.requestReview(in: windowScene)
-            }
+            viewModel.rateAppAction()
         } label: {
             Text("Оценить приложение")
         }
@@ -87,6 +84,6 @@ private extension ProfileSettingsView {
 struct ProfileSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileSettingsView()
-            .environmentObject(AppState())
+            .environmentObject(UserDefaultsService())
     }
 }

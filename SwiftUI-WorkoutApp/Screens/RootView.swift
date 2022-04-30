@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  RootView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @EnvironmentObject var appState: AppState
+struct RootView: View {
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var appState = RootViewModel()
 
     init() {
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -16,24 +17,24 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if appState.showWelcome {
+            if userDefaults.showWelcome {
                 WelcomeAuthView()
             } else {
                 tabView()
             }
         }
-        .animation(.default, value: appState.showWelcome)
+        .animation(.default, value: userDefaults.showWelcome)
         .ignoresSafeArea()
     }
 }
 
-extension ContentView {
+extension RootView {
     enum Tab: Int, Hashable {
         case events = 0, messages, journal, map, profile
     }
 }
 
-private extension ContentView {
+private extension RootView {
     func tabView() -> some View {
         TabView(selection: $appState.selectedTab) {
             EventsView()
@@ -73,7 +74,7 @@ private extension ContentView {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-            .environmentObject(AppState())
+        RootView()
+            .environmentObject(UserDefaultsService())
     }
 }

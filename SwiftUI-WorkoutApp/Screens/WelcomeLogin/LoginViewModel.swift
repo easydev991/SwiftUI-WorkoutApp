@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    private let userDefaults = UserDefaultsService()
     @Published var loginEmailText = ""
     @Published var passwordText = ""
     @Published var hasError = false
@@ -19,12 +18,11 @@ final class LoginViewModel: ObservableObject {
     var canLogIn: Bool {
         !loginEmailText.isEmpty && passwordText.count >= 6
     }
-
     var canRestorePassword: Bool {
         !loginEmailText.isEmpty
     }
 
-    func loginButtonTapped() {
+    func loginButtonTapped(with userDefaults: UserDefaultsService) {
 #warning("TODO: интеграция с сервером")
         userDefaults.isUserAuthorized = true
         userDefaults.showWelcome = false

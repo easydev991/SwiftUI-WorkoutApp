@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct WelcomeAuthView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = WelcomeAuthViewModel()
 
     var body: some View {
         NavigationView {
@@ -49,7 +50,7 @@ private extension WelcomeAuthView {
 
     func skipLoginButton() -> some View {
         Button {
-            appState.setShowWelcome(false)
+            userDefaults.showWelcome = false
         } label: {
             Text("Пропустить")
                 .frame(height: 48)
@@ -62,5 +63,6 @@ private extension WelcomeAuthView {
 struct WelcomeAuthView_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeAuthView()
+            .environmentObject(UserDefaultsService())
     }
 }

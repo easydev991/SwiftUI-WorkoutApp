@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserDefaultsService {
+final class UserDefaultsService: ObservableObject {
     @AppStorage("isUserAuthorized") var isUserAuthorized = false
     @AppStorage("showWelcome") var showWelcome = true
 }

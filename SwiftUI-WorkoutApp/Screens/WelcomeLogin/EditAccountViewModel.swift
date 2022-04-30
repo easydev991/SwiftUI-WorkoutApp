@@ -1,5 +1,5 @@
 //
-//  EditUserInfoService.swift
+//  EditAccountViewModel.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,8 +7,7 @@
 
 import Foundation
 
-final class EditUserInfoService: ObservableObject {
-    private let userDefaults = UserDefaultsService()
+final class EditAccountViewModel: ObservableObject {
     @Published var countries = [CountryElement]()
     @Published var selectedCountry = CountryElement(
         cities: [], id: "", name: ""
@@ -30,18 +29,16 @@ final class EditUserInfoService: ObservableObject {
             to: .now
         ) ?? .now
     }
-    var isUserAuth: Bool {
-        userDefaults.isUserAuthorized
-    }
+
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
-#warning("TODO: после интеграции убрать хардкод 'false'")
-    var isButtonAvailable: Bool {
+    func isButtonAvailable(with isUserAuth: Bool) -> Bool {
         isUserAuth
         ? !loginText.isEmpty && !emailText.isEmpty && passwordText.count >= 6
-        : false
+        : false // убрать хардкод после интеграции с БД
     }
-    var title: String {
+
+    func title(_ isUserAuth: Bool) -> String {
         isUserAuth ? "Изменить профиль" : "Регистрация"
     }
 
@@ -71,7 +68,7 @@ final class EditUserInfoService: ObservableObject {
     }
 }
 
-private extension EditUserInfoService {
+private extension EditAccountViewModel {
     func makeCountryAndCityData() {
         let _countries = Bundle.main.decodeJson(
             [CountryElement].self,

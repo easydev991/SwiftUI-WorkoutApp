@@ -1,5 +1,5 @@
 //
-//  FeedbackHelper.swift
+//  FeedbackService.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 24.04.2022.
@@ -11,13 +11,13 @@ protocol IFeedbackHelper {
     func sendFeedback()
 }
 
-final class FeedbackHelper: NSObject, MFMailComposeViewControllerDelegate {
+final class FeedbackService: NSObject, MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         getRootViewController()?.dismiss(animated: true)
     }
 }
 
-extension FeedbackHelper: IFeedbackHelper {
+extension FeedbackService: IFeedbackHelper {
     func sendFeedback() {
         if MFMailComposeViewController.canSendMail() {
             let picker = MFMailComposeViewController()
@@ -38,7 +38,7 @@ extension FeedbackHelper: IFeedbackHelper {
     }
 }
 
-private extension FeedbackHelper {
+private extension FeedbackService {
     func getRootViewController() -> UIViewController? {
         (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.rootViewController
     }

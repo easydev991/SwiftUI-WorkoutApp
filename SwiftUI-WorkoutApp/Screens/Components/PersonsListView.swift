@@ -88,7 +88,7 @@ struct PersonsListView: View {
 #warning("TODO: интеграция с сервером")
         List(TempPersonModel.mockArray) { person in
             NavigationLink {
-                PersonProfileView(model: person)
+                PersonProfileView(user: person)
                     .navigationTitle("Профиль")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {

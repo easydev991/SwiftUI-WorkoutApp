@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct IncognitoProfileView: View {
-    @EnvironmentObject var appState: AppState
-
     var body: some View {
         VStack(spacing: 16) {
             incognitoInformer()
@@ -46,6 +44,5 @@ private extension IncognitoProfileView {
 struct IncognitoProfileView_Previews: PreviewProvider {
     static var previews: some View {
         IncognitoProfileView()
-            .environmentObject(AppState())
     }
 }

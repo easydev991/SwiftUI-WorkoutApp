@@ -28,7 +28,7 @@ struct MapViewUI: UIViewRepresentable {
             MapViewUI.mapViewStore[viewKey] = newView
             mapView = newView
         }
-        mapView.setRegion(region, animated: false)
+        mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
         mapView.isRotateEnabled = true
         mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)

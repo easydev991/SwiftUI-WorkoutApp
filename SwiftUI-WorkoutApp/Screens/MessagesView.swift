@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct MessagesView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = MessagesViewModel()
 
     var body: some View {
         NavigationView {
@@ -20,7 +21,7 @@ struct MessagesView: View {
 
 private extension MessagesView {
     func content() -> AnyView {
-        switch appState.isUserAuthorized {
+        switch userDefaults.isUserAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать экран с сообщениями и заглушку")
@@ -34,6 +35,6 @@ private extension MessagesView {
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
         MessagesView()
-            .environmentObject(AppState())
+            .environmentObject(UserDefaultsService())
     }
 }

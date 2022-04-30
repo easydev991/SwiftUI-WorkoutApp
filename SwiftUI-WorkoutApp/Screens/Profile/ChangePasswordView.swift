@@ -9,11 +9,7 @@ import SwiftUI
 
 struct ChangePasswordView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var currentPasswordText = ""
-    @State private var newPasswordText = ""
-    @State private var newPasswordAgainText = ""
-    @State private var isChangeSuccessful = false
-    @State private var changeSuccessTitle = "Пароль изменен"
+    @StateObject private var viewModel = ChangePasswordViewModel()
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -43,7 +39,7 @@ private extension ChangePasswordView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Текущий пароль", text: $currentPasswordText)
+            SecureField("Текущий пароль", text: $viewModel.currentPasswordText)
                 .focused($focus, equals: .currentPassword)
         }
         .onAppear {
@@ -57,7 +53,7 @@ private extension ChangePasswordView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Новый пароль", text: $newPasswordText)
+            SecureField("Новый пароль", text: $viewModel.newPasswordText)
                 .focused($focus, equals: .newPassword)
         }
     }
@@ -66,40 +62,26 @@ private extension ChangePasswordView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Новый пароль ещё раз", text: $newPasswordAgainText)
+            SecureField("Новый пароль ещё раз", text: $viewModel.newPasswordAgainText)
                 .focused($focus, equals: .newPasswordAgain)
         }
     }
 
     func changePasswordButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-            // меняем пароль
             focus = nil
-            isChangeSuccessful.toggle()
+            viewModel.changePasswordAction()
         } label: {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
-        .alert(changeSuccessTitle, isPresented: $isChangeSuccessful) {
+        .alert(viewModel.changeSuccessTitle, isPresented: $viewModel.isChangeSuccessful) {
             Button {
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Text("Закрыть")
             }
         }
-        .disabled(isChangeButtonDisabled)
-    }
-
-    var isChangeButtonDisabled: Bool {
-#warning("TODO: убрать во ViewModel")
-        let isCurrentPasswordTooShort = currentPasswordText.count < 6
-        let isNewPasswordEmpty = newPasswordText.isEmpty || newPasswordAgainText.isEmpty
-        let isNewPasswordTooShort = newPasswordText.count < 6 || newPasswordAgainText.count < 6
-        let areNewPasswordsNotEqual = newPasswordText != newPasswordAgainText
-        return isCurrentPasswordTooShort
-        || isNewPasswordEmpty
-        || isNewPasswordTooShort
-        || areNewPasswordsNotEqual
+        .disabled(viewModel.isChangeButtonDisabled)
     }
 }
 

@@ -25,6 +25,9 @@ final class SportsGroundsMapViewModel: ObservableObject {
 
     init() {
         locationService = LocationService()
+    }
+
+    func onAppearAction() {
         locationService.setEnabled(true)
     }
 

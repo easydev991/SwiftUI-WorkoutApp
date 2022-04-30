@@ -9,21 +9,9 @@ import SwiftUI
 
 struct CreateEventView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var eventName = ""
-    @State private var eventDate = Date()
-    @State private var eventDescription = ""
-    @State private var alertTitle = "Мероприятие создано!"
-    @State private var isEventCreated = false
     @FocusState private var focus: FocusableField?
-    let model: SportsGround
+    @ObservedObject var viewModel: CreateEventViewModel
 
-    private var maxDate: Date {
-        Calendar.current.date(
-            byAdding: .year,
-            value: Constants.maxEventFutureYear,
-            to: .now
-        ) ?? .now
-    }
     var body: some View {
         Form {
             eventNameSection()
@@ -46,7 +34,7 @@ private extension CreateEventView {
 
     func eventNameSection() -> some View {
         Section {
-            TextField("Название", text: $eventName)
+            TextField("Название", text: $viewModel.eventName)
                 .focused($focus, equals: .eventName)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -58,20 +46,20 @@ private extension CreateEventView {
 
     func datePickerSection() -> some View {
         Section("Дата и время") {
-            DatePicker("Дата и время", selection: $eventDate, in: .now...maxDate)
+            DatePicker("Дата и время", selection: $viewModel.eventDate, in: .now...viewModel.maxDate)
                 .labelsHidden()
         }
     }
 
     func sportsGroundNameSection() -> some View {
         Section("Площадка") {
-            Text(model.name)
+            Text(viewModel.ground.name)
         }
     }
 
     func descriptionTextViewSection() -> some View {
         Section("Описание") {
-            TextEditor(text: $eventDescription)
+            TextEditor(text: $viewModel.eventDescription)
                 .frame(height: 150)
                 .focused($focus, equals: .eventDescription)
         }
@@ -79,14 +67,13 @@ private extension CreateEventView {
 
     func createEventButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
             focus = nil
-            isEventCreated.toggle()
+            viewModel.createEventAction()
         } label: {
             Text("Сохранить")
         }
-        .disabled(eventName.count < 6)
-        .alert(alertTitle, isPresented: $isEventCreated) {
+        .disabled(!viewModel.isCreateButtonActive)
+        .alert(viewModel.alertTitle, isPresented: $viewModel.isEventCreated) {
             closeButton()
         }
     }
@@ -102,6 +89,6 @@ private extension CreateEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateEventView(model: .mock)
+        CreateEventView(viewModel: .init(with: .mock))
     }
 }

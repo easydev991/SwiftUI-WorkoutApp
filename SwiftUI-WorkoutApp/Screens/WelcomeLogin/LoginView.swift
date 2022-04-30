@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject private var userDefaults: UserDefaultsService
     @StateObject private var viewModel = LoginViewModel()
     @FocusState private var focus: FocusableField?
 
@@ -58,7 +59,7 @@ private extension LoginView {
 
     func loginButton() -> some View {
         Button {
-            viewModel.loginButtonTapped()
+            viewModel.loginButtonTapped(with: userDefaults)
             focus = nil
         } label: {
             ButtonInFormLabel(title: "Войти")
@@ -86,5 +87,6 @@ private extension LoginView {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
+            .environmentObject(UserDefaultsService())
     }
 }

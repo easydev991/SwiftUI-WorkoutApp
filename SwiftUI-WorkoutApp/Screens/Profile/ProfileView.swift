@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = ProfileViewModel()
 
     var body: some View {
         NavigationView {
             content()
                 .navigationTitle("Профиль")
         }
-        .animation(.default, value: appState.isUserAuthorized)
+        .animation(.default, value: userDefaults.isUserAuthorized)
         .ignoresSafeArea()
     }
 }
 
 private extension ProfileView {
     func content() -> AnyView {
-        switch appState.isUserAuthorized {
+        switch userDefaults.isUserAuthorized {
         case true:
-            return AnyView(PersonProfileView(model: .mockMain))
+            return AnyView(PersonProfileView(user: .mockMain))
         case false:
             return AnyView(IncognitoProfileView())
         }
@@ -34,6 +35,6 @@ private extension ProfileView {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
-            .environmentObject(AppState())
+            .environmentObject(UserDefaultsService())
     }
 }

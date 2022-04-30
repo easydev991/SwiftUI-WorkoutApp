@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct JournalsView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @StateObject private var viewModel = JournalsViewModel()
 
     var body: some View {
         NavigationView {
@@ -20,7 +21,7 @@ struct JournalsView: View {
 
 private extension JournalsView {
     func content() -> AnyView {
-        switch appState.isUserAuthorized {
+        switch userDefaults.isUserAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать экран с дневниками и заглушку")
@@ -34,6 +35,6 @@ private extension JournalsView {
 struct JournalsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsView()
-            .environmentObject(AppState())
+            .environmentObject(UserDefaultsService())
     }
 }

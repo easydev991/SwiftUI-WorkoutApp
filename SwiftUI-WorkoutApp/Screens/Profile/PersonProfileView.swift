@@ -8,23 +8,19 @@
 import SwiftUI
 
 struct PersonProfileView: View {
-    @State private var alertTitle = "Запрос отправлен!"
-    @State private var isFriendRequestSent = false
-#warning("TODO: вынести это свойство во viewModel")
-    @State private var isAddFriendButtonEnabled = true
-
-    let model: TempPersonModel
+    @StateObject private var viewModel = PersonProfileViewModel()
+    let user: TempPersonModel
 
     var body: some View {
         Form {
             personInfoSection()
-            if !model.isMainUser {
+            if !user.isMainUser {
                 communicationSection()
             }
             socialInfoSection()
         }
         .toolbar {
-            if model.isMainUser {
+            if user.isMainUser {
                 settingsLink()
             }
         }
@@ -37,17 +33,17 @@ private extension PersonProfileView {
             HStack(spacing: 24) {
                 avatarImageView()
                 VStack {
-                    Text(model.name)
+                    Text(user.name)
                         .fontWeight(.bold)
-                    Text(model.genderAge)
-                    Text(model.shortAddress)
+                    Text(user.genderAge)
+                    Text(user.shortAddress)
                 }
             }
         }
     }
 
     func avatarImageView() -> some View {
-        AsyncImage(url: .init(string: model.imageStringURL)) { phase in
+        AsyncImage(url: .init(string: user.imageStringURL)) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -70,7 +66,7 @@ private extension PersonProfileView {
     func communicationSection() -> some View {
         Section {
             sendMessageLink()
-            if isAddFriendButtonEnabled {
+            if viewModel.isAddFriendButtonEnabled {
                 addNewFriendButton()
             }
         }
@@ -80,7 +76,7 @@ private extension PersonProfileView {
         NavigationLink {
 #warning("TODO: сверстать экран для чата")
             Text("Экран для отправки сообщения")
-                .navigationTitle(model.name)
+                .navigationTitle(user.name)
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
             Text("Отправить сообщение")
@@ -91,21 +87,19 @@ private extension PersonProfileView {
 
     func addNewFriendButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-            print("Отправляем запрос на добавление в друзья")
-            isFriendRequestSent.toggle()
+            viewModel.sendFriendRequest()
         } label: {
             Text("Предложить дружбу")
                 .fontWeight(.medium)
         }
-        .alert(alertTitle, isPresented: $isFriendRequestSent) {
+        .alert(viewModel.alertTitle, isPresented: $viewModel.isFriendRequestSent) {
             okButton()
         }
     }
 
     func okButton() -> some View {
         Button {
-            isAddFriendButtonEnabled.toggle()
+            viewModel.friendRequestedAlertOKAction()
         } label: {
             Text("Ок")
         }
@@ -113,16 +107,16 @@ private extension PersonProfileView {
 
     func socialInfoSection() -> some View {
         Section {
-            if model.usesSportsGrounds > 0 {
+            if user.usesSportsGrounds > 0 {
                 usesSportsGroundsLink()
             }
-            if model.addedSportsGrounds > 0 {
+            if user.addedSportsGrounds > 0 {
                 addedSportsGroundsLink()
             }
-            if model.friendsCount > 0 {
+            if user.friendsCount > 0 {
                 friendsLink()
             }
-            if model.journalsCount > 0 {
+            if user.journalsCount > 0 {
                 journalsLink()
             }
         }
@@ -137,7 +131,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
                 Spacer()
-                Text("\(model.usesSportsGrounds)")
+                Text("\(user.usesSportsGrounds)")
                     .foregroundColor(.secondary)
             }
         }
@@ -151,7 +145,7 @@ private extension PersonProfileView {
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")
             Spacer()
-            Text("\(model.addedSportsGrounds)")
+            Text("\(user.addedSportsGrounds)")
                 .foregroundColor(.secondary)
         }
     }
@@ -165,7 +159,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
-                Text("\(model.friendsCount)")
+                Text("\(user.friendsCount)")
                     .foregroundColor(.secondary)
             }
         }
@@ -180,7 +174,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Дневники", systemImage: "list.bullet")
                 Spacer()
-                Text("\(model.journalsCount)")
+                Text("\(user.journalsCount)")
                     .foregroundColor(.secondary)
             }
         }
@@ -197,7 +191,6 @@ private extension PersonProfileView {
 
 struct PersonProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonProfileView(model: .mockMain)
-            .previewDevice("iPhone 13 mini")
+        PersonProfileView(user: .mockMain)
     }
 }
