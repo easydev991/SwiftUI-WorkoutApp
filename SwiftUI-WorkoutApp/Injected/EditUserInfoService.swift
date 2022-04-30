@@ -33,8 +33,13 @@ final class EditUserInfoService: ObservableObject {
     var isUserAuth: Bool {
         userDefaults.isUserAuthorized
     }
-    var canRegister: Bool {
-        !loginText.isEmpty && !emailText.isEmpty && passwordText.count >= 6
+#warning("TODO: интеграция с сервером")
+#warning("TODO: интеграция с БД")
+#warning("TODO: после интеграции убрать хардкод 'false'")
+    var isButtonAvailable: Bool {
+        isUserAuth
+        ? !loginText.isEmpty && !emailText.isEmpty && passwordText.count >= 6
+        : false
     }
     var title: String {
         isUserAuth ? "Изменить профиль" : "Регистрация"

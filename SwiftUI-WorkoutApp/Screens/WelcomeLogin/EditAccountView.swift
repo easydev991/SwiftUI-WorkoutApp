@@ -161,7 +161,7 @@ private extension EditAccountView {
         } label: {
             ButtonInFormLabel(title: "Зарегистрироваться")
         }
-        .disabled(!viewModel.canRegister)
+        .disabled(!viewModel.isButtonAvailable)
     }
 
     func saveChangesButton() -> some View {
@@ -171,7 +171,7 @@ private extension EditAccountView {
         } label: {
             ButtonInFormLabel(title: "Сохранить")
         }
-        .disabled(true)
+        .disabled(!viewModel.isButtonAvailable)
     }
 }
 
