@@ -5,9 +5,7 @@
 //  Created by Олег Еременко on 16.04.2022.
 //
 
-import Foundation
 import SwiftUI
-import MapKit.MKGeometry
 
 final class AppState: ObservableObject {
     @AppStorage("isUserAuthorized") private(set) var isUserAuthorized = false

@@ -5,8 +5,6 @@
 //  Created by Олег Еременко on 30.04.2022.
 //
 
-import Foundation
-import Combine
 import MapKit.MKGeometry
 
 final class SportsGroundsMapViewModel: ObservableObject {

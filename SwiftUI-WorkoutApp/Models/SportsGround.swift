@@ -5,8 +5,6 @@
 //  Created by Олег Еременко on 16.04.2022.
 //
 
-import Foundation
-import CoreLocation
 import MapKit.MKGeometry
 
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {

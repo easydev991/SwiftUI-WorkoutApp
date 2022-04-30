@@ -5,8 +5,6 @@
 //  Created by Олег Еременко on 22.04.2022.
 //
 
-import Foundation
-
 struct SportsGroundSize {
     let size: Size
 

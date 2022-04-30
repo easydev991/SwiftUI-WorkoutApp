@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import MapKit
 
 struct SportsGroundsMapView: View {
     @StateObject private var viewModel = SportsGroundsMapViewModel()

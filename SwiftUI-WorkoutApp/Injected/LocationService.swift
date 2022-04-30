@@ -6,7 +6,6 @@
 //
 
 import MapKit.MKGeometry
-import CoreLocation
 
 final class LocationService: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()

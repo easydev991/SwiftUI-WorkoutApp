@@ -5,7 +5,6 @@
 //  Created by Олег Еременко on 24.04.2022.
 //
 
-import Foundation
 import MessageUI
 
 protocol IFeedbackHelper {
