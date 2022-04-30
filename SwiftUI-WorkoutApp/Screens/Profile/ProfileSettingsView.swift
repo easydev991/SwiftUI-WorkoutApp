@@ -49,7 +49,7 @@ private extension ProfileSettingsView {
     func logoutButton() -> some View {
         Button {
 #warning("TODO: выход из учетной записи")
-            appState.isUserAuthorized = false
+            appState.setIsUserAuth(false)
         } label: {
             Text("Выйти")
                 .foregroundColor(.pink)

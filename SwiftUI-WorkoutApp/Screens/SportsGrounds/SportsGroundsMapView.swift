@@ -9,26 +9,24 @@ import SwiftUI
 import MapKit
 
 struct SportsGroundsMapView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var openDetails = false
-    @State private var selectedPlace = SportsGround.mock
-
+    @StateObject private var viewModel = SportsGroundsMapViewModel()
     var body: some View {
         NavigationView {
             ZStack {
-                NavigationLink(isActive: $openDetails) {
-                    SportsGroundView(model: selectedPlace)
+                NavigationLink(isActive: $viewModel.openDetails) {
+                    SportsGroundView(model: viewModel.selectedPlace)
                 } label: {
                     Text("Загружаем карту ...")
                 }
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
-                    region: $appState.mapRegion,
-                    annotations: $appState.mapAnnotations,
-                    selectedPlace: $selectedPlace,
-                    openDetails: $openDetails
+                    region: $viewModel.mapRegion,
+                    annotations: $viewModel.mapAnnotations,
+                    selectedPlace: $viewModel.selectedPlace,
+                    openDetails: $viewModel.openDetails
                 )
             }
+            .onDisappear { viewModel.onDisappearAction() }
             .navigationTitle("Площадки")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -38,6 +36,5 @@ struct SportsGroundsMapView: View {
 struct SportsGroundsMapView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsMapView()
-            .environmentObject(AppState())
     }
 }

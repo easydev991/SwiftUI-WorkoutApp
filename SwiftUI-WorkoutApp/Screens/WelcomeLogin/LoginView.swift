@@ -3,16 +3,12 @@
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
-//
+// https://cocoacasts.com/networking-essentials-how-to-implement-basic-authentication-in-swift
 
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var loginEmailText = ""
-    @State private var passwordText = ""
-    @State private var isForgotPasswordAlertShown = false
-    @State private var forgotPasswordAlertTitle = "Для восстановления пароля введите логин или email"
+    @StateObject private var viewModel = LoginViewModel()
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -41,7 +37,7 @@ private extension LoginView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Логин или email", text: $loginEmailText)
+            TextField("Логин или email", text: $viewModel.loginEmailText)
                 .focused($focus, equals: .username)
         }
         .onAppear {
@@ -55,34 +51,25 @@ private extension LoginView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Пароль", text: $passwordText)
+            SecureField("Пароль", text: $viewModel.passwordText)
                 .focused($focus, equals: .password)
         }
     }
 
     func loginButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-            print("--- Выполняем вход")
-            appState.isUserAuthorized = true
-            appState.showWelcome = false
+            viewModel.loginButtonTapped()
             focus = nil
         } label: {
             ButtonInFormLabel(title: "Войти")
         }
-        .disabled(loginEmailText.isEmpty || passwordText.count < 6)
+        .disabled(!viewModel.canLogIn)
     }
 
     func forgotPasswordButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-            if loginEmailText.isEmpty {
-                focus = .username
-                isForgotPasswordAlertShown.toggle()
-            } else {
-                focus = nil
-                print("--- Запрашиваем восстановление пароля")
-            }
+            viewModel.forgotPasswordTapped()
+            focus = viewModel.canRestorePassword ? nil : .username
         } label: {
             HStack {
                 Spacer()
@@ -91,7 +78,7 @@ private extension LoginView {
                 Spacer()
             }
         }
-        .alert(forgotPasswordAlertTitle, isPresented: $isForgotPasswordAlertShown) {
+        .alert(viewModel.forgotPasswordAlertTitle, isPresented: $viewModel.showForgotPasswordAlert) {
             Text("Ok")
         }
     }
@@ -99,6 +86,5 @@ private extension LoginView {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(AppState())
     }
 }

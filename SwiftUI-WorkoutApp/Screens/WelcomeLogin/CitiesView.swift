@@ -9,25 +9,23 @@ import SwiftUI
 
 struct CitiesView: View {
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var appState: AppState
-
-    let cities: [City]
     @State private var searchQuery = ""
+    @ObservedObject var viewModel: EditUserInfoService
     private var filteredCities: [City] {
         searchQuery.isEmpty
-        ? cities
-        : cities.filter { $0.name.contains(searchQuery) }
+        ? viewModel.cities
+        : viewModel.cities.filter { $0.name.contains(searchQuery) }
     }
 
     var body: some View {
         List(filteredCities, id: \.self) { city in
             Button {
-                appState.selectCity(city)
+                viewModel.selectCity(city)
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 TextWithCheckmark(
                     title: city.name,
-                    showMark: city.name == $appState.selectedCity.wrappedValue.name
+                    showMark: city.name == $viewModel.selectedCity.wrappedValue.name
                 )
             }
         }
@@ -42,7 +40,6 @@ struct CitiesView: View {
 
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        CitiesView(cities: AppState().cities)
-            .environmentObject(AppState())
+        CitiesView(viewModel: EditUserInfoService())
     }
 }

@@ -9,26 +9,24 @@ import SwiftUI
 
 struct CountriesView: View {
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var appState: AppState
-
-    let countriesList: [CountryElement]
     @State private var searchQuery = ""
+    @ObservedObject var viewModel: EditUserInfoService
     private var filteredCountries: [CountryElement] {
         searchQuery.isEmpty
-        ? countriesList
-        : countriesList.filter { $0.name.contains(searchQuery) }
+        ? viewModel.countries
+        : viewModel.countries.filter { $0.name.contains(searchQuery) }
     }
 
     var body: some View {
         List {
             ForEach(filteredCountries, id: \.self) { country in
                 Button {
-                    appState.selectCountry(country)
+                    viewModel.selectCountry(country)
                     presentationMode.wrappedValue.dismiss()
                 } label: {
                     TextWithCheckmark(
                         title: country.name,
-                        showMark: country.name == $appState.selectedCity.wrappedValue.name
+                        showMark: country.name == $viewModel.selectedCity.wrappedValue.name
                     )
                 }
             }
@@ -44,7 +42,6 @@ struct CountriesView: View {
 
 struct CountriesView_Previews: PreviewProvider {
     static var previews: some View {
-        CountriesView(countriesList: AppState().countries)
-            .environmentObject(AppState())
+        CountriesView(viewModel: EditUserInfoService())
     }
 }

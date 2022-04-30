@@ -9,36 +9,24 @@ import SwiftUI
 
 struct EditAccountView: View {
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var appState: AppState
-    @State private var loginText = ""
-    @State private var emailText = ""
-    @State private var passwordText = ""
-    @State private var nameText = ""
-    @State private var birthDate = Date()
+    @StateObject private var viewModel = EditUserInfoService()
     @FocusState private var focus: FocusableField?
-    private var maxDate: Date {
-        Calendar.current.date(
-            byAdding: .year,
-            value: Constants.minimumUserAge,
-            to: .now
-        ) ?? .now
-    }
 
     var body: some View {
         Form {
             Section {
                 loginField()
                 emailField()
-                if !appState.isUserAuthorized {
+                if !viewModel.isUserAuth {
                     passwordField()
                 }
                 nameField()
-                countryPicker()
-                cityPicker()
                 genderPicker()
                 birthdayPicker()
+                countryPicker()
+                cityPicker()
             }
-            if !appState.isUserAuthorized {
+            if !viewModel.isUserAuth {
                 Section {
                     rulesOfService()
                 }
@@ -51,7 +39,7 @@ struct EditAccountView: View {
                 }
             }
         }
-        .navigationTitle(viewTitle)
+        .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -61,15 +49,11 @@ private extension EditAccountView {
         case login, email, password
     }
 
-    var viewTitle: String {
-        appState.isUserAuthorized ? "Изменить профиль" : "Регистрация"
-    }
-
     func loginField() -> some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Логин", text: $loginText)
+            TextField("Логин", text: $viewModel.loginText)
                 .focused($focus, equals: .login)
         }
     }
@@ -78,7 +62,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "envelope")
                 .foregroundColor(.secondary)
-            TextField("email", text: $emailText)
+            TextField("email", text: $viewModel.emailText)
                 .focused($focus, equals: .email)
         }
     }
@@ -87,7 +71,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Пароль (минимум 6 символов)", text: $passwordText)
+            SecureField("Пароль (минимум 6 символов)", text: $viewModel.passwordText)
                 .focused($focus, equals: .password)
         }
     }
@@ -96,46 +80,51 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Имя (необязательно)", text: $nameText)
+            TextField("Имя (необязательно)", text: $viewModel.nameText)
         }
     }
 
     func countryPicker() -> some View {
-        NavigationLink(destination: CountriesView(countriesList: appState.countries)) {
+        NavigationLink(destination: CountriesView(viewModel: viewModel)) {
             HStack {
                 Image(systemName: "globe")
                     .foregroundColor(.secondary)
                 Text("Страна")
                 Spacer()
-                Text($appState.selectedCountry.wrappedValue.name)
+                Text($viewModel.selectedCountry.wrappedValue.name)
                     .foregroundColor(.secondary)
             }
         }
     }
 
     func cityPicker() -> some View {
-        NavigationLink(destination: CitiesView(cities: appState.cities)) {
+        NavigationLink(destination: CitiesView(viewModel: viewModel)) {
             HStack {
                 Image(systemName: "signpost.right")
                     .foregroundColor(.secondary)
                 Text("Город")
                 Spacer()
-                Text($appState.selectedCity.wrappedValue.name)
+                Text($viewModel.selectedCity.wrappedValue.name)
                     .foregroundColor(.secondary)
             }
         }
     }
 
     func genderPicker() -> some View {
-        Picker(selection: $appState.selectedGender) {
-            ForEach($appState.genders, id: \.self) {
-                Text($0.wrappedValue)
+        Menu {
+            Picker("", selection: $viewModel.selectedGender) {
+                ForEach($viewModel.genders, id: \.self) {
+                    Text($0.wrappedValue)
+                }
             }
         } label: {
             HStack {
                 Image(systemName: "person.fill.questionmark")
                     .foregroundColor(.secondary)
                 Text("Пол")
+                Spacer()
+                Text(viewModel.selectedGender)
+                    .foregroundColor(.secondary)
             }
         }
     }
@@ -144,7 +133,12 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "face.smiling")
                 .foregroundColor(.secondary)
-            DatePicker("Дата рождения", selection: $birthDate, in: ...maxDate, displayedComponents: .date)
+            DatePicker(
+                "Дата рождения",
+                selection: $viewModel.birthDate,
+                in: ...viewModel.maxDate,
+                displayedComponents: .date
+            )
         }
     }
 
@@ -162,23 +156,17 @@ private extension EditAccountView {
 
     func registerButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-#warning("TODO: Проверить введенные данные")
-            print("--- Проверяем введенные данные и начинаем регистрацию")
+            viewModel.registerAction()
             focus = nil
         } label: {
             ButtonInFormLabel(title: "Зарегистрироваться")
         }
-        .disabled(
-            loginText.isEmpty || emailText.isEmpty || passwordText.count < 6
-        )
+        .disabled(!viewModel.canRegister)
     }
 
     func saveChangesButton() -> some View {
         Button {
-#warning("TODO: интеграция с сервером")
-#warning("TODO: интеграция с БД")
-            // Сохранить изменения профиля
+            viewModel.saveChangesAction()
             presentationMode.wrappedValue.dismiss()
         } label: {
             ButtonInFormLabel(title: "Сохранить")
@@ -190,6 +178,5 @@ private extension EditAccountView {
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
         EditAccountView()
-            .environmentObject(AppState())
     }
 }
