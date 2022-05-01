@@ -3,25 +3,48 @@
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
-// https://cocoacasts.com/networking-essentials-how-to-implement-basic-authentication-in-swift
+//
 
 import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject private var userDefaults: UserDefaultsService
     @StateObject private var viewModel = LoginViewModel()
+    // Вызывает утечку памяти, если разместить внутри viewModel
+    @State private var showForgotPasswordAlert = false
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        Form {
-            Section {
-                loginField()
-                passwordField()
+        ZStack {
+            Form {
+                Section {
+                    loginField()
+                    passwordField()
+                }
+                Section {
+                    loginButton()
+                    forgotPasswordButton()
+                }
             }
-            Section {
-                loginButton()
-                forgotPasswordButton()
+            ProgressView()
+                .opacity(viewModel.isSigningIn ? 1 : .zero)
+        }
+        .disabled(viewModel.isSigningIn)
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button {
+                viewModel.errorAlertClosed()
+            } label: {
+                Text("Ок")
             }
+        }
+        .onChange(of: viewModel.showForgotPasswordAlert) { showAlert in
+            showForgotPasswordAlert = showAlert
+        }
+        .onChange(of: viewModel.errorResponse) { message in
+            showErrorAlert = !message.isEmpty
+            errorTitle = message
         }
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
@@ -30,8 +53,7 @@ struct LoginView: View {
 
 private extension LoginView {
     enum FocusableField: Hashable {
-        case username
-        case password
+        case username, password
     }
 
     func loginField() -> some View {
@@ -59,7 +81,10 @@ private extension LoginView {
 
     func loginButton() -> some View {
         Button {
-            viewModel.loginButtonTapped(with: userDefaults)
+//            viewModel.loginButtonTapped(with: userDefaults)
+            Task {
+                await viewModel.loginAsync(with: userDefaults)
+            }
             focus = nil
         } label: {
             ButtonInFormLabel(title: "Войти")
@@ -69,6 +94,7 @@ private extension LoginView {
 
     func forgotPasswordButton() -> some View {
         Button {
+            showForgotPasswordAlert = viewModel.loginEmailText.isEmpty
             viewModel.forgotPasswordTapped()
             focus = viewModel.canRestorePassword ? nil : .username
         } label: {
@@ -79,7 +105,7 @@ private extension LoginView {
                 Spacer()
             }
         }
-        .alert(viewModel.forgotPasswordAlertTitle, isPresented: $viewModel.showForgotPasswordAlert) {
+        .alert(Constants.AlertTitle.forgotPassword, isPresented: $showForgotPasswordAlert) {
             Text("Ok")
         }
     }

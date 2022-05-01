@@ -14,7 +14,8 @@ final class LoginViewModel: ObservableObject {
     @Published var hasError = false
     @Published var isSigningIn = false
     @Published var showForgotPasswordAlert = false
-    @Published var forgotPasswordAlertTitle = "Для восстановления пароля введите логин или email"
+    @Published var errorResponse = ""
+
     var canLogIn: Bool {
         !loginEmailText.isEmpty && passwordText.count >= 6
     }
@@ -22,10 +23,38 @@ final class LoginViewModel: ObservableObject {
         !loginEmailText.isEmpty
     }
 
-    func loginButtonTapped(with userDefaults: UserDefaultsService) {
-#warning("TODO: интеграция с сервером")
-        userDefaults.isUserAuthorized = true
-        userDefaults.showWelcome = false
+    init() {
+        print("--- inited LoginViewModel")
+    }
+
+    deinit {
+        print("--- deinited LoginViewModel")
+    }
+
+    func errorAlertClosed() {
+        errorResponse = ""
+    }
+
+    func loginAsync(with defaults: UserDefaultsService) async {
+        if !canLogIn {
+            return
+        }
+        await MainActor.run {
+            isSigningIn = true
+        }
+        let loader = LoginService(
+            defaults: defaults,
+            login: loginEmailText,
+            password: passwordText
+        )
+        do {
+            try await loader.loginRequest()
+        } catch {
+            await MainActor.run {
+                errorResponse = error.localizedDescription
+                isSigningIn = false
+            }
+        }
     }
 
     func forgotPasswordTapped() {

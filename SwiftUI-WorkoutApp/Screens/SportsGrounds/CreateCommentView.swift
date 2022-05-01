@@ -10,7 +10,6 @@ import SwiftUI
 struct CreateCommentView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var commentText = ""
-    @State private var alertTitle = "Комментарий отправлен!"
     @State private var isCommentSent = false
     @FocusState private var isFocused
 
@@ -53,7 +52,7 @@ private extension CreateCommentView {
             Text("Отправить")
         }
         .disabled(commentText.count < 6)
-        .alert(alertTitle, isPresented: $isCommentSent) {
+        .alert(Constants.AlertTitle.commentSent, isPresented: $isCommentSent) {
             closeButton()
         }
     }

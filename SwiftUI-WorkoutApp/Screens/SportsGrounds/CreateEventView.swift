@@ -19,6 +19,9 @@ struct CreateEventView: View {
             sportsGroundNameSection()
             descriptionTextViewSection()
         }
+        .onChange(of: viewModel.isEventCreated) { _ in
+            presentationMode.wrappedValue.dismiss()
+        }
         .navigationTitle("Мероприятие")
         .toolbar {
             createEventButton()
@@ -73,17 +76,6 @@ private extension CreateEventView {
             Text("Сохранить")
         }
         .disabled(!viewModel.isCreateButtonActive)
-        .alert(viewModel.alertTitle, isPresented: $viewModel.isEventCreated) {
-            closeButton()
-        }
-    }
-
-    func closeButton() -> some View {
-        Button {
-            presentationMode.wrappedValue.dismiss()
-        } label: {
-            Text("Закрыть")
-        }
     }
 }
 

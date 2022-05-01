@@ -8,14 +8,12 @@
 import Foundation
 
 final class PersonProfileViewModel: ObservableObject {
-    #warning("TODO: интеграция с сервером")
-    @Published var alertTitle = "Запрос отправлен!"
-    @Published var isFriendRequestSent = false
+    @Published var requestedFriendship = false
     @Published var isAddFriendButtonEnabled = true
 
     func sendFriendRequest() {
-        print("Отправляем запрос на добавление в друзья")
-        isFriendRequestSent = true
+#warning("TODO: интеграция с сервером")
+        requestedFriendship = true
     }
 
     func friendRequestedAlertOKAction() {

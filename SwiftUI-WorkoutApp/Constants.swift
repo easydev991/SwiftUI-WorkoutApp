@@ -26,4 +26,15 @@ struct Constants {
             return .init(string: "mailto:\(toEmail)?subject=\(_subject)")
         }
     }
+    struct API {
+        static let baseURL = "https://workout.su/api/v3"
+        static let timeOut = TimeInterval(20)
+    }
+    struct AlertTitle {
+        static let authError = "Ошибка авторизации"
+        static let forgotPassword = "Для восстановления пароля введите логин или email"
+        static let commentSent = "Комментарий отправлен!"
+        static let friendRequestSent = "Запрос отправлен!"
+        static let logout = "Выйти из учетной записи?"
+    }
 }

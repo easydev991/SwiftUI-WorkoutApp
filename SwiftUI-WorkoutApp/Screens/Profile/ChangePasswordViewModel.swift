@@ -12,7 +12,6 @@ final class ChangePasswordViewModel: ObservableObject {
     @Published var newPasswordText = ""
     @Published var newPasswordAgainText = ""
     @Published var isChangeSuccessful = false
-    @Published var changeSuccessTitle = "Пароль изменен"
     var isChangeButtonDisabled: Bool {
         let isCurrentPasswordTooShort = currentPasswordText.count < 6
         let isNewPasswordEmpty = newPasswordText.isEmpty || newPasswordAgainText.isEmpty

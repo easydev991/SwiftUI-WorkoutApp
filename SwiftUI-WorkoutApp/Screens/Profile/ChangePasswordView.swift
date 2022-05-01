@@ -11,6 +11,7 @@ struct ChangePasswordView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel = ChangePasswordViewModel()
     @FocusState private var focus: FocusableField?
+    @State private var showSuccess = false
 
     var body: some View {
         Form {
@@ -24,6 +25,9 @@ struct ChangePasswordView: View {
             Section {
                 changePasswordButton()
             }
+        }
+        .onChange(of: viewModel.isChangeSuccessful) { isSuccess in
+            showSuccess = isSuccess
         }
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
@@ -74,14 +78,14 @@ private extension ChangePasswordView {
         } label: {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
-        .alert(viewModel.changeSuccessTitle, isPresented: $viewModel.isChangeSuccessful) {
-            Button {
+        .disabled(viewModel.isChangeButtonDisabled)
+        .alert("Пароль успешно изменен", isPresented: $showSuccess) {
+            Button(role: .cancel) {
                 presentationMode.wrappedValue.dismiss()
             } label: {
-                Text("Закрыть")
+                Text("Ок")
             }
         }
-        .disabled(viewModel.isChangeButtonDisabled)
     }
 }
 

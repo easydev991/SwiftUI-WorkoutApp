@@ -12,8 +12,8 @@ final class CreateEventViewModel: ObservableObject {
     @Published var eventName = ""
     @Published var eventDate = Date()
     @Published var eventDescription = ""
-    @Published var alertTitle = "Мероприятие создано!"
     @Published var isEventCreated = false
+
     var maxDate: Date {
         Calendar.current.date(
             byAdding: .year,
@@ -31,6 +31,7 @@ final class CreateEventViewModel: ObservableObject {
 
     func createEventAction() {
 #warning("TODO: интеграция с сервером")
+#warning("TODO: уведомлять о проблемах при отправке мероприятия")
         isEventCreated = true
     }
 }

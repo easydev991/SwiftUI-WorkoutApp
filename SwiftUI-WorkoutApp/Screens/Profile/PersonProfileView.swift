@@ -10,6 +10,7 @@ import SwiftUI
 struct PersonProfileView: View {
     @StateObject private var viewModel = PersonProfileViewModel()
     let user: TempPersonModel
+    @State private var isFriendRequestSent = false
 
     var body: some View {
         Form {
@@ -18,6 +19,9 @@ struct PersonProfileView: View {
                 communicationSection()
             }
             socialInfoSection()
+        }
+        .onChange(of: viewModel.requestedFriendship) { isSuccess in
+            isFriendRequestSent = isSuccess
         }
         .toolbar {
             if user.isMainUser {
@@ -92,7 +96,7 @@ private extension PersonProfileView {
             Text("Предложить дружбу")
                 .fontWeight(.medium)
         }
-        .alert(viewModel.alertTitle, isPresented: $viewModel.isFriendRequestSent) {
+        .alert(Constants.AlertTitle.friendRequestSent, isPresented: $isFriendRequestSent) {
             okButton()
         }
     }

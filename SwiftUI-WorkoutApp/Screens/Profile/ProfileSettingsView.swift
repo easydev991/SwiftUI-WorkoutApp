@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileSettingsView: View {
     @EnvironmentObject private var userDefaults: UserDefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
+    @State private var showLogoutConfirmation = false
 
     var body: some View {
         Form {
@@ -48,10 +49,18 @@ private extension ProfileSettingsView {
 
     func logoutButton() -> some View {
         Button {
-            viewModel.logoutAction(with: userDefaults)
+            showLogoutConfirmation = true
         } label: {
             Text("Выйти")
                 .foregroundColor(.pink)
+        }
+        .confirmationDialog(Constants.AlertTitle.logout, isPresented: $showLogoutConfirmation, titleVisibility: .visible) {
+            Button(role: .destructive) {
+                viewModel.logoutAction(with: userDefaults)
+            } label: {
+                Text("Выйти")
+            }
+
         }
     }
 

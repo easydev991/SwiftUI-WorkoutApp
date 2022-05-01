@@ -44,6 +44,11 @@ final class EditAccountViewModel: ObservableObject {
 
     init() {
         makeCountryAndCityData()
+        print("--- inited EditAccountViewModel")
+    }
+
+    deinit {
+        print("--- deinited EditAccountViewModel")
     }
 
     func selectCountry(_ country: CountryElement) {
