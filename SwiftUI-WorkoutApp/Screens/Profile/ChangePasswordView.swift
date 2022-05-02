@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ChangePasswordView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ChangePasswordViewModel()
-    @FocusState private var focus: FocusableField?
     @State private var showSuccess = false
+    @FocusState private var focus: FocusableField?
 
     var body: some View {
         Form {
@@ -79,12 +79,16 @@ private extension ChangePasswordView {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
         .disabled(viewModel.isChangeButtonDisabled)
-        .alert("Пароль успешно изменен", isPresented: $showSuccess) {
-            Button(role: .cancel) {
-                presentationMode.wrappedValue.dismiss()
-            } label: {
-                Text("Ок")
-            }
+        .alert(Constants.AlertTitle.passwordChanged, isPresented: $showSuccess) {
+            closeButton()
+        }
+    }
+
+    func closeButton() -> some View {
+        Button(role: .cancel) {
+            dismiss()
+        } label: {
+            TextOk()
         }
     }
 }

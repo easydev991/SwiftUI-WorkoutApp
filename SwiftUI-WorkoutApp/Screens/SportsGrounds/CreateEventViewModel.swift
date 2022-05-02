@@ -21,6 +21,7 @@ final class CreateEventViewModel: ObservableObject {
             to: .now
         ) ?? .now
     }
+
     var isCreateButtonActive: Bool {
         eventName.count >= 6
     }
@@ -33,5 +34,12 @@ final class CreateEventViewModel: ObservableObject {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: уведомлять о проблемах при отправке мероприятия")
         isEventCreated = true
+    }
+
+    func eventAlertClosed() {
+        eventName = ""
+        eventDate = .now
+        eventDescription = ""
+        isEventCreated = false
     }
 }

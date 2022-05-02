@@ -105,7 +105,7 @@ private extension PersonProfileView {
         Button {
             viewModel.friendRequestedAlertOKAction()
         } label: {
-            Text("Ок")
+            TextOk()
         }
     }
 

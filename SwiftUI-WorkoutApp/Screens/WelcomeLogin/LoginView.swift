@@ -36,7 +36,7 @@ struct LoginView: View {
             Button {
                 viewModel.errorAlertClosed()
             } label: {
-                Text("Ок")
+                TextOk()
             }
         }
         .onChange(of: viewModel.showForgotPasswordAlert) { showAlert in
@@ -107,9 +107,8 @@ private extension LoginView {
             Button {
                 viewModel.warningAlertClosed()
             } label: {
-                Text("Ок")
+                TextOk()
             }
-
         }
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CitiesView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
     @ObservedObject var viewModel: EditAccountViewModel
     private var filteredCities: [City] {
@@ -21,7 +21,7 @@ struct CitiesView: View {
         List(filteredCities, id: \.self) { city in
             Button {
                 viewModel.selectCity(city)
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             } label: {
                 TextWithCheckmark(
                     title: city.name,

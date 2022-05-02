@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EditAccountView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var userDefaults: UserDefaultsService
     @StateObject private var viewModel = EditAccountViewModel()
     @FocusState private var focus: FocusableField?
@@ -168,7 +168,7 @@ private extension EditAccountView {
     func saveChangesButton() -> some View {
         Button {
             viewModel.saveChangesAction()
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } label: {
             ButtonInFormLabel(title: "Сохранить")
         }

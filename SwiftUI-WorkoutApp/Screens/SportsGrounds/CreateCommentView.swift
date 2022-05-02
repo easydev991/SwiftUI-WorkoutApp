@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CreateCommentView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var commentText = ""
     @State private var isCommentSent = false
     @FocusState private var isFocused
@@ -20,9 +20,7 @@ struct CreateCommentView: View {
         }
         .padding()
         .navigationTitle("Комментарий")
-        .toolbar {
-            sendButton()
-        }
+        .toolbar { sendButton() }
     }
 }
 
@@ -59,7 +57,7 @@ private extension CreateCommentView {
 
     func closeButton() -> some View {
         Button {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } label: {
             Text("Закрыть")
         }

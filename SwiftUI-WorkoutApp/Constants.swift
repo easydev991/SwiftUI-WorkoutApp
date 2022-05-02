@@ -35,6 +35,8 @@ struct Constants {
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let commentSent = "Комментарий отправлен!"
         static let friendRequestSent = "Запрос отправлен!"
+        static let eventCreated = "Мероприятие создано!"
+        static let passwordChanged = "Пароль успешно изменен"
         static let logout = "Выйти из учетной записи?"
     }
     enum Gender: String, CaseIterable {

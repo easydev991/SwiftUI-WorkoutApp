@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CreateEventView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @FocusState private var focus: FocusableField?
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: CreateEventViewModel
+    @State private var eventCreated = false
+    @FocusState private var focus: FocusableField?
 
     var body: some View {
         Form {
@@ -19,13 +20,14 @@ struct CreateEventView: View {
             sportsGroundNameSection()
             descriptionTextViewSection()
         }
-        .onChange(of: viewModel.isEventCreated) { _ in
-            presentationMode.wrappedValue.dismiss()
+        .onChange(of: viewModel.isEventCreated) { isSuccess in
+            eventCreated = isSuccess
+        }
+        .alert(Constants.AlertTitle.eventCreated, isPresented: $eventCreated) {
+            closeButton()
         }
         .navigationTitle("Мероприятие")
-        .toolbar {
-            createEventButton()
-        }
+        .toolbar { createEventButton() }
     }
 }
 
@@ -76,6 +78,15 @@ private extension CreateEventView {
             Text("Сохранить")
         }
         .disabled(!viewModel.isCreateButtonActive)
+    }
+
+    func closeButton() -> some View {
+        Button {
+            viewModel.eventAlertClosed()
+            dismiss()
+        } label: {
+            TextOk()
+        }
     }
 }
 
