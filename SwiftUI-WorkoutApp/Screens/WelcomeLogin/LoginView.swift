@@ -60,7 +60,7 @@ private extension LoginView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Логин или email", text: $viewModel.loginEmailText)
+            TextField("Логин или email", text: $viewModel.login)
                 .focused($focus, equals: .username)
         }
         .onAppear {
@@ -74,18 +74,17 @@ private extension LoginView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Пароль", text: $viewModel.passwordText)
+            SecureField("Пароль", text: $viewModel.password)
                 .focused($focus, equals: .password)
         }
     }
 
     func loginButton() -> some View {
         Button {
-//            viewModel.loginButtonTapped(with: userDefaults)
-            Task {
-                await viewModel.loginAsync(with: userDefaults)
-            }
             focus = nil
+            Task {
+                await viewModel.loginAction(with: userDefaults)
+            }
         } label: {
             ButtonInFormLabel(title: "Войти")
         }
@@ -94,7 +93,6 @@ private extension LoginView {
 
     func forgotPasswordButton() -> some View {
         Button {
-            showForgotPasswordAlert = viewModel.loginEmailText.isEmpty
             viewModel.forgotPasswordTapped()
             focus = viewModel.canRestorePassword ? nil : .username
         } label: {
@@ -106,7 +104,12 @@ private extension LoginView {
             }
         }
         .alert(Constants.AlertTitle.forgotPassword, isPresented: $showForgotPasswordAlert) {
-            Text("Ok")
+            Button {
+                viewModel.warningAlertClosed()
+            } label: {
+                Text("Ок")
+            }
+
         }
     }
 }

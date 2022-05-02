@@ -15,7 +15,7 @@ final class EditAccountViewModel: ObservableObject {
     @Published var selectedCity = City(id: "", name: "")
     @Published var cities = [City]()
     @Published var selectedGender = ""
-    @Published var genders = ["Мужской", "Женский"]
+    @Published var genders = Constants.Gender.allCases.map(\.rawValue)
 
     @Published var loginText = ""
     @Published var emailText = ""
@@ -42,6 +42,7 @@ final class EditAccountViewModel: ObservableObject {
         isUserAuth ? "Изменить профиль" : "Регистрация"
     }
 
+#warning("TODO: убрать принты после окончания работ")
     init() {
         makeCountryAndCityData()
         print("--- inited EditAccountViewModel")

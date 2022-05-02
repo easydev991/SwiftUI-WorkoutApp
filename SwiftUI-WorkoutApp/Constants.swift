@@ -37,4 +37,8 @@ struct Constants {
         static let friendRequestSent = "Запрос отправлен!"
         static let logout = "Выйти из учетной записи?"
     }
+    enum Gender: String, CaseIterable {
+        case male = "Мужской"
+        case female = "Женский"
+    }
 }

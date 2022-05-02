@@ -9,46 +9,32 @@ import Foundation
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    @Published var loginEmailText = ""
-    @Published var passwordText = ""
-    @Published var hasError = false
+    @Published var login = ""
+    @Published var password = ""
     @Published var isSigningIn = false
     @Published var showForgotPasswordAlert = false
     @Published var errorResponse = ""
 
     var canLogIn: Bool {
-        !loginEmailText.isEmpty && passwordText.count >= 6
+        !login.isEmpty && password.count >= 6
     }
     var canRestorePassword: Bool {
-        !loginEmailText.isEmpty
-    }
-
-    init() {
-        print("--- inited LoginViewModel")
-    }
-
-    deinit {
-        print("--- deinited LoginViewModel")
+        !login.isEmpty
     }
 
     func errorAlertClosed() {
         errorResponse = ""
     }
 
-    func loginAsync(with defaults: UserDefaultsService) async {
-        if !canLogIn {
-            return
-        }
-        await MainActor.run {
-            isSigningIn = true
-        }
-        let loader = LoginService(
-            defaults: defaults,
-            login: loginEmailText,
-            password: passwordText
-        )
+    func warningAlertClosed() {
+        showForgotPasswordAlert = false
+    }
+
+    func loginAction(with userDefaults: UserDefaultsService) async {
+        if !canLogIn { return }
+        await MainActor.run { isSigningIn = true }
         do {
-            try await loader.loginRequest()
+            try await LoginService(userDefaults, login, password).loginRequest()
         } catch {
             await MainActor.run {
                 errorResponse = error.localizedDescription
@@ -63,5 +49,14 @@ final class LoginViewModel: ObservableObject {
         } else {
             showForgotPasswordAlert = true
         }
+    }
+
+#warning("TODO: убрать принты после окончания работ")
+    init() {
+        print("--- inited LoginViewModel")
+    }
+
+    deinit {
+        print("--- deinited LoginViewModel")
     }
 }

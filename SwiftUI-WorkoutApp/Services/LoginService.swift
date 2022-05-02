@@ -12,9 +12,9 @@ struct LoginService {
     private let authData: AuthData
 
     init(
-        defaults: UserDefaultsService,
-        login: String,
-        password: String
+        _ defaults: UserDefaultsService,
+        _ login: String,
+        _ password: String
     ) {
         self.defaults = defaults
         self.authData = .init(login: login, password: password)
