@@ -42,13 +42,13 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
             return Int(str) ?? .zero
         }
     }
-    private let regionRadius: CLLocationDistance = 1000
     var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? .zero),
             longitude: .init(Double(longitude) ?? .zero)
         )
     }
+    private let regionRadius: CLLocationDistance = 1000
     var region: MKCoordinateRegion {
         .init(
             center: coordinate,

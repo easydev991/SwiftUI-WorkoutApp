@@ -11,7 +11,7 @@ struct UserResponse: Codable {
     let userName, fullName, email, imageStringURL: String?
     let birthDateIsoString: String? // "1990-11-25"
     let createdIsoDateTimeSec: String? // "2013-01-16T03:35:54+04:00"
-    let userId, cityID, countryID, genderCode, friendsCount, journalsCount: Int?
+    let userID, cityID, countryID, genderCode, friendsCount, journalsCount: Int?
     let friendRequestsCountString, sportsGroundsCountString: String? // "0"
     /// Не используется
     let purchaseCustomerEditor: Bool?
@@ -21,7 +21,7 @@ struct UserResponse: Codable {
     let rating: Int? // 1
 
     enum CodingKeys: String, CodingKey {
-        case userId = "id"
+        case userID = "id"
         case userName = "name"
         case imageStringURL = "image"
         case cityID = "city_id"

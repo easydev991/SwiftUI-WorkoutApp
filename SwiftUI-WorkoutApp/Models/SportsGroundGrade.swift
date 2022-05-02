@@ -18,16 +18,11 @@ struct SportsGroundGrade {
 
     init(id: Int) {
         switch id {
-        case 1:
-            grade = .soviet
-        case 2:
-            grade = .modern
-        case 3:
-            grade = .collars
-        case 4:
-            grade = .underTheHood
-        default:
-            grade = .legendary // id = 6
+        case 1: grade = .soviet
+        case 2: grade = .modern
+        case 3: grade = .collars
+        case 4: grade = .underTheHood
+        default: grade = .legendary // id = 6
         }
     }
 }

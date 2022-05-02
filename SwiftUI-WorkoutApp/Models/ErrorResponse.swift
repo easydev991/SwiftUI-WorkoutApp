@@ -7,6 +7,7 @@
 
 import Foundation
 
+#warning("TODO: парсить при получении ошибок")
 struct ErrorResponse: Codable {
     let name, message: String?
     let code, status: Int?

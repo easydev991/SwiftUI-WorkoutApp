@@ -8,8 +8,8 @@
 import Foundation
 
 final class EditAccountViewModel: ObservableObject {
-    @Published var countries = [CountryElement]()
-    @Published var selectedCountry = CountryElement(
+    @Published var countries = [Country]()
+    @Published var selectedCountry = Country(
         cities: [], id: "", name: ""
     )
     @Published var selectedCity = City(id: "", name: "")
@@ -51,7 +51,7 @@ final class EditAccountViewModel: ObservableObject {
         print("--- deinited EditAccountViewModel")
     }
 
-    func selectCountry(_ country: CountryElement) {
+    func selectCountry(_ country: Country) {
         selectedCountry = country
         updateCityIfNeeded(for: country)
     }
@@ -76,7 +76,7 @@ final class EditAccountViewModel: ObservableObject {
 private extension EditAccountViewModel {
     func makeCountryAndCityData() {
         let _countries = Bundle.main.decodeJson(
-            [CountryElement].self,
+            [Country].self,
             fileName: "countries.json"
         )
         guard let russia = _countries.first(where: { $0.name == "Россия" }),
@@ -89,7 +89,7 @@ private extension EditAccountViewModel {
         selectedCity = moscow
     }
 
-    func updateCityIfNeeded(for country: CountryElement) {
+    func updateCityIfNeeded(for country: Country) {
         if !country.cities.contains(where: { $0 == selectedCity }),
            let firstCity = country.cities.first {
             selectedCity = firstCity

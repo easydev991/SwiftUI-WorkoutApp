@@ -11,7 +11,7 @@ struct CountriesView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var searchQuery = ""
     @ObservedObject var viewModel: EditAccountViewModel
-    private var filteredCountries: [CountryElement] {
+    private var filteredCountries: [Country] {
         searchQuery.isEmpty
         ? viewModel.countries
         : viewModel.countries.filter { $0.name.contains(searchQuery) }

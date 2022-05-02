@@ -16,12 +16,9 @@ struct SportsGroundSize {
 
     init(id: Int) {
         switch id {
-        case 1:
-            size = .small
-        case 2:
-            size = .medium
-        default:
-            size = .large // id = 3
+        case 1: size = .small
+        case 2: size = .medium
+        default: size = .large // id = 3
         }
     }
 }
