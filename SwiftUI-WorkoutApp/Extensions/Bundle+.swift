@@ -15,7 +15,7 @@ extension Bundle {
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
     ) -> T {
         guard let url = self.url(forResource: fileName, withExtension: nil) else {
-            fatalError("Failed to load file ")
+            fatalError("Не удалось загрузить файл: \(fileName)")
         }
         do {
             let jsonData = try Data(contentsOf: url)
@@ -25,7 +25,7 @@ extension Bundle {
             let result = try decoder.decode(type, from: jsonData)
             return result
         } catch {
-            fatalError("Could not decode json with error:\(error)")
+            fatalError("Ошибка преобразования json: \(error)")
         }
     }
 }

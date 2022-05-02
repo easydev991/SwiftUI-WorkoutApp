@@ -34,10 +34,10 @@ private extension IncognitoProfileView {
     }
 
     func loginButton() -> some View {
-        NavigationLink(destination: LoginView(), label: {
+        NavigationLink(destination: LoginView()) {
             Label("Войти через email", systemImage: "envelope")
                 .roundedRectangleStyle()
-        })
+        }
     }
 }
 
