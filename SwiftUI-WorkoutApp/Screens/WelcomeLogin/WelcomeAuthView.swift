@@ -50,7 +50,7 @@ private extension WelcomeAuthView {
 
     func skipLoginButton() -> some View {
         Button {
-            userDefaults.showWelcome = false
+            userDefaults.setWelcomeShown()
         } label: {
             Text("Пропустить")
                 .frame(height: 48)

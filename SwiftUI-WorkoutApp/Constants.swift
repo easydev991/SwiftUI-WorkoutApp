@@ -42,5 +42,8 @@ struct Constants {
     enum Gender: String, CaseIterable {
         case male = "Мужской"
         case female = "Женский"
+        init(_ code: Int?) {
+            self = code == .zero ? .male : .female
+        }
     }
 }

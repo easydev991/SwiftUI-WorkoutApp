@@ -86,7 +86,6 @@ private extension PersonProfileView {
             Text("Отправить сообщение")
                 .fontWeight(.medium)
         }
-
     }
 
     func addNewFriendButton() -> some View {

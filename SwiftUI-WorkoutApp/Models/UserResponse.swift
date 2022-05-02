@@ -59,7 +59,7 @@ extension UserResponse {
         }
     }
     var gender: String {
-        genderCode == .zero ? "Мужской" : "Женский"
+        Constants.Gender(genderCode).rawValue
     }
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero

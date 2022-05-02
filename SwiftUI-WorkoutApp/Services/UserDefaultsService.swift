@@ -8,6 +8,58 @@
 import SwiftUI
 
 final class UserDefaultsService: ObservableObject {
-    @AppStorage("isUserAuthorized") var isUserAuthorized = false
-    @AppStorage("showWelcome") var showWelcome = true
+    @AppStorage(Key.isUserAuthorized.rawValue) private(set) var isUserAuthorized = false
+    @AppStorage(Key.showWelcome.rawValue) private(set) var showWelcome = true
+    @AppStorage(Key.authData.rawValue) private var authData = Data()
+    @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
+
+    @MainActor func setWelcomeShown() {
+        showWelcome = false
+    }
+
+    @MainActor func setUserLoggedIn() {
+        showWelcome = false
+        isUserAuthorized = true
+    }
+
+    @MainActor func setUserLoggedOut() {
+        authData = .init()
+        userInfo = .init()
+        showWelcome = true
+        isUserAuthorized = false
+    }
+
+    @MainActor func saveAuthData(_ info: AuthData) {
+        if let data = try? JSONEncoder().encode(info) {
+            authData = data
+        }
+    }
+
+    func getAuthData() -> AuthData {
+        if let info = try? JSONDecoder().decode(AuthData.self, from: authData) {
+            return info
+        } else {
+            return .emptyValue
+        }
+    }
+
+    @MainActor func saveUserInfo(_ info: UserResponse) {
+        if let data = try? JSONEncoder().encode(info) {
+            userInfo = data
+        }
+    }
+
+    @MainActor func getUserInfo() -> UserResponse? {
+        if let info = try? JSONDecoder().decode(UserResponse.self, from: userInfo) {
+            return info
+        } else {
+            return nil
+        }
+    }
+}
+
+private extension UserDefaultsService {
+    enum Key: String {
+        case isUserAuthorized, showWelcome, authData, userInfo
+    }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject private var userDefaults: UserDefaultsService
-    @StateObject private var appState = RootViewModel()
+    @StateObject private var viewModel = RootViewModel()
 
     init() {
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -36,33 +36,33 @@ extension RootView {
 
 private extension RootView {
     func tabView() -> some View {
-        TabView(selection: $appState.selectedTab) {
+        TabView(selection: $viewModel.selectedTab) {
             EventsView()
-                .onAppear { appState.selectTab(.events) }
+                .onAppear { viewModel.selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
             MessagesView()
-                .onAppear { appState.selectTab(.messages) }
+                .onAppear { viewModel.selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
             JournalsView()
-                .onAppear { appState.selectTab(.journal) }
+                .onAppear { viewModel.selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal)
             SportsGroundsMapView()
-                .onAppear { appState.selectTab(.map) }
+                .onAppear { viewModel.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map)
             ProfileView()
-                .onAppear { appState.selectTab(.profile) }
+                .onAppear { viewModel.selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }

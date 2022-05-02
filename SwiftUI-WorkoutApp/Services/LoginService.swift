@@ -31,17 +31,19 @@ struct LoginService {
             throw error
         }
     }
+}
 
-    private func userRequest(with userID: Int) async throws {
+private extension LoginService {
+    func userRequest(with userID: Int) async throws {
         let endpoint = Endpoint.getUser(id: userID, auth: authData)
         guard let request = endpoint.urlRequest else { return }
         do {
             let (data, response) = try await APIService.configuredURLSession().data(for: request)
-#warning("TODO: интеграция с БД - сохранить данные пользователя")
-            _ = try APIService.handleResponse(UserResponse.self, data: data, response: response)
+            let userResponse = try APIService.handleResponse(UserResponse.self, data: data, response: response)
             await MainActor.run {
-                defaults.isUserAuthorized = true
-                defaults.showWelcome = false
+                defaults.saveAuthData(authData)
+                defaults.saveUserInfo(userResponse)
+                defaults.setUserLoggedIn()
             }
         } catch {
             throw error

@@ -14,10 +14,6 @@ final class ProfileSettingsViewModel: ObservableObject {
         feedbackHelper = FeedbackService()
     }
 
-    func logoutAction(with userDefaults: UserDefaultsService) {
-        userDefaults.isUserAuthorized = false
-    }
-
     func feedbackAction() {
         feedbackHelper.sendFeedback()
     }

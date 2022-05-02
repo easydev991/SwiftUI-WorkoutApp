@@ -54,13 +54,16 @@ private extension ProfileSettingsView {
             Text("Выйти")
                 .foregroundColor(.pink)
         }
-        .confirmationDialog(Constants.AlertTitle.logout, isPresented: $showLogoutConfirmation, titleVisibility: .visible) {
+        .confirmationDialog(
+            Constants.AlertTitle.logout,
+            isPresented: $showLogoutConfirmation,
+            titleVisibility: .visible
+        ) {
             Button(role: .destructive) {
-                viewModel.logoutAction(with: userDefaults)
+                userDefaults.setUserLoggedOut()
             } label: {
                 Text("Выйти")
             }
-
         }
     }
 

@@ -7,10 +7,14 @@
 
 import Foundation
 
-struct AuthData {
+struct AuthData: Codable {
     let login, password: String
 
     var base64Encoded: String? {
         (login + ":" + password).data(using: .utf8)?.base64EncodedString()
+    }
+
+    static var emptyValue: Self {
+        .init(login: "", password: "")
     }
 }
