@@ -5,7 +5,7 @@
 //  Created by Олег Еременко on 30.04.2022.
 //
 
-import SwiftUI
+import Foundation
 
 final class SportsGroundViewModel: ObservableObject {
     let ground: SportsGround
@@ -13,6 +13,10 @@ final class SportsGroundViewModel: ObservableObject {
     @Published var photoColumns = Columns.one
     @Published var isMySportsGround = false
     @Published var showParticipants = false
+
+    var authorImageStringURL: String {
+        ground.author.imageStringURL
+    }
 
     init(with model: SportsGround) {
         self.ground = model
@@ -24,9 +28,6 @@ final class SportsGroundViewModel: ObservableObject {
 
     enum Columns: Int {
         case one = 1, two, three
-        var items: [GridItem] {
-            .init(repeating: .init(.flexible()), count: rawValue)
-        }
         init(_ photosCount: Int) {
             switch photosCount {
             case 1: self = .one

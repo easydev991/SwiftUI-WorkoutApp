@@ -58,7 +58,12 @@ private extension SportsGroundView {
 
     func gridWithPhotosSection() -> some View {
         Section("Фотографии") {
-            LazyVGrid(columns: viewModel.photoColumns.items) {
+            LazyVGrid(
+                columns: .init(
+                    repeating: .init(.flexible(maximum: 150)),
+                    count: viewModel.photoColumns.rawValue
+                )
+            ) {
                 ForEach(viewModel.ground.photos) {
                     AsyncImage(url: .init(string: $0.stringURL)) { phase in
                         switch phase {
@@ -126,7 +131,7 @@ private extension SportsGroundView {
     func authorSection() -> some View {
         Section("Добавил") {
             HStack(spacing: 16) {
-                AsyncImage(url: .init(string: viewModel.ground.author.imageStringURL)) { phase in
+                AsyncImage(url: .init(string: viewModel.authorImageStringURL)) { phase in
                     switch phase {
                     case let .success(image):
                         image
