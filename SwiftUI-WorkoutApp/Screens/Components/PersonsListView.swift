@@ -89,36 +89,9 @@ struct PersonsListView: View {
         List(TempPersonModel.mockArray) { person in
             NavigationLink {
                 PersonProfileView(user: person)
-                    .navigationTitle("Профиль")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
-                personView(person)
-            }
-        }
-    }
-}
-
-private extension PersonsListView {
-    func personView(_ model: TempPersonModel) -> some View {
-        HStack(spacing: 16) {
-            AsyncImage(url: .init(string: model.imageStringURL)) { phase in
-                switch phase {
-                case let .success(image):
-                    image
-                        .resizable()
-                        .smallProfileImageRect()
-                case .failure:
-                    Image(systemName: "person.fill")
-                default:
-                    ProgressView()
-                }
-            }
-            VStack(alignment: .leading) {
-                Text(model.name)
-                    .fontWeight(.medium)
-                Text(model.shortAddress)
-                    .foregroundColor(.secondary)
-                    .font(.caption)
+                PersonRow(model: person)
             }
         }
     }

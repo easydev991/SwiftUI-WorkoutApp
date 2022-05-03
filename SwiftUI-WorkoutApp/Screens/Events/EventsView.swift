@@ -20,8 +20,8 @@ struct EventsView: View {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать экран со списком мероприятий")
             VStack {
-                segmentedControl()
-                content()
+                segmentedControl
+                content
             }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
@@ -30,25 +30,23 @@ struct EventsView: View {
 }
 
 private extension EventsView {
-    func segmentedControl() -> some View {
+    var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
-            ForEach(EventType.allCases, id: \.self) {
-                Text($0.rawValue)
-            }
+            ForEach(EventType.allCases, id: \.self) { Text($0.rawValue) }
         }
         .pickerStyle(.segmented)
         .padding()
     }
 
-    func content() -> AnyView {
+    var content: AnyView {
         switch selectedEventType {
         case .future: return AnyView(EventsEmptyView())
-        case .past: return AnyView(eventsList())
+        case .past: return AnyView(eventsList)
         }
     }
 
 #warning("TODO: убрать временный хардкод после реализации фичи")
-    func eventsList() -> some View {
+    var eventsList: some View {
         List(0..<15) { id in
             Text("Тренировка № \(id)")
         }

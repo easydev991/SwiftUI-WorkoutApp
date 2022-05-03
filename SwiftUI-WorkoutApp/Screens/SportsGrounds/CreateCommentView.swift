@@ -15,17 +15,17 @@ struct CreateCommentView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            textView()
+            textView
             Spacer()
         }
         .padding()
         .navigationTitle("Комментарий")
-        .toolbar { sendButton() }
+        .toolbar { sendButton }
     }
 }
 
 private extension CreateCommentView {
-    func textView() -> some View {
+    var textView: some View {
         TextEditor(text: $commentText)
             .frame(height: 200)
             .overlay(
@@ -33,14 +33,10 @@ private extension CreateCommentView {
                     .stroke(.gray.opacity(0.5), lineWidth: 2)
             )
             .focused($isFocused)
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    isFocused.toggle()
-                }
-            }
+            .onAppear(perform: showKeyboard)
     }
 
-    func sendButton() -> some View {
+    var sendButton: some View {
         Button {
 #warning("TODO: интеграция с сервером")
             // Отправить комментарий на сервер
@@ -51,15 +47,21 @@ private extension CreateCommentView {
         }
         .disabled(commentText.count < 6)
         .alert(Constants.AlertTitle.commentSent, isPresented: $isCommentSent) {
-            closeButton()
+            closeButton
         }
     }
 
-    func closeButton() -> some View {
+    var closeButton: some View {
         Button {
             dismiss()
         } label: {
             Text("Закрыть")
+        }
+    }
+
+    func showKeyboard() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            isFocused.toggle()
         }
     }
 }

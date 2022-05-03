@@ -19,33 +19,19 @@ struct LoginView: View {
     var body: some View {
         ZStack {
             Form {
-                Section {
-                    loginField()
-                    passwordField()
-                }
-                Section {
-                    loginButton()
-                    forgotPasswordButton()
-                }
+                loginPasswordSection
+                buttonsSection
             }
-            ProgressView()
-                .opacity(viewModel.isSigningIn ? 1 : .zero)
+            progressView
         }
         .disabled(viewModel.isSigningIn)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button {
-                viewModel.errorAlertClosed()
-            } label: {
+            Button(action: viewModel.errorAlertClosed) {
                 TextOk()
             }
         }
-        .onChange(of: viewModel.showForgotPasswordAlert) { showAlert in
-            showForgotPasswordAlert = showAlert
-        }
-        .onChange(of: viewModel.errorResponse) { message in
-            showErrorAlert = !message.isEmpty
-            errorTitle = message
-        }
+        .onChange(of: viewModel.showForgotPasswordAlert) { showForgotPasswordAlert = $0 }
+        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -56,21 +42,30 @@ private extension LoginView {
         case username, password
     }
 
-    func loginField() -> some View {
+    var loginPasswordSection: some View {
+        Section {
+            loginField
+            passwordField
+        }
+    }
+
+    var loginField: some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
             TextField("Логин или email", text: $viewModel.login)
                 .focused($focus, equals: .username)
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                focus = .username
-            }
+        .onAppear(perform: showKeyboard)
+    }
+
+    func showKeyboard() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            focus = .username
         }
     }
 
-    func passwordField() -> some View {
+    var passwordField: some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
@@ -79,39 +74,59 @@ private extension LoginView {
         }
     }
 
-    func loginButton() -> some View {
-        Button {
-            focus = nil
-            Task {
-                await viewModel.loginAction(with: userDefaults)
-            }
-        } label: {
+    var buttonsSection: some View {
+        Section {
+            loginButton
+            forgotPasswordButton
+        }
+    }
+
+    var loginButton: some View {
+        Button(action: loginAction) {
             ButtonInFormLabel(title: "Войти")
         }
         .disabled(!viewModel.canLogIn)
     }
 
-    func forgotPasswordButton() -> some View {
-        Button {
-            viewModel.forgotPasswordTapped()
-            focus = viewModel.canRestorePassword ? nil : .username
-        } label: {
-            HStack {
-                Spacer()
-                Text("Забыли пароль?")
-                    .tint(.blue)
-                Spacer()
-            }
-        }
-        .alert(Constants.AlertTitle.forgotPassword, isPresented: $showForgotPasswordAlert) {
-            Button {
-                viewModel.warningAlertClosed()
-            } label: {
-                TextOk()
-            }
+    func loginAction() {
+        focus = nil
+        Task {
+            await viewModel.loginAction(with: userDefaults)
         }
     }
+
+    var forgotPasswordButton: some View {
+        Button(action: forgotPasswordAction) { forgotPasswordLabel }
+            .alert(Constants.AlertTitle.forgotPassword, isPresented: $showForgotPasswordAlert) {
+                Button(action: viewModel.warningAlertClosed) { TextOk() }
+            }
+    }
+
+    func forgotPasswordAction() {
+        viewModel.forgotPasswordTapped()
+        focus = viewModel.canRestorePassword ? nil : .username
+    }
+
+    var forgotPasswordLabel: some View {
+        HStack {
+            Spacer()
+            Text("Забыли пароль?")
+                .tint(.blue)
+            Spacer()
+        }
+    }
+
+    var progressView: some View {
+        ProgressView()
+            .opacity(viewModel.isSigningIn ? 1 : .zero)
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
 }
+
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()

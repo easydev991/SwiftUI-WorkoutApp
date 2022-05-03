@@ -14,7 +14,7 @@ struct MapSnapshotView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            content()
+            content
                 .onAppear {
                     generateSnapshot(
                         width: geometry.size.width,
@@ -26,15 +26,15 @@ struct MapSnapshotView: View {
 }
 
 private extension MapSnapshotView {
-    func content() -> AnyView {
+    var content: AnyView {
         if let image = snapshotImage {
             return AnyView(Image(uiImage: image))
         } else {
-            return AnyView(centeredProgressView())
+            return AnyView(centeredProgressView)
         }
     }
 
-    func centeredProgressView() -> some View {
+    var centeredProgressView: some View {
         VStack {
             Spacer()
             HStack {

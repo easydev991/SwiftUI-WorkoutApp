@@ -16,28 +16,22 @@ struct EditAccountView: View {
     var body: some View {
         Form {
             Section {
-                loginField()
-                emailField()
+                loginField
+                emailField
                 if !userDefaults.isUserAuthorized {
-                    passwordField()
+                    passwordField
                 }
-                nameField()
-                genderPicker()
-                birthdayPicker()
-                countryPicker()
-                cityPicker()
+                nameField
+                genderPicker
+                birthdayPicker
+                countryPicker
+                cityPicker
             }
             if !userDefaults.isUserAuthorized {
-                Section {
-                    rulesOfService()
-                }
-                Section {
-                    registerButton()
-                }
+                rulesOfServiceSection
+                registerButtonSection
             } else {
-                Section {
-                    saveChangesButton()
-                }
+                saveChangesButtonSection
             }
         }
         .navigationTitle(viewModel.title(userDefaults.isUserAuthorized))
@@ -50,7 +44,7 @@ private extension EditAccountView {
         case login, email, password
     }
 
-    func loginField() -> some View {
+    var loginField: some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
@@ -59,7 +53,7 @@ private extension EditAccountView {
         }
     }
 
-    func emailField() -> some View {
+    var emailField: some View {
         HStack {
             Image(systemName: "envelope")
                 .foregroundColor(.secondary)
@@ -68,7 +62,7 @@ private extension EditAccountView {
         }
     }
 
-    func passwordField() -> some View {
+    var passwordField: some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
@@ -77,7 +71,7 @@ private extension EditAccountView {
         }
     }
 
-    func nameField() -> some View {
+    var nameField: some View {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
@@ -85,7 +79,7 @@ private extension EditAccountView {
         }
     }
 
-    func countryPicker() -> some View {
+    var countryPicker: some View {
         NavigationLink(destination: CountriesView(viewModel: viewModel)) {
             HStack {
                 Image(systemName: "globe")
@@ -98,7 +92,7 @@ private extension EditAccountView {
         }
     }
 
-    func cityPicker() -> some View {
+    var cityPicker: some View {
         NavigationLink(destination: CitiesView(viewModel: viewModel)) {
             HStack {
                 Image(systemName: "signpost.right")
@@ -111,12 +105,10 @@ private extension EditAccountView {
         }
     }
 
-    func genderPicker() -> some View {
+    var genderPicker: some View {
         Menu {
             Picker("", selection: $viewModel.selectedGender) {
-                ForEach($viewModel.genders, id: \.self) {
-                    Text($0.wrappedValue)
-                }
+                ForEach($viewModel.genders, id: \.self) { Text($0.wrappedValue) }
             }
         } label: {
             HStack {
@@ -130,7 +122,7 @@ private extension EditAccountView {
         }
     }
 
-    func birthdayPicker() -> some View {
+    var birthdayPicker: some View {
         HStack {
             Image(systemName: "face.smiling")
                 .foregroundColor(.secondary)
@@ -143,36 +135,46 @@ private extension EditAccountView {
         }
     }
 
-    func rulesOfService() -> some View {
-        Link(destination: URL(string: Constants.rulesOfService)!) {
-            HStack {
-                Spacer()
-                Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.blue)
-                Spacer()
+    var rulesOfServiceSection: some View {
+        Section {
+            Link(destination: URL(string: Constants.rulesOfService)!) {
+                HStack {
+                    Spacer()
+                    Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.blue)
+                    Spacer()
+                }
             }
         }
     }
 
-    func registerButton() -> some View {
-        Button {
-            viewModel.registerAction()
-            focus = nil
-        } label: {
-            ButtonInFormLabel(title: "Зарегистрироваться")
+    var registerButtonSection: some View {
+        Section {
+            Button(action: registerAction) {
+                ButtonInFormLabel(title: "Зарегистрироваться")
+            }
+            .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
         }
-        .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
     }
 
-    func saveChangesButton() -> some View {
-        Button {
-            viewModel.saveChangesAction()
-            dismiss()
-        } label: {
-            ButtonInFormLabel(title: "Сохранить")
+    func registerAction() {
+        viewModel.registerAction()
+        focus = nil
+    }
+
+    var saveChangesButtonSection: some View {
+        Section {
+            Button(action: saveChangesAction) {
+                ButtonInFormLabel(title: "Сохранить")
+            }
+            .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
         }
-        .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
+    }
+
+    func saveChangesAction() {
+        viewModel.saveChangesAction()
+        dismiss()
     }
 }
 

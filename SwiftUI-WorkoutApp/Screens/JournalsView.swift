@@ -13,14 +13,14 @@ struct JournalsView: View {
 
     var body: some View {
         NavigationView {
-            content()
+            content
                 .navigationTitle("Дневники")
         }
     }
 }
 
 private extension JournalsView {
-    func content() -> AnyView {
+    var content: AnyView {
         switch userDefaults.isUserAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")

@@ -17,11 +17,7 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            if userDefaults.showWelcome {
-                WelcomeAuthView()
-            } else {
-                tabView()
-            }
+            content
         }
         .animation(.default, value: userDefaults.showWelcome)
         .ignoresSafeArea()
@@ -35,7 +31,11 @@ extension RootView {
 }
 
 private extension RootView {
-    func tabView() -> some View {
+    var content: AnyView {
+        userDefaults.showWelcome ? AnyView(WelcomeAuthView()) : AnyView(tabView)
+    }
+
+    var tabView: some View {
         TabView(selection: $viewModel.selectedTab) {
             EventsView()
                 .onAppear { viewModel.selectTab(.events) }

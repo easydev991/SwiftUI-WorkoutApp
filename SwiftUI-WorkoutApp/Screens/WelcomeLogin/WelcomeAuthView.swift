@@ -15,8 +15,8 @@ struct WelcomeAuthView: View {
         NavigationView {
             ZStack {
                 Color.black
-                Image("login_logo")
-                buttonsView()
+                logo
+                buttonsView
             }
             .ignoresSafeArea()
         }
@@ -24,31 +24,35 @@ struct WelcomeAuthView: View {
 }
 
 private extension WelcomeAuthView {
-    func buttonsView() -> some View {
+    var logo: some View {
+        Image("login_logo")
+    }
+
+    var buttonsView: some View {
         VStack(spacing: 16) {
             Spacer()
-            registerButton()
-            loginButton()
-            skipLoginButton()
+            registerButton
+            loginButton
+            skipLoginButton
         }
         .padding()
     }
 
-    func registerButton() -> some View {
+    var registerButton: some View {
         NavigationLink(destination: EditAccountView()) {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
                 .welcomeLoginButtonTitle()
         }
     }
 
-    func loginButton() -> some View {
+    var loginButton: some View {
         NavigationLink(destination: LoginView()) {
             Label("Войти через email", systemImage: "envelope")
                 .welcomeLoginButtonTitle()
         }
     }
 
-    func skipLoginButton() -> some View {
+    var skipLoginButton: some View {
         Button {
             userDefaults.setWelcomeShown()
         } label: {

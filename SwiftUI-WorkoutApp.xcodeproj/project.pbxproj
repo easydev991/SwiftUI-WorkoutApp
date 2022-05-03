@@ -13,6 +13,7 @@
 		671D7DEA28200F870068E728 /* TextOk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DE928200F870068E728 /* TextOk.swift */; };
 		671D7DEC28210D2F0068E728 /* EventsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EventsEmptyView.swift */; };
 		671D7DEF282112140068E728 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEE282112140068E728 /* Text+.swift */; };
+		671D7DF1282117FF0068E728 /* PersonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* PersonRow.swift */; };
 		672BE762281FD4E300579183 /* AuthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE761281FD4E300579183 /* AuthData.swift */; };
 		672BE764281FD56900579183 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE763281FD56900579183 /* Endpoint.swift */; };
 		672BE766281FD5CA00579183 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE765281FD5CA00579183 /* APIError.swift */; };
@@ -87,6 +88,7 @@
 		671D7DE928200F870068E728 /* TextOk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOk.swift; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EventsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsEmptyView.swift; sourceTree = "<group>"; };
 		671D7DEE282112140068E728 /* Text+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
+		671D7DF0282117FF0068E728 /* PersonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonRow.swift; sourceTree = "<group>"; };
 		672BE761281FD4E300579183 /* AuthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthData.swift; sourceTree = "<group>"; };
 		672BE763281FD56900579183 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		672BE765281FD5CA00579183 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 				675EC6562815433600C2E229 /* PersonsListView.swift */,
 				675EC6642819C30600C2E229 /* BorderedRectangleStyle.swift */,
 				671D7DE928200F870068E728 /* TextOk.swift */,
+				671D7DF0282117FF0068E728 /* PersonRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				675EC6572815433600C2E229 /* PersonsListView.swift in Sources */,
 				67B78710281D6110008B104F /* LoginViewModel.swift in Sources */,
 				675EC65F2815532800C2E229 /* CreateEventView.swift in Sources */,
+				671D7DF1282117FF0068E728 /* PersonRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

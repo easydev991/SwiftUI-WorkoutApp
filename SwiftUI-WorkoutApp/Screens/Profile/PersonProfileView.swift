@@ -14,28 +14,27 @@ struct PersonProfileView: View {
 
     var body: some View {
         Form {
-            personInfoSection()
+            personInfoSection
             if !user.isMainUser {
-                communicationSection()
+                communicationSection
             }
-            socialInfoSection()
+            socialInfoSection
         }
-        .onChange(of: viewModel.requestedFriendship) { isSuccess in
-            isFriendRequestSent = isSuccess
-        }
+        .navigationTitle("Профиль")
+        .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
         .toolbar {
             if user.isMainUser {
-                settingsLink()
+                settingsLink
             }
         }
     }
 }
 
 private extension PersonProfileView {
-    func personInfoSection() -> some View {
+    var personInfoSection: some View {
         Section {
             HStack(spacing: 24) {
-                avatarImageView()
+                avatarImageView
                 VStack {
                     Text(user.name)
                         .fontWeight(.bold)
@@ -46,7 +45,7 @@ private extension PersonProfileView {
         }
     }
 
-    func avatarImageView() -> some View {
+    var avatarImageView: some View {
         AsyncImage(url: .init(string: user.imageStringURL)) { phase in
             switch phase {
             case let .success(image):
@@ -67,16 +66,16 @@ private extension PersonProfileView {
         }
     }
 
-    func communicationSection() -> some View {
+    var communicationSection: some View {
         Section {
-            sendMessageLink()
+            sendMessageLink
             if viewModel.isAddFriendButtonEnabled {
-                addNewFriendButton()
+                addNewFriendButton
             }
         }
     }
 
-    func sendMessageLink() -> some View {
+    var sendMessageLink: some View {
         NavigationLink {
 #warning("TODO: сверстать экран для чата")
             Text("Экран для отправки сообщения")
@@ -88,44 +87,40 @@ private extension PersonProfileView {
         }
     }
 
-    func addNewFriendButton() -> some View {
-        Button {
-            viewModel.sendFriendRequest()
-        } label: {
+    var addNewFriendButton: some View {
+        Button(action: viewModel.sendFriendRequest) {
             Text("Предложить дружбу")
                 .fontWeight(.medium)
         }
         .alert(Constants.AlertTitle.friendRequestSent, isPresented: $isFriendRequestSent) {
-            okButton()
+            okButton
         }
     }
 
-    func okButton() -> some View {
-        Button {
-            viewModel.friendRequestedAlertOKAction()
-        } label: {
+    var okButton: some View {
+        Button(action: viewModel.friendRequestedAlertOKAction) {
             TextOk()
         }
     }
 
-    func socialInfoSection() -> some View {
+    var socialInfoSection: some View {
         Section {
             if user.usesSportsGrounds > 0 {
-                usesSportsGroundsLink()
+                usesSportsGroundsLink
             }
             if user.addedSportsGrounds > 0 {
-                addedSportsGroundsLink()
+                addedSportsGroundsLink
             }
             if user.friendsCount > 0 {
-                friendsLink()
+                friendsLink
             }
             if user.journalsCount > 0 {
-                journalsLink()
+                journalsLink
             }
         }
     }
 
-    func usesSportsGroundsLink() -> some View {
+    var usesSportsGroundsLink: some View {
         NavigationLink {
             Text("Площадки (где тренируется)")
                 .navigationTitle("Где тренируется")
@@ -140,7 +135,7 @@ private extension PersonProfileView {
         }
     }
 
-    func addedSportsGroundsLink() -> some View {
+    var addedSportsGroundsLink: some View {
         NavigationLink {
             Text("Добавленные площадки")
                 .navigationTitle("Добавленные")
@@ -153,7 +148,7 @@ private extension PersonProfileView {
         }
     }
 
-    func friendsLink() -> some View {
+    var friendsLink: some View {
         NavigationLink {
             PersonsListView(model: .mock)
                 .navigationTitle("Друзья")
@@ -168,7 +163,7 @@ private extension PersonProfileView {
         }
     }
 
-    func journalsLink() -> some View {
+    var journalsLink: some View {
         NavigationLink {
             Text("Экран с дневниками")
                 .navigationTitle("Дневники")
@@ -183,10 +178,8 @@ private extension PersonProfileView {
         }
     }
 
-    func settingsLink() -> some View {
-        NavigationLink {
-            ProfileSettingsView()
-        } label: {
+    var settingsLink: some View {
+        NavigationLink(destination: ProfileSettingsView()) {
             Image(systemName: "gearshape.fill")
         }
     }

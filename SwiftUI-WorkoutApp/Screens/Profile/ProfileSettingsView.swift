@@ -15,14 +15,14 @@ struct ProfileSettingsView: View {
     var body: some View {
         Form {
             Section("Профиль") {
-                editAccountLink()
-                changePasswordLink()
-                logoutButton()
+                editAccountLink
+                changePasswordLink
+                logoutButton
             }
             Section("Информация о приложении") {
-                appVersionView()
-                feedbackButton()
-                rateAppButton()
+                appVersionView
+                feedbackButton
+                rateAppButton
             }
         }
         .navigationTitle("Настройки")
@@ -31,26 +31,20 @@ struct ProfileSettingsView: View {
 }
 
 private extension ProfileSettingsView {
-    func editAccountLink() -> some View {
-        NavigationLink {
-            EditAccountView()
-        } label: {
+    var editAccountLink: some View {
+        NavigationLink(destination: EditAccountView()) {
             Text("Редактировать данные")
         }
     }
 
-    func changePasswordLink() -> some View {
-        NavigationLink {
-            ChangePasswordView()
-        } label: {
+    var changePasswordLink: some View {
+        NavigationLink(destination: ChangePasswordView()) {
             Text("Изменить пароль")
         }
     }
 
-    func logoutButton() -> some View {
-        Button {
-            showLogoutConfirmation = true
-        } label: {
+    var logoutButton: some View {
+        Button(action: showConfirmatinoDialog) {
             Text("Выйти")
                 .foregroundColor(.pink)
         }
@@ -59,15 +53,17 @@ private extension ProfileSettingsView {
             isPresented: $showLogoutConfirmation,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive) {
-                userDefaults.setUserLoggedOut()
-            } label: {
+            Button(role: .destructive, action: userDefaults.setUserLoggedOut) {
                 Text("Выйти")
             }
         }
     }
 
-    func appVersionView() -> some View {
+    func showConfirmatinoDialog() {
+        showLogoutConfirmation = true
+    }
+
+    var appVersionView: some View {
         HStack {
             Text("Версия")
             Spacer()
@@ -76,18 +72,14 @@ private extension ProfileSettingsView {
         }
     }
 
-    func feedbackButton() -> some View {
-        Button {
-            viewModel.feedbackAction()
-        } label: {
+    var feedbackButton: some View {
+        Button(action: viewModel.feedbackAction) {
             Text("Отправить обратную связь")
         }
     }
 
-    func rateAppButton() -> some View {
-        Button {
-            viewModel.rateAppAction()
-        } label: {
+    var rateAppButton: some View {
+        Button(action: viewModel.rateAppAction) {
             Text("Оценить приложение")
         }
     }

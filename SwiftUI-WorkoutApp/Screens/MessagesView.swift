@@ -13,14 +13,14 @@ struct MessagesView: View {
 
     var body: some View {
         NavigationView {
-            content()
+            content
                 .navigationTitle("Сообщения")
         }
     }
 }
 
 private extension MessagesView {
-    func content() -> AnyView {
+    var content: AnyView {
         switch userDefaults.isUserAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")

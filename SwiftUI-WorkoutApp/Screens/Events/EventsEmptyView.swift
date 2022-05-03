@@ -19,9 +19,7 @@ struct EventsEmptyView: View {
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.secondary)
                 .frame(width: 180)
-            NavigationLink {
-                CreateEventView(viewModel: .init(mode: .regular))
-            } label: {
+            NavigationLink(destination: CreateEventView(viewModel: .init(mode: .regular))) {
                 Text("Создать мероприятие")
                     .roundedBorderedStyle()
             }

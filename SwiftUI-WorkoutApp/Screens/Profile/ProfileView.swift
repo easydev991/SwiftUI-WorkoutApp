@@ -13,8 +13,7 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationView {
-            content()
-                .navigationTitle("Профиль")
+            content
         }
         .animation(.default, value: userDefaults.isUserAuthorized)
         .ignoresSafeArea()
@@ -22,7 +21,7 @@ struct ProfileView: View {
 }
 
 private extension ProfileView {
-    func content() -> AnyView {
+    var content: AnyView {
         switch userDefaults.isUserAuthorized {
         case true:
             return AnyView(PersonProfileView(user: .mockMain))

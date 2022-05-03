@@ -26,8 +26,8 @@ struct SportsGroundsMapView: View {
                     openDetails: $viewModel.openDetails
                 )
             }
-            .onAppear { viewModel.onAppearAction() }
-            .onDisappear { viewModel.onDisappearAction() }
+            .onAppear(perform: viewModel.onAppearAction)
+            .onDisappear(perform: viewModel.onDisappearAction)
             .navigationTitle("Площадки")
             .navigationBarTitleDisplayMode(.inline)
         }

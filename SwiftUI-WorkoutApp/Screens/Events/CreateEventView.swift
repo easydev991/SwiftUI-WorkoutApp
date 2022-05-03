@@ -15,22 +15,20 @@ struct CreateEventView: View {
 
     var body: some View {
         Form {
-            eventNameSection()
-            datePickerSection()
+            eventNameSection
+            datePickerSection
             Section("Площадка") {
-                sportsGround()
+                sportsGround
             }
-            descriptionTextViewSection()
+            descriptionSection
         }
-        .onChange(of: viewModel.isEventCreated) { isSuccess in
-            eventCreated = isSuccess
-        }
+        .onChange(of: viewModel.isEventCreated) { eventCreated = $0 }
         .alert(Constants.AlertTitle.eventCreated, isPresented: $eventCreated) {
-            closeButton()
+            closeButton
         }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar { createEventButton() }
+        .toolbar { createEventButton }
     }
 }
 
@@ -40,7 +38,7 @@ private extension CreateEventView {
         case eventDescription
     }
 
-    func eventNameSection() -> some View {
+    var eventNameSection: some View {
         Section {
             TextField("Название", text: $viewModel.eventName)
                 .focused($focus, equals: .eventName)
@@ -52,14 +50,14 @@ private extension CreateEventView {
         }
     }
 
-    func datePickerSection() -> some View {
+    var datePickerSection: some View {
         Section("Дата и время") {
             DatePicker("Дата и время", selection: $viewModel.eventDate, in: .now...viewModel.maxDate)
                 .labelsHidden()
         }
     }
 
-    func sportsGround() -> AnyView {
+    var sportsGround: AnyView {
         switch viewModel.mode {
         case .regular:
             return AnyView(
@@ -79,7 +77,7 @@ private extension CreateEventView {
         }
     }
 
-    func descriptionTextViewSection() -> some View {
+    var descriptionSection: some View {
         Section("Описание") {
             TextEditor(text: $viewModel.eventDescription)
                 .frame(height: 150)
@@ -87,7 +85,7 @@ private extension CreateEventView {
         }
     }
 
-    func createEventButton() -> some View {
+    var createEventButton: some View {
         Button {
             focus = nil
             viewModel.createEventAction()
@@ -97,7 +95,7 @@ private extension CreateEventView {
         .disabled(!viewModel.isCreateButtonActive)
     }
 
-    func closeButton() -> some View {
+    var closeButton: some View {
         Button {
             viewModel.eventAlertClosed()
             dismiss()

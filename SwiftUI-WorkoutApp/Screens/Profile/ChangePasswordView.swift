@@ -16,19 +16,17 @@ struct ChangePasswordView: View {
     var body: some View {
         Form {
             Section("Минимум 6 символов") {
-                passwordField()
+                passwordField
             }
             Section {
-                newPasswordField()
-                newPasswordAgainField()
+                newPasswordField
+                newPasswordAgainField
             }
             Section {
-                changePasswordButton()
+                changePasswordButton
             }
         }
-        .onChange(of: viewModel.isChangeSuccessful) { isSuccess in
-            showSuccess = isSuccess
-        }
+        .onChange(of: viewModel.isChangeSuccessful) { showSuccess = $0 }
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -39,21 +37,23 @@ private extension ChangePasswordView {
         case currentPassword, newPassword, newPasswordAgain
     }
 
-    func passwordField() -> some View {
+    var passwordField: some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
             SecureField("Текущий пароль", text: $viewModel.currentPasswordText)
                 .focused($focus, equals: .currentPassword)
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                focus = .currentPassword
-            }
+        .onAppear(perform: showKeyboard)
+    }
+
+    func showKeyboard() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            focus = .currentPassword
         }
     }
 
-    func newPasswordField() -> some View {
+    var newPasswordField: some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
@@ -62,7 +62,7 @@ private extension ChangePasswordView {
         }
     }
 
-    func newPasswordAgainField() -> some View {
+    var newPasswordAgainField: some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
@@ -71,20 +71,22 @@ private extension ChangePasswordView {
         }
     }
 
-    func changePasswordButton() -> some View {
-        Button {
-            focus = nil
-            viewModel.changePasswordAction()
-        } label: {
+    var changePasswordButton: some View {
+        Button(action: changePasswordTapped) {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
         .disabled(viewModel.isChangeButtonDisabled)
         .alert(Constants.AlertTitle.passwordChanged, isPresented: $showSuccess) {
-            closeButton()
+            closeButton
         }
     }
 
-    func closeButton() -> some View {
+    func changePasswordTapped() {
+        focus = nil
+        viewModel.changePasswordAction()
+    }
+
+    var closeButton: some View {
         Button(role: .cancel) {
             dismiss()
         } label: {

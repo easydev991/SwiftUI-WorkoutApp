@@ -16,13 +16,13 @@ struct SportsGroundView: View {
 
     var body: some View {
         Form {
-            titleAddressSection()
+            titleAddressSection
             if viewModel.isPhotoGridShown {
-                gridWithPhotosSection()
+                gridWithPhotosSection
             }
-            participantsAndEventSection()
-            authorSection()
-            commentsSection()
+            participantsAndEventSection
+            authorSection
+            commentsSection
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
@@ -30,7 +30,7 @@ struct SportsGroundView: View {
 }
 
 private extension SportsGroundView {
-    func titleAddressSection() -> some View {
+    var titleAddressSection: some View {
         Section {
             HStack {
                 Text(viewModel.ground.shortTitle)
@@ -55,7 +55,7 @@ private extension SportsGroundView {
         }
     }
 
-    func gridWithPhotosSection() -> some View {
+    var gridWithPhotosSection: some View {
         Section("Фотографии") {
             LazyVGrid(
                 columns: .init(
@@ -88,18 +88,18 @@ private extension SportsGroundView {
         }
     }
 
-    func participantsAndEventSection() -> some View {
+    var participantsAndEventSection: some View {
         Section {
             if viewModel.showParticipants {
-                linkToParticipantsView()
+                linkToParticipantsView
             }
 #warning("TODO: интеграция с сервером")
             Toggle("Тренируюсь здесь", isOn: $viewModel.isMySportsGround)
-            createEventLink()
+            createEventLink
         }
     }
 
-    func linkToParticipantsView() -> some View {
+    var linkToParticipantsView: some View {
         NavigationLink {
             PersonsListView(model: viewModel.ground)
                 .navigationTitle("Здесь тренируются")
@@ -117,16 +117,16 @@ private extension SportsGroundView {
         }
     }
 
-    func createEventLink() -> some View {
-        NavigationLink {
-            CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
-        } label: {
+    var createEventLink: some View {
+        NavigationLink(
+            destination: CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
+        ) {
             Text("Создать мероприятие")
                 .blueMediumWeight()
         }
     }
 
-    func authorSection() -> some View {
+    var authorSection: some View {
         Section("Добавил") {
             HStack(spacing: 16) {
                 AsyncImage(url: .init(string: viewModel.authorImageStringURL)) { phase in
@@ -147,14 +147,12 @@ private extension SportsGroundView {
         }
     }
 
-    func commentsSection() -> some View {
+    var commentsSection: some View {
         Section("Комментарии") {
             VStack(alignment: .leading, spacing: 16) {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать список комментариев")
-                NavigationLink {
-                    CreateCommentView()
-                } label: {
+                NavigationLink(destination: CreateCommentView()) {
                     Label {
                         Text("Добавить комментарий")
                             .blueMediumWeight()
