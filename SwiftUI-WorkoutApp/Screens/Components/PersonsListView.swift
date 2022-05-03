@@ -13,7 +13,7 @@ struct TempPersonModel: Identifiable {
     let name, genderAge, shortAddress: String
     let usesSportsGrounds, addedSportsGrounds: Int
     let friendsCount, journalsCount: Int
-    let isMainUser: Bool
+    var isMainUser: Bool
 
     static let mockMain = TempPersonModel(
         id: 22,
@@ -47,7 +47,7 @@ struct TempPersonModel: Identifiable {
             imageStringURL: "https://workout.su/uploads/avatars/1442580670.jpg",
             name: "Albert_88",
             genderAge: "Мужчина, 30 лет",
-            shortAddress: "Россия, Тимашевск",
+            shortAddress: "Россия, Тимашевск1111",
             usesSportsGrounds: 1,
             addedSportsGrounds: 3,
             friendsCount: .zero,
@@ -82,13 +82,14 @@ struct TempPersonModel: Identifiable {
 }
 
 struct PersonsListView: View {
+    @EnvironmentObject private var userDefaults: UserDefaultsService
 #warning("TODO: Добавить вариант модели для списка друзей")
     let model: SportsGround
     var body: some View {
 #warning("TODO: интеграция с сервером")
         List(TempPersonModel.mockArray) { person in
             NavigationLink {
-                PersonProfileView(user: person)
+                PersonProfileView(viewModel: .init(userID: person.id))
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
                 PersonRow(model: person)

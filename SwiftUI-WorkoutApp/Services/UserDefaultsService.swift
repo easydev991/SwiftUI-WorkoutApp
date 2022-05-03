@@ -27,7 +27,7 @@ final class UserDefaultsService: ObservableObject {
         isUserAuthorized = true
     }
 
-    func setUserLoggedOut() {
+    func triggerLogout() {
         authData = .init()
         userInfo = .init()
         mainUserID = .zero

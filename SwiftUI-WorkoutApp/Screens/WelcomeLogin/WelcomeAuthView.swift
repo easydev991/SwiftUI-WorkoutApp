@@ -20,6 +20,11 @@ struct WelcomeAuthView: View {
             }
             .ignoresSafeArea()
         }
+        .transition(
+            .move(edge: .leading)
+            .combined(with: .scale)
+            .combined(with: .opacity)
+        )
     }
 }
 

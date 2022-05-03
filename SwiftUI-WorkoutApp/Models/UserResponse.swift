@@ -40,6 +40,14 @@ struct UserResponse: Codable {
 }
 
 extension UserResponse {
+    var age: Int {
+        if let birthDate = birthDate {
+            let components = Calendar.current.dateComponents([.year], from: birthDate, to: .now)
+            return components.year.valueOrZero
+        } else {
+            return .zero
+        }
+    }
     var createdDate: Date? {
         if let createdIsoDateTimeSec = createdIsoDateTimeSec, !createdIsoDateTimeSec.isEmpty {
             let dateFormatter = DateFormatter()
@@ -59,7 +67,7 @@ extension UserResponse {
         }
     }
     var gender: String {
-        Constants.Gender(genderCode).rawValue
+        genderCode == .zero ? "Мужчина" : "Женщина"
     }
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero

@@ -17,9 +17,13 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            content
+            if userDefaults.showWelcome {
+                WelcomeAuthView()
+            } else {
+                tabView
+            }
         }
-        .animation(.default, value: userDefaults.showWelcome)
+        .animation(.easeInOut, value: userDefaults.showWelcome)
         .ignoresSafeArea()
     }
 }
@@ -31,10 +35,6 @@ extension RootView {
 }
 
 private extension RootView {
-    var content: AnyView {
-        userDefaults.showWelcome ? AnyView(WelcomeAuthView()) : AnyView(tabView)
-    }
-
     var tabView: some View {
         TabView(selection: $viewModel.selectedTab) {
             EventsView()
@@ -68,6 +68,7 @@ private extension RootView {
                 }
                 .tag(Tab.profile)
         }
+        .transition(.move(edge: .trailing).combined(with: .scale))
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }

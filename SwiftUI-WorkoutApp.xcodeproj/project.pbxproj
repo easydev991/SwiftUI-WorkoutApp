@@ -79,6 +79,8 @@
 		67B78718281D8792008B104F /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78717281D8792008B104F /* ChangePasswordViewModel.swift */; };
 		67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */; };
 		67B7871C281D8A49008B104F /* PersonProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B7871B281D8A49008B104F /* PersonProfileViewModel.swift */; };
+		67E4266D2821429500DF82A7 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266C2821429500DF82A7 /* UserModel.swift */; };
+		67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,6 +159,8 @@
 		67B78717281D8792008B104F /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsViewModel.swift; sourceTree = "<group>"; };
 		67B7871B281D8A49008B104F /* PersonProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonProfileViewModel.swift; sourceTree = "<group>"; };
+		67E4266C2821429500DF82A7 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortAddressService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,13 +251,13 @@
 		6798AA4F280AF3F300DB76F1 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				671D7DED28210D820068E728 /* Events */,
 				6798AA3F280AEDC900DB76F1 /* RootView.swift */,
 				6798AA60280B136800DB76F1 /* RootViewModel.swift */,
 				6798AA54280AF46300DB76F1 /* MessagesView.swift */,
 				6758B92F281D9469001D83D8 /* MessagesViewModel.swift */,
 				6798AA56280AF48C00DB76F1 /* JournalsView.swift */,
 				6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */,
+				671D7DED28210D820068E728 /* Events */,
 				67475757281285E5002F0A24 /* SportsGrounds */,
 				6798AA6A280B277600DB76F1 /* Components */,
 				6798AA82280BF52600DB76F1 /* WelcomeLogin */,
@@ -291,6 +295,7 @@
 				672BE763281FD56900579183 /* Endpoint.swift */,
 				672BE765281FD5CA00579183 /* APIError.swift */,
 				6758B938281E7391001D83D8 /* DateFormat.swift */,
+				67E4266C2821429500DF82A7 /* UserModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -302,6 +307,7 @@
 				67B786FF281AFB9F008B104F /* LocationService.swift */,
 				67B78711281D654C008B104F /* UserDefaultsService.swift */,
 				6758B935281E5EA9001D83D8 /* APIService.swift */,
+				67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -440,6 +446,7 @@
 				6798AA8E280C3CCB00DB76F1 /* CitiesView.swift in Sources */,
 				670CA19A280D5583003914A3 /* TextWithCheckmark.swift in Sources */,
 				67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */,
+				67E4266D2821429500DF82A7 /* UserModel.swift in Sources */,
 				671D7DEC28210D2F0068E728 /* EventsEmptyView.swift in Sources */,
 				675EC649281289FB00C2E229 /* SportsGroundSize.swift in Sources */,
 				675EC653281445E500C2E229 /* MapViewUI.swift in Sources */,
@@ -472,6 +479,7 @@
 				6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */,
 				6798AA57280AF48C00DB76F1 /* JournalsView.swift in Sources */,
 				67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */,
+				67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
 				6758B928281D8F13001D83D8 /* WelcomeAuthViewModel.swift in Sources */,
 				672BE762281FD4E300579183 /* AuthData.swift in Sources */,

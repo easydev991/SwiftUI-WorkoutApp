@@ -14,18 +14,17 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             content
+                .navigationTitle("Профиль")
         }
-        .animation(.default, value: userDefaults.isUserAuthorized)
         .ignoresSafeArea()
     }
 }
 
 private extension ProfileView {
     var content: AnyView {
-        switch userDefaults.isUserAuthorized {
-        case true:
-            return AnyView(PersonProfileView(user: .mockMain))
-        case false:
+        if userDefaults.isUserAuthorized {
+            return AnyView(PersonProfileView(viewModel: .init(userID: userDefaults.mainUserID)))
+        } else {
             return AnyView(IncognitoProfileView())
         }
     }

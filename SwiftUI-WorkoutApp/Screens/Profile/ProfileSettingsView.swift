@@ -53,7 +53,7 @@ private extension ProfileSettingsView {
             isPresented: $showLogoutConfirmation,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive, action: userDefaults.setUserLoggedOut) {
+            Button(role: .destructive, action: userDefaults.triggerLogout) {
                 Text("Выйти")
             }
         }

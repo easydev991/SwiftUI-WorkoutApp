@@ -8,52 +8,69 @@
 import SwiftUI
 
 struct PersonProfileView: View {
-    @StateObject private var viewModel = PersonProfileViewModel()
-    let user: TempPersonModel
+    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @ObservedObject var viewModel: PersonProfileViewModel
     @State private var isFriendRequestSent = false
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
 
     var body: some View {
-        Form {
-            personInfoSection
-            if !user.isMainUser {
-                communicationSection
+        ZStack {
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
+            Form {
+                personInfoSection
+                if viewModel.showCommunication {
+                    communicationSection
+                }
+                socialInfoSection
             }
-            socialInfoSection
+            .opacity(viewModel.isLoading ? .zero : 1)
+            .animation(.easeIn, value: viewModel.user?.id)
         }
-        .navigationTitle("Профиль")
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
-        .toolbar {
-            if user.isMainUser {
-                settingsLink
+        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: retryAction) {
+                Text("Попробовать еще раз")
             }
         }
+        .toolbar { settingsLink }
+        .task { await askForUserInfo() }
+        .navigationTitle("Профиль")
     }
 }
 
 private extension PersonProfileView {
     var personInfoSection: some View {
         Section {
-            HStack(spacing: 24) {
-                avatarImageView
-                VStack {
-                    Text(user.name)
-                        .fontWeight(.bold)
-                    Text(user.genderAge)
-                    Text(user.shortAddress)
+            HStack(alignment: .center) {
+                VStack(spacing: 16) {
+                    avatarImageView
+                    VStack(spacing: 4) {
+                        Text((viewModel.user?.name).valueOrEmpty)
+                            .fontWeight(.bold)
+                        Text("\((viewModel.user?.gender).valueOrEmpty), ") + Text(
+                            "yearsCount \((viewModel.user?.age).valueOrZero)",
+                            tableName: "Plurals"
+                        )
+                        Text(viewModel.userShortAddress)
+                            .multilineTextAlignment(.center)
+                    }
                 }
             }
         }
     }
 
     var avatarImageView: some View {
-        AsyncImage(url: .init(string: user.imageStringURL)) { phase in
+        AsyncImage(url: (viewModel.user?.imageURL) ?? .init(string: "")) { phase in
             switch phase {
             case let .success(image):
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 120)
                     .cornerRadius(8)
+                    .frame(maxWidth: .infinity, maxHeight: 200)
             case .failure:
                 Image(systemName: "person.fill")
                     .resizable()
@@ -79,7 +96,7 @@ private extension PersonProfileView {
         NavigationLink {
 #warning("TODO: сверстать экран для чата")
             Text("Экран для отправки сообщения")
-                .navigationTitle(user.name)
+                .navigationTitle(viewModel.userName)
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
             Text("Отправить сообщение")
@@ -93,28 +110,24 @@ private extension PersonProfileView {
                 .fontWeight(.medium)
         }
         .alert(Constants.AlertTitle.friendRequestSent, isPresented: $isFriendRequestSent) {
-            okButton
-        }
-    }
-
-    var okButton: some View {
-        Button(action: viewModel.friendRequestedAlertOKAction) {
-            TextOk()
+            Button(action: viewModel.friendRequestedAlertOKAction) {
+                TextOk()
+            }
         }
     }
 
     var socialInfoSection: some View {
         Section {
-            if user.usesSportsGrounds > 0 {
+            if viewModel.showUsedSportsGrounds {
                 usesSportsGroundsLink
             }
-            if user.addedSportsGrounds > 0 {
+            if viewModel.showAddedSportsGrounds {
                 addedSportsGroundsLink
             }
-            if user.friendsCount > 0 {
+            if viewModel.showFriends {
                 friendsLink
             }
-            if user.journalsCount > 0 {
+            if viewModel.showJournals {
                 journalsLink
             }
         }
@@ -129,7 +142,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
                 Spacer()
-                Text("\(user.usesSportsGrounds)")
+                Text("\(viewModel.usesSportsGrounds)")
                     .foregroundColor(.secondary)
             }
         }
@@ -143,7 +156,7 @@ private extension PersonProfileView {
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")
             Spacer()
-            Text("\(user.addedSportsGrounds)")
+            Text("\(viewModel.addedSportsGrounds)")
                 .foregroundColor(.secondary)
         }
     }
@@ -157,7 +170,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
-                Text("\(user.friendsCount)")
+                Text("\((viewModel.user?.friendsCount).valueOrZero)")
                     .foregroundColor(.secondary)
             }
         }
@@ -172,7 +185,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Дневники", systemImage: "list.bullet")
                 Spacer()
-                Text("\(user.journalsCount)")
+                Text("\((viewModel.user?.journalsCount).valueOrZero)")
                     .foregroundColor(.secondary)
             }
         }
@@ -182,11 +195,27 @@ private extension PersonProfileView {
         NavigationLink(destination: ProfileSettingsView()) {
             Image(systemName: "gearshape.fill")
         }
+        .opacity(viewModel.showSettingsButton ? 1 : .zero)
+    }
+
+    func askForUserInfo() async {
+        await viewModel.makeUserInfo(with: userDefaults)
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
+    func retryAction() {
+        Task {
+            await askForUserInfo()
+        }
     }
 }
 
 struct PersonProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonProfileView(user: .mockMain)
+        PersonProfileView(viewModel: .init(userID: 1))
     }
 }
