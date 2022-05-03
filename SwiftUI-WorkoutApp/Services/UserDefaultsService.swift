@@ -8,10 +8,15 @@
 import SwiftUI
 
 final class UserDefaultsService: ObservableObject {
+    @AppStorage(Key.mainUserID.rawValue) private(set) var mainUserID = Int.zero
     @AppStorage(Key.isUserAuthorized.rawValue) private(set) var isUserAuthorized = false
     @AppStorage(Key.showWelcome.rawValue) private(set) var showWelcome = true
     @AppStorage(Key.authData.rawValue) private var authData = Data()
     @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
+
+    @MainActor func setMainUserID(_ id: Int) {
+        mainUserID = id
+    }
 
     @MainActor func setWelcomeShown() {
         showWelcome = false
@@ -25,6 +30,7 @@ final class UserDefaultsService: ObservableObject {
     @MainActor func setUserLoggedOut() {
         authData = .init()
         userInfo = .init()
+        mainUserID = .zero
         showWelcome = true
         isUserAuthorized = false
     }
@@ -60,6 +66,6 @@ final class UserDefaultsService: ObservableObject {
 
 private extension UserDefaultsService {
     enum Key: String {
-        case isUserAuthorized, showWelcome, authData, userInfo
+        case mainUserID, isUserAuthorized, showWelcome, authData, userInfo
     }
 }

@@ -34,7 +34,7 @@ final class LoginViewModel: ObservableObject {
         if !canLogIn { return }
         await MainActor.run { isSigningIn = true }
         do {
-            try await LoginService(userDefaults, login, password).loginRequest()
+            try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
             await MainActor.run {
                 errorResponse = error.localizedDescription

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Используется во всех запросах, где нужна авторизация
 struct AuthData: Codable {
     let login, password: String
 

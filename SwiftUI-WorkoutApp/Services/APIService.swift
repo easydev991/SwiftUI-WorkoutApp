@@ -8,7 +8,50 @@
 import Foundation
 
 struct APIService {
-    static func configuredURLSession() -> URLSession {
+    private let defaults: UserDefaultsService
+
+    init(with defaults: UserDefaultsService) {
+        self.defaults = defaults
+    }
+
+    /// Запрашивает `id` пользователя для входа в учетную запись
+    /// - Parameters:
+    ///   - login: логин или email для входа
+    ///   - password: пароль от учетной записи
+    func logInWith(_ login: String, _ password: String) async throws {
+        let authData = AuthData(login: login, password: password)
+        let endpoint = Endpoint.login(auth: authData)
+        guard let request = endpoint.urlRequest else { return }
+        let (data, response) = try await urlSession.data(for: request)
+        let loginResponse = try handle(LoginResponse.self, data, response)
+        await MainActor.run {
+            defaults.setMainUserID(loginResponse.userID)
+            defaults.saveAuthData(authData)
+        }
+        try await getUserByID(loginResponse.userID)
+    }
+
+    /// Запрашивает данные пользователя по `id`
+    /// - Parameter userID: `id` пользователя
+    /// - Returns: Вся информация о пользователе
+    @discardableResult
+    func getUserByID(_ userID: Int) async throws -> UserResponse? {
+        let endpoint = Endpoint.getUser(id: userID, auth: defaults.getAuthData())
+        guard let request = endpoint.urlRequest else { return nil }
+        let (data, response) = try await urlSession.data(for: request)
+        let userInfo = try handle(UserResponse.self, data, response)
+        if userID == defaults.mainUserID {
+            await MainActor.run {
+                defaults.saveUserInfo(userInfo)
+                defaults.setUserLoggedIn()
+            }
+        }
+        return userInfo
+    }
+}
+
+private extension APIService {
+    var urlSession: URLSession {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
@@ -16,10 +59,11 @@ struct APIService {
         return .init(configuration: config)
     }
 
-    static func handleResponse<T: Decodable>(
+    /// Обрабатывает ответ сервера
+    func handle<T: Decodable>(
         _ type: T.Type,
-        data: Data?,
-        response: URLResponse?
+        _ data: Data?,
+        _ response: URLResponse?
     ) throws -> T {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
         if responseCode != 200, let error = APIError(with: responseCode) {
@@ -30,14 +74,10 @@ struct APIService {
         }
         print("--- Получили ответ:")
         dump(response)
-        let prettyString = String(data: data, encoding: .utf8)?.replacingOccurrences(of: "\n", with: "")
+        let prettyString = String(data: data, encoding: .utf8)
         print("--- Полученный JSON:\n\(prettyString.valueOrEmpty)")
-        do {
-            let decodedInfo = try JSONDecoder().decode(type, from: data)
-            print("--- Преобразованные данные:\n\(decodedInfo)")
-            return decodedInfo
-        } catch {
-            throw error
-        }
+        let decodedInfo = try JSONDecoder().decode(type, from: data)
+        print("--- Преобразованные данные:\n\(decodedInfo)")
+        return decodedInfo
     }
 }
