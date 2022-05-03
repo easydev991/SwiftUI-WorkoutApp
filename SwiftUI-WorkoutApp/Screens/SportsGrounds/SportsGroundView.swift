@@ -50,8 +50,7 @@ private extension SportsGroundView {
                 }
             } label: {
                 Text("Построить маршрут")
-                    .fontWeight(.medium)
-                    .foregroundColor(.blue)
+                    .blueMediumWeight()
             }
         }
     }
@@ -120,11 +119,10 @@ private extension SportsGroundView {
 
     func createEventLink() -> some View {
         NavigationLink {
-            CreateEventView(viewModel: .init(with: viewModel.ground))
+            CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
         } label: {
             Text("Создать мероприятие")
-                .fontWeight(.medium)
-                .foregroundColor(.blue)
+                .blueMediumWeight()
         }
     }
 
@@ -159,8 +157,7 @@ private extension SportsGroundView {
                 } label: {
                     Label {
                         Text("Добавить комментарий")
-                            .fontWeight(.medium)
-                            .foregroundColor(.blue)
+                            .blueMediumWeight()
                     } icon: {
                         Image(systemName: "plus.message.fill")
                             .foregroundColor(.blue)

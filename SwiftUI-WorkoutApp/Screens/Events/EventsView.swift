@@ -42,7 +42,7 @@ private extension EventsView {
 
     func content() -> AnyView {
         switch selectedEventType {
-        case .future: return AnyView(dummyView())
+        case .future: return AnyView(EventsEmptyView())
         case .past: return AnyView(eventsList())
         }
     }
@@ -52,31 +52,6 @@ private extension EventsView {
         List(0..<15) { id in
             Text("Тренировка № \(id)")
         }
-    }
-
-    func dummyView() -> some View {
-        VStack(spacing: 16) {
-            Spacer()
-            Text("Нет запланированных мероприятий")
-                .font(.title2)
-                .multilineTextAlignment(.center)
-            Image(systemName: "calendar")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(.secondary)
-                .frame(width: 180)
-            NavigationLink {
-#warning("TODO: Сверстать экран для создания мероприятия")
-                Text("Экран для создания мероприятия")
-                    .navigationTitle("Мероприятие")
-                    .navigationBarTitleDisplayMode(.inline)
-            } label: {
-                Text("Создать мероприятие")
-                    .roundedBorderedStyle()
-            }
-            Spacer()
-        }
-        .padding()
     }
 }
 

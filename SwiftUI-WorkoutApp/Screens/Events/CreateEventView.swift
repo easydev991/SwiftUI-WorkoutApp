@@ -17,7 +17,9 @@ struct CreateEventView: View {
         Form {
             eventNameSection()
             datePickerSection()
-            sportsGroundNameSection()
+            Section("Площадка") {
+                sportsGround()
+            }
             descriptionTextViewSection()
         }
         .onChange(of: viewModel.isEventCreated) { isSuccess in
@@ -27,6 +29,7 @@ struct CreateEventView: View {
             closeButton()
         }
         .navigationTitle("Мероприятие")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar { createEventButton() }
     }
 }
@@ -56,9 +59,23 @@ private extension CreateEventView {
         }
     }
 
-    func sportsGroundNameSection() -> some View {
-        Section("Площадка") {
-            Text(viewModel.ground.name)
+    func sportsGround() -> AnyView {
+        switch viewModel.mode {
+        case .regular:
+            return AnyView(
+                NavigationLink(
+                    destination: {
+                        Text("Список моих площадок с возможностью выбора по нажатию")
+                            .navigationTitle("Выбери площадку")
+                            .navigationBarTitleDisplayMode(.inline)
+                    }, label: {
+                        Text("Выбрать")
+                            .blueMediumWeight()
+                    }
+                )
+            )
+        case let .selectedSportsGround(ground):
+            return AnyView(Text(ground.name))
         }
     }
 
@@ -92,6 +109,6 @@ private extension CreateEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateEventView(viewModel: .init(with: .mock))
+        CreateEventView(viewModel: .init(mode: .selectedSportsGround(.mock)))
     }
 }
