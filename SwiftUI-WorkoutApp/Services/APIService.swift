@@ -78,6 +78,13 @@ struct APIService {
         }
         return isSuccess
     }
+
+    func getFriendsForUser(id: Int) async throws -> [UserResponse]? {
+        let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.getAuthData())
+        guard let request = endpoint.urlRequest else { return nil }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle([UserResponse].self, data, response)
+    }
 }
 
 private extension APIService {

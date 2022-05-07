@@ -162,7 +162,7 @@ private extension PersonProfileView {
 
     var friendsLink: some View {
         NavigationLink {
-            PersonsListView()
+            PersonsListView(viewModel: .init(mode: .friends(userID: viewModel.user.id)))
                 .navigationTitle("Друзья")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {

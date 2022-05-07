@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct PersonRow: View {
-    let model: TempPersonModel
+    let model: UserResponse
 
     var body: some View {
         HStack(spacing: 16) {
             profileImage
             VStack(alignment: .leading) {
-                Text(model.name)
+                Text(model.userName.valueOrEmpty)
                     .fontWeight(.medium)
-                Text(model.shortAddress)
+                Text("model.shortAddress")
                     .foregroundColor(.secondary)
                     .font(.caption)
             }
@@ -26,7 +26,7 @@ struct PersonRow: View {
 
 private extension PersonRow {
     var profileImage: some View {
-        AsyncImage(url: .init(string: model.imageStringURL)) { phase in
+        AsyncImage(url: .init(string: model.imageStringURL.valueOrEmpty)) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -43,6 +43,6 @@ private extension PersonRow {
 
 struct PersonRow_Previews: PreviewProvider {
     static var previews: some View {
-        PersonRow(model: .mockMain)
+        PersonRow(model: .emptyValue)
     }
 }
