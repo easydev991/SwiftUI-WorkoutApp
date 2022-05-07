@@ -16,6 +16,10 @@ enum Endpoint {
     /// **POST** ${API}/auth/reset
     case resetPassword(login: String)
 
+    /// Изменение пароля:
+    /// **POST** ${API}/auth/changepass
+    case changePassword(currentPass: String, newPass: String, auth: AuthData)
+
     /// Получение профиля пользователя:
     /// **GET** ${API}/users/<id>
     /// `id` - идентификатор пользователя, чей профиль нужно получить
@@ -60,6 +64,8 @@ private extension Endpoint {
     enum Parameter {
         enum Key: String {
             case usernameOrEmail = "username_or_email"
+            case password
+            case newPassword = "new_password"
         }
         static func makeParameters(from params: [Key: String]) -> Data? {
             params
@@ -76,6 +82,8 @@ private extension Endpoint {
             return "\(baseUrl)/auth/login"
         case .resetPassword:
             return "\(baseUrl)/auth/reset"
+        case .changePassword:
+            return "\(baseUrl)/auth/changepass"
         case let .getUser(id, _):
             return "\(baseUrl)/users/\(id)"
         }
@@ -83,7 +91,7 @@ private extension Endpoint {
 
     var method: HTTPMethod {
         switch self {
-        case .login, .resetPassword:
+        case .login, .resetPassword, .changePassword:
             return .post
         case .getUser:
             return .get
@@ -92,7 +100,7 @@ private extension Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case let .login(auth), let .getUser(_ , auth):
+        case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -104,6 +112,10 @@ private extension Endpoint {
         case .login, .getUser: return nil
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])
+        case let .changePassword(current, new, _):
+            return Parameter.makeParameters(
+                from: [.password: current, .newPassword: new]
+            )
         }
     }
 }

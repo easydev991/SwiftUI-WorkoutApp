@@ -30,6 +30,7 @@ struct Constants {
     struct API {
         static let baseURL = "https://workout.su/api/v3"
         static let timeOut = TimeInterval(20)
+        static let codeOK = 200
     }
     struct Alert {
         static let success = "Успех!"
@@ -42,6 +43,7 @@ struct Constants {
         static let logout = "Выйти из учетной записи?"
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         static let resetPasswordError = "Не удалось восстановить пароль"
+        static let changePasswordError = "Не удалось изменить пароль"
     }
     enum Gender: String, CaseIterable {
         case male = "Мужской"

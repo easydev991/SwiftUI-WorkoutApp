@@ -61,6 +61,23 @@ struct APIService {
         let userIdResponse = try handle(UserIdResponse.self, data, response)
         return userIdResponse.userID != .zero
     }
+
+    func changePassword(current: String, new: String) async throws -> Bool {
+        let authData = defaults.getAuthData()
+        let endpoint = Endpoint.changePassword(
+            currentPass: current, newPass: new, auth: authData
+        )
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        let isSuccess = try handle(response)
+        if isSuccess {
+            let login = authData.login
+            await MainActor.run {
+                defaults.saveAuthData(.init(login: login, password: new))
+            }
+        }
+        return isSuccess
+    }
 }
 
 private extension APIService {
@@ -72,14 +89,14 @@ private extension APIService {
         return .init(configuration: config)
     }
 
-    /// Обрабатывает ответ сервера
+    /// Обрабатывает ответ сервера и возвращает данные в нужном формате
     func handle<T: Decodable>(
         _ type: T.Type,
         _ data: Data?,
         _ response: URLResponse?
     ) throws -> T {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != 200, let error = APIError(with: responseCode) {
+        if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
             throw error
         }
         guard let data = data, !data.isEmpty else {
@@ -92,5 +109,14 @@ private extension APIService {
         let decodedInfo = try JSONDecoder().decode(type, from: data)
         print("--- Преобразованные данные:\n\(decodedInfo)")
         return decodedInfo
+    }
+
+    /// Обрабатывает ответ сервера, в котором важен только статус
+    func handle(_ response: URLResponse?) throws -> Bool {
+        let responseCode = (response as? HTTPURLResponse)?.statusCode
+        if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
+            throw error
+        }
+        return responseCode == Constants.API.codeOK
     }
 }

@@ -34,8 +34,8 @@ struct LoginView: View {
         }, message: {
             Text(Constants.Alert.resetSuccessful)
         })
-        .onChange(of: viewModel.showResetSuccessfulAlert, perform: setupResetSuccessfulAlert)
-        .onChange(of: viewModel.showForgotPasswordAlert, perform: setupResetInfoAlert)
+        .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
+        .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
         .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
@@ -126,11 +126,11 @@ private extension LoginView {
             .opacity(viewModel.isLoading ? 1 : .zero)
     }
 
-    func setupResetInfoAlert(showAlert: Bool) {
+    func toggleResetInfoAlert(showAlert: Bool) {
         showResetInfoAlert = showAlert
     }
 
-    func setupResetSuccessfulAlert(showAlert: Bool) {
+    func toggleResetSuccessfulAlert(showAlert: Bool) {
         showResetSuccessfulAlert = showAlert
     }
 

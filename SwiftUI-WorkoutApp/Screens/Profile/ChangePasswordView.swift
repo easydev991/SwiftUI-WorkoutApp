@@ -11,22 +11,36 @@ struct ChangePasswordView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ChangePasswordViewModel()
     @State private var showSuccess = false
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        Form {
-            Section("Минимум 6 символов") {
-                passwordField
+        ZStack {
+            Form {
+                Section("Минимум 6 символов") {
+                    passwordField
+                }
+                Section {
+                    newPasswordField
+                    newPasswordAgainField
+                }
+                Section {
+                    changePasswordButton
+                }
             }
-            Section {
-                newPasswordField
-                newPasswordAgainField
-            }
-            Section {
-                changePasswordButton
-            }
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
-        .onChange(of: viewModel.isChangeSuccessful) { showSuccess = $0 }
+        .disabled(viewModel.isLoading)
+        .alert(Constants.Alert.passwordChanged, isPresented: $showSuccess) {
+            Button(action: dismissView) { TextOk() }
+        }
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: viewModel.errorAlertClosed) { TextOk() }
+        }
+        .onChange(of: viewModel.isChangeSuccessful, perform: toggleSuccessAlert)
+        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -76,22 +90,26 @@ private extension ChangePasswordView {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
         .disabled(viewModel.isChangeButtonDisabled)
-        .alert(Constants.Alert.passwordChanged, isPresented: $showSuccess) {
-            closeButton
-        }
     }
 
     func changePasswordTapped() {
         focus = nil
-        viewModel.changePasswordAction()
+        Task {
+            await viewModel.changePasswordAction()
+        }
     }
 
-    var closeButton: some View {
-        Button(role: .cancel) {
-            dismiss()
-        } label: {
-            TextOk()
-        }
+    func toggleSuccessAlert(showAlert: Bool) {
+        showSuccess = showAlert
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
+    func dismissView() {
+        dismiss()
     }
 }
 
