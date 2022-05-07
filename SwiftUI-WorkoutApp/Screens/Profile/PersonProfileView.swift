@@ -30,7 +30,7 @@ struct PersonProfileView: View {
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: retryAction) {
-                Text("Попробовать еще раз")
+                TextTryAgain()
             }
         }
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
