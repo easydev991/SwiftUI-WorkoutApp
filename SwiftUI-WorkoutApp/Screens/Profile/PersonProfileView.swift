@@ -34,7 +34,7 @@ struct PersonProfileView: View {
             }
         }
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
-        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .toolbar { settingsLink }
         .task { await askForUserInfo() }
         .navigationTitle("Профиль")

@@ -40,7 +40,7 @@ struct ChangePasswordView: View {
             Button(action: viewModel.errorAlertClosed) { TextOk() }
         }
         .onChange(of: viewModel.isChangeSuccessful, perform: toggleSuccessAlert)
-        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
     }

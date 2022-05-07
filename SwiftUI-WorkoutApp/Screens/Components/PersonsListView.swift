@@ -32,9 +32,7 @@ struct PersonsListView: View {
             }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .task {
-            await askForPersons()
-        }
+        .task { await askForPersons() }
     }
 }
 

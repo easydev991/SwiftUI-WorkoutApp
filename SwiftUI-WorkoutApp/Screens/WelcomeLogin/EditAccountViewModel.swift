@@ -47,10 +47,8 @@ final class EditAccountViewModel: ObservableObject {
         isUserAuth ? "Изменить профиль" : "Регистрация"
     }
 
-#warning("TODO: убрать принты после окончания работ")
     init() {
         makeCountryAndCityData()
-        print("--- inited EditAccountViewModel")
     }
 
     deinit {

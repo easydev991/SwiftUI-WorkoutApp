@@ -13,7 +13,7 @@ final class ChangePasswordViewModel: ObservableObject {
     @Published var newPasswordAgainText = ""
     @Published var isChangeSuccessful = false
     @Published var isLoading = false
-    @Published var errorResponse = ""
+    @Published var errorMessage = ""
     var isChangeButtonDisabled: Bool {
         let isCurrentPasswordTooShort = currentPasswordText.count < Constants.minPasswordSize
         let isNewPasswordEmpty = newPasswordText.isEmpty || newPasswordAgainText.isEmpty
@@ -37,13 +37,13 @@ final class ChangePasswordViewModel: ObservableObject {
             if isSuccess.isTrue {
                 isChangeSuccessful = true
             } else {
-                errorResponse = Constants.Alert.changePasswordError
+                errorMessage = Constants.Alert.changePasswordError
             }
         }
     }
 
     func errorAlertClosed() {
-        errorResponse = ""
+        errorMessage = ""
     }
 
     init() {

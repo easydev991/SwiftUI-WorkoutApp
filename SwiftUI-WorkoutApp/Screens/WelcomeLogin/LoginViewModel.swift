@@ -14,7 +14,7 @@ final class LoginViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var showForgotPasswordAlert = false
     @Published var showResetSuccessfulAlert = false
-    @Published var errorResponse = ""
+    @Published var errorMessage = ""
 
     var canLogIn: Bool {
         !login.isEmpty && password.count >= Constants.minPasswordSize
@@ -25,7 +25,7 @@ final class LoginViewModel: ObservableObject {
     }
 
     func errorAlertClosed() {
-        errorResponse = ""
+        errorMessage = ""
     }
 
     func warningAlertClosed() {
@@ -43,7 +43,7 @@ final class LoginViewModel: ObservableObject {
             try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
             await MainActor.run {
-                errorResponse = error.localizedDescription
+                errorMessage = error.localizedDescription
                 isLoading = false
             }
         }
@@ -59,23 +59,18 @@ final class LoginViewModel: ObservableObject {
                     if isSuccess {
                         showResetSuccessfulAlert = true
                     } else {
-                        errorResponse = Constants.Alert.resetPasswordError
+                        errorMessage = Constants.Alert.resetPasswordError
                     }
                 }
             } catch {
                 await MainActor.run {
-                    errorResponse = error.localizedDescription
+                    errorMessage = error.localizedDescription
                     isLoading = false
                 }
             }
         } else {
             showForgotPasswordAlert = true
         }
-    }
-
-#warning("TODO: убрать принты после окончания работ")
-    init() {
-        print("--- inited LoginViewModel")
     }
 
     deinit {

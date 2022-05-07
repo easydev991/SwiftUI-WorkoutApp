@@ -16,7 +16,7 @@ final class PersonProfileViewModel: ObservableObject {
     @Published var requestedFriendship = false
     @Published var isAddFriendButtonEnabled = true
     @Published var user = UserModel.emptyValue
-    @Published var errorResponse = ""
+    @Published var errorMessage = ""
 
     var showCommunication: Bool { !isMainUser }
     var showSettingsButton: Bool { isMainUser }
@@ -35,7 +35,7 @@ final class PersonProfileViewModel: ObservableObject {
     }
 
     func makeUserInfo(with userDefaults: UserDefaultsService) async {
-        errorResponse = ""
+        errorMessage = ""
         if isLoading || user.id != .zero {
             return
         }
@@ -51,7 +51,7 @@ final class PersonProfileViewModel: ObservableObject {
         do {
             guard let userResponse = try await APIService(with: userDefaults).getUserByID(userID) else {
                 await MainActor.run {
-                    errorResponse = Constants.Alert.cannotReadData
+                    errorMessage = Constants.Alert.cannotReadData
                     isLoading = false
                 }
                 return
@@ -64,7 +64,7 @@ final class PersonProfileViewModel: ObservableObject {
         } catch {
             print("--- makeUserInfo error: \(error)")
             await MainActor.run {
-                errorResponse = error.localizedDescription
+                errorMessage = error.localizedDescription
                 isLoading = false
             }
         }

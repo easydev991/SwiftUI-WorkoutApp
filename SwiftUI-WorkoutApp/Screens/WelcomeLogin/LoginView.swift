@@ -36,7 +36,7 @@ struct LoginView: View {
         })
         .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
         .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
-        .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
     }
