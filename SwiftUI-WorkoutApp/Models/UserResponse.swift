@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserResponse: Codable {
+struct UserResponse: Codable, Hashable {
     let userName, fullName, email, imageStringURL: String?
     let birthDateIsoString: String? // "1990-11-25"
     let createdIsoDateTimeSec: String? // "2013-01-16T03:35:54+04:00"
@@ -74,5 +74,8 @@ extension UserResponse {
     }
     var sportsGroundsCount: Int {
         Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
+    }
+    static var emptyValue: UserResponse {
+        .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
     }
 }

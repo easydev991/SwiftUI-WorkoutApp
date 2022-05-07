@@ -13,7 +13,6 @@ struct PersonProfileView: View {
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var userInfo = UserModel.emptyValue
 
     var body: some View {
         ZStack {
@@ -27,14 +26,13 @@ struct PersonProfileView: View {
                 socialInfoSection
             }
             .opacity(viewModel.isLoading ? .zero : 1)
-            .animation(.easeIn, value: userInfo.id)
+            .animation(.easeIn, value: viewModel.user.id)
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: retryAction) {
                 Text("Попробовать еще раз")
             }
         }
-        .onChange(of: viewModel.user, perform: setUserInfo)
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
         .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
         .toolbar { settingsLink }
@@ -50,10 +48,10 @@ private extension PersonProfileView {
                 VStack(spacing: 16) {
                     avatarImageView
                     VStack(spacing: 4) {
-                        Text(userInfo.name)
+                        Text(viewModel.user.name)
                             .fontWeight(.bold)
-                        Text("\(userInfo.gender), ") + Text(
-                            "yearsCount \(userInfo.age)",
+                        Text("\(viewModel.user.gender), ") + Text(
+                            "yearsCount \(viewModel.user.age)",
                             tableName: "Plurals"
                         )
                         Text(viewModel.userShortAddress)
@@ -65,7 +63,7 @@ private extension PersonProfileView {
     }
 
     var avatarImageView: some View {
-        AsyncImage(url: (userInfo.imageURL) ?? .init(string: "")) { phase in
+        AsyncImage(url: viewModel.user.imageURL) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -97,7 +95,7 @@ private extension PersonProfileView {
         NavigationLink {
 #warning("TODO: сверстать экран для чата")
             Text("Экран для отправки сообщения")
-                .navigationTitle(userInfo.name)
+                .navigationTitle(viewModel.user.name)
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
             Text("Отправить сообщение")
@@ -119,16 +117,16 @@ private extension PersonProfileView {
 
     var socialInfoSection: some View {
         Section {
-            if userInfo.usesSportsGrounds > .zero {
+            if viewModel.user.usesSportsGrounds > .zero {
                 usesSportsGroundsLink
             }
-            if userInfo.addedSportsGrounds > .zero {
+            if viewModel.user.addedSportsGrounds > .zero {
                 addedSportsGroundsLink
             }
-            if userInfo.friendsCount > .zero {
+            if viewModel.user.friendsCount > .zero {
                 friendsLink
             }
-            if userInfo.journalsCount > .zero {
+            if viewModel.user.journalsCount > .zero {
                 journalsLink
             }
         }
@@ -143,7 +141,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
                 Spacer()
-                Text("\(userInfo.usesSportsGrounds)")
+                Text("\(viewModel.user.usesSportsGrounds)")
                     .foregroundColor(.secondary)
             }
         }
@@ -171,7 +169,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
-                Text("\(userInfo.friendsCount)")
+                Text("\(viewModel.user.friendsCount)")
                     .foregroundColor(.secondary)
             }
         }
@@ -186,7 +184,7 @@ private extension PersonProfileView {
             HStack {
                 Label("Дневники", systemImage: "list.bullet")
                 Spacer()
-                Text("\(userInfo.journalsCount)")
+                Text("\(viewModel.user.journalsCount)")
                     .foregroundColor(.secondary)
             }
         }
@@ -197,12 +195,6 @@ private extension PersonProfileView {
             Image(systemName: "gearshape.fill")
         }
         .opacity(viewModel.showSettingsButton ? 1 : .zero)
-    }
-
-    func setUserInfo(user: UserModel?) {
-        if let user = user {
-            userInfo = user
-        }
     }
 
     func askForUserInfo() async {
