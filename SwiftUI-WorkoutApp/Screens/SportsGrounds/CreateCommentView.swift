@@ -14,7 +14,7 @@ struct CreateCommentView: View {
     @FocusState private var isFocused
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack {
             textView
             Spacer()
         }
@@ -28,9 +28,10 @@ private extension CreateCommentView {
     var textView: some View {
         TextEditor(text: $commentText)
             .frame(height: 200)
+            .padding(.horizontal, 8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(.gray.opacity(0.5), lineWidth: 2)
+                    .stroke(.gray.opacity(0.5), lineWidth: 1)
             )
             .focused($isFocused)
             .onAppear(perform: showKeyboard)
@@ -45,17 +46,9 @@ private extension CreateCommentView {
         } label: {
             Text("Отправить")
         }
-        .disabled(commentText.count < 6)
+        .disabled(commentText.isEmpty)
         .alert(Constants.Alert.commentSent, isPresented: $isCommentSent) {
-            closeButton
-        }
-    }
-
-    var closeButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Text("Закрыть")
+            Button { dismiss() } label: { TextOk() }
         }
     }
 
