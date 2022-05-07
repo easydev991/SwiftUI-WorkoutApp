@@ -15,19 +15,19 @@ final class PersonProfileViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var requestedFriendship = false
     @Published var isAddFriendButtonEnabled = true
-    @Published var user: UserModel? = nil
+    @Published var user = UserModel.emptyValue
     @Published var errorResponse = ""
 
     var showCommunication: Bool { !isMainUser }
     var showSettingsButton: Bool { isMainUser }
     var userShortAddress: String {
-        let countryID = (user?.countryID).valueOrZero
-        let cityID = (user?.cityID).valueOrZero
+        let countryID = user.countryID
+        let cityID = user.cityID
         return countryCityService.addressFor(countryID, cityID)
     }
     var addedSportsGrounds: Int {
 #warning("TODO: маппить из списка площадок, т.к. сервер не присылает")
-        return (user?.addedSportsGrounds).valueOrZero
+        return user.addedSportsGrounds
     }
 
     init(userID: Int) {
@@ -36,12 +36,11 @@ final class PersonProfileViewModel: ObservableObject {
 
     func makeUserInfo(with userDefaults: UserDefaultsService) async {
         errorResponse = ""
-        if isLoading || user != nil {
+        if isLoading || user.id != .zero {
             return
         }
         if userID == userDefaults.mainUserID,
            let mainUserInfo = await userDefaults.getUserInfo() {
-            
             await MainActor.run {
                 user = .init(mainUserInfo)
                 isMainUser = true
@@ -52,7 +51,7 @@ final class PersonProfileViewModel: ObservableObject {
         do {
             guard let userResponse = try await APIService(with: userDefaults).getUserByID(userID) else {
                 await MainActor.run {
-                    errorResponse = "Не удается прочитать загруженные данные"
+                    errorResponse = Constants.Alert.cannotReadData
                     isLoading = false
                 }
                 return

@@ -44,6 +44,7 @@ struct Constants {
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         static let resetPasswordError = "Не удалось восстановить пароль"
         static let changePasswordError = "Не удалось изменить пароль"
+        static let cannotReadData = "Не удается прочитать загруженные данные"
     }
     enum Gender: String, CaseIterable {
         case male = "Мужской"
