@@ -75,8 +75,7 @@ private extension PersonProfileView {
                 Image(systemName: "person.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
-                    .padding(.leading)
+                    .frame(maxWidth: .infinity, maxHeight: 80)
             default:
                 ProgressView()
             }
