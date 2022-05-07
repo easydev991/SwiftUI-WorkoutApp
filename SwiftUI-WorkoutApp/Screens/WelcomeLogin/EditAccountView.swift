@@ -154,7 +154,7 @@ private extension EditAccountView {
             Button(action: registerAction) {
                 ButtonInFormLabel(title: "Зарегистрироваться")
             }
-            .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
+            .disabled(!viewModel.isButtonAvailable(userDefaults.isUserAuthorized))
         }
     }
 
@@ -168,7 +168,7 @@ private extension EditAccountView {
             Button(action: saveChangesAction) {
                 ButtonInFormLabel(title: "Сохранить")
             }
-            .disabled(!viewModel.isButtonAvailable(with: userDefaults.isUserAuthorized))
+            .disabled(!viewModel.isButtonAvailable(userDefaults.isUserAuthorized))
         }
     }
 

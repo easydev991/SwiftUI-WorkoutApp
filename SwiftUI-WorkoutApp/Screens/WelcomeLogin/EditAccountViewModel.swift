@@ -32,10 +32,15 @@ final class EditAccountViewModel: ObservableObject {
 
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
-    func isButtonAvailable(with isUserAuth: Bool) -> Bool {
-        isUserAuth
-        ? !loginText.isEmpty && !emailText.isEmpty && passwordText.count >= 6
-        : false // убрать хардкод после интеграции с БД
+    /// Доступность кнопки для регистрации или сохранения изменений
+    func isButtonAvailable(_ isUserAuth: Bool) -> Bool {
+        if isUserAuth {
+            return !loginText.isEmpty
+            && !emailText.isEmpty
+            && passwordText.count >= Constants.minPasswordSize
+        } else {
+            return false // убрать хардкод после интеграции с БД
+        }
     }
 
     func title(_ isUserAuth: Bool) -> String {

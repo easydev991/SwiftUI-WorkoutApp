@@ -9,6 +9,7 @@ import Foundation
 import UIKit.UIDevice
 
 struct Constants {
+    static let minPasswordSize = 6
     static let minimumUserAge = -5
     static let maxEventFutureYear = 1
     static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
@@ -30,7 +31,8 @@ struct Constants {
         static let baseURL = "https://workout.su/api/v3"
         static let timeOut = TimeInterval(20)
     }
-    struct AlertTitle {
+    struct Alert {
+        static let success = "Успех!"
         static let authError = "Ошибка авторизации"
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let commentSent = "Комментарий отправлен!"
@@ -38,6 +40,8 @@ struct Constants {
         static let eventCreated = "Мероприятие создано!"
         static let passwordChanged = "Пароль успешно изменен"
         static let logout = "Выйти из учетной записи?"
+        static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
+        static let resetPasswordError = "Не удалось восстановить пароль"
     }
     enum Gender: String, CaseIterable {
         case male = "Мужской"

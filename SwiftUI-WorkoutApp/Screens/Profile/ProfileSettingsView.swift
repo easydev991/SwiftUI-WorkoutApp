@@ -49,7 +49,7 @@ private extension ProfileSettingsView {
                 .foregroundColor(.pink)
         }
         .confirmationDialog(
-            Constants.AlertTitle.logout,
+            Constants.Alert.logout,
             isPresented: $showLogoutConfirmation,
             titleVisibility: .visible
         ) {

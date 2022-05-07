@@ -23,7 +23,7 @@ struct CreateEventView: View {
             descriptionSection
         }
         .onChange(of: viewModel.isEventCreated) { eventCreated = $0 }
-        .alert(Constants.AlertTitle.eventCreated, isPresented: $eventCreated) {
+        .alert(Constants.Alert.eventCreated, isPresented: $eventCreated) {
             closeButton
         }
         .navigationTitle("Мероприятие")

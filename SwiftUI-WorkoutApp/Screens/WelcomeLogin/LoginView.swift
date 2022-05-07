@@ -11,7 +11,8 @@ struct LoginView: View {
     @EnvironmentObject private var userDefaults: UserDefaultsService
     @StateObject private var viewModel = LoginViewModel()
     // Вызывает утечку памяти, если разместить внутри viewModel
-    @State private var showForgotPasswordAlert = false
+    @State private var showResetInfoAlert = false
+    @State private var showResetSuccessfulAlert = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @FocusState private var focus: FocusableField?
@@ -24,13 +25,17 @@ struct LoginView: View {
             }
             progressView
         }
-        .disabled(viewModel.isSigningIn)
+        .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: viewModel.errorAlertClosed) {
-                TextOk()
-            }
+            Button(action: viewModel.errorAlertClosed) { TextOk() }
         }
-        .onChange(of: viewModel.showForgotPasswordAlert) { showForgotPasswordAlert = $0 }
+        .alert(Constants.Alert.success, isPresented: $showResetSuccessfulAlert, actions: {
+            Button(action: viewModel.resetSuccessfulAlertClosed) { TextOk() }
+        }, message: {
+            Text(Constants.Alert.resetSuccessful)
+        })
+        .onChange(of: viewModel.showResetSuccessfulAlert, perform: setupResetSuccessfulAlert)
+        .onChange(of: viewModel.showForgotPasswordAlert, perform: setupResetInfoAlert)
         .onChange(of: viewModel.errorResponse, perform: setupErrorAlert)
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
@@ -97,13 +102,13 @@ private extension LoginView {
 
     var forgotPasswordButton: some View {
         Button(action: forgotPasswordAction) { forgotPasswordLabel }
-            .alert(Constants.AlertTitle.forgotPassword, isPresented: $showForgotPasswordAlert) {
+            .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
                 Button(action: viewModel.warningAlertClosed) { TextOk() }
             }
     }
 
     func forgotPasswordAction() {
-        viewModel.forgotPasswordTapped()
+        Task { await viewModel.forgotPasswordTapped() }
         focus = viewModel.canRestorePassword ? nil : .username
     }
 
@@ -118,7 +123,15 @@ private extension LoginView {
 
     var progressView: some View {
         ProgressView()
-            .opacity(viewModel.isSigningIn ? 1 : .zero)
+            .opacity(viewModel.isLoading ? 1 : .zero)
+    }
+
+    func setupResetInfoAlert(showAlert: Bool) {
+        showResetInfoAlert = showAlert
+    }
+
+    func setupResetSuccessfulAlert(showAlert: Bool) {
+        showResetSuccessfulAlert = showAlert
     }
 
     func setupErrorAlert(with message: String) {

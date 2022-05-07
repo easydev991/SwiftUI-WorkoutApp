@@ -46,7 +46,7 @@ private extension CreateCommentView {
             Text("Отправить")
         }
         .disabled(commentText.count < 6)
-        .alert(Constants.AlertTitle.commentSent, isPresented: $isCommentSent) {
+        .alert(Constants.Alert.commentSent, isPresented: $isCommentSent) {
             closeButton
         }
     }

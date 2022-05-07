@@ -109,7 +109,7 @@ private extension PersonProfileView {
             Text("Предложить дружбу")
                 .fontWeight(.medium)
         }
-        .alert(Constants.AlertTitle.friendRequestSent, isPresented: $isFriendRequestSent) {
+        .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
             Button(action: viewModel.friendRequestedAlertOKAction) {
                 TextOk()
             }

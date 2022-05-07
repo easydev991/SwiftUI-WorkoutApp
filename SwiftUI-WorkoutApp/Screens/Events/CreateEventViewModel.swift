@@ -23,7 +23,7 @@ final class CreateEventViewModel: ObservableObject {
     }
 
     var isCreateButtonActive: Bool {
-        eventName.count >= 6
+        eventName.count >= Constants.minPasswordSize
     }
 
     init(mode: Mode) {

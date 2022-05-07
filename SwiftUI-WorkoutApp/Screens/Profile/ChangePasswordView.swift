@@ -76,7 +76,7 @@ private extension ChangePasswordView {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
         .disabled(viewModel.isChangeButtonDisabled)
-        .alert(Constants.AlertTitle.passwordChanged, isPresented: $showSuccess) {
+        .alert(Constants.Alert.passwordChanged, isPresented: $showSuccess) {
             closeButton
         }
     }

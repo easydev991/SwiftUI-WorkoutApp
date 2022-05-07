@@ -14,6 +14,11 @@ struct APIService {
         self.defaults = defaults
     }
 
+    /// Для запросов без базовой аутентификации
+    init() {
+        self.init(with: .init())
+    }
+
     /// Запрашивает `id` пользователя для входа в учетную запись
     /// - Parameters:
     ///   - login: логин или email для входа
@@ -23,7 +28,7 @@ struct APIService {
         let endpoint = Endpoint.login(auth: authData)
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
-        let loginResponse = try handle(LoginResponse.self, data, response)
+        let loginResponse = try handle(UserIdResponse.self, data, response)
         await MainActor.run {
             defaults.setMainUserID(loginResponse.userID)
             defaults.saveAuthData(authData)
@@ -47,6 +52,14 @@ struct APIService {
             }
         }
         return userInfo
+    }
+
+    func resetPassword(for login: String) async throws -> Bool {
+        let endpoint = Endpoint.resetPassword(login: login)
+        guard let request = endpoint.urlRequest else { return false }
+        let (data, response) = try await urlSession.data(for: request)
+        let userIdResponse = try handle(UserIdResponse.self, data, response)
+        return userIdResponse.userID != .zero
     }
 }
 

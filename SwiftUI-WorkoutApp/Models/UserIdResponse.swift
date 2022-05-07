@@ -1,5 +1,5 @@
 //
-//  LoginResponse.swift
+//  UserIdResponse.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoginResponse: Codable {
+struct UserIdResponse: Codable {
     let userID: Int
 
     enum CodingKeys: String, CodingKey {
