@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = ProfileViewModel()
 
     var body: some View {
@@ -22,8 +22,8 @@ struct ProfileView: View {
 
 private extension ProfileView {
     var content: AnyView {
-        if userDefaults.isUserAuthorized {
-            return AnyView(PersonProfileView(viewModel: .init(userID: userDefaults.mainUserID)))
+        if defaults.isAuthorized {
+            return AnyView(PersonProfileView(viewModel: .init(userID: defaults.mainUserID)))
         } else {
             return AnyView(IncognitoProfileView())
         }

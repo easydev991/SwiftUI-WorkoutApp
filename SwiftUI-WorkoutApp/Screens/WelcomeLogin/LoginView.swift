@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = LoginViewModel()
     // Вызывает утечку памяти, если разместить внутри viewModel
     @State private var showResetInfoAlert = false
@@ -96,7 +96,7 @@ private extension LoginView {
     func loginAction() {
         focus = nil
         Task {
-            await viewModel.loginAction(with: userDefaults)
+            await viewModel.loginAction(with: defaults)
         }
     }
 

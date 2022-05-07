@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileSettingsView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
     @State private var showLogoutConfirmation = false
 
@@ -53,7 +53,7 @@ private extension ProfileSettingsView {
             isPresented: $showLogoutConfirmation,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive, action: userDefaults.triggerLogout) {
+            Button(role: .destructive, action: defaults.triggerLogout) {
                 Text("Выйти")
             }
         }

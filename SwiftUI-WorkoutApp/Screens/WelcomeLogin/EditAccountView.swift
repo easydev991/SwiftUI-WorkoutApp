@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditAccountView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = EditAccountViewModel()
     @FocusState private var focus: FocusableField?
 
@@ -18,7 +18,7 @@ struct EditAccountView: View {
             Section {
                 loginField
                 emailField
-                if !userDefaults.isUserAuthorized {
+                if !defaults.isAuthorized {
                     passwordField
                 }
                 nameField
@@ -27,14 +27,14 @@ struct EditAccountView: View {
                 countryPicker
                 cityPicker
             }
-            if !userDefaults.isUserAuthorized {
+            if !defaults.isAuthorized {
                 rulesOfServiceSection
                 registerButtonSection
             } else {
                 saveChangesButtonSection
             }
         }
-        .navigationTitle(viewModel.title(userDefaults.isUserAuthorized))
+        .navigationTitle(viewModel.title(defaults.isAuthorized))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -154,7 +154,7 @@ private extension EditAccountView {
             Button(action: registerAction) {
                 ButtonInFormLabel(title: "Зарегистрироваться")
             }
-            .disabled(!viewModel.isButtonAvailable(userDefaults.isUserAuthorized))
+            .disabled(!viewModel.isButtonAvailable(defaults.isAuthorized))
         }
     }
 
@@ -168,7 +168,7 @@ private extension EditAccountView {
             Button(action: saveChangesAction) {
                 ButtonInFormLabel(title: "Сохранить")
             }
-            .disabled(!viewModel.isButtonAvailable(userDefaults.isUserAuthorized))
+            .disabled(!viewModel.isButtonAvailable(defaults.isAuthorized))
         }
     }
 

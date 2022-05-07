@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct JournalsView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = JournalsViewModel()
 
     var body: some View {
@@ -21,7 +21,7 @@ struct JournalsView: View {
 
 private extension JournalsView {
     var content: AnyView {
-        switch userDefaults.isUserAuthorized {
+        switch defaults.isAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать экран с дневниками и заглушку")

@@ -10,12 +10,12 @@ import SwiftUI
 @main
 struct SwiftUI_WorkoutAppApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var userDefaults = UserDefaultsService()
+    @StateObject private var defaults = UserDefaultsService()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(userDefaults)
+                .environmentObject(defaults)
         }
         .onChange(of: scenePhase) { newValue in
             switch newValue {

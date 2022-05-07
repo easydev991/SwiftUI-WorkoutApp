@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RootView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = RootViewModel()
 
     init() {
@@ -17,13 +17,13 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            if userDefaults.showWelcome {
+            if defaults.showWelcome {
                 WelcomeAuthView()
             } else {
                 tabView
             }
         }
-        .animation(.easeInOut, value: userDefaults.showWelcome)
+        .animation(.easeInOut, value: defaults.showWelcome)
         .ignoresSafeArea()
     }
 }

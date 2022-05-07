@@ -9,7 +9,7 @@ import SwiftUI
 
 final class UserDefaultsService: ObservableObject {
     @AppStorage(Key.mainUserID.rawValue) private(set) var mainUserID = Int.zero
-    @AppStorage(Key.isUserAuthorized.rawValue) private(set) var isUserAuthorized = false
+    @AppStorage(Key.isUserAuthorized.rawValue) private(set) var isAuthorized = false
     @AppStorage(Key.showWelcome.rawValue) private(set) var showWelcome = true
     @AppStorage(Key.authData.rawValue) private var authData = Data()
     @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
@@ -18,13 +18,13 @@ final class UserDefaultsService: ObservableObject {
         mainUserID = id
     }
 
-    @MainActor func setWelcomeShown() {
+    func setWelcomeShown() {
         showWelcome = false
     }
 
     @MainActor func setUserLoggedIn() {
         showWelcome = false
-        isUserAuthorized = true
+        isAuthorized = true
     }
 
     func triggerLogout() {
@@ -32,7 +32,7 @@ final class UserDefaultsService: ObservableObject {
         userInfo = .init()
         mainUserID = .zero
         showWelcome = true
-        isUserAuthorized = false
+        isAuthorized = false
     }
 
     @MainActor func saveAuthData(_ info: AuthData) {

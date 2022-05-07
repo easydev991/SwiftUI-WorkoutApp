@@ -82,9 +82,6 @@ struct TempPersonModel: Identifiable {
 }
 
 struct PersonsListView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
-#warning("TODO: Добавить вариант модели для списка друзей")
-    let model: SportsGround
     var body: some View {
 #warning("TODO: интеграция с сервером")
         List(TempPersonModel.mockArray) { person in
@@ -100,6 +97,6 @@ struct PersonsListView: View {
 
 struct PersonsListView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonsListView(model: .mock)
+        PersonsListView()
     }
 }

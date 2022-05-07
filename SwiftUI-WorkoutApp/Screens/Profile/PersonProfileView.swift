@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PersonProfileView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @ObservedObject var viewModel: PersonProfileViewModel
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
@@ -163,7 +163,7 @@ private extension PersonProfileView {
 
     var friendsLink: some View {
         NavigationLink {
-            PersonsListView(model: .mock)
+            PersonsListView()
                 .navigationTitle("Друзья")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -199,7 +199,7 @@ private extension PersonProfileView {
     }
 
     func askForUserInfo() async {
-        await viewModel.makeUserInfo(with: userDefaults)
+        await viewModel.makeUserInfo(with: defaults)
     }
 
     func setupErrorAlert(with message: String) {

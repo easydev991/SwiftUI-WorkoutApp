@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MessagesView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = MessagesViewModel()
 
     var body: some View {
@@ -21,7 +21,7 @@ struct MessagesView: View {
 
 private extension MessagesView {
     var content: AnyView {
-        switch userDefaults.isUserAuthorized {
+        switch defaults.isAuthorized {
         case true:
 #warning("TODO: интеграция с сервером")
 #warning("TODO: сверстать экран с сообщениями и заглушку")

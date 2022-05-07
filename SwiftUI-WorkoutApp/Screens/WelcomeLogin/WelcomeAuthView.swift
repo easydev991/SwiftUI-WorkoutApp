@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WelcomeAuthView: View {
-    @EnvironmentObject private var userDefaults: UserDefaultsService
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = WelcomeAuthViewModel()
 
     var body: some View {
@@ -58,9 +58,7 @@ private extension WelcomeAuthView {
     }
 
     var skipLoginButton: some View {
-        Button {
-            userDefaults.setWelcomeShown()
-        } label: {
+        Button(action: defaults.setWelcomeShown) {
             Text("Пропустить")
                 .frame(height: 48)
                 .font(.subheadline)
