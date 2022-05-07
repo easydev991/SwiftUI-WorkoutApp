@@ -20,22 +20,11 @@ final class PersonProfileViewModel: ObservableObject {
 
     var showCommunication: Bool { !isMainUser }
     var showSettingsButton: Bool { isMainUser }
-    var showFriends: Bool { friendsCount > .zero }
-    var friendsCount: Int { (user?.friendsCount).valueOrZero }
-    var showJournals: Bool { journalsCount > .zero }
-    var journalsCount: Int { (user?.journalsCount).valueOrZero }
-
-    var userName: String { (user?.name).valueOrEmpty }
-    var userGender: String { (user?.gender).valueOrEmpty }
-    var userAge: Int { (user?.age).valueOrZero }
     var userShortAddress: String {
         let countryID = (user?.countryID).valueOrZero
         let cityID = (user?.cityID).valueOrZero
         return countryCityService.addressFor(countryID, cityID)
     }
-    var showUsedSportsGrounds: Bool { usesSportsGrounds > .zero }
-    var usesSportsGrounds: Int { (user?.usesSportsGrounds).valueOrZero }
-    var showAddedSportsGrounds: Bool { addedSportsGrounds > .zero }
     var addedSportsGrounds: Int {
 #warning("TODO: маппить из списка площадок, т.к. сервер не присылает")
         return (user?.addedSportsGrounds).valueOrZero
