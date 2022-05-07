@@ -62,13 +62,10 @@ private extension Endpoint {
             case usernameOrEmail = "username_or_email"
         }
         static func makeParameters(from params: [Key: String]) -> Data? {
-            var paramsArray = [String]()
-            params.forEach {
-                let parameter = $0.key.rawValue + "=" + $0.value
-                paramsArray.append(parameter)
-            }
-            let paramsString = paramsArray.joined(separator: "&")
-            return paramsString.data(using: .utf8)
+            params
+                .map { $0.key.rawValue + "=" + $0.value }
+                .joined(separator: "&")
+                .data(using: .utf8)
         }
     }
 
