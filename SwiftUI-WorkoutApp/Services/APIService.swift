@@ -86,6 +86,13 @@ struct APIService {
         return try handle([UserResponse].self, data, response)
     }
 
+    func getFriendRequests() async throws -> [UserResponse]? {
+        let endpoint = Endpoint.getFriendRequests(auth: defaults.getAuthData())
+        guard let request = endpoint.urlRequest else { return nil }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle([UserResponse].self, data, response)
+    }
+
     func getSportsGround(id: Int) async throws -> SportsGround? {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.getAuthData())
         guard let request = endpoint.urlRequest else { return nil }

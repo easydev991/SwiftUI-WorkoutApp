@@ -11,10 +11,10 @@ import Combine
 final class LoginViewModel: ObservableObject {
     @Published var login = ""
     @Published var password = ""
-    @Published var isLoading = false
-    @Published var showForgotPasswordAlert = false
-    @Published var showResetSuccessfulAlert = false
-    @Published var errorMessage = ""
+    @Published private(set) var isLoading = false
+    @Published private(set) var showForgotPasswordAlert = false
+    @Published private(set) var showResetSuccessfulAlert = false
+    @Published private(set) var errorMessage = ""
 
     var canLogIn: Bool {
         !login.isEmpty && password.count >= Constants.minPasswordSize
@@ -29,35 +29,35 @@ final class LoginViewModel: ObservableObject {
     }
 
     func warningAlertClosed() {
-        showForgotPasswordAlert = false
+        showForgotPasswordAlert.toggle()
     }
 
     func resetSuccessfulAlertClosed() {
-        showResetSuccessfulAlert = false
+        showResetSuccessfulAlert.toggle()
     }
 
     func loginAction(with userDefaults: UserDefaultsService) async {
         if !canLogIn { return }
-        await MainActor.run { isLoading = true }
+        await MainActor.run { isLoading.toggle() }
         do {
             try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
             await MainActor.run {
                 errorMessage = error.localizedDescription
-                isLoading = false
+                isLoading.toggle()
             }
         }
     }
 
     func forgotPasswordTapped() async {
         if canRestorePassword {
-            await MainActor.run { isLoading = true }
+            await MainActor.run { isLoading.toggle() }
             do {
                 let isSuccess = try await APIService().resetPassword(for: login)
                 await MainActor.run {
-                    isLoading = false
+                    isLoading.toggle()
                     if isSuccess {
-                        showResetSuccessfulAlert = true
+                        showResetSuccessfulAlert.toggle()
                     } else {
                         errorMessage = Constants.Alert.resetPasswordError
                     }
@@ -65,11 +65,11 @@ final class LoginViewModel: ObservableObject {
             } catch {
                 await MainActor.run {
                     errorMessage = error.localizedDescription
-                    isLoading = false
+                    isLoading.toggle()
                 }
             }
         } else {
-            showForgotPasswordAlert = true
+            showForgotPasswordAlert.toggle()
         }
     }
 

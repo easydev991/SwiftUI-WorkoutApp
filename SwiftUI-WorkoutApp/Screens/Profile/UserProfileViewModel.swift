@@ -1,5 +1,5 @@
 //
-//  PersonProfileViewModel.swift
+//  UserProfileViewModel.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,23 +7,16 @@
 
 import Foundation
 
-final class PersonProfileViewModel: ObservableObject {
+final class UserProfileViewModel: ObservableObject {
     private var isMainUser = false
-    private let countryCityService = ShortAddressService()
-
-    @Published var isLoading = false
-    @Published var requestedFriendship = false
-    @Published var isAddFriendButtonEnabled = true
-    @Published var user = UserModel.emptyValue
-    @Published var errorMessage = ""
+    @Published private(set) var isLoading = false
+    @Published private(set) var requestedFriendship = false
+    @Published private(set) var isAddFriendButtonEnabled = true
+    @Published private(set) var user = UserModel.emptyValue
+    @Published private(set) var errorMessage = ""
 
     var showCommunication: Bool { !isMainUser }
     var showSettingsButton: Bool { isMainUser }
-    var userShortAddress: String {
-        let countryID = user.countryID
-        let cityID = user.cityID
-        return countryCityService.addressFor(countryID, cityID)
-    }
     var addedSportsGrounds: Int {
 #warning("TODO: маппить из списка площадок, т.к. сервер не присылает")
         return user.addedSportsGrounds
@@ -42,25 +35,24 @@ final class PersonProfileViewModel: ObservableObject {
             }
             return
         }
-        await MainActor.run { isLoading = true }
+        await MainActor.run { isLoading.toggle() }
         do {
-            guard let userResponse = try await APIService(with: userDefaults).getUserByID(userID) else {
+            guard let info = try await APIService(with: userDefaults).getUserByID(userID) else {
                 await MainActor.run {
                     errorMessage = Constants.Alert.cannotReadData
-                    isLoading = false
+                    isLoading.toggle()
                 }
                 return
             }
             await MainActor.run {
-                user = .init(userResponse)
-                isMainUser = userResponse.userID == userDefaults.mainUserID
-                isLoading = false
+                user = .init(info)
+                isMainUser = user.id == userDefaults.mainUserID
+                isLoading.toggle()
             }
         } catch {
-            print("--- makeUserInfo error: \(error)")
             await MainActor.run {
                 errorMessage = error.localizedDescription
-                isLoading = false
+                isLoading.toggle()
             }
         }
     }

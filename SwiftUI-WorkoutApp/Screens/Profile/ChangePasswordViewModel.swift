@@ -11,9 +11,9 @@ final class ChangePasswordViewModel: ObservableObject {
     @Published var currentPasswordText = ""
     @Published var newPasswordText = ""
     @Published var newPasswordAgainText = ""
-    @Published var isChangeSuccessful = false
-    @Published var isLoading = false
-    @Published var errorMessage = ""
+    @Published private(set) var isChangeSuccessful = false
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
     var isChangeButtonDisabled: Bool {
         let isCurrentPasswordTooShort = currentPasswordText.count < Constants.minPasswordSize
         let isNewPasswordEmpty = newPasswordText.isEmpty || newPasswordAgainText.isEmpty
@@ -27,15 +27,15 @@ final class ChangePasswordViewModel: ObservableObject {
     }
 
     func changePasswordAction() async {
-        await MainActor.run { isLoading = true }
+        await MainActor.run { isLoading.toggle() }
         let isSuccess = try? await APIService().changePassword(
             current: currentPasswordText,
             new: newPasswordText
         )
         await MainActor.run {
-            isLoading = false
+            isLoading.toggle()
             if isSuccess.isTrue {
-                isChangeSuccessful = true
+                isChangeSuccessful.toggle()
             } else {
                 errorMessage = Constants.Alert.changePasswordError
             }

@@ -81,7 +81,7 @@ private extension SportsGroundView {
                 )
             ) {
                 ForEach(viewModel.ground.photos) {
-                    AsyncImage(url: .init(string: $0.stringURL)) { phase in
+                    CacheAsyncImage(url: .init(string: $0.stringURL)) { phase in
                         switch phase {
                         case let .success(image):
                             image
@@ -118,7 +118,7 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            PersonsListView(mode: .sportsGroundVisitors(groundID: viewModel.ground.id))
+            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.ground.id))
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -146,7 +146,7 @@ private extension SportsGroundView {
     var authorSection: some View {
         Section("Добавил") {
             HStack(spacing: 16) {
-                AsyncImage(url: .init(string: viewModel.authorImageStringURL)) { phase in
+                CacheAsyncImage(url: .init(string: viewModel.authorImageStringURL)) { phase in
                     switch phase {
                     case let .success(image):
                         image

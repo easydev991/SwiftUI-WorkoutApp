@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserModel: Identifiable, Equatable {
+struct UserModel: Identifiable, Hashable {
     let id: Int
     let imageURL: URL?
     let name: String
@@ -24,7 +24,7 @@ struct UserModel: Identifiable, Equatable {
         self.id = user.userID.valueOrZero
         self.imageURL = .init(string: user.imageStringURL.valueOrEmpty)
         self.name = user.userName.valueOrEmpty
-        self.gender = user.gender
+        self.gender = "\(user.gender), "
         self.age = user.age
         self.countryID = user.countryID.valueOrZero
         self.cityID = user.cityID.valueOrZero
@@ -48,5 +48,11 @@ struct UserModel: Identifiable, Equatable {
 
     static var emptyValue: UserModel {
         .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, friendsCount: .zero, journalsCount: .zero)
+    }
+}
+
+extension UserModel {
+    var shortAddress: String {
+        ShortAddressService().addressFor(countryID, cityID)
     }
 }

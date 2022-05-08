@@ -12,7 +12,7 @@ final class CreateEventViewModel: ObservableObject {
     @Published var eventName = ""
     @Published var eventDate = Date()
     @Published var eventDescription = ""
-    @Published var isEventCreated = false
+    @Published private(set) var isEventCreated = false
 
     var maxDate: Date {
         Calendar.current.date(
@@ -33,14 +33,14 @@ final class CreateEventViewModel: ObservableObject {
     func createEventAction() {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: уведомлять о проблемах при отправке мероприятия")
-        isEventCreated = true
+        isEventCreated.toggle()
     }
 
     func eventAlertClosed() {
         eventName = ""
         eventDate = .now
         eventDescription = ""
-        isEventCreated = false
+        isEventCreated.toggle()
     }
 
     enum Mode {

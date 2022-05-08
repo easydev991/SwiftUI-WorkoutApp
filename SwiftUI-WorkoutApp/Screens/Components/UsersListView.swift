@@ -1,0 +1,87 @@
+//
+//  UsersListView.swift
+//  SwiftUI-WorkoutApp
+//
+//  Created by Олег Еременко on 24.04.2022.
+//
+
+import SwiftUI
+
+struct UsersListView: View {
+    @EnvironmentObject private var defaults: UserDefaultsService
+    @StateObject private var viewModel = UsersListViewModel()
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
+    let mode: Mode
+
+    var body: some View {
+        ZStack {
+            Form {
+                if !viewModel.friendRequests.isEmpty {
+                    friendRequestsSection
+                }
+                List(viewModel.users, id: \.self) { user in
+                    NavigationLink {
+                        UserProfileView(userID: user.id)
+                            .navigationBarTitleDisplayMode(.inline)
+                    } label: {
+                        UserViewRow(model: user)
+                    }
+                }
+            }
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
+        }
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: retryAction) {
+                TextTryAgain()
+            }
+        }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .task { await askForUsers() }
+    }
+}
+
+extension UsersListView {
+    enum Mode {
+        case friends(userID: Int)
+        case sportsGroundVisitors(groundID: Int)
+    }
+}
+
+private extension UsersListView {
+    var friendRequestsSection: some View {
+        Section {
+            NavigationLink {
+                FriendRequestsView(viewModel: viewModel)
+            } label: {
+                HStack {
+                    Label("Заявки", systemImage: "person.fill.badge.plus")
+                    Spacer()
+                    Text("\(viewModel.friendRequests.count)")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+
+    func askForUsers() async {
+        await viewModel.makeInfo(for: mode, with: defaults)
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
+    func retryAction() {
+        Task { await askForUsers() }
+    }
+}
+
+struct UsersListView_Previews: PreviewProvider {
+    static var previews: some View {
+        UsersListView(mode: .friends(userID: UserDefaultsService().mainUserID))
+            .environmentObject(UserDefaultsService())
+    }
+}

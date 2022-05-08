@@ -1,5 +1,5 @@
 //
-//  PersonRow.swift
+//  UserViewRow.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 03.05.2022.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct PersonRow: View {
-    let model: UserResponse
+struct UserViewRow: View {
+    let model: UserModel
 
     var body: some View {
         HStack(spacing: 16) {
             profileImage
             VStack(alignment: .leading) {
-                Text(model.userName.valueOrEmpty)
+                Text(model.name)
                     .fontWeight(.medium)
                 Text("model.shortAddress")
                     .foregroundColor(.secondary)
@@ -24,9 +24,9 @@ struct PersonRow: View {
     }
 }
 
-private extension PersonRow {
+private extension UserViewRow {
     var profileImage: some View {
-        AsyncImage(url: .init(string: model.imageStringURL.valueOrEmpty)) { phase in
+        CacheAsyncImage(url: model.imageURL) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -41,8 +41,8 @@ private extension PersonRow {
     }
 }
 
-struct PersonRow_Previews: PreviewProvider {
+struct UserViewRow_Previews: PreviewProvider {
     static var previews: some View {
-        PersonRow(model: .emptyValue)
+        UserViewRow(model: .emptyValue)
     }
 }

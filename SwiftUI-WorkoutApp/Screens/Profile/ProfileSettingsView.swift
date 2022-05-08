@@ -60,7 +60,7 @@ private extension ProfileSettingsView {
     }
 
     func showConfirmatinoDialog() {
-        showLogoutConfirmation = true
+        showLogoutConfirmation.toggle()
     }
 
     var appVersionView: some View {

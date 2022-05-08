@@ -10,12 +10,12 @@ import Foundation
 final class SportsGroundViewModel: ObservableObject {
     let id: Int
     @Published var ground = SportsGround.emptyValue
-    @Published var isPhotoGridShown = false
-    @Published var photoColumns = Columns.one
+    @Published private(set) var isPhotoGridShown = false
+    @Published private(set) var photoColumns = Columns.one
     @Published var isMySportsGround = false
-    @Published var showParticipants = false
-    @Published var isLoading = false
-    @Published var errorMessage = ""
+    @Published private(set) var showParticipants = false
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
 
     var authorImageStringURL: String {
         ground.author.imageStringURL
@@ -26,21 +26,23 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     func makeSportsGroundInfo(with defaults: UserDefaultsService) async {
-        if isLoading || ground.id != .zero { return }
+        if isLoading || ground.id != .zero {
+            return
+        }
         errorMessage = ""
-        await MainActor.run { isLoading = true }
+        await MainActor.run { isLoading.toggle() }
         do {
             if let model = try await APIService(with: defaults).getSportsGround(id: id) {
                 await MainActor.run {
                     ground = model
-                    isLoading = false
+                    isLoading.toggle()
                     updateState()
                 }
             }
         } catch {
             await MainActor.run {
                 errorMessage = error.localizedDescription
-                isLoading = false
+                isLoading.toggle()
             }
         }
     }

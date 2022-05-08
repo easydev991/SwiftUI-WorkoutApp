@@ -1,5 +1,5 @@
 //
-//  PersonProfileView.swift
+//  UserProfileView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct PersonProfileView: View {
+struct UserProfileView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject var viewModel = PersonProfileViewModel()
+    @StateObject private var viewModel = UserProfileViewModel()
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -18,7 +18,7 @@ struct PersonProfileView: View {
     var body: some View {
         ZStack {
             Form {
-                personInfoSection
+                userInfoSection
                 if viewModel.showCommunication {
                     communicationSection
                 }
@@ -44,8 +44,8 @@ struct PersonProfileView: View {
     }
 }
 
-private extension PersonProfileView {
-    var personInfoSection: some View {
+private extension UserProfileView {
+    var userInfoSection: some View {
         Section {
             HStack(alignment: .center) {
                 VStack(spacing: 16) {
@@ -53,11 +53,8 @@ private extension PersonProfileView {
                     VStack(spacing: 4) {
                         Text(viewModel.user.name)
                             .fontWeight(.bold)
-                        Text("\(viewModel.user.gender), ") + Text(
-                            "yearsCount \(viewModel.user.age)",
-                            tableName: "Plurals"
-                        )
-                        Text(viewModel.userShortAddress)
+                        Text(viewModel.user.gender) + Text("yearsCount \(viewModel.user.age)", tableName: "Plurals")
+                        Text(viewModel.user.shortAddress)
                             .multilineTextAlignment(.center)
                     }
                 }
@@ -66,7 +63,7 @@ private extension PersonProfileView {
     }
 
     var avatarImageView: some View {
-        AsyncImage(url: viewModel.user.imageURL) { phase in
+        CacheAsyncImage(url: viewModel.user.imageURL) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -166,7 +163,7 @@ private extension PersonProfileView {
 
     var friendsLink: some View {
         NavigationLink {
-            PersonsListView(mode: .friends(userID: viewModel.user.id))
+            UsersListView(mode: .friends(userID: viewModel.user.id))
                 .navigationTitle("Друзья")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -221,9 +218,9 @@ private extension PersonProfileView {
     }
 }
 
-struct PersonProfileView_Previews: PreviewProvider {
+struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonProfileView(userID: UserDefaultsService().mainUserID)
+        UserProfileView(userID: UserDefaultsService().mainUserID)
             .environmentObject(UserDefaultsService())
     }
 }
