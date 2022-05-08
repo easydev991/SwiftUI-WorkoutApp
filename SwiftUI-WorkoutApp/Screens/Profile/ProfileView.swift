@@ -23,7 +23,7 @@ struct ProfileView: View {
 private extension ProfileView {
     var content: AnyView {
         if defaults.isAuthorized {
-            return AnyView(PersonProfileView(viewModel: .init(userID: defaults.mainUserID)))
+            return AnyView(PersonProfileView(userID: defaults.mainUserID))
         } else {
             return AnyView(IncognitoProfileView())
         }

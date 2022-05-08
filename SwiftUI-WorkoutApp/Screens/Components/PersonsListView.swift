@@ -18,7 +18,7 @@ struct PersonsListView: View {
         ZStack {
             List(viewModel.persons, id: \.self) { person in
                 NavigationLink {
-                    PersonProfileView(viewModel: .init(userID: person.userID.valueOrZero))
+                    PersonProfileView(userID: person.userID.valueOrZero)
                         .navigationBarTitleDisplayMode(.inline)
                 } label: {
                     PersonRow(model: person)

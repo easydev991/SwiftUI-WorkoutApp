@@ -8,7 +8,6 @@
 import Foundation
 
 final class PersonProfileViewModel: ObservableObject {
-    private let userID: Int
     private var isMainUser = false
     private let countryCityService = ShortAddressService()
 
@@ -30,11 +29,7 @@ final class PersonProfileViewModel: ObservableObject {
         return user.addedSportsGrounds
     }
 
-    init(userID: Int) {
-        self.userID = userID
-    }
-
-    func makeUserInfo(with userDefaults: UserDefaultsService) async {
+    func makeUserInfo(for userID: Int, with userDefaults: UserDefaultsService) async {
         errorMessage = ""
         if isLoading || user.id != .zero {
             return

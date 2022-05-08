@@ -9,15 +9,14 @@ import SwiftUI
 
 struct PersonProfileView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
-    @ObservedObject var viewModel: PersonProfileViewModel
+    @StateObject var viewModel = PersonProfileViewModel()
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    let userID: Int
 
     var body: some View {
         ZStack {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
             Form {
                 personInfoSection
                 if viewModel.showCommunication {
@@ -26,7 +25,8 @@ struct PersonProfileView: View {
                 socialInfoSection
             }
             .opacity(viewModel.isLoading ? .zero : 1)
-            .animation(.easeIn, value: viewModel.user.id)
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: retryAction) {
@@ -202,7 +202,7 @@ private extension PersonProfileView {
     }
 
     func askForUserInfo() async {
-        await viewModel.makeUserInfo(with: defaults)
+        await viewModel.makeUserInfo(for: userID, with: defaults)
     }
 
     func setupErrorAlert(with message: String) {
@@ -223,6 +223,7 @@ private extension PersonProfileView {
 
 struct PersonProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonProfileView(viewModel: .init(userID: 1))
+        PersonProfileView(userID: UserDefaultsService().mainUserID)
+            .environmentObject(UserDefaultsService())
     }
 }
