@@ -34,6 +34,7 @@ final class SportsGroundViewModel: ObservableObject {
                 await MainActor.run {
                     ground = model
                     isLoading = false
+                    updateState()
                 }
             }
         } catch {
@@ -55,5 +56,14 @@ extension SportsGroundViewModel {
             default: self = .three
             }
         }
+    }
+}
+
+private extension SportsGroundViewModel {
+    func updateState() {
+        isPhotoGridShown = !ground.photos.isEmpty
+        photoColumns = .init(ground.photos.count)
+        isMySportsGround = ground.mine
+        showParticipants = ground.peopleTrainHereCount > .zero
     }
 }
