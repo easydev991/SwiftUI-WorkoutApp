@@ -9,17 +9,17 @@ import SwiftUI
 import MapKit
 
 struct MapSnapshotView: View {
-    let model: SportsGround
+    @Binding var model: SportsGround
     @State private var snapshotImage: UIImage? = nil
 
     var body: some View {
         GeometryReader { geometry in
             content
-                .onAppear {
-                    generateSnapshot(
-                        width: geometry.size.width,
-                        height: geometry.size.height
-                    )
+                .onChange(of: model) { ground in
+                    if ground.coordinate.latitude != .zero
+                        && ground.coordinate.longitude != .zero {
+                        generateSnapshot(for: geometry.size)
+                    }
                 }
         }
     }
@@ -46,7 +46,8 @@ private extension MapSnapshotView {
         }
     }
 
-    func generateSnapshot(width: CGFloat, height: CGFloat) {
+    func generateSnapshot(for size: CGSize) {
+        snapshotImage = nil
         let spanDelta: CLLocationDegrees = 0.002
         let region = MKCoordinateRegion(
             center: model.coordinate,
@@ -57,7 +58,7 @@ private extension MapSnapshotView {
         )
         let options = MKMapSnapshotter.Options()
         options.region = region
-        options.size = .init(width: width, height: height)
+        options.size = .init(width: size.width, height: size.height)
         options.pointOfInterestFilter = .excludingAll
 
         let snapshotter = MKMapSnapshotter(options: options)
@@ -66,7 +67,9 @@ private extension MapSnapshotView {
                 let image = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
                     let point = snapshot.point(for: model.coordinate)
-                    let annotationView = MKMarkerAnnotationView(annotation: model, reuseIdentifier: nil)
+                    let annotationView = MKMarkerAnnotationView(
+                        annotation: model, reuseIdentifier: nil
+                    )
                     annotationView.contentMode = .scaleAspectFit
                     annotationView.bounds = .init(x: .zero, y: .zero, width: 40, height: 40)
                     let viewBounds = annotationView.bounds
@@ -82,7 +85,7 @@ private extension MapSnapshotView {
                 }
                 snapshotImage = image
             } else {
-                print("Error with snapshot: ",error?.localizedDescription ?? "")
+                print("Error with snapshot: ",(error?.localizedDescription).valueOrEmpty)
             }
         }
     }
@@ -90,7 +93,7 @@ private extension MapSnapshotView {
 
 struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
-        MapSnapshotView(model: SportsGround.mock)
+        MapSnapshotView(model: .constant(.emptyValue))
             .frame(width: .infinity, height: 150)
     }
 }

@@ -8,22 +8,39 @@
 import SwiftUI
 
 struct SportsGroundView: View {
+    @EnvironmentObject private var defaults: UserDefaultsService
     @ObservedObject var viewModel: SportsGroundViewModel
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
 
     init(model: SportsGroundViewModel) {
         viewModel = model
     }
 
     var body: some View {
-        Form {
-            titleAddressSection
-            if viewModel.isPhotoGridShown {
-                gridWithPhotosSection
+        ZStack {
+            Form {
+                titleAddressSection
+                if viewModel.isPhotoGridShown {
+                    gridWithPhotosSection
+                }
+                participantsAndEventSection
+                authorSection
+                commentsSection
             }
-            participantsAndEventSection
-            authorSection
-            commentsSection
+            .opacity(viewModel.isLoading ? .zero : 1)
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .task { await askForInfo() }
+        .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
+            Button(action: retryAction) {
+                TextTryAgain()
+            }
+        } message: {
+            Text(errorTitle)
+        }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -39,7 +56,7 @@ private extension SportsGroundView {
                 Text(viewModel.ground.subtitle ?? "")
                     .foregroundColor(.secondary)
             }
-            MapSnapshotView(model: viewModel.ground)
+            MapSnapshotView(model: $viewModel.ground)
                 .frame(height: 150)
                 .cornerRadius(8)
             Text(viewModel.ground.address)
@@ -165,12 +182,26 @@ private extension SportsGroundView {
             }
         }
     }
+
+    func askForInfo() async {
+        await viewModel.makeSportsGroundInfo(with: defaults)
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
+    func retryAction() {
+        Task { await askForInfo() }
+    }
 }
 
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundView(model: .init(with: .mock))
+            SportsGroundView(model: .init(groundID: .zero))
+                .environmentObject(UserDefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }
     }

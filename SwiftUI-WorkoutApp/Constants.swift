@@ -34,6 +34,7 @@ struct Constants {
     }
     struct Alert {
         static let success = "Успех!"
+        static let error = "Ошибка"
         static let authError = "Ошибка авторизации"
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let commentSent = "Комментарий отправлен!"

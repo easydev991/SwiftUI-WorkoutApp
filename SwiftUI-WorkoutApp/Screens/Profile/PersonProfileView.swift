@@ -32,6 +32,9 @@ struct PersonProfileView: View {
             Button(action: retryAction) {
                 TextTryAgain()
             }
+            Button(action: logout) {
+                Text("Выйти")
+            }
         }
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -134,6 +137,7 @@ private extension PersonProfileView {
 
     var usesSportsGroundsLink: some View {
         NavigationLink {
+#warning("TODO: интеграция с сервером - GET ${API}/users/<user_id>/areas")
             Text("Площадки (где тренируется)")
                 .navigationTitle("Где тренируется")
                 .navigationBarTitleDisplayMode(.inline)
@@ -204,6 +208,10 @@ private extension PersonProfileView {
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
+    }
+
+    func logout() {
+        defaults.triggerLogout()
     }
 
     func retryAction() {

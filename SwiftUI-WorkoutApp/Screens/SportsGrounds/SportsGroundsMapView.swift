@@ -14,7 +14,7 @@ struct SportsGroundsMapView: View {
         NavigationView {
             ZStack {
                 NavigationLink(isActive: $viewModel.openDetails) {
-                    SportsGroundView(model: .init(with: viewModel.selectedPlace))
+                    SportsGroundView(model: .init(groundID: viewModel.selectedPlace.id))
                 } label: {
                     Text("Загружаем карту ...")
                 }

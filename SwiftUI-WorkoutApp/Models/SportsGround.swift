@@ -153,6 +153,10 @@ enum Trainings: Codable {
 }
 
 extension SportsGround {
+    static var emptyValue: SportsGround {
+        .init(address: "", author: .init(id: .zero, imageStringURL: "", name: ""), canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero)
+    }
+
     static let mock = SportsGround(
         address: "ул. Шоссе Нефтянников 11/1",
         author: .init(
