@@ -19,7 +19,7 @@ struct UserProfileView: View {
         ZStack {
             Form {
                 userInfoSection
-                if viewModel.showCommunication {
+                if !viewModel.isMainUser {
                     communicationSection
                 }
                 socialInfoSection
@@ -123,7 +123,7 @@ private extension UserProfileView {
             if viewModel.user.addedSportsGrounds > .zero {
                 addedSportsGroundsLink
             }
-            if viewModel.user.friendsCount > .zero {
+            if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
                 friendsLink
             }
             if viewModel.user.journalsCount > .zero {
@@ -170,6 +170,10 @@ private extension UserProfileView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
+                if friendRequestsCount > .zero && viewModel.isMainUser {
+                    Image(systemName: "\(friendRequestsCount).circle.fill")
+                        .foregroundColor(.red)
+                }
                 Text("\(viewModel.user.friendsCount)")
                     .foregroundColor(.secondary)
             }
@@ -195,7 +199,7 @@ private extension UserProfileView {
         NavigationLink(destination: ProfileSettingsView()) {
             Image(systemName: "gearshape.fill")
         }
-        .opacity(viewModel.showSettingsButton ? 1 : .zero)
+        .opacity(viewModel.isMainUser ? 1 : .zero)
     }
 
     func askForUserInfo() async {
@@ -215,6 +219,10 @@ private extension UserProfileView {
         Task {
             await askForUserInfo()
         }
+    }
+
+    var friendRequestsCount: Int {
+        (defaults.getFriendRequests()?.count).valueOrZero
     }
 }
 

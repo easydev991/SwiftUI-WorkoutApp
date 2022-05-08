@@ -13,6 +13,13 @@ final class UserDefaultsService: ObservableObject {
     @AppStorage(Key.showWelcome.rawValue) private(set) var showWelcome = true
     @AppStorage(Key.authData.rawValue) private var authData = Data()
     @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
+    @AppStorage(Key.friendRequests.rawValue) private(set) var friendRequests = Data()
+    @AppStorage(Key.userUpdateTime.rawValue) private(set) var userUpdateTime = Double.zero
+
+    var needUpdateUser: Bool {
+        let now = Date().timeIntervalSince1970
+        return (now - userUpdateTime) > Constants.oneMinute
+    }
 
     @MainActor func setMainUserID(_ id: Int) {
         mainUserID = id
@@ -52,6 +59,7 @@ final class UserDefaultsService: ObservableObject {
     @MainActor func saveUserInfo(_ info: UserResponse) {
         if let data = try? JSONEncoder().encode(info) {
             userInfo = data
+            userUpdateTime = Date().timeIntervalSince1970
         }
     }
 
@@ -62,10 +70,27 @@ final class UserDefaultsService: ObservableObject {
             return nil
         }
     }
+
+    @MainActor func saveFriendRequests(_ array: [UserResponse]) {
+        if let data = try? JSONEncoder().encode(array) {
+            friendRequests = data
+            userUpdateTime = Date().timeIntervalSince1970
+        }
+    }
+
+    @MainActor func getFriendRequests() -> [UserResponse]? {
+        if let array = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
+            return array
+        } else {
+            return nil
+        }
+    }
 }
 
 private extension UserDefaultsService {
     enum Key: String {
-        case mainUserID, isUserAuthorized, showWelcome, authData, userInfo
+        case mainUserID, isUserAuthorized,
+             showWelcome, authData, userInfo,
+             friendRequests, userUpdateTime
     }
 }

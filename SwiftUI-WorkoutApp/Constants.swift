@@ -9,6 +9,7 @@ import Foundation
 import UIKit.UIDevice
 
 struct Constants {
+    static let oneMinute = Double(60)
     static let minPasswordSize = 6
     static let minimumUserAge = -5
     static let maxEventFutureYear = 1

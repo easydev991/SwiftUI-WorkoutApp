@@ -14,6 +14,9 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             content
+                .task {
+                    await viewModel.checkFriendRequests(with: defaults)
+                }
                 .navigationTitle("Профиль")
         }
         .ignoresSafeArea()

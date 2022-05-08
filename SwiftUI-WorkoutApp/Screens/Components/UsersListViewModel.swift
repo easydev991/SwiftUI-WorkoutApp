@@ -17,9 +17,9 @@ final class UsersListViewModel: ObservableObject {
         if !users.isEmpty || isLoading { return }
         switch mode {
         case let .friends(userID):
-            await makeFriends(for: userID, with: defaults)
+            await makeFriendsList(for: userID, with: defaults)
         case let .sportsGroundVisitors(groundID):
-            await makeParticipants(for: groundID, with: defaults)
+            await makeParticipantsList(for: groundID, with: defaults)
         }
     }
 
@@ -29,13 +29,13 @@ final class UsersListViewModel: ObservableObject {
 }
 
 private extension UsersListViewModel {
-    func makeFriends(for id: Int, with defaults: UserDefaultsService) async {
+    func makeFriendsList(for id: Int, with defaults: UserDefaultsService) async {
         errorMessage = ""
         let isMainUser = id == defaults.mainUserID
         let service = APIService(with: defaults)
         await MainActor.run { isLoading.toggle() }
         do {
-            if isMainUser, let friendRequests = try await service.getFriendRequests() {
+            if isMainUser, let friendRequests = await defaults.getFriendRequests() {
                 await MainActor.run {
                     self.friendRequests = friendRequests.map { UserModel($0) }
                 }
@@ -54,7 +54,7 @@ private extension UsersListViewModel {
         }
     }
 
-    func makeParticipants(for id: Int, with defaults: UserDefaultsService) async {
+    func makeParticipantsList(for id: Int, with defaults: UserDefaultsService) async {
         errorMessage = ""
         let _ = APIService(with: defaults)
         await MainActor.run { isLoading.toggle() }

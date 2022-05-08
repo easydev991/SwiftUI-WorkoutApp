@@ -8,27 +8,26 @@
 import Foundation
 
 final class UserProfileViewModel: ObservableObject {
-    private var isMainUser = false
+    private(set) var isMainUser = false
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
     @Published private(set) var isAddFriendButtonEnabled = true
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
-
-    var showCommunication: Bool { !isMainUser }
-    var showSettingsButton: Bool { isMainUser }
     var addedSportsGrounds: Int {
 #warning("TODO: маппить из списка площадок, т.к. сервер не присылает")
         return user.addedSportsGrounds
     }
 
-    func makeUserInfo(for userID: Int, with userDefaults: UserDefaultsService) async {
+    func makeUserInfo(for userID: Int, with defaults: UserDefaultsService) async {
         errorMessage = ""
-        if isLoading || user.id != .zero {
+        if isLoading
+            || (isMainUser && !defaults.needUpdateUser)
+            || (!isMainUser && user.id != .zero) {
             return
         }
-        if userID == userDefaults.mainUserID,
-           let mainUserInfo = await userDefaults.getUserInfo() {
+        if userID == defaults.mainUserID,
+           let mainUserInfo = await defaults.getUserInfo() {
             await MainActor.run {
                 user = .init(mainUserInfo)
                 isMainUser = true
@@ -37,7 +36,7 @@ final class UserProfileViewModel: ObservableObject {
         }
         await MainActor.run { isLoading.toggle() }
         do {
-            guard let info = try await APIService(with: userDefaults).getUserByID(userID) else {
+            guard let info = try await APIService(with: defaults).getUserByID(userID) else {
                 await MainActor.run {
                     errorMessage = Constants.Alert.cannotReadData
                     isLoading.toggle()
@@ -46,7 +45,7 @@ final class UserProfileViewModel: ObservableObject {
             }
             await MainActor.run {
                 user = .init(info)
-                isMainUser = user.id == userDefaults.mainUserID
+                isMainUser = user.id == defaults.mainUserID
                 isLoading.toggle()
             }
         } catch {
