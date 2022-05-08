@@ -118,7 +118,7 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            PersonsListView(viewModel: .init(mode: .sportsGroundVisitors(groundID: viewModel.ground.id)))
+            PersonsListView(mode: .sportsGroundVisitors(groundID: viewModel.ground.id))
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {

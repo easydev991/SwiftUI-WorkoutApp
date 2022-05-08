@@ -9,9 +9,10 @@ import SwiftUI
 
 struct PersonsListView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
-    @ObservedObject var viewModel: PersonsListViewModel
+    @StateObject var viewModel = PersonsListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    let mode: Mode
 
     var body: some View {
         ZStack {
@@ -36,9 +37,16 @@ struct PersonsListView: View {
     }
 }
 
+extension PersonsListView {
+    enum Mode {
+        case friends(userID: Int)
+        case sportsGroundVisitors(groundID: Int)
+    }
+}
+
 private extension PersonsListView {
     func askForPersons() async {
-        await viewModel.makePersons(defaults: defaults)
+        await viewModel.makeInfo(for: mode, with: defaults)
     }
 
     func setupErrorAlert(with message: String) {
@@ -53,7 +61,7 @@ private extension PersonsListView {
 
 struct PersonsListView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonsListView(viewModel: .init(mode: .friends(userID: UserDefaultsService().mainUserID)))
+        PersonsListView(mode: .friends(userID: UserDefaultsService().mainUserID))
             .environmentObject(UserDefaultsService())
     }
 }
