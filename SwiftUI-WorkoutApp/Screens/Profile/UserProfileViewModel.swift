@@ -43,7 +43,7 @@ final class UserProfileViewModel: ObservableObject {
                     return
                 }
                 if !isMainUser,
-                   !defaults.friendsList.compactMap(\.userID).contains(userID) {
+                   !defaults.friendsIdsList.contains(userID) {
                     isAddFriendButtonEnabled.toggle()
                 }
                 user = .init(info)

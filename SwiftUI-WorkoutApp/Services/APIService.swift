@@ -83,7 +83,7 @@ struct APIService {
         let friends = try handle([UserResponse].self, data, response)
         if id == defaults.mainUserID {
             await MainActor.run {
-                defaults.saveFriends(friends)
+                defaults.saveFriendsIds(friends.compactMap(\.userID))
             }
         }
         return friends

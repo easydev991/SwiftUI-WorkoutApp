@@ -89,15 +89,15 @@ final class UserDefaultsService: ObservableObject {
     }
 
     @MainActor
-    func saveFriends(_ friendsIds: [UserResponse]) {
-        if let data = try? JSONEncoder().encode(friendsIds) {
-            self.friendsIds = data
+    func saveFriendsIds(_ ids: [Int]) {
+        if let data = try? JSONEncoder().encode(ids) {
+            friendsIds = data
         }
     }
 
     @MainActor
-    var friendsList: [UserResponse] {
-        if let array = try? JSONDecoder().decode([UserResponse].self, from: friendsIds) {
+    var friendsIdsList: [Int] {
+        if let array = try? JSONDecoder().decode([Int].self, from: friendsIds) {
             return array
         } else {
             return []
