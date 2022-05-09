@@ -11,6 +11,7 @@ final class UserProfileViewModel: ObservableObject {
     private(set) var isMainUser = false
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
+#warning("TODO: добавить состояние *Удалить из друзей*")
     @Published private(set) var isAddFriendButtonEnabled = true
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
