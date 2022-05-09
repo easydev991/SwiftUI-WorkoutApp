@@ -12,7 +12,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
 #warning("TODO: добавить состояние *Удалить из друзей*")
-    @Published private(set) var isAddFriendButtonEnabled = true
+    @Published private(set) var isAddFriendButtonEnabled = false
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
     var addedSportsGrounds: Int {
@@ -33,7 +33,7 @@ final class UserProfileViewModel: ObservableObject {
         }
         isLoading.toggle()
         if isMainUser, !refresh,
-           let mainUserInfo = defaults.getUserInfo() {
+           let mainUserInfo = defaults.mainUserInfo {
             user = .init(mainUserInfo)
         } else {
             do {
@@ -41,6 +41,10 @@ final class UserProfileViewModel: ObservableObject {
                     errorMessage = Constants.Alert.cannotReadData
                     isLoading.toggle()
                     return
+                }
+                if !isMainUser,
+                   !defaults.friendsList.compactMap(\.userID).contains(userID) {
+                    isAddFriendButtonEnabled.toggle()
                 }
                 user = .init(info)
             } catch {

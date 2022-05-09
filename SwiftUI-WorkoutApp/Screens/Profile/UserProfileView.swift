@@ -213,18 +213,14 @@ private extension UserProfileView {
         errorTitle = message
     }
 
-    func logout() {
-        defaults.triggerLogout()
-    }
+    func logout() { defaults.triggerLogout() }
 
     func retryAction() {
-        Task {
-            await askForUserInfo()
-        }
+        Task { await askForUserInfo() }
     }
 
     var friendRequestsCount: Int {
-        (defaults.getFriendRequests()?.count).valueOrZero
+        defaults.friendRequestsList.count
     }
 }
 

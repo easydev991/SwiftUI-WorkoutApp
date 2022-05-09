@@ -36,8 +36,8 @@ private extension UsersListViewModel {
         let service = APIService(with: defaults)
         isLoading.toggle()
         do {
-            if isMainUser, let friendRequests = defaults.getFriendRequests() {
-                self.friendRequests = friendRequests.map { UserModel($0) }
+            if isMainUser {
+                self.friendRequests = defaults.friendRequestsList.map { UserModel($0) }
             }
             if let friends = try await service.getFriendsForUser(id: id) {
                 users = friends.map { UserModel($0) }

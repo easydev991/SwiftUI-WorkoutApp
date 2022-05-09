@@ -41,7 +41,7 @@ struct APIService {
     /// - Returns: Вся информация о пользователе
     @discardableResult
     func getUserByID(_ userID: Int) async throws -> UserResponse? {
-        let endpoint = Endpoint.getUser(id: userID, auth: defaults.getAuthData())
+        let endpoint = Endpoint.getUser(id: userID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return nil }
         let (data, response) = try await urlSession.data(for: request)
         let userInfo = try handle(UserResponse.self, data, response)
@@ -63,7 +63,7 @@ struct APIService {
     }
 
     func changePassword(current: String, new: String) async throws -> Bool {
-        let authData = defaults.getAuthData()
+        let authData = defaults.basicAuthInfo
         let endpoint = Endpoint.changePassword(
             currentPass: current, newPass: new, auth: authData
         )
@@ -77,14 +77,20 @@ struct APIService {
     }
 
     func getFriendsForUser(id: Int) async throws -> [UserResponse]? {
-        let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.getAuthData())
+        let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return nil }
         let (data, response) = try await urlSession.data(for: request)
-        return try handle([UserResponse].self, data, response)
+        let friends = try handle([UserResponse].self, data, response)
+        if id == defaults.mainUserID {
+            await MainActor.run {
+                defaults.saveFriends(friends)
+            }
+        }
+        return friends
     }
 
     func getFriendRequests() async throws {
-        let endpoint = Endpoint.getFriendRequests(auth: defaults.getAuthData())
+        let endpoint = Endpoint.getFriendRequests(auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
         let result = try handle([UserResponse].self, data, response)
@@ -92,7 +98,7 @@ struct APIService {
     }
 
     func getSportsGround(id: Int) async throws -> SportsGround? {
-        let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.getAuthData())
+        let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return nil }
         let (data, response) = try await urlSession.data(for: request)
         return try handle(SportsGround.self, data, response)

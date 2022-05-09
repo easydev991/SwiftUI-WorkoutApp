@@ -23,6 +23,9 @@ final class UserDefaultsService: ObservableObject {
     @AppStorage(Key.userInfo.rawValue)
     private var userInfo = Data()
 
+    @AppStorage(Key.friends.rawValue)
+    private var friendsIds = Data()
+
     @AppStorage(Key.friendRequests.rawValue)
     private var friendRequests = Data()
 
@@ -60,7 +63,7 @@ final class UserDefaultsService: ObservableObject {
         }
     }
 
-    func getAuthData() -> AuthData {
+    var basicAuthInfo: AuthData {
         if let info = try? JSONDecoder().decode(AuthData.self, from: authData) {
             return info
         } else {
@@ -77,11 +80,27 @@ final class UserDefaultsService: ObservableObject {
     }
 
     @MainActor
-    func getUserInfo() -> UserResponse? {
+    var mainUserInfo: UserResponse? {
         if let info = try? JSONDecoder().decode(UserResponse.self, from: userInfo) {
             return info
         } else {
             return nil
+        }
+    }
+
+    @MainActor
+    func saveFriends(_ friendsIds: [UserResponse]) {
+        if let data = try? JSONEncoder().encode(friendsIds) {
+            self.friendsIds = data
+        }
+    }
+
+    @MainActor
+    var friendsList: [UserResponse] {
+        if let array = try? JSONDecoder().decode([UserResponse].self, from: friendsIds) {
+            return array
+        } else {
+            return []
         }
     }
 
@@ -93,11 +112,11 @@ final class UserDefaultsService: ObservableObject {
     }
 
     @MainActor
-    func getFriendRequests() -> [UserResponse]? {
+    var friendRequestsList: [UserResponse] {
         if let array = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
             return array
         } else {
-            return nil
+            return []
         }
     }
 }
@@ -105,6 +124,6 @@ final class UserDefaultsService: ObservableObject {
 private extension UserDefaultsService {
     enum Key: String {
         case mainUserID, isUserAuthorized,showWelcome,
-             authData, userInfo, friendRequests
+             authData, userInfo, friends, friendRequests
     }
 }
