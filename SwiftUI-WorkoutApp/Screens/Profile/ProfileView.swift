@@ -14,7 +14,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             content
-                .task {
+                .task(priority: .medium) {
                     await viewModel.checkFriendRequests(with: defaults)
                 }
                 .navigationTitle("Профиль")

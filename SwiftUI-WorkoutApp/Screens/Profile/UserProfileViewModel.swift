@@ -19,41 +19,37 @@ final class UserProfileViewModel: ObservableObject {
         return user.addedSportsGrounds
     }
 
-    func makeUserInfo(for userID: Int, with defaults: UserDefaultsService) async {
+    @MainActor
+    func makeUserInfo(
+        for userID: Int,
+        with defaults: UserDefaultsService,
+        refresh: Bool = false
+    ) async {
         errorMessage = ""
+        isMainUser = userID == defaults.mainUserID
         if isLoading
-            || (isMainUser && !defaults.needUpdateUser)
-            || (!isMainUser && user.id != .zero) {
+            || (isMainUser && !defaults.needUpdateUser && !refresh)
+            || (user.id != .zero && !refresh) {
             return
         }
-        if userID == defaults.mainUserID,
-           let mainUserInfo = await defaults.getUserInfo() {
-            await MainActor.run {
-                user = .init(mainUserInfo)
-                isMainUser = true
-            }
+        isLoading.toggle()
+        if isMainUser,
+           let mainUserInfo = defaults.getUserInfo() {
+            user = .init(mainUserInfo)
+            isLoading.toggle()
             return
         }
-        await MainActor.run { isLoading.toggle() }
         do {
             guard let info = try await APIService(with: defaults).getUserByID(userID) else {
-                await MainActor.run {
-                    errorMessage = Constants.Alert.cannotReadData
-                    isLoading.toggle()
-                }
+                errorMessage = Constants.Alert.cannotReadData
+                isLoading.toggle()
                 return
             }
-            await MainActor.run {
-                user = .init(info)
-                isMainUser = user.id == defaults.mainUserID
-                isLoading.toggle()
-            }
+            user = .init(info)
         } catch {
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading.toggle()
-            }
+            errorMessage = error.localizedDescription
         }
+        isLoading.toggle()
     }
 
     func sendFriendRequest() {

@@ -71,10 +71,7 @@ struct APIService {
         let (_, response) = try await urlSession.data(for: request)
         let isSuccess = try handle(response)
         if isSuccess {
-            let login = authData.login
-            await MainActor.run {
-                defaults.saveAuthData(.init(login: login, password: new))
-            }
+            await defaults.saveAuthData(.init(login: authData.login, password: new))
         }
         return isSuccess
     }
@@ -86,11 +83,12 @@ struct APIService {
         return try handle([UserResponse].self, data, response)
     }
 
-    func getFriendRequests() async throws -> [UserResponse]? {
+    func getFriendRequests() async throws {
         let endpoint = Endpoint.getFriendRequests(auth: defaults.getAuthData())
-        guard let request = endpoint.urlRequest else { return nil }
+        guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
-        return try handle([UserResponse].self, data, response)
+        let result = try handle([UserResponse].self, data, response)
+        await defaults.saveFriendRequests(result)
     }
 
     func getSportsGround(id: Int) async throws -> SportsGround? {

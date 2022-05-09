@@ -7,11 +7,11 @@
 
 import Foundation
 
+@MainActor
 final class ProfileViewModel: ObservableObject {
     func checkFriendRequests(with defaults: UserDefaultsService) async {
-        if defaults.isAuthorized, defaults.needUpdateUser,
-           let friendRequests = try? await APIService(with: defaults).getFriendRequests() {
-            await defaults.saveFriendRequests(friendRequests)
+        if defaults.isAuthorized, defaults.needUpdateUser {
+            try? await APIService(with: defaults).getFriendRequests()
         }
     }
 }

@@ -24,10 +24,8 @@ struct UserProfileView: View {
                 }
                 socialInfoSection
             }
-            .opacity(viewModel.isLoading ? .zero : 1)
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.user.id)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: retryAction) {
                 TextTryAgain()
@@ -36,10 +34,11 @@ struct UserProfileView: View {
                 Text("Выйти")
             }
         }
+        .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .toolbar { settingsLink }
-        .task { await askForUserInfo() }
+        .task(priority: .userInitiated) { await askForUserInfo() }
         .navigationTitle("Профиль")
     }
 }
@@ -202,8 +201,8 @@ private extension UserProfileView {
         .opacity(viewModel.isMainUser ? 1 : .zero)
     }
 
-    func askForUserInfo() async {
-        await viewModel.makeUserInfo(for: userID, with: defaults)
+    func askForUserInfo(refresh: Bool = false) async {
+        await viewModel.makeUserInfo(for: userID, with: defaults, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {

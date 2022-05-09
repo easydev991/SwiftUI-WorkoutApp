@@ -26,19 +26,18 @@ final class ChangePasswordViewModel: ObservableObject {
         || areNewPasswordsNotEqual
     }
 
+    @MainActor
     func changePasswordAction() async {
-        await MainActor.run { isLoading.toggle() }
+        isLoading.toggle()
         let isSuccess = try? await APIService().changePassword(
             current: currentPasswordText,
             new: newPasswordText
         )
-        await MainActor.run {
-            isLoading.toggle()
-            if isSuccess.isTrue {
-                isChangeSuccessful.toggle()
-            } else {
-                errorMessage = Constants.Alert.changePasswordError
-            }
+        isLoading.toggle()
+        if isSuccess.isTrue {
+            isChangeSuccessful.toggle()
+        } else {
+            errorMessage = Constants.Alert.changePasswordError
         }
     }
 

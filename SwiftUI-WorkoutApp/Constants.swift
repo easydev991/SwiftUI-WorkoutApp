@@ -9,11 +9,10 @@ import Foundation
 import UIKit.UIDevice
 
 struct Constants {
-    static let oneMinute = Double(60)
     static let minPasswordSize = 6
     static let minimumUserAge = -5
     static let maxEventFutureYear = 1
-    static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+    static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"
 
@@ -24,8 +23,8 @@ struct Constants {
         static let sysVersion = "iOS: \(UIDevice.current.systemVersion)"
         static let appVersion = "App version: \(Constants.appVersion)"
         static func completeURL() -> URL? {
-            let _subject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-            return .init(string: "mailto:\(toEmail)?subject=\(_subject)")
+            let _subject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+            return .init(string: "mailto:\(toEmail)?subject=\(_subject.valueOrEmpty)")
         }
     }
     struct API {

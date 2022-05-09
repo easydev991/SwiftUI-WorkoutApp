@@ -23,6 +23,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 print("---background")
             case .inactive:
                 print("---inactive")
+                defaults.needUpdateUser = true
             case .active:
                 print("---active")
             @unknown default:

@@ -39,7 +39,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case let .integer(int):
             return int
         case let .string(str):
-            return Int(str) ?? .zero
+            return Int(str).valueOrZero
         }
     }
     var coordinate: CLLocationCoordinate2D {

@@ -53,7 +53,7 @@ private extension SportsGroundView {
                 Text(viewModel.ground.shortTitle)
                     .font(.title2.bold())
                 Spacer()
-                Text(viewModel.ground.subtitle ?? "")
+                Text(viewModel.ground.subtitle.valueOrEmpty)
                     .foregroundColor(.secondary)
             }
             MapSnapshotView(model: $viewModel.ground)

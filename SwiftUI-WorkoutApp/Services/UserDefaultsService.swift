@@ -14,12 +14,8 @@ final class UserDefaultsService: ObservableObject {
     @AppStorage(Key.authData.rawValue) private var authData = Data()
     @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
     @AppStorage(Key.friendRequests.rawValue) private(set) var friendRequests = Data()
-    @AppStorage(Key.userUpdateTime.rawValue) private(set) var userUpdateTime = Double.zero
 
-    var needUpdateUser: Bool {
-        let now = Date().timeIntervalSince1970
-        return (now - userUpdateTime) > Constants.oneMinute
-    }
+    var needUpdateUser = true
 
     @MainActor func setMainUserID(_ id: Int) {
         mainUserID = id
@@ -37,6 +33,7 @@ final class UserDefaultsService: ObservableObject {
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
+        friendRequests = .init()
         mainUserID = .zero
         showWelcome = true
         isAuthorized = false
@@ -59,7 +56,7 @@ final class UserDefaultsService: ObservableObject {
     @MainActor func saveUserInfo(_ info: UserResponse) {
         if let data = try? JSONEncoder().encode(info) {
             userInfo = data
-            userUpdateTime = Date().timeIntervalSince1970
+            needUpdateUser = false
         }
     }
 
@@ -74,7 +71,6 @@ final class UserDefaultsService: ObservableObject {
     @MainActor func saveFriendRequests(_ array: [UserResponse]) {
         if let data = try? JSONEncoder().encode(array) {
             friendRequests = data
-            userUpdateTime = Date().timeIntervalSince1970
         }
     }
 
@@ -91,6 +87,6 @@ private extension UserDefaultsService {
     enum Key: String {
         case mainUserID, isUserAuthorized,
              showWelcome, authData, userInfo,
-             friendRequests, userUpdateTime
+             friendRequests
     }
 }
