@@ -9,14 +9,10 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject private var viewModel = ProfileViewModel()
 
     var body: some View {
         NavigationView {
             content
-                .task(priority: .medium) {
-                    await viewModel.checkFriendRequests(with: defaults)
-                }
                 .navigationTitle("Профиль")
         }
         .ignoresSafeArea()

@@ -27,28 +27,33 @@ final class UserProfileViewModel: ObservableObject {
     ) async {
         errorMessage = ""
         isMainUser = userID == defaults.mainUserID
-        if isMainUser && !defaults.needUpdateUser && !refresh
-            || (user.id != .zero && !refresh) {
+        if user.id != .zero, !refresh {
             return
         }
         isLoading.toggle()
-        if isMainUser,
+        if isMainUser, !refresh,
            let mainUserInfo = defaults.getUserInfo() {
             user = .init(mainUserInfo)
-            isLoading.toggle()
-            return
-        }
-        do {
-            guard let info = try await APIService(with: defaults).getUserByID(userID) else {
-                errorMessage = Constants.Alert.cannotReadData
-                isLoading.toggle()
-                return
+        } else {
+            do {
+                guard let info = try await APIService(with: defaults).getUserByID(userID) else {
+                    errorMessage = Constants.Alert.cannotReadData
+                    isLoading.toggle()
+                    return
+                }
+                user = .init(info)
+            } catch {
+                errorMessage = error.localizedDescription
             }
-            user = .init(info)
-        } catch {
-            errorMessage = error.localizedDescription
         }
         isLoading.toggle()
+    }
+
+    @MainActor
+    func checkFriendRequests(with defaults: UserDefaultsService) async {
+        if defaults.isAuthorized {
+            try? await APIService(with: defaults).getFriendRequests()
+        }
     }
 
     func sendFriendRequest() {
@@ -57,6 +62,6 @@ final class UserProfileViewModel: ObservableObject {
     }
 
     func friendRequestedAlertOKAction() {
-        isAddFriendButtonEnabled = false
+        isAddFriendButtonEnabled.toggle()
     }
 }

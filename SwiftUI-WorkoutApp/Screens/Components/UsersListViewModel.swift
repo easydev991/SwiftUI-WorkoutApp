@@ -29,35 +29,30 @@ final class UsersListViewModel: ObservableObject {
 }
 
 private extension UsersListViewModel {
+    @MainActor
     func makeFriendsList(for id: Int, with defaults: UserDefaultsService) async {
         errorMessage = ""
         let isMainUser = id == defaults.mainUserID
         let service = APIService(with: defaults)
-        await MainActor.run { isLoading.toggle() }
+        isLoading.toggle()
         do {
-            if isMainUser, let friendRequests = await defaults.getFriendRequests() {
-                await MainActor.run {
-                    self.friendRequests = friendRequests.map { UserModel($0) }
-                }
+            if isMainUser, let friendRequests = defaults.getFriendRequests() {
+                self.friendRequests = friendRequests.map { UserModel($0) }
             }
             if let friends = try await service.getFriendsForUser(id: id) {
-                await MainActor.run {
-                    users = friends.map { UserModel($0) }
-                    isLoading.toggle()
-                }
+                users = friends.map { UserModel($0) }
             }
         } catch {
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading.toggle()
-            }
+            errorMessage = error.localizedDescription
         }
+        isLoading.toggle()
     }
 
+    @MainActor
     func makeParticipantsList(for id: Int, with defaults: UserDefaultsService) async {
         errorMessage = ""
         let _ = APIService(with: defaults)
-        await MainActor.run { isLoading.toggle() }
+        isLoading.toggle()
 #warning("TODO: интеграция с сервером")
         print("--- получить список тренирующихся на площадке с номером \(id)")
     }

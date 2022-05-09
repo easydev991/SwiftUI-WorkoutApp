@@ -48,7 +48,7 @@ struct APIService {
         if userID == defaults.mainUserID {
             await MainActor.run {
                 defaults.saveUserInfo(userInfo)
-                defaults.setUserLoggedIn()
+                if !defaults.isAuthorized { defaults.setUserLoggedIn() }
             }
         }
         return userInfo

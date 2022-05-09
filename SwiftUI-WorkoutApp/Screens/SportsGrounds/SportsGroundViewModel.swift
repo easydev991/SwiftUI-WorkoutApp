@@ -25,26 +25,22 @@ final class SportsGroundViewModel: ObservableObject {
         id = groundID
     }
 
+    @MainActor
     func makeSportsGroundInfo(with defaults: UserDefaultsService) async {
+        errorMessage = ""
         if isLoading || ground.id != .zero {
             return
         }
-        errorMessage = ""
-        await MainActor.run { isLoading.toggle() }
+        isLoading.toggle()
         do {
             if let model = try await APIService(with: defaults).getSportsGround(id: id) {
-                await MainActor.run {
-                    ground = model
-                    isLoading.toggle()
-                    updateState()
-                }
+                ground = model
+                updateState()
             }
         } catch {
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading.toggle()
-            }
+            errorMessage = error.localizedDescription
         }
+        isLoading.toggle()
     }
 }
 

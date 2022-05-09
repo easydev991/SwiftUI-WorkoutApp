@@ -203,6 +203,9 @@ private extension UserProfileView {
 
     func askForUserInfo(refresh: Bool = false) async {
         await viewModel.makeUserInfo(for: userID, with: defaults, refresh: refresh)
+        if viewModel.isMainUser {
+            await viewModel.checkFriendRequests(with: defaults)
+        }
     }
 
     func setupErrorAlert(with message: String) {

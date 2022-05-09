@@ -8,16 +8,29 @@
 import SwiftUI
 
 final class UserDefaultsService: ObservableObject {
-    @AppStorage(Key.mainUserID.rawValue) private(set) var mainUserID = Int.zero
-    @AppStorage(Key.isUserAuthorized.rawValue) private(set) var isAuthorized = false
-    @AppStorage(Key.showWelcome.rawValue) private(set) var showWelcome = true
-    @AppStorage(Key.authData.rawValue) private var authData = Data()
-    @AppStorage(Key.userInfo.rawValue) private var userInfo = Data()
-    @AppStorage(Key.friendRequests.rawValue) private(set) var friendRequests = Data()
+    @AppStorage(Key.mainUserID.rawValue)
+    private(set) var mainUserID = Int.zero
 
+    @AppStorage(Key.isUserAuthorized.rawValue)
+    private(set) var isAuthorized = false
+
+    @AppStorage(Key.showWelcome.rawValue)
+    private(set) var showWelcome = true
+
+    @AppStorage(Key.authData.rawValue)
+    private var authData = Data()
+
+    @AppStorage(Key.userInfo.rawValue)
+    private var userInfo = Data()
+
+    @AppStorage(Key.friendRequests.rawValue)
+    private var friendRequests = Data()
+
+    /// Ставим `true` при смене состояния приложения на `inactive`
     var needUpdateUser = true
 
-    @MainActor func setMainUserID(_ id: Int) {
+    @MainActor
+    func setMainUserID(_ id: Int) {
         mainUserID = id
     }
 
@@ -25,7 +38,8 @@ final class UserDefaultsService: ObservableObject {
         showWelcome = false
     }
 
-    @MainActor func setUserLoggedIn() {
+    @MainActor
+    func setUserLoggedIn() {
         showWelcome = false
         isAuthorized = true
     }
@@ -39,7 +53,8 @@ final class UserDefaultsService: ObservableObject {
         isAuthorized = false
     }
 
-    @MainActor func saveAuthData(_ info: AuthData) {
+    @MainActor
+    func saveAuthData(_ info: AuthData) {
         if let data = try? JSONEncoder().encode(info) {
             authData = data
         }
@@ -53,14 +68,16 @@ final class UserDefaultsService: ObservableObject {
         }
     }
 
-    @MainActor func saveUserInfo(_ info: UserResponse) {
+    @MainActor
+    func saveUserInfo(_ info: UserResponse) {
         if let data = try? JSONEncoder().encode(info) {
             userInfo = data
             needUpdateUser = false
         }
     }
 
-    @MainActor func getUserInfo() -> UserResponse? {
+    @MainActor
+    func getUserInfo() -> UserResponse? {
         if let info = try? JSONDecoder().decode(UserResponse.self, from: userInfo) {
             return info
         } else {
@@ -68,13 +85,15 @@ final class UserDefaultsService: ObservableObject {
         }
     }
 
-    @MainActor func saveFriendRequests(_ array: [UserResponse]) {
+    @MainActor
+    func saveFriendRequests(_ array: [UserResponse]) {
         if let data = try? JSONEncoder().encode(array) {
             friendRequests = data
         }
     }
 
-    @MainActor func getFriendRequests() -> [UserResponse]? {
+    @MainActor
+    func getFriendRequests() -> [UserResponse]? {
         if let array = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
             return array
         } else {
@@ -85,8 +104,7 @@ final class UserDefaultsService: ObservableObject {
 
 private extension UserDefaultsService {
     enum Key: String {
-        case mainUserID, isUserAuthorized,
-             showWelcome, authData, userInfo,
-             friendRequests
+        case mainUserID, isUserAuthorized,showWelcome,
+             authData, userInfo, friendRequests
     }
 }

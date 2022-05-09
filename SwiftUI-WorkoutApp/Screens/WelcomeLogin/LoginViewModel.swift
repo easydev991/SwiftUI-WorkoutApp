@@ -36,38 +36,33 @@ final class LoginViewModel: ObservableObject {
         showResetSuccessfulAlert.toggle()
     }
 
+    @MainActor
     func loginAction(with userDefaults: UserDefaultsService) async {
         if !canLogIn { return }
-        await MainActor.run { isLoading.toggle() }
+        isLoading.toggle()
         do {
             try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading.toggle()
-            }
+            errorMessage = error.localizedDescription
+            isLoading.toggle()
         }
     }
 
+    @MainActor
     func forgotPasswordTapped() async {
         if canRestorePassword {
-            await MainActor.run { isLoading.toggle() }
+            isLoading.toggle()
             do {
                 let isSuccess = try await APIService().resetPassword(for: login)
-                await MainActor.run {
-                    isLoading.toggle()
-                    if isSuccess {
-                        showResetSuccessfulAlert.toggle()
-                    } else {
-                        errorMessage = Constants.Alert.resetPasswordError
-                    }
+                if isSuccess {
+                    showResetSuccessfulAlert.toggle()
+                } else {
+                    errorMessage = Constants.Alert.resetPasswordError
                 }
             } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    isLoading.toggle()
-                }
+                errorMessage = error.localizedDescription
             }
+            isLoading.toggle()
         } else {
             showForgotPasswordAlert.toggle()
         }
