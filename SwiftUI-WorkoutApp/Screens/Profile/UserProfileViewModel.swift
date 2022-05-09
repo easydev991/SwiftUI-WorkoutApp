@@ -27,8 +27,7 @@ final class UserProfileViewModel: ObservableObject {
     ) async {
         errorMessage = ""
         isMainUser = userID == defaults.mainUserID
-        if isLoading
-            || (isMainUser && !defaults.needUpdateUser && !refresh)
+        if isMainUser && !defaults.needUpdateUser && !refresh
             || (user.id != .zero && !refresh) {
             return
         }

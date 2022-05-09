@@ -33,19 +33,19 @@ struct APIService {
             defaults.setMainUserID(loginResponse.userID)
             defaults.saveAuthData(authData)
         }
-        try await getUserByID(loginResponse.userID, loginFlow: true)
+        try await getUserByID(loginResponse.userID)
     }
 
     /// Запрашивает данные пользователя по `id`
     /// - Parameter userID: `id` пользователя
     /// - Returns: Вся информация о пользователе
     @discardableResult
-    func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse? {
+    func getUserByID(_ userID: Int) async throws -> UserResponse? {
         let endpoint = Endpoint.getUser(id: userID, auth: defaults.getAuthData())
         guard let request = endpoint.urlRequest else { return nil }
         let (data, response) = try await urlSession.data(for: request)
         let userInfo = try handle(UserResponse.self, data, response)
-        if loginFlow && userID == defaults.mainUserID {
+        if userID == defaults.mainUserID {
             await MainActor.run {
                 defaults.saveUserInfo(userInfo)
                 defaults.setUserLoggedIn()
