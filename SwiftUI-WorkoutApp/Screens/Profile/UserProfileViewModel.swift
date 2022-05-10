@@ -12,7 +12,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
 #warning("TODO: добавить состояние *Удалить из друзей*")
-    @Published private(set) var isAddFriendButtonEnabled = false
+    @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
     var addedSportsGrounds: Int {
@@ -31,7 +31,7 @@ final class UserProfileViewModel: ObservableObject {
         if user.id != .zero, !refresh {
             return
         }
-        isLoading.toggle()
+        if !refresh { isLoading.toggle() }
         if isMainUser, !refresh,
            let mainUserInfo = defaults.mainUserInfo {
             user = .init(mainUserInfo)
@@ -39,19 +39,20 @@ final class UserProfileViewModel: ObservableObject {
             do {
                 guard let info = try await APIService(with: defaults).getUserByID(userID) else {
                     errorMessage = Constants.Alert.cannotReadData
-                    isLoading.toggle()
+                    if !refresh { isLoading.toggle() }
                     return
                 }
-                if !isMainUser,
-                   !defaults.friendsIdsList.contains(userID) {
-                    isAddFriendButtonEnabled.toggle()
+                if !isMainUser {
+                    friendActionOption = defaults.friendsIdsList.contains(userID)
+                    ? .removeFriend
+                    : .sendFriendRequest
                 }
                 user = .init(info)
             } catch {
                 errorMessage = error.localizedDescription
             }
         }
-        isLoading.toggle()
+        if !refresh { isLoading.toggle() }
     }
 
     @MainActor
@@ -59,12 +60,27 @@ final class UserProfileViewModel: ObservableObject {
         try? await APIService(with: defaults).getFriendRequests()
     }
 
-    func sendFriendRequest() {
-#warning("TODO: интеграция с сервером")
-        requestedFriendship = true
+    @MainActor
+    func friendAction(with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let isSuccess = try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption)
+            if isSuccess {
+                switch friendActionOption {
+                case .sendFriendRequest:
+                    requestedFriendship.toggle()
+                case .removeFriend:
+                    friendActionOption = .sendFriendRequest
+                }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
     }
 
     func friendRequestedAlertOKAction() {
-        isAddFriendButtonEnabled.toggle()
+        print("--- заглушка")
     }
 }

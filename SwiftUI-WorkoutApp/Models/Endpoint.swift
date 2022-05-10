@@ -36,11 +36,19 @@ enum Endpoint {
 
     /// Принять заявку на добавление в друзья:
     /// **POST** ${API}/friends/<id>/accept
-    case acceptFriendRequest(friendID: Int, auth: AuthData)
+    case acceptFriendRequest(from: Int, auth: AuthData)
 
     /// Отклонить заявку на добавление в друзья:
     /// **DELETE**  ${API}/friends/<user_id>/accept
-    case declineFriendRequest(friendID: Int, auth: AuthData)
+    case declineFriendRequest(from: Int, auth: AuthData)
+
+    /// Отправить запрос на добавление в друзья:
+    /// **POST**  ${API}/friends/<user_id>
+    case sendFriendRequest(to: Int, auth: AuthData)
+
+    /// Удалить из списка друзей:
+    /// **DELETE**  ${API}/friends/<user_id>
+    case deleteFriend(_ friendID: Int, auth: AuthData)
 
     /// Получение выбранной площадки по ее номеру `id`:
     /// **GET** ${API}/areas/<id>
@@ -112,9 +120,12 @@ private extension Endpoint {
             return "\(baseUrl)/users/\(id)/friends"
         case .getFriendRequests:
             return "\(baseUrl)/friends/requests"
-        case let .acceptFriendRequest(friendID, _),
-            let .declineFriendRequest(friendID, _):
-            return "\(baseUrl)/friends/\(friendID)/accept"
+        case let .acceptFriendRequest(userID, _),
+            let .declineFriendRequest(userID, _):
+            return "\(baseUrl)/friends/\(userID)/accept"
+        case let .sendFriendRequest(userID, _),
+            let .deleteFriend(userID, _):
+            return "\(baseUrl)/friends/\(userID)"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
         }
@@ -122,12 +133,13 @@ private extension Endpoint {
 
     var method: HTTPMethod {
         switch self {
-        case .login, .resetPassword, .changePassword, .acceptFriendRequest:
+        case .login, .resetPassword, .changePassword,
+                .acceptFriendRequest, .sendFriendRequest:
             return .post
         case .getUser, .getFriendsForUser,
                 .getFriendRequests, .getSportsGround:
             return .get
-        case .declineFriendRequest:
+        case .declineFriendRequest, .deleteFriend:
             return .delete
         }
     }
@@ -136,7 +148,8 @@ private extension Endpoint {
         switch self {
         case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth),
             let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
-            let .declineFriendRequest(_, auth), let .getSportsGround(_, auth):
+            let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
+            let .deleteFriend(_, auth), let .getSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -146,7 +159,8 @@ private extension Endpoint {
     var httpBody: Data? {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
-                .acceptFriendRequest, .declineFriendRequest, .getSportsGround:
+                .acceptFriendRequest, .declineFriendRequest,
+                .sendFriendRequest, .deleteFriend, .getSportsGround:
             return nil
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])

@@ -19,13 +19,15 @@ struct UserProfileView: View {
         ZStack {
             Form {
                 userInfoSection
-                if !viewModel.isMainUser {
-                    communicationSection
-                }
+                communicationSection
                 socialInfoSection
             }
+            .disabled(viewModel.isLoading)
+            .opacity(viewModel.user.isEmpty ? .zero : 1)
+            .animation(.default, value: viewModel.isLoading)
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
-        .animation(.default, value: viewModel.user.id)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: retryAction) {
                 TextTryAgain()
@@ -83,9 +85,9 @@ private extension UserProfileView {
 
     var communicationSection: some View {
         Section {
-            sendMessageLink
-            if viewModel.isAddFriendButtonEnabled {
-                addNewFriendButton
+            if !viewModel.isMainUser {
+                sendMessageLink
+                friendActionButton
             }
         }
     }
@@ -102,9 +104,11 @@ private extension UserProfileView {
         }
     }
 
-    var addNewFriendButton: some View {
-        Button(action: viewModel.sendFriendRequest) {
-            Text("Предложить дружбу")
+    var friendActionButton: some View {
+        Button {
+            Task { await viewModel.friendAction(with: defaults) }
+        } label: {
+            Text(viewModel.friendActionOption.rawValue)
                 .fontWeight(.medium)
         }
         .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {

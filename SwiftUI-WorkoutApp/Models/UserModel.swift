@@ -45,14 +45,14 @@ struct UserModel: Identifiable, Hashable {
         self.friendsCount = friendsCount
         self.journalsCount = journalsCount
     }
-
-    static var emptyValue: UserModel {
-        .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, friendsCount: .zero, journalsCount: .zero)
-    }
 }
 
 extension UserModel {
     var shortAddress: String {
         ShortAddressService().addressFor(countryID, cityID)
+    }
+    var isEmpty: Bool { id == .zero }
+    static var emptyValue: UserModel {
+        .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, friendsCount: .zero, journalsCount: .zero)
     }
 }

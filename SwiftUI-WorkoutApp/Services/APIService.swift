@@ -100,14 +100,33 @@ struct APIService {
 
     func respondToFriendRequest(from userID: Int, accept: Bool) async throws -> Bool {
         let endpoint: Endpoint = accept
-        ? .acceptFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
-        : .declineFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
+        ? .acceptFriendRequest(from: userID, auth: defaults.basicAuthInfo)
+        : .declineFriendRequest(from: userID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         let isSuccess = try handle(response)
         if isSuccess {
-            defaults.needUpdateUser = true
+            if accept {
+                defaults.needUpdateUser = true
+                try await getFriendsForUser(id: defaults.mainUserID)
+            }
             try await getFriendRequests()
+        }
+        return isSuccess
+    }
+
+    func friendAction(userID: Int, option: Constants.FriendAction) async throws -> Bool {
+        let endpoint: Endpoint = option == .sendFriendRequest
+        ? .sendFriendRequest(to: userID, auth: defaults.basicAuthInfo)
+        : .deleteFriend(userID, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        let isSuccess = try handle(response)
+        if isSuccess && option == .removeFriend {
+            defaults.needUpdateUser = true
+            if option == .removeFriend {
+                try await getFriendsForUser(id: defaults.mainUserID)
+            }
         }
         return isSuccess
     }
