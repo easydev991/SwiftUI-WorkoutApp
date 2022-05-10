@@ -16,6 +16,7 @@ struct FriendRequestsView: View {
         List(viewModel.friendRequests, id: \.self) { item in
             FriendRequestRow(model: item, acceptClbk: accept, declineClbk: decline)
         }
+        .disabled(viewModel.isLoading)
         .animation(.default, value: viewModel.friendRequests)
         .onChange(of: viewModel.friendRequests, perform: dismissIfNeeded)
         .navigationTitle("Заявки")
@@ -25,16 +26,15 @@ struct FriendRequestsView: View {
 
 private extension FriendRequestsView {
     func accept(userID: Int) {
-#warning("TODO: интеграция с сервером")
-        print("приняли заявку")
         Task {
-            await viewModel.acceptFriendRequest(from: userID, with: defaults)
+            await viewModel.respondToFriendRequest(from: userID, with: defaults, accept: true)
         }
     }
 
     func decline(userID: Int) {
-#warning("TODO: интеграция с сервером")
-        print("отклонили заявку")
+        Task {
+            await viewModel.respondToFriendRequest(from: userID, with: defaults, accept: false)
+        }
     }
 
     func dismissIfNeeded(items: [UserModel]) {

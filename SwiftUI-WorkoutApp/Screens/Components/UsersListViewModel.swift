@@ -28,12 +28,14 @@ final class UsersListViewModel: ObservableObject {
     }
 
     @MainActor
-    func acceptFriendRequest(
+    func respondToFriendRequest(
         from userID: Int,
-        with defaults: UserDefaultsService
+        with defaults: UserDefaultsService,
+        accept: Bool
     ) async {
+        isLoading.toggle()
         do {
-            let isSuccess = try await APIService(with: defaults).acceptFriendRequest(from: userID)
+            let isSuccess = try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept)
             if isSuccess {
                 self.friendRequests = defaults.friendRequestsList.map(UserModel.init)
             }
@@ -41,10 +43,7 @@ final class UsersListViewModel: ObservableObject {
             print("--- error acceptFriendRequest: \(error)")
             errorMessage = error.localizedDescription
         }
-    }
-
-    func declineFriendRequest(from userID: Int) async {
-
+        isLoading.toggle()
     }
 
     deinit {

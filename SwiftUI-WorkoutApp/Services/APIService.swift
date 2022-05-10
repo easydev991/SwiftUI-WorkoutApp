@@ -98,14 +98,15 @@ struct APIService {
         await defaults.saveFriendRequests(result)
     }
 
-    func acceptFriendRequest(from userID: Int) async throws -> Bool {
-        let endpoint = Endpoint.acceptFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
+    func respondToFriendRequest(from userID: Int, accept: Bool) async throws -> Bool {
+        let endpoint: Endpoint = accept
+        ? .acceptFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
+        : .declineFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         let isSuccess = try handle(response)
         if isSuccess {
             defaults.needUpdateUser = true
-            try await getFriendsForUser(id: defaults.mainUserID)
             try await getFriendRequests()
         }
         return isSuccess

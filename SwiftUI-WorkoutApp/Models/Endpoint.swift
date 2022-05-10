@@ -38,6 +38,10 @@ enum Endpoint {
     /// **POST** ${API}/friends/<id>/accept
     case acceptFriendRequest(friendID: Int, auth: AuthData)
 
+    /// Отклонить заявку на добавление в друзья:
+    /// **DELETE**  ${API}/friends/<user_id>/accept
+    case declineFriendRequest(friendID: Int, auth: AuthData)
+
     /// Получение выбранной площадки по ее номеру `id`:
     /// **GET** ${API}/areas/<id>
     case getSportsGround(id: Int, auth: AuthData)
@@ -56,6 +60,7 @@ private extension Endpoint {
     enum HTTPMethod: String {
         case post = "POST"
         case get = "GET"
+        case delete = "DELETE"
     }
 
     enum HTTPHeader {
@@ -107,7 +112,8 @@ private extension Endpoint {
             return "\(baseUrl)/users/\(id)/friends"
         case .getFriendRequests:
             return "\(baseUrl)/friends/requests"
-        case let .acceptFriendRequest(friendID, _):
+        case let .acceptFriendRequest(friendID, _),
+            let .declineFriendRequest(friendID, _):
             return "\(baseUrl)/friends/\(friendID)/accept"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
@@ -121,15 +127,16 @@ private extension Endpoint {
         case .getUser, .getFriendsForUser,
                 .getFriendRequests, .getSportsGround:
             return .get
+        case .declineFriendRequest:
+            return .delete
         }
     }
 
     var headers: [String: String] {
         switch self {
-        case let .login(auth), let .getUser(_, auth),
-            let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
-            let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
-            let .getSportsGround(_, auth):
+        case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth),
+            let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
+            let .declineFriendRequest(_, auth), let .getSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -138,9 +145,9 @@ private extension Endpoint {
 
     var httpBody: Data? {
         switch self {
-        case .login, .getUser, .getFriendsForUser,
-                .getFriendRequests, .acceptFriendRequest,
-                .getSportsGround: return nil
+        case .login, .getUser, .getFriendsForUser, .getFriendRequests,
+                .acceptFriendRequest, .declineFriendRequest, .getSportsGround:
+            return nil
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])
         case let .changePassword(current, new, _):
