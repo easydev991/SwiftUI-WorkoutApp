@@ -9,8 +9,8 @@ import SwiftUI
 
 struct FriendRequestRow: View {
     let model: UserModel
-    let acceptClbk: () -> Void
-    let declineClbk: () -> Void
+    let acceptClbk: (Int) -> Void
+    let declineClbk: (Int) -> Void
 
     var body: some View {
         Section {
@@ -34,11 +34,11 @@ struct FriendRequestRow: View {
                     }
                 }
                 HStack(spacing: 16) {
-                    Button(action: acceptClbk) {
+                    Button(action: accept) {
                         Text("Принять")
                     }
                     .tint(.blue)
-                    Button(role: .destructive, action: declineClbk) {
+                    Button(role: .destructive, action: decline) {
                         Text("Отклонить")
                     }
                     .tint(.red)
@@ -50,9 +50,15 @@ struct FriendRequestRow: View {
     }
 }
 
+private extension FriendRequestRow {
+    func accept() { acceptClbk(model.id) }
+
+    func decline() { declineClbk(model.id) }
+}
+
 struct FriendRequestRow_Previews: PreviewProvider {
     static var previews: some View {
-        FriendRequestRow(model: .emptyValue, acceptClbk: {}, declineClbk: {})
+        FriendRequestRow(model: .emptyValue, acceptClbk: {_ in}, declineClbk: {_ in})
             .previewDevice("iPhone 13 mini")
     }
 }

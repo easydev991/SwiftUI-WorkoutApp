@@ -30,9 +30,13 @@ enum Endpoint {
     /// `id` - идентификатор пользователя, чьих друзей нужно получить
     case getFriendsForUser(id: Int, auth: AuthData)
 
-    /// Получение списка заявок на добавление в друзья
+    /// Получение списка заявок на добавление в друзья:
     /// **GET** ${API}/friends/requests
     case getFriendRequests(auth: AuthData)
+
+    /// Принять заявку на добавление в друзья:
+    /// **POST** ${API}/friends/<id>/accept
+    case acceptFriendRequest(friendID: Int, auth: AuthData)
 
     /// Получение выбранной площадки по ее номеру `id`:
     /// **GET** ${API}/areas/<id>
@@ -103,6 +107,8 @@ private extension Endpoint {
             return "\(baseUrl)/users/\(id)/friends"
         case .getFriendRequests:
             return "\(baseUrl)/friends/requests"
+        case let .acceptFriendRequest(friendID, _):
+            return "\(baseUrl)/friends/\(friendID)/accept"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
         }
@@ -110,7 +116,7 @@ private extension Endpoint {
 
     var method: HTTPMethod {
         switch self {
-        case .login, .resetPassword, .changePassword:
+        case .login, .resetPassword, .changePassword, .acceptFriendRequest:
             return .post
         case .getUser, .getFriendsForUser,
                 .getFriendRequests, .getSportsGround:
@@ -122,7 +128,8 @@ private extension Endpoint {
         switch self {
         case let .login(auth), let .getUser(_, auth),
             let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
-            let .getFriendRequests(auth), let .getSportsGround(_, auth):
+            let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
+            let .getSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -132,7 +139,8 @@ private extension Endpoint {
     var httpBody: Data? {
         switch self {
         case .login, .getUser, .getFriendsForUser,
-                .getFriendRequests, .getSportsGround: return nil
+                .getFriendRequests, .acceptFriendRequest,
+                .getSportsGround: return nil
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])
         case let .changePassword(current, new, _):

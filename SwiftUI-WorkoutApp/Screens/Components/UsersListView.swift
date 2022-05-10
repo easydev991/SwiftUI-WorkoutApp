@@ -27,6 +27,7 @@ struct UsersListView: View {
                     } label: {
                         UserViewRow(model: user)
                     }
+                    .disabled(user.id == defaults.mainUserID)
                 }
             }
             ProgressView()
@@ -39,6 +40,7 @@ struct UsersListView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }
+        .refreshable { await askForUsers(refresh: true) }
     }
 }
 
@@ -65,8 +67,8 @@ private extension UsersListView {
         }
     }
 
-    func askForUsers() async {
-        await viewModel.makeInfo(for: mode, with: defaults)
+    func askForUsers(refresh: Bool = false) async {
+        await viewModel.makeInfo(for: mode, with: defaults, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {

@@ -16,7 +16,7 @@ struct UserViewRow: View {
             VStack(alignment: .leading) {
                 Text(model.name)
                     .fontWeight(.medium)
-                Text("model.shortAddress")
+                Text(model.shortAddress)
                     .foregroundColor(.secondary)
                     .font(.caption)
             }

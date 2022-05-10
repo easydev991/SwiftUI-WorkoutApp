@@ -76,6 +76,7 @@ struct APIService {
         return isSuccess
     }
 
+    @discardableResult
     func getFriendsForUser(id: Int) async throws -> [UserResponse]? {
         let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return nil }
@@ -95,6 +96,19 @@ struct APIService {
         let (data, response) = try await urlSession.data(for: request)
         let result = try handle([UserResponse].self, data, response)
         await defaults.saveFriendRequests(result)
+    }
+
+    func acceptFriendRequest(from userID: Int) async throws -> Bool {
+        let endpoint = Endpoint.acceptFriendRequest(friendID: userID, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        let isSuccess = try handle(response)
+        if isSuccess {
+            defaults.needUpdateUser = true
+            try await getFriendsForUser(id: defaults.mainUserID)
+            try await getFriendRequests()
+        }
+        return isSuccess
     }
 
     func getSportsGround(id: Int) async throws -> SportsGround? {
@@ -142,6 +156,8 @@ private extension APIService {
         if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
             throw error
         }
+        print("--- Получили ответ:")
+        dump(response)
         return responseCode == Constants.API.codeOK
     }
 }

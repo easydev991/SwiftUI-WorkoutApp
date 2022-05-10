@@ -56,9 +56,7 @@ final class UserProfileViewModel: ObservableObject {
 
     @MainActor
     func checkFriendRequests(with defaults: UserDefaultsService) async {
-        if defaults.isAuthorized {
-            try? await APIService(with: defaults).getFriendRequests()
-        }
+        try? await APIService(with: defaults).getFriendRequests()
     }
 
     func sendFriendRequest() {
