@@ -50,6 +50,10 @@ enum Endpoint {
     /// **DELETE**  ${API}/friends/<user_id>
     case deleteFriend(_ friendID: Int, auth: AuthData)
 
+    /// Найти пользователей с указанным именем:
+    /// **GET** ${API}/users/search?name=<user>
+    case findUsers(with: String, auth: AuthData)
+
     /// Получение выбранной площадки по ее номеру `id`:
     /// **GET** ${API}/areas/<id>
     case getSportsGround(id: Int, auth: AuthData)
@@ -126,6 +130,8 @@ private extension Endpoint {
         case let .sendFriendRequest(userID, _),
             let .deleteFriend(userID, _):
             return "\(baseUrl)/friends/\(userID)"
+        case let .findUsers(name, _):
+            return "\(baseUrl)/users/search?name=\(name)"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
         }
@@ -137,7 +143,7 @@ private extension Endpoint {
                 .acceptFriendRequest, .sendFriendRequest:
             return .post
         case .getUser, .getFriendsForUser,
-                .getFriendRequests, .getSportsGround:
+                .getFriendRequests, .getSportsGround, .findUsers:
             return .get
         case .declineFriendRequest, .deleteFriend:
             return .delete
@@ -149,7 +155,7 @@ private extension Endpoint {
         case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth),
             let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-            let .deleteFriend(_, auth), let .getSportsGround(_, auth):
+            let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -159,7 +165,7 @@ private extension Endpoint {
     var httpBody: Data? {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
-                .acceptFriendRequest, .declineFriendRequest,
+                .acceptFriendRequest, .declineFriendRequest, .findUsers,
                 .sendFriendRequest, .deleteFriend, .getSportsGround:
             return nil
         case let .resetPassword(login):

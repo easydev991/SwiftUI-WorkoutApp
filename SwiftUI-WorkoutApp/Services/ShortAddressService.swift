@@ -16,6 +16,11 @@ struct ShortAddressService {
     func addressFor(_ countryID: Int, _ cityID: Int) -> String {
         let country = countries.first(where: { $0.id == String(countryID) })
         let city = country?.cities.first(where: { $0.id == String(cityID) })
-        return "\((country?.name).valueOrEmpty), \((city?.name).valueOrEmpty)"
+        let countryName = (country?.name).valueOrEmpty
+        if let cityName = city?.name {
+            return countryName + ", " + cityName
+        } else {
+            return countryName
+        }
     }
 }

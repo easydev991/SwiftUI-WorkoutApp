@@ -131,6 +131,13 @@ struct APIService {
         return isSuccess
     }
 
+    func findUsers(with name: String) async throws -> [UserResponse] {
+        let endpoint = Endpoint.findUsers(with: name, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return [] }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle([UserResponse].self, data, response)
+    }
+
     func getSportsGround(id: Int) async throws -> SportsGround? {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return nil }

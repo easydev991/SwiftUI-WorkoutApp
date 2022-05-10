@@ -19,7 +19,9 @@ struct UserProfileView: View {
         ZStack {
             Form {
                 userInfoSection
-                communicationSection
+                if !viewModel.isMainUser {
+                    communicationSection
+                }
                 socialInfoSection
             }
             .disabled(viewModel.isLoading)
@@ -29,17 +31,20 @@ struct UserProfileView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: retryAction) {
-                TextTryAgain()
-            }
-            Button(action: logout) {
-                Text("Выйти")
-            }
+            Button(action: retryAction) { TextTryAgain() }
+            Button(action: logout) { Text("Выйти") }
         }
         .refreshable { await askForUserInfo(refresh: true) }
-        .onChange(of: viewModel.requestedFriendship) { isFriendRequestSent = $0 }
+        .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .toolbar { settingsLink }
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                if viewModel.isMainUser {
+                    searchUsersLink
+                    settingsLink
+                }
+            }
+        }
         .task(priority: .userInitiated) { await askForUserInfo() }
         .navigationTitle("Профиль")
     }
@@ -85,10 +90,8 @@ private extension UserProfileView {
 
     var communicationSection: some View {
         Section {
-            if !viewModel.isMainUser {
-                sendMessageLink
-                friendActionButton
-            }
+            sendMessageLink
+            friendActionButton
         }
     }
 
@@ -116,6 +119,10 @@ private extension UserProfileView {
                 TextOk()
             }
         }
+    }
+
+    func toggleFriendRequestSent(isSent: Bool) {
+        isFriendRequestSent = isSent
     }
 
     var socialInfoSection: some View {
@@ -198,11 +205,16 @@ private extension UserProfileView {
         }
     }
 
+    var searchUsersLink: some View {
+        NavigationLink(destination: SearchUsersView()) {
+            Image(systemName: "magnifyingglass")
+        }
+    }
+
     var settingsLink: some View {
         NavigationLink(destination: ProfileSettingsView()) {
             Image(systemName: "gearshape.fill")
         }
-        .opacity(viewModel.isMainUser ? 1 : .zero)
     }
 
     func askForUserInfo(refresh: Bool = false) async {

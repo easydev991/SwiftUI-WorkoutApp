@@ -18,7 +18,7 @@ struct CitiesView: View {
     }
 
     var body: some View {
-        List(filteredCities, id: \.self) { city in
+        List(filteredCities) { city in
             Button {
                 viewModel.selectCity(city)
                 dismiss()

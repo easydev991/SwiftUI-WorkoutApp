@@ -19,7 +19,7 @@ struct CountriesView: View {
 
     var body: some View {
         List {
-            ForEach(filteredCountries, id: \.self) { country in
+            ForEach(filteredCountries) { country in
                 Button {
                     viewModel.selectCountry(country)
                     dismiss()
