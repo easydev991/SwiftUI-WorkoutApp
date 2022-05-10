@@ -60,7 +60,7 @@ private extension UsersListView {
                 HStack {
                     Label("Заявки", systemImage: "person.fill.badge.plus")
                     Spacer()
-                    Text("\(viewModel.friendRequests.count)")
+                    Text(viewModel.friendRequests.count.description)
                         .foregroundColor(.secondary)
                 }
             }

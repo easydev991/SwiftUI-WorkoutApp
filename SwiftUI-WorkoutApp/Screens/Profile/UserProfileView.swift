@@ -145,7 +145,7 @@ private extension UserProfileView {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
                 Spacer()
-                Text("\(viewModel.user.usesSportsGrounds)")
+                Text(viewModel.user.usesSportsGrounds.description)
                     .foregroundColor(.secondary)
             }
         }
@@ -159,7 +159,7 @@ private extension UserProfileView {
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")
             Spacer()
-            Text("\(viewModel.addedSportsGrounds)")
+            Text(viewModel.addedSportsGrounds.description)
                 .foregroundColor(.secondary)
         }
     }
@@ -177,7 +177,7 @@ private extension UserProfileView {
                     Image(systemName: "\(friendRequestsCount).circle.fill")
                         .foregroundColor(.red)
                 }
-                Text("\(viewModel.user.friendsCount)")
+                Text(viewModel.user.friendsCount.description)
                     .foregroundColor(.secondary)
             }
         }
@@ -192,7 +192,7 @@ private extension UserProfileView {
             HStack {
                 Label("Дневники", systemImage: "list.bullet")
                 Spacer()
-                Text("\(viewModel.user.journalsCount)")
+                Text(viewModel.user.journalsCount.description)
                     .foregroundColor(.secondary)
             }
         }
