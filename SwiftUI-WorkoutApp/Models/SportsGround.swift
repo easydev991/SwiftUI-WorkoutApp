@@ -23,6 +23,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let preview: String?
     let trainings: Trainings
     let typeID: Int
+    let comments: [Comment]?
     var title: String? { "Площадка № \(id)" }
     var subtitle: String? {
         let grade = SportsGroundGrade(id: typeID).grade.rawValue
@@ -65,12 +66,12 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case countryID = "country_id"
         case createDate = "create_date"
         case equipmentIDS = "equipment_ids"
-        case id, latitude, longitude, mine, name, photos, preview, trainings
+        case id, latitude, longitude, mine, name, photos, preview, trainings, comments
         case modifyDate = "modify_date"
         case typeID = "type_id"
     }
 
-    init(address: String, author: UserResponse, canEdit: Bool, cityID: Int, sizeID: Int, commentsCount: Int, countryID: Int, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String, photos: [Photo], preview: String, trainings: Trainings, typeID: Int) {
+    init(address: String?, author: UserResponse, canEdit: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String?, photos: [Photo], preview: String?, trainings: Trainings, typeID: Int, comments: [Comment]?) {
         self.address = address
         self.author = author
         self.canEdit = canEdit
@@ -90,6 +91,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         self.preview = preview
         self.trainings = trainings
         self.typeID = typeID
+        self.comments = comments
     }
 }
 
@@ -141,9 +143,20 @@ enum Trainings: Codable {
     }
 }
 
+struct Comment: Codable, Identifiable {
+    let id: Int
+    let body, date: String?
+    let user: UserResponse?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "comment_id"
+        case body, date, user
+    }
+}
+
 extension SportsGround {
     static var emptyValue: SportsGround {
-        .init(address: "", author: .emptyValue, canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero)
+        .init(address: "", author: .emptyValue, canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero, comments: nil)
     }
 
     static let mock = SportsGround(
@@ -190,6 +203,26 @@ extension SportsGround {
         ],
         preview: "https://workout.su/uploads/userfiles/2016/10/2016-10-14-15-10-13-qwt.jpg",
         trainings: .string("1"),
-        typeID: 1
+        typeID: 1,
+        comments: [
+            .init(
+                id: 35,
+                body: "на сколько я понял это \"крылья советов\" в принципе неплохой стадион но достаточно далеко до метро так что заниматься могут только люди которые живут в районе)",
+                date: "2011-07-13T18:59:23+00:00",
+                user: .init(userName: "rastoaman", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/ad8c7eb668c2412954d11668f473a4a8dd4458bc.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 1317, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+            ),
+            .init(
+                id: 69,
+                body: "Да, это на стадионе \"Крылья Советов\".",
+                date: "2011-09-29T19:18:07+00:00",
+                user: .init(userName: "WasD", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/2019/03/2019-03-21-23-03-49-rjk.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 30, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+            ),
+            .init(
+                id: 70,
+                body: "100% \"Крылья\" !!  Бываю там частенько )))",
+                date: "2011-09-30T11:03:44+00:00",
+                user: .init(userName: "JA666", fullName: nil, email: nil, imageStringURL: "https://workout.su/img/avatar_default.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 2301, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+            )
+        ]
     )
 }
