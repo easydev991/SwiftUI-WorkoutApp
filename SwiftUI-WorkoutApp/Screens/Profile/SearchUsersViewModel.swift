@@ -13,11 +13,12 @@ final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func searchFor(name: String, with defaults: UserDefaultsService) async {
+    func searchFor(user: String, with defaults: UserDefaultsService) async {
         errorMessage = ""
         if isLoading { return }
         isLoading.toggle()
         do {
+            let name = user.replacingOccurrences(of: " ", with: "")
             let result = try await APIService(with: defaults).findUsers(with: name)
             users = result.map(UserModel.init)
         } catch {

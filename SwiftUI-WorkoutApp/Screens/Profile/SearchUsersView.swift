@@ -51,7 +51,7 @@ struct SearchUsersView: View {
 
 private extension SearchUsersView {
     func search() {
-        Task { await viewModel.searchFor(name: query, with: defaults) }
+        Task { await viewModel.searchFor(user: query, with: defaults) }
     }
 
     func setupErrorAlert(with message: String) {
