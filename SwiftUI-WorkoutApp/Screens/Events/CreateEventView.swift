@@ -73,7 +73,7 @@ private extension CreateEventView {
                 )
             )
         case let .selectedSportsGround(ground):
-            return AnyView(Text(ground.name))
+            return AnyView(Text(ground.name.valueOrEmpty))
         }
     }
 

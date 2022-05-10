@@ -8,32 +8,28 @@
 import MapKit.MKGeometry
 
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
-    let address: String
-    let author: Author
+    let address: String?
+    let author: UserResponse
     let canEdit: Bool
-    let cityID, sizeID, commentsCount, countryID: Int
+    let cityID, sizeID, commentsCount, countryID: Int?
     let createDate: String?
     let equipmentIDS: [Int]
     let id: Int
     let latitude, longitude: String
     let mine: Bool
     let modifyDate: String?
-    let name: String
+    let name: String?
     let photos: [Photo]
-    let preview: String
+    let preview: String?
     let trainings: Trainings
     let typeID: Int
-    var title: String? {
-        "Площадка № \(id)"
-    }
+    var title: String? { "Площадка № \(id)" }
     var subtitle: String? {
         let grade = SportsGroundGrade(id: typeID).grade.rawValue
-        let size = SportsGroundSize(id: sizeID).size.rawValue
+        let size = SportsGroundSize(id: sizeID.valueOrZero).size.rawValue
         return grade + " / " + size
     }
-    var shortTitle: String {
-        "№ \(id)"
-    }
+    var shortTitle: String { "№ \(id)" }
     var peopleTrainHereCount: Int {
         switch trainings {
         case let .integer(int):
@@ -74,7 +70,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case typeID = "type_id"
     }
 
-    init(address: String, author: Author, canEdit: Bool, cityID: Int, sizeID: Int, commentsCount: Int, countryID: Int, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String, photos: [Photo], preview: String, trainings: Trainings, typeID: Int) {
+    init(address: String, author: UserResponse, canEdit: Bool, cityID: Int, sizeID: Int, commentsCount: Int, countryID: Int, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String, photos: [Photo], preview: String, trainings: Trainings, typeID: Int) {
         self.address = address
         self.author = author
         self.canEdit = canEdit
@@ -97,20 +93,13 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 }
 
-struct Author: Codable, Identifiable {
-    let id: Int
-    let imageStringURL: String
-    let name: String
-
-    enum CodingKeys: String, CodingKey {
-        case id, name
-        case imageStringURL = "image"
-    }
-}
-
 struct Photo: Codable, Identifiable {
     let id: Int
-    let stringURL: String
+    let stringURL: String?
+
+    var imageURL: URL? {
+        .init(string: stringURL.valueOrEmpty)
+    }
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -154,16 +143,12 @@ enum Trainings: Codable {
 
 extension SportsGround {
     static var emptyValue: SportsGround {
-        .init(address: "", author: .init(id: .zero, imageStringURL: "", name: ""), canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero)
+        .init(address: "", author: .emptyValue, canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero)
     }
 
     static let mock = SportsGround(
         address: "ул. Шоссе Нефтянников 11/1",
-        author: .init(
-            id: 22377,
-            imageStringURL: "https://workout.su/uploads/avatars/1442580670.jpg",
-            name: "Albert_88"
-        ),
+        author: .emptyValue,
         canEdit: false,
         cityID: 67,
         sizeID: 1,

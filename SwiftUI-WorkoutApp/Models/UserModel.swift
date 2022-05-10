@@ -22,7 +22,7 @@ struct UserModel: Identifiable, Hashable {
 
     init(_ user: UserResponse) {
         self.id = user.userID.valueOrZero
-        self.imageURL = .init(string: user.imageStringURL.valueOrEmpty)
+        self.imageURL = user.avatarURL
         self.name = user.userName.valueOrEmpty
         self.gender = "\(user.gender), "
         self.age = user.age

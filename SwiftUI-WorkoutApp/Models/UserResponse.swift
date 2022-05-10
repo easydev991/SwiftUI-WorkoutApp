@@ -66,6 +66,9 @@ extension UserResponse {
             return nil
         }
     }
+    var avatarURL: URL? {
+        .init(string: imageStringURL.valueOrEmpty)
+    }
     var gender: String {
         genderCode == .zero ? "Мужчина" : "Женщина"
     }

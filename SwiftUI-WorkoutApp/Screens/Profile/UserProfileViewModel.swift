@@ -36,7 +36,8 @@ final class UserProfileViewModel: ObservableObject {
             user = .init(mainUserInfo)
         } else {
             do {
-                guard let info = try await APIService(with: defaults).getUserByID(userID) else {
+                let info = try await APIService(with: defaults).getUserByID(userID)
+                if info.userID == nil {
                     errorMessage = Constants.Alert.cannotReadData
                     if !refresh { isLoading.toggle() }
                     return

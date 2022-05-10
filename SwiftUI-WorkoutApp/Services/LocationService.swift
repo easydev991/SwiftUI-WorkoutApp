@@ -10,6 +10,7 @@ import MapKit.MKGeometry
 final class LocationService: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     var region = MKCoordinateRegion()
+#warning("TODO: синхронизировать с сервером")
     var annotations = Bundle.main.decodeJson(
         [SportsGround].self,
         fileName: "areas.json"

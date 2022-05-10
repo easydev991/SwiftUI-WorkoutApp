@@ -59,7 +59,7 @@ private extension SportsGroundView {
             MapSnapshotView(model: $viewModel.ground)
                 .frame(height: 150)
                 .cornerRadius(8)
-            Text(viewModel.ground.address)
+            Text(viewModel.ground.address.valueOrEmpty)
             Button {
                 if let url = viewModel.ground.appleMapsURL,
                    UIApplication.shared.canOpenURL(url) {
@@ -81,7 +81,7 @@ private extension SportsGroundView {
                 )
             ) {
                 ForEach(viewModel.ground.photos) {
-                    CacheAsyncImage(url: .init(string: $0.stringURL)) { phase in
+                    CacheAsyncImage(url: $0.imageURL) { phase in
                         switch phase {
                         case let .success(image):
                             image
@@ -146,7 +146,7 @@ private extension SportsGroundView {
     var authorSection: some View {
         Section("Добавил") {
             HStack(spacing: 16) {
-                CacheAsyncImage(url: .init(string: viewModel.authorImageStringURL)) { phase in
+                CacheAsyncImage(url: viewModel.ground.author.avatarURL) { phase in
                     switch phase {
                     case let .success(image):
                         image
@@ -158,7 +158,7 @@ private extension SportsGroundView {
                         ProgressView()
                     }
                 }
-                Text(viewModel.ground.author.name)
+                Text(viewModel.ground.author.userName.valueOrEmpty)
                     .fontWeight(.medium)
             }
         }

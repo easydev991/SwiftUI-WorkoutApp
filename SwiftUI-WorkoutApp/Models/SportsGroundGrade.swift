@@ -14,6 +14,8 @@ struct SportsGroundGrade {
         case collars = "Хомуты"
         case underTheHood = "Под навесом"
         case legendary = "Легендарная"
+        case broken = "Разрушена"
+        case other = "Разное"
     }
 
     init(id: Int) {
@@ -22,7 +24,9 @@ struct SportsGroundGrade {
         case 2: grade = .modern
         case 3: grade = .collars
         case 4: grade = .underTheHood
-        default: grade = .legendary // id = 6
+        case 5: grade = .broken
+        case 6: grade = .legendary
+        default: grade = .other // id = 7
         }
     }
 }

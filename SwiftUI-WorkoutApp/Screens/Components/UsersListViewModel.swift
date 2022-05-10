@@ -66,9 +66,8 @@ private extension UsersListViewModel {
             if isMainUser {
                 await checkFriendRequests(with: defaults, refresh: refresh)
             }
-            if let friends = try await service.getFriendsForUser(id: id) {
-                users = friends.map(UserModel.init)
-            }
+            let friends = try await service.getFriendsForUser(id: id)
+            users = friends.map(UserModel.init)
         } catch {
             errorMessage = error.localizedDescription
         }

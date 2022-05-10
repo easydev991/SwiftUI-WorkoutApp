@@ -17,13 +17,7 @@ final class SportsGroundViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    var authorImageStringURL: String {
-        ground.author.imageStringURL
-    }
-
-    init(groundID: Int) {
-        id = groundID
-    }
+    init(groundID: Int) { id = groundID }
 
     @MainActor
     func makeSportsGroundInfo(with defaults: UserDefaultsService) async {
@@ -33,10 +27,14 @@ final class SportsGroundViewModel: ObservableObject {
         }
         isLoading.toggle()
         do {
-            if let model = try await APIService(with: defaults).getSportsGround(id: id) {
-                ground = model
-                updateState()
+            let model = try await APIService(with: defaults).getSportsGround(id: id)
+            if model.id == .zero {
+                errorMessage = Constants.Alert.cannotReadData
+                isLoading.toggle()
+                return
             }
+            ground = model
+            updateState()
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -40,9 +40,9 @@ struct APIService {
     /// - Parameter userID: `id` пользователя
     /// - Returns: Вся информация о пользователе
     @discardableResult
-    func getUserByID(_ userID: Int) async throws -> UserResponse? {
+    func getUserByID(_ userID: Int) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return nil }
+        guard let request = endpoint.urlRequest else { return .emptyValue }
         let (data, response) = try await urlSession.data(for: request)
         let userInfo = try handle(UserResponse.self, data, response)
         if userID == defaults.mainUserID {
@@ -77,9 +77,9 @@ struct APIService {
     }
 
     @discardableResult
-    func getFriendsForUser(id: Int) async throws -> [UserResponse]? {
+    func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return nil }
+        guard let request = endpoint.urlRequest else { return [] }
         let (data, response) = try await urlSession.data(for: request)
         let friends = try handle([UserResponse].self, data, response)
         if id == defaults.mainUserID {
@@ -138,9 +138,9 @@ struct APIService {
         return try handle([UserResponse].self, data, response)
     }
 
-    func getSportsGround(id: Int) async throws -> SportsGround? {
+    func getSportsGround(id: Int) async throws -> SportsGround {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return nil }
+        guard let request = endpoint.urlRequest else { return .emptyValue }
         let (data, response) = try await urlSession.data(for: request)
         return try handle(SportsGround.self, data, response)
     }
