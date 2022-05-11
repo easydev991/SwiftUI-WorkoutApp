@@ -13,7 +13,9 @@ final class SportsGroundViewModel: ObservableObject {
     @Published private(set) var isPhotoGridShown = false
     @Published private(set) var photoColumns = Columns.one
     @Published var isMySportsGround = false
+    @Published private(set) var comments = [Comment]()
     @Published private(set) var showParticipants = false
+    @Published private(set) var showComments = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
@@ -34,6 +36,7 @@ final class SportsGroundViewModel: ObservableObject {
                 return
             }
             ground = model
+            comments = model.comments ?? []
             updateState()
         } catch {
             errorMessage = error.localizedDescription
@@ -61,5 +64,6 @@ private extension SportsGroundViewModel {
         photoColumns = .init(ground.photos.count)
         isMySportsGround = ground.mine
         showParticipants = ground.peopleTrainHereCount > .zero
+        showComments = !comments.isEmpty
     }
 }

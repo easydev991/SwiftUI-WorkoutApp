@@ -5,6 +5,7 @@
 //  Created by Олег Еременко on 16.04.2022.
 //
 
+import Foundation
 import MapKit.MKGeometry
 
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
@@ -151,6 +152,10 @@ struct Comment: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id = "comment_id"
         case body, date, user
+    }
+
+    var formattedDateString: String {
+        FormatterService.readableDate(from: date)
     }
 }
 

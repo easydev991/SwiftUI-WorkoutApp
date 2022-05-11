@@ -22,6 +22,10 @@
 		672BE768281FD60F00579183 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE767281FD60F00579183 /* City.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordView.swift */; };
 		6747575928128603002F0A24 /* SportsGroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundView.swift */; };
+		674B37AC282B9332001A5B66 /* FormatterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37AB282B9332001A5B66 /* FormatterService.swift */; };
+		674B37AE282B9758001A5B66 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37AD282B9758001A5B66 /* String+.swift */; };
+		674B37B0282B9BE2001A5B66 /* SportsGroundCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37AF282B9BE2001A5B66 /* SportsGroundCommentView.swift */; };
+		674B37B2282B9E51001A5B66 /* SmallProfileCacheImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37B1282B9E51001A5B66 /* SmallProfileCacheImageView.swift */; };
 		674D06192827F052007E75C6 /* CacheAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D06182827F052007E75C6 /* CacheAsyncImage.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
 		674D061F2828153A007E75C6 /* FriendRequestRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061E2828153A007E75C6 /* FriendRequestRow.swift */; };
@@ -105,6 +109,10 @@
 		672BE767281FD60F00579183 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* SportsGroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundView.swift; sourceTree = "<group>"; };
+		674B37AB282B9332001A5B66 /* FormatterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterService.swift; sourceTree = "<group>"; };
+		674B37AD282B9758001A5B66 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		674B37AF282B9BE2001A5B66 /* SportsGroundCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundCommentView.swift; sourceTree = "<group>"; };
+		674B37B1282B9E51001A5B66 /* SmallProfileCacheImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallProfileCacheImageView.swift; sourceTree = "<group>"; };
 		674D06182827F052007E75C6 /* CacheAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheAsyncImage.swift; sourceTree = "<group>"; };
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
 		674D061E2828153A007E75C6 /* FriendRequestRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestRow.swift; sourceTree = "<group>"; };
@@ -204,6 +212,7 @@
 				67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */,
 				6747575828128603002F0A24 /* SportsGroundView.swift */,
 				6758B929281D8FD7001D83D8 /* SportsGroundViewModel.swift */,
+				674B37AF282B9BE2001A5B66 /* SportsGroundCommentView.swift */,
 				675EC64E2814126800C2E229 /* CreateCommentView.swift */,
 				675EC652281445E500C2E229 /* MapViewUI.swift */,
 			);
@@ -217,6 +226,7 @@
 				6758B93B281E74F2001D83D8 /* Date+.swift */,
 				6758B93D281E7695001D83D8 /* Optional+.swift */,
 				671D7DEE282112140068E728 /* Text+.swift */,
+				674B37AD282B9758001A5B66 /* String+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -320,6 +330,7 @@
 				67B78711281D654C008B104F /* UserDefaultsService.swift */,
 				6758B935281E5EA9001D83D8 /* APIService.swift */,
 				67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */,
+				674B37AB282B9332001A5B66 /* FormatterService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -359,6 +370,7 @@
 				671D7DF0282117FF0068E728 /* UserViewRow.swift */,
 				670F16C52826CF5A0069D80A /* TextTryAgain.swift */,
 				674D06182827F052007E75C6 /* CacheAsyncImage.swift */,
+				674B37B1282B9E51001A5B66 /* SmallProfileCacheImageView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -462,6 +474,7 @@
 				6798AA70280B42BC00DB76F1 /* WelcomeLoginButtonTitle.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				6798AA8E280C3CCB00DB76F1 /* CitiesView.swift in Sources */,
+				674B37AC282B9332001A5B66 /* FormatterService.swift in Sources */,
 				670CA19A280D5583003914A3 /* TextWithCheckmark.swift in Sources */,
 				67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */,
 				67E4266D2821429500DF82A7 /* UserModel.swift in Sources */,
@@ -490,8 +503,10 @@
 				6758B92C281D9283001D83D8 /* CreateEventViewModel.swift in Sources */,
 				6758B939281E7391001D83D8 /* DateFormat.swift in Sources */,
 				6798AA64280B1F0900DB76F1 /* WelcomeAuthView.swift in Sources */,
+				674B37AE282B9758001A5B66 /* String+.swift in Sources */,
 				6758B934281DC198001D83D8 /* UserResponse.swift in Sources */,
 				6798AA86280C135E00DB76F1 /* Country.swift in Sources */,
+				674B37B0282B9BE2001A5B66 /* SportsGroundCommentView.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
 				670F16C62826CF5A0069D80A /* TextTryAgain.swift in Sources */,
 				670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */,
@@ -519,6 +534,7 @@
 				671D7DEF282112140068E728 /* Text+.swift in Sources */,
 				6758B930281D9469001D83D8 /* MessagesViewModel.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
+				674B37B2282B9E51001A5B66 /* SmallProfileCacheImageView.swift in Sources */,
 				674D06192827F052007E75C6 /* CacheAsyncImage.swift in Sources */,
 				6758B936281E5EA9001D83D8 /* APIService.swift in Sources */,
 				6747575928128603002F0A24 /* SportsGroundView.swift in Sources */,

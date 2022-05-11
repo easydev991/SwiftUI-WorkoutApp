@@ -16,18 +16,7 @@ struct FriendRequestRow: View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 16) {
-                    CacheAsyncImage(url: model.imageURL) { phase in
-                        switch phase {
-                        case let .success(image):
-                            image
-                                .resizable()
-                                .smallProfileImageRect()
-                        case .failure:
-                            Image(systemName: "person.fill")
-                        default:
-                            ProgressView()
-                        }
-                    }
+                    SmallProfileCacheImageView(url: model.imageURL)
                     VStack(alignment: .leading) {
                         Text(model.name)
                         Text(model.shortAddress)
@@ -52,7 +41,6 @@ struct FriendRequestRow: View {
 
 private extension FriendRequestRow {
     func accept() { acceptClbk(model.id) }
-
     func decline() { declineClbk(model.id) }
 }
 

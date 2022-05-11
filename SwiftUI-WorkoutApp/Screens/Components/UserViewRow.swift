@@ -12,30 +12,13 @@ struct UserViewRow: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            profileImage
+            SmallProfileCacheImageView(url: model.imageURL)
             VStack(alignment: .leading) {
                 Text(model.name)
                     .fontWeight(.medium)
                 Text(model.shortAddress)
                     .foregroundColor(.secondary)
                     .font(.caption)
-            }
-        }
-    }
-}
-
-private extension UserViewRow {
-    var profileImage: some View {
-        CacheAsyncImage(url: model.imageURL) { phase in
-            switch phase {
-            case let .success(image):
-                image
-                    .resizable()
-                    .smallProfileImageRect()
-            case .failure:
-                Image(systemName: "person.fill")
-            default:
-                ProgressView()
             }
         }
     }

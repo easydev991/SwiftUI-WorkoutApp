@@ -26,20 +26,20 @@ struct SportsGroundView: View {
                 }
                 participantsAndEventSection
                 authorSection
-                commentsSection
+                if viewModel.showComments {
+                    commentsSection
+                }
+                addNewCommentLink
             }
-            .opacity(viewModel.isLoading ? .zero : 1)
+            .disabled(viewModel.isLoading)
+            .animation(.default, value: viewModel.ground.id)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .task { await askForInfo() }
         .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
-            Button(action: retryAction) {
-                TextTryAgain()
-            }
-        } message: {
-            Text(errorTitle)
-        }
+            Button(action: retryAction) { TextTryAgain() }
+        } message: { Text(errorTitle) }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
@@ -166,18 +166,22 @@ private extension SportsGroundView {
 
     var commentsSection: some View {
         Section("Комментарии") {
-            VStack(alignment: .leading, spacing: 16) {
-#warning("TODO: интеграция с сервером")
-#warning("TODO: сверстать список комментариев")
-                NavigationLink(destination: CreateCommentView()) {
-                    Label {
-                        Text("Добавить комментарий")
-                            .blueMediumWeight()
-                    } icon: {
-                        Image(systemName: "plus.message.fill")
-                            .foregroundColor(.blue)
-                            .font(.title3)
-                    }
+            List(viewModel.comments) {
+                SportsGroundCommentView(model: $0)
+            }
+        }
+    }
+
+    var addNewCommentLink: some View {
+        Section {
+            NavigationLink(destination: CreateCommentView()) {
+                Label {
+                    Text("Добавить комментарий")
+                        .blueMediumWeight()
+                } icon: {
+                    Image(systemName: "plus.message.fill")
+                        .foregroundColor(.blue)
+                        .font(.title3)
                 }
             }
         }

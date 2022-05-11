@@ -48,20 +48,12 @@ extension UserResponse {
             return .zero
         }
     }
-    var createdDate: Date? {
-        if let createdIsoDateTimeSec = createdIsoDateTimeSec, !createdIsoDateTimeSec.isEmpty {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = DateFormat.isoDateTimeSec.rawValue
-            return dateFormatter.date(from: createdIsoDateTimeSec)
-        } else {
-            return nil
-        }
-    }
     var birthDate: Date? {
         if let birthDateIsoString = birthDateIsoString, !birthDateIsoString.isEmpty {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = DateFormat.isoDate.rawValue
-            return dateFormatter.date(from: birthDateIsoString)
+            let formatter = DateFormatter()
+            formatter.dateFormat = DateFormat.isoDate.rawValue
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            return formatter.date(from: birthDateIsoString)
         } else {
             return nil
         }
