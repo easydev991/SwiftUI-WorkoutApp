@@ -86,7 +86,7 @@ struct APIService {
 
     /// Загружает список друзей для выбранного пользователя; для главного пользователя в случае успеха сохраняет идентификаторы друзей в `defaults`
     /// - Parameter id: `id` пользователя
-    /// - Returns: список друзей выбранного пользователя
+    /// - Returns: Список друзей выбранного пользователя
     @discardableResult
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
@@ -155,7 +155,7 @@ struct APIService {
 
     /// Ищет пользователей, чей логин содержит указанный текст
     /// - Parameter name: текст для поиска
-    /// - Returns: список пользователей, чей логин содержит указанный текст
+    /// - Returns: Список пользователей, чей логин содержит указанный текст
     func findUsers(with name: String) async throws -> [UserResponse] {
         let endpoint = Endpoint.findUsers(with: name, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return [] }
@@ -165,7 +165,7 @@ struct APIService {
 
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
-    /// - Returns: данные о площадке
+    /// - Returns: Вся информация о площадке
     func getSportsGround(id: Int) async throws -> SportsGround {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return .emptyValue }
