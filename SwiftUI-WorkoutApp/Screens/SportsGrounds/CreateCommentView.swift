@@ -9,24 +9,38 @@ import SwiftUI
 
 struct CreateCommentView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var commentText = ""
+    @EnvironmentObject private var defaults: UserDefaultsService
+    @StateObject private var viewModel = CreateCommentViewModel()
     @State private var isCommentSent = false
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
     @FocusState private var isFocused
 
+    let groundID: Int
     var body: some View {
-        VStack {
-            textView
-            Spacer()
+        ZStack {
+            VStack {
+                textView
+                Spacer()
+            }
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .padding()
-        .navigationTitle("Комментарий")
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: dismissErrorAlert) { TextOk() }
+        }
+        .onChange(of: viewModel.isSuccess, perform: toggleSuccessAlert)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .toolbar { sendButton }
+        .navigationTitle("Комментарий")
     }
 }
 
 private extension CreateCommentView {
     var textView: some View {
-        TextEditor(text: $commentText)
+        TextEditor(text: $viewModel.commentText)
             .frame(height: 200)
             .padding(.horizontal, 8)
             .overlay(
@@ -39,21 +53,32 @@ private extension CreateCommentView {
 
     var sendButton: some View {
         Button {
-#warning("TODO: интеграция с сервером")
-            // Отправить комментарий на сервер
+            Task { await viewModel.addComment(to: groundID, defaults: defaults) }
             isFocused.toggle()
-            isCommentSent.toggle()
         } label: {
             Text("Отправить")
         }
-        .disabled(commentText.isEmpty)
+        .disabled(viewModel.commentText.isEmpty)
         .alert(Constants.Alert.commentSent, isPresented: $isCommentSent) {
             Button { dismiss() } label: { TextOk() }
         }
     }
 
+    func toggleSuccessAlert(isSuccess: Bool) {
+        isCommentSent = isSuccess
+    }
+
+    func dismissErrorAlert() {
+        viewModel.closedErrorAlert()
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
     func showKeyboard() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             isFocused.toggle()
         }
     }
@@ -61,6 +86,6 @@ private extension CreateCommentView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateCommentView()
+        CreateCommentView(groundID: .zero)
     }
 }

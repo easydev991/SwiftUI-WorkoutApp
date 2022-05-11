@@ -58,6 +58,10 @@ enum Endpoint {
     /// **GET** ${API}/areas/<id>
     case getSportsGround(id: Int, auth: AuthData)
 
+    /// Добавить комментарий для площадки:
+    /// **POST** ${API}/areas/<area_id>/comments
+    case addCommentToSportsGround(groundID: Int, comment: String, auth: AuthData)
+
     var urlRequest: URLRequest? {
         guard let url = URL(string: urlString) else { return nil }
         var request = URLRequest(url: url)
@@ -100,6 +104,7 @@ private extension Endpoint {
             case usernameOrEmail = "username_or_email"
             case password
             case newPassword = "new_password"
+            case comment
         }
         static func makeParameters(from params: [Key: String]) -> Data? {
             params
@@ -134,13 +139,16 @@ private extension Endpoint {
             return "\(baseUrl)/users/search?name=\(name)"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
+        case let .addCommentToSportsGround(groundID, _, _):
+            return "\(baseUrl)/areas/\(groundID)/comments"
         }
     }
 
     var method: HTTPMethod {
         switch self {
         case .login, .resetPassword, .changePassword,
-                .acceptFriendRequest, .sendFriendRequest:
+                .acceptFriendRequest, .sendFriendRequest,
+                .addCommentToSportsGround:
             return .post
         case .getUser, .getFriendsForUser,
                 .getFriendRequests, .getSportsGround, .findUsers:
@@ -155,7 +163,8 @@ private extension Endpoint {
         case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth),
             let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-            let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth):
+            let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth),
+            let .addCommentToSportsGround(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -174,6 +183,8 @@ private extension Endpoint {
             return Parameter.makeParameters(
                 from: [.password: current, .newPassword: new]
             )
+        case let .addCommentToSportsGround(_, comment, _):
+            return Parameter.makeParameters(from: [.comment: comment])
         }
     }
 }

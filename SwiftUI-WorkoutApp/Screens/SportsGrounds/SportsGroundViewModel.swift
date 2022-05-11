@@ -22,17 +22,17 @@ final class SportsGroundViewModel: ObservableObject {
     init(groundID: Int) { id = groundID }
 
     @MainActor
-    func makeSportsGroundInfo(with defaults: UserDefaultsService) async {
+    func makeSportsGroundInfo(with defaults: UserDefaultsService, refresh: Bool = false) async {
         errorMessage = ""
-        if isLoading || ground.id != .zero {
+        if (isLoading || ground.id != .zero) && !refresh {
             return
         }
-        isLoading.toggle()
+        if !refresh { isLoading.toggle() }
         do {
             let model = try await APIService(with: defaults).getSportsGround(id: id)
             if model.id == .zero {
                 errorMessage = Constants.Alert.cannotReadData
-                isLoading.toggle()
+                if !refresh { isLoading.toggle() }
                 return
             }
             ground = model
@@ -41,7 +41,7 @@ final class SportsGroundViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
-        isLoading.toggle()
+        if !refresh { isLoading.toggle() }
     }
 }
 

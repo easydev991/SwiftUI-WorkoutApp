@@ -172,6 +172,14 @@ struct APIService {
         let (data, response) = try await urlSession.data(for: request)
         return try handle(SportsGround.self, data, response)
     }
+
+    @discardableResult
+    func addCommentToSportsGround(groundID: Int, comment: String) async throws -> Bool {
+        let endpoint = Endpoint.addCommentToSportsGround(groundID: groundID, comment: comment, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
+    }
 }
 
 private extension APIService {

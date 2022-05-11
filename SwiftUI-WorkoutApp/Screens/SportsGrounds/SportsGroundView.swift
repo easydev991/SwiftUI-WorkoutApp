@@ -32,11 +32,14 @@ struct SportsGroundView: View {
                 addNewCommentLink
             }
             .disabled(viewModel.isLoading)
-            .animation(.default, value: viewModel.ground.id)
+            .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .task { await askForInfo() }
+        .refreshable {
+            Task { await askForInfo(refresh: true) }
+        }
         .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
             Button(action: retryAction) { TextTryAgain() }
         } message: { Text(errorTitle) }
@@ -76,7 +79,7 @@ private extension SportsGroundView {
         Section("Фотографии") {
             LazyVGrid(
                 columns: .init(
-                    repeating: .init(.flexible(maximum: 150)),
+                    repeating: .init(.flexible()),
                     count: viewModel.photoColumns.rawValue
                 )
             ) {
@@ -118,7 +121,7 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.ground.id))
+            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.id))
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -174,7 +177,7 @@ private extension SportsGroundView {
 
     var addNewCommentLink: some View {
         Section {
-            NavigationLink(destination: CreateCommentView()) {
+            NavigationLink(destination: CreateCommentView(groundID: viewModel.id)) {
                 Label {
                     Text("Добавить комментарий")
                         .blueMediumWeight()
@@ -187,8 +190,8 @@ private extension SportsGroundView {
         }
     }
 
-    func askForInfo() async {
-        await viewModel.makeSportsGroundInfo(with: defaults)
+    func askForInfo(refresh: Bool = false) async {
+        await viewModel.makeSportsGroundInfo(with: defaults, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {
@@ -197,7 +200,7 @@ private extension SportsGroundView {
     }
 
     func retryAction() {
-        Task { await askForInfo() }
+        Task { await askForInfo(refresh: true) }
     }
 }
 
