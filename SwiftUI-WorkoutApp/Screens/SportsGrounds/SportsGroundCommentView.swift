@@ -59,6 +59,8 @@ private extension SportsGroundCommentView {
             }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
+                .font(.title2)
+                .foregroundColor(.secondary)
         }
     }
 }
@@ -70,6 +72,7 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
             deleteClbk: {_ in},
             editClbk: {_,_ in}
         )
+        .environmentObject(UserDefaultsService())
         .padding()
     }
 }
