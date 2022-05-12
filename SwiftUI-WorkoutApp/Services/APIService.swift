@@ -185,6 +185,24 @@ struct APIService {
         return try handle(response)
     }
 
+    /// Изменить свой комментарий для площадки
+    /// - Parameters:
+    ///   - groundID: `id` площадки
+    ///   - commentID: `id` комментария
+    ///   - newComment: текст измененного комментария
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func editComment(for groundID: Int, commentID: Int, newComment: String) async throws -> Bool {
+        let endpoint = Endpoint.editComment(
+            groundID: groundID,
+            commentID: commentID,
+            newComment: newComment,
+            auth: defaults.basicAuthInfo
+        )
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
+    }
+
     /// Удалить комментарий для площадки
     /// - Parameters:
     ///   - groundID: `id` площадки

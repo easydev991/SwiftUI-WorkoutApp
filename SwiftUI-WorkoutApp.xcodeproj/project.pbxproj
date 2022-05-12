@@ -46,7 +46,7 @@
 		675EC649281289FB00C2E229 /* SportsGroundSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC648281289FB00C2E229 /* SportsGroundSize.swift */; };
 		675EC64B28128B7E00C2E229 /* SportsGroundGrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */; };
 		675EC64D281405A900C2E229 /* Plurals.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 675EC64C281405A900C2E229 /* Plurals.stringsdict */; };
-		675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* CreateCommentView.swift */; };
+		675EC64F2814126800C2E229 /* CreateOrEditCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* CreateOrEditCommentView.swift */; };
 		675EC653281445E500C2E229 /* MapViewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC652281445E500C2E229 /* MapViewUI.swift */; };
 		675EC6572815433600C2E229 /* UsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6562815433600C2E229 /* UsersListView.swift */; };
 		675EC6592815472700C2E229 /* SmallProfileImageRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6582815472700C2E229 /* SmallProfileImageRectangle.swift */; };
@@ -89,7 +89,7 @@
 		67B78718281D8792008B104F /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78717281D8792008B104F /* ChangePasswordViewModel.swift */; };
 		67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */; };
 		67B7871C281D8A49008B104F /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B7871B281D8A49008B104F /* UserProfileViewModel.swift */; };
-		67DD1120282C3CE400E3917C /* CreateCommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DD111F282C3CE400E3917C /* CreateCommentViewModel.swift */; };
+		67DD1120282C3CE400E3917C /* CreateOrEditCommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DD111F282C3CE400E3917C /* CreateOrEditCommentViewModel.swift */; };
 		67E4266D2821429500DF82A7 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266C2821429500DF82A7 /* UserModel.swift */; };
 		67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */; };
 /* End PBXBuildFile section */
@@ -134,7 +134,7 @@
 		675EC648281289FB00C2E229 /* SportsGroundSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundSize.swift; sourceTree = "<group>"; };
 		675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundGrade.swift; sourceTree = "<group>"; };
 		675EC64C281405A900C2E229 /* Plurals.stringsdict */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; path = Plurals.stringsdict; sourceTree = "<group>"; };
-		675EC64E2814126800C2E229 /* CreateCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentView.swift; sourceTree = "<group>"; };
+		675EC64E2814126800C2E229 /* CreateOrEditCommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrEditCommentView.swift; sourceTree = "<group>"; };
 		675EC652281445E500C2E229 /* MapViewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewUI.swift; sourceTree = "<group>"; };
 		675EC65528153B8200C2E229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		675EC6562815433600C2E229 /* UsersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListView.swift; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 		67B78717281D8792008B104F /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsViewModel.swift; sourceTree = "<group>"; };
 		67B7871B281D8A49008B104F /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
-		67DD111F282C3CE400E3917C /* CreateCommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentViewModel.swift; sourceTree = "<group>"; };
+		67DD111F282C3CE400E3917C /* CreateOrEditCommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrEditCommentViewModel.swift; sourceTree = "<group>"; };
 		67E4266C2821429500DF82A7 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortAddressService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -215,8 +215,8 @@
 				6747575828128603002F0A24 /* SportsGroundView.swift */,
 				6758B929281D8FD7001D83D8 /* SportsGroundViewModel.swift */,
 				674B37AF282B9BE2001A5B66 /* SportsGroundCommentView.swift */,
-				675EC64E2814126800C2E229 /* CreateCommentView.swift */,
-				67DD111F282C3CE400E3917C /* CreateCommentViewModel.swift */,
+				675EC64E2814126800C2E229 /* CreateOrEditCommentView.swift */,
+				67DD111F282C3CE400E3917C /* CreateOrEditCommentViewModel.swift */,
 				675EC652281445E500C2E229 /* MapViewUI.swift */,
 			);
 			path = SportsGrounds;
@@ -487,7 +487,7 @@
 				6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */,
 				671D7DEA28200F870068E728 /* TextOk.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserProfileView.swift in Sources */,
-				67DD1120282C3CE400E3917C /* CreateCommentViewModel.swift in Sources */,
+				67DD1120282C3CE400E3917C /* CreateOrEditCommentViewModel.swift in Sources */,
 				67B78712281D654C008B104F /* UserDefaultsService.swift in Sources */,
 				675EC6652819C30600C2E229 /* BorderedRectangleStyle.swift in Sources */,
 				67B7871C281D8A49008B104F /* UserProfileViewModel.swift in Sources */,
@@ -497,7 +497,7 @@
 				6758B93E281E7695001D83D8 /* Optional+.swift in Sources */,
 				672BE768281FD60F00579183 /* City.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */,
-				675EC64F2814126800C2E229 /* CreateCommentView.swift in Sources */,
+				675EC64F2814126800C2E229 /* CreateOrEditCommentView.swift in Sources */,
 				674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */,
 				6798AA8C280C390F00DB76F1 /* CountriesView.swift in Sources */,
 				6758B93C281E74F2001D83D8 /* Date+.swift in Sources */,

@@ -37,7 +37,6 @@ struct Constants {
         static let error = "Ошибка"
         static let authError = "Ошибка авторизации"
         static let forgotPassword = "Для восстановления пароля введите логин или email"
-        static let commentSent = "Комментарий отправлен!"
         static let friendRequestSent = "Запрос отправлен!"
         static let eventCreated = "Мероприятие создано!"
         static let passwordChanged = "Пароль успешно изменен"

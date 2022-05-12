@@ -12,6 +12,8 @@ struct SportsGroundView: View {
     @ObservedObject var viewModel: SportsGroundViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var isCreatingComment = false
+    @State private var editComment: Comment?
     @State private var deleteCommentTask: Task<Void, Never>?
 
     init(model: SportsGroundViewModel) {
@@ -30,7 +32,7 @@ struct SportsGroundView: View {
                 if viewModel.showComments {
                     commentsSection
                 }
-                addNewCommentLink
+                addNewCommentButton
             }
             .disabled(viewModel.isLoading)
             .animation(.default, value: viewModel.isLoading)
@@ -43,6 +45,12 @@ struct SportsGroundView: View {
             Button(action: closeAlert) { TextOk() }
         } message: { Text(alertMessage) }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .sheet(item: $editComment) {
+            editCommentView(commentID: $0.id, commentText: $0.body.valueOrEmpty)
+        }
+        .sheet(isPresented: $isCreatingComment) {
+            CreateOrEditCommentView(mode: .create(groundID: viewModel.groundID))
+        }
         .onDisappear(perform: cancelDeleteCommentTask)
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
@@ -93,7 +101,7 @@ private extension SportsGroundView {
                                 .cornerRadius(8)
                         case let .failure(error):
                             Color.secondary
-                                .frame(width: .infinity, height: 100)
+                                .frame(width: 100, height: 100)
                                 .cornerRadius(8)
                                 .overlay {
                                     Text(error.localizedDescription)
@@ -166,29 +174,27 @@ private extension SportsGroundView {
 
     var commentsSection: some View {
         Section("Комментарии") {
-            List(viewModel.comments) {
-                SportsGroundCommentView(model: $0) { id in
+            List(viewModel.comments) { comment in
+                SportsGroundCommentView(model: comment) { id in
                     deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults) }
                 } editClbk: { id, text in
-                    print("--- открываем экран CreateCommentView для комментария \(id) с текстом \(text)")
+                    editComment = .init(id: id, body: text, date: comment.date, user: comment.user)
                 }
             }
         }
     }
 
-    var addNewCommentLink: some View {
-        Section {
-            NavigationLink(destination: CreateCommentView(groundID: viewModel.groundID)) {
-                Label {
-                    Text("Добавить комментарий")
-                        .blueMediumWeight()
-                } icon: {
-                    Image(systemName: "plus.message.fill")
-                        .foregroundColor(.blue)
-                        .font(.title3)
-                }
-            }
+    var addNewCommentButton: some View {
+        Button {
+            isCreatingComment.toggle()
+        } label: {
+            Label("Добавить комментарий", systemImage: "plus.message.fill")
+                .foregroundColor(.blue)
         }
+    }
+
+    func editCommentView(commentID: Int, commentText: String) -> some View {
+        CreateOrEditCommentView(mode: .edit(groundID: viewModel.groundID, commentID: commentID, commentText: commentText))
     }
 
     func askForInfo(refresh: Bool = false) async {

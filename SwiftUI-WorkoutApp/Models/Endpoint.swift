@@ -62,6 +62,10 @@ enum Endpoint {
     /// **POST** ${API}/areas/<area_id>/comments
     case addCommentToSportsGround(groundID: Int, comment: String, auth: AuthData)
 
+    /// Изменить свой комментарий для площадки:
+    /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
+    case editComment(groundID: Int, commentID: Int, newComment: String, auth: AuthData)
+
     /// Удалить свой комментарий для площадки:
     /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
     case deleteComment(groundID: Int, commentID: Int, auth: AuthData)
@@ -145,6 +149,8 @@ private extension Endpoint {
             return "\(baseUrl)/areas/\(id)"
         case let .addCommentToSportsGround(groundID, _, _):
             return "\(baseUrl)/areas/\(groundID)/comments"
+        case let .editComment(groundID, commentID, _, _):
+            return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
         case let .deleteComment(groundID, commentID, _):
             return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
         }
@@ -154,7 +160,7 @@ private extension Endpoint {
         switch self {
         case .login, .resetPassword, .changePassword,
                 .acceptFriendRequest, .sendFriendRequest,
-                .addCommentToSportsGround:
+                .addCommentToSportsGround, .editComment:
             return .post
         case .getUser, .getFriendsForUser,
                 .getFriendRequests, .getSportsGround, .findUsers:
@@ -170,7 +176,8 @@ private extension Endpoint {
             let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
             let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth),
-            let .addCommentToSportsGround(_, _, auth), let .deleteComment(_, _, auth):
+            let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
+            let .deleteComment(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -190,7 +197,7 @@ private extension Endpoint {
             return Parameter.makeParameters(
                 from: [.password: current, .newPassword: new]
             )
-        case let .addCommentToSportsGround(_, comment, _):
+        case let .addCommentToSportsGround(_, comment, _), let .editComment(_, _, comment, _):
             return Parameter.makeParameters(from: [.comment: comment])
         }
     }
