@@ -13,6 +13,7 @@ struct UserProfileView: View {
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var friendActionTask: Task<Void, Never>?
     let userID: Int
 
     var body: some View {
@@ -31,8 +32,7 @@ struct UserProfileView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: retryAction) { TextTryAgain() }
-            Button(action: logout) { Text("Выйти") }
+            Button(action: closeAlert) { TextOk() }
         }
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
@@ -45,6 +45,7 @@ struct UserProfileView: View {
                 }
             }
         }
+        .onDisappear(perform: cancelFriendActionTask)
         .task(priority: .userInitiated) { await askForUserInfo() }
         .navigationTitle("Профиль")
     }
@@ -109,15 +110,13 @@ private extension UserProfileView {
 
     var friendActionButton: some View {
         Button {
-            Task { await viewModel.friendAction(with: defaults) }
+            friendActionTask = Task { await viewModel.friendAction(with: defaults) }
         } label: {
             Text(viewModel.friendActionOption.rawValue)
                 .fontWeight(.medium)
         }
         .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
-            Button(action: viewModel.friendRequestedAlertOKAction) {
-                TextOk()
-            }
+            Button {} label: { TextOk() }
         }
     }
 
@@ -229,14 +228,16 @@ private extension UserProfileView {
         errorTitle = message
     }
 
-    func logout() { defaults.triggerLogout() }
-
-    func retryAction() {
-        Task { await askForUserInfo() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
     }
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
+    }
+
+    func cancelFriendActionTask() {
+        friendActionTask?.cancel()
     }
 }
 

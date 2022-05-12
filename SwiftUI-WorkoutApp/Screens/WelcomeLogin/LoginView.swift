@@ -15,6 +15,8 @@ struct LoginView: View {
     @State private var showResetSuccessfulAlert = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var loginTask: Task<Void, Never>?
+    @State private var resetPasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -37,6 +39,7 @@ struct LoginView: View {
         .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
         .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onDisappear(perform: cancelTasks)
         .navigationTitle("Вход по email")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -95,9 +98,7 @@ private extension LoginView {
 
     func loginAction() {
         focus = nil
-        Task {
-            await viewModel.loginAction(with: defaults)
-        }
+        loginTask = Task { await viewModel.loginAction(with: defaults) }
     }
 
     var forgotPasswordButton: some View {
@@ -108,7 +109,7 @@ private extension LoginView {
     }
 
     func forgotPasswordAction() {
-        Task { await viewModel.forgotPasswordTapped() }
+        resetPasswordTask = Task { await viewModel.forgotPasswordTapped() }
         focus = viewModel.canRestorePassword ? nil : .username
     }
 
@@ -137,6 +138,10 @@ private extension LoginView {
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
+    }
+
+    func cancelTasks() {
+        [loginTask, resetPasswordTask].forEach { $0?.cancel() }
     }
 }
 

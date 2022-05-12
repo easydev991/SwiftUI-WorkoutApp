@@ -14,6 +14,7 @@ struct CreateCommentView: View {
     @State private var isCommentSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var addCommentTask: Task<Void, Never>?
     @FocusState private var isFocused
 
     let groundID: Int
@@ -33,6 +34,7 @@ struct CreateCommentView: View {
         }
         .onChange(of: viewModel.isSuccess, perform: toggleSuccessAlert)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onDisappear(perform: cancelAddCommentTask)
         .toolbar { sendButton }
         .navigationTitle("Комментарий")
     }
@@ -53,7 +55,7 @@ private extension CreateCommentView {
 
     var sendButton: some View {
         Button {
-            Task { await viewModel.addComment(to: groundID, defaults: defaults) }
+            addCommentTask = Task { await viewModel.addComment(to: groundID, defaults: defaults) }
             isFocused.toggle()
         } label: {
             Text("Отправить")
@@ -81,6 +83,10 @@ private extension CreateCommentView {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             isFocused.toggle()
         }
+    }
+
+    func cancelAddCommentTask() {
+        addCommentTask?.cancel()
     }
 }
 

@@ -14,7 +14,6 @@ final class SearchUsersViewModel: ObservableObject {
 
     @MainActor
     func searchFor(user: String, with defaults: UserDefaultsService) async {
-        errorMessage = ""
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -26,5 +25,9 @@ final class SearchUsersViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()
+    }
+
+    func clearErrorMessage() {
+        errorMessage = ""
     }
 }

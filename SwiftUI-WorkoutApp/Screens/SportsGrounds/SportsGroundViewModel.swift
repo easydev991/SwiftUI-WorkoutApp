@@ -8,7 +8,7 @@
 import Foundation
 
 final class SportsGroundViewModel: ObservableObject {
-    let id: Int
+    let groundID: Int
     @Published var ground = SportsGround.emptyValue
     @Published private(set) var isPhotoGridShown = false
     @Published private(set) var photoColumns = Columns.one
@@ -19,17 +19,16 @@ final class SportsGroundViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    init(groundID: Int) { id = groundID }
+    init(groundID: Int) { self.groundID = groundID }
 
     @MainActor
     func makeSportsGroundInfo(with defaults: UserDefaultsService, refresh: Bool = false) async {
-        errorMessage = ""
         if (isLoading || ground.id != .zero) && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }
         do {
-            let model = try await APIService(with: defaults).getSportsGround(id: id)
+            let model = try await APIService(with: defaults).getSportsGround(id: groundID)
             if model.id == .zero {
                 errorMessage = Constants.Alert.cannotReadData
                 if !refresh { isLoading.toggle() }
@@ -42,6 +41,25 @@ final class SportsGroundViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
         if !refresh { isLoading.toggle() }
+    }
+
+    @MainActor
+    func delete(commentID: Int, with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let isOk = try await APIService(with: defaults).deleteComment(from: groundID, commentID: commentID)
+            if isOk {
+                comments.removeAll(where: { $0.id == commentID} )
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    func clearErrorMessage() {
+        errorMessage = ""
     }
 }
 

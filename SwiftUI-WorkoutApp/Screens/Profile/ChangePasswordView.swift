@@ -13,6 +13,7 @@ struct ChangePasswordView: View {
     @State private var showSuccess = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var changePasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -41,6 +42,7 @@ struct ChangePasswordView: View {
         }
         .onChange(of: viewModel.isChangeSuccessful, perform: toggleSuccessAlert)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onDisappear(perform: cancelTask)
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -94,9 +96,7 @@ private extension ChangePasswordView {
 
     func changePasswordTapped() {
         focus = nil
-        Task {
-            await viewModel.changePasswordAction()
-        }
+        changePasswordTask = Task { await viewModel.changePasswordAction() }
     }
 
     func toggleSuccessAlert(showAlert: Bool) {
@@ -106,6 +106,10 @@ private extension ChangePasswordView {
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
+    }
+
+    func cancelTask() {
+        changePasswordTask?.cancel()
     }
 
     func dismissView() {

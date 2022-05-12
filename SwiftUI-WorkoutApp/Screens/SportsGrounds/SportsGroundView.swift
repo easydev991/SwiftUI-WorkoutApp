@@ -11,7 +11,8 @@ struct SportsGroundView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
     @ObservedObject var viewModel: SportsGroundViewModel
     @State private var showErrorAlert = false
-    @State private var errorTitle = ""
+    @State private var alertMessage = ""
+    @State private var deleteCommentTask: Task<Void, Never>?
 
     init(model: SportsGroundViewModel) {
         viewModel = model
@@ -37,13 +38,12 @@ struct SportsGroundView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .task { await askForInfo() }
-        .refreshable {
-            Task { await askForInfo(refresh: true) }
-        }
+        .refreshable { await askForInfo(refresh: true) }
         .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
-            Button(action: retryAction) { TextTryAgain() }
-        } message: { Text(errorTitle) }
+            Button(action: closeAlert) { TextOk() }
+        } message: { Text(alertMessage) }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onDisappear(perform: cancelDeleteCommentTask)
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -121,7 +121,7 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.id))
+            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.groundID))
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -140,10 +140,7 @@ private extension SportsGroundView {
     var createEventLink: some View {
         NavigationLink(
             destination: CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
-        ) {
-            Text("Создать мероприятие")
-                .blueMediumWeight()
-        }
+        ) { Text("Создать мероприятие").blueMediumWeight() }
     }
 
     var authorSection: some View {
@@ -170,14 +167,18 @@ private extension SportsGroundView {
     var commentsSection: some View {
         Section("Комментарии") {
             List(viewModel.comments) {
-                SportsGroundCommentView(model: $0)
+                SportsGroundCommentView(model: $0) { id in
+                    deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults) }
+                } editClbk: { id, text in
+                    print("--- открываем экран CreateCommentView для комментария \(id) с текстом \(text)")
+                }
             }
         }
     }
 
     var addNewCommentLink: some View {
         Section {
-            NavigationLink(destination: CreateCommentView(groundID: viewModel.id)) {
+            NavigationLink(destination: CreateCommentView(groundID: viewModel.groundID)) {
                 Label {
                     Text("Добавить комментарий")
                         .blueMediumWeight()
@@ -196,11 +197,15 @@ private extension SportsGroundView {
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
-        errorTitle = message
+        alertMessage = message
     }
 
-    func retryAction() {
-        Task { await askForInfo(refresh: true) }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
+
+    func cancelDeleteCommentTask() {
+        deleteCommentTask?.cancel()
     }
 }
 

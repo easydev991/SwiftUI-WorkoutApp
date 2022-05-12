@@ -46,6 +46,10 @@ final class UsersListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
+    func clearErrorMessage() {
+        errorMessage = ""
+    }
+
     deinit {
         print("--- deinited UsersListViewModel")
     }
@@ -58,7 +62,6 @@ private extension UsersListViewModel {
         with defaults: UserDefaultsService,
         refresh: Bool
     ) async {
-        errorMessage = ""
         let isMainUser = id == defaults.mainUserID
         let service = APIService(with: defaults)
         if !refresh { isLoading.toggle() }
@@ -80,7 +83,6 @@ private extension UsersListViewModel {
         with defaults: UserDefaultsService,
         refresh: Bool
     ) async {
-        errorMessage = ""
         let _ = APIService(with: defaults)
         if !refresh { isLoading.toggle() }
 #warning("TODO: интеграция с сервером")
@@ -95,6 +97,6 @@ private extension UsersListViewModel {
         if defaults.friendRequestsList.isEmpty || refresh {
             try? await APIService(with: defaults).getFriendRequests()
         }
-        self.friendRequests = defaults.friendRequestsList.map(UserModel.init)
+        friendRequests = defaults.friendRequestsList.map(UserModel.init)
     }
 }

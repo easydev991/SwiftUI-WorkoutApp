@@ -13,13 +13,14 @@ final class CreateCommentViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
+    @MainActor
     func addComment(to groundID: Int, defaults: UserDefaultsService) async {
         errorMessage = ""
         if isLoading { return }
         isLoading.toggle()
         do {
-            try await APIService(with: defaults).addCommentToSportsGround(groundID: groundID, comment: commentText)
-            isSuccess.toggle()
+            let isOk = try await APIService(with: defaults).addComment(to: groundID, comment: commentText)
+            if isOk { isSuccess.toggle() }
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -34,9 +34,7 @@ struct UsersListView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: retryAction) {
-                TextTryAgain()
-            }
+            Button(action: closeAlert) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }
@@ -76,8 +74,8 @@ private extension UsersListView {
         errorTitle = message
     }
 
-    func retryAction() {
-        Task { await askForUsers() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
     }
 }
 

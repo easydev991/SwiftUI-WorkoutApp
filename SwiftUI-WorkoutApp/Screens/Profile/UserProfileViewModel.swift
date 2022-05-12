@@ -25,7 +25,6 @@ final class UserProfileViewModel: ObservableObject {
         with defaults: UserDefaultsService,
         refresh: Bool = false
     ) async {
-        errorMessage = ""
         isMainUser = userID == defaults.mainUserID
         if user.id != .zero, !refresh {
             return
@@ -80,7 +79,7 @@ final class UserProfileViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func friendRequestedAlertOKAction() {
-        print("--- заглушка")
+    func clearErrorMessage() {
+        errorMessage = ""
     }
 }

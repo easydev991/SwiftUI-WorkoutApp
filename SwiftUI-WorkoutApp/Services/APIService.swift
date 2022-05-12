@@ -173,9 +173,25 @@ struct APIService {
         return try handle(SportsGround.self, data, response)
     }
 
-    @discardableResult
-    func addCommentToSportsGround(groundID: Int, comment: String) async throws -> Bool {
+    /// Добавить комментарий для площадки
+    /// - Parameters:
+    ///   - groundID: `id` площадки
+    ///   - comment: текст комментария
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func addComment(to groundID: Int, comment: String) async throws -> Bool {
         let endpoint = Endpoint.addCommentToSportsGround(groundID: groundID, comment: comment, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
+    }
+
+    /// Удалить комментарий для площадки
+    /// - Parameters:
+    ///   - groundID: `id` площадки
+    ///   - commentID: `id` комментария
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func deleteComment(from groundID: Int, commentID: Int) async throws -> Bool {
+        let endpoint = Endpoint.deleteComment(groundID: groundID, commentID: commentID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
