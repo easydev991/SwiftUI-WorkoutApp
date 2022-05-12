@@ -238,12 +238,16 @@ private extension APIService {
         guard let data = data, !data.isEmpty else {
             throw APIError.noData
         }
+        let prettyString = String(data: data, encoding: .utf8)
+#if DEBUG
         print("--- Получили ответ:")
         dump(response)
-        let prettyString = String(data: data, encoding: .utf8)
         print("--- Полученный JSON:\n\(prettyString.valueOrEmpty)")
+#endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
+#if DEBUG
         print("--- Преобразованные данные:\n\(decodedInfo)")
+#endif
         return decodedInfo
     }
 
@@ -253,8 +257,10 @@ private extension APIService {
         if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
             throw error
         }
+#if DEBUG
         print("--- Получили ответ:")
         dump(response)
+#endif
         return responseCode == Constants.API.codeOK
     }
 }
