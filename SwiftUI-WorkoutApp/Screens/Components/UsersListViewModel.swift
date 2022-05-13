@@ -13,6 +13,7 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
 
+    @MainActor
     func makeInfo(
         for mode: UsersListView.Mode,
         with defaults: UserDefaultsService,
@@ -22,8 +23,8 @@ final class UsersListViewModel: ObservableObject {
         switch mode {
         case let .friends(userID):
             await makeFriendsList(for: userID, with: defaults, refresh: refresh)
-        case let .sportsGroundVisitors(groundID):
-            await makeParticipantsList(for: groundID, with: defaults, refresh: refresh)
+        case let .sportsGroundVisitors(list):
+            users = list.map(UserModel.init)
         }
     }
 
@@ -71,18 +72,6 @@ private extension UsersListViewModel {
             errorMessage = error.localizedDescription
         }
         if !refresh { isLoading.toggle() }
-    }
-
-    @MainActor
-    func makeParticipantsList(
-        for id: Int,
-        with defaults: UserDefaultsService,
-        refresh: Bool
-    ) async {
-        let _ = APIService(with: defaults)
-        if !refresh { isLoading.toggle() }
-#warning("TODO: интеграция с сервером")
-        print("--- получить список тренирующихся на площадке с номером \(id)")
     }
 
     @MainActor

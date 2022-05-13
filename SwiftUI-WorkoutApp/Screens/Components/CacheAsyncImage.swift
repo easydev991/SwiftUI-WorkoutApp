@@ -11,17 +11,20 @@ import SwiftUI
 struct CacheAsyncImage<Content>: View where Content: View {
     private let url: URL?
     private let scale: CGFloat
+    private let dummySize: CGSize
     private let transaction: Transaction
     private let content: (AsyncImagePhase) -> Content
 
     init(
         url: URL?,
         scale: CGFloat = 1.0,
+        dummySize: CGSize = .init(width: 36, height: 36),
         transaction: Transaction = .init(animation: .easeIn),
         @ViewBuilder content: @escaping (AsyncImagePhase) -> Content
     ) {
         self.url = url
         self.scale = scale
+        self.dummySize = dummySize
         self.transaction = transaction
         self.content = content
     }
@@ -38,7 +41,7 @@ struct CacheAsyncImage<Content>: View where Content: View {
 #endif
             AsyncImage(url: url, scale: scale, transaction: transaction, content: cacheAndRender)
         } else {
-            ProgressView()
+            EmptyGrayRoundedRect(size: dummySize)
         }
     }
 
@@ -61,7 +64,7 @@ struct CacheAsyncImage_Previews: PreviewProvider {
             case .success(let image):
                 image
                     .resizable()
-                    .smallProfileImageRect()
+                    .applySpecificSize(.init(width: 36, height: 36))
             case .failure(let error):
                 Text(error.localizedDescription)
             @unknown default:

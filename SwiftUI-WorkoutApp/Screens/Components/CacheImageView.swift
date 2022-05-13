@@ -1,5 +1,5 @@
 //
-//  SmallProfileCacheImageView.swift
+//  CacheImageView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 11.05.2022.
@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct SmallProfileCacheImageView: View {
+struct CacheImageView: View {
     let url: URL?
+    var mode = Mode.user
 
     var body: some View {
         CacheAsyncImage(url: url) { phase in
@@ -16,9 +17,9 @@ struct SmallProfileCacheImageView: View {
             case let .success(image):
                 image
                     .resizable()
-                    .smallProfileImageRect()
+                    .applySpecificSize(mode.size)
             case .failure:
-                Image(systemName: "person.fill")
+                Image(systemName: "exclamationmark.triangle.fill")
             default:
                 ProgressView()
             }
@@ -26,8 +27,19 @@ struct SmallProfileCacheImageView: View {
     }
 }
 
+extension CacheImageView {
+    enum Mode {
+        case user, sportsGround
+        var size: CGSize {
+            self == .user
+            ? .init(width: 36, height: 36)
+            : .init(width: 60, height: 60)
+        }
+    }
+}
+
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
-        SmallProfileCacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
+        CacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
     }
 }

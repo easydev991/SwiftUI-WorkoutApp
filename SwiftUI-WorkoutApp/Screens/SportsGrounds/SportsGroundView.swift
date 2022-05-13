@@ -129,7 +129,7 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            UsersListView(mode: .sportsGroundVisitors(groundID: viewModel.groundID))
+            UsersListView(mode: .sportsGroundVisitors(list: viewModel.ground.usersTrainHere ?? []))
                 .navigationTitle("Здесь тренируются")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -155,7 +155,7 @@ private extension SportsGroundView {
         Section("Добавил") {
             NavigationLink(destination: UserProfileView(userID: viewModel.ground.author.userID.valueOrZero)) {
                 HStack(spacing: 16) {
-                    SmallProfileCacheImageView(url: viewModel.ground.author.avatarURL)
+                    CacheImageView(url: viewModel.ground.author.avatarURL)
                     Text(viewModel.ground.author.userName.valueOrEmpty)
                         .fontWeight(.medium)
                 }

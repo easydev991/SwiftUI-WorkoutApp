@@ -143,10 +143,10 @@ private extension UserProfileView {
 
     var usesSportsGroundsLink: some View {
         NavigationLink {
-#warning("TODO: интеграция с сервером - GET ${API}/users/<user_id>/areas")
-            Text("Площадки (где тренируется)")
-                .navigationTitle("Где тренируется")
-                .navigationBarTitleDisplayMode(.inline)
+            // getSportsGroundsForUser
+//#warning("TODO: интеграция с сервером - GET ${API}/users/<user_id>/areas")
+//            Text("Площадки (где тренируется)")
+            SportsGroundListView(userID: userID)
         } label: {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")

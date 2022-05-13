@@ -16,7 +16,7 @@ struct FriendRequestRow: View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 16) {
-                    SmallProfileCacheImageView(url: model.imageURL)
+                    CacheImageView(url: model.imageURL)
                     VStack(alignment: .leading) {
                         Text(model.name)
                         Text(model.shortAddress)

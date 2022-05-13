@@ -25,7 +25,7 @@ struct UsersListView: View {
                         UserProfileView(userID: user.id)
                             .navigationBarTitleDisplayMode(.inline)
                     } label: {
-                        UserViewRow(model: user)
+                        UserViewCell(model: user)
                     }
                     .disabled(user.id == defaults.mainUserID)
                 }
@@ -45,7 +45,7 @@ struct UsersListView: View {
 extension UsersListView {
     enum Mode {
         case friends(userID: Int)
-        case sportsGroundVisitors(groundID: Int)
+        case sportsGroundVisitors(list: [UserResponse])
     }
 }
 

@@ -30,7 +30,7 @@ struct SearchUsersView: View {
                         NavigationLink {
                             UserProfileView(userID: user.id)
                         } label: {
-                            UserViewRow(model: user)
+                            UserViewCell(model: user)
                         }
                     }
                 }

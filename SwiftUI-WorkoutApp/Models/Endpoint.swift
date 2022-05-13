@@ -70,6 +70,10 @@ enum Endpoint {
     /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
     case deleteComment(groundID: Int, commentID: Int, auth: AuthData)
 
+    /// Получение списка площадок, где тренируется пользователь:
+    /// **GET** ${API}/users/<user_id>/areas
+    case getSportsGroundsForUser(_ userID: Int, auth: AuthData)
+
     var urlRequest: URLRequest? {
         guard let url = URL(string: urlString) else { return nil }
         var request = URLRequest(url: url)
@@ -153,6 +157,8 @@ private extension Endpoint {
             return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
         case let .deleteComment(groundID, commentID, _):
             return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
+        case let .getSportsGroundsForUser(userID, _):
+            return "\(baseUrl)/users/\(userID)/areas"
         }
     }
 
@@ -162,8 +168,8 @@ private extension Endpoint {
                 .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editComment:
             return .post
-        case .getUser, .getFriendsForUser,
-                .getFriendRequests, .getSportsGround, .findUsers:
+        case .getUser, .getFriendsForUser, .getFriendRequests,
+                .getSportsGround, .findUsers, .getSportsGroundsForUser:
             return .get
         case .declineFriendRequest, .deleteFriend, .deleteComment:
             return .delete
@@ -177,7 +183,7 @@ private extension Endpoint {
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
             let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth),
             let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
-            let .deleteComment(_, _, auth):
+            let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .resetPassword:
             return [:]
@@ -189,7 +195,7 @@ private extension Endpoint {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
                 .acceptFriendRequest, .declineFriendRequest, .findUsers,
                 .sendFriendRequest, .deleteFriend, .getSportsGround,
-                .deleteComment:
+                .deleteComment, .getSportsGroundsForUser:
             return nil
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])

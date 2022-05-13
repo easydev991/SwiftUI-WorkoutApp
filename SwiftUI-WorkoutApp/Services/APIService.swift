@@ -214,6 +214,16 @@ struct APIService {
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
     }
+
+    /// Получить список площадок, где тренируется пользователь
+    /// - Parameter userID: `id` пользователя
+    /// - Returns: Список площадок, где тренируется пользователь
+    func getSportsGroundsForUser(_ userID: Int) async throws -> [SportsGround] {
+        let endpoint = Endpoint.getSportsGroundsForUser(userID, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return [] }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle([SportsGround].self, data, response)
+    }
 }
 
 private extension APIService {
@@ -221,7 +231,7 @@ private extension APIService {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
-        config.waitsForConnectivity = true
+//        config.waitsForConnectivity = true
         return .init(configuration: config)
     }
 

@@ -16,7 +16,7 @@ struct SportsGroundCommentView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top, spacing: 16) {
-                SmallProfileCacheImageView(url: model.user?.avatarURL)
+                CacheImageView(url: model.user?.avatarURL)
                 nameDate
                 Spacer()
                 menuButton
