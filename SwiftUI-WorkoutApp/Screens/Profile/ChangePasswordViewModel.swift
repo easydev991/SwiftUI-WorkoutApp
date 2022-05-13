@@ -41,15 +41,5 @@ final class ChangePasswordViewModel: ObservableObject {
         }
     }
 
-    func errorAlertClosed() {
-        errorMessage = ""
-    }
-
-    init() {
-        print("--- inited ChangePasswordViewModel")
-    }
-
-    deinit {
-        print("--- deinited ChangePasswordViewModel")
-    }
+    func errorAlertClosed() { errorMessage = "" }
 }

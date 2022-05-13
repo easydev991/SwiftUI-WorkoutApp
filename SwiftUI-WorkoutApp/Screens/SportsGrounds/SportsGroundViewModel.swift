@@ -58,9 +58,7 @@ final class SportsGroundViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }
 
 extension SportsGroundViewModel {

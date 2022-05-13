@@ -27,7 +27,5 @@ final class SearchUsersViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }

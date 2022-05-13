@@ -79,7 +79,5 @@ final class UserProfileViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }

@@ -20,13 +20,9 @@ final class LoginViewModel: ObservableObject {
         !login.isEmpty && password.count >= Constants.minPasswordSize
     }
 
-    var canRestorePassword: Bool {
-        !login.isEmpty
-    }
+    var canRestorePassword: Bool { !login.isEmpty }
 
-    func errorAlertClosed() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 
     func warningAlertClosed() {
         showForgotPasswordAlert.toggle()
@@ -66,9 +62,5 @@ final class LoginViewModel: ObservableObject {
         } else {
             showForgotPasswordAlert.toggle()
         }
-    }
-
-    deinit {
-        print("--- deinited LoginViewModel")
     }
 }

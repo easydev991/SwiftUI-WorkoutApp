@@ -29,7 +29,7 @@ struct LoginView: View {
         }
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: viewModel.errorAlertClosed) { TextOk() }
+            Button(action: viewModel.clearErrorMessage) { TextOk() }
         }
         .alert(Constants.Alert.success, isPresented: $showResetSuccessfulAlert, actions: {
             Button(action: viewModel.resetSuccessfulAlertClosed) { TextOk() }

@@ -46,13 +46,7 @@ final class UsersListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
-
-    deinit {
-        print("--- deinited UsersListViewModel")
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }
 
 private extension UsersListViewModel {

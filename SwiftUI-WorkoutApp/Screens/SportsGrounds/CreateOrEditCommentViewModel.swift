@@ -38,11 +38,5 @@ final class CreateOrEditCommentViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func closedErrorAlert() {
-        errorMessage = ""
-    }
-
-    deinit {
-        print("--- deinited comment VM")
-    }
+    func closedErrorAlert() { errorMessage = "" }
 }
