@@ -224,6 +224,21 @@ struct APIService {
         let (data, response) = try await urlSession.data(for: request)
         return try handle([SportsGround].self, data, response)
     }
+
+    /// Изменить статус "тренируюсь здесь" для площадки
+    /// - Parameters:
+    ///   - groundID: `id` площадки
+    ///   - trainHere: `true` - тренируюсь здесь, `false` - не тренируюсь здесь
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
+    func changeTrainHereStatus(for groundID: Int, trainHere: Bool) async throws -> Bool {
+        let endpoint: Endpoint = trainHere
+        ? .postTrainHere(groundID, auth: defaults.basicAuthInfo)
+        : .deleteTrainHere(groundID, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
+    }
 }
 
 private extension APIService {
@@ -231,7 +246,7 @@ private extension APIService {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
-//        config.waitsForConnectivity = true
+        config.waitsForConnectivity = true
         return .init(configuration: config)
     }
 

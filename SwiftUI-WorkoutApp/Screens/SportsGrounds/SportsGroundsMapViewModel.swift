@@ -9,7 +9,7 @@ import MapKit.MKGeometry
 
 final class SportsGroundsMapViewModel: ObservableObject {
     @Published var openDetails = false
-    @Published var selectedPlace = SportsGround.mock
+    @Published var selectedPlace = SportsGround.emptyValue
 
     private let locationService: LocationService
 

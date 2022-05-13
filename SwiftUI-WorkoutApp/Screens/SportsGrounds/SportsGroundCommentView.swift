@@ -68,7 +68,7 @@ private extension SportsGroundCommentView {
 struct SportsGroundCommentView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundCommentView(
-            model: SportsGround.mock.comments!.first!,
+            model: .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue),
             deleteClbk: {_ in},
             editClbk: {_,_ in}
         )

@@ -12,10 +12,7 @@ final class SportsGroundViewModel: ObservableObject {
     @Published var ground = SportsGround.emptyValue
     @Published private(set) var isPhotoGridShown = false
     @Published private(set) var photoColumns = Columns.one
-    @Published var trainHere = false
-    @Published private(set) var comments = [Comment]()
     @Published private(set) var showParticipants = false
-    @Published private(set) var showComments = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
@@ -35,7 +32,6 @@ final class SportsGroundViewModel: ObservableObject {
                 return
             }
             ground = model
-            comments = model.comments ?? []
             updateState()
         } catch {
             errorMessage = error.localizedDescription
@@ -50,8 +46,21 @@ final class SportsGroundViewModel: ObservableObject {
         do {
             let isOk = try await APIService(with: defaults).deleteComment(from: groundID, commentID: commentID)
             if isOk {
-                comments.removeAll(where: { $0.id == commentID} )
+                ground.comments.removeAll(where: { $0.id == commentID} )
             }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func changeTrainHereStatus(with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: ground.trainHereOptional ?? false)
+            await makeSportsGroundInfo(with: defaults, refresh: true)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -78,8 +87,6 @@ private extension SportsGroundViewModel {
     func updateState() {
         isPhotoGridShown = !ground.photos.isEmpty
         photoColumns = .init(ground.photos.count)
-        trainHere = ground.trainHere.isTrue
         showParticipants = ground.peopleTrainHereCount > .zero
-        showComments = !comments.isEmpty
     }
 }

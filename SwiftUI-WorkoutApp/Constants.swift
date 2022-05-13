@@ -29,7 +29,7 @@ struct Constants {
     }
     struct API {
         static let baseURL = "https://workout.su/api/v3"
-        static let timeOut = TimeInterval(20)
+        static let timeOut = TimeInterval(15)
         static let codeOK = 200
     }
     struct Alert {

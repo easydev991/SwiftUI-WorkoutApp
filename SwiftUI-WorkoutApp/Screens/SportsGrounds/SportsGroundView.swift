@@ -29,7 +29,7 @@ struct SportsGroundView: View {
                 }
                 participantsAndEventSection
                 authorSection
-                if viewModel.showComments {
+                if !viewModel.ground.comments.isEmpty {
                     commentsSection
                 }
                 addNewCommentButton
@@ -121,11 +121,15 @@ private extension SportsGroundView {
             if viewModel.showParticipants {
                 linkToParticipantsView
             }
-#warning("TODO: добавить возможность изменять это свойство")
-            Toggle("Тренируюсь здесь", isOn: $viewModel.trainHere)
-                .disabled(true)
+            Toggle("Тренируюсь здесь", isOn: $viewModel.ground.trainHere)
+                .disabled(viewModel.isLoading)
+                .onChange(of: viewModel.ground.trainHere, perform: changeTrainHereStatus)
             createEventLink
         }
+    }
+
+    func changeTrainHereStatus(newStatus: Bool) {
+        Task { await viewModel.changeTrainHereStatus(with: defaults) }
     }
 
     var linkToParticipantsView: some View {
@@ -166,7 +170,7 @@ private extension SportsGroundView {
 
     var commentsSection: some View {
         Section("Комментарии") {
-            List(viewModel.comments) { comment in
+            List(viewModel.ground.comments) { comment in
                 SportsGroundCommentView(model: comment) { id in
                     deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults) }
                 } editClbk: { id, text in

@@ -107,6 +107,6 @@ private extension CreateEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateEventView(viewModel: .init(mode: .selectedSportsGround(.mock)))
+        CreateEventView(viewModel: .init(mode: .selectedSportsGround(.emptyValue)))
     }
 }

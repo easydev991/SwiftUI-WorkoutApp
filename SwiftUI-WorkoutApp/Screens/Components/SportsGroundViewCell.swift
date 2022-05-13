@@ -31,6 +31,6 @@ struct SportsGroundViewCell: View {
 
 struct SportsGroundsForUserView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundViewCell(model: .mock)
+        SportsGroundViewCell(model: .emptyValue)
     }
 }
