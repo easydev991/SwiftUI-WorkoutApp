@@ -215,6 +215,62 @@
 			path = Events;
 			sourceTree = "<group>";
 		};
+		67419AD4282E8E6F004F5339 /* Journals */ = {
+			isa = PBXGroup;
+			children = (
+				6798AA56280AF48C00DB76F1 /* JournalsView.swift */,
+				6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */,
+			);
+			path = Journals;
+			sourceTree = "<group>";
+		};
+		67419AD5282E8E7C004F5339 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				6798AA54280AF46300DB76F1 /* MessagesView.swift */,
+				6758B92F281D9469001D83D8 /* MessagesViewModel.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		67419AD6282E8E84004F5339 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				6798AA3F280AEDC900DB76F1 /* RootView.swift */,
+				6798AA60280B136800DB76F1 /* RootViewModel.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		67419AD7282E8E95004F5339 /* SearchUsers */ = {
+			isa = PBXGroup;
+			children = (
+				674D0622282A9896007E75C6 /* SearchUsersView.swift */,
+				674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */,
+			);
+			path = SearchUsers;
+			sourceTree = "<group>";
+		};
+		67419AD8282E8E9E004F5339 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				6747575528113419002F0A24 /* ChangePasswordView.swift */,
+				67B78717281D8792008B104F /* ChangePasswordViewModel.swift */,
+				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
+				67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		67419AD9282E8EBA004F5339 /* FriendRequests */ = {
+			isa = PBXGroup;
+			children = (
+				674D061A28280A63007E75C6 /* FriendRequestsView.swift */,
+				674D061E2828153A007E75C6 /* FriendRequestRow.swift */,
+			);
+			path = FriendRequests;
+			sourceTree = "<group>";
+		};
 		67475757281285E5002F0A24 /* SportsGrounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,12 +340,9 @@
 		6798AA4F280AF3F300DB76F1 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA3F280AEDC900DB76F1 /* RootView.swift */,
-				6798AA60280B136800DB76F1 /* RootViewModel.swift */,
-				6798AA54280AF46300DB76F1 /* MessagesView.swift */,
-				6758B92F281D9469001D83D8 /* MessagesViewModel.swift */,
-				6798AA56280AF48C00DB76F1 /* JournalsView.swift */,
-				6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */,
+				67419AD6282E8E84004F5339 /* Root */,
+				67419AD5282E8E7C004F5339 /* Messages */,
+				67419AD4282E8E6F004F5339 /* Journals */,
 				671D7DED28210D820068E728 /* Events */,
 				67475757281285E5002F0A24 /* SportsGrounds */,
 				6798AA6A280B277600DB76F1 /* Components */,
@@ -349,18 +402,13 @@
 		6798AA69280B23BF00DB76F1 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				67419AD9282E8EBA004F5339 /* FriendRequests */,
+				67419AD8282E8E9E004F5339 /* Settings */,
+				67419AD7282E8E95004F5339 /* SearchUsers */,
 				6798AA5A280AF4C700DB76F1 /* ProfileView.swift */,
 				6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */,
 				6798AA67280B23B700DB76F1 /* UserProfileView.swift */,
 				67B7871B281D8A49008B104F /* UserProfileViewModel.swift */,
-				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
-				67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */,
-				6747575528113419002F0A24 /* ChangePasswordView.swift */,
-				67B78717281D8792008B104F /* ChangePasswordViewModel.swift */,
-				674D061A28280A63007E75C6 /* FriendRequestsView.swift */,
-				674D061E2828153A007E75C6 /* FriendRequestRow.swift */,
-				674D0622282A9896007E75C6 /* SearchUsersView.swift */,
-				674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
