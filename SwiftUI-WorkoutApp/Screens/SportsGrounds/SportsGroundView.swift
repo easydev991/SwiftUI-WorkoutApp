@@ -153,21 +153,12 @@ private extension SportsGroundView {
 
     var authorSection: some View {
         Section("Добавил") {
-            HStack(spacing: 16) {
-                CacheAsyncImage(url: viewModel.ground.author.avatarURL) { phase in
-                    switch phase {
-                    case let .success(image):
-                        image
-                            .resizable()
-                            .smallProfileImageRect()
-                    case .failure:
-                        Image(systemName: "person.fill")
-                    default:
-                        ProgressView()
-                    }
+            NavigationLink(destination: UserProfileView(userID: viewModel.ground.author.userID.valueOrZero)) {
+                HStack(spacing: 16) {
+                    SmallProfileCacheImageView(url: viewModel.ground.author.avatarURL)
+                    Text(viewModel.ground.author.userName.valueOrEmpty)
+                        .fontWeight(.medium)
                 }
-                Text(viewModel.ground.author.userName.valueOrEmpty)
-                    .fontWeight(.medium)
             }
         }
     }
