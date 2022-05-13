@@ -20,14 +20,22 @@ struct SwiftUI_WorkoutAppApp: App {
         .onChange(of: scenePhase) { newValue in
             switch newValue {
             case .background:
+#if DEBUG
                 print("---background")
+#endif
             case .inactive:
+#if DEBUG
                 print("---inactive")
+#endif
                 defaults.needUpdateUser = true
             case .active:
+#if DEBUG
                 print("---active")
+#endif
             @unknown default:
+#if DEBUG
                 print("---unknown")
+#endif
             }
         }
     }

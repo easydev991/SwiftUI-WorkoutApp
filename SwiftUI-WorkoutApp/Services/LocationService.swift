@@ -50,9 +50,13 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             manager.requestLocation()
         case .restricted:
+#if DEBUG
             print("--- Запрещен доступ к геолокации")
+#endif
         case .denied:
+#if DEBUG
             print("--- Отклонен запрос на доступ к геолокации")
+#endif
         @unknown default: break
         }
     }
@@ -61,6 +65,8 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
+#if DEBUG
         print("--- LocationManager столкнулся с ошибкой: \(error.localizedDescription)")
+#endif
     }
 }

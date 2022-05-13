@@ -51,10 +51,6 @@ final class EditAccountViewModel: ObservableObject {
         makeCountryAndCityData()
     }
 
-    deinit {
-        print("--- deinited EditAccountViewModel")
-    }
-
     func selectCountry(_ country: Country) {
         selectedCountry = country
         updateCityIfNeeded(for: country)
@@ -67,13 +63,11 @@ final class EditAccountViewModel: ObservableObject {
     func registerAction() {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: Проверить введенные данные")
-        print("--- Проверяем введенные данные и начинаем регистрацию")
     }
 
     func saveChangesAction() {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
-        print("--- сохраняем изменения в профиле")
     }
 }
 

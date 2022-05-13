@@ -85,7 +85,9 @@ private extension MapSnapshotView {
                 }
                 snapshotImage = image
             } else {
-                print("Error with snapshot: ",(error?.localizedDescription).valueOrEmpty)
+#if DEBUG
+                print("--- Error with snapshot: ",(error?.localizedDescription).valueOrEmpty)
+#endif
             }
         }
     }

@@ -21,7 +21,9 @@ final class SearchUsersViewModel: ObservableObject {
             let result = try await APIService(with: defaults).findUsers(with: name)
             users = result.map(UserModel.init)
         } catch {
+#if DEBUG
             print("--- error with search: \(error)")
+#endif
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()

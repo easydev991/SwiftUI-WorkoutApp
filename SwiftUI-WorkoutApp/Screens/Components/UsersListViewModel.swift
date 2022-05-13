@@ -40,7 +40,9 @@ final class UsersListViewModel: ObservableObject {
                 self.friendRequests = defaults.friendRequestsList.map(UserModel.init)
             }
         } catch {
+#if DEBUG
             print("--- error acceptFriendRequest: \(error)")
+#endif
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()
