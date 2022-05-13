@@ -10,6 +10,8 @@ import SwiftUI
 struct SportsGroundListView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
+    @State private var showErrorAlert = false
+    @State private var errorTitle = ""
     let userID: Int
 
     var body: some View {
@@ -25,6 +27,10 @@ struct SportsGroundListView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: closeAlert) { TextOk() }
+        }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
         .navigationTitle("Где тренируется")
@@ -35,6 +41,15 @@ struct SportsGroundListView: View {
 private extension SportsGroundListView {
     func askForGrounds(refresh: Bool = false) async {
         await viewModel.makeSportsGroundsForUser(userID, refresh: refresh, with: defaults)
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        errorTitle = message
+    }
+
+    func closeAlert() {
+        viewModel.clearErrorMessage()
     }
 }
 
