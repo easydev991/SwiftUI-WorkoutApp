@@ -12,7 +12,7 @@ final class SportsGroundViewModel: ObservableObject {
     @Published var ground = SportsGround.emptyValue
     @Published private(set) var isPhotoGridShown = false
     @Published private(set) var photoColumns = Columns.one
-    @Published var isMySportsGround = false
+    @Published var trainHere = false
     @Published private(set) var comments = [Comment]()
     @Published private(set) var showParticipants = false
     @Published private(set) var showComments = false
@@ -78,7 +78,7 @@ private extension SportsGroundViewModel {
     func updateState() {
         isPhotoGridShown = !ground.photos.isEmpty
         photoColumns = .init(ground.photos.count)
-        isMySportsGround = ground.mine
+        trainHere = ground.trainHere.isTrue
         showParticipants = ground.peopleTrainHereCount > .zero
         showComments = !comments.isEmpty
     }

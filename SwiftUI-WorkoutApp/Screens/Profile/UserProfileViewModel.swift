@@ -14,10 +14,6 @@ final class UserProfileViewModel: ObservableObject {
     @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
-    var addedSportsGrounds: Int {
-#warning("TODO: маппить из списка площадок, т.к. сервер не присылает")
-        return user.addedSportsGrounds
-    }
 
     @MainActor
     func makeUserInfo(

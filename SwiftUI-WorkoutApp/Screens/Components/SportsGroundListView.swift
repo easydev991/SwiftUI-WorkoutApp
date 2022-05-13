@@ -12,7 +12,7 @@ struct SportsGroundListView: View {
     @StateObject private var viewModel = SportsGroundListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    let userID: Int
+    let mode: Mode
 
     var body: some View {
         ZStack {
@@ -33,14 +33,20 @@ struct SportsGroundListView: View {
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
-        .navigationTitle("Где тренируется")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension SportsGroundListView {
+    enum Mode {
+        case usedBy(userID: Int)
+        case added(list: [SportsGround])
     }
 }
 
 private extension SportsGroundListView {
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundsForUser(userID, refresh: refresh, with: defaults)
+        await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
 
     func setupErrorAlert(with message: String) {
@@ -55,7 +61,7 @@ private extension SportsGroundListView {
 
 struct SportsGroundListView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundListView(userID: UserDefaultsService().mainUserID)
+        SportsGroundListView(mode: .usedBy(userID: UserDefaultsService().mainUserID))
             .environmentObject(UserDefaultsService())
     }
 }

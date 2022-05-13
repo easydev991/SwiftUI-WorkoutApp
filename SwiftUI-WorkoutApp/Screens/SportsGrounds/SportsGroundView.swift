@@ -121,8 +121,9 @@ private extension SportsGroundView {
             if viewModel.showParticipants {
                 linkToParticipantsView
             }
-#warning("TODO: интеграция с сервером")
-            Toggle("Тренируюсь здесь", isOn: $viewModel.isMySportsGround)
+#warning("TODO: добавить возможность изменять это свойство")
+            Toggle("Тренируюсь здесь", isOn: $viewModel.trainHere)
+                .disabled(true)
             createEventLink
         }
     }

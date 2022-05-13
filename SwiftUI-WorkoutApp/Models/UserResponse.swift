@@ -13,6 +13,7 @@ struct UserResponse: Codable, Hashable {
     let createdIsoDateTimeSec: String? // "2013-01-16T03:35:54+04:00"
     let userID, cityID, countryID, genderCode, friendsCount, journalsCount: Int?
     let friendRequestsCountString, sportsGroundsCountString: String? // "0"
+    let addedSportsGrounds: [SportsGround]?
     /// Не используется
     let purchaseCustomerEditor: Bool?
     /// Не используется
@@ -35,6 +36,7 @@ struct UserResponse: Codable, Hashable {
         case sportsGroundsCountString = "area_count"
         case journalsCount = "journal_count"
         case purchaseCustomerEditor = "purchase_customer_editor"
+        case addedSportsGrounds = "added_areas"
         case rating, email, lang
     }
 }
@@ -67,10 +69,10 @@ extension UserResponse {
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero
     }
-    var sportsGroundsCount: Int {
+    var usedSportsGroundsCount: Int {
         Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
     }
     static var emptyValue: UserResponse {
-        .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+        .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
     }
 }

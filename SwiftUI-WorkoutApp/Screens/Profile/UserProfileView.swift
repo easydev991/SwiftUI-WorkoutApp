@@ -129,7 +129,7 @@ private extension UserProfileView {
             if viewModel.user.usesSportsGrounds > .zero {
                 usesSportsGroundsLink
             }
-            if viewModel.user.addedSportsGrounds > .zero {
+            if !viewModel.user.addedSportsGrounds.isEmpty {
                 addedSportsGroundsLink
             }
             if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
@@ -143,10 +143,8 @@ private extension UserProfileView {
 
     var usesSportsGroundsLink: some View {
         NavigationLink {
-            // getSportsGroundsForUser
-//#warning("TODO: интеграция с сервером - GET ${API}/users/<user_id>/areas")
-//            Text("Площадки (где тренируется)")
-            SportsGroundListView(userID: userID)
+            SportsGroundListView(mode: .usedBy(userID: userID))
+                .navigationTitle("Где тренируется")
         } label: {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
@@ -159,13 +157,12 @@ private extension UserProfileView {
 
     var addedSportsGroundsLink: some View {
         NavigationLink {
-            Text("Добавленные площадки")
+            SportsGroundListView(mode: .added(list: viewModel.user.addedSportsGrounds))
                 .navigationTitle("Добавленные")
-                .navigationBarTitleDisplayMode(.inline)
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")
             Spacer()
-            Text(viewModel.addedSportsGrounds.description)
+            Text(viewModel.user.addedSportsGrounds.count.description)
                 .foregroundColor(.secondary)
         }
     }

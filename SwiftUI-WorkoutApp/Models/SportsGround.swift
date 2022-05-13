@@ -25,7 +25,10 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let trainings: Trainings
     let typeID: Int
     let comments: [Comment]?
+    /// Пользователи, которые тренируются на этой площадке
     let usersTrainHere: [UserResponse]?
+    /// Пользователь тренируется на этой площадке
+    var trainHere: Bool?
     var title: String? { "Площадка № \(id)" }
     var subtitle: String? {
         let grade = SportsGroundGrade(id: typeID).grade.rawValue
@@ -74,10 +77,11 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case id, latitude, longitude, mine, name, photos, preview, trainings, comments
         case modifyDate = "modify_date"
         case typeID = "type_id"
+        case trainHere = "train_here"
         case usersTrainHere = "users_train_here"
     }
 
-    init(address: String?, author: UserResponse, canEdit: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String?, photos: [Photo], preview: String?, trainings: Trainings, typeID: Int, comments: [Comment]?, usersTrainHere: [UserResponse]?) {
+    init(address: String?, author: UserResponse, canEdit: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, equipmentIDS: [Int], id: Int, latitude: String, longitude: String, mine: Bool, modifyDate: String?, name: String?, photos: [Photo], preview: String?, trainings: Trainings, typeID: Int, comments: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.address = address
         self.author = author
         self.canEdit = canEdit
@@ -99,6 +103,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         self.typeID = typeID
         self.comments = comments
         self.usersTrainHere = usersTrainHere
+        self.trainHere = trainHere
     }
 }
 
@@ -177,7 +182,7 @@ struct Comment: Codable, Identifiable {
 
 extension SportsGround {
     static var emptyValue: SportsGround {
-        .init(address: "", author: .emptyValue, canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero, comments: nil, usersTrainHere: nil)
+        .init(address: "", author: .emptyValue, canEdit: false, cityID: .zero, sizeID: .zero, commentsCount: .zero, countryID: .zero, createDate: nil, equipmentIDS: [], id: .zero, latitude: "", longitude: "", mine: false, modifyDate: nil, name: "", photos: [], preview: "", trainings: .integer(.zero), typeID: .zero, comments: nil, usersTrainHere: nil, trainHere: false)
     }
 
     static let mock = SportsGround(
@@ -230,23 +235,24 @@ extension SportsGround {
                 id: 35,
                 body: "на сколько я понял это \"крылья советов\" в принципе неплохой стадион но достаточно далеко до метро так что заниматься могут только люди которые живут в районе)",
                 date: "2011-07-13T18:59:23+00:00",
-                user: .init(userName: "rastoaman", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/ad8c7eb668c2412954d11668f473a4a8dd4458bc.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 1317, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+                user: .init(userName: "rastoaman", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/ad8c7eb668c2412954d11668f473a4a8dd4458bc.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 1317, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
             ),
             .init(
                 id: 69,
                 body: "Да, это на стадионе \"Крылья Советов\".",
                 date: "2011-09-29T19:18:07+00:00",
-                user: .init(userName: "WasD", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/2019/03/2019-03-21-23-03-49-rjk.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 30, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+                user: .init(userName: "WasD", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/2019/03/2019-03-21-23-03-49-rjk.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 30, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
             ),
             .init(
                 id: 70,
                 body: "100% \"Крылья\" !!  Бываю там частенько )))",
                 date: "2011-09-30T11:03:44+00:00",
-                user: .init(userName: "JA666", fullName: nil, email: nil, imageStringURL: "https://workout.su/img/avatar_default.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 2301, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
+                user: .init(userName: "JA666", fullName: nil, email: nil, imageStringURL: "https://workout.su/img/avatar_default.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 2301, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
             )
         ],
         usersTrainHere: [
-            .init(userName: "ninenineone", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/2018/01/2018-01-28-13-01-38-asm.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 10367, cityID: 1, countryID: 17, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, purchaseCustomerEditor: false, lang: "ru", rating: nil)
-        ]
+            .init(userName: "ninenineone", fullName: nil, email: nil, imageStringURL: "https://workout.su/uploads/avatars/2018/01/2018-01-28-13-01-38-asm.jpg", birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: 10367, cityID: 1, countryID: 17, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: false, lang: "ru", rating: nil)
+        ],
+        trainHere: true
     )
 }

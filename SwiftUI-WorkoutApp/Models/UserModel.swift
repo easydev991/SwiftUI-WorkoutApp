@@ -17,7 +17,7 @@ struct UserModel: Identifiable, Hashable {
     let cityID: Int
     let usesSportsGrounds: Int
 #warning("TODO: маппить из списка площадок")
-    let addedSportsGrounds = Int.zero
+    let addedSportsGrounds: [SportsGround]
     let friendsCount, journalsCount: Int
 
     init(_ user: UserResponse) {
@@ -28,12 +28,13 @@ struct UserModel: Identifiable, Hashable {
         self.age = user.age
         self.countryID = user.countryID.valueOrZero
         self.cityID = user.cityID.valueOrZero
-        self.usesSportsGrounds = user.sportsGroundsCount
+        self.usesSportsGrounds = user.usedSportsGroundsCount
+        self.addedSportsGrounds = user.addedSportsGrounds ?? []
         self.friendsCount = user.friendsCount.valueOrZero
         self.journalsCount = user.journalsCount.valueOrZero
     }
 
-    init(id: Int, imageURL: URL?, name: String, gender: String, age: Int, countryID: Int, cityID: Int, usesSportsGrounds: Int, friendsCount: Int, journalsCount: Int) {
+    init(id: Int, imageURL: URL?, name: String, gender: String, age: Int, countryID: Int, cityID: Int, usesSportsGrounds: Int, addedSportsGrounds: [SportsGround], friendsCount: Int, journalsCount: Int) {
         self.id = id
         self.imageURL = imageURL
         self.name = name
@@ -42,6 +43,7 @@ struct UserModel: Identifiable, Hashable {
         self.countryID = countryID
         self.cityID = cityID
         self.usesSportsGrounds = usesSportsGrounds
+        self.addedSportsGrounds = addedSportsGrounds
         self.friendsCount = friendsCount
         self.journalsCount = journalsCount
     }
@@ -53,6 +55,6 @@ extension UserModel {
     }
     var isEmpty: Bool { id == .zero }
     static var emptyValue: UserModel {
-        .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, friendsCount: .zero, journalsCount: .zero)
+        .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, addedSportsGrounds: [], friendsCount: .zero, journalsCount: .zero)
     }
 }

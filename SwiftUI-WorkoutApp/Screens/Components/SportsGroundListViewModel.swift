@@ -13,15 +13,20 @@ final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeSportsGroundsForUser(_ userID: Int, refresh: Bool, with defaults: UserDefaultsService) async {
-        if isLoading || (!list.isEmpty && !refresh) { return }
-        if !refresh { isLoading.toggle() }
-        do {
-            list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
-        } catch {
-            errorMessage = error.localizedDescription
+    func makeSportsGroundsFor(_ mode: SportsGroundListView.Mode, refresh: Bool, with defaults: UserDefaultsService) async {
+        switch mode {
+        case let .usedBy(userID):
+            if isLoading || (!list.isEmpty && !refresh) { return }
+            if !refresh { isLoading.toggle() }
+            do {
+                list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            if !refresh { isLoading.toggle() }
+        case let .added(list):
+            self.list = list
         }
-        if !refresh { isLoading.toggle() }
     }
 
     func clearErrorMessage() {
