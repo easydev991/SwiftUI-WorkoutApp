@@ -143,9 +143,8 @@ private extension SportsGroundView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            UsersListView(mode: .sportsGroundVisitors(list: viewModel.ground.usersTrainHere ?? []))
+            UsersListView(mode: .sportsGroundVisitors(list: viewModel.ground.participants))
                 .navigationTitle("Здесь тренируются")
-                .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
                 Text("Здесь тренируются")
@@ -160,9 +159,11 @@ private extension SportsGroundView {
     }
 
     var createEventLink: some View {
-        NavigationLink(
-            destination: CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
-        ) { Text("Создать мероприятие").blueMediumWeight() }
+        NavigationLink {
+            CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
+        } label: {
+            Text("Создать мероприятие").blueMediumWeight()
+        }
     }
 
     var authorSection: some View {

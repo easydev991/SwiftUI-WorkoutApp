@@ -38,10 +38,12 @@ private extension EventsView {
         .padding()
     }
 
-    var content: AnyView {
-        switch selectedEventType {
-        case .future: return AnyView(EventsEmptyView())
-        case .past: return AnyView(eventsList)
+    var content: some View {
+        ZStack {
+            switch selectedEventType {
+            case .future: EmptyContentView(mode: .events)
+            case .past: eventsList
+            }
         }
     }
 

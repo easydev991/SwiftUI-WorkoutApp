@@ -171,7 +171,6 @@ private extension UserProfileView {
         NavigationLink {
             UsersListView(mode: .friends(userID: viewModel.user.id))
                 .navigationTitle("Друзья")
-                .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")

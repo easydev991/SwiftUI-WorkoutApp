@@ -27,7 +27,11 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         set { commentsOptional = newValue }
     }
     /// Пользователи, которые тренируются на этой площадке
-    let usersTrainHere: [UserResponse]?
+    var usersTrainHere: [UserResponse]?
+    var participants: [UserResponse] {
+        get { usersTrainHere ?? [] }
+        set { usersTrainHere = newValue }
+    }
     var trainHereOptional: Bool?
     /// Пользователь тренируется на этой площадке
     var trainHere: Bool {

@@ -13,6 +13,8 @@ struct MessagesView: View {
 
     var body: some View {
         NavigationView {
+#warning("TODO: интеграция с сервером")
+#warning("TODO: сверстать экран с сообщениями")
             content
                 .navigationTitle("Сообщения")
         }
@@ -20,14 +22,19 @@ struct MessagesView: View {
 }
 
 private extension MessagesView {
-    var content: AnyView {
-        switch defaults.isAuthorized {
-        case true:
-#warning("TODO: интеграция с сервером")
-#warning("TODO: сверстать экран с сообщениями и заглушку")
-            return AnyView(Text("Сообщения"))
-        case false:
-            return AnyView(IncognitoProfileView())
+    var content: some View {
+        ZStack {
+            if defaults.isAuthorized {
+                if !defaults.friendsIdsList.isEmpty {
+                    EmptyContentView(mode: .messages)
+                } else {
+                    Text("Тут будут чаты с другими пользователями")
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            } else {
+                IncognitoProfileView()
+            }
         }
     }
 }

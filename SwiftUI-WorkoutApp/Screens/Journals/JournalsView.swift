@@ -13,21 +13,30 @@ struct JournalsView: View {
 
     var body: some View {
         NavigationView {
+#warning("TODO: интеграция с сервером")
+#warning("TODO: сверстать экран с дневниками")
             content
-                .navigationTitle("Дневники")
+            .toolbar { addJournalButton }
+            .navigationTitle("Дневники тренировок")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
 private extension JournalsView {
-    var content: AnyView {
-        switch defaults.isAuthorized {
-        case true:
-#warning("TODO: интеграция с сервером")
-#warning("TODO: сверстать экран с дневниками и заглушку")
-            return AnyView(Text("Дневники"))
-        case false:
-            return AnyView(IncognitoProfileView())
+    var content: some View {
+        ZStack {
+            if defaults.isAuthorized {
+                EmptyContentView(mode: .journals)
+            } else {
+                IncognitoProfileView()
+            }
+        }
+    }
+
+    var addJournalButton: some View {
+        NavigationLink(destination: Text("Создать дневник")) {
+            Image(systemName: "plus")
         }
     }
 }

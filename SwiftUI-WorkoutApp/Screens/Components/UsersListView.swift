@@ -39,6 +39,7 @@ struct UsersListView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
