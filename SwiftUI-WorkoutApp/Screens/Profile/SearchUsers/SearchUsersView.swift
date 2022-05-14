@@ -39,9 +39,9 @@ struct SearchUsersView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
-        .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
+        .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: viewModel.clearErrorMessage) { TextOk() }
-        } message: { Text(alertMessage) }
+        }
         .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onAppear(perform: showKeyboard)

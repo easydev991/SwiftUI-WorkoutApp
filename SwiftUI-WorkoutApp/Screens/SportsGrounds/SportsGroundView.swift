@@ -15,6 +15,7 @@ struct SportsGroundView: View {
     @State private var isCreatingComment = false
     @State private var editComment: Comment?
     @State private var deleteCommentTask: Task<Void, Never>?
+    @State private var refreshButtonTask: Task<Void, Never>?
 
     init(model: SportsGroundViewModel) {
         viewModel = model
@@ -34,6 +35,7 @@ struct SportsGroundView: View {
                 }
                 addNewCommentButton
             }
+            .opacity(viewModel.ground.id == .zero ? .zero : 1)
             .disabled(viewModel.isLoading)
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
@@ -41,9 +43,9 @@ struct SportsGroundView: View {
         }
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
-        .alert(Constants.Alert.error, isPresented: $showErrorAlert) {
+        .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
-        } message: { Text(alertMessage) }
+        }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .sheet(item: $editComment) {
             CreateOrEditCommentView(
@@ -57,7 +59,8 @@ struct SportsGroundView: View {
         .sheet(isPresented: $isCreatingComment) {
             CreateOrEditCommentView(mode: .create(groundID: viewModel.groundID))
         }
-        .onDisappear(perform: cancelDeleteCommentTask)
+        .onDisappear(perform: cancelTasks)
+        .toolbar { refreshButton }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -195,6 +198,16 @@ private extension SportsGroundView {
         }
     }
 
+    var refreshButton: some View {
+        Button {
+            refreshButtonTask = Task { await askForInfo() }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .opacity(viewModel.ground.id == .zero ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
     func askForInfo(refresh: Bool = false) async {
         await viewModel.makeSportsGroundInfo(with: defaults, refresh: refresh)
     }
@@ -208,8 +221,8 @@ private extension SportsGroundView {
         viewModel.clearErrorMessage()
     }
 
-    func cancelDeleteCommentTask() {
-        deleteCommentTask?.cancel()
+    func cancelTasks() {
+        [refreshButtonTask, deleteCommentTask].forEach { $0?.cancel() }
     }
 }
 
