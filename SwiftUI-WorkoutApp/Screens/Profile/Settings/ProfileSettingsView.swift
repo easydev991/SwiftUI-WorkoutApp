@@ -32,7 +32,10 @@ struct ProfileSettingsView: View {
 
 private extension ProfileSettingsView {
     var editAccountLink: some View {
-        NavigationLink(destination: EditAccountView()) {
+        NavigationLink {
+            EditAccountView()
+                .navigationTitle("Изменить профиль")
+        } label: {
             Text("Редактировать данные")
         }
     }

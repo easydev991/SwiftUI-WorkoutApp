@@ -72,6 +72,9 @@ extension UserResponse {
     var usedSportsGroundsCount: Int {
         Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
     }
+    var regForm: RegistrationForm {
+        .init(self)
+    }
     static var emptyValue: UserResponse {
         .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil, purchaseCustomerEditor: nil, lang: nil, rating: nil)
     }

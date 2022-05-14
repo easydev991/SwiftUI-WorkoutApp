@@ -22,23 +22,33 @@ final class EditAccountViewModel: ObservableObject {
     }
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    private var currentUserRegInfo = RegistrationForm.emptyValue
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
     /// Доступность кнопки для регистрации или сохранения изменений
-    func isButtonAvailable(_ isUserAuth: Bool) -> Bool {
-        if isUserAuth {
-            return false // убрать хардкод после интеграции с БД
+    func isButtonAvailable(with defaults: UserDefaultsService) -> Bool {
+        if defaults.isAuthorized {
+            print("--- regform: \(regForm)")
+            print("--- currentUserRegInfo: \(currentUserRegInfo)")
+            return regForm != currentUserRegInfo
         } else {
             return regForm.isComplete
         }
     }
 
-    func title(_ isUserAuth: Bool) -> String {
-        isUserAuth ? "Изменить профиль" : "Регистрация"
-    }
-
     init() {
         makeCountryAndCityData()
+    }
+
+    @MainActor
+    func updateFormIfNeeded(with defaults: UserDefaultsService) async {
+        if defaults.isAuthorized, let userInfo = defaults.mainUserInfo {
+            regForm = .init(userInfo)
+            birthDate = userInfo.birthDate ?? .now
+            selectedCountry = countries.first(where: { $0.id == regForm.countryID }) ?? .defaultCountry
+            selectedCity = cities.first(where: { $0.id == regForm.cityID }) ?? .defaultCity
+            currentUserRegInfo = regForm
+        }
     }
 
     func selectCountry(_ country: Country) {

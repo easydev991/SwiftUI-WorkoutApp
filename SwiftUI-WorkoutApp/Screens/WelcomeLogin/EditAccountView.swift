@@ -42,12 +42,14 @@ struct EditAccountView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
+        .task {
+            await viewModel.updateFormIfNeeded(with: defaults)
+        }
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: viewModel.clearErrorMessage) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTasks)
-        .navigationTitle(viewModel.title(defaults.isAuthorized))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -169,7 +171,7 @@ private extension EditAccountView {
             Button(action: registerAction) {
                 ButtonInFormLabel(title: "Зарегистрироваться")
             }
-            .disabled(!viewModel.isButtonAvailable(defaults.isAuthorized))
+            .disabled(!viewModel.isButtonAvailable(with: defaults))
         }
     }
 
@@ -183,7 +185,7 @@ private extension EditAccountView {
             Button(action: saveChangesAction) {
                 ButtonInFormLabel(title: "Сохранить")
             }
-            .disabled(!viewModel.isButtonAvailable(defaults.isAuthorized))
+            .disabled(!viewModel.isButtonAvailable(with: defaults))
         }
     }
 
