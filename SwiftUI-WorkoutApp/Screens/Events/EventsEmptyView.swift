@@ -21,7 +21,13 @@ struct EventsEmptyView: View {
                 .frame(width: 180)
             NavigationLink(destination: CreateEventView(viewModel: .init(mode: .regular))) {
                 Text("Создать мероприятие")
-                    .roundedBorderedStyle()
+                    .font(.headline)
+                    .frame(height: 48)
+                    .padding(.horizontal)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke()
+                    }
             }
             Spacer()
         }

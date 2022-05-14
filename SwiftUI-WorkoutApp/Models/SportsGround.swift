@@ -177,7 +177,7 @@ struct Comment: Codable, Identifiable, Hashable {
     let user: UserResponse?
 
     var formattedBody: String {
-        body.valueOrEmpty.withoutHTML
+        body.valueOrEmpty.withoutHTML.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     enum CodingKeys: String, CodingKey {
