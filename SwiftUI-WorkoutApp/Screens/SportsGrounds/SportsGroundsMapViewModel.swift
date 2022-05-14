@@ -18,11 +18,6 @@ final class SportsGroundsMapViewModel: ObservableObject {
         set { locationService.region = newValue }
     }
 
-    var mapAnnotations: [SportsGround] {
-        get { locationService.annotations }
-        set { locationService.annotations = newValue }
-    }
-
     init() {
         locationService = LocationService()
     }

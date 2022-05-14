@@ -87,6 +87,6 @@ private extension SportsGroundViewModel {
     func updateState() {
         isPhotoGridShown = !ground.photos.isEmpty
         photoColumns = .init(ground.photos.count)
-        showParticipants = ground.peopleTrainHereCount > .zero
+        showParticipants = ground.usersTrainHereCount.valueOrZero > .zero
     }
 }

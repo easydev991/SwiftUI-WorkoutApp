@@ -20,7 +20,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let name: String?
     let photos: [Photo]
     let preview: String?
-    let trainings: Trainings
+    let usersTrainHereCount: Int?
     var commentsOptional: [Comment]?
     var comments: [Comment] {
         get { commentsOptional ?? [] }
@@ -45,14 +45,6 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         return grade + " / " + size
     }
     var shortTitle: String { "№ \(id)" }
-    var peopleTrainHereCount: Int {
-        switch trainings {
-        case let .integer(int):
-            return int
-        case let .string(str):
-            return Int(str).valueOrZero
-        }
-    }
     var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? .zero),
@@ -83,7 +75,8 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case countryID = "country_id"
         case createDate = "create_date"
         case equipmentIDS = "equipment_ids"
-        case id, latitude, longitude, mine, name, photos, preview, trainings
+        case id, latitude, longitude, mine, name, photos, preview
+        case usersTrainHereCount = "trainings"
         case commentsOptional = "comments"
         case modifyDate = "modify_date"
         case typeID = "type_id"
@@ -91,7 +84,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, address: String?, author: UserResponse, canEdit: Bool, mine: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int], latitude: String, longitude: String, name: String?, photos: [Photo], preview: String?, trainings: Trainings, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, address: String?, author: UserResponse, canEdit: Bool, mine: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int], latitude: String, longitude: String, name: String?, photos: [Photo], preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
         self.address = address
@@ -110,7 +103,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         self.name = name
         self.photos = photos
         self.preview = preview
-        self.trainings = trainings
+        self.usersTrainHereCount = usersTrainHereCount
         self.commentsOptional = commentsOptional
         self.usersTrainHere = usersTrainHere
         self.trainHereOptional = trainHere
@@ -128,50 +121,6 @@ struct Photo: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id
         case stringURL = "photo"
-    }
-}
-
-enum Trainings: Codable, CustomStringConvertible {
-    case integer(Int)
-    case string(String)
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let x = try? container.decode(Int.self) {
-            self = .integer(x)
-            return
-        }
-        if let x = try? container.decode(String.self) {
-            self = .string(x)
-            return
-        }
-        throw DecodingError.typeMismatch(
-            Trainings.self,
-            DecodingError.Context(
-                codingPath: decoder.codingPath,
-                debugDescription: "Wrong type for Trainings"
-            )
-        )
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch self {
-        case let .integer(int):
-            try container.encode(int)
-        case let .string(str):
-            try container.encode(str)
-        }
-    }
-
-    var description: String {
-        let prefix = "Тренируется: "
-        switch self {
-        case let .integer(count):
-            return prefix + "\(count) чел."
-        case let .string(count):
-            return prefix + count + " чел."
-        }
     }
 }
 
@@ -196,6 +145,6 @@ struct Comment: Codable, Identifiable, Hashable {
 
 extension SportsGround {
     static var emptyValue: SportsGround {
-        .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, trainings: .integer(.zero), commentsOptional: nil, usersTrainHere: [], trainHere: nil)
+        .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
 }

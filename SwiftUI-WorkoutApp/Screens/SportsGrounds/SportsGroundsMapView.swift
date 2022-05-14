@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SportsGroundsMapView: View {
+    @EnvironmentObject private var sportsGrounds: SportsGroundsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
 
     var body: some View {
@@ -21,7 +22,7 @@ struct SportsGroundsMapView: View {
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
                     region: $viewModel.mapRegion,
-                    annotations: $viewModel.mapAnnotations,
+                    annotations: $sportsGrounds.list,
                     selectedPlace: $viewModel.selectedPlace,
                     openDetails: $viewModel.openDetails
                 )
