@@ -46,7 +46,13 @@ struct SportsGroundView: View {
         } message: { Text(alertMessage) }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .sheet(item: $editComment) {
-            editCommentView(commentID: $0.id, commentText: $0.formattedBody)
+            CreateOrEditCommentView(
+                mode: .edit(
+                    groundID: viewModel.groundID,
+                    commentID: $0.id,
+                    commentText: $0.formattedBody
+                )
+            )
         }
         .sheet(isPresented: $isCreatingComment) {
             CreateOrEditCommentView(mode: .create(groundID: viewModel.groundID))
@@ -187,10 +193,6 @@ private extension SportsGroundView {
             Label("Добавить комментарий", systemImage: "plus.message.fill")
                 .foregroundColor(.blue)
         }
-    }
-
-    func editCommentView(commentID: Int, commentText: String) -> some View {
-        CreateOrEditCommentView(mode: .edit(groundID: viewModel.groundID, commentID: commentID, commentText: commentText))
     }
 
     func askForInfo(refresh: Bool = false) async {
