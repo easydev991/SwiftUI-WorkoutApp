@@ -8,6 +8,10 @@
 import Foundation
 
 enum Endpoint {
+    /// Регистрация:
+    /// **POST** ${API}/registration
+    case registration(form: RegistrationForm)
+
     /// Проверка входа с базовой авторизацией:
     /// **POST** ${API}/auth/login,
     case login(auth: AuthData)
@@ -121,10 +125,12 @@ private extension Endpoint {
 
     enum Parameter {
         enum Key: String {
+            case name, fullname, email, gender, password, comment
             case usernameOrEmail = "username_or_email"
-            case password
             case newPassword = "new_password"
-            case comment
+            case countryID = "country_id"
+            case cityID = "city_id"
+            case birthDate = "birth_date"
         }
         static func makeParameters(from params: [Key: String]) -> Data? {
             params
@@ -137,6 +143,8 @@ private extension Endpoint {
     var urlString: String {
         let baseUrl = Constants.API.baseURL
         switch self {
+        case .registration:
+            return "\(baseUrl)/registration"
         case .login:
             return "\(baseUrl)/auth/login"
         case .resetPassword:
@@ -174,8 +182,8 @@ private extension Endpoint {
 
     var method: HTTPMethod {
         switch self {
-        case .login, .resetPassword, .changePassword,
-                .acceptFriendRequest, .sendFriendRequest,
+        case .registration, .login, .resetPassword,
+                .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editComment, .postTrainHere:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
@@ -197,7 +205,7 @@ private extension Endpoint {
             let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
             let .postTrainHere(_, auth), let .deleteTrainHere(_, auth):
             return HTTPHeader.basicAuth(with: auth)
-        case .resetPassword:
+        case .registration, .resetPassword:
             return [:]
         }
     }
@@ -210,6 +218,19 @@ private extension Endpoint {
                 .deleteComment, .getSportsGroundsForUser,
                 .postTrainHere, .deleteTrainHere:
             return nil
+        case let .registration(form):
+            return Parameter.makeParameters(
+                from: [
+                    .name: form.userName,
+                    .fullname: form.fullName,
+                    .email: form.email,
+                    .password: form.password,
+                    .gender: form.gender.description,
+                    .countryID: form.countryID,
+                    .cityID: form.cityID,
+                    .birthDate: form.birthDate // "1990-11-30T21:00:00.000Z"
+                ]
+            )
         case let .resetPassword(login):
             return Parameter.makeParameters(from: [.usernameOrEmail: login])
         case let .changePassword(current, new, _):

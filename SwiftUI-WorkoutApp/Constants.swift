@@ -10,7 +10,16 @@ import UIKit.UIDevice
 
 struct Constants {
     static let minPasswordSize = 6
-    static let minimumUserAge = -5
+    static let defaultUserAge = Calendar.current.date(
+        byAdding: .year,
+        value: -18,
+        to: .now
+    ) ?? .now
+    static let minUserAge = Calendar.current.date(
+        byAdding: .year,
+        value: -5,
+        to: .now
+    ) ?? .now
     static let maxEventFutureYear = 1
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
@@ -46,11 +55,14 @@ struct Constants {
         static let changePasswordError = "Не удалось изменить пароль"
         static let cannotReadData = "Не удается прочитать загруженные данные"
     }
-    enum Gender: String, CaseIterable {
+    enum Gender: String, CaseIterable, Codable {
         case male = "Мужской"
         case female = "Женский"
         init(_ code: Int?) {
             self = code == .zero ? .male : .female
+        }
+        var code: Int {
+            self == .male ? .zero : 1
         }
     }
     enum FriendAction: String {

@@ -19,6 +19,22 @@ struct APIService {
         self.init(with: .init())
     }
 
+    /// Выполняет регистрацию пользователя
+    /// - Parameter model: необходимые для регистрации данные
+    /// - Returns: Вся информация о пользователе
+    func completeRegistration(with model: RegistrationForm) async throws {
+        let endpoint = Endpoint.registration(form: model)
+        guard let request = endpoint.urlRequest else { return }
+        let (data, response) = try await urlSession.data(for: request)
+        let userResponse = try handle(UserResponse.self, data, response)
+        await MainActor.run {
+            defaults.setMainUserID(userResponse.userID.valueOrZero)
+            defaults.saveAuthData(.init(login: model.userName, password: model.password))
+            defaults.saveUserInfo(userResponse)
+            defaults.setUserLoggedIn()
+        }
+    }
+
     /// Запрашивает `id` пользователя для входа в учетную запись
     /// - Parameters:
     ///   - login: логин или email для входа

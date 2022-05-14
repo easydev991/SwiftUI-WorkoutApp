@@ -8,38 +8,28 @@
 import Foundation
 
 final class EditAccountViewModel: ObservableObject {
+    @Published var regForm = RegistrationForm.emptyValue
     @Published var countries = [Country]()
-    @Published var selectedCountry = Country(
-        cities: [], id: "", name: ""
-    )
-    @Published var selectedCity = City(id: "", name: "")
-    @Published var cities = [City]()
-    @Published var selectedGender = ""
-    @Published var genders = Constants.Gender.allCases.map(\.rawValue)
-
-    @Published var loginText = ""
-    @Published var emailText = ""
-    @Published var passwordText = ""
-    @Published var nameText = ""
-    @Published var birthDate = Date()
-    var maxDate: Date {
-        Calendar.current.date(
-            byAdding: .year,
-            value: Constants.minimumUserAge,
-            to: .now
-        ) ?? .now
+    @Published var selectedCountry = Country.defaultCountry {
+        didSet { regForm.countryID = selectedCountry.id }
     }
-
+    @Published var selectedCity = City.defaultCity {
+        didSet { regForm.cityID = selectedCity.id }
+    }
+    @Published var cities = [City]()
+    @Published var birthDate = Constants.defaultUserAge {
+        didSet { updateBirthDate() }
+    }
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
     /// Доступность кнопки для регистрации или сохранения изменений
     func isButtonAvailable(_ isUserAuth: Bool) -> Bool {
         if isUserAuth {
-            return !loginText.isEmpty
-            && !emailText.isEmpty
-            && passwordText.count >= Constants.minPasswordSize
-        } else {
             return false // убрать хардкод после интеграции с БД
+        } else {
+            return regForm.isComplete
         }
     }
 
@@ -60,18 +50,33 @@ final class EditAccountViewModel: ObservableObject {
         selectedCity = city
     }
 
-    func registerAction() {
-#warning("TODO: интеграция с сервером")
-#warning("TODO: Проверить введенные данные")
+    @MainActor
+    func registerAction(with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            try await APIService(with: defaults).completeRegistration(with: regForm)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
     }
 
     func saveChangesAction() {
 #warning("TODO: интеграция с сервером")
 #warning("TODO: интеграция с БД")
     }
+
+    func clearErrorMessage() {
+        errorMessage = ""
+    }
 }
 
 private extension EditAccountViewModel {
+    func updateBirthDate() {
+        regForm.birthDate = FormatterService.isoStringFromDate(date: birthDate)
+    }
+
     func makeCountryAndCityData() {
         let _countries = Bundle.main.decodeJson(
             [Country].self,

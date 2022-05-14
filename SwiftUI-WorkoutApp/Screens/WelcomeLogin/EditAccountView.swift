@@ -11,29 +11,42 @@ struct EditAccountView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = EditAccountViewModel()
+    @State private var showErrorAlert = false
+    @State private var alertMessage = ""
+    @State private var registrationTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        Form {
-            Section {
-                loginField
-                emailField
-                if !defaults.isAuthorized {
-                    passwordField
+        ZStack {
+            Form {
+                Section {
+                    loginField
+                    emailField
+                    if !defaults.isAuthorized {
+                        passwordField
+                    }
+                    nameField
+                    genderPicker
+                    birthdayPicker
+                    countryPicker
+                    cityPicker
                 }
-                nameField
-                genderPicker
-                birthdayPicker
-                countryPicker
-                cityPicker
+                if !defaults.isAuthorized {
+                    rulesOfServiceSection
+                    registerButtonSection
+                } else {
+                    saveChangesButtonSection
+                }
             }
-            if !defaults.isAuthorized {
-                rulesOfServiceSection
-                registerButtonSection
-            } else {
-                saveChangesButtonSection
-            }
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
+        .alert(alertMessage, isPresented: $showErrorAlert) {
+            Button(action: viewModel.clearErrorMessage) { TextOk() }
+        }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onDisappear(perform: cancelTasks)
         .navigationTitle(viewModel.title(defaults.isAuthorized))
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -48,7 +61,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Логин", text: $viewModel.loginText)
+            TextField("Логин", text: $viewModel.regForm.userName)
                 .focused($focus, equals: .login)
         }
     }
@@ -57,7 +70,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "envelope")
                 .foregroundColor(.secondary)
-            TextField("email", text: $viewModel.emailText)
+            TextField("email", text: $viewModel.regForm.email)
                 .focused($focus, equals: .email)
         }
     }
@@ -66,7 +79,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Пароль (минимум 6 символов)", text: $viewModel.passwordText)
+            SecureField("Пароль (минимум 6 символов)", text: $viewModel.regForm.password)
                 .focused($focus, equals: .password)
         }
     }
@@ -75,7 +88,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Имя (необязательно)", text: $viewModel.nameText)
+            TextField("Имя (необязательно)", text: $viewModel.regForm.fullName)
         }
     }
 
@@ -107,8 +120,10 @@ private extension EditAccountView {
 
     var genderPicker: some View {
         Menu {
-            Picker("", selection: $viewModel.selectedGender) {
-                ForEach($viewModel.genders, id: \.self) { Text($0.wrappedValue) }
+            Picker("", selection: $viewModel.regForm.gender) {
+                ForEach(Constants.Gender.allCases.map(\.code), id: \.self) {
+                    Text(Constants.Gender($0).rawValue)
+                }
             }
         } label: {
             HStack {
@@ -116,7 +131,7 @@ private extension EditAccountView {
                     .foregroundColor(.secondary)
                 Text("Пол")
                 Spacer()
-                Text(viewModel.selectedGender)
+                Text(Constants.Gender(viewModel.regForm.gender).rawValue)
                     .foregroundColor(.secondary)
             }
         }
@@ -129,7 +144,7 @@ private extension EditAccountView {
             DatePicker(
                 "Дата рождения",
                 selection: $viewModel.birthDate,
-                in: ...viewModel.maxDate,
+                in: ...Constants.minUserAge,
                 displayedComponents: .date
             )
         }
@@ -159,8 +174,8 @@ private extension EditAccountView {
     }
 
     func registerAction() {
-        viewModel.registerAction()
         focus = nil
+        registrationTask = Task { await viewModel.registerAction(with: defaults) }
     }
 
     var saveChangesButtonSection: some View {
@@ -175,6 +190,15 @@ private extension EditAccountView {
     func saveChangesAction() {
         viewModel.saveChangesAction()
         dismiss()
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        alertMessage = message
+    }
+
+    func cancelTasks() {
+        registrationTask?.cancel()
     }
 }
 
