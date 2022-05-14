@@ -23,13 +23,10 @@ final class EditAccountViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     private var currentUserRegInfo = RegistrationForm.emptyValue
-#warning("TODO: интеграция с сервером")
-#warning("TODO: интеграция с БД")
+
     /// Доступность кнопки для регистрации или сохранения изменений
     func isButtonAvailable(with defaults: UserDefaultsService) -> Bool {
         if defaults.isAuthorized {
-            print("--- regform: \(regForm)")
-            print("--- currentUserRegInfo: \(currentUserRegInfo)")
             return regForm != currentUserRegInfo
         } else {
             return regForm.isComplete
