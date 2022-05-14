@@ -176,6 +176,10 @@ struct Comment: Codable, Identifiable, Hashable {
     let body, date: String?
     let user: UserResponse?
 
+    var formattedBody: String {
+        body.valueOrEmpty.withoutHTML
+    }
+
     enum CodingKeys: String, CodingKey {
         case id = "comment_id"
         case body, date, user

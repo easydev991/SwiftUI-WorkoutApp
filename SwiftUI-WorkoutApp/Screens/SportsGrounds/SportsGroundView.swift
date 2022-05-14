@@ -46,7 +46,7 @@ struct SportsGroundView: View {
         } message: { Text(alertMessage) }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .sheet(item: $editComment) {
-            editCommentView(commentID: $0.id, commentText: $0.body.valueOrEmpty)
+            editCommentView(commentID: $0.id, commentText: $0.formattedBody)
         }
         .sheet(isPresented: $isCreatingComment) {
             CreateOrEditCommentView(mode: .create(groundID: viewModel.groundID))

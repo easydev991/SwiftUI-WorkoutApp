@@ -23,8 +23,10 @@ struct SportsGroundCommentView: View {
                 .disabled(!isMenuAvailable)
                 .opacity(isMenuAvailable ? 1 : .zero)
             }
-            Text(model.body.valueOrEmpty.withoutHTML)
+            Text(.init(model.formattedBody))
                 .fixedSize(horizontal: false, vertical: true)
+                .tint(.blue)
+                .textSelection(.enabled)
         }
     }
 }
@@ -48,7 +50,7 @@ private extension SportsGroundCommentView {
     var menuButton: some View {
         Menu {
             Button {
-                editClbk(model.id, model.body.valueOrEmpty)
+                editClbk(model.id, model.formattedBody)
             } label: {
                 Label("Изменить", systemImage: "pencil.circle.fill")
             }
