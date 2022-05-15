@@ -22,7 +22,7 @@ struct APIService {
     /// Выполняет регистрацию пользователя
     /// - Parameter model: необходимые для регистрации данные
     /// - Returns: Вся информация о пользователе
-    func completeRegistration(with model: RegistrationForm) async throws {
+    func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
@@ -44,7 +44,7 @@ struct APIService {
         let endpoint = Endpoint.login(auth: authData)
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
-        let loginResponse = try handle(UserIdResponse.self, data, response)
+        let loginResponse = try handle(LoginResponse.self, data, response)
         await MainActor.run {
             defaults.setMainUserID(loginResponse.userID)
             defaults.saveAuthData(authData)
@@ -77,8 +77,26 @@ struct APIService {
         let endpoint = Endpoint.resetPassword(login: login)
         guard let request = endpoint.urlRequest else { return false }
         let (data, response) = try await urlSession.data(for: request)
-        let userIdResponse = try handle(UserIdResponse.self, data, response)
+        let userIdResponse = try handle(LoginResponse.self, data, response)
         return userIdResponse.userID != .zero
+    }
+
+    /// Изменяет данные пользователя
+    /// - Parameters:
+    ///   - id: `id` пользователя
+    ///   - model: данные для изменения
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
+        let authData = defaults.basicAuthInfo
+        let endpoint = Endpoint.editUser(id: id, form: model, auth: authData)
+        guard let request = endpoint.urlRequest else { return false }
+        let (data, response) = try await urlSession.data(for: request)
+        let userResponse = try handle(UserResponse.self, data, response)
+        await MainActor.run {
+            defaults.saveAuthData(.init(login: model.userName, password: authData.password))
+            defaults.saveUserInfo(userResponse)
+        }
+        return userResponse.userName == model.userName
     }
 
     /// Меняет текущий пароль на новый, в случае успеха сохраняет новый пароль в `defaults`
@@ -272,18 +290,17 @@ private extension APIService {
         _ data: Data?,
         _ response: URLResponse?
     ) throws -> T {
-        let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
-            throw error
-        }
         guard let data = data, !data.isEmpty else {
             throw APIError.noData
         }
-        let prettyString = String(data: data, encoding: .utf8)
+        let responseCode = (response as? HTTPURLResponse)?.statusCode
+        if responseCode != Constants.API.codeOK {
+            throw handleError(from: data, with: responseCode)
+        }
 #if DEBUG
         print("--- Получили ответ:")
         dump(response)
-        print("--- Полученный JSON:\n\(prettyString.valueOrEmpty)")
+        print("--- Полученный JSON:\n\(data.prettyJson)")
 #endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
 #if DEBUG
@@ -295,8 +312,8 @@ private extension APIService {
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != Constants.API.codeOK, let error = APIError(with: responseCode) {
-            throw error
+        if responseCode != Constants.API.codeOK {
+            throw APIError(with: responseCode)
         }
 #if DEBUG
         print("--- Получили ответ:")
@@ -304,13 +321,28 @@ private extension APIService {
 #endif
         return responseCode == Constants.API.codeOK
     }
-}
 
+    /// Обрабатывает ошибки
+    /// - Parameters:
+    ///   - data: данные для обработки
+    ///   - code: код ответа
+    /// - Returns: Готовая к выводу ошибка `APIError`
+    func handleError(from data: Data, with code: Int?) -> APIError {
+        print("--- JSON с ошибкой:")
+        print(data.prettyJson)
+        if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+            return APIError(errorInfo)
+        } else {
+            return APIError(with: code)
+        }
+    }
+}
+// MARK: - Endpoint
 private extension APIService {
     enum Endpoint {
         /// Регистрация:
         /// **POST** ${API}/registration
-        case registration(form: RegistrationForm)
+        case registration(form: MainUserForm)
 
         /// Проверка входа с базовой авторизацией:
         /// **POST** ${API}/auth/login,
@@ -319,6 +351,10 @@ private extension APIService {
         /// Восстановление пароля:
         /// **POST** ${API}/auth/reset
         case resetPassword(login: String)
+
+        /// Изменить данные пользователя:
+        /// **POST** ${API}/users/<user_id>
+        case editUser(id: Int, form: MainUserForm, auth: AuthData)
 
         /// Изменение пароля:
         /// **POST** ${API}/auth/changepass
@@ -404,6 +440,8 @@ private extension APIService {
                 return "\(baseUrl)/auth/login"
             case .resetPassword:
                 return "\(baseUrl)/auth/reset"
+            case let .editUser(userID, _, _):
+                return "\(baseUrl)/users/\(userID)"
             case .changePassword:
                 return "\(baseUrl)/auth/changepass"
             case let .getUser(id, _):
@@ -437,7 +475,7 @@ private extension APIService {
 
         var method: HTTPMethod {
             switch self {
-            case .registration, .login, .resetPassword,
+            case .registration, .login, .editUser, .resetPassword,
                     .changePassword, .acceptFriendRequest, .sendFriendRequest,
                     .addCommentToSportsGround, .editComment, .postTrainHere:
                 return .post
@@ -452,8 +490,9 @@ private extension APIService {
 
         var headers: [String: String] {
             switch self {
-            case let .login(auth), let .getUser(_, auth), let .changePassword(_, _, auth),
-                let .getFriendsForUser(_, auth), let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
+            case let .login(auth), let .getUser(_, auth), let .editUser(_, _, auth),
+                let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
+                let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
                 let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
                 let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth),
                 let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
@@ -481,9 +520,21 @@ private extension APIService {
                         .email: form.email,
                         .password: form.password,
                         .genderCode: form.genderCode.description,
-                        .countryID: form.countryID,
-                        .cityID: form.cityID,
-                        .birthDate: form.birthDate // "1990-11-30T21:00:00.000Z"
+                        .countryID: form.country.id,
+                        .cityID: form.city.id,
+                        .birthDate: form.birthDateIsoString
+                    ]
+                )
+            case let .editUser(_, form, _):
+                return Parameter.makeParameters(
+                    from: [
+                        .name: form.userName,
+                        .fullname: form.fullName,
+                        .email: form.email,
+                        .genderCode: form.genderCode.description,
+                        .countryID: form.country.id,
+                        .cityID: form.city.id,
+                        .birthDate: form.birthDateIsoString // "1990-08-12T00:00:00.000Z"
                     ]
                 )
             case let .resetPassword(login):
@@ -498,8 +549,8 @@ private extension APIService {
         }
 
         enum HTTPMethod: String {
-            case post = "POST"
             case get = "GET"
+            case post = "POST"
             case delete = "DELETE"
         }
 
@@ -537,6 +588,58 @@ private extension APIService {
                     .map { $0.key.rawValue + "=" + $0.value }
                     .joined(separator: "&")
                     .data(using: .utf8)
+            }
+        }
+    }
+}
+// MARK: - APIError
+private extension APIService {
+    enum APIError: Error, LocalizedError {
+        case noData
+        case noResponse
+        case badRequest
+        case invalidCredentials
+        case notFound
+        case serverError
+        case customError(String)
+
+        init(_ error: ErrorResponse) {
+            if let message = error.message, error.realCode != 401 {
+                self = .customError(message)
+            } else if let array = error.errors {
+                let message = array.joined(separator: ",\n")
+                self = .customError(message)
+            } else {
+                self.init(with: error.realCode)
+            }
+        }
+
+        init(with code: Int?) {
+            switch code {
+            case 400: self = .badRequest
+            case 401: self = .invalidCredentials
+            case 404: self = .notFound
+            case 500: self = .serverError
+            default: self = .noResponse
+            }
+        }
+
+        var errorDescription: String? {
+            switch self {
+            case .noData:
+                return "Сервер не прислал данные для обработки ответа"
+            case .noResponse:
+                return "Сервер не отвечает"
+            case .badRequest:
+                return "Запрос содержит ошибку"
+            case .invalidCredentials:
+                return "Некорректное имя пользователя или пароль"
+            case .notFound:
+                return "Запрашиваемый ресурс не найден"
+            case .serverError:
+                return "Внутренняя ошибка сервера"
+            case let .customError(error):
+                return error
             }
         }
     }

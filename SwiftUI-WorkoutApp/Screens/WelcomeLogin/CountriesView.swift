@@ -26,7 +26,7 @@ struct CountriesView: View {
                 } label: {
                     TextWithCheckmark(
                         title: country.name,
-                        showMark: country.name == $viewModel.selectedCity.wrappedValue.name
+                        showMark: country.name == viewModel.userForm.country.name
                     )
                 }
             }

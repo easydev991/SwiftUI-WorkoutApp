@@ -8,28 +8,21 @@
 import Foundation
 
 final class EditAccountViewModel: ObservableObject {
-    @Published var regForm = RegistrationForm.emptyValue
+    @Published var userForm = MainUserForm.emptyValue
     @Published var countries = [Country]()
-    @Published var selectedCountry = Country.defaultCountry {
-        didSet { regForm.countryID = selectedCountry.id }
-    }
-    @Published var selectedCity = City.defaultCity {
-        didSet { regForm.cityID = selectedCity.id }
-    }
     @Published var cities = [City]()
-    @Published var birthDate = Constants.defaultUserAge {
-        didSet { updateBirthDate() }
-    }
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    private var currentUserRegInfo = RegistrationForm.emptyValue
+    @Published private(set) var isProfileSaved = false
+    /// Ранее сохраненная форма с данными пользователя
+    private var savedUserForm = MainUserForm.emptyValue
 
     /// Доступность кнопки для регистрации или сохранения изменений
     func isButtonAvailable(with defaults: UserDefaultsService) -> Bool {
         if defaults.isAuthorized {
-            return regForm != currentUserRegInfo
+            return userForm != savedUserForm && userForm.isReadyToSave
         } else {
-            return regForm.isComplete
+            return userForm.isReadyToRegister
         }
     }
 
@@ -39,49 +32,53 @@ final class EditAccountViewModel: ObservableObject {
 
     @MainActor
     func updateFormIfNeeded(with defaults: UserDefaultsService) async {
-        if defaults.isAuthorized, let userInfo = defaults.mainUserInfo {
-            regForm = .init(userInfo)
-            birthDate = userInfo.birthDate
-            selectedCountry = countries.first(where: { $0.id == regForm.countryID }) ?? .defaultCountry
-            selectedCity = cities.first(where: { $0.id == regForm.cityID }) ?? .defaultCity
-            currentUserRegInfo = regForm
+        if defaults.isAuthorized, userForm.userName.isEmpty,
+           let userInfo = defaults.mainUserInfo {
+            userForm = .init(userInfo)
+            userForm.country = countries.first(where: { $0.id == userForm.country.id }) ?? .defaultCountry
+            userForm.city = cities.first(where: { $0.id == userForm.city.id }) ?? .defaultCity
+            savedUserForm = userForm
         }
     }
 
     func selectCountry(_ country: Country) {
-        selectedCountry = country
+        userForm.country = country
         updateCityIfNeeded(for: country)
     }
 
     func selectCity(_ city: City) {
-        selectedCity = city
+        userForm.city = city
     }
 
-#warning("TODO: добавить проверку почтового адреса - должен содержать @XXX.ru")
     @MainActor
     func registerAction(with defaults: UserDefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            try await APIService(with: defaults).completeRegistration(with: regForm)
+            try await APIService(with: defaults).registration(with: userForm)
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()
     }
 
-    func saveChangesAction() {
-#warning("TODO: интеграция с сервером")
+    @MainActor
+    func saveChangesAction(with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let isOk = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
+            if isOk { isProfileSaved.toggle() }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
     }
 
     func clearErrorMessage() { errorMessage = "" }
 }
 
 private extension EditAccountViewModel {
-    func updateBirthDate() {
-        regForm.birthDate = FormatterService.isoStringFromFullDate(birthDate)
-    }
-
     func makeCountryAndCityData() {
         let _countries = Bundle.main.decodeJson(
             [Country].self,
@@ -92,15 +89,15 @@ private extension EditAccountViewModel {
             fatalError("Россия и Москва должны быть в файле countries.json")
         }
         countries = _countries.sorted { $0.name < $1.name }
-        selectedCountry = russia
+        userForm.country = russia
         cities = russia.cities.sorted { $0.name < $1.name }
-        selectedCity = moscow
+        userForm.city = moscow
     }
 
     func updateCityIfNeeded(for country: Country) {
-        if !country.cities.contains(where: { $0 == selectedCity }),
+        if !country.cities.contains(where: { $0 == userForm.city }),
            let firstCity = country.cities.first {
-            selectedCity = firstCity
+            userForm.city = firstCity
             cities = country.cities
         }
     }

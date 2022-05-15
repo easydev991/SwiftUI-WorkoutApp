@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Модель данных пользователя со всеми доступными свойствами
 struct UserResponse: Codable, Hashable {
     let userName, fullName, email, imageStringURL: String?
     let birthDateIsoString: String? // "1990-11-25"
@@ -61,7 +62,7 @@ extension UserResponse {
     var usedSportsGroundsCount: Int {
         Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
     }
-    var regForm: RegistrationForm {
+    var regForm: MainUserForm {
         .init(self)
     }
     static var emptyValue: UserResponse {

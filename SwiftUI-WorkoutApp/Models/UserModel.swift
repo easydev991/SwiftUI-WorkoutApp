@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Упрощенная модель данных пользователя (ничего лишнего)
 struct UserModel: Identifiable, Hashable {
     let id: Int
     let imageURL: URL?
@@ -16,7 +17,7 @@ struct UserModel: Identifiable, Hashable {
     let countryID: Int
     let cityID: Int
     let usesSportsGrounds: Int
-#warning("TODO: маппить из списка площадок")
+#warning("Сервер иногда шлет неправильный массив, можно маппить из списка площадок")
     let addedSportsGrounds: [SportsGround]
     let friendsCount, journalsCount: Int
 

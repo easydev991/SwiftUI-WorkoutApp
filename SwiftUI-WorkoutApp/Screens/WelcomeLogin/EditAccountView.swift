@@ -14,6 +14,7 @@ struct EditAccountView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var registrationTask: Task<Void, Never>?
+    @State private var editUserTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -49,6 +50,7 @@ struct EditAccountView: View {
             Button(action: viewModel.clearErrorMessage) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.isProfileSaved, perform: close)
         .onDisappear(perform: cancelTasks)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -63,7 +65,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Логин", text: $viewModel.regForm.userName)
+            TextField(viewModel.userForm.placeholder(.userName), text: $viewModel.userForm.userName)
                 .focused($focus, equals: .login)
         }
     }
@@ -72,7 +74,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "envelope")
                 .foregroundColor(.secondary)
-            TextField("email", text: $viewModel.regForm.email)
+            TextField(viewModel.userForm.placeholder(.email), text: $viewModel.userForm.email)
                 .focused($focus, equals: .email)
         }
     }
@@ -81,7 +83,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "lock")
                 .foregroundColor(.secondary)
-            SecureField("Пароль (минимум 6 символов)", text: $viewModel.regForm.password)
+            SecureField(viewModel.userForm.placeholder(.password), text: $viewModel.userForm.password)
                 .focused($focus, equals: .password)
         }
     }
@@ -90,7 +92,7 @@ private extension EditAccountView {
         HStack {
             Image(systemName: "person")
                 .foregroundColor(.secondary)
-            TextField("Имя (необязательно)", text: $viewModel.regForm.fullName)
+            TextField(viewModel.userForm.placeholder(.fullname), text: $viewModel.userForm.fullName)
         }
     }
 
@@ -99,9 +101,9 @@ private extension EditAccountView {
             HStack {
                 Image(systemName: "globe")
                     .foregroundColor(.secondary)
-                Text("Страна")
+                Text(viewModel.userForm.placeholder(.country))
                 Spacer()
-                Text($viewModel.selectedCountry.wrappedValue.name)
+                Text(viewModel.userForm.country.name)
                     .foregroundColor(.secondary)
             }
         }
@@ -112,9 +114,9 @@ private extension EditAccountView {
             HStack {
                 Image(systemName: "signpost.right")
                     .foregroundColor(.secondary)
-                Text("Город")
+                Text(viewModel.userForm.placeholder(.city))
                 Spacer()
-                Text($viewModel.selectedCity.wrappedValue.name)
+                Text(viewModel.userForm.city.name)
                     .foregroundColor(.secondary)
             }
         }
@@ -122,7 +124,7 @@ private extension EditAccountView {
 
     var genderPicker: some View {
         Menu {
-            Picker("", selection: $viewModel.regForm.genderCode) {
+            Picker("", selection: $viewModel.userForm.genderCode) {
                 ForEach(Constants.Gender.allCases.map(\.code), id: \.self) {
                     Text(Constants.Gender($0).rawValue)
                 }
@@ -131,9 +133,9 @@ private extension EditAccountView {
             HStack {
                 Image(systemName: "person.fill.questionmark")
                     .foregroundColor(.secondary)
-                Text("Пол")
+                Text(viewModel.userForm.placeholder(.gender))
                 Spacer()
-                Text(Constants.Gender(viewModel.regForm.genderCode).rawValue)
+                Text(Constants.Gender(viewModel.userForm.genderCode).rawValue)
                     .foregroundColor(.secondary)
             }
         }
@@ -144,8 +146,8 @@ private extension EditAccountView {
             Image(systemName: "face.smiling")
                 .foregroundColor(.secondary)
             DatePicker(
-                "Дата рождения",
-                selection: $viewModel.birthDate,
+                viewModel.userForm.placeholder(.birthDate),
+                selection: $viewModel.userForm.birthDate,
                 in: ...Constants.minUserAge,
                 displayedComponents: .date
             )
@@ -190,8 +192,7 @@ private extension EditAccountView {
     }
 
     func saveChangesAction() {
-        viewModel.saveChangesAction()
-        dismiss()
+        editUserTask = Task { await viewModel.saveChangesAction(with: defaults) }
     }
 
     func setupErrorAlert(with message: String) {
@@ -199,8 +200,12 @@ private extension EditAccountView {
         alertMessage = message
     }
 
+    func close(_ shouldClose: Bool) {
+        if shouldClose { dismiss() }
+    }
+
     func cancelTasks() {
-        registrationTask?.cancel()
+        [registrationTask, editUserTask].forEach { $0?.cancel() }
     }
 }
 

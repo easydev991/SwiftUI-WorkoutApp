@@ -8,6 +8,7 @@
 import Foundation
 import MapKit.MKGeometry
 
+/// Модель данных спортивной площадки
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let id, typeID: Int
     let address: String?
