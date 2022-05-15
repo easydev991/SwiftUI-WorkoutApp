@@ -9,7 +9,7 @@ import Foundation
 
 struct RegistrationForm: Codable, Equatable {
     var userName, fullName, email, password, birthDate, countryID, cityID: String
-    var gender: Int
+    var genderCode: Int
 
     init(userName: String, fullName: String, email: String, password: String, birthDate: String, countryID: String, cityID: String, gender: Int) {
         self.userName = userName
@@ -19,7 +19,7 @@ struct RegistrationForm: Codable, Equatable {
         self.birthDate = birthDate
         self.countryID = countryID
         self.cityID = cityID
-        self.gender = gender
+        self.genderCode = gender
     }
 
     init(_ user: UserResponse) {
@@ -30,7 +30,7 @@ struct RegistrationForm: Codable, Equatable {
         self.birthDate = user.birthDateIsoString.valueOrEmpty
         self.countryID = user.countryID.valueOrZero.description
         self.cityID = user.cityID.valueOrZero.description
-        self.gender = user.genderCode.valueOrZero
+        self.genderCode = user.genderCode.valueOrZero
     }
 }
 
@@ -39,7 +39,7 @@ extension RegistrationForm {
         .init(userName: "", fullName: "", email: "", password: "", birthDate: "", countryID: "", cityID: "", gender: .zero)
     }
 
-    /// Готова ли форма к отправке
+    /// Готовность формы к отправке
     var isComplete: Bool {
         !userName.isEmpty
         && !email.isEmpty

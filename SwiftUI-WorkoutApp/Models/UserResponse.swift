@@ -43,28 +43,17 @@ struct UserResponse: Codable, Hashable {
 
 extension UserResponse {
     var age: Int {
-        if let birthDate = birthDate {
-            let components = Calendar.current.dateComponents([.year], from: birthDate, to: .now)
-            return components.year.valueOrZero
-        } else {
-            return .zero
-        }
+        let components = Calendar.current.dateComponents([.year], from: birthDate, to: .now)
+        return components.year.valueOrZero
     }
-    var birthDate: Date? {
-        if let birthDateIsoString = birthDateIsoString, !birthDateIsoString.isEmpty {
-            let formatter = DateFormatter()
-            formatter.dateFormat = DateFormat.isoDate.rawValue
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            return formatter.date(from: birthDateIsoString)
-        } else {
-            return nil
-        }
+    var birthDate: Date {
+        FormatterService.dateFromShortIsoString(birthDateIsoString)
     }
     var avatarURL: URL? {
         .init(string: imageStringURL.valueOrEmpty)
     }
     var gender: String {
-        genderCode == .zero ? "Мужчина" : "Женщина"
+        Constants.Gender(genderCode.valueOrZero).description
     }
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero

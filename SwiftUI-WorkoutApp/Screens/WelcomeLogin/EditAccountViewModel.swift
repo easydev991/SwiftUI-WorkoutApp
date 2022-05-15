@@ -41,7 +41,7 @@ final class EditAccountViewModel: ObservableObject {
     func updateFormIfNeeded(with defaults: UserDefaultsService) async {
         if defaults.isAuthorized, let userInfo = defaults.mainUserInfo {
             regForm = .init(userInfo)
-            birthDate = userInfo.birthDate ?? .now
+            birthDate = userInfo.birthDate
             selectedCountry = countries.first(where: { $0.id == regForm.countryID }) ?? .defaultCountry
             selectedCity = cities.first(where: { $0.id == regForm.cityID }) ?? .defaultCity
             currentUserRegInfo = regForm
@@ -57,6 +57,7 @@ final class EditAccountViewModel: ObservableObject {
         selectedCity = city
     }
 
+#warning("TODO: добавить проверку почтового адреса - должен содержать @XXX.ru")
     @MainActor
     func registerAction(with defaults: UserDefaultsService) async {
         if isLoading { return }
@@ -71,17 +72,14 @@ final class EditAccountViewModel: ObservableObject {
 
     func saveChangesAction() {
 #warning("TODO: интеграция с сервером")
-#warning("TODO: интеграция с БД")
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }
 
 private extension EditAccountViewModel {
     func updateBirthDate() {
-        regForm.birthDate = FormatterService.isoStringFromDate(date: birthDate)
+        regForm.birthDate = FormatterService.isoStringFromFullDate(birthDate)
     }
 
     func makeCountryAndCityData() {

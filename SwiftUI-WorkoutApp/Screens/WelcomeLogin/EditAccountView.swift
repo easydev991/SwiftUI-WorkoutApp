@@ -122,7 +122,7 @@ private extension EditAccountView {
 
     var genderPicker: some View {
         Menu {
-            Picker("", selection: $viewModel.regForm.gender) {
+            Picker("", selection: $viewModel.regForm.genderCode) {
                 ForEach(Constants.Gender.allCases.map(\.code), id: \.self) {
                     Text(Constants.Gender($0).rawValue)
                 }
@@ -133,7 +133,7 @@ private extension EditAccountView {
                     .foregroundColor(.secondary)
                 Text("Пол")
                 Spacer()
-                Text(Constants.Gender(viewModel.regForm.gender).rawValue)
+                Text(Constants.Gender(viewModel.regForm.genderCode).rawValue)
                     .foregroundColor(.secondary)
             }
         }

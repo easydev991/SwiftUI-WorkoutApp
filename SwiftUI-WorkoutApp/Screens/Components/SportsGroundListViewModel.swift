@@ -29,7 +29,5 @@ final class SportsGroundListViewModel: ObservableObject {
         }
     }
 
-    func clearErrorMessage() {
-        errorMessage = ""
-    }
+    func clearErrorMessage() { errorMessage = "" }
 }
