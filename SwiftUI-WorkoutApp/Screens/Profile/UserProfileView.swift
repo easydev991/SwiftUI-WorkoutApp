@@ -20,7 +20,7 @@ struct UserProfileView: View {
         ZStack {
             Form {
                 userInfoSection
-                if !viewModel.isMainUser {
+                if !isMainUser {
                     communicationSection
                 }
                 socialInfoSection
@@ -39,7 +39,7 @@ struct UserProfileView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if viewModel.isMainUser {
+                if isMainUser {
                     searchUsersLink
                     settingsLink
                 }
@@ -175,7 +175,7 @@ private extension UserProfileView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
-                if friendRequestsCount > .zero && viewModel.isMainUser {
+                if friendRequestsCount > .zero && isMainUser {
                     Image(systemName: "\(friendRequestsCount).circle.fill")
                         .foregroundColor(.red)
                 }
@@ -214,7 +214,7 @@ private extension UserProfileView {
 
     func askForUserInfo(refresh: Bool = false) async {
         await viewModel.makeUserInfo(for: userID, with: defaults, refresh: refresh)
-        if viewModel.isMainUser {
+        if isMainUser {
             await viewModel.checkFriendRequests(with: defaults)
         }
     }
@@ -230,6 +230,10 @@ private extension UserProfileView {
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
+    }
+
+    var isMainUser: Bool {
+        userID == defaults.mainUserID
     }
 
     func cancelFriendActionTask() {

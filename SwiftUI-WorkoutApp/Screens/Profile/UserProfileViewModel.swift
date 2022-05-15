@@ -8,7 +8,6 @@
 import Foundation
 
 final class UserProfileViewModel: ObservableObject {
-    private(set) var isMainUser = false
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
     @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
@@ -21,7 +20,7 @@ final class UserProfileViewModel: ObservableObject {
         with defaults: UserDefaultsService,
         refresh: Bool = false
     ) async {
-        isMainUser = userID == defaults.mainUserID
+        let isMainUser = userID == defaults.mainUserID
         if user.id != .zero, !refresh {
             return
         }
