@@ -21,7 +21,7 @@ struct SportsGroundViewCell: View {
                     .fontWeight(.medium)
                 Text(model.address.valueOrEmpty)
                     .font(.caption)
-                Text(model.usersTrainHereCount.valueOrZero.description)
+                Text(model.usersTrainHereText)
                     .foregroundColor(.secondary)
                     .font(.caption)
             }

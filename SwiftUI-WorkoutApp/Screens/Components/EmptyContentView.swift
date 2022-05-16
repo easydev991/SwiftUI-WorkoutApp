@@ -20,14 +20,18 @@ struct EmptyContentView: View {
 extension EmptyContentView {
     enum Mode {
         case events, journals, messages
-        var text: (message: String, buttonTitle: String) {
+        struct Info {
+            let message: String
+            let buttonTitle: String
+        }
+        var info: Info {
             switch self {
             case .events:
-                return ("Нет запланированных мероприятий", "Создать мероприятие")
+                return .init(message: "Нет запланированных мероприятий", buttonTitle: "Создать мероприятие")
             case .journals:
-                return ("Дневников пока нет", "Создать дневник")
+                return .init(message: "Дневников пока нет", buttonTitle: "Создать дневник")
             case .messages:
-                return ("Чатов пока нет", "Открыть список друзей")
+                return .init(message: "Чатов пока нет", buttonTitle: "Открыть список друзей")
             }
         }
     }
@@ -37,7 +41,7 @@ private extension EmptyContentView {
     var content: some View {
         VStack(spacing: 16) {
             Spacer()
-            Text(mode.text.message)
+            Text(mode.info.message)
                 .font(.title2)
                 .multilineTextAlignment(.center)
             NavigationLink {
@@ -51,9 +55,10 @@ private extension EmptyContentView {
                         .navigationTitle("Друзья")
                 }
             } label: {
-                Text(mode.text.buttonTitle)
+                Text(mode.info.buttonTitle)
                     .roundedRectangleStyle()
             }
+            .opacity(defaults.isAuthorized ? 1 : .zero)
             Spacer()
         }
     }

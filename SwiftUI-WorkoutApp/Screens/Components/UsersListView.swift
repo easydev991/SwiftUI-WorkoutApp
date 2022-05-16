@@ -27,7 +27,7 @@ struct UsersListView: View {
                     } label: {
                         UserViewCell(model: user)
                     }
-                    .disabled(user.id == defaults.mainUserID)
+                    .disabled(isLinkDisabled(for: user.id))
                 }
             }
             ProgressView()
@@ -64,6 +64,10 @@ private extension UsersListView {
                 }
             }
         }
+    }
+
+    func isLinkDisabled(for userID: Int) -> Bool {
+        userID == defaults.mainUserID || !defaults.isAuthorized
     }
 
     func askForUsers(refresh: Bool = false) async {

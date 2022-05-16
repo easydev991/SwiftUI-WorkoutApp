@@ -15,6 +15,9 @@ final class SportsGroundViewModel: ObservableObject {
     @Published private(set) var showParticipants = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    var showRefreshButton: Bool {
+        ground.id == .zero && !isLoading
+    }
 
     init(groundID: Int) { self.groundID = groundID }
 
@@ -56,7 +59,7 @@ final class SportsGroundViewModel: ObservableObject {
 
     @MainActor
     func changeTrainHereStatus(with defaults: UserDefaultsService) async {
-        if isLoading { return }
+        if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
             try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: ground.trainHereOptional ?? false)

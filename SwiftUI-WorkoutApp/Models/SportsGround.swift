@@ -22,6 +22,9 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let photos: [Photo]
     let preview: String?
     let usersTrainHereCount: Int?
+    var usersTrainHereText: String {
+        "Тренируется \(usersTrainHereCount.valueOrZero) чел."
+    }
     var commentsOptional: [Comment]?
     var comments: [Comment] {
         get { commentsOptional ?? [] }

@@ -69,7 +69,7 @@ private extension RootView {
                 .tag(Tab.profile)
         }
         .transition(.move(edge: .trailing).combined(with: .scale))
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(.stack)
     }
 }
 

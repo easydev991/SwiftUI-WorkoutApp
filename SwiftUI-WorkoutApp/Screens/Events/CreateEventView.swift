@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var defaults: UserDefaultsService
     @ObservedObject var viewModel: CreateEventViewModel
     @State private var eventCreated = false
     @FocusState private var focus: FocusableField?
@@ -63,7 +64,7 @@ private extension CreateEventView {
             return AnyView(
                 NavigationLink(
                     destination: {
-                        Text("Список моих площадок с возможностью выбора по нажатию")
+                        SportsGroundListView(mode: .usedBy(userID: defaults.mainUserID))
                             .navigationTitle("Выбери площадку")
                             .navigationBarTitleDisplayMode(.inline)
                     }, label: {

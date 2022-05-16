@@ -28,12 +28,16 @@ struct SportsGroundView: View {
                 if viewModel.isPhotoGridShown {
                     gridWithPhotosSection
                 }
-                participantsAndEventSection
+                if defaults.isAuthorized {
+                    participantsAndEventSection
+                }
                 authorSection
                 if !viewModel.ground.comments.isEmpty {
                     commentsSection
                 }
-                addNewCommentButton
+                if defaults.isAuthorized {
+                    addNewCommentButton
+                }
             }
             .opacity(viewModel.ground.id == .zero ? .zero : 1)
             .disabled(viewModel.isLoading)
@@ -96,7 +100,7 @@ private extension SportsGroundView {
         Section("Фотографии") {
             LazyVGrid(
                 columns: .init(
-                    repeating: .init(.flexible()),
+                    repeating: .init(.flexible(maximum: 150)),
                     count: viewModel.photoColumns.rawValue
                 )
             ) {
@@ -109,9 +113,7 @@ private extension SportsGroundView {
                                 .scaledToFill()
                                 .cornerRadius(8)
                         case let .failure(error):
-                            Color.secondary
-                                .frame(width: 100, height: 100)
-                                .cornerRadius(8)
+                            EmptyGrayRoundedRect(size: .init(width: 100, height: 100))
                                 .overlay {
                                     Text(error.localizedDescription)
                                         .multilineTextAlignment(.center)
@@ -175,6 +177,7 @@ private extension SportsGroundView {
                         .fontWeight(.medium)
                 }
             }
+            .disabled(!defaults.isAuthorized)
         }
     }
 
@@ -205,8 +208,7 @@ private extension SportsGroundView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(viewModel.ground.id == .zero ? 1 : .zero)
-        .disabled(viewModel.isLoading)
+        .opacity(viewModel.showRefreshButton ? 1 : .zero)
     }
 
     func askForInfo(refresh: Bool = false) async {

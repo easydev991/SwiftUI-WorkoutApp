@@ -12,7 +12,7 @@ struct CacheImageView: View {
     var mode = Mode.user
 
     var body: some View {
-        CacheAsyncImage(url: url) { phase in
+        CacheAsyncImage(url: url, dummySize: mode.size) { phase in
             switch phase {
             case let .success(image):
                 image
@@ -20,6 +20,7 @@ struct CacheImageView: View {
                     .applySpecificSize(mode.size)
             case .failure:
                 Image(systemName: "exclamationmark.triangle.fill")
+                    .applySpecificSize(mode.size)
             default:
                 ProgressView()
             }

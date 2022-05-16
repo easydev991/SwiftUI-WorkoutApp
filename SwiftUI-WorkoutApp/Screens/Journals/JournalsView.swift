@@ -17,8 +17,8 @@ struct JournalsView: View {
 #warning("TODO: сверстать экран с дневниками")
             content
             .toolbar { addJournalButton }
-            .navigationTitle("Дневники тренировок")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(defaults.isAuthorized ? "Дневники тренировок" : "Дневники")
+            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
     }
 }
@@ -38,6 +38,7 @@ private extension JournalsView {
         NavigationLink(destination: Text("Создать дневник")) {
             Image(systemName: "plus")
         }
+        .opacity(defaults.isAuthorized ? 1 : .zero)
     }
 }
 
