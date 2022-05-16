@@ -14,6 +14,10 @@ enum EventType: String, CaseIterable {
 
 struct EventsView: View {
     @State private var selectedEventType = EventType.future
+    @State private var oldEvents = Bundle.main.decodeJson(
+        [EventResponse].self,
+        fileName: "oldEvents.json"
+    )
 
     var body: some View {
         NavigationView {
@@ -49,8 +53,8 @@ private extension EventsView {
 
 #warning("TODO: убрать временный хардкод после реализации фичи")
     var eventsList: some View {
-        List(0..<15) { id in
-            Text("Тренировка № \(id)")
+        List(oldEvents) {
+            EventViewCell(event: $0)
         }
     }
 }

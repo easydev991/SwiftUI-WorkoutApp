@@ -17,6 +17,9 @@
 		671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* UserViewCell.swift */; };
 		672BE762281FD4E300579183 /* AuthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE761281FD4E300579183 /* AuthData.swift */; };
 		672BE768281FD60F00579183 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE767281FD60F00579183 /* City.swift */; };
+		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
+		672F2BE52832BE3E0000A193 /* EventResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672F2BE42832BE3E0000A193 /* EventResponse.swift */; };
+		672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672F2BE62832CD2A0000A193 /* EventViewCell.swift */; };
 		67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACC282E6C4A004F5339 /* SportsGroundViewCell.swift */; };
 		67419ACF282E70B9004F5339 /* SportsGroundListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundListView.swift */; };
 		67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */; };
@@ -108,6 +111,9 @@
 		671D7DF0282117FF0068E728 /* UserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewCell.swift; sourceTree = "<group>"; };
 		672BE761281FD4E300579183 /* AuthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthData.swift; sourceTree = "<group>"; };
 		672BE767281FD60F00579183 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
+		672F2BE42832BE3E0000A193 /* EventResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventResponse.swift; sourceTree = "<group>"; };
+		672F2BE62832CD2A0000A193 /* EventViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewCell.swift; sourceTree = "<group>"; };
 		67419ACC282E6C4A004F5339 /* SportsGroundViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundViewCell.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* SportsGroundListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundListView.swift; sourceTree = "<group>"; };
 		67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundListViewModel.swift; sourceTree = "<group>"; };
@@ -206,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				6798AA52280AF43900DB76F1 /* EventsView.swift */,
+				672F2BE62832CD2A0000A193 /* EventViewCell.swift */,
 				675EC65E2815532800C2E229 /* CreateEventView.swift */,
 				6758B92B281D9283001D83D8 /* CreateEventViewModel.swift */,
 			);
@@ -354,6 +361,7 @@
 		6798AA5E280AF5F900DB76F1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				672F2BE22832BC7C0000A193 /* oldEvents.json */,
 				675EC65528153B8200C2E229 /* Info.plist */,
 				6798AA75280BE8E200DB76F1 /* countries.json */,
 				6798AA77280BE8E200DB76F1 /* areas.json */,
@@ -379,6 +387,7 @@
 				6758B933281DC198001D83D8 /* UserResponse.swift */,
 				67E4266C2821429500DF82A7 /* UserModel.swift */,
 				675462FE282FC6E6005BC86A /* MainUserForm.swift */,
+				672F2BE42832BE3E0000A193 /* EventResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -513,6 +522,7 @@
 				6798AA7B280BE8E200DB76F1 /* areas.json in Resources */,
 				6798AA45280AEDCA00DB76F1 /* Preview Assets.xcassets in Resources */,
 				6798AA79280BE8E200DB76F1 /* countries.json in Resources */,
+				672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */,
 				6798AA7E280BF13100DB76F1 /* Localizable.strings in Resources */,
 				6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */,
 				675EC64D281405A900C2E229 /* Plurals.stringsdict in Resources */,
@@ -533,6 +543,7 @@
 				6758B92E281D93DF001D83D8 /* JournalsViewModel.swift in Sources */,
 				6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */,
 				67419AD3282E7F84004F5339 /* EmptyGrayRoundedRect.swift in Sources */,
+				672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */,
 				6798AA70280B42BC00DB76F1 /* WelcomeLoginButtonTitle.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				6798AA8E280C3CCB00DB76F1 /* CitiesView.swift in Sources */,
@@ -596,6 +607,7 @@
 				674D061F2828153A007E75C6 /* FriendRequestRow.swift in Sources */,
 				6798AA5D280AF5E500DB76F1 /* Constants.swift in Sources */,
 				671D7DEF282112140068E728 /* Text+.swift in Sources */,
+				672F2BE52832BE3E0000A193 /* EventResponse.swift in Sources */,
 				6758B930281D9469001D83D8 /* MessagesViewModel.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				674B37B2282B9E51001A5B66 /* CacheImageView.swift in Sources */,

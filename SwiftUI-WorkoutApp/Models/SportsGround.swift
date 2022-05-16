@@ -151,4 +151,11 @@ extension SportsGround {
     static var emptyValue: SportsGround {
         .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
+
+    static var mock: SportsGround {
+        Bundle.main.decodeJson(
+            [SportsGround].self,
+            fileName: "areas.json"
+        ).first!
+    }
 }
