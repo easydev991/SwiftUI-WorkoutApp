@@ -8,18 +8,16 @@
 import SwiftUI
 
 struct SpecificSizeImageRectangle: ViewModifier {
-    let size: CGSize
-
     func body(content: Content) -> some View {
         content
-            .scaledToFill()
-            .frame(width: size.width, height: size.height)
+            .aspectRatio(contentMode: .fit)
             .cornerRadius(8)
+            .frame(maxWidth: .infinity, maxHeight: 200)
     }
 }
 
 extension View {
-    func applySpecificSize(_ size: CGSize) -> some View {
-        modifier(SpecificSizeImageRectangle(size: size))
+    func applyProfileImageStyle() -> some View {
+        modifier(SpecificSizeImageRectangle())
     }
 }

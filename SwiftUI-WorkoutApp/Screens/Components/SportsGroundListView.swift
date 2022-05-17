@@ -18,6 +18,7 @@ struct SportsGroundListView: View {
         ZStack {
             List(viewModel.list) { ground in
                 NavigationLink {
+#warning("TODO: убедиться, что сервер присылает всю инфу о добавленной пользователем площадке в added_areas")
                     SportsGroundView(input: .full(ground))
                 } label: {
                     SportsGroundViewCell(model: ground)

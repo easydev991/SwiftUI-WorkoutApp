@@ -10,21 +10,36 @@ import SwiftUI
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
-    @State private var showLogoutConfirmation = false
+    @State private var showLogoutDialog = false
+    @State private var showDeleteProfileDialog = false
+    @State private var showErrorAlert = false
+    @State private var alertMessage = ""
+    @State private var deleteProfileTask: Task<Void, Never>?
 
     var body: some View {
-        Form {
-            Section("Профиль") {
-                editAccountLink
-                changePasswordLink
-                logoutButton
+        ZStack {
+            Form {
+                Section("Профиль") {
+                    editAccountLink
+                    changePasswordLink
+                    logoutButton
+                }
+                Section("Информация о приложении") {
+                    appVersionView
+                    feedbackButton
+                    rateAppButton
+                }
             }
-            Section("Информация о приложении") {
-                appVersionView
-                feedbackButton
-                rateAppButton
-            }
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .alert(alertMessage, isPresented: $showErrorAlert) {
+            Button(action: closeAlert) { TextOk() }
+        }
+        .toolbar { deleteProfileButton }
+        .onDisappear(perform: cancelTask)
         .navigationTitle("Настройки")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -47,13 +62,15 @@ private extension ProfileSettingsView {
     }
 
     var logoutButton: some View {
-        Button(action: showConfirmatinoDialog) {
+        Button {
+            showLogoutDialog.toggle()
+        } label: {
             Text("Выйти")
                 .foregroundColor(.pink)
         }
         .confirmationDialog(
             Constants.Alert.logout,
-            isPresented: $showLogoutConfirmation,
+            isPresented: $showLogoutDialog,
             titleVisibility: .visible
         ) {
             Button(role: .destructive, action: defaults.triggerLogout) {
@@ -62,8 +79,26 @@ private extension ProfileSettingsView {
         }
     }
 
-    func showConfirmatinoDialog() {
-        showLogoutConfirmation.toggle()
+    var deleteProfileButton: some View {
+        Button {
+            showDeleteProfileDialog.toggle()
+        } label: {
+            Image(systemName: "trash")
+                .tint(.secondary)
+        }
+        .confirmationDialog(
+            Constants.Alert.deleteProfile,
+            isPresented: $showDeleteProfileDialog,
+            titleVisibility: .visible
+        ) {
+            Button(role: .destructive, action: deleteProfile) {
+                Text("Удалить учетную запись")
+            }
+        }
+    }
+
+    func deleteProfile() {
+        deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
     }
 
     var appVersionView: some View {
@@ -85,6 +120,19 @@ private extension ProfileSettingsView {
         Button(action: viewModel.rateAppAction) {
             Text("Оценить приложение")
         }
+    }
+
+    func setupErrorAlert(with message: String) {
+        showErrorAlert = !message.isEmpty
+        alertMessage = message
+    }
+
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
+
+    func cancelTask() {
+        deleteProfileTask?.cancel()
     }
 }
 

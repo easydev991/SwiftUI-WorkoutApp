@@ -52,7 +52,7 @@ private extension SportsGroundCommentView {
             Button {
                 editClbk(model.id, model.formattedBody)
             } label: {
-                Label("Изменить", systemImage: "pencil.circle.fill")
+                Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
             }
             Button(role: .destructive) {
                 deleteClbk(model.id)

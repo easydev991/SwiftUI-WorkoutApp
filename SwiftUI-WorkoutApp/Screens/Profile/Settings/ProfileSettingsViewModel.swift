@@ -9,6 +9,8 @@ import StoreKit
 
 final class ProfileSettingsViewModel: ObservableObject {
     private let feedbackHelper: IFeedbackHelper
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
 
     init() {
         feedbackHelper = FeedbackService()
@@ -23,4 +25,18 @@ final class ProfileSettingsViewModel: ObservableObject {
             SKStoreReviewController.requestReview(in: windowScene)
         }
     }
+
+    @MainActor
+    func deleteProfile(with defaults: UserDefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            try await APIService(with: defaults).deleteUser()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    func clearErrorMessage() { errorMessage = "" }
 }

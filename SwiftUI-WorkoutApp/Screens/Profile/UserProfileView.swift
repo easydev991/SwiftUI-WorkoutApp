@@ -75,16 +75,11 @@ private extension UserProfileView {
             case let .success(image):
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(8)
-                    .frame(maxWidth: .infinity, maxHeight: 200)
-            case .failure:
-                Image(systemName: "person.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: .infinity, maxHeight: 80)
+                    .applyProfileImageStyle()
             default:
-                ProgressView()
+                Image("defaultWorkoutImage")
+                    .resizable()
+                    .applyProfileImageStyle()
             }
         }
     }

@@ -54,7 +54,7 @@ struct APIService {
         guard let request = endpoint.urlRequest else { return .emptyValue }
         let (data, response) = try await urlSession.data(for: request)
         let userInfo = try handle(UserResponse.self, data, response)
-        if loginFlow {
+        if loginFlow || userID == defaults.mainUserID {
             await defaults.saveUserInfo(userInfo)
         }
         return userInfo
@@ -104,6 +104,15 @@ struct APIService {
             await defaults.saveAuthData(.init(login: authData.login, password: new))
         }
         return isSuccess
+    }
+
+    /// Запрашивает удаление профиля текущего пользователя приложения
+    func deleteUser() async throws {
+        let endpoint = Endpoint.deleteUser(auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return }
+        let (_, response) = try await urlSession.data(for: request)
+        let isDeleted = try handle(response)
+        if isDeleted { await defaults.triggerLogout() }
     }
 
     /// Загружает список друзей для выбранного пользователя; для главного пользователя в случае успеха сохраняет идентификаторы друзей в `defaults`
@@ -309,10 +318,9 @@ private extension APIService {
         dump(response)
         print("--- Полученный JSON:\n\(data.prettyJson)")
         do {
-            try JSONDecoder().decode(type, from: data)
+            _ = try JSONDecoder().decode(type, from: data)
         } catch {
             print("--- error: \(error)")
-            fatalError(error.localizedDescription)
         }
 #endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
@@ -341,8 +349,10 @@ private extension APIService {
     ///   - code: код ответа
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, with code: Int?) -> APIError {
+#if DEBUG
         print("--- JSON с ошибкой:")
         print(data.prettyJson)
+#endif
         if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
             return APIError(errorInfo)
         } else {
@@ -372,6 +382,10 @@ private extension APIService {
         /// Изменение пароля:
         /// **POST** ${API}/auth/changepass
         case changePassword(currentPass: String, newPass: String, auth: AuthData)
+
+        /// Удаляет профиль текущего пользователя, от которого пришел запрос:
+        /// **DELETE** ${API}/users/current
+        case deleteUser(auth: AuthData)
 
         /// Получение профиля пользователя:
         /// **GET** ${API}/users/<id>
@@ -469,6 +483,8 @@ private extension APIService {
                 return "\(baseUrl)/users/\(userID)"
             case .changePassword:
                 return "\(baseUrl)/auth/changepass"
+            case .deleteUser:
+                return "\(baseUrl)/users/current"
             case let .getUser(id, _):
                 return "\(baseUrl)/users/\(id)"
             case let .getFriendsForUser(id, _):
@@ -515,7 +531,7 @@ private extension APIService {
                     .getFutureEvents, .getPastEvents, .getEvent:
                 return .get
             case .declineFriendRequest, .deleteFriend,
-                    .deleteComment, .deleteTrainHere:
+                    .deleteComment, .deleteTrainHere, .deleteUser:
                 return .delete
             }
         }
@@ -526,7 +542,8 @@ private extension APIService {
                 let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
                 let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
                 let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-                let .deleteFriend(_, auth), let .getSportsGround(_, auth), let .findUsers(_, auth),
+                let .deleteFriend(_, auth), let .getSportsGround(_, auth),
+                let .findUsers(_, auth), let .deleteUser(auth),
                 let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
                 let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth):
@@ -543,7 +560,7 @@ private extension APIService {
                     .acceptFriendRequest, .declineFriendRequest, .findUsers,
                     .sendFriendRequest, .deleteFriend, .getSportsGround,
                     .deleteComment, .getSportsGroundsForUser,
-                    .postTrainHere, .deleteTrainHere,
+                    .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent:
                 return nil
             case let .registration(form):

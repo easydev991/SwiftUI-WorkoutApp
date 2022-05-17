@@ -35,13 +35,13 @@ struct CacheAsyncImage<Content>: View where Content: View {
             let _ = print("картинка из кэша: \((url?.absoluteString).valueOrEmpty)")
 #endif
             content(.success(cached))
-        } else if let url = url {
+        } else if let url = url, !url.absoluteString.contains("avatar_default") {
 #if DEBUG
             let _ = print("запросили картинку: \(url)")
 #endif
             AsyncImage(url: url, scale: scale, transaction: transaction, content: cacheAndRender)
         } else {
-            EmptyGrayRoundedRect(size: dummySize)
+            RoundedRectDefaultImage(size: dummySize)
         }
     }
 
@@ -68,7 +68,7 @@ struct CacheAsyncImage_Previews: PreviewProvider {
             case .failure(let error):
                 Text(error.localizedDescription)
             @unknown default:
-                fatalError()
+                ProgressView()
             }
         }
     }

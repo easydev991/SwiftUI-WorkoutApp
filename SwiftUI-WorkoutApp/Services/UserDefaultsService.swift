@@ -33,9 +33,11 @@ final class UserDefaultsService: ObservableObject {
         showWelcome = false
     }
 
+    @MainActor
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
+        friendsIds = .init()
         friendRequests = .init()
         mainUserID = .zero
         isAuthorized = false

@@ -18,11 +18,10 @@ struct CacheImageView: View {
                 image
                     .resizable()
                     .applySpecificSize(mode.size)
-            case .failure:
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .applySpecificSize(mode.size)
             default:
-                ProgressView()
+                Image("defaultWorkoutImage")
+                    .resizable()
+                    .applySpecificSize(mode.size)
             }
         }
     }

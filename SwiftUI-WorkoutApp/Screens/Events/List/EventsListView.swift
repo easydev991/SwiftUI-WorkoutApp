@@ -34,8 +34,8 @@ struct EventsListView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: selectedEventType) { _ in askForEvents() }
-        .task { askForEvents() }
-        .refreshable { askForEvents(refresh: true) }
+        .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
+        .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
         .onDisappear(perform: cancelTask)
     }
 }

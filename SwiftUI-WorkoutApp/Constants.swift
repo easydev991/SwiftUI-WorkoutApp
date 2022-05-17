@@ -44,6 +44,7 @@ struct Constants {
         static let eventCreated = "Мероприятие создано!"
         static let passwordChanged = "Пароль успешно изменен"
         static let logout = "Выйти из учетной записи?"
+        static let deleteProfile = "Удалить учетную запись без возможности восстановления?"
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         static let resetPasswordError = "Не удалось восстановить пароль"
         static let changePasswordError = "Не удалось изменить пароль"

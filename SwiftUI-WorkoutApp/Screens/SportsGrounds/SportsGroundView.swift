@@ -125,9 +125,12 @@ private extension SportsGroundView {
                                 .scaledToFill()
                                 .cornerRadius(8)
                         case let .failure(error):
-                            EmptyGrayRoundedRect(size: .init(width: 100, height: 100))
+                            RoundedRectDefaultImage(size: .init(width: 100, height: 100))
                                 .overlay {
                                     Text(error.localizedDescription)
+                                        .background(.white)
+                                        .foregroundColor(.black)
+                                        .cornerRadius(8)
                                         .multilineTextAlignment(.center)
                                 }
                         default:
