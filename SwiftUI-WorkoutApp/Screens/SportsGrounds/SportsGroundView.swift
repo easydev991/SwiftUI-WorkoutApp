@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SportsGroundView: View {
     @EnvironmentObject private var defaults: UserDefaultsService
-    @ObservedObject var viewModel: SportsGroundViewModel
+    @ObservedObject private var viewModel: SportsGroundViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
@@ -18,8 +18,13 @@ struct SportsGroundView: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
 
-    init(model: SportsGroundViewModel) {
-        viewModel = model
+    init(input: Input) {
+        switch input {
+        case let .full(ground):
+            viewModel = .init(sportsGround: ground)
+        case let .limited(id):
+            viewModel = .init(groundID: id)
+        }
     }
 
     var body: some View {
@@ -71,6 +76,12 @@ struct SportsGroundView: View {
     }
 }
 
+extension SportsGroundView {
+    enum Input {
+        case full(SportsGround)
+        case limited(id: Int)
+    }
+}
 private extension SportsGroundView {
     var titleAddressSection: some View {
         Section {
@@ -240,7 +251,7 @@ private extension SportsGroundView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundView(model: .init(groundID: .zero))
+            SportsGroundView(input: .full(.mock))
                 .environmentObject(UserDefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }

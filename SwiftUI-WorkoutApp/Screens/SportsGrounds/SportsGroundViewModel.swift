@@ -19,7 +19,14 @@ final class SportsGroundViewModel: ObservableObject {
         ground.id == .zero && !isLoading
     }
 
-    init(groundID: Int) { self.groundID = groundID }
+    init(groundID: Int) {
+        self.groundID = groundID
+    }
+
+    init(sportsGround: SportsGround) {
+        self.groundID = sportsGround.id
+        self.ground = sportsGround
+    }
 
     @MainActor
     func makeSportsGroundInfo(with defaults: UserDefaultsService, refresh: Bool = false) async {

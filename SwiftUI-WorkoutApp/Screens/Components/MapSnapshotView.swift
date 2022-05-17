@@ -15,11 +15,11 @@ struct MapSnapshotView: View {
     var body: some View {
         GeometryReader { geometry in
             content
-                .onChange(of: model) { ground in
-                    if ground.coordinate.latitude != .zero
-                        && ground.coordinate.longitude != .zero {
-                        generateSnapshot(for: geometry.size)
-                    }
+                .onAppear {
+                    generateSnapshot(for: geometry.size)
+                }
+                .onChange(of: model) { _ in
+                    generateSnapshot(for: geometry.size)
                 }
         }
     }
@@ -47,6 +47,11 @@ private extension MapSnapshotView {
     }
 
     func generateSnapshot(for size: CGSize) {
+        if snapshotImage != nil
+            || model.coordinate.latitude == .zero
+            || model.coordinate.longitude == .zero {
+            return
+        }
         snapshotImage = nil
         let spanDelta: CLLocationDegrees = 0.002
         let region = MKCoordinateRegion(

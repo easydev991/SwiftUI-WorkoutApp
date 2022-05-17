@@ -18,7 +18,7 @@ struct SportsGroundListView: View {
         ZStack {
             List(viewModel.list) { ground in
                 NavigationLink {
-                    SportsGroundView(model: .init(groundID: ground.id))
+                    SportsGroundView(input: .full(ground))
                 } label: {
                     SportsGroundViewCell(model: ground)
                 }
