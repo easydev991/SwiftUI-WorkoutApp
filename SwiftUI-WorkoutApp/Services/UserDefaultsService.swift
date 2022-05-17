@@ -29,22 +29,8 @@ final class UserDefaultsService: ObservableObject {
     @AppStorage(Key.friendRequests.rawValue)
     private var friendRequests = Data()
 
-    /// Ставим `true` при смене состояния приложения на `inactive`
-    var needUpdateUser = true
-
-    @MainActor
-    func setMainUserID(_ id: Int) {
-        mainUserID = id
-    }
-
     func setWelcomeShown() {
         showWelcome = false
-    }
-
-    @MainActor
-    func setUserLoggedIn() {
-        showWelcome = false
-        isAuthorized = true
     }
 
     func triggerLogout() {
@@ -52,8 +38,8 @@ final class UserDefaultsService: ObservableObject {
         userInfo = .init()
         friendRequests = .init()
         mainUserID = .zero
-        showWelcome = true
         isAuthorized = false
+        showWelcome = true
     }
 
     @MainActor
@@ -73,9 +59,13 @@ final class UserDefaultsService: ObservableObject {
 
     @MainActor
     func saveUserInfo(_ info: UserResponse) {
+        mainUserID = info.userID.valueOrZero
+        if !isAuthorized {
+            showWelcome = false
+            isAuthorized = true
+        }
         if let data = try? JSONEncoder().encode(info) {
             userInfo = data
-            needUpdateUser = false
         }
     }
 
@@ -123,7 +113,8 @@ final class UserDefaultsService: ObservableObject {
 
 private extension UserDefaultsService {
     enum Key: String {
-        case mainUserID, isUserAuthorized,showWelcome,
-             authData, userInfo, friends, friendRequests
+        case mainUserID, isUserAuthorized,
+             showWelcome, authData, userInfo,
+             friends, friendRequests
     }
 }

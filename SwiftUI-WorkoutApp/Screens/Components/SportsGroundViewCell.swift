@@ -17,7 +17,7 @@ struct SportsGroundViewCell: View {
                 mode: .sportsGround
             )
             VStack(alignment: .leading, spacing: 4) {
-                Text(model.shortTitle)
+                Text(model.longTitle)
                     .fontWeight(.medium)
                 Text(model.address.valueOrEmpty)
                     .font(.caption)

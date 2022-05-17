@@ -12,14 +12,14 @@ import MapKit.MKGeometry
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let id, typeID: Int
     let address: String?
-    let author: UserResponse
-    let canEdit, mine: Bool
+    let author: UserResponse?
+    let canEdit, mine: Bool?
     let cityID, sizeID, commentsCount, countryID: Int?
     let createDate, modifyDate: String?
-    let equipmentIDS: [Int]
+    let equipmentIDS: [Int]?
     let latitude, longitude: String
     let name: String?
-    let photos: [Photo]
+    let photos: [Photo]?
     let preview: String?
     let usersTrainHereCount: Int?
     var usersTrainHereText: String {
@@ -49,6 +49,16 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         return grade + " / " + size
     }
     var shortTitle: String { "№ \(id)" }
+    /// shortTitle + subtitle
+    var longTitle: String {
+        shortTitle + " " + subtitle.valueOrEmpty
+    }
+    var authorID: Int {
+        (author?.userID).valueOrZero
+    }
+    var authorName: String {
+        (author?.userName).valueOrEmpty
+    }
     var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? .zero),
@@ -88,7 +98,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, address: String?, author: UserResponse, canEdit: Bool, mine: Bool, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int], latitude: String, longitude: String, name: String?, photos: [Photo], preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, address: String?, author: UserResponse?, canEdit: Bool?, mine: Bool?, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int]?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
         self.address = address

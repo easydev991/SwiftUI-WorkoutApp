@@ -58,12 +58,14 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus(with defaults: UserDefaultsService) async {
+    func changeTrainHereStatus(trainHere: Bool, with defaults: UserDefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: ground.trainHereOptional ?? false)
-            await makeSportsGroundInfo(with: defaults, refresh: true)
+            let isOk = try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: trainHere)
+            if isOk {
+                ground.trainHere = trainHere
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -88,8 +90,10 @@ extension SportsGroundViewModel {
 
 private extension SportsGroundViewModel {
     func updateState() {
-        isPhotoGridShown = !ground.photos.isEmpty
-        photoColumns = .init(ground.photos.count)
+        if let photos = ground.photos {
+            isPhotoGridShown = !photos.isEmpty
+            photoColumns = .init(photos.count)
+        }
         showParticipants = ground.usersTrainHereCount.valueOrZero > .zero
     }
 }

@@ -29,7 +29,6 @@ struct SwiftUI_WorkoutAppApp: App {
 #if DEBUG
                 print("---inactive")
 #endif
-                defaults.needUpdateUser = true
             case .active:
 #if DEBUG
                 print("---active")

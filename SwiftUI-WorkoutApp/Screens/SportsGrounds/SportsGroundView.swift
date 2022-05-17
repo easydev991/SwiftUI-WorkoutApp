@@ -14,6 +14,7 @@ struct SportsGroundView: View {
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
     @State private var editComment: Comment?
+    @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
 
@@ -104,7 +105,7 @@ private extension SportsGroundView {
                     count: viewModel.photoColumns.rawValue
                 )
             ) {
-                ForEach(viewModel.ground.photos) {
+                ForEach(viewModel.ground.photos ?? []) {
                     CacheAsyncImage(url: $0.imageURL) { phase in
                         switch phase {
                         case let .success(image):
@@ -134,13 +135,20 @@ private extension SportsGroundView {
             }
             Toggle("Тренируюсь здесь", isOn: $viewModel.ground.trainHere)
                 .disabled(viewModel.isLoading)
-                .onChange(of: viewModel.ground.trainHere, perform: changeTrainHereStatus)
+                .onTapGesture {
+                    changeTrainHereStatus(newStatus: !viewModel.ground.trainHere)
+                }
+                // .onChange срабатывает при появлении экрана, отправляет лишний запрос на сервер
             createEventLink
         }
     }
 
     func changeTrainHereStatus(newStatus: Bool) {
-        Task { await viewModel.changeTrainHereStatus(with: defaults) }
+        changeTrainHereTask = Task {
+            await viewModel.changeTrainHereStatus(
+                trainHere: newStatus, with: defaults
+            )
+        }
     }
 
     var linkToParticipantsView: some View {
@@ -170,10 +178,10 @@ private extension SportsGroundView {
 
     var authorSection: some View {
         Section("Добавил") {
-            NavigationLink(destination: UserProfileView(userID: viewModel.ground.author.userID.valueOrZero)) {
+            NavigationLink(destination: UserProfileView(userID: viewModel.ground.authorID)) {
                 HStack(spacing: 16) {
-                    CacheImageView(url: viewModel.ground.author.avatarURL)
-                    Text(viewModel.ground.author.userName.valueOrEmpty)
+                    CacheImageView(url: viewModel.ground.author?.avatarURL)
+                    Text(viewModel.ground.authorName)
                         .fontWeight(.medium)
                 }
             }
@@ -225,7 +233,7 @@ private extension SportsGroundView {
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, changeTrainHereTask].forEach { $0?.cancel() }
     }
 }
 

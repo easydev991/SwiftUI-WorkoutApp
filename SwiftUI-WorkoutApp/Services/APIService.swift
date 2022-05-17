@@ -27,12 +27,8 @@ struct APIService {
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
         let userResponse = try handle(UserResponse.self, data, response)
-        await MainActor.run {
-            defaults.setMainUserID(userResponse.userID.valueOrZero)
-            defaults.saveAuthData(.init(login: model.userName, password: model.password))
-            defaults.saveUserInfo(userResponse)
-            defaults.setUserLoggedIn()
-        }
+        await defaults.saveAuthData(.init(login: model.userName, password: model.password))
+        await defaults.saveUserInfo(userResponse)
     }
 
     /// Запрашивает `id` пользователя для входа в учетную запись
@@ -45,27 +41,21 @@ struct APIService {
         guard let request = endpoint.urlRequest else { return }
         let (data, response) = try await urlSession.data(for: request)
         let loginResponse = try handle(LoginResponse.self, data, response)
-        await MainActor.run {
-            defaults.setMainUserID(loginResponse.userID)
-            defaults.saveAuthData(authData)
-        }
-        try await getUserByID(loginResponse.userID)
+        await defaults.saveAuthData(authData)
+        try await getUserByID(loginResponse.userID, loginFlow: true)
     }
 
     /// Запрашивает данные пользователя по `id`, сохраняет данные главного пользователя в `defaults` и авторизует, если еще не авторизован
     /// - Parameter userID: `id` пользователя
     /// - Returns: Вся информация о пользователе
     @discardableResult
-    func getUserByID(_ userID: Int) async throws -> UserResponse {
+    func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return .emptyValue }
         let (data, response) = try await urlSession.data(for: request)
         let userInfo = try handle(UserResponse.self, data, response)
-        if userID == defaults.mainUserID {
-            await MainActor.run {
-                defaults.saveUserInfo(userInfo)
-                if !defaults.isAuthorized { defaults.setUserLoggedIn() }
-            }
+        if loginFlow {
+            await defaults.saveUserInfo(userInfo)
         }
         return userInfo
     }
@@ -92,10 +82,8 @@ struct APIService {
         guard let request = endpoint.urlRequest else { return false }
         let (data, response) = try await urlSession.data(for: request)
         let userResponse = try handle(UserResponse.self, data, response)
-        await MainActor.run {
-            defaults.saveAuthData(.init(login: model.userName, password: authData.password))
-            defaults.saveUserInfo(userResponse)
-        }
+        await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
+        await defaults.saveUserInfo(userResponse)
         return userResponse.userName == model.userName
     }
 
@@ -128,9 +116,7 @@ struct APIService {
         let (data, response) = try await urlSession.data(for: request)
         let friends = try handle([UserResponse].self, data, response)
         if id == defaults.mainUserID {
-            await MainActor.run {
-                defaults.saveFriendsIds(friends.compactMap(\.userID))
-            }
+            await defaults.saveFriendsIds(friends.compactMap(\.userID))
         }
         return friends
     }
@@ -158,7 +144,6 @@ struct APIService {
         let isSuccess = try handle(response)
         if isSuccess {
             if accept {
-                defaults.needUpdateUser = true
                 try await getFriendsForUser(id: defaults.mainUserID)
             }
             try await getFriendRequests()
@@ -179,7 +164,6 @@ struct APIService {
         let (_, response) = try await urlSession.data(for: request)
         let isSuccess = try handle(response)
         if isSuccess && option == .removeFriend {
-            defaults.needUpdateUser = true
             if option == .removeFriend {
                 try await getFriendsForUser(id: defaults.mainUserID)
             }
@@ -271,6 +255,7 @@ struct APIService {
         : .deleteTrainHere(groundID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
+#warning("TODO: интеграция с БД")
         return try handle(response)
     }
 
@@ -323,6 +308,12 @@ private extension APIService {
         print("--- Получили ответ:")
         dump(response)
         print("--- Полученный JSON:\n\(data.prettyJson)")
+        do {
+            try JSONDecoder().decode(type, from: data)
+        } catch {
+            print("--- error: \(error)")
+            fatalError(error.localizedDescription)
+        }
 #endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
 #if DEBUG

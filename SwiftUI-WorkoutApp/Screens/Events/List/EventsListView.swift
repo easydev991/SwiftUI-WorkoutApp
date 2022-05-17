@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct EventsListView: View {
+    @EnvironmentObject private var defaults: UserDefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
     @State private var showErrorAlert = false
@@ -24,6 +25,7 @@ struct EventsListView: View {
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : .zero)
             }
+            .toolbar { addEventButton }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -58,6 +60,22 @@ private extension EventsListView {
                 }
             }
             .opacity(viewModel.isLoading ? .zero : 1)
+        }
+    }
+
+    var addEventButton: some View {
+        NavigationLink(destination: CreateEventView(viewModel: .init(mode: .regular))) {
+            Image(systemName: "plus")
+        }
+        .opacity(isAddEventButtonHidden ? .zero : 1)
+    }
+
+    var isAddEventButtonHidden: Bool {
+        if let usedGrounds = defaults.mainUserInfo?.usedSportsGroundsCount,
+           usedGrounds > .zero {
+            return false
+        } else {
+            return true
         }
     }
 
