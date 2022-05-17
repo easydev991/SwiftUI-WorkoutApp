@@ -20,16 +20,13 @@ struct EventViewCell: View {
                 Text(event.formattedTitle)
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(event.shortAddress)
                     .font(.caption)
                 Text(event.eventDateString)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-        }
-        .onAppear {
-            print("--- event:")
-            dump(event)
         }
     }
 }

@@ -37,7 +37,7 @@ extension RootView {
 private extension RootView {
     var tabView: some View {
         TabView(selection: $viewModel.selectedTab) {
-            EventsView()
+            EventsListView()
                 .onAppear { viewModel.selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")

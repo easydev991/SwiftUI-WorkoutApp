@@ -273,6 +273,28 @@ struct APIService {
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
     }
+
+    /// Запрашивает список событий
+    /// - Parameter type: тип события (предстоящее или прошедшее)
+    /// - Returns: Список событий
+    func getEvents(of type: EventType) async throws -> [EventResponse] {
+        let endpoint: Endpoint = type == .future
+        ? .getFutureEvents
+        : .getPastEvents
+        guard let request = endpoint.urlRequest else { return [] }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle([EventResponse].self, data, response)
+    }
+
+    /// Запрашивает конкретное событие
+    /// - Parameter id: `id` события
+    /// - Returns: Вся информация по событию
+    func getEvent(by id: Int) async throws -> EventResponse {
+        let endpoint = Endpoint.getEvent(id: id)
+        guard let request = endpoint.urlRequest else { return .emptyValue }
+        let (data, response) = try await urlSession.data(for: request)
+        return try handle(EventResponse.self, data, response)
+    }
 }
 
 private extension APIService {
@@ -422,6 +444,18 @@ private extension APIService {
         /// **DELETE** ${API}/areas/<area_id>/train
         case deleteTrainHere(_ groundID: Int, auth: AuthData)
 
+        /// Получить список предстоящих событий:
+        /// **GET** ${API}/trainings/current
+        case getFutureEvents
+
+        /// Получить краткий список прошедших событий:
+        /// **GET** ${API}/trainings/last
+        case getPastEvents
+
+        /// Получить информацию о конкретном событии:
+        /// **GET** ${API}/trainings/<event_id>
+        case getEvent(id: Int)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
@@ -431,7 +465,7 @@ private extension APIService {
             return request
         }
 
-        var urlString: String {
+        private var urlString: String {
             let baseUrl = Constants.API.baseURL
             switch self {
             case .registration:
@@ -470,17 +504,24 @@ private extension APIService {
                 return "\(baseUrl)/users/\(userID)/areas"
             case let .postTrainHere(groundID, _), let .deleteTrainHere(groundID, _):
                 return "\(baseUrl)/areas/\(groundID)/train"
+            case .getFutureEvents:
+                return "\(baseUrl)/trainings/current"
+            case .getPastEvents:
+                return "\(baseUrl)/trainings/last"
+            case let .getEvent(id):
+                return "\(baseUrl)/trainings/\(id)"
             }
         }
 
-        var method: HTTPMethod {
+        private var method: HTTPMethod {
             switch self {
             case .registration, .login, .editUser, .resetPassword,
                     .changePassword, .acceptFriendRequest, .sendFriendRequest,
                     .addCommentToSportsGround, .editComment, .postTrainHere:
                 return .post
             case .getUser, .getFriendsForUser, .getFriendRequests,
-                    .getSportsGround, .findUsers, .getSportsGroundsForUser:
+                    .getSportsGround, .findUsers, .getSportsGroundsForUser,
+                    .getFutureEvents, .getPastEvents, .getEvent:
                 return .get
             case .declineFriendRequest, .deleteFriend,
                     .deleteComment, .deleteTrainHere:
@@ -488,7 +529,7 @@ private extension APIService {
             }
         }
 
-        var headers: [String: String] {
+        private var headers: [String: String] {
             switch self {
             case let .login(auth), let .getUser(_, auth), let .editUser(_, _, auth),
                 let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
@@ -499,18 +540,20 @@ private extension APIService {
                 let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
-            case .registration, .resetPassword:
+            case .registration, .resetPassword, .getFutureEvents,
+                    .getPastEvents, .getEvent:
                 return [:]
             }
         }
 
-        var httpBody: Data? {
+        private var httpBody: Data? {
             switch self {
             case .login, .getUser, .getFriendsForUser, .getFriendRequests,
                     .acceptFriendRequest, .declineFriendRequest, .findUsers,
                     .sendFriendRequest, .deleteFriend, .getSportsGround,
                     .deleteComment, .getSportsGroundsForUser,
-                    .postTrainHere, .deleteTrainHere:
+                    .postTrainHere, .deleteTrainHere,
+                    .getFutureEvents, .getPastEvents, .getEvent:
                 return nil
             case let .registration(form):
                 return Parameter.makeParameters(
@@ -534,7 +577,7 @@ private extension APIService {
                         .genderCode: form.genderCode.description,
                         .countryID: form.country.id,
                         .cityID: form.city.id,
-                        .birthDate: form.birthDateIsoString // "1990-08-12T00:00:00.000Z"
+                        .birthDate: form.birthDateIsoString
                     ]
                 )
             case let .resetPassword(login):

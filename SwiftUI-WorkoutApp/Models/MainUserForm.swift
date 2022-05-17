@@ -54,6 +54,7 @@ extension MainUserForm {
         element.rawValue
     }
 
+    /// Пример: "1990-08-12T00:00:00.000Z"
     var birthDateIsoString: String {
         FormatterService.isoStringFromFullDate(birthDate)
     }
