@@ -103,6 +103,7 @@ private extension EventsListView {
 struct EventsView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
+            .environmentObject(DefaultsService())
             .preferredColorScheme(.dark)
             .previewDevice("iPhone 13 mini")
     }

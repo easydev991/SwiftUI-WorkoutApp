@@ -147,12 +147,10 @@ private extension SportsGroundView {
             if viewModel.showParticipants {
                 linkToParticipantsView
             }
-            Toggle("Тренируюсь здесь", isOn: $viewModel.ground.trainHere)
-                .disabled(viewModel.isLoading)
-                .onTapGesture {
-                    changeTrainHereStatus(newStatus: !viewModel.ground.trainHere)
-                }
-                // .onChange срабатывает при появлении экрана, отправляет лишний запрос на сервер
+            CustomToggle(isOn: $viewModel.ground.trainHere, title: "Тренируюсь здесь") {
+                changeTrainHereStatus(newStatus: !viewModel.ground.trainHere)
+            }
+            .disabled(viewModel.isLoading)
             createEventLink
         }
     }

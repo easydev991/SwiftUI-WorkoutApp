@@ -23,11 +23,12 @@ struct EventDetailsView: View {
             Form {
                 Text(viewModel.event.formattedTitle)
                     .font(.title2.bold())
-                Toggle("Пойду на мероприятие", isOn: $viewModel.isGoing)
-                    .disabled(viewModel.isLoading)
-                    .onTapGesture {
+                if defaults.isAuthorized {
+                    CustomToggle(isOn: $viewModel.isGoing, title: "Пойду на мероприятие") {
                         changeVisitEventStatus(newStatus: !viewModel.isGoing)
                     }
+                    .disabled(viewModel.isLoading)
+                }
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
             ProgressView()
