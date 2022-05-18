@@ -16,12 +16,27 @@ struct CustomToggle: View {
         HStack {
             Text(title)
             Spacer()
-            Button(action: action) {
-                Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                    .font(.title)
+            ZStack {
+                Capsule()
+                    .frame(width: 51,height: 31)
+                    .foregroundColor(isOn ? .green : .secondary.opacity(0.5))
+                ZStack{
+                    Circle()
+                        .frame(width: 40, height: 26)
+                        .foregroundColor(.white)
+                }
+                .shadow(
+                    color: .black.opacity(0.14),
+                    radius: 4,
+                    x: .zero,
+                    y: 2
+                )
+                .offset(x: isOn ? 10 : -10)
+                .animation(.spring(), value: isOn)
             }
+            .onTapGesture(perform: action)
+            .animation(.default, value: isOn)
         }
-        .animation(.easeIn, value: isOn)
     }
 }
 
