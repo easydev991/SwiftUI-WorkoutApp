@@ -41,7 +41,7 @@ struct CacheAsyncImage<Content>: View where Content: View {
 #endif
             AsyncImage(url: url, scale: scale, transaction: transaction, content: cacheAndRender)
         } else {
-            RoundedRectDefaultImage(size: dummySize)
+            RoundedDefaultImage(size: dummySize)
         }
     }
 

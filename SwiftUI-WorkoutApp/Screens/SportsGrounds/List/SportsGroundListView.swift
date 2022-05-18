@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SportsGroundListView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -62,7 +62,7 @@ private extension SportsGroundListView {
 
 struct SportsGroundListView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundListView(mode: .usedBy(userID: UserDefaultsService().mainUserID))
-            .environmentObject(UserDefaultsService())
+        SportsGroundListView(mode: .usedBy(userID: DefaultsService().mainUserID))
+            .environmentObject(DefaultsService())
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SportsGroundView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @ObservedObject private var viewModel: SportsGroundViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -58,7 +58,7 @@ struct SportsGroundView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .sheet(item: $editComment) {
-            CreateOrEditCommentView(
+            CommentView(
                 mode: .edit(
                     groundID: viewModel.groundID,
                     commentID: $0.id,
@@ -67,7 +67,7 @@ struct SportsGroundView: View {
             )
         }
         .sheet(isPresented: $isCreatingComment) {
-            CreateOrEditCommentView(mode: .create(groundID: viewModel.groundID))
+            CommentView(mode: .create(groundID: viewModel.groundID))
         }
         .onDisappear(perform: cancelTasks)
         .toolbar { refreshButton }
@@ -125,7 +125,7 @@ private extension SportsGroundView {
                                 .scaledToFill()
                                 .cornerRadius(8)
                         case let .failure(error):
-                            RoundedRectDefaultImage(size: .init(width: 100, height: 100))
+                            RoundedDefaultImage(size: .init(width: 100, height: 100))
                                 .overlay {
                                     Text(error.localizedDescription)
                                         .background(.white)
@@ -206,7 +206,7 @@ private extension SportsGroundView {
     var commentsSection: some View {
         Section("Комментарии") {
             List(viewModel.ground.comments) { comment in
-                SportsGroundCommentView(model: comment) { id in
+                CommentViewCell(model: comment) { id in
                     deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults) }
                 } editClbk: { id, text in
                     editComment = .init(id: id, body: text, date: comment.date, user: comment.user)
@@ -255,7 +255,7 @@ struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SportsGroundView(input: .full(.mock))
-                .environmentObject(UserDefaultsService())
+                .environmentObject(DefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }
     }

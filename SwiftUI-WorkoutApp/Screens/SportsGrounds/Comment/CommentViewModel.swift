@@ -7,13 +7,13 @@
 
 import Foundation
 
-final class CreateOrEditCommentViewModel: ObservableObject {
+final class CommentViewModel: ObservableObject {
     @Published private(set) var isSuccess = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func addComment(to groundID: Int, comment: String, defaults: UserDefaultsService) async {
+    func addComment(to groundID: Int, comment: String, defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -26,7 +26,7 @@ final class CreateOrEditCommentViewModel: ObservableObject {
     }
 
     @MainActor
-    func editComment(for groundID: Int, commentID: Int, newComment: String, with defaults: UserDefaultsService) async {
+    func editComment(for groundID: Int, commentID: Int, newComment: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {

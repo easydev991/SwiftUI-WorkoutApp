@@ -1,5 +1,5 @@
 //
-//  UserDefaultsService.swift
+//  DefaultsService.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class UserDefaultsService: ObservableObject {
+final class DefaultsService: ObservableObject {
     @AppStorage(Key.mainUserID.rawValue)
     private(set) var mainUserID = Int.zero
 
@@ -113,7 +113,7 @@ final class UserDefaultsService: ObservableObject {
     }
 }
 
-private extension UserDefaultsService {
+private extension DefaultsService {
     enum Key: String {
         case mainUserID, isUserAuthorized,
              showWelcome, authData, userInfo,

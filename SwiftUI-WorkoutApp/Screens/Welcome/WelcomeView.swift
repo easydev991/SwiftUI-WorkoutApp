@@ -1,5 +1,5 @@
 //
-//  WelcomeAuthView.swift
+//  WelcomeView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,9 +7,8 @@
 
 import SwiftUI
 
-struct WelcomeAuthView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject private var viewModel = WelcomeAuthViewModel()
+struct WelcomeView: View {
+    @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
         NavigationView {
@@ -28,7 +27,7 @@ struct WelcomeAuthView: View {
     }
 }
 
-private extension WelcomeAuthView {
+private extension WelcomeView {
     var logo: some View {
         Image("login_logo")
     }
@@ -44,7 +43,7 @@ private extension WelcomeAuthView {
     }
 
     var registerButton: some View {
-        NavigationLink(destination: EditAccountView()) {
+        NavigationLink(destination: AccountInfoView()) {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
                 .welcomeLoginButtonTitle()
         }
@@ -69,7 +68,7 @@ private extension WelcomeAuthView {
 
 struct WelcomeAuthView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeAuthView()
-            .environmentObject(UserDefaultsService())
+        WelcomeView()
+            .environmentObject(DefaultsService())
     }
 }

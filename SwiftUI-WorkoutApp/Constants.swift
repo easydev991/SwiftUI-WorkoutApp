@@ -70,7 +70,5 @@ struct Constants {
         case removeFriend = "Удалить из друзей"
     }
 
-    struct Chat {
-        enum BubblePosition { case incoming, sent }
-    }
+    enum BubblePosition { case incoming, sent }
 }

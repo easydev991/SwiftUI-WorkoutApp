@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
         NavigationView {
@@ -20,11 +20,13 @@ struct ProfileView: View {
 }
 
 private extension ProfileView {
-    var content: AnyView {
-        if defaults.isAuthorized {
-            return AnyView(UserProfileView(userID: defaults.mainUserID))
-        } else {
-            return AnyView(IncognitoProfileView())
+    var content: some View {
+        ZStack {
+            if defaults.isAuthorized {
+                UserProfileView(userID: defaults.mainUserID)
+            } else {
+                IncognitoProfileView()
+            }
         }
     }
 }
@@ -32,6 +34,6 @@ private extension ProfileView {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

@@ -13,7 +13,7 @@ final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeSportsGroundsFor(_ mode: SportsGroundListView.Mode, refresh: Bool, with defaults: UserDefaultsService) async {
+    func makeSportsGroundsFor(_ mode: SportsGroundListView.Mode, refresh: Bool, with defaults: DefaultsService) async {
         switch mode {
         case let .usedBy(userID):
             if isLoading || (!list.isEmpty && !refresh) { return }

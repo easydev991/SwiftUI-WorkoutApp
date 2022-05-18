@@ -29,7 +29,7 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeSportsGroundInfo(with defaults: UserDefaultsService, refresh: Bool = false) async {
+    func makeSportsGroundInfo(with defaults: DefaultsService, refresh: Bool = false) async {
         if (isLoading || ground.id != .zero) && !refresh {
             return
         }
@@ -50,7 +50,7 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(commentID: Int, with defaults: UserDefaultsService) async {
+    func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -65,7 +65,7 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus(trainHere: Bool, with defaults: UserDefaultsService) async {
+    func changeTrainHereStatus(trainHere: Bool, with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {

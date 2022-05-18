@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @ObservedObject var viewModel: CreateEventViewModel
     @State private var eventCreated = false
     @FocusState private var focus: FocusableField?

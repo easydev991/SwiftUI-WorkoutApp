@@ -13,7 +13,7 @@ final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func searchFor(user: String, with defaults: UserDefaultsService) async {
+    func searchFor(user: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FriendRequestsView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @ObservedObject var viewModel: UsersListViewModel
     @State private var acceptRequestTask: Task<Void, Never>?
     @State private var declineRequestTask: Task<Void, Never>?

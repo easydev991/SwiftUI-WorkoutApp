@@ -1,5 +1,5 @@
 //
-//  EditAccountViewModel.swift
+//  AccountInfoViewModel.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class EditAccountViewModel: ObservableObject {
+final class AccountInfoViewModel: ObservableObject {
     @Published var userForm = MainUserForm.emptyValue
     @Published var countries = [Country]()
     @Published var cities = [City]()
@@ -18,7 +18,7 @@ final class EditAccountViewModel: ObservableObject {
     private var savedUserForm = MainUserForm.emptyValue
 
     /// Доступность кнопки для регистрации или сохранения изменений
-    func isButtonAvailable(with defaults: UserDefaultsService) -> Bool {
+    func isButtonAvailable(with defaults: DefaultsService) -> Bool {
         if defaults.isAuthorized {
             return userForm != savedUserForm && userForm.isReadyToSave
         } else {
@@ -31,7 +31,7 @@ final class EditAccountViewModel: ObservableObject {
     }
 
     @MainActor
-    func updateFormIfNeeded(with defaults: UserDefaultsService) async {
+    func updateFormIfNeeded(with defaults: DefaultsService) async {
         if defaults.isAuthorized, userForm.userName.isEmpty,
            let userInfo = defaults.mainUserInfo {
             userForm = .init(userInfo)
@@ -51,7 +51,7 @@ final class EditAccountViewModel: ObservableObject {
     }
 
     @MainActor
-    func registerAction(with defaults: UserDefaultsService) async {
+    func registerAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -63,7 +63,7 @@ final class EditAccountViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveChangesAction(with defaults: UserDefaultsService) async {
+    func saveChangesAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -78,7 +78,7 @@ final class EditAccountViewModel: ObservableObject {
     func clearErrorMessage() { errorMessage = "" }
 }
 
-private extension EditAccountViewModel {
+private extension AccountInfoViewModel {
     func makeCountryAndCityData() {
         let _countries = Bundle.main.decodeJson(
             [Country].self,

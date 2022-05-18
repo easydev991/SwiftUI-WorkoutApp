@@ -1,5 +1,5 @@
 //
-//  CreateOrEditCommentView.swift
+//  CommentView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 23.04.2022.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct CreateOrEditCommentView: View {
+struct CommentView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject private var viewModel = CreateOrEditCommentViewModel()
+    @EnvironmentObject private var defaults: DefaultsService
+    @StateObject private var viewModel = CommentViewModel()
     @State private var commentText = ""
     @State private var isCommentSent = false
     @State private var showErrorAlert = false
@@ -52,14 +52,14 @@ struct CreateOrEditCommentView: View {
     }
 }
 
-extension CreateOrEditCommentView {
+extension CommentView {
     enum Mode {
         case create(groundID: Int)
         case edit(groundID: Int, commentID: Int, commentText: String)
     }
 }
 
-private extension CreateOrEditCommentView {
+private extension CommentView {
     var textView: some View {
         TextEditor(text: $commentText)
             .frame(height: 200)
@@ -151,7 +151,7 @@ private extension CreateOrEditCommentView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateOrEditCommentView(mode: .create(groundID: .zero))
-            .environmentObject(UserDefaultsService())
+        CommentView(mode: .create(groundID: .zero))
+            .environmentObject(DefaultsService())
     }
 }

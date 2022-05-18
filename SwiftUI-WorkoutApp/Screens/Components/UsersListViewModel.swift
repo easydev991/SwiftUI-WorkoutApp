@@ -16,7 +16,7 @@ final class UsersListViewModel: ObservableObject {
     @MainActor
     func makeInfo(
         for mode: UsersListView.Mode,
-        with defaults: UserDefaultsService,
+        with defaults: DefaultsService,
         refresh: Bool = false
     ) async {
         if (!users.isEmpty || isLoading) && !refresh { return }
@@ -31,7 +31,7 @@ final class UsersListViewModel: ObservableObject {
     @MainActor
     func respondToFriendRequest(
         from userID: Int,
-        with defaults: UserDefaultsService,
+        with defaults: DefaultsService,
         accept: Bool
     ) async {
         isLoading.toggle()
@@ -56,7 +56,7 @@ private extension UsersListViewModel {
     @MainActor
     func makeFriendsList(
         for id: Int,
-        with defaults: UserDefaultsService,
+        with defaults: DefaultsService,
         refresh: Bool
     ) async {
         let isMainUser = id == defaults.mainUserID
@@ -76,7 +76,7 @@ private extension UsersListViewModel {
 
     @MainActor
     func checkFriendRequests(
-        with defaults: UserDefaultsService,
+        with defaults: DefaultsService,
         refresh: Bool
     ) async {
         if defaults.friendRequestsList.isEmpty || refresh {

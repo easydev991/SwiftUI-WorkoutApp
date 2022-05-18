@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MessagesView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = MessagesViewModel()
 
     var body: some View {
@@ -42,6 +42,6 @@ private extension MessagesView {
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
         MessagesView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

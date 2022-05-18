@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileSettingsView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
     @State private var showLogoutDialog = false
     @State private var showDeleteProfileDialog = false
@@ -48,7 +48,7 @@ struct ProfileSettingsView: View {
 private extension ProfileSettingsView {
     var editAccountLink: some View {
         NavigationLink {
-            EditAccountView()
+            AccountInfoView()
                 .navigationTitle("Изменить профиль")
         } label: {
             Text("Редактировать данные")
@@ -139,6 +139,6 @@ private extension ProfileSettingsView {
 struct ProfileSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileSettingsView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

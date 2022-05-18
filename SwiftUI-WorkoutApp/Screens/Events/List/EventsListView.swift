@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EventsListView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
     @State private var showErrorAlert = false

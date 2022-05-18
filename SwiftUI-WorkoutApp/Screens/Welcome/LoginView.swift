@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = LoginViewModel()
     // Вызывает утечку памяти, если разместить внутри viewModel
     @State private var showResetInfoAlert = false
@@ -148,6 +148,6 @@ private extension LoginView {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

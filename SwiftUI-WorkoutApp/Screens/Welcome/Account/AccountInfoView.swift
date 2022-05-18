@@ -1,5 +1,5 @@
 //
-//  EditAccountView.swift
+//  AccountInfoView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 17.04.2022.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct EditAccountView: View {
+struct AccountInfoView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject private var viewModel = EditAccountViewModel()
+    @EnvironmentObject private var defaults: DefaultsService
+    @StateObject private var viewModel = AccountInfoViewModel()
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var registrationTask: Task<Void, Never>?
@@ -56,7 +56,7 @@ struct EditAccountView: View {
     }
 }
 
-private extension EditAccountView {
+private extension AccountInfoView {
     enum FocusableField: Hashable {
         case login, email, password
     }
@@ -211,7 +211,7 @@ private extension EditAccountView {
 
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        EditAccountView()
-            .environmentObject(UserDefaultsService())
+        AccountInfoView()
+            .environmentObject(DefaultsService())
     }
 }

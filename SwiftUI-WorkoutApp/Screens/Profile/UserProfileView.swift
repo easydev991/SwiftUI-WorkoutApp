@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserProfileView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UserProfileViewModel()
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
@@ -238,7 +238,7 @@ private extension UserProfileView {
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserProfileView(userID: UserDefaultsService().mainUserID)
-            .environmentObject(UserDefaultsService())
+        UserProfileView(userID: DefaultsService().mainUserID)
+            .environmentObject(DefaultsService())
     }
 }

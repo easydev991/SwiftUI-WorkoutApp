@@ -10,7 +10,7 @@ import SwiftUI
 struct CountriesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
-    @ObservedObject var viewModel: EditAccountViewModel
+    @ObservedObject var viewModel: AccountInfoViewModel
     private var filteredCountries: [Country] {
         searchQuery.isEmpty
         ? viewModel.countries
@@ -42,6 +42,6 @@ struct CountriesView: View {
 
 struct CountriesView_Previews: PreviewProvider {
     static var previews: some View {
-        CountriesView(viewModel: EditAccountViewModel())
+        CountriesView(viewModel: .init())
     }
 }

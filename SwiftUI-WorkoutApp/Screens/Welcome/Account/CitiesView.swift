@@ -10,7 +10,7 @@ import SwiftUI
 struct CitiesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
-    @ObservedObject var viewModel: EditAccountViewModel
+    @ObservedObject var viewModel: AccountInfoViewModel
     private var filteredCities: [City] {
         searchQuery.isEmpty
         ? viewModel.cities
@@ -40,6 +40,6 @@ struct CitiesView: View {
 
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        CitiesView(viewModel: EditAccountViewModel())
+        CitiesView(viewModel: .init())
     }
 }

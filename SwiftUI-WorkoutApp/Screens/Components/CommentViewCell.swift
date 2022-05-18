@@ -1,5 +1,5 @@
 //
-//  SportsGroundCommentView.swift
+//  CommentViewCell.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 11.05.2022.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct SportsGroundCommentView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+struct CommentViewCell: View {
+    @EnvironmentObject private var defaults: DefaultsService
     let model: Comment
     let deleteClbk: (Int) -> Void
     let editClbk: (Int, String) -> Void
@@ -31,7 +31,7 @@ struct SportsGroundCommentView: View {
     }
 }
 
-private extension SportsGroundCommentView {
+private extension CommentViewCell {
     var nameDate: some View {
         VStack(alignment: .leading) {
             Text((model.user?.userName).valueOrEmpty)
@@ -69,12 +69,12 @@ private extension SportsGroundCommentView {
 
 struct SportsGroundCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundCommentView(
+        CommentViewCell(
             model: .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue),
             deleteClbk: {_ in},
             editClbk: {_,_ in}
         )
-        .environmentObject(UserDefaultsService())
+        .environmentObject(DefaultsService())
         .padding()
     }
 }

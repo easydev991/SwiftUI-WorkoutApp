@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EmptyContentView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode
 
     var body: some View {
@@ -71,6 +71,6 @@ struct EmptyContentView_Previews: PreviewProvider {
             EmptyContentView(mode: .journals)
             EmptyContentView(mode: .messages)
         }
-        .environmentObject(UserDefaultsService())
+        .environmentObject(DefaultsService())
     }
 }

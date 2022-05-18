@@ -33,7 +33,7 @@ final class LoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func loginAction(with userDefaults: UserDefaultsService) async {
+    func loginAction(with userDefaults: DefaultsService) async {
         if !canLogIn { return }
         isLoading.toggle()
         do {

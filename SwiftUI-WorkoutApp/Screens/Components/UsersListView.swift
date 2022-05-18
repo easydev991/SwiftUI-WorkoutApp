@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UsersListView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -86,7 +86,7 @@ private extension UsersListView {
 
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
-        UsersListView(mode: .friends(userID: UserDefaultsService().mainUserID))
-            .environmentObject(UserDefaultsService())
+        UsersListView(mode: .friends(userID: DefaultsService().mainUserID))
+            .environmentObject(DefaultsService())
     }
 }

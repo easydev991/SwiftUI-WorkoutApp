@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchUsersView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SearchUsersViewModel()
     @State private var query = ""
     @State private var showErrorAlert = false

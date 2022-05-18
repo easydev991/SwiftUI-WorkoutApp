@@ -1,5 +1,5 @@
 //
-//  RoundedRectDefaultImage.swift
+//  RoundedDefaultImage.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 13.05.2022.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RoundedRectDefaultImage: View {
+struct RoundedDefaultImage: View {
     let size: CGSize
     var body: some View {
         Image("defaultWorkoutImage")
@@ -19,6 +19,6 @@ struct RoundedRectDefaultImage: View {
 
 struct RoundedRectDefaultImage_Previews: PreviewProvider {
     static var previews: some View {
-        RoundedRectDefaultImage(size: .init(width: 45, height: 45))
+        RoundedDefaultImage(size: .init(width: 45, height: 45))
     }
 }

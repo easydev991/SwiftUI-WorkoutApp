@@ -27,7 +27,7 @@ final class ProfileSettingsViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteProfile(with defaults: UserDefaultsService) async {
+    func deleteProfile(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {

@@ -8,17 +8,13 @@
 import SwiftUI
 
 struct RootView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
-    @StateObject private var viewModel = RootViewModel()
-
-    init() {
-        UITextField.appearance().clearButtonMode = .whileEditing
-    }
+    @EnvironmentObject private var defaults: DefaultsService
+    @State private var selectedTab = Tab.events
 
     var body: some View {
         ZStack {
             if defaults.showWelcome {
-                WelcomeAuthView()
+                WelcomeView()
             } else {
                 tabView
             }
@@ -28,41 +24,39 @@ struct RootView: View {
     }
 }
 
-extension RootView {
+private extension RootView {
     enum Tab: Int, Hashable {
         case events = 0, messages, journal, map, profile
     }
-}
 
-private extension RootView {
     var tabView: some View {
-        TabView(selection: $viewModel.selectedTab) {
+        TabView(selection: $selectedTab) {
             EventsListView()
-                .onAppear { viewModel.selectTab(.events) }
+                .onAppear { selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
             MessagesView()
-                .onAppear { viewModel.selectTab(.messages) }
+                .onAppear { selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
             JournalsView()
-                .onAppear { viewModel.selectTab(.journal) }
+                .onAppear { selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal)
             SportsGroundsMapView()
-                .onAppear { viewModel.selectTab(.map) }
+                .onAppear { selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map)
             ProfileView()
-                .onAppear { viewModel.selectTab(.profile) }
+                .onAppear { selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }
@@ -71,11 +65,15 @@ private extension RootView {
         .transition(.move(edge: .trailing).combined(with: .scale))
         .navigationViewStyle(.stack)
     }
+
+    func selectTab(_ tab: RootView.Tab) {
+        selectedTab = tab
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         RootView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

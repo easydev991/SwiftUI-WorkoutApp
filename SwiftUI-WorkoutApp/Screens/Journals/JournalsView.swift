@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct JournalsView: View {
-    @EnvironmentObject private var defaults: UserDefaultsService
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsViewModel()
 
     var body: some View {
@@ -45,6 +45,6 @@ private extension JournalsView {
 struct JournalsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsView()
-            .environmentObject(UserDefaultsService())
+            .environmentObject(DefaultsService())
     }
 }

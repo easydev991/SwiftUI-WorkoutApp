@@ -10,8 +10,12 @@ import SwiftUI
 @main
 struct SwiftUI_WorkoutAppApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var defaults = UserDefaultsService()
+    @StateObject private var defaults = DefaultsService()
     @StateObject private var sportsGrounds = SportsGroundsService()
+
+    init() {
+        UITextField.appearance().clearButtonMode = .whileEditing
+    }
 
     var body: some Scene {
         WindowGroup {

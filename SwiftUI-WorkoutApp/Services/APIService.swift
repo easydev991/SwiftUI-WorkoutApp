@@ -8,9 +8,9 @@
 import Foundation
 
 struct APIService {
-    private let defaults: UserDefaultsService
+    private let defaults: DefaultsService
 
-    init(with defaults: UserDefaultsService) {
+    init(with defaults: DefaultsService) {
         self.defaults = defaults
     }
 

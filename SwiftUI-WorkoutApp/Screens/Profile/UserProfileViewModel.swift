@@ -17,7 +17,7 @@ final class UserProfileViewModel: ObservableObject {
     @MainActor
     func makeUserInfo(
         for userID: Int,
-        with defaults: UserDefaultsService,
+        with defaults: DefaultsService,
         refresh: Bool = false
     ) async {
         let isMainUser = userID == defaults.mainUserID
@@ -50,12 +50,12 @@ final class UserProfileViewModel: ObservableObject {
     }
 
     @MainActor
-    func checkFriendRequests(with defaults: UserDefaultsService) async {
+    func checkFriendRequests(with defaults: DefaultsService) async {
         try? await APIService(with: defaults).getFriendRequests()
     }
 
     @MainActor
-    func friendAction(with defaults: UserDefaultsService) async {
+    func friendAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
