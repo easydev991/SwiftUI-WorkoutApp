@@ -10,7 +10,6 @@ import Foundation
 final class EventsListViewModel: ObservableObject {
     @Published private(set) var futureEvents = [EventResponse]()
     @Published private(set) var pastEvents = [EventResponse]()
-    @Published private(set) var eventInfo = EventResponse.emptyValue
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     func isEmpty(for type: EventType) -> Bool {
@@ -40,21 +39,6 @@ final class EventsListViewModel: ObservableObject {
         } catch {
             if type == .past {
                 pastEvents = oldEvents
-            }
-            errorMessage = error.localizedDescription
-        }
-        if !refresh { isLoading.toggle() }
-    }
-
-    @MainActor
-    func askForEvent(id: Int, refresh: Bool = false) async {
-        if isLoading && !refresh { return }
-        if !refresh { isLoading.toggle() }
-        do {
-            eventInfo = try await APIService().getEvent(by: id)
-        } catch {
-            if let pastEvent = oldEvents.first(where: { $0.id == id }) {
-                eventInfo = pastEvent
             }
             errorMessage = error.localizedDescription
         }

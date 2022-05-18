@@ -50,8 +50,7 @@ private extension EventsListView {
             EmptyContentView(mode: .events)
                 .opacity(isEmptyViewHidden ? .zero : 1)
             List(selectedEventType == .future ? viewModel.futureEvents : viewModel.pastEvents) { event in
-#warning("TODO: сверстать детальный экран события")
-                NavigationLink(destination: EventDetailsView(viewModel: viewModel, id: event.id)) {
+                NavigationLink(destination: EventDetailsView(id: event.id)) {
                     EventViewCell(event: event)
                 }
             }

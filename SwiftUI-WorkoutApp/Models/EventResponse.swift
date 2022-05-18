@@ -9,7 +9,7 @@ import Foundation
 
 struct EventResponse: Codable, Identifiable {
     let id: Int
-    /// Название события
+    /// Название мероприятия
     let title: String?
     let eventDescription, fullAddress, createDate, modifyDate, beginDate: String?
     let countryID, cityID, commentsCount: Int?
@@ -20,15 +20,16 @@ struct EventResponse: Codable, Identifiable {
     /// Количество участников
     let participantsCount: Int?
     let participants: [UserResponse]?
-    /// `true` - предстоящее, `false` - прошедшее событие
+    /// `true` - предстоящее мероприятие, `false` - прошедшее
     let isCurrent: Bool?
     /// `true` - пользователь является организатором, `false` - не является
     let isOrganizer: Bool?
     let photos: [Photo]?
-    /// Логин автора события
+    /// Логин автора мероприятия
     let name: String?
     let author: UserResponse?
-    let canEdit, iAmGoing: Bool?
+    let canEdit: Bool?
+    var trainHere: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id, title, latitude, longitude, photos, comments, author, name
@@ -47,7 +48,7 @@ struct EventResponse: Codable, Identifiable {
         case participants = "training_users"
         case isOrganizer = "is_organizer"
         case canEdit = "can_edit"
-        case iAmGoing = "train_here"
+        case trainHere = "train_here"
     }
 }
 
@@ -74,7 +75,7 @@ extension EventResponse {
     }
 
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, comments: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participants: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, iAmGoing: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, comments: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participants: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
     }
 
     static var mock: EventResponse {
