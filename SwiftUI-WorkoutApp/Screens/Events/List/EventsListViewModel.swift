@@ -27,8 +27,8 @@ final class EventsListViewModel: ObservableObject {
     @MainActor
     func askForEvents(type: EventType, refresh: Bool) async {
         if isLoading && !refresh
-            || (type == .future && !futureEvents.isEmpty)
-            || (type == .past && !pastEvents.isEmpty)
+            || (type == .future && !futureEvents.isEmpty && !refresh)
+            || (type == .past && !pastEvents.isEmpty && !refresh)
         { return }
         if !refresh { isLoading.toggle() }
         do {

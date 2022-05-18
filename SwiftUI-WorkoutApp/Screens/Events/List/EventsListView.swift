@@ -17,13 +17,9 @@ struct EventsListView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                VStack {
-                    segmentedControl
-                    content
-                }
-                ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : .zero)
+            VStack {
+                segmentedControl
+                content
             }
             .toolbar { addEventButton }
             .navigationTitle("Мероприятия")
@@ -60,6 +56,8 @@ private extension EventsListView {
                 }
             }
             .opacity(viewModel.isLoading ? .zero : 1)
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
     }
 
