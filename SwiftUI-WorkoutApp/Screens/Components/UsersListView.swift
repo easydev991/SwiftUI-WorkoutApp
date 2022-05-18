@@ -46,7 +46,7 @@ struct UsersListView: View {
 extension UsersListView {
     enum Mode {
         case friends(userID: Int)
-        case sportsGroundVisitors(list: [UserResponse])
+        case participants(list: [UserResponse])
     }
 }
 

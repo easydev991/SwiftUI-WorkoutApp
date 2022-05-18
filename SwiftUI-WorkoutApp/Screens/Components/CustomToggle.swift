@@ -16,26 +16,26 @@ struct CustomToggle: View {
         HStack {
             Text(title)
             Spacer()
-            ZStack {
-                Capsule()
-                    .frame(width: 51,height: 31)
-                    .foregroundColor(isOn ? .green : .secondary.opacity(0.5))
-                ZStack{
-                    Circle()
-                        .frame(width: 40, height: 26)
-                        .foregroundColor(.white)
+            Button(action: action) {
+                ZStack {
+                    Capsule()
+                        .frame(width: 51,height: 31)
+                        .foregroundColor(isOn ? .green : .secondary.opacity(0.5))
+                    ZStack{
+                        Circle()
+                            .frame(width: 40, height: 26)
+                            .foregroundColor(.white)
+                    }
+                    .shadow(
+                        color: .black.opacity(0.14),
+                        radius: 4,
+                        x: .zero,
+                        y: 2
+                    )
+                    .offset(x: isOn ? 10 : -10)
+                    .animation(.spring(), value: isOn)
                 }
-                .shadow(
-                    color: .black.opacity(0.14),
-                    radius: 4,
-                    x: .zero,
-                    y: 2
-                )
-                .offset(x: isOn ? 10 : -10)
-                .animation(.spring(), value: isOn)
             }
-            .onTapGesture(perform: action)
-            .animation(.default, value: isOn)
         }
     }
 }

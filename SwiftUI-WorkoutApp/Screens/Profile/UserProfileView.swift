@@ -54,7 +54,8 @@ struct UserProfileView: View {
 private extension UserProfileView {
     var userInfoSection: some View {
         Section {
-            HStack(alignment: .center) {
+            HStack {
+                Spacer()
                 VStack(spacing: 16) {
                     avatarImageView
                     VStack(spacing: 4) {
@@ -65,12 +66,16 @@ private extension UserProfileView {
                             .multilineTextAlignment(.center)
                     }
                 }
+                Spacer()
             }
         }
     }
 
     var avatarImageView: some View {
-        CacheAsyncImage(url: viewModel.user.imageURL) { phase in
+        CacheAsyncImage(
+            url: viewModel.user.imageURL,
+            dummySize: .init(width: 100, height: 100)
+        ) { phase in
             switch phase {
             case let .success(image):
                 image

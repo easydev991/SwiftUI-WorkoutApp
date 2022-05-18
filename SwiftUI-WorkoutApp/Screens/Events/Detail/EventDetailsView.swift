@@ -12,7 +12,7 @@ struct EventDetailsView: View {
     @ObservedObject private var viewModel: EventDetailsViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var changeVisitStatusTask: Task<Void, Never>?
+    @State private var goingToEventTask: Task<Void, Never>?
 
     init(id: Int) {
         viewModel = .init(eventID: id)
@@ -23,11 +23,11 @@ struct EventDetailsView: View {
             Form {
                 Text(viewModel.event.formattedTitle)
                     .font(.title2.bold())
+                dateInfo
+                addressInfo
+                linkToParticipantsView
                 if defaults.isAuthorized {
-                    CustomToggle(isOn: $viewModel.isGoing, title: "Пойду на мероприятие") {
-                        changeVisitEventStatus(newStatus: !viewModel.isGoing)
-                    }
-                    .disabled(viewModel.isLoading)
+                    isGoingToggle
                 }
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
@@ -49,9 +49,51 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
-    func changeVisitEventStatus(newStatus: Bool) {
-        changeVisitStatusTask = Task {
-            await viewModel.changeVisitEventStatus(
+    var dateInfo: some View {
+        HStack {
+            Text("Когда")
+            Spacer()
+            Text(viewModel.event.eventDateString)
+                .fontWeight(.medium)
+        }
+    }
+
+    var addressInfo: some View {
+        HStack {
+            Text("Где")
+            Spacer()
+            Text(viewModel.event.shortAddress)
+                .fontWeight(.medium)
+        }
+    }
+
+    var linkToParticipantsView: some View {
+        NavigationLink {
+            UsersListView(mode: .participants(list: viewModel.event.participants ?? []))
+                .navigationTitle("Пойдут на мероприятие")
+        } label: {
+            HStack {
+                Text("Идут")
+                Spacer()
+                Text(
+                    "peopleTrainHere \(viewModel.event.participantsCount.valueOrZero)",
+                    tableName: "Plurals"
+                )
+                .foregroundColor(.secondary)
+            }
+        }
+    }
+
+    var isGoingToggle: some View {
+        CustomToggle(isOn: $viewModel.isGoing, title: "Пойду на мероприятие") {
+            changeIsGoingToEvent(newStatus: !viewModel.isGoing)
+        }
+        .disabled(viewModel.isLoading)
+    }
+
+    func changeIsGoingToEvent(newStatus: Bool) {
+        goingToEventTask = Task {
+            await viewModel.changeIsGoingToEvent(
                 isGoing: newStatus, with: defaults
             )
         }
@@ -67,7 +109,7 @@ private extension EventDetailsView {
     }
 
     func cancelTask() {
-        changeVisitStatusTask?.cancel()
+        goingToEventTask?.cancel()
     }
 }
 

@@ -23,7 +23,7 @@ final class UsersListViewModel: ObservableObject {
         switch mode {
         case let .friends(userID):
             await makeFriendsList(for: userID, with: defaults, refresh: refresh)
-        case let .sportsGroundVisitors(list):
+        case let .participants(list):
             users = list.map(UserModel.init)
         }
     }

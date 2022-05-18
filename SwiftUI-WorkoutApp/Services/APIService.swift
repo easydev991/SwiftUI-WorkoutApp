@@ -296,10 +296,10 @@ struct APIService {
     ///   - trainHere: `true` - иду на мероприятие, `false` - не иду
     /// - Returns: `true` в случае успеха, `false` при ошибках
     @discardableResult
-    func changeVisitEventStatus(for eventID: Int, isGoing: Bool) async throws -> Bool {
+    func changeIsGoingToEvent(for eventID: Int, isGoing: Bool) async throws -> Bool {
         let endpoint: Endpoint = isGoing
-        ? .postVisitEvent(id: eventID, auth: defaults.basicAuthInfo)
-        : .deleteVisitEvent(id: eventID, auth: defaults.basicAuthInfo)
+        ? .postIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
+        : .deleteIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
@@ -477,10 +477,10 @@ private extension APIService {
         case getEvent(id: Int)
 
         /// Сообщить, что пользователь пойдет на мероприятие
-        case postVisitEvent(id: Int, auth: AuthData)
+        case postIsGoingToEvent(id: Int, auth: AuthData)
 
         /// Сообщить, что пользователь не пойдет на мероприятие
-        case deleteVisitEvent(id: Int, auth: AuthData)
+        case deleteIsGoingToEvent(id: Int, auth: AuthData)
 
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlString) else { return nil }
@@ -538,7 +538,7 @@ private extension APIService {
                 return "\(baseUrl)/trainings/last"
             case let .getEvent(id):
                 return "\(baseUrl)/trainings/\(id)"
-            case let .postVisitEvent(id, _), let .deleteVisitEvent(id, _):
+            case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
                 return "\(baseUrl)/trainings/\(id)/go"
             }
         }
@@ -548,14 +548,14 @@ private extension APIService {
             case .registration, .login, .editUser, .resetPassword,
                     .changePassword, .acceptFriendRequest, .sendFriendRequest,
                     .addCommentToSportsGround, .editComment, .postTrainHere,
-                    .postVisitEvent:
+                    .postIsGoingToEvent:
                 return .post
             case .getUser, .getFriendsForUser, .getFriendRequests,
                     .getSportsGround, .findUsers, .getSportsGroundsForUser,
                     .getFutureEvents, .getPastEvents, .getEvent:
                 return .get
             case .declineFriendRequest, .deleteFriend, .deleteComment,
-                    .deleteTrainHere, .deleteUser, .deleteVisitEvent:
+                    .deleteTrainHere, .deleteUser, .deleteIsGoingToEvent:
                 return .delete
             }
         }
@@ -571,7 +571,7 @@ private extension APIService {
                 let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
                 let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-                let .postVisitEvent(_, auth), let .deleteVisitEvent(_, auth):
+                let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
             case .registration, .resetPassword, .getFutureEvents,
                     .getPastEvents, .getEvent:
@@ -587,7 +587,7 @@ private extension APIService {
                     .deleteComment, .getSportsGroundsForUser,
                     .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
-                    .postVisitEvent, .deleteVisitEvent:
+                    .postIsGoingToEvent, .deleteIsGoingToEvent:
                 return nil
             case let .registration(form):
                 return Parameter.makeParameters(

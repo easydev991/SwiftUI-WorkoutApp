@@ -33,11 +33,11 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeVisitEventStatus(isGoing: Bool, with defaults: DefaultsService) async {
+    func changeIsGoingToEvent(isGoing: Bool, with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).changeVisitEventStatus(for: eventID, isGoing: isGoing)
+            let isOk = try await APIService(with: defaults).changeIsGoingToEvent(for: eventID, isGoing: isGoing)
             if isOk {
                 self.isGoing = isGoing
             }
