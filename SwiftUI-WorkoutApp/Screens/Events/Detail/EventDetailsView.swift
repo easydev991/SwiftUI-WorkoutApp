@@ -21,14 +21,20 @@ struct EventDetailsView: View {
     var body: some View {
         ZStack {
             Form {
-                Text(viewModel.event.formattedTitle)
-                    .font(.title2.bold())
+                title
                 dateInfo
                 addressInfo
+                mapSnapshot
+                fullAddress
+                makeRouteButton
+                if viewModel.event.hasDescription {
+                    descriptionView
+                }
                 linkToParticipantsView
                 if defaults.isAuthorized {
                     isGoingToggle
                 }
+                authorSection
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
             ProgressView()
@@ -49,12 +55,35 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
+    var title: some View {
+        Text(viewModel.event.formattedTitle)
+            .font(.title2.bold())
+    }
+
     var dateInfo: some View {
         HStack {
             Text("Когда")
             Spacer()
             Text(viewModel.event.eventDateString)
                 .fontWeight(.medium)
+        }
+    }
+
+    var mapInfo: some View {
+        Section {
+            MapSnapshotView(model: $viewModel.event.sportsGround)
+                .frame(height: 150)
+                .cornerRadius(8)
+            Text(viewModel.event.fullAddress.valueOrEmpty)
+            Button {
+                if let url = viewModel.event.sportsGround.appleMapsURL,
+                   UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text("Построить маршрут")
+                    .blueMediumWeight()
+            }
         }
     }
 
@@ -65,6 +94,32 @@ private extension EventDetailsView {
             Text(viewModel.event.shortAddress)
                 .fontWeight(.medium)
         }
+    }
+
+    var mapSnapshot: some View {
+        MapSnapshotView(model: $viewModel.event.sportsGround)
+            .frame(height: 150)
+            .cornerRadius(8)
+    }
+
+    var fullAddress: some View {
+        Text(viewModel.event.fullAddress.valueOrEmpty)
+    }
+
+    var makeRouteButton: some View {
+        Button {
+            if let url = viewModel.event.sportsGround.appleMapsURL,
+               UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            Text("Построить маршрут")
+                .blueMediumWeight()
+        }
+    }
+
+    var descriptionView: some View {
+        Text(viewModel.event.formattedDescription)
     }
 
     var linkToParticipantsView: some View {
@@ -89,6 +144,21 @@ private extension EventDetailsView {
             changeIsGoingToEvent(newStatus: !viewModel.isGoing)
         }
         .disabled(viewModel.isLoading)
+    }
+
+    var authorSection: some View {
+        Section("Организатор") {
+            NavigationLink {
+                UserProfileView(userID: viewModel.event.authorID)
+            } label: {
+                HStack(spacing: 16) {
+                    CacheImageView(url: viewModel.event.author?.avatarURL)
+                    Text(viewModel.event.name.valueOrEmpty)
+                        .fontWeight(.medium)
+                }
+            }
+            .disabled(!defaults.isAuthorized || viewModel.event.authorID == defaults.mainUserID)
+        }
     }
 
     func changeIsGoingToEvent(newStatus: Bool) {
