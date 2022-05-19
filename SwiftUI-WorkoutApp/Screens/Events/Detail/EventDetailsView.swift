@@ -6,58 +6,71 @@
 //
 
 import SwiftUI
-#warning("TODO: сверстать детальный экран мероприятия")
+
 struct EventDetailsView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @ObservedObject private var viewModel: EventDetailsViewModel
+    @StateObject private var viewModel = EventDetailsViewModel()
+    @State private var isCreatingComment = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var goingToEventTask: Task<Void, Never>?
-
-    init(id: Int) {
-        viewModel = .init(eventID: id)
-    }
+    @State private var deleteCommentTask: Task<Void, Never>?
+    @State private var refreshButtonTask: Task<Void, Never>?
+    let eventID: Int
 
     var body: some View {
         ZStack {
             Form {
-                title
-                dateInfo
-                addressInfo
-                mapSnapshot
-                fullAddress
-                makeRouteButton
+                mainInfo
+                locationInfo
                 if viewModel.event.hasDescription {
-                    descriptionView
+                    descriptionSection
                 }
-                linkToParticipantsView
-                if defaults.isAuthorized {
-                    isGoingToggle
+                participantsSection
+                if let photos = viewModel.event.photos,
+                   !photos.isEmpty {
+                    PhotosCollection(items: photos)
                 }
                 authorSection
+                if !viewModel.event.comments.isEmpty {
+                    commentsSection
+                }
+                if defaults.isAuthorized {
+                    AddCommentButton(isCreatingComment: $isCreatingComment)
+                }
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
+            .disabled(viewModel.isLoading)
+            .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .task { await askForInfo() }
+        .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .task { await viewModel.askForEvent(with: defaults) }
-        .refreshable {
-            await viewModel.askForEvent(refresh: true, with: defaults)
+        .onChange(of: defaults.isAuthorized, perform: dismiss)
+        .sheet(isPresented: $isCreatingComment) {
+            CommentView(mode: .event(id: viewModel.event.id))
         }
-        .onDisappear(perform: cancelTask)
+        .onDisappear(perform: cancelTasks)
+        .toolbar { refreshButton }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 private extension EventDetailsView {
-    var title: some View {
-        Text(viewModel.event.formattedTitle)
-            .font(.title2.bold())
+    var mainInfo: some View {
+        Group {
+            Text(viewModel.event.formattedTitle)
+                .font(.title2.bold())
+            dateInfo
+            addressInfo
+        }
     }
 
     var dateInfo: some View {
@@ -66,24 +79,6 @@ private extension EventDetailsView {
             Spacer()
             Text(viewModel.event.eventDateString)
                 .fontWeight(.medium)
-        }
-    }
-
-    var mapInfo: some View {
-        Section {
-            MapSnapshotView(model: $viewModel.event.sportsGround)
-                .frame(height: 150)
-                .cornerRadius(8)
-            Text(viewModel.event.fullAddress.valueOrEmpty)
-            Button {
-                if let url = viewModel.event.sportsGround.appleMapsURL,
-                   UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url)
-                }
-            } label: {
-                Text("Построить маршрут")
-                    .blueMediumWeight()
-            }
         }
     }
 
@@ -96,33 +91,33 @@ private extension EventDetailsView {
         }
     }
 
-    var mapSnapshot: some View {
-        MapSnapshotView(model: $viewModel.event.sportsGround)
-            .frame(height: 150)
-            .cornerRadius(8)
+    var locationInfo: some View {
+        SportsGroundLocationInfo(
+            ground: $viewModel.event.sportsGround,
+            address: viewModel.event.fullAddress.valueOrEmpty,
+            appleMapsURL: viewModel.event.sportsGround.appleMapsURL
+        )
     }
 
-    var fullAddress: some View {
-        Text(viewModel.event.fullAddress.valueOrEmpty)
-    }
-
-    var makeRouteButton: some View {
-        Button {
-            if let url = viewModel.event.sportsGround.appleMapsURL,
-               UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url)
-            }
-        } label: {
-            Text("Построить маршрут")
-                .blueMediumWeight()
+    var descriptionSection: some View {
+        Section("Описание") {
+            Text(viewModel.event.formattedDescription)
         }
     }
 
-    var descriptionView: some View {
-        Text(viewModel.event.formattedDescription)
+    var participantsSection: some View {
+        Section {
+            if let participants = viewModel.event.participants,
+               !participants.isEmpty {
+                linkToParticipants
+            }
+            if defaults.isAuthorized {
+                isGoingToggle
+            }
+        }
     }
 
-    var linkToParticipantsView: some View {
+    var linkToParticipants: some View {
         NavigationLink {
             UsersListView(mode: .participants(list: viewModel.event.participants ?? []))
                 .navigationTitle("Пойдут на мероприятие")
@@ -161,12 +156,36 @@ private extension EventDetailsView {
         }
     }
 
+    var commentsSection: some View {
+        Comments(
+            items: viewModel.event.comments,
+            deleteClbk: { id in
+                deleteCommentTask = Task {
+                    await viewModel.delete(commentID: id, for: eventID, with: defaults)
+                }
+            }
+        )
+    }
+
+    func askForInfo(refresh: Bool = false) async {
+        await viewModel.askForEvent(eventID, with: defaults, refresh: refresh)
+    }
+
     func changeIsGoingToEvent(newStatus: Bool) {
         goingToEventTask = Task {
             await viewModel.changeIsGoingToEvent(
-                isGoing: newStatus, with: defaults
+                eventID, isGoing: newStatus, with: defaults
             )
         }
+    }
+
+    var refreshButton: some View {
+        Button {
+            refreshButtonTask = Task { await askForInfo() }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .opacity(viewModel.showRefreshButton ? 1 : .zero)
     }
 
     func setupErrorAlert(with message: String) {
@@ -178,14 +197,18 @@ private extension EventDetailsView {
         viewModel.clearErrorMessage()
     }
 
-    func cancelTask() {
-        goingToEventTask?.cancel()
+    func dismiss(isAuth: Bool) {
+        if !isAuth { dismiss() }
+    }
+
+    func cancelTasks() {
+        [goingToEventTask, deleteCommentTask, refreshButtonTask].forEach { $0?.cancel() }
     }
 }
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(id: 4378)
+        EventDetailsView(eventID: 4378)
             .environmentObject(DefaultsService())
     }
 }

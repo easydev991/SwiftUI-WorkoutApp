@@ -14,7 +14,11 @@ struct EventResponse: Codable, Identifiable {
     let title: String?
     let eventDescription, fullAddress, createDate, modifyDate, beginDate: String?
     let countryID, cityID, commentsCount: Int?
-    let comments: [Comment]?
+    var commentsOptional: [Comment]?
+    var comments: [Comment] {
+        get { commentsOptional ?? [] }
+        set { commentsOptional = newValue }
+    }
     let previewImageStringURL: String?
     let sportsGroundID: Int?
     let latitude, longitude: String?
@@ -33,7 +37,7 @@ struct EventResponse: Codable, Identifiable {
     var trainHere: Bool?
 
     enum CodingKeys: String, CodingKey {
-        case id, title, latitude, longitude, photos, comments, author, name
+        case id, title, latitude, longitude, photos, author, name
         case fullAddress = "address"
         case previewImageStringURL = "preview"
         case eventDescription = "description"
@@ -50,6 +54,7 @@ struct EventResponse: Codable, Identifiable {
         case isOrganizer = "is_organizer"
         case canEdit = "can_edit"
         case trainHere = "train_here"
+        case commentsOptional = "comments"
     }
 }
 
@@ -98,7 +103,7 @@ extension EventResponse {
     }
 
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, comments: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participants: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participants: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
     }
 
     static var mock: EventResponse {

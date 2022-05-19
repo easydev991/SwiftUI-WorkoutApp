@@ -50,7 +50,7 @@ private extension EventsListView {
             EmptyContentView(mode: .events)
                 .opacity(isEmptyViewHidden ? .zero : 1)
             List(selectedEventType == .future ? viewModel.futureEvents : viewModel.pastEvents) { event in
-                NavigationLink(destination: EventDetailsView(id: event.id)) {
+                NavigationLink(destination: EventDetailsView(eventID: event.id)) {
                     EventViewCell(event: event)
                 }
             }
@@ -104,7 +104,5 @@ struct EventsView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
             .environmentObject(DefaultsService())
-            .preferredColorScheme(.dark)
-            .previewDevice("iPhone 13 mini")
     }
 }

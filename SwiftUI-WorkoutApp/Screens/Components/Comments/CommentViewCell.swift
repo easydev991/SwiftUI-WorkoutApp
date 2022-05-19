@@ -11,7 +11,7 @@ struct CommentViewCell: View {
     @EnvironmentObject private var defaults: DefaultsService
     let model: Comment
     let deleteClbk: (Int) -> Void
-    let editClbk: (Int, String) -> Void
+    var editClbk: ((Comment) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -50,10 +50,11 @@ private extension CommentViewCell {
     var menuButton: some View {
         Menu {
             Button {
-                editClbk(model.id, model.formattedBody)
+                editClbk?(model)
             } label: {
                 Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
             }
+            .disabled(editClbk == nil)
             Button(role: .destructive) {
                 deleteClbk(model.id)
             } label: {
@@ -72,7 +73,7 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
         CommentViewCell(
             model: .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue),
             deleteClbk: {_ in},
-            editClbk: {_,_ in}
+            editClbk: {_ in}
         )
         .environmentObject(DefaultsService())
         .padding()

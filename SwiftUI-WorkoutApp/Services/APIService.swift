@@ -202,11 +202,17 @@ struct APIService {
 
     /// Добавить комментарий для площадки
     /// - Parameters:
-    ///   - groundID: `id` площадки
+    ///   - model: тип комментария (к площадке или мероприятию)
     ///   - comment: текст комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func addComment(to groundID: Int, comment: String) async throws -> Bool {
-        let endpoint = Endpoint.addCommentToSportsGround(groundID: groundID, comment: comment, auth: defaults.basicAuthInfo)
+    func addComment(to model: Constants.CommentType, comment: String) async throws -> Bool {
+        let endpoint: Endpoint
+        switch model {
+        case let .ground(id):
+            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: comment, auth: defaults.basicAuthInfo)
+        case let .event(id):
+            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: comment, auth: defaults.basicAuthInfo)
+        }
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
@@ -232,11 +238,17 @@ struct APIService {
 
     /// Удалить комментарий для площадки
     /// - Parameters:
-    ///   - groundID: `id` площадки
+    ///   - model: тип комментария (к площадке или мероприятию)
     ///   - commentID: `id` комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func deleteComment(from groundID: Int, commentID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteComment(groundID: groundID, commentID: commentID, auth: defaults.basicAuthInfo)
+    func deleteComment(from model: Constants.CommentType, commentID: Int) async throws -> Bool {
+        let endpoint: Endpoint
+        switch model {
+        case let .ground(id):
+            endpoint = Endpoint.deleteGroundComment(id, commentID: commentID, auth: defaults.basicAuthInfo)
+        case let .event(id):
+            endpoint = Endpoint.deleteEventComment(id, commentID: commentID, auth: defaults.basicAuthInfo)
+        }
         guard let request = endpoint.urlRequest else { return false }
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
@@ -311,7 +323,7 @@ private extension APIService {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
-        config.waitsForConnectivity = true
+//        config.waitsForConnectivity = true
         return .init(configuration: config)
     }
 
@@ -450,7 +462,7 @@ private extension APIService {
 
         /// Удалить свой комментарий для площадки:
         /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
-        case deleteComment(groundID: Int, commentID: Int, auth: AuthData)
+        case deleteGroundComment(_ groundID: Int, commentID: Int, auth: AuthData)
 
         /// Получение списка площадок, где тренируется пользователь:
         /// **GET** ${API}/users/<user_id>/areas
@@ -481,6 +493,14 @@ private extension APIService {
 
         /// Сообщить, что пользователь не пойдет на мероприятие
         case deleteIsGoingToEvent(id: Int, auth: AuthData)
+
+        /// Добавить комментарий для мероприятия:
+        /// **POST** ${API}/trainings/<event_id>/comments
+        case addCommentToEvent(eventID: Int, comment: String, auth: AuthData)
+
+        /// Удалить свой комментарий для мероприятия:
+        /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
+        case deleteEventComment(_ eventID: Int, commentID: Int, auth: AuthData)
 
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlString) else { return nil }
@@ -526,7 +546,7 @@ private extension APIService {
                 return "\(baseUrl)/areas/\(groundID)/comments"
             case let .editComment(groundID, commentID, _, _):
                 return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
-            case let .deleteComment(groundID, commentID, _):
+            case let .deleteGroundComment(groundID, commentID, _):
                 return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
             case let .getSportsGroundsForUser(userID, _):
                 return "\(baseUrl)/users/\(userID)/areas"
@@ -540,6 +560,10 @@ private extension APIService {
                 return "\(baseUrl)/trainings/\(id)"
             case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
                 return "\(baseUrl)/trainings/\(id)/go"
+            case let .addCommentToEvent(id, _, _):
+                return "\(baseUrl)/trainings/\(id)/comments"
+            case let .deleteEventComment(eventID, commentID, _):
+                return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
             }
         }
 
@@ -548,14 +572,15 @@ private extension APIService {
             case .registration, .login, .editUser, .resetPassword,
                     .changePassword, .acceptFriendRequest, .sendFriendRequest,
                     .addCommentToSportsGround, .editComment, .postTrainHere,
-                    .postIsGoingToEvent:
+                    .postIsGoingToEvent, .addCommentToEvent:
                 return .post
             case .getUser, .getFriendsForUser, .getFriendRequests,
                     .getSportsGround, .findUsers, .getSportsGroundsForUser,
                     .getFutureEvents, .getPastEvents, .getEvent:
                 return .get
-            case .declineFriendRequest, .deleteFriend, .deleteComment,
-                    .deleteTrainHere, .deleteUser, .deleteIsGoingToEvent:
+            case .declineFriendRequest, .deleteFriend, .deleteGroundComment,
+                    .deleteTrainHere, .deleteUser, .deleteIsGoingToEvent,
+                    .deleteEventComment:
                 return .delete
             }
         }
@@ -569,9 +594,10 @@ private extension APIService {
                 let .deleteFriend(_, auth), let .getSportsGround(_, auth),
                 let .findUsers(_, auth), let .deleteUser(auth),
                 let .addCommentToSportsGround(_, _, auth), let .editComment(_, _, _, auth),
-                let .deleteComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
+                let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-                let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth):
+                let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
+                let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth):
                 return HTTPHeader.basicAuth(with: auth)
             case .registration, .resetPassword, .getFutureEvents,
                     .getPastEvents, .getEvent:
@@ -584,10 +610,11 @@ private extension APIService {
             case .login, .getUser, .getFriendsForUser, .getFriendRequests,
                     .acceptFriendRequest, .declineFriendRequest, .findUsers,
                     .sendFriendRequest, .deleteFriend, .getSportsGround,
-                    .deleteComment, .getSportsGroundsForUser,
+                    .deleteGroundComment, .getSportsGroundsForUser,
                     .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
-                    .postIsGoingToEvent, .deleteIsGoingToEvent:
+                    .postIsGoingToEvent, .deleteIsGoingToEvent,
+                    .deleteEventComment:
                 return nil
             case let .registration(form):
                 return Parameter.makeParameters(
@@ -620,7 +647,9 @@ private extension APIService {
                 return Parameter.makeParameters(
                     from: [.password: current, .newPassword: new]
                 )
-            case let .addCommentToSportsGround(_, comment, _), let .editComment(_, _, comment, _):
+            case let .addCommentToSportsGround(_, comment, _),
+                let .addCommentToEvent(_, comment, _),
+                let .editComment(_, _, comment, _):
                 return Parameter.makeParameters(from: [.comment: comment])
             }
         }

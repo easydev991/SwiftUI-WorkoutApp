@@ -136,6 +136,10 @@ struct Photo: Codable, Identifiable {
         case id
         case stringURL = "photo"
     }
+
+    static var mock: Photo {
+        .init(id: .zero, stringURL: "avatar_default")
+    }
 }
 
 struct Comment: Codable, Identifiable, Hashable {
@@ -154,6 +158,10 @@ struct Comment: Codable, Identifiable, Hashable {
 
     var formattedDateString: String {
         FormatterService.readableDate(from: date)
+    }
+
+    static var mock: Comment {
+        .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue)
     }
 }
 

@@ -71,4 +71,9 @@ struct Constants {
     }
 
     enum BubblePosition { case incoming, sent }
+
+    enum CommentType {
+        case ground(id: Int)
+        case event(id: Int)
+    }
 }

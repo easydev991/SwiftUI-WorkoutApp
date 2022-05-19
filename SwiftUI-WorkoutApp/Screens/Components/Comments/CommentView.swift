@@ -54,7 +54,8 @@ struct CommentView: View {
 
 extension CommentView {
     enum Mode {
-        case create(groundID: Int)
+        case ground(id: Int)
+        case event(id: Int)
         case edit(groundID: Int, commentID: Int, commentText: String)
     }
 }
@@ -82,10 +83,10 @@ private extension CommentView {
     var sendButton: some View {
         Button {
             switch mode {
-            case let .create(groundID):
+            case .ground, .event:
                 addCommentTask = Task {
                     await viewModel.addComment(
-                        to: groundID,
+                        mode,
                         comment: commentText,
                         defaults: defaults
                     )
@@ -139,7 +140,7 @@ private extension CommentView {
 
     var isSendButtonDisabled: Bool {
         switch mode {
-        case .create: return commentText.isEmpty
+        case .ground, .event: return commentText.isEmpty
         case .edit: return commentText == oldCommentText
         }
     }
@@ -151,7 +152,7 @@ private extension CommentView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView(mode: .create(groundID: .zero))
+        CommentView(mode: .ground(id: .zero))
             .environmentObject(DefaultsService())
     }
 }

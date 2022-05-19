@@ -30,9 +30,11 @@ struct SportsGroundView: View {
     var body: some View {
         ZStack {
             Form {
-                titleAddressSection
-                if viewModel.isPhotoGridShown {
-                    gridWithPhotosSection
+                titleSubtitleSection
+                mapInfo
+                if let photos = viewModel.ground.photos,
+                   !photos.isEmpty {
+                    PhotosCollection(items: photos)
                 }
                 if defaults.isAuthorized {
                     participantsAndEventSection
@@ -42,7 +44,7 @@ struct SportsGroundView: View {
                     commentsSection
                 }
                 if defaults.isAuthorized {
-                    addNewCommentButton
+                    AddCommentButton(isCreatingComment: $isCreatingComment)
                 }
             }
             .opacity(viewModel.ground.id == .zero ? .zero : 1)
@@ -67,7 +69,7 @@ struct SportsGroundView: View {
             )
         }
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .create(groundID: viewModel.groundID))
+            CommentView(mode: .ground(id: viewModel.groundID))
         }
         .onDisappear(perform: cancelTasks)
         .toolbar { refreshButton }
@@ -83,7 +85,7 @@ extension SportsGroundView {
     }
 }
 private extension SportsGroundView {
-    var titleAddressSection: some View {
+    var titleSubtitleSection: some View {
         Section {
             HStack {
                 Text(viewModel.ground.shortTitle)
@@ -92,59 +94,21 @@ private extension SportsGroundView {
                 Text(viewModel.ground.subtitle.valueOrEmpty)
                     .foregroundColor(.secondary)
             }
-            MapSnapshotView(model: $viewModel.ground)
-                .frame(height: 150)
-                .cornerRadius(8)
-            Text(viewModel.ground.address.valueOrEmpty)
-            Button {
-                if let url = viewModel.ground.appleMapsURL,
-                   UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url)
-                }
-            } label: {
-                Text("Построить маршрут")
-                    .blueMediumWeight()
-            }
         }
     }
 
-    var gridWithPhotosSection: some View {
-        Section("Фотографии") {
-            LazyVGrid(
-                columns: .init(
-                    repeating: .init(.flexible(maximum: 150)),
-                    count: viewModel.photoColumns.rawValue
-                )
-            ) {
-                ForEach(viewModel.ground.photos ?? []) {
-                    CacheAsyncImage(url: $0.imageURL) { phase in
-                        switch phase {
-                        case let .success(image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .cornerRadius(8)
-                        case let .failure(error):
-                            RoundedDefaultImage(size: .init(width: 100, height: 100))
-                                .overlay {
-                                    Text(error.localizedDescription)
-                                        .background(.white)
-                                        .foregroundColor(.black)
-                                        .cornerRadius(8)
-                                        .multilineTextAlignment(.center)
-                                }
-                        default:
-                            ProgressView()
-                        }
-                    }
-                }
-            }
-        }
+    var mapInfo: some View {
+        SportsGroundLocationInfo(
+            ground: $viewModel.ground,
+            address: viewModel.ground.address.valueOrEmpty,
+            appleMapsURL: viewModel.ground.appleMapsURL
+        )
     }
 
     var participantsAndEventSection: some View {
         Section {
-            if viewModel.showParticipants {
+            if let participants = viewModel.ground.usersTrainHere,
+               !participants.isEmpty {
                 linkToParticipantsView
             }
             CustomToggle(isOn: $viewModel.ground.trainHere, title: "Тренируюсь здесь") {
@@ -202,24 +166,16 @@ private extension SportsGroundView {
     }
 
     var commentsSection: some View {
-        Section("Комментарии") {
-            List(viewModel.ground.comments) { comment in
-                CommentViewCell(model: comment) { id in
-                    deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults) }
-                } editClbk: { id, text in
-                    editComment = .init(id: id, body: text, date: comment.date, user: comment.user)
+        Comments(
+            items: viewModel.ground.comments,
+            deleteClbk: { id in
+                deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults)
                 }
+            },
+            editClbk: { comment in
+                editComment = comment
             }
-        }
-    }
-
-    var addNewCommentButton: some View {
-        Button {
-            isCreatingComment.toggle()
-        } label: {
-            Label("Добавить комментарий", systemImage: "plus.message.fill")
-                .foregroundColor(.blue)
-        }
+        )
     }
 
     var refreshButton: some View {

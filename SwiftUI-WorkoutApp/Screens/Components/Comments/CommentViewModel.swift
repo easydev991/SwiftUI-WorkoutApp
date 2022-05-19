@@ -13,11 +13,22 @@ final class CommentViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func addComment(to groundID: Int, comment: String, defaults: DefaultsService) async {
+    func addComment(_ mode: CommentView.Mode, comment: String, defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).addComment(to: groundID, comment: comment)
+            let isOk: Bool
+            switch mode {
+            case let .ground(id):
+                isOk = try await APIService(with: defaults).addComment(
+                    to: .ground(id: id), comment: comment
+                )
+            case let .event(id):
+                isOk = try await APIService(with: defaults).addComment(
+                    to: .event(id: id), comment: comment
+                )
+            default: isOk = false
+            }
             if isOk { isSuccess.toggle() }
         } catch {
             errorMessage = error.localizedDescription

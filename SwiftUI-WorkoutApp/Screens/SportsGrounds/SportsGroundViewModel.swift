@@ -10,9 +10,6 @@ import Foundation
 final class SportsGroundViewModel: ObservableObject {
     let groundID: Int
     @Published var ground = SportsGround.emptyValue
-    @Published private(set) var isPhotoGridShown = false
-    @Published private(set) var photoColumns = Columns.one
-    @Published private(set) var showParticipants = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     var showRefreshButton: Bool {
@@ -42,7 +39,6 @@ final class SportsGroundViewModel: ObservableObject {
                 return
             }
             ground = model
-            updateState()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -54,7 +50,7 @@ final class SportsGroundViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).deleteComment(from: groundID, commentID: commentID)
+            let isOk = try await APIService(with: defaults).deleteComment(from: .ground(id: groundID), commentID: commentID)
             if isOk {
                 ground.comments.removeAll(where: { $0.id == commentID} )
             }
@@ -80,27 +76,4 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
-}
-
-extension SportsGroundViewModel {
-    enum Columns: Int {
-        case one = 1, two, three
-        init(_ photosCount: Int) {
-            switch photosCount {
-            case 1: self = .one
-            case 2: self = .two
-            default: self = .three
-            }
-        }
-    }
-}
-
-private extension SportsGroundViewModel {
-    func updateState() {
-        if let photos = ground.photos {
-            isPhotoGridShown = !photos.isEmpty
-            photoColumns = .init(photos.count)
-        }
-        showParticipants = ground.usersTrainHereCount.valueOrZero > .zero
-    }
 }
