@@ -10,9 +10,10 @@ import SwiftUI
 struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @ObservedObject var viewModel: CreateEventViewModel
+    @StateObject private var viewModel = CreateEventViewModel()
     @State private var eventCreated = false
     @FocusState private var focus: FocusableField?
+    let mode: Mode
 
     var body: some View {
         Form {
@@ -30,6 +31,15 @@ struct CreateEventView: View {
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { createEventButton }
+    }
+}
+
+extension CreateEventView {
+    enum Mode {
+        /// Для экрана "Мероприятия"
+        case regular
+        /// Для детальной страницы площадки
+        case selectedSportsGround(SportsGround)
     }
 }
 
@@ -59,7 +69,7 @@ private extension CreateEventView {
     }
 
     var sportsGround: AnyView {
-        switch viewModel.mode {
+        switch mode {
         case .regular:
             return AnyView(
                 NavigationLink(
@@ -108,6 +118,6 @@ private extension CreateEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateEventView(viewModel: .init(mode: .selectedSportsGround(.emptyValue)))
+        CreateEventView(mode: .regular)
     }
 }

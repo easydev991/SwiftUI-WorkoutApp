@@ -8,7 +8,6 @@
 import Foundation
 
 final class CreateEventViewModel: ObservableObject {
-    let mode: Mode
     @Published var eventName = ""
     @Published var eventDate = Date()
     @Published var eventDescription = ""
@@ -26,13 +25,8 @@ final class CreateEventViewModel: ObservableObject {
         eventName.count >= Constants.minPasswordSize
     }
 
-    init(mode: Mode) {
-        self.mode = mode
-    }
-
     func createEventAction() {
 #warning("TODO: интеграция с сервером")
-#warning("TODO: уведомлять о проблемах при отправке мероприятия")
         isEventCreated.toggle()
     }
 
@@ -41,12 +35,5 @@ final class CreateEventViewModel: ObservableObject {
         eventDate = .now
         eventDescription = ""
         isEventCreated.toggle()
-    }
-
-    enum Mode {
-        /// Для экрана "Мероприятия"
-        case regular
-        /// Для детальной страницы площадки
-        case selectedSportsGround(SportsGround)
     }
 }

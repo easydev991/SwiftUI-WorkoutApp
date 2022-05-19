@@ -61,7 +61,7 @@ private extension EventsListView {
     }
 
     var addEventButton: some View {
-        NavigationLink(destination: CreateEventView(viewModel: .init(mode: .regular))) {
+        NavigationLink(destination: CreateEventView(mode: .regular)) {
             Image(systemName: "plus")
         }
         .opacity(isAddEventButtonHidden ? .zero : 1)

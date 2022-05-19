@@ -146,7 +146,7 @@ private extension SportsGroundView {
 
     var createEventLink: some View {
         NavigationLink {
-            CreateEventView(viewModel: .init(mode: .selectedSportsGround(viewModel.ground)))
+            CreateEventView(mode: .selectedSportsGround(viewModel.ground))
         } label: {
             Text("Создать мероприятие").blueMediumWeight()
         }

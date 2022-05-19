@@ -106,12 +106,12 @@ private extension EventDetailsView {
     }
 
     var participantsSection: some View {
-        Section {
+        Section("Участники") {
             if let participants = viewModel.event.participants,
                !participants.isEmpty {
                 linkToParticipants
             }
-            if defaults.isAuthorized {
+            if defaults.isAuthorized && (viewModel.event.isCurrent).isTrue {
                 isGoingToggle
             }
         }
