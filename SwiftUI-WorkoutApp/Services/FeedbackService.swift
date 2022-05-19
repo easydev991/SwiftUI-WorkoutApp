@@ -30,7 +30,7 @@ extension FeedbackService: IFeedbackHelper {
             picker.mailComposeDelegate = self
             getRootViewController()?.present(picker, animated: true)
         } else {
-            if let url = Constants.Feedback.completeURL(),
+            if let url = Constants.Feedback.completeURL,
                UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
             }

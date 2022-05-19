@@ -8,7 +8,7 @@
 import Foundation
 import UIKit.UIDevice
 
-struct Constants {
+enum Constants {
     static let minPasswordSize = 6
     static let defaultUserAge = Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
     static let minUserAge = Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
@@ -17,25 +17,25 @@ struct Constants {
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"
 
-    struct Feedback {
-        static let subject = "Обратная связь"
-        static let toEmail = "info@workout.su"
-        static let question = "Над чем нам стоит поработать?"
-        static let sysVersion = "iOS: \(UIDevice.current.systemVersion)"
-        static let appVersion = "App version: \(Constants.appVersion)"
-        static func completeURL() -> URL? {
-            let _subject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
-            return .init(string: "mailto:\(toEmail)?subject=\(_subject.valueOrEmpty)")
-        }
-    }
-
-    struct API {
+    enum API {
         static let baseURL = "https://workout.su/api/v3"
         static let timeOut = TimeInterval(15)
         static let codeOK = 200
     }
 
-    struct Alert {
+    enum Feedback {
+        static let subject = "Обратная связь"
+        static let toEmail = "info@workout.su"
+        static let question = "Над чем нам стоит поработать?"
+        static let sysVersion = "iOS: \(UIDevice.current.systemVersion)"
+        static let appVersion = "App version: \(Constants.appVersion)"
+        static var completeURL: URL? {
+            let _subject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+            return .init(string: "mailto:\(toEmail)?subject=\(_subject.valueOrEmpty)")
+        }
+    }
+
+    enum Alert {
         static let success = "Успех!"
         static let error = "Ошибка"
         static let authError = "Ошибка авторизации"
