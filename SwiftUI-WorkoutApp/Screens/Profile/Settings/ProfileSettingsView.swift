@@ -73,7 +73,9 @@ private extension ProfileSettingsView {
             isPresented: $showLogoutDialog,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive, action: defaults.triggerLogout) {
+            Button(role: .destructive) {
+                defaults.triggerLogout()
+            } label: {
                 Text("Выйти")
             }
         }

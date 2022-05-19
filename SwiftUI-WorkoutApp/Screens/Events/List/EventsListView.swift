@@ -42,7 +42,7 @@ private extension EventsListView {
             ForEach(EventType.allCases, id: \.self) { Text($0.rawValue) }
         }
         .pickerStyle(.segmented)
-        .padding()
+        .padding(.horizontal)
     }
 
     var content: some View {
