@@ -16,7 +16,9 @@ struct EventDetailsView: View {
     @State private var alertMessage = ""
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
+    @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
+    @Binding var needRefresh: Bool
     let eventID: Int
 
     var body: some View {
@@ -52,12 +54,20 @@ struct EventDetailsView: View {
             Button(action: closeAlert) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: defaults.isAuthorized, perform: dismiss)
+        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
+        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .sheet(isPresented: $isCreatingComment) {
             CommentView(mode: .event(id: viewModel.event.id))
         }
         .onDisappear(perform: cancelTasks)
-        .toolbar { refreshButton }
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                refreshButton
+                if isAuthor {
+                    deleteButton
+                }
+            }
+        }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -188,27 +198,49 @@ private extension EventDetailsView {
         .opacity(viewModel.showRefreshButton ? 1 : .zero)
     }
 
+    var deleteButton: some View {
+        Button(role: .destructive) {
+            deleteEventTask = Task {
+                await viewModel.deleteEvent(eventID, with: defaults)
+            }
+        } label: {
+            Label("Удалить", systemImage: "trash")
+        }
+        .opacity(viewModel.showRefreshButton ? .zero : 1)
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
+    }
+
+    var isAuthor: Bool {
+        viewModel.event.authorID == defaults.mainUserID
     }
 
     func closeAlert() {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isAuth: Bool) {
+    func dismissNotAuth(isAuth: Bool) {
         if !isAuth { dismiss() }
     }
 
+    func dismissDeleted(isDeleted: Bool) {
+        if isDeleted {
+            dismiss()
+            needRefresh.toggle()
+        }
+    }
+
     func cancelTasks() {
-        [goingToEventTask, deleteCommentTask, refreshButtonTask].forEach { $0?.cancel() }
+        [goingToEventTask, deleteCommentTask, refreshButtonTask, deleteEventTask].forEach { $0?.cancel() }
     }
 }
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(eventID: 4378)
+        EventDetailsView(needRefresh: .constant(false), eventID: 4378)
             .environmentObject(DefaultsService())
     }
 }

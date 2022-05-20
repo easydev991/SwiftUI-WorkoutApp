@@ -10,6 +10,7 @@ import SwiftUI
 struct EventsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
+    @State private var needRefresh = false
     @State private var selectedEventType = EventType.future
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -30,6 +31,7 @@ struct EventsListView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: selectedEventType) { _ in askForEvents() }
+        .onChange(of: needRefresh, perform: refreshIfNeeded)
         .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
         .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
         .onDisappear(perform: cancelTask)
@@ -50,7 +52,9 @@ private extension EventsListView {
             EmptyContentView(mode: .events)
                 .opacity(isEmptyViewHidden ? .zero : 1)
             List(selectedEventType == .future ? viewModel.futureEvents : viewModel.pastEvents) { event in
-                NavigationLink(destination: EventDetailsView(eventID: event.id)) {
+                NavigationLink {
+                    EventDetailsView(needRefresh: $needRefresh, eventID: event.id)
+                } label: {
                     EventViewCell(event: event)
                 }
             }
@@ -84,6 +88,10 @@ private extension EventsListView {
         eventsTask = Task {
             await viewModel.askForEvents(type: selectedEventType, refresh: refresh)
         }
+    }
+
+    func refreshIfNeeded(_ needRefresh: Bool) {
+        if needRefresh { askForEvents(refresh: true) }
     }
 
     func setupErrorAlert(with message: String) {

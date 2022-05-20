@@ -9,6 +9,7 @@ import Foundation
 
 final class EventDetailsViewModel: ObservableObject {
     @Published var event = EventResponse.emptyValue
+    @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var isGoing = false
@@ -56,6 +57,19 @@ final class EventDetailsViewModel: ObservableObject {
             if isOk {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func deleteEvent(_ id: Int, with defaults: DefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let isOk = try await APIService(with: defaults).delete(eventID: id)
+            isDeleted = isOk
         } catch {
             errorMessage = error.localizedDescription
         }

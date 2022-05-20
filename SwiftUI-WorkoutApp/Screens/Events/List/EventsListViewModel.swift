@@ -31,7 +31,7 @@ final class EventsListViewModel: ObservableObject {
         { return }
         if !refresh { isLoading.toggle() }
         do {
-            let list = try await APIService().getEvents(of: type)
+            let list = try await APIService().getEvents(of: type).sorted { $0.id > $1.id }
             switch type {
             case .future: futureEvents = list
             case .past: pastEvents = list

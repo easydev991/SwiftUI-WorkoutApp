@@ -316,6 +316,17 @@ struct APIService {
         let (_, response) = try await urlSession.data(for: request)
         return try handle(response)
     }
+
+    /// Удалить мероприятие
+    /// - Parameter eventID: `id` мероприятия
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
+    func delete(eventID: Int) async throws -> Bool {
+        let endpoint = Endpoint.deleteEvent(id: eventID, auth: defaults.basicAuthInfo)
+        guard let request = endpoint.urlRequest else { return false }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
+    }
 }
 
 private extension APIService {
@@ -323,7 +334,7 @@ private extension APIService {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
-//        config.waitsForConnectivity = true
+        config.waitsForConnectivity = true
         return .init(configuration: config)
     }
 
@@ -502,6 +513,10 @@ private extension APIService {
         /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
         case deleteEventComment(_ eventID: Int, commentID: Int, auth: AuthData)
 
+        /// Удалить мероприятие:
+        /// **DELETE** ${API}/trainings/<event_id>
+        case deleteEvent(id: Int, auth: AuthData)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
@@ -564,6 +579,8 @@ private extension APIService {
                 return "\(baseUrl)/trainings/\(id)/comments"
             case let .deleteEventComment(eventID, commentID, _):
                 return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
+            case let .deleteEvent(id, _):
+                return "\(baseUrl)/trainings/\(id)"
             }
         }
 
@@ -578,9 +595,9 @@ private extension APIService {
                     .getSportsGround, .findUsers, .getSportsGroundsForUser,
                     .getFutureEvents, .getPastEvents, .getEvent:
                 return .get
-            case .declineFriendRequest, .deleteFriend, .deleteGroundComment,
-                    .deleteTrainHere, .deleteUser, .deleteIsGoingToEvent,
-                    .deleteEventComment:
+            case .declineFriendRequest, .deleteFriend, .deleteGroundComment, .deleteTrainHere,
+                    .deleteUser, .deleteIsGoingToEvent,
+                    .deleteEventComment, .deleteEvent:
                 return .delete
             }
         }
@@ -597,7 +614,8 @@ private extension APIService {
                 let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
                 let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
-                let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth):
+                let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
+                let .deleteEvent(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
             case .registration, .resetPassword, .getFutureEvents,
                     .getPastEvents, .getEvent:
@@ -614,7 +632,7 @@ private extension APIService {
                     .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
                     .postIsGoingToEvent, .deleteIsGoingToEvent,
-                    .deleteEventComment:
+                    .deleteEventComment, .deleteEvent:
                 return nil
             case let .registration(form):
                 return Parameter.makeParameters(
