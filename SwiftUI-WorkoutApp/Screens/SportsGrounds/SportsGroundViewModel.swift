@@ -8,7 +8,6 @@
 import Foundation
 
 final class SportsGroundViewModel: ObservableObject {
-    let groundID: Int
     @Published var ground = SportsGround.emptyValue
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
@@ -16,17 +15,8 @@ final class SportsGroundViewModel: ObservableObject {
         ground.id == .zero && !isLoading
     }
 
-    init(groundID: Int) {
-        self.groundID = groundID
-    }
-
-    init(sportsGround: SportsGround) {
-        self.groundID = sportsGround.id
-        self.ground = sportsGround
-    }
-
     @MainActor
-    func makeSportsGroundInfo(with defaults: DefaultsService, refresh: Bool = false) async {
+    func makeSportsGroundInfo(groundID: Int, with defaults: DefaultsService, refresh: Bool = false) async {
         if (isLoading || ground.id != .zero) && !refresh {
             return
         }
@@ -46,7 +36,7 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(commentID: Int, with defaults: DefaultsService) async {
+    func delete(groundID: Int, commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -61,7 +51,7 @@ final class SportsGroundViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus(trainHere: Bool, with defaults: DefaultsService) async {
+    func changeTrainHereStatus(groundID: Int, trainHere: Bool, with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {

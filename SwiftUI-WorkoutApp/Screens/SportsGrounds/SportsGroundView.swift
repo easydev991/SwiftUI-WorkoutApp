@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SportsGroundView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @ObservedObject private var viewModel: SportsGroundViewModel
+    @StateObject private var viewModel = SportsGroundViewModel()
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
@@ -18,14 +18,7 @@ struct SportsGroundView: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
 
-    init(mode: Mode) {
-        switch mode {
-        case let .full(ground):
-            viewModel = .init(sportsGround: ground)
-        case let .limited(id):
-            viewModel = .init(groundID: id)
-        }
-    }
+    let mode: Mode
 
     var body: some View {
         ZStack {
@@ -63,7 +56,7 @@ struct SportsGroundView: View {
             CommentView(
                 mode: .editGround(
                     .init(
-                        mainID: viewModel.groundID,
+                        mainID: viewModel.ground.id,
                         commentID: $0.id,
                         oldComment: $0.formattedBody
                     )
@@ -71,7 +64,7 @@ struct SportsGroundView: View {
             )
         }
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .ground(id: viewModel.groundID))
+            CommentView(mode: .ground(id: viewModel.ground.id))
         }
         .onDisappear(perform: cancelTasks)
         .toolbar { refreshButton }
@@ -124,7 +117,9 @@ private extension SportsGroundView {
     func changeTrainHereStatus(newStatus: Bool) {
         changeTrainHereTask = Task {
             await viewModel.changeTrainHereStatus(
-                trainHere: newStatus, with: defaults
+                groundID: viewModel.ground.id,
+                trainHere: newStatus,
+                with: defaults
             )
         }
     }
@@ -171,7 +166,12 @@ private extension SportsGroundView {
         Comments(
             items: viewModel.ground.comments,
             deleteClbk: { id in
-                deleteCommentTask = Task { await viewModel.delete(commentID: id, with: defaults)
+                deleteCommentTask = Task {
+                    await viewModel.delete(
+                        groundID: viewModel.ground.id,
+                        commentID: id,
+                        with: defaults
+                    )
                 }
             },
             editClbk: { comment in
@@ -190,7 +190,20 @@ private extension SportsGroundView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundInfo(with: defaults, refresh: refresh)
+        switch mode {
+        case let .full(ground):
+            await viewModel.makeSportsGroundInfo(
+                groundID: ground.id,
+                with: defaults,
+                refresh: refresh
+            )
+        case let .limited(id):
+            await viewModel.makeSportsGroundInfo(
+                groundID: id,
+                with: defaults,
+                refresh: refresh
+            )
+        }
     }
 
     func setupErrorAlert(with message: String) {
