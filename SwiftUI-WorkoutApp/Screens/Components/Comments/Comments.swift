@@ -10,7 +10,7 @@ import SwiftUI
 struct Comments: View {
     let items: [Comment]
     let deleteClbk: (Int) -> Void
-    var editClbk: ((Comment) -> Void)? = nil
+    let editClbk: (Comment) -> Void
 
     var body: some View {
         Section("Комментарии") {

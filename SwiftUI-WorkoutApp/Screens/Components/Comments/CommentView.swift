@@ -24,8 +24,10 @@ struct CommentView: View {
 
     init(mode: Mode) {
         self.mode = mode
-        if case let .edit(_, _, oldComment) = mode {
-            oldCommentText = oldComment
+        switch mode {
+        case let .editGround(info), let .editEvent(info):
+            oldCommentText = info.oldComment
+        default: break
         }
     }
 
@@ -56,7 +58,13 @@ extension CommentView {
     enum Mode {
         case ground(id: Int)
         case event(id: Int)
-        case edit(groundID: Int, commentID: Int, commentText: String)
+        case editGround(EditInfo)
+        case editEvent(EditInfo)
+
+        struct EditInfo {
+            let mainID, commentID: Int
+            let oldComment: String
+        }
     }
 }
 
@@ -91,11 +99,10 @@ private extension CommentView {
                         defaults: defaults
                     )
                 }
-            case let .edit(groundID, commentID, _):
+            case .editGround, .editEvent:
                 editCommentTask = Task {
                     await viewModel.editComment(
-                        for: groundID,
-                        commentID: commentID,
+                        for: mode,
                         newComment: commentText,
                         with: defaults
                     )
@@ -141,7 +148,7 @@ private extension CommentView {
     var isSendButtonDisabled: Bool {
         switch mode {
         case .ground, .event: return commentText.isEmpty
-        case .edit: return commentText == oldCommentText
+        case .editGround, .editEvent: return commentText == oldCommentText
         }
     }
 

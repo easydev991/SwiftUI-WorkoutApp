@@ -12,6 +12,7 @@ struct EventDetailsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventDetailsViewModel()
     @State private var isCreatingComment = false
+    @State private var editComment: Comment?
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var goingToEventTask: Task<Void, Never>?
@@ -58,6 +59,17 @@ struct EventDetailsView: View {
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .sheet(isPresented: $isCreatingComment) {
             CommentView(mode: .event(id: viewModel.event.id))
+        }
+        .sheet(item: $editComment) {
+            CommentView(
+                mode: .editEvent(
+                    .init(
+                        mainID: eventID,
+                        commentID: $0.id,
+                        oldComment: $0.formattedBody
+                    )
+                )
+            )
         }
         .onDisappear(perform: cancelTasks)
         .toolbar {
@@ -173,6 +185,9 @@ private extension EventDetailsView {
                 deleteCommentTask = Task {
                     await viewModel.delete(commentID: id, for: eventID, with: defaults)
                 }
+            },
+            editClbk: { comment in
+                editComment = comment
             }
         )
     }

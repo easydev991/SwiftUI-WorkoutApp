@@ -37,11 +37,18 @@ final class CommentViewModel: ObservableObject {
     }
 
     @MainActor
-    func editComment(for groundID: Int, commentID: Int, newComment: String, with defaults: DefaultsService) async {
+    func editComment(for mode: CommentView.Mode, newComment: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).editComment(for: groundID, commentID: commentID, newComment: newComment)
+            let isOk: Bool
+            switch mode {
+            case let .editGround(info):
+                isOk = try await APIService(with: defaults).editComment(for: .ground(id: info.mainID), commentID: info.commentID, newComment: newComment)
+            case let .editEvent(info):
+                isOk = try await APIService(with: defaults).editComment(for: .event(id: info.mainID), commentID: info.commentID, newComment: newComment)
+            default: isOk = false
+            }
             if isOk { isSuccess.toggle() }
         } catch {
             errorMessage = error.localizedDescription

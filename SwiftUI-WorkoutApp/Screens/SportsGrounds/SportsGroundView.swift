@@ -61,10 +61,12 @@ struct SportsGroundView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .sheet(item: $editComment) {
             CommentView(
-                mode: .edit(
-                    groundID: viewModel.groundID,
-                    commentID: $0.id,
-                    commentText: $0.formattedBody
+                mode: .editGround(
+                    .init(
+                        mainID: viewModel.groundID,
+                        commentID: $0.id,
+                        oldComment: $0.formattedBody
+                    )
                 )
             )
         }

@@ -11,7 +11,7 @@ struct CommentViewCell: View {
     @EnvironmentObject private var defaults: DefaultsService
     let model: Comment
     let deleteClbk: (Int) -> Void
-    var editClbk: ((Comment) -> Void)? = nil
+    let editClbk: (Comment) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -50,11 +50,10 @@ private extension CommentViewCell {
     var menuButton: some View {
         Menu {
             Button {
-                editClbk?(model)
+                editClbk(model)
             } label: {
                 Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
             }
-            .disabled(editClbk == nil)
             Button(role: .destructive) {
                 deleteClbk(model.id)
             } label: {
