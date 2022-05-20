@@ -12,7 +12,6 @@ struct CommentView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = CommentViewModel()
     @State private var commentText = ""
-    @State private var isCommentSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var addCommentTask: Task<Void, Never>?
@@ -21,9 +20,11 @@ struct CommentView: View {
 
     private let mode: Mode
     private var oldCommentText: String?
+    @Binding var isCommentSent: Bool
 
-    init(mode: Mode) {
+    init(mode: Mode, isSent: Binding<Bool>) {
         self.mode = mode
+        _isCommentSent = isSent
         switch mode {
         case let .editGround(info), let .editEvent(info):
             oldCommentText = info.oldComment
@@ -46,7 +47,7 @@ struct CommentView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: dismissErrorAlert) { TextOk() }
         }
-        .onChange(of: viewModel.isSuccess, perform: toggleSuccessAlert)
+        .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onAppear(perform: setupOldCommentIfNeeded)
         .onDisappear(perform: cancelTasks)
@@ -115,13 +116,11 @@ private extension CommentView {
         .tint(.blue)
         .buttonStyle(.borderedProminent)
         .disabled(isSendButtonDisabled)
-        .alert(Constants.Alert.success, isPresented: $isCommentSent) {
-            Button { dismiss() } label: { TextOk() }
-        }
     }
 
-    func toggleSuccessAlert(isSuccess: Bool) {
-        isCommentSent = isSuccess
+    func dismiss(isSuccess: Bool) {
+        isCommentSent.toggle()
+        dismiss()
     }
 
     func dismissErrorAlert() {
@@ -159,7 +158,7 @@ private extension CommentView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView(mode: .ground(id: .zero))
+        CommentView(mode: .ground(id: .zero), isSent: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

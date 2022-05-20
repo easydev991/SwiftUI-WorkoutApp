@@ -10,6 +10,7 @@ import SwiftUI
 struct SportsGroundView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundViewModel()
+    @State private var needUpdateComments = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
@@ -52,6 +53,10 @@ struct SportsGroundView: View {
             Button(action: closeAlert) { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: needUpdateComments, perform: refreshAction)
+        .sheet(isPresented: $isCreatingComment) {
+            CommentView(mode: .ground(id: viewModel.ground.id), isSent: $needUpdateComments)
+        }
         .sheet(item: $editComment) {
             CommentView(
                 mode: .editGround(
@@ -60,11 +65,9 @@ struct SportsGroundView: View {
                         commentID: $0.id,
                         oldComment: $0.formattedBody
                     )
-                )
+                ),
+                isSent: $needUpdateComments
             )
-        }
-        .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .ground(id: viewModel.ground.id))
         }
         .onDisappear(perform: cancelTasks)
         .toolbar { refreshButton }
@@ -187,6 +190,10 @@ private extension SportsGroundView {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
         .opacity(viewModel.showRefreshButton ? 1 : .zero)
+    }
+
+    func refreshAction(refresh: Bool = false) {
+        refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
     func askForInfo(refresh: Bool = false) async {

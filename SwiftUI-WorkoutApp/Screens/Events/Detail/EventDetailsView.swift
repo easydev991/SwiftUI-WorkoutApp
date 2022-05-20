@@ -11,6 +11,7 @@ struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventDetailsViewModel()
+    @State private var needUpdateComments = false
     @State private var isCreatingComment = false
     @State private var editComment: Comment?
     @State private var showErrorAlert = false
@@ -19,7 +20,7 @@ struct EventDetailsView: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    @Binding var needRefresh: Bool
+    @Binding var needRefreshOnDelete: Bool
     let eventID: Int
 
     var body: some View {
@@ -57,8 +58,9 @@ struct EventDetailsView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
+        .onChange(of: needUpdateComments, perform: refreshAction)
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .event(id: viewModel.event.id))
+            CommentView(mode: .event(id: viewModel.event.id), isSent: $needUpdateComments)
         }
         .sheet(item: $editComment) {
             CommentView(
@@ -68,7 +70,8 @@ struct EventDetailsView: View {
                         commentID: $0.id,
                         oldComment: $0.formattedBody
                     )
-                )
+                ),
+                isSent: $needUpdateComments
             )
         }
         .onDisappear(perform: cancelTasks)
@@ -193,7 +196,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(eventID, with: defaults, refresh: refresh)
+        await viewModel.askForEvent(eventID, with: defaults, refresh: true)
     }
 
     func changeIsGoingToEvent(newStatus: Bool) {
@@ -206,11 +209,15 @@ private extension EventDetailsView {
 
     var refreshButton: some View {
         Button {
-            refreshButtonTask = Task { await askForInfo() }
+            refreshAction()
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
         .opacity(viewModel.showRefreshButton ? 1 : .zero)
+    }
+
+    func refreshAction(refresh: Bool = false) {
+        refreshButtonTask = Task { await askForInfo(refresh: refresh) }
     }
 
     var deleteButton: some View {
@@ -244,7 +251,7 @@ private extension EventDetailsView {
     func dismissDeleted(isDeleted: Bool) {
         if isDeleted {
             dismiss()
-            needRefresh.toggle()
+            needRefreshOnDelete.toggle()
         }
     }
 
@@ -255,7 +262,7 @@ private extension EventDetailsView {
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(needRefresh: .constant(false), eventID: 4378)
+        EventDetailsView(needRefreshOnDelete: .constant(false), eventID: 4378)
             .environmentObject(DefaultsService())
     }
 }
