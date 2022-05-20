@@ -18,8 +18,8 @@ struct SportsGroundView: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
 
-    init(input: Input) {
-        switch input {
+    init(mode: Mode) {
+        switch mode {
         case let .full(ground):
             viewModel = .init(sportsGround: ground)
         case let .limited(id):
@@ -81,7 +81,7 @@ struct SportsGroundView: View {
 }
 
 extension SportsGroundView {
-    enum Input {
+    enum Mode {
         case full(SportsGround)
         case limited(id: Int)
     }
@@ -210,7 +210,7 @@ private extension SportsGroundView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundView(input: .full(.mock))
+            SportsGroundView(mode: .full(.mock))
                 .environmentObject(DefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }
