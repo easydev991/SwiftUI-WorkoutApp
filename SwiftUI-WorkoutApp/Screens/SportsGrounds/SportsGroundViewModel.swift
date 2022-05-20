@@ -58,6 +58,11 @@ final class SportsGroundViewModel: ObservableObject {
             let isOk = try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: trainHere)
             if isOk {
                 ground.trainHere = trainHere
+                if trainHere, let userInfo = defaults.mainUserInfo {
+                    ground.participants.append(userInfo)
+                } else {
+                    ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
+                }
             }
         } catch {
             errorMessage = error.localizedDescription

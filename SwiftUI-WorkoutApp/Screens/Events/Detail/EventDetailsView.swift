@@ -129,7 +129,7 @@ private extension EventDetailsView {
 
     var participantsSection: some View {
         Section("Участники") {
-            if let participants = viewModel.event.participants,
+            if let participants = viewModel.event.participantsOptional,
                !participants.isEmpty {
                 linkToParticipants
             }
@@ -141,14 +141,14 @@ private extension EventDetailsView {
 
     var linkToParticipants: some View {
         NavigationLink {
-            UsersListView(mode: .participants(list: viewModel.event.participants ?? []))
+            UsersListView(mode: .participants(list: viewModel.event.participants))
                 .navigationTitle("Пойдут на мероприятие")
         } label: {
             HStack {
                 Text("Идут")
                 Spacer()
                 Text(
-                    "peopleTrainHere \(viewModel.event.participantsCount.valueOrZero)",
+                    "peopleTrainHere \(viewModel.event.participants.count)",
                     tableName: "Plurals"
                 )
                 .foregroundColor(.secondary)

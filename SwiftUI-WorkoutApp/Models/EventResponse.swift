@@ -24,7 +24,11 @@ struct EventResponse: Codable, Identifiable {
     let latitude, longitude: String?
     /// Количество участников
     let participantsCount: Int?
-    let participants: [UserResponse]?
+    var participantsOptional: [UserResponse]?
+    var participants: [UserResponse] {
+        get { participantsOptional ?? [] }
+        set { participantsOptional = newValue }
+    }
     /// `true` - предстоящее мероприятие, `false` - прошедшее
     let isCurrent: Bool?
     /// `true` - пользователь является организатором, `false` - не является
@@ -50,7 +54,7 @@ struct EventResponse: Codable, Identifiable {
         case sportsGroundID = "area_id"
         case participantsCount = "user_count"
         case isCurrent = "is_current"
-        case participants = "training_users"
+        case participantsOptional = "training_users"
         case isOrganizer = "is_organizer"
         case canEdit = "can_edit"
         case trainHere = "train_here"
@@ -103,7 +107,7 @@ extension EventResponse {
     }
 
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participants: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
     }
 
     static var mock: EventResponse {

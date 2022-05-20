@@ -25,7 +25,7 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService().getEvent(by: id)
-            let isUserGoing = event.participants?.contains(where: { $0.userID == defaults.mainUserID })
+            let isUserGoing = event.participantsOptional?.contains(where: { $0.userID == defaults.mainUserID })
             isGoing = isUserGoing.isTrue
         } catch {
             errorMessage = error.localizedDescription
@@ -41,6 +41,11 @@ final class EventDetailsViewModel: ObservableObject {
             let isOk = try await APIService(with: defaults).changeIsGoingToEvent(for: id, isGoing: isGoing)
             if isOk {
                 self.isGoing = isGoing
+                if isGoing, let userInfo = defaults.mainUserInfo {
+                    event.participants.append(userInfo)
+                } else {
+                    event.participants.removeAll(where: { $0.userID == defaults.mainUserID })
+                }
             }
         } catch {
             errorMessage = error.localizedDescription

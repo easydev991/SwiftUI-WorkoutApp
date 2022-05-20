@@ -133,7 +133,7 @@ private extension SportsGroundView {
                 Text("Здесь тренируются")
                 Spacer()
                 Text(
-                    "peopleTrainHere \(viewModel.ground.usersTrainHereCount.valueOrZero)",
+                    "peopleTrainHere \(viewModel.ground.participants.count)",
                     tableName: "Plurals"
                 )
                 .foregroundColor(.secondary)
