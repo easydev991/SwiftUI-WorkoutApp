@@ -12,8 +12,8 @@ struct DialogView: View {
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @Namespace var chatScrollView
     @State private var sendMessageTask: Task<Void, Never>?
+    @Namespace private var chatScrollView
 
     @Binding var dialog: DialogResponse
 
@@ -24,18 +24,7 @@ struct DialogView: View {
                     LazyVStack {
                         ForEach(viewModel.list) { message in
                             ChatBubble(messageType(for: message)) {
-                                VStack(alignment: .trailing, spacing: 8) {
-                                    Text(message.formattedMessage)
-                                        .padding(.top, 12)
-                                        .padding(.horizontal, 20)
-                                    Text(message.messageDateString)
-                                        .font(.caption2)
-                                        .padding(.horizontal, 16)
-                                        .padding(.bottom, 4)
-                                        .opacity(0.75)
-                                }
-                                .foregroundColor(.white)
-                                .background(Color(uiColor: messageType(for: message).color))
+                                chatCell(for: message)
                             }
                         }
                     }
@@ -47,19 +36,8 @@ struct DialogView: View {
                     }
                 }
                 HStack {
-                    TextEditor(text: $viewModel.newMessage)
-                        .frame(maxHeight: 40)
-                        .padding(.horizontal, 8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(.gray.opacity(0.5), lineWidth: 1)
-                        )
-                    Button(action: sendMessage) {
-                        Image(systemName: "paperplane.fill")
-                            .font(.title)
-                            .tint(.blue)
-                    }
-                    .disabled(viewModel.newMessage.isEmpty || viewModel.isLoading)
+                    newMessageTextField
+                    sendMessageButton
                 }
                 .padding()
             }
@@ -91,10 +69,42 @@ private extension DialogView {
         .disabled(viewModel.isLoading)
     }
 
-    func updateDialogUnreadCount(isRead: Bool) {
-        if isRead {
-            dialog.unreadMessagesCount = .zero
+    func chatCell(for message: MessageResponse) -> some View {
+        VStack(alignment: .trailing, spacing: 8) {
+            Text(message.formattedMessage)
+                .padding(.top, 12)
+                .padding(.horizontal, 20)
+            Text(message.messageDateString)
+                .font(.caption2)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 4)
+                .opacity(0.75)
         }
+        .foregroundColor(.white)
+        .background(Color(uiColor: messageType(for: message).color))
+    }
+
+    var newMessageTextField: some View {
+        TextEditor(text: $viewModel.newMessage)
+            .frame(maxHeight: 40)
+            .padding(.horizontal, 8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.gray.opacity(0.5), lineWidth: 1)
+            )
+    }
+
+    var sendMessageButton: some View {
+        Button(action: sendMessage) {
+            Image(systemName: "paperplane.fill")
+                .font(.title)
+                .tint(.blue)
+        }
+        .disabled(viewModel.newMessage.isEmpty || viewModel.isLoading)
+    }
+
+    func updateDialogUnreadCount(isRead: Bool) {
+        if isRead { dialog.unreadMessagesCount = .zero }
     }
 
     func markAsRead() async {
