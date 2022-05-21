@@ -324,6 +324,14 @@ struct APIService {
         let endpoint = Endpoint.markAsRead(from: userID, auth: defaults.basicAuthInfo)
         return try await makeStatus(for: endpoint.urlRequest)
     }
+
+    /// Удаляет выбранный диалог
+    /// - Parameter dialogID: `id` диалога для удаления
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func deleteDialog(_ dialogID: Int) async throws -> Bool {
+        let endpoint = Endpoint.deleteDialog(id: dialogID, auth: defaults.basicAuthInfo)
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
 }
 
 private extension APIService {
@@ -555,6 +563,10 @@ private extension APIService {
         /// **POST** ${API}/messages/mark_as_read
         case markAsRead(from: Int, auth: AuthData)
 
+        // MARK: Удалить выбранный диалог
+        /// **DELETE** ${API}/dialogs/<dialog_id>
+        case deleteDialog(id: Int, auth: AuthData)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
             var request = URLRequest(url: url)
@@ -629,6 +641,8 @@ private extension APIService {
                 return "\(baseUrl)/messages/\(userID)"
             case .markAsRead:
                 return "\(baseUrl)/messages/mark_as_read"
+            case let .deleteDialog(dialogID, _):
+                return "\(baseUrl)/dialogs/\(dialogID)"
             }
         }
 
@@ -646,8 +660,8 @@ private extension APIService {
                     .getDialogs, .getMessages:
                 return .get
             case .declineFriendRequest, .deleteFriend, .deleteGroundComment, .deleteTrainHere,
-                    .deleteUser, .deleteIsGoingToEvent,
-                    .deleteEventComment, .deleteEvent:
+                    .deleteUser, .deleteIsGoingToEvent, .deleteEventComment, .deleteEvent,
+                    .deleteDialog:
                 return .delete
             }
         }
@@ -667,7 +681,7 @@ private extension APIService {
                 let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
                 let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
                 let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
-                let .markAsRead(_, auth):
+                let .markAsRead(_, auth), let .deleteDialog(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
             case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
                 return [:]
@@ -684,7 +698,7 @@ private extension APIService {
                     .getFutureEvents, .getPastEvents, .getEvent,
                     .postIsGoingToEvent, .deleteIsGoingToEvent,
                     .deleteEventComment, .deleteEvent, .getDialogs,
-                    .getMessages:
+                    .getMessages, .deleteDialog:
                 return nil
             case let .registration(form):
                 return Parameter.make(

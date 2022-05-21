@@ -10,8 +10,10 @@ import SwiftUI
 struct DialogListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogListViewModel()
+    @State private var editMode = EditMode.inactive
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
@@ -21,11 +23,18 @@ struct DialogListView: View {
                 .multilineTextAlignment(.center)
                 .padding()
                 .opacity(showDummyText ? 1 : .zero)
-            List($viewModel.list) { $dialog in
-                NavigationLink {
-                    DialogView(dialog: $dialog)
-                } label: {
-                    DialogListCell(with: dialog)
+            List {
+                ForEach($viewModel.list) { $dialog in
+                    NavigationLink {
+                        DialogView(dialog: $dialog)
+                    } label: {
+                        DialogListCell(with: dialog)
+                    }
+                }
+                .onDelete { indexSet in
+                    deleteDialogTask = Task {
+                        await viewModel.deleteDialog(at: indexSet.first, with: defaults)
+                    }
                 }
             }
             .disabled(viewModel.isLoading)
@@ -38,6 +47,14 @@ struct DialogListView: View {
         }
         .task { await askForDialogs() }
         .refreshable { await askForDialogs(refresh: true) }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                EditButton()
+            }
+        }
+        .environment(\.editMode, $editMode)
+        .onDisappear(perform: cancelTask)
+        .navigationBarTitleDisplayMode(titleMode)
     }
 }
 
@@ -51,6 +68,12 @@ private extension DialogListView {
         !showEmptyView && viewModel.list.isEmpty
     }
 
+    var titleMode: NavigationBarItem.TitleDisplayMode {
+        defaults.isAuthorized && !viewModel.list.isEmpty
+        ? .inline
+        : .large
+    }
+
     func askForDialogs(refresh: Bool = false) async {
         await viewModel.makeItems(with: defaults, refresh: refresh)
     }
@@ -62,6 +85,10 @@ private extension DialogListView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+    }
+
+    func cancelTask() {
+        deleteDialogTask?.cancel()
     }
 }
 
