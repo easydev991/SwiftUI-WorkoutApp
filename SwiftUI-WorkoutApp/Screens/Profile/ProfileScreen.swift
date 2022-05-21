@@ -1,5 +1,5 @@
 //
-//  ProfileView.swift
+//  ProfileScreen.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct ProfileScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
@@ -19,11 +19,11 @@ struct ProfileView: View {
     }
 }
 
-private extension ProfileView {
+private extension ProfileScreen {
     var content: some View {
         ZStack {
             if defaults.isAuthorized {
-                UserProfileView(userID: defaults.mainUserID)
+                UserDetailsView(userID: defaults.mainUserID)
             } else {
                 IncognitoProfileView()
             }
@@ -33,7 +33,7 @@ private extension ProfileView {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileScreen()
             .environmentObject(DefaultsService())
     }
 }

@@ -16,7 +16,7 @@ struct FriendRequestsView: View {
 
     var body: some View {
         List(viewModel.friendRequests, id: \.self) { item in
-            FriendRequestRow(model: item, acceptClbk: accept, declineClbk: decline)
+            FriendRequestCell(model: item, acceptClbk: accept, declineClbk: decline)
         }
         .disabled(viewModel.isLoading)
         .animation(.default, value: viewModel.friendRequests)

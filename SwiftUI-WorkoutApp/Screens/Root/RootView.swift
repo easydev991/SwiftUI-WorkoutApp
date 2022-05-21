@@ -55,7 +55,7 @@ private extension RootView {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map)
-            ProfileView()
+            ProfileScreen()
                 .onAppear { selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")

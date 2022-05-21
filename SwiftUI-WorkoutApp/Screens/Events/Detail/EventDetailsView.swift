@@ -169,7 +169,7 @@ private extension EventDetailsView {
     var authorSection: some View {
         Section("Организатор") {
             NavigationLink {
-                UserProfileView(userID: viewModel.event.authorID)
+                UserDetailsView(userID: viewModel.event.authorID)
             } label: {
                 HStack(spacing: 16) {
                     CacheImageView(url: viewModel.event.author?.avatarURL)

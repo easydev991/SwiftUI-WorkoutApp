@@ -1,5 +1,5 @@
 //
-//  UserProfileViewModel.swift
+//  UserDetailsViewModel.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 30.04.2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class UserProfileViewModel: ObservableObject {
+final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
     @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
@@ -21,9 +21,7 @@ final class UserProfileViewModel: ObservableObject {
         refresh: Bool = false
     ) async {
         let isMainUser = userID == defaults.mainUserID
-        if user.id != .zero, !refresh {
-            return
-        }
+        if user.id != .zero, !refresh { return }
         if !refresh { isLoading.toggle() }
         if isMainUser, !refresh,
            let mainUserInfo = defaults.mainUserInfo {

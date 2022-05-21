@@ -154,7 +154,7 @@ private extension SportsGroundView {
 
     var authorSection: some View {
         Section("Добавил") {
-            NavigationLink(destination: UserProfileView(userID: viewModel.ground.authorID)) {
+            NavigationLink(destination: UserDetailsView(userID: viewModel.ground.authorID)) {
                 HStack(spacing: 16) {
                     CacheImageView(url: viewModel.ground.author?.avatarURL)
                     Text(viewModel.ground.authorName)

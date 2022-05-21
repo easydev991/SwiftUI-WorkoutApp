@@ -1,5 +1,5 @@
 //
-//  FriendRequestRow.swift
+//  FriendRequestCell.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 08.05.2022.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FriendRequestRow: View {
+struct FriendRequestCell: View {
     let model: UserModel
     let acceptClbk: (Int) -> Void
     let declineClbk: (Int) -> Void
@@ -39,14 +39,14 @@ struct FriendRequestRow: View {
     }
 }
 
-private extension FriendRequestRow {
+private extension FriendRequestCell {
     func accept() { acceptClbk(model.id) }
     func decline() { declineClbk(model.id) }
 }
 
 struct FriendRequestRow_Previews: PreviewProvider {
     static var previews: some View {
-        FriendRequestRow(model: .emptyValue, acceptClbk: {_ in}, declineClbk: {_ in})
+        FriendRequestCell(model: .emptyValue, acceptClbk: {_ in}, declineClbk: {_ in})
             .previewDevice("iPhone 13 mini")
     }
 }

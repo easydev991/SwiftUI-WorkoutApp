@@ -22,7 +22,7 @@ struct UsersListView: View {
                 }
                 List(viewModel.users, id: \.self) { user in
                     NavigationLink {
-                        UserProfileView(userID: user.id)
+                        UserDetailsView(userID: user.id)
                             .navigationBarTitleDisplayMode(.inline)
                     } label: {
                         UserViewCell(model: user)

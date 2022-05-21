@@ -1,5 +1,5 @@
 //
-//  UserProfileView.swift
+//  UserDetailsView.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct UserProfileView: View {
+struct UserDetailsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = UserProfileViewModel()
+    @StateObject private var viewModel = UserDetailsViewModel()
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -51,7 +51,7 @@ struct UserProfileView: View {
     }
 }
 
-private extension UserProfileView {
+private extension UserDetailsView {
     var userInfoSection: some View {
         Section {
             HStack {
@@ -243,7 +243,7 @@ private extension UserProfileView {
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserProfileView(userID: DefaultsService().mainUserID)
+        UserDetailsView(userID: DefaultsService().mainUserID)
             .environmentObject(DefaultsService())
     }
 }

@@ -28,7 +28,7 @@ struct SearchUsersView: View {
                 Section("Результаты поиска") {
                     List(viewModel.users) { user in
                         NavigationLink {
-                            UserProfileView(userID: user.id)
+                            UserDetailsView(userID: user.id)
                         } label: {
                             UserViewCell(model: user)
                         }

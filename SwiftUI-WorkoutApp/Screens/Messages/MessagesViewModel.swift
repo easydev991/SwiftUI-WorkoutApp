@@ -7,4 +7,6 @@
 
 import Foundation
 
-final class MessagesViewModel: ObservableObject {}
+final class MessagesViewModel: ObservableObject {
+    
+}
