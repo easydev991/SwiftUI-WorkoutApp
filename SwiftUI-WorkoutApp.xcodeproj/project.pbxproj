@@ -373,13 +373,13 @@
 		6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */,
+				6798AA5C280AF5E500DB76F1 /* Constants.swift */,
 				6758B93A281E74DF001D83D8 /* Extensions */,
 				6798AA62280B1A5A00DB76F1 /* Services */,
 				6798AA5F280AF61700DB76F1 /* Models */,
 				6798AA4F280AF3F300DB76F1 /* Screens */,
 				6798AA5E280AF5F900DB76F1 /* Resources */,
-				6798AA5C280AF5E500DB76F1 /* Constants.swift */,
-				6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */,
 				6798AA43280AEDCA00DB76F1 /* Preview Content */,
 			);
 			path = "SwiftUI-WorkoutApp";
