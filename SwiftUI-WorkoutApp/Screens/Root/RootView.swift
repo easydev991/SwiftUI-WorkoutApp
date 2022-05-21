@@ -37,7 +37,7 @@ private extension RootView {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
-            MessagesView()
+            MessagesScreen()
                 .onAppear { selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")

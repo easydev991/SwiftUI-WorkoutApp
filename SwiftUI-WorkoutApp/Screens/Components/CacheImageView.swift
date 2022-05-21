@@ -29,7 +29,7 @@ struct CacheImageView: View {
 
 extension CacheImageView {
     enum Mode {
-        case user, sportsGround
+        case user, sportsGround, dialog
         var size: CGSize {
             self == .user
             ? .init(width: 36, height: 36)

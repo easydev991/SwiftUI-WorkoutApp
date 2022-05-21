@@ -290,6 +290,14 @@ struct APIService {
         let endpoint = Endpoint.deleteEvent(id: eventID, auth: defaults.basicAuthInfo)
         return try await makeStatus(for: endpoint.urlRequest)
     }
+
+
+    /// Запрашивает список диалогов для текущего пользователя
+    /// - Returns: Список диалогов
+    func getDialogs() async throws -> [DialogResponse] {
+        let endpoint = Endpoint.getDialogs(auth: defaults.basicAuthInfo)
+        return try await makeResult([DialogResponse].self, for: endpoint.urlRequest)
+    }
 }
 
 private extension APIService {
@@ -505,6 +513,10 @@ private extension APIService {
         /// **DELETE** ${API}/trainings/<event_id>
         case deleteEvent(id: Int, auth: AuthData)
 
+        // MARK: Получить список диалогов
+        /// **GET** ${API}/dialogs
+        case getDialogs(auth: AuthData)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
             var request = URLRequest(url: url)
@@ -571,6 +583,8 @@ private extension APIService {
                 return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
             case let .deleteEvent(id, _):
                 return "\(baseUrl)/trainings/\(id)"
+            case .getDialogs:
+                return "\(baseUrl)/dialogs"
             }
         }
 
@@ -583,7 +597,8 @@ private extension APIService {
                 return .post
             case .getUser, .getFriendsForUser, .getFriendRequests,
                     .getSportsGround, .findUsers, .getSportsGroundsForUser,
-                    .getFutureEvents, .getPastEvents, .getEvent:
+                    .getFutureEvents, .getPastEvents, .getEvent,
+                    .getDialogs:
                 return .get
             case .declineFriendRequest, .deleteFriend, .deleteGroundComment, .deleteTrainHere,
                     .deleteUser, .deleteIsGoingToEvent,
@@ -599,7 +614,7 @@ private extension APIService {
                 let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
                 let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
                 let .deleteFriend(_, auth), let .getSportsGround(_, auth),
-                let .findUsers(_, auth), let .deleteUser(auth),
+                let .findUsers(_, auth), let .deleteUser(auth), let .getDialogs(auth),
                 let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
                 let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
@@ -621,7 +636,7 @@ private extension APIService {
                     .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
                     .postIsGoingToEvent, .deleteIsGoingToEvent,
-                    .deleteEventComment, .deleteEvent:
+                    .deleteEventComment, .deleteEvent, .getDialogs:
                 return nil
             case let .registration(form):
                 return Parameter.make(

@@ -1,5 +1,5 @@
 //
-//  ProfileScreen.swift
+//  MessagesScreen.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,27 +7,26 @@
 
 import SwiftUI
 
-struct ProfileScreen: View {
+struct MessagesScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
         NavigationView {
             ZStack {
                 if defaults.isAuthorized {
-                    UserDetailsView(userID: defaults.mainUserID)
+                    DialogListView()
                 } else {
                     IncognitoProfileView()
                 }
             }
-            .navigationTitle("Профиль")
+            .navigationTitle("Сообщения")
         }
-        .ignoresSafeArea()
     }
 }
 
-struct ProfileView_Previews: PreviewProvider {
+struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileScreen()
+        MessagesScreen()
             .environmentObject(DefaultsService())
     }
 }

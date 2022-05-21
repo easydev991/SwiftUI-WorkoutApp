@@ -14,7 +14,9 @@ struct FormatterService {
            let fullDate = isoFormatter.date(from: dateString) {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.dateFormat = DateFormat.fullDateMediumTime.rawValue
+            formatter.dateFormat = fullDate.isToday
+            ? DateFormat.shortTime.rawValue
+            : DateFormat.fullDateMediumTime.rawValue
             return formatter.string(from: fullDate)
         } else {
             return ""
@@ -41,5 +43,6 @@ extension FormatterService {
         case isoShortDate = "yyyy-MM-dd"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
         case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
+        case shortTime = "HH:mm"
     }
 }

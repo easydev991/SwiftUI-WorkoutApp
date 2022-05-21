@@ -25,10 +25,6 @@ struct EventResponse: Codable, Identifiable {
     /// Количество участников
     let participantsCount: Int?
     var participantsOptional: [UserResponse]?
-    var participants: [UserResponse] {
-        get { participantsOptional ?? [] }
-        set { participantsOptional = newValue }
-    }
     /// `true` - предстоящее мероприятие, `false` - прошедшее
     let isCurrent: Bool?
     /// `true` - пользователь является организатором, `false` - не является
@@ -68,7 +64,6 @@ extension EventResponse {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .capitalizingFirstLetter
     }
-
     var shortAddress: String {
         if let countryID = countryID, let cityID = cityID {
             return ShortAddressService().addressFor(countryID, cityID)
@@ -76,40 +71,36 @@ extension EventResponse {
             return "Не указан"
         }
     }
-
     var hasDescription: Bool {
         !formattedDescription.isEmpty
     }
-
     var formattedDescription: String {
         eventDescription.valueOrEmpty
             .withoutHTML
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
-
     var sportsGround: SportsGround {
         get {
             .init(id: sportsGroundID.valueOrZero, typeID: .zero, address: fullAddress, author: author, canEdit: false, mine: false, cityID: cityID, sizeID: nil, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
         }
         set {}
     }
-
     var previewImageURL: URL? {
         .init(string: previewImageStringURL.valueOrEmpty)
     }
-
     var eventDateString: String {
         FormatterService.readableDate(from: beginDate)
     }
-
+    var participants: [UserResponse] {
+        get { participantsOptional ?? [] }
+        set { participantsOptional = newValue }
+    }
     var authorID: Int {
         (author?.userID).valueOrZero
     }
-
     static var emptyValue: EventResponse {
         .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
     }
-
     static var mock: EventResponse {
         Bundle.main.decodeJson(
             [EventResponse].self,
