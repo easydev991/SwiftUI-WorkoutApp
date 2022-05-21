@@ -33,17 +33,12 @@ struct CommentView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 32) {
-                sendButtonStack
-                textView
-                Spacer()
-            }
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
-        }
-        .disabled(viewModel.isLoading)
-        .padding()
+        SendMessageView(
+            text: $commentText,
+            isLoading: viewModel.isLoading,
+            isSendButtonDisabled: isSendButtonDisabled,
+            sendClbk: sendAction
+        )
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: dismissErrorAlert) { TextOk() }
         }
@@ -70,52 +65,26 @@ extension CommentView {
 }
 
 private extension CommentView {
-    var sendButtonStack: some View {
-        HStack {
-            Spacer()
-            sendButton
-        }
-    }
-
-    var textView: some View {
-        TextEditor(text: $commentText)
-            .frame(height: 200)
-            .padding(.horizontal, 8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-            )
-            .focused($isFocused)
-            .onAppear(perform: showKeyboard)
-    }
-
-    var sendButton: some View {
-        Button {
-            switch mode {
-            case .newForGround, .newForEvent:
-                addCommentTask = Task {
-                    await viewModel.addComment(
-                        mode,
-                        comment: commentText,
-                        defaults: defaults
-                    )
-                }
-            case .editGround, .editEvent:
-                editCommentTask = Task {
-                    await viewModel.editComment(
-                        for: mode,
-                        newComment: commentText,
-                        with: defaults
-                    )
-                }
+    func sendAction() {
+        switch mode {
+        case .newForGround, .newForEvent:
+            addCommentTask = Task {
+                await viewModel.addComment(
+                    mode,
+                    comment: commentText,
+                    defaults: defaults
+                )
             }
-            isFocused.toggle()
-        } label: {
-            Label("Отправить", systemImage: "paperplane.fill")
+        case .editGround, .editEvent:
+            editCommentTask = Task {
+                await viewModel.editComment(
+                    for: mode,
+                    newComment: commentText,
+                    with: defaults
+                )
+            }
         }
-        .tint(.blue)
-        .buttonStyle(.borderedProminent)
-        .disabled(isSendButtonDisabled)
+        isFocused.toggle()
     }
 
     func dismiss(isSuccess: Bool) {

@@ -13,6 +13,7 @@ final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
     @Published private(set) var user = UserModel.emptyValue
     @Published private(set) var errorMessage = ""
+    @Published private(set) var isMessageSent = false
 
     @MainActor
     func makeUserInfo(
@@ -59,6 +60,20 @@ final class UserDetailsViewModel: ObservableObject {
                 case .removeFriend:
                     friendActionOption = .sendFriendRequest
                 }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func send(_ message: String, to userID: Int, with defaults: DefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService(with: defaults).sendMessage(message, to: userID) {
+                isMessageSent.toggle()
             }
         } catch {
             errorMessage = error.localizedDescription

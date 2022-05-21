@@ -16,6 +16,7 @@ struct UserDetailsView: View {
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var friendActionTask: Task<Void, Never>?
+    @State private var sendMessageTask: Task<Void, Never>?
     let userID: Int
 
     var body: some View {
@@ -39,11 +40,13 @@ struct UserDetailsView: View {
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.isMessageSent, perform: endMessaging)
         .sheet(isPresented: $isMessaging) {
-            MessagingView(
-                with: userID,
-                message: $messageText,
-                isActive: $isMessaging
+            SendMessageView(
+                text: $messageText,
+                isLoading: viewModel.isLoading,
+                isSendButtonDisabled: messageText.isEmpty,
+                sendClbk: sendMessage
             )
         }
         .toolbar {
@@ -54,7 +57,7 @@ struct UserDetailsView: View {
                 }
             }
         }
-        .onDisappear(perform: cancelFriendActionTask)
+        .onDisappear(perform: cancelTasks)
         .task(priority: .userInitiated) { await askForUserInfo() }
         .navigationTitle("Профиль")
     }
@@ -225,6 +228,19 @@ private extension UserDetailsView {
         }
     }
 
+    func sendMessage() {
+        sendMessageTask = Task {
+            await viewModel.send(messageText, to: userID, with: defaults)
+        }
+    }
+
+    func endMessaging(isSuccess: Bool) {
+        if isSuccess {
+            messageText = ""
+            isMessaging.toggle()
+        }
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
@@ -242,8 +258,8 @@ private extension UserDetailsView {
         userID == defaults.mainUserID
     }
 
-    func cancelFriendActionTask() {
-        friendActionTask?.cancel()
+    func cancelTasks() {
+        [friendActionTask, sendMessageTask].forEach { $0?.cancel() }
     }
 }
 
