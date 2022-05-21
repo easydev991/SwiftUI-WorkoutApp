@@ -31,11 +31,9 @@ struct LoginView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: viewModel.clearErrorMessage) { TextOk() }
         }
-        .alert(Constants.Alert.success, isPresented: $showResetSuccessfulAlert, actions: {
+        .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
             Button(action: viewModel.resetSuccessfulAlertClosed) { TextOk() }
-        }, message: {
-            Text(Constants.Alert.resetSuccessful)
-        })
+        }
         .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
         .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

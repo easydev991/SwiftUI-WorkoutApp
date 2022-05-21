@@ -385,128 +385,128 @@ private extension APIService {
 // MARK: - Endpoint
 private extension APIService {
     enum Endpoint {
-        /// Регистрация:
+        // MARK: Регистрация
         /// **POST** ${API}/registration
         case registration(form: MainUserForm)
 
-        /// Проверка входа с базовой авторизацией:
+        // MARK: Авторизация
         /// **POST** ${API}/auth/login,
         case login(auth: AuthData)
 
-        /// Восстановление пароля:
+        // MARK: Восстановление пароля
         /// **POST** ${API}/auth/reset
         case resetPassword(login: String)
 
-        /// Изменить данные пользователя:
+        // MARK: Изменить данные пользователя
         /// **POST** ${API}/users/<user_id>
         case editUser(id: Int, form: MainUserForm, auth: AuthData)
 
-        /// Изменение пароля:
+        // MARK: Изменить пароль
         /// **POST** ${API}/auth/changepass
         case changePassword(currentPass: String, newPass: String, auth: AuthData)
 
-        /// Удаляет профиль текущего пользователя, от которого пришел запрос:
+        // MARK: Удалить профиль текущего пользователя
         /// **DELETE** ${API}/users/current
         case deleteUser(auth: AuthData)
 
-        /// Получение профиля пользователя:
+        // MARK: Получить профиль пользователя
         /// **GET** ${API}/users/<id>
         /// `id` - идентификатор пользователя, чей профиль нужно получить
         case getUser(id: Int, auth: AuthData)
 
-        /// Получение списка друзей:
+        // MARK: Получить список друзей пользователя
         /// **GET** ${API}/users/<id>/friends
         /// `id` - идентификатор пользователя, чьих друзей нужно получить
         case getFriendsForUser(id: Int, auth: AuthData)
 
-        /// Получение списка заявок на добавление в друзья:
+        // MARK: Получить список заявок на добавление в друзья
         /// **GET** ${API}/friends/requests
         case getFriendRequests(auth: AuthData)
 
-        /// Принять заявку на добавление в друзья:
+        // MARK: Принять заявку на добавление в друзья
         /// **POST** ${API}/friends/<id>/accept
         case acceptFriendRequest(from: Int, auth: AuthData)
 
-        /// Отклонить заявку на добавление в друзья:
+        // MARK: Отклонить заявку на добавление в друзья
         /// **DELETE**  ${API}/friends/<user_id>/accept
         case declineFriendRequest(from: Int, auth: AuthData)
 
-        /// Отправить запрос на добавление в друзья:
+        // MARK: Отправить запрос на добавление в друзья
         /// **POST**  ${API}/friends/<user_id>
         case sendFriendRequest(to: Int, auth: AuthData)
 
-        /// Удалить из списка друзей:
+        // MARK: Удалить пользователя из списка друзей
         /// **DELETE**  ${API}/friends/<user_id>
         case deleteFriend(_ friendID: Int, auth: AuthData)
 
-        /// Найти пользователей с указанным именем:
+        // MARK: Найти пользователей по логину
         /// **GET** ${API}/users/search?name=<user>
         case findUsers(with: String, auth: AuthData)
 
-        /// Получение выбранной площадки по ее номеру `id`:
+        // MARK: Получить выбранную площадку:
         /// **GET** ${API}/areas/<id>
         case getSportsGround(id: Int, auth: AuthData)
 
-        /// Добавить комментарий для площадки:
+        // MARK: Добавить комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments
         case addCommentToSportsGround(groundID: Int, comment: String, auth: AuthData)
 
-        /// Изменить свой комментарий для площадки:
+        // MARK: Изменить свой комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
         case editGroundComment(groundID: Int, commentID: Int, newComment: String, auth: AuthData)
 
-        /// Удалить свой комментарий для площадки:
+        // MARK: Удалить свой комментарий для площадки
         /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
         case deleteGroundComment(_ groundID: Int, commentID: Int, auth: AuthData)
 
-        /// Получение списка площадок, где тренируется пользователь:
+        // MARK: Получить список площадок, где тренируется пользователь
         /// **GET** ${API}/users/<user_id>/areas
         case getSportsGroundsForUser(_ userID: Int, auth: AuthData)
 
-        /// Сообщить, что пользователь тренируется на площадке:
+        // MARK: Сообщить, что пользователь тренируется на площадке
         /// **POST** ${API}/areas/<area_id>/train
         case postTrainHere(_ groundID: Int, auth: AuthData)
 
-        /// Сообщить, что пользователь не тренируется на площадке:
+        // MARK: Сообщить, что пользователь не тренируется на площадке
         /// **DELETE** ${API}/areas/<area_id>/train
         case deleteTrainHere(_ groundID: Int, auth: AuthData)
 
-        /// Получить список предстоящих мероприятий:
+        // MARK: Получить список предстоящих мероприятий
         /// **GET** ${API}/trainings/current
         case getFutureEvents
 
-        /// Получить краткий список прошедших мероприятий:
+        // MARK: Получить краткий список прошедших мероприятий
         /// **GET** ${API}/trainings/last
         case getPastEvents
 
-        /// Получить информацию о конкретном мероприятии:
+        // MARK: Получить всю информацию о мероприятии
         /// **GET** ${API}/trainings/<event_id>
         case getEvent(id: Int)
 
-        /// Сообщить, что пользователь пойдет на мероприятие
+        // MARK: Сообщить, что пользователь пойдет на мероприятие
         case postIsGoingToEvent(id: Int, auth: AuthData)
 
-        /// Сообщить, что пользователь не пойдет на мероприятие
+        // MARK: Сообщить, что пользователь не пойдет на мероприятие
         case deleteIsGoingToEvent(id: Int, auth: AuthData)
 
-        /// Добавить комментарий для мероприятия:
+        // MARK: Добавить комментарий для мероприятия
         /// **POST** ${API}/trainings/<event_id>/comments
         case addCommentToEvent(eventID: Int, comment: String, auth: AuthData)
 
-        /// Удалить свой комментарий для мероприятия:
+        // MARK: Удалить свой комментарий для мероприятия
         /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
         case deleteEventComment(_ eventID: Int, commentID: Int, auth: AuthData)
 
-        /// Изменить свой комментарий для мероприятия:
+        // MARK: Изменить свой комментарий для мероприятия
         /// **POST** ${API}/trainings/<training_id>/comments/<comment_id>
         case editEventComment(eventID: Int, commentID: Int, newComment: String, auth: AuthData)
 
-        /// Удалить мероприятие:
+        // MARK: Удалить мероприятие
         /// **DELETE** ${API}/trainings/<event_id>
         case deleteEvent(id: Int, auth: AuthData)
 
         var urlRequest: URLRequest? {
-            guard let url = URL(string: urlString) else { return nil }
+            guard let url = URL(string: urlPath) else { return nil }
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             request.httpBody = httpBody
@@ -514,7 +514,7 @@ private extension APIService {
             return request
         }
 
-        private var urlString: String {
+        private var urlPath: String {
             let baseUrl = Constants.API.baseURL
             switch self {
             case .registration:
@@ -607,8 +607,7 @@ private extension APIService {
                 let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
                 let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
-            case .registration, .resetPassword, .getFutureEvents,
-                    .getPastEvents, .getEvent:
+            case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
                 return [:]
             }
         }
@@ -625,7 +624,7 @@ private extension APIService {
                     .deleteEventComment, .deleteEvent:
                 return nil
             case let .registration(form):
-                return Parameter.makeParameters(
+                return Parameter.make(
                     from: [
                         .name: form.userName,
                         .fullname: form.fullName,
@@ -638,7 +637,7 @@ private extension APIService {
                     ]
                 )
             case let .editUser(_, form, _):
-                return Parameter.makeParameters(
+                return Parameter.make(
                     from: [
                         .name: form.userName,
                         .fullname: form.fullName,
@@ -650,16 +649,16 @@ private extension APIService {
                     ]
                 )
             case let .resetPassword(login):
-                return Parameter.makeParameters(from: [.usernameOrEmail: login])
+                return Parameter.make(from: [.usernameOrEmail: login])
             case let .changePassword(current, new, _):
-                return Parameter.makeParameters(
+                return Parameter.make(
                     from: [.password: current, .newPassword: new]
                 )
             case let .addCommentToSportsGround(_, comment, _),
                 let .addCommentToEvent(_, comment, _),
                 let .editGroundComment(_, _, comment, _),
                 let .editEventComment(_, _, comment, _):
-                return Parameter.makeParameters(from: [.comment: comment])
+                return Parameter.make(from: [.comment: comment])
             }
         }
 
@@ -698,8 +697,8 @@ private extension APIService {
                 case birthDate = "birth_date"
             }
 
-            static func makeParameters(from params: [Key: String]) -> Data? {
-                params
+            static func make(from dict: [Key: String]) -> Data? {
+                dict
                     .map { $0.key.rawValue + "=" + $0.value }
                     .joined(separator: "&")
                     .data(using: .utf8)

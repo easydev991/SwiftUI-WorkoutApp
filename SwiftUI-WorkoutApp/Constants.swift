@@ -36,9 +36,6 @@ enum Constants {
     }
 
     enum Alert {
-        static let success = "Успех!"
-        static let error = "Ошибка"
-        static let authError = "Ошибка авторизации"
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let friendRequestSent = "Запрос отправлен!"
         static let eventCreated = "Мероприятие создано!"
@@ -46,9 +43,6 @@ enum Constants {
         static let logout = "Выйти из учетной записи?"
         static let deleteProfile = "Удалить учетную запись без возможности восстановления?"
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
-        static let resetPasswordError = "Не удалось восстановить пароль"
-        static let changePasswordError = "Не удалось изменить пароль"
-        static let cannotReadData = "Не удается прочитать загруженные данные"
     }
 
     enum Gender: String, CaseIterable, CustomStringConvertible, Codable {
@@ -57,9 +51,7 @@ enum Constants {
         init(_ code: Int?) {
             self = code == .zero ? .male : .female
         }
-        var code: Int {
-            self == .male ? .zero : 1
-        }
+        var code: Int { self == .male ? .zero : 1 }
         var description: String {
             self == .male ? "Мужчина" : "Женщина"
         }

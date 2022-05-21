@@ -36,14 +36,10 @@ final class UsersListViewModel: ObservableObject {
     ) async {
         isLoading.toggle()
         do {
-            let isSuccess = try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept)
-            if isSuccess {
-                self.friendRequests = defaults.friendRequestsList.map(UserModel.init)
+            if try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
+                friendRequests = defaults.friendRequestsList.map(UserModel.init)
             }
         } catch {
-#if DEBUG
-            print("--- error acceptFriendRequest: \(error)")
-#endif
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()

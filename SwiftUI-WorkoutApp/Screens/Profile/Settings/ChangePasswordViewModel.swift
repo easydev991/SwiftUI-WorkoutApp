@@ -29,16 +29,14 @@ final class ChangePasswordViewModel: ObservableObject {
     @MainActor
     func changePasswordAction() async {
         isLoading.toggle()
-        let isSuccess = try? await APIService().changePassword(
-            current: currentPasswordText,
-            new: newPasswordText
-        )
-        isLoading.toggle()
-        if isSuccess.isTrue {
-            isChangeSuccessful.toggle()
-        } else {
-            errorMessage = Constants.Alert.changePasswordError
+        do {
+            if try await APIService().changePassword(current: currentPasswordText, new: newPasswordText) {
+                isChangeSuccessful.toggle()
+            }
+        } catch {
+            errorMessage = error.localizedDescription
         }
+        isLoading.toggle()
     }
 
     func errorAlertClosed() { errorMessage = "" }

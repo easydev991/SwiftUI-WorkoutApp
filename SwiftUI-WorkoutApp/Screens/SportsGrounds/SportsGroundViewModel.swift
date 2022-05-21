@@ -22,13 +22,7 @@ final class SportsGroundViewModel: ObservableObject {
         }
         if !refresh { isLoading.toggle() }
         do {
-            let model = try await APIService(with: defaults).getSportsGround(id: groundID)
-            if model.id == .zero {
-                errorMessage = Constants.Alert.cannotReadData
-                if !refresh { isLoading.toggle() }
-                return
-            }
-            ground = model
+            ground = try await APIService(with: defaults).getSportsGround(id: groundID)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -40,8 +34,7 @@ final class SportsGroundViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).deleteComment(from: .ground(id: groundID), commentID: commentID)
-            if isOk {
+            if try await APIService(with: defaults).deleteComment(from: .ground(id: groundID), commentID: commentID) {
                 ground.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
@@ -55,8 +48,7 @@ final class SportsGroundViewModel: ObservableObject {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: trainHere)
-            if isOk {
+            if try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: trainHere) {
                 ground.trainHere = trainHere
                 if trainHere, let userInfo = defaults.mainUserInfo {
                     ground.participants.append(userInfo)

@@ -196,7 +196,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(eventID, with: defaults, refresh: true)
+        await viewModel.askForEvent(eventID, with: defaults, refresh: refresh)
     }
 
     func changeIsGoingToEvent(newStatus: Bool) {

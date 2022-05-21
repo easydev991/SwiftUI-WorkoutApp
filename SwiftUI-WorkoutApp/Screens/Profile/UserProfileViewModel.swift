@@ -31,11 +31,6 @@ final class UserProfileViewModel: ObservableObject {
         } else {
             do {
                 let info = try await APIService(with: defaults).getUserByID(userID)
-                if info.userID == nil {
-                    errorMessage = Constants.Alert.cannotReadData
-                    if !refresh { isLoading.toggle() }
-                    return
-                }
                 if !isMainUser {
                     friendActionOption = defaults.friendsIdsList.contains(userID)
                     ? .removeFriend
@@ -59,8 +54,7 @@ final class UserProfileViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isSuccess = try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption)
-            if isSuccess {
+            if try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption) {
                 switch friendActionOption {
                 case .sendFriendRequest:
                     requestedFriendship.toggle()

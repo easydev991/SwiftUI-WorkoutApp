@@ -49,11 +49,8 @@ final class LoginViewModel: ObservableObject {
         if canRestorePassword {
             isLoading.toggle()
             do {
-                let isSuccess = try await APIService().resetPassword(for: login)
-                if isSuccess {
+                if try await APIService().resetPassword(for: login) {
                     showResetSuccessfulAlert.toggle()
-                } else {
-                    errorMessage = Constants.Alert.resetPasswordError
                 }
             } catch {
                 errorMessage = error.localizedDescription

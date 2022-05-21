@@ -18,7 +18,7 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func askForEvent(_ id: Int, with defaults: DefaultsService, refresh: Bool = false) async {
+    func askForEvent(_ id: Int, with defaults: DefaultsService, refresh: Bool) async {
         if (isLoading || event.id != .zero) && !refresh {
             return
         }
@@ -38,8 +38,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).changeIsGoingToEvent(for: id, isGoing: isGoing)
-            if isOk {
+            if try await APIService(with: defaults).changeIsGoingToEvent(for: id, isGoing: isGoing) {
                 self.isGoing = isGoing
                 if isGoing, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
@@ -58,8 +57,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).deleteComment(from: .event(id: eventID), commentID: commentID)
-            if isOk {
+            if try await APIService(with: defaults).deleteComment(from: .event(id: eventID), commentID: commentID) {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
@@ -73,8 +71,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).delete(eventID: id)
-            isDeleted = isOk
+            isDeleted = try await APIService(with: defaults).delete(eventID: id)
         } catch {
             errorMessage = error.localizedDescription
         }

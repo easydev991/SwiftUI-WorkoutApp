@@ -67,8 +67,9 @@ final class AccountInfoViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
-            if isOk { isProfileSaved.toggle() }
+            if try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm) {
+                isProfileSaved.toggle()
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
