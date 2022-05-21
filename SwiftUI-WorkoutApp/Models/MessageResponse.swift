@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MessageResponse: Codable, Identifiable {
+struct MessageResponse: Codable, Identifiable, Hashable {
     let id: Int
     let message: String?
     let userID: Int?

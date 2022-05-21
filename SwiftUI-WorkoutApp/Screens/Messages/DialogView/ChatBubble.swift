@@ -29,7 +29,7 @@ struct ChatBubble<Content: View>: View {
                 Spacer()
             }
         }
-        .padding([messageType == .incoming ? .leading : .trailing, .top, .bottom], 20)
+        .padding([messageType == .incoming ? .leading : .trailing, .top, .bottom], 10)
         .padding(messageType == .sent ? .leading : .trailing, 50)
     }
 }

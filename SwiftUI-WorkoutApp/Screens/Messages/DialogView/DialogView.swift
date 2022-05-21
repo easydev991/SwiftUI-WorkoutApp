@@ -12,49 +12,57 @@ struct DialogView: View {
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @Namespace var chatScrollView
     @State private var sendMessageTask: Task<Void, Never>?
 
     @Binding var dialog: DialogResponse
 
     var body: some View {
-        VStack {
-            CustomScrollView(scrollToEnd: true) {
-                LazyVStack {
-                    ForEach(viewModel.list) { message in
-                        ChatBubble(messageType(for: message)) {
-                            VStack(alignment: .trailing, spacing: 8) {
-                                Text(message.formattedMessage)
-                                    .padding(.top, 12)
-                                    .padding(.horizontal, 20)
-                                Text(message.messageDateString)
-                                    .font(.caption2)
-                                    .padding(.trailing, 16)
-                                    .padding(.bottom, 4)
-                                    .opacity(0.75)
+        ScrollViewReader { scrollView in
+            VStack {
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewModel.list) { message in
+                            ChatBubble(messageType(for: message)) {
+                                VStack(alignment: .trailing, spacing: 8) {
+                                    Text(message.formattedMessage)
+                                        .padding(.top, 12)
+                                        .padding(.horizontal, 20)
+                                    Text(message.messageDateString)
+                                        .font(.caption2)
+                                        .padding(.horizontal, 16)
+                                        .padding(.bottom, 4)
+                                        .opacity(0.75)
+                                }
+                                .foregroundColor(.white)
+                                .background(Color(uiColor: messageType(for: message).color))
                             }
-                            .foregroundColor(.white)
-                            .background(Color(uiColor: messageType(for: message).color))
+                        }
+                    }
+                    .id(chatScrollView)
+                    .onChange(of: viewModel.list) { _ in
+                        withAnimation {
+                            scrollView.scrollTo(chatScrollView, anchor: .bottom)
                         }
                     }
                 }
-            }
-            .padding(.top)
-            HStack {
-                TextEditor(text: $viewModel.newMessage)
-                    .frame(maxHeight: 40)
-                    .padding(.horizontal, 8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.gray.opacity(0.5), lineWidth: 1)
-                    )
-                Button(action: sendMessage) {
-                    Image(systemName: "paperplane.fill")
-                        .font(.title)
-                        .tint(.blue)
+                HStack {
+                    TextEditor(text: $viewModel.newMessage)
+                        .frame(maxHeight: 40)
+                        .padding(.horizontal, 8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(.gray.opacity(0.5), lineWidth: 1)
+                        )
+                    Button(action: sendMessage) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title)
+                            .tint(.blue)
+                    }
+                    .disabled(viewModel.newMessage.isEmpty || viewModel.isLoading)
                 }
-                .disabled(viewModel.newMessage.isEmpty || viewModel.isLoading)
+                .padding()
             }
-            .padding()
         }
         .onChange(of: viewModel.markedAsRead, perform: updateDialogUnreadCount)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
