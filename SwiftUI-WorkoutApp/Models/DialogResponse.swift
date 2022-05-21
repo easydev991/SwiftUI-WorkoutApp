@@ -45,6 +45,9 @@ extension DialogResponse {
         get { unreadCountOptional.valueOrZero }
         set { unreadCountOptional = newValue }
     }
+    static var emptyValue: DialogResponse {
+        .init(id: .zero, anotherUserImageStringURL: nil, anotherUserName: nil, lastMessageText: nil, lastMessageDate: nil, anotherUserID: nil, createdDate: nil)
+    }
     static var mock: DialogResponse {
         .init(
             id: 88777,

@@ -298,6 +298,32 @@ struct APIService {
         let endpoint = Endpoint.getDialogs(auth: defaults.basicAuthInfo)
         return try await makeResult([DialogResponse].self, for: endpoint.urlRequest)
     }
+
+    /// Запрашивает сообщения для выбранного диалога, по умолчанию лимит 30 сообщений
+    /// - Parameter dialog: `id` диалога
+    /// - Returns: Сообщения в диалоге
+    func getMessages(for dialog: Int) async throws -> [MessageResponse] {
+        let endpoint = Endpoint.getMessages(dialogID: dialog, auth: defaults.basicAuthInfo)
+        return try await makeResult([MessageResponse].self, for: endpoint.urlRequest)
+    }
+
+    /// Отправляет сообщение указанному пользователю
+    /// - Parameters:
+    ///   - message: отправляемое сообщение
+    ///   - userID: `id` получателя сообщения
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func sendMessage(_ message: String, to userID: Int) async throws -> Bool {
+        let endpoint = Endpoint.sendMessageTo(message, userID, auth: defaults.basicAuthInfo)
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
+
+    /// Отмечает сообщения от выбранного пользователя как прочитанные
+    /// - Parameter userID: `id` выбранного пользователя
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func markAsRead(from userID: Int) async throws -> Bool {
+        let endpoint = Endpoint.markAsRead(from: userID, auth: defaults.basicAuthInfo)
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
 }
 
 private extension APIService {
@@ -517,6 +543,18 @@ private extension APIService {
         /// **GET** ${API}/dialogs
         case getDialogs(auth: AuthData)
 
+        // MARK: Получить сообщения в диалоге
+        /// **GET** ${API}/dialogs/<dialog_id>/messages
+        case getMessages(dialogID: Int, auth: AuthData)
+
+        // MARK: Отправить сообщение пользователю
+        /// **POST** ${API}/messages/<user_id>
+        case sendMessageTo(_ message: String, _ userID: Int, auth: AuthData)
+
+        // MARK: Отметить сообщения как прочитанные
+        /// **POST** ${API}/messages/mark_as_read
+        case markAsRead(from: Int, auth: AuthData)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
             var request = URLRequest(url: url)
@@ -585,6 +623,12 @@ private extension APIService {
                 return "\(baseUrl)/trainings/\(id)"
             case .getDialogs:
                 return "\(baseUrl)/dialogs"
+            case let .getMessages(dialogID, _):
+                return "\(baseUrl)/dialogs/\(dialogID)/messages"
+            case let .sendMessageTo(_, userID, _):
+                return "\(baseUrl)/messages/\(userID)"
+            case .markAsRead:
+                return "\(baseUrl)/messages/mark_as_read"
             }
         }
 
@@ -593,12 +637,13 @@ private extension APIService {
             case .registration, .login, .editUser, .resetPassword,
                     .changePassword, .acceptFriendRequest, .sendFriendRequest,
                     .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                    .postIsGoingToEvent, .addCommentToEvent, .editEventComment:
+                    .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
+                    .sendMessageTo, .markAsRead:
                 return .post
             case .getUser, .getFriendsForUser, .getFriendRequests,
                     .getSportsGround, .findUsers, .getSportsGroundsForUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
-                    .getDialogs:
+                    .getDialogs, .getMessages:
                 return .get
             case .declineFriendRequest, .deleteFriend, .deleteGroundComment, .deleteTrainHere,
                     .deleteUser, .deleteIsGoingToEvent,
@@ -620,7 +665,9 @@ private extension APIService {
                 let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
                 let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
                 let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
-                let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth):
+                let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
+                let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
+                let .markAsRead(_, auth):
                 return HTTPHeader.basicAuth(with: auth)
             case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
                 return [:]
@@ -636,7 +683,8 @@ private extension APIService {
                     .postTrainHere, .deleteTrainHere, .deleteUser,
                     .getFutureEvents, .getPastEvents, .getEvent,
                     .postIsGoingToEvent, .deleteIsGoingToEvent,
-                    .deleteEventComment, .deleteEvent, .getDialogs:
+                    .deleteEventComment, .deleteEvent, .getDialogs,
+                    .getMessages:
                 return nil
             case let .registration(form):
                 return Parameter.make(
@@ -674,6 +722,10 @@ private extension APIService {
                 let .editGroundComment(_, _, comment, _),
                 let .editEventComment(_, _, comment, _):
                 return Parameter.make(from: [.comment: comment])
+            case let .sendMessageTo(message, _, _):
+                return Parameter.make(from: [.message: message])
+            case let .markAsRead(userID, _):
+                return Parameter.make(from: [.fromUserID: userID.description])
             }
         }
 
@@ -703,13 +755,14 @@ private extension APIService {
 
         enum Parameter {
             enum Key: String {
-                case name, fullname, email, password, comment
+                case name, fullname, email, password, comment, message
                 case genderCode = "gender"
                 case usernameOrEmail = "username_or_email"
                 case newPassword = "new_password"
                 case countryID = "country_id"
                 case cityID = "city_id"
                 case birthDate = "birth_date"
+                case fromUserID = "from_user_id"
             }
 
             static func make(from dict: [Key: String]) -> Data? {

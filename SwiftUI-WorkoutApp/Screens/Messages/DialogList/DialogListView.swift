@@ -21,10 +21,9 @@ struct DialogListView: View {
                 .multilineTextAlignment(.center)
                 .padding()
                 .opacity(showDummyText ? 1 : .zero)
-            List(viewModel.list) { dialog in
+            List($viewModel.list) { $dialog in
                 NavigationLink {
-#warning("TODO: сверстать экран с отдельным чатом")
-                    Text("Детальный экран диалога с пользователем \(dialog.anotherUserName.valueOrEmpty)")
+                    DialogView(dialog: $dialog)
                 } label: {
                     DialogListCell(with: dialog)
                 }

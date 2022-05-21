@@ -62,7 +62,12 @@ enum Constants {
         case removeFriend = "Удалить из друзей"
     }
 
-    enum BubblePosition { case incoming, sent }
+    enum MessageType {
+        case incoming, sent
+        var color: UIColor {
+            self == .incoming ? .systemGreen : .systemBlue
+        }
+    }
 
     enum CommentType {
         /// Комментарий к площадке

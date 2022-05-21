@@ -8,35 +8,35 @@
 import SwiftUI
 
 struct ChatBubble<Content: View>: View {
-    private let position: Constants.BubblePosition
+    private let messageType: Constants.MessageType
     private let content: () -> Content
 
     init(
-        position: Constants.BubblePosition,
+        _ messageType: Constants.MessageType,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self.position = position
+        self.messageType = messageType
         self.content = content
     }
 
     var body: some View {
         HStack {
-            if position == .sent {
+            if messageType == .sent {
                 Spacer()
             }
-            content().clipShape(ChatBubbleShape(position))
-            if position == .incoming {
+            content().clipShape(ChatBubbleShape(messageType))
+            if messageType == .incoming {
                 Spacer()
             }
         }
-        .padding([position == .incoming ? .leading : .trailing, .top, .bottom], 20)
-        .padding(position == .sent ? .leading : .trailing, 50)
+        .padding([messageType == .incoming ? .leading : .trailing, .top, .bottom], 20)
+        .padding(messageType == .sent ? .leading : .trailing, 50)
     }
 }
 
 struct ChatBubbleShape: Shape {
-    private let position: Constants.BubblePosition
-    init(_ position: Constants.BubblePosition) {
+    private let position: Constants.MessageType
+    init(_ position: Constants.MessageType) {
         self.position = position
     }
 
@@ -138,17 +138,31 @@ struct ChatBubbleShape: Shape {
 struct ChatBubble_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            ChatBubble(position: .incoming) {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper. ")
-                    .padding(.all, 20)
-                    .foregroundColor(.white)
-                    .background(.blue)
+            ChatBubble(.incoming) {
+                VStack(alignment: .trailing, spacing: 8) {
+                    Text("orem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper.")
+                        .padding([.top, .leading, .trailing], 12)
+                    Text("11:22")
+                        .font(.caption2)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 4)
+                        .opacity(0.75)
+                }
+                .foregroundColor(.white)
+                .background(.blue)
             }
-            ChatBubble(position: .sent) {
-                Text("Lorem ipsumper.")
-                    .padding(.all, 20)
-                    .foregroundColor(.white)
-                    .background(.green)
+            ChatBubble(.sent) {
+                VStack(alignment: .trailing, spacing: 8) {
+                    Text("Lorem ipsumper.")
+                        .padding([.top, .leading, .trailing], 12)
+                    Text("11:22")
+                        .font(.caption2)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 4)
+                        .opacity(0.75)
+                }
+                .foregroundColor(.white)
+                .background(.green)
             }
         }
         .textSelection(.enabled)

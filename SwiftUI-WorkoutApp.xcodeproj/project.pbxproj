@@ -103,6 +103,10 @@
 		67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9167D2838DC3E0098D3CB /* DialogListCell.swift */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
 		67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916822838E2520098D3CB /* DialogListViewModel.swift */; };
+		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
+		67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916872838F4C40098D3CB /* DialogViewModel.swift */; };
+		67D9168A2838F79D0098D3CB /* MessageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916892838F79D0098D3CB /* MessageResponse.swift */; };
+		67D9168C2838F8FA0098D3CB /* ChatScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9168B2838F8FA0098D3CB /* ChatScrollView.swift */; };
 		67DD1120282C3CE400E3917C /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DD111F282C3CE400E3917C /* CommentViewModel.swift */; };
 		67E4266D2821429500DF82A7 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266C2821429500DF82A7 /* UserModel.swift */; };
 		67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */; };
@@ -211,6 +215,10 @@
 		67D9167D2838DC3E0098D3CB /* DialogListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListCell.swift; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916822838E2520098D3CB /* DialogListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListViewModel.swift; sourceTree = "<group>"; };
+		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
+		67D916872838F4C40098D3CB /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
+		67D916892838F79D0098D3CB /* MessageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageResponse.swift; sourceTree = "<group>"; };
+		67D9168B2838F8FA0098D3CB /* ChatScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatScrollView.swift; sourceTree = "<group>"; };
 		67DD111F282C3CE400E3917C /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		67E4266C2821429500DF82A7 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		67E4266E28218B6E00DF82A7 /* ShortAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortAddressService.swift; sourceTree = "<group>"; };
@@ -254,7 +262,7 @@
 			children = (
 				6798AA54280AF46300DB76F1 /* MessagesScreen.swift */,
 				67D9167F2838E2240098D3CB /* DialogList */,
-				675462FA282F8CBF005BC86A /* ChatBubble.swift */,
+				67D916842838EC960098D3CB /* DialogView */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -445,6 +453,7 @@
 				67FBF64828337876008A7968 /* EventType.swift */,
 				6758B945281ED194001D83D8 /* ErrorResponse.swift */,
 				67D9167B2838D6610098D3CB /* DialogResponse.swift */,
+				67D916892838F79D0098D3CB /* MessageResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -553,6 +562,17 @@
 			path = DialogList;
 			sourceTree = "<group>";
 		};
+		67D916842838EC960098D3CB /* DialogView */ = {
+			isa = PBXGroup;
+			children = (
+				67D916852838F0DD0098D3CB /* DialogView.swift */,
+				67D916872838F4C40098D3CB /* DialogViewModel.swift */,
+				67D9168B2838F8FA0098D3CB /* ChatScrollView.swift */,
+				675462FA282F8CBF005BC86A /* ChatBubble.swift */,
+			);
+			path = DialogView;
+			sourceTree = "<group>";
+		};
 		67FBF64C283389F6008A7968 /* List */ = {
 			isa = PBXGroup;
 			children = (
@@ -654,6 +674,7 @@
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* MessagesScreen.swift in Sources */,
 				6758B92E281D93DF001D83D8 /* JournalsViewModel.swift in Sources */,
+				67D9168A2838F79D0098D3CB /* MessageResponse.swift in Sources */,
 				6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */,
 				67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */,
 				672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */,
@@ -661,6 +682,7 @@
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotosCollection.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* Comments.swift in Sources */,
+				67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				6798AA8E280C3CCB00DB76F1 /* CitiesView.swift in Sources */,
 				674B37AC282B9332001A5B66 /* FormatterService.swift in Sources */,
@@ -701,6 +723,7 @@
 				67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */,
 				674B37AE282B9758001A5B66 /* String+.swift in Sources */,
 				6758B934281DC198001D83D8 /* UserResponse.swift in Sources */,
+				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
 				67BAF3FB28362AD100DB40D9 /* AddCommentButton.swift in Sources */,
 				678142092835575D00590746 /* CustomToggle.swift in Sources */,
 				6798AA86280C135E00DB76F1 /* Country.swift in Sources */,
@@ -713,6 +736,7 @@
 				6798AA57280AF48C00DB76F1 /* JournalsView.swift in Sources */,
 				67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */,
 				67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */,
+				67D9168C2838F8FA0098D3CB /* ChatScrollView.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
 				672BE762281FD4E300579183 /* AuthData.swift in Sources */,
 				67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */,
