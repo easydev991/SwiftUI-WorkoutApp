@@ -19,11 +19,11 @@ final class CommentViewModel: ObservableObject {
         do {
             let isOk: Bool
             switch mode {
-            case let .ground(id):
+            case let .newForGround(id):
                 isOk = try await APIService(with: defaults).addComment(
                     to: .ground(id: id), comment: comment
                 )
-            case let .event(id):
+            case let .newForEvent(id):
                 isOk = try await APIService(with: defaults).addComment(
                     to: .event(id: id), comment: comment
                 )

@@ -10,6 +10,8 @@ import SwiftUI
 struct UserDetailsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UserDetailsViewModel()
+    @State private var isMessaging = false
+    @State private var messageText = ""
     @State private var isFriendRequestSent = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -37,6 +39,13 @@ struct UserDetailsView: View {
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .sheet(isPresented: $isMessaging) {
+            MessagingView(
+                with: userID,
+                message: $messageText,
+                isActive: $isMessaging
+            )
+        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -97,11 +106,8 @@ private extension UserDetailsView {
     }
 
     var sendMessageLink: some View {
-        NavigationLink {
-#warning("TODO: сверстать экран для чата")
-            Text("Экран для отправки сообщения")
-                .navigationTitle(viewModel.user.name)
-                .navigationBarTitleDisplayMode(.inline)
+        Button {
+            isMessaging.toggle()
         } label: {
             Text("Отправить сообщение")
                 .fontWeight(.medium)

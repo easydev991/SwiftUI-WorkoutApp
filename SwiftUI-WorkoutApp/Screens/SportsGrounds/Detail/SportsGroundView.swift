@@ -55,7 +55,7 @@ struct SportsGroundView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: needUpdateComments, perform: refreshAction)
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .ground(id: viewModel.ground.id), isSent: $needUpdateComments)
+            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needUpdateComments)
         }
         .sheet(item: $editComment) {
             CommentView(

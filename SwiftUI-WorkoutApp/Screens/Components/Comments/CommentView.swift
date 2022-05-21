@@ -20,7 +20,7 @@ struct CommentView: View {
 
     private let mode: Mode
     private var oldCommentText: String?
-    @Binding var isCommentSent: Bool
+    @Binding private var isCommentSent: Bool
 
     init(mode: Mode, isSent: Binding<Bool>) {
         self.mode = mode
@@ -35,7 +35,7 @@ struct CommentView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 32) {
-                topHStack
+                sendButtonStack
                 textView
                 Spacer()
             }
@@ -57,8 +57,8 @@ struct CommentView: View {
 
 extension CommentView {
     enum Mode {
-        case ground(id: Int)
-        case event(id: Int)
+        case newForGround(id: Int)
+        case newForEvent(id: Int)
         case editGround(EditInfo)
         case editEvent(EditInfo)
 
@@ -70,6 +70,13 @@ extension CommentView {
 }
 
 private extension CommentView {
+    var sendButtonStack: some View {
+        HStack {
+            Spacer()
+            sendButton
+        }
+    }
+
     var textView: some View {
         TextEditor(text: $commentText)
             .frame(height: 200)
@@ -82,17 +89,10 @@ private extension CommentView {
             .onAppear(perform: showKeyboard)
     }
 
-    var topHStack: some View {
-        HStack {
-            Spacer()
-            sendButton
-        }
-    }
-
     var sendButton: some View {
         Button {
             switch mode {
-            case .ground, .event:
+            case .newForGround, .newForEvent:
                 addCommentTask = Task {
                     await viewModel.addComment(
                         mode,
@@ -146,7 +146,7 @@ private extension CommentView {
 
     var isSendButtonDisabled: Bool {
         switch mode {
-        case .ground, .event: return commentText.isEmpty
+        case .newForGround, .newForEvent: return commentText.isEmpty
         case .editGround, .editEvent: return commentText == oldCommentText
         }
     }
@@ -158,7 +158,7 @@ private extension CommentView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView(mode: .ground(id: .zero), isSent: .constant(false))
+        CommentView(mode: .newForGround(id: .zero), isSent: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

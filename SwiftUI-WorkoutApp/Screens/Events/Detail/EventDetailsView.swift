@@ -60,7 +60,7 @@ struct EventDetailsView: View {
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: needUpdateComments, perform: refreshAction)
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .event(id: viewModel.event.id), isSent: $needUpdateComments)
+            CommentView(mode: .newForEvent(id: viewModel.event.id), isSent: $needUpdateComments)
         }
         .sheet(item: $editComment) {
             CommentView(
