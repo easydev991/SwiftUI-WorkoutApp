@@ -73,7 +73,9 @@ enum Constants {
     enum BubblePosition { case incoming, sent }
 
     enum CommentType {
+        /// Комментарий к площадке
         case ground(id: Int)
+        /// Комментарий к мероприятию
         case event(id: Int)
     }
 }

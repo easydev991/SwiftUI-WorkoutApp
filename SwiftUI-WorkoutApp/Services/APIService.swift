@@ -24,11 +24,9 @@ struct APIService {
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
-        guard let request = endpoint.urlRequest else { return }
-        let (data, response) = try await urlSession.data(for: request)
-        let userResponse = try handle(UserResponse.self, data, response)
+        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: model.password))
-        await defaults.saveUserInfo(userResponse)
+        await defaults.saveUserInfo(result)
     }
 
     /// Запрашивает `id` пользователя для входа в учетную запись
@@ -38,11 +36,9 @@ struct APIService {
     func logInWith(_ login: String, _ password: String) async throws {
         let authData = AuthData(login: login, password: password)
         let endpoint = Endpoint.login(auth: authData)
-        guard let request = endpoint.urlRequest else { return }
-        let (data, response) = try await urlSession.data(for: request)
-        let loginResponse = try handle(LoginResponse.self, data, response)
+        let result = try await makeResult(LoginResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(authData)
-        try await getUserByID(loginResponse.userID, loginFlow: true)
+        try await getUserByID(result.userID, loginFlow: true)
     }
 
     /// Запрашивает данные пользователя по `id`, сохраняет данные главного пользователя в `defaults` и авторизует, если еще не авторизован
@@ -51,13 +47,11 @@ struct APIService {
     @discardableResult
     func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return .emptyValue }
-        let (data, response) = try await urlSession.data(for: request)
-        let userInfo = try handle(UserResponse.self, data, response)
+        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         if loginFlow || userID == defaults.mainUserID {
-            await defaults.saveUserInfo(userInfo)
+            await defaults.saveUserInfo(result)
         }
-        return userInfo
+        return result
     }
 
     /// Сбрасывает пароль для неавторизованного пользователя с указанным логином
@@ -65,10 +59,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func resetPassword(for login: String) async throws -> Bool {
         let endpoint = Endpoint.resetPassword(login: login)
-        guard let request = endpoint.urlRequest else { return false }
-        let (data, response) = try await urlSession.data(for: request)
-        let userIdResponse = try handle(LoginResponse.self, data, response)
-        return userIdResponse.userID != .zero
+        let response = try await makeResult(LoginResponse.self, for: endpoint.urlRequest)
+        return response.userID != .zero
     }
 
     /// Изменяет данные пользователя
@@ -79,12 +71,10 @@ struct APIService {
     func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
         let authData = defaults.basicAuthInfo
         let endpoint = Endpoint.editUser(id: id, form: model, auth: authData)
-        guard let request = endpoint.urlRequest else { return false }
-        let (data, response) = try await urlSession.data(for: request)
-        let userResponse = try handle(UserResponse.self, data, response)
+        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
-        await defaults.saveUserInfo(userResponse)
-        return userResponse.userName == model.userName
+        await defaults.saveUserInfo(result)
+        return result.userName == model.userName
     }
 
     /// Меняет текущий пароль на новый, в случае успеха сохраняет новый пароль в `defaults`
@@ -97,9 +87,7 @@ struct APIService {
         let endpoint = Endpoint.changePassword(
             currentPass: current, newPass: new, auth: authData
         )
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        let isSuccess = try handle(response)
+        let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess {
             await defaults.saveAuthData(.init(login: authData.login, password: new))
         }
@@ -121,21 +109,17 @@ struct APIService {
     @discardableResult
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return [] }
-        let (data, response) = try await urlSession.data(for: request)
-        let friends = try handle([UserResponse].self, data, response)
+        let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         if id == defaults.mainUserID {
-            await defaults.saveFriendsIds(friends.compactMap(\.userID))
+            await defaults.saveFriendsIds(result.compactMap(\.userID))
         }
-        return friends
+        return result
     }
 
     /// Загружает список заявок на добавление в друзья, в случае успеха - сохраняет в `defaults`
     func getFriendRequests() async throws {
         let endpoint = Endpoint.getFriendRequests(auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return }
-        let (data, response) = try await urlSession.data(for: request)
-        let result = try handle([UserResponse].self, data, response)
+        let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         await defaults.saveFriendRequests(result)
     }
 
@@ -148,9 +132,7 @@ struct APIService {
         let endpoint: Endpoint = accept
         ? .acceptFriendRequest(from: userID, auth: defaults.basicAuthInfo)
         : .declineFriendRequest(from: userID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        let isSuccess = try handle(response)
+        let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess {
             if accept {
                 try await getFriendsForUser(id: defaults.mainUserID)
@@ -169,13 +151,9 @@ struct APIService {
         let endpoint: Endpoint = option == .sendFriendRequest
         ? .sendFriendRequest(to: userID, auth: defaults.basicAuthInfo)
         : .deleteFriend(userID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        let isSuccess = try handle(response)
+        let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess && option == .removeFriend {
-            if option == .removeFriend {
-                try await getFriendsForUser(id: defaults.mainUserID)
-            }
+            try await getFriendsForUser(id: defaults.mainUserID)
         }
         return isSuccess
     }
@@ -185,9 +163,7 @@ struct APIService {
     /// - Returns: Список пользователей, чей логин содержит указанный текст
     func findUsers(with name: String) async throws -> [UserResponse] {
         let endpoint = Endpoint.findUsers(with: name, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return [] }
-        let (data, response) = try await urlSession.data(for: request)
-        return try handle([UserResponse].self, data, response)
+        return try await makeResult([UserResponse].self, for: endpoint.urlRequest)
     }
 
     /// Загружает данные по отдельной площадке
@@ -195,9 +171,7 @@ struct APIService {
     /// - Returns: Вся информация о площадке
     func getSportsGround(id: Int) async throws -> SportsGround {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return .emptyValue }
-        let (data, response) = try await urlSession.data(for: request)
-        return try handle(SportsGround.self, data, response)
+        return try await makeResult(SportsGround.self, for: endpoint.urlRequest)
     }
 
     /// Добавить комментарий для площадки
@@ -213,9 +187,7 @@ struct APIService {
         case let .event(id):
             endpoint = Endpoint.addCommentToEvent(eventID: id, comment: comment, auth: defaults.basicAuthInfo)
         }
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Изменить свой комментарий для площадки
@@ -242,9 +214,7 @@ struct APIService {
                 auth: defaults.basicAuthInfo
             )
         }
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Удалить комментарий для площадки
@@ -260,9 +230,7 @@ struct APIService {
         case let .event(id):
             endpoint = Endpoint.deleteEventComment(id, commentID: commentID, auth: defaults.basicAuthInfo)
         }
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Получить список площадок, где тренируется пользователь
@@ -270,9 +238,7 @@ struct APIService {
     /// - Returns: Список площадок, где тренируется пользователь
     func getSportsGroundsForUser(_ userID: Int) async throws -> [SportsGround] {
         let endpoint = Endpoint.getSportsGroundsForUser(userID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return [] }
-        let (data, response) = try await urlSession.data(for: request)
-        return try handle([SportsGround].self, data, response)
+        return try await makeResult([SportsGround].self, for: endpoint.urlRequest)
     }
 
     /// Изменить статус "тренируюсь здесь" для площадки
@@ -285,32 +251,22 @@ struct APIService {
         let endpoint: Endpoint = trainHere
         ? .postTrainHere(groundID, auth: defaults.basicAuthInfo)
         : .deleteTrainHere(groundID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-#warning("TODO: интеграция с БД")
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Запрашивает список мероприятий
     /// - Parameter type: тип мероприятия (предстоящее или прошедшее)
     /// - Returns: Список мероприятий
     func getEvents(of type: EventType) async throws -> [EventResponse] {
-        let endpoint: Endpoint = type == .future
-        ? .getFutureEvents
-        : .getPastEvents
-        guard let request = endpoint.urlRequest else { return [] }
-        let (data, response) = try await urlSession.data(for: request)
-        return try handle([EventResponse].self, data, response)
+        let endpoint: Endpoint = type == .future ? .getFutureEvents : .getPastEvents
+        return try await makeResult([EventResponse].self, for: endpoint.urlRequest)
     }
 
     /// Запрашивает конкретное мероприятие
     /// - Parameter id: `id` мероприятия
     /// - Returns: Вся информация по мероприятию
     func getEvent(by id: Int) async throws -> EventResponse {
-        let endpoint = Endpoint.getEvent(id: id)
-        guard let request = endpoint.urlRequest else { return .emptyValue }
-        let (data, response) = try await urlSession.data(for: request)
-        return try handle(EventResponse.self, data, response)
+        try await makeResult(EventResponse.self, for: Endpoint.getEvent(id: id).urlRequest)
     }
 
     /// Изменить статус "пойду на мероприятие" для мероприятия
@@ -323,9 +279,7 @@ struct APIService {
         let endpoint: Endpoint = isGoing
         ? .postIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
         : .deleteIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Удалить мероприятие
@@ -334,9 +288,7 @@ struct APIService {
     @discardableResult
     func delete(eventID: Int) async throws -> Bool {
         let endpoint = Endpoint.deleteEvent(id: eventID, auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return false }
-        let (_, response) = try await urlSession.data(for: request)
-        return try handle(response)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 }
 
@@ -347,6 +299,27 @@ private extension APIService {
         config.timeoutIntervalForResource = Constants.API.timeOut
         config.waitsForConnectivity = true
         return .init(configuration: config)
+    }
+
+    /// Загружает данные в нужном формате или отдает ошибку
+    /// - Parameters:
+    ///   - type: тип, который нужно загрузить
+    ///   - request: запрос, по которому нужно обратиться
+    /// - Returns: Вся информация по запрошенному типу
+    func makeResult<T: Codable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
+        guard let request = request else { throw APIError.badRequest }
+        let (data, response) = try await urlSession.data(for: request)
+        let result = try handle(type.self, data, response)
+        return result
+    }
+
+    /// Выполняет действие, не требующее указания типа
+    /// - Parameter request: запрос, по которому нужно обратиться
+    /// - Returns: Статус действия
+    func makeStatus(for request: URLRequest?) async throws -> Bool {
+        guard let request = request else { throw APIError.badRequest }
+        let (_, response) = try await urlSession.data(for: request)
+        return try handle(response)
     }
 
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
