@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DialogView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
@@ -100,7 +101,13 @@ private extension DialogView {
                 .font(.title)
                 .tint(.blue)
         }
-        .disabled(viewModel.newMessage.isEmpty || viewModel.isLoading)
+        .disabled(isSendButtonDisabled)
+    }
+
+    var isSendButtonDisabled: Bool {
+        viewModel.newMessage.isEmpty
+        || viewModel.isLoading
+        || !network.isConnected
     }
 
     func updateDialogUnreadCount(isRead: Bool) {
@@ -142,6 +149,7 @@ private extension DialogView {
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
         DialogView(dialog: .constant(.mock))
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

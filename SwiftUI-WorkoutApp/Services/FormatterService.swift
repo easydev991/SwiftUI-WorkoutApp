@@ -13,11 +13,10 @@ struct FormatterService {
         if let dateString = string, !dateString.isEmpty,
            let fullDate = isoFormatter.date(from: dateString) {
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.dateFormat = fullDate.isToday
-            ? DateFormat.shortTime.rawValue
-            : DateFormat.fullDateMediumTime.rawValue
-            return formatter.string(from: fullDate)
+            formatter.locale = Locale.autoupdatingCurrent
+            let (prefix, dateFormat) = DateFormat.makeFormat(for: fullDate)
+            formatter.dateFormat = dateFormat
+            return prefix + formatter.string(from: fullDate)
         } else {
             return ""
         }
@@ -43,6 +42,19 @@ extension FormatterService {
         case isoShortDate = "yyyy-MM-dd"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
         case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
-        case shortTime = "HH:mm"
+        case dayMonthMediumTime = "d MMM, HH:mm"
+        case mediumTime = "HH:mm"
+
+        static func makeFormat(for date: Date) -> (prefix: String, date: String) {
+            if date.isToday {
+                return ("", self.mediumTime.rawValue)
+            } else if date.isYesterday {
+                return ("Вчера, ", self.mediumTime.rawValue)
+            } else if date.isThisYear {
+                return ("", self.dayMonthMediumTime.rawValue)
+            } else {
+                return ("", self.fullDateMediumTime.rawValue)
+            }
+        }
     }
 }

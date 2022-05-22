@@ -41,14 +41,7 @@ struct UserDetailsView: View {
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isMessageSent, perform: endMessaging)
-        .sheet(isPresented: $isMessaging) {
-            SendMessageView(
-                text: $messageText,
-                isLoading: viewModel.isLoading,
-                isSendButtonDisabled: messageText.isEmpty,
-                sendClbk: sendMessage
-            )
-        }
+        .sheet(isPresented: $isMessaging) { messageSheet }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -226,6 +219,18 @@ private extension UserDetailsView {
         if isMainUser {
             await viewModel.checkFriendRequests(with: defaults)
         }
+    }
+
+    var messageSheet: some View {
+        SendMessageView(
+            text: $messageText,
+            isLoading: viewModel.isLoading,
+            isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
+            sendAction: sendMessage,
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: closeAlert
+        )
     }
 
     func sendMessage() {

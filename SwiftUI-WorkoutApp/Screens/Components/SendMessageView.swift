@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct SendMessageView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @FocusState private var isFocused
     @Binding var text: String
     let isLoading: Bool
     let isSendButtonDisabled: Bool
-    let sendClbk: () -> Void
+    let sendAction: () -> Void
+    @Binding var showErrorAlert: Bool
+    @Binding var errorTitle: String
+    let dismissError: () -> Void
 
     var body: some View {
         ZStack {
@@ -25,6 +29,9 @@ struct SendMessageView: View {
                 .opacity(isLoading ? 1 : .zero)
         }
         .padding()
+        .alert(errorTitle, isPresented: $showErrorAlert) {
+            Button(action: dismissError) { TextOk() }
+        }
     }
 }
 
@@ -37,12 +44,12 @@ private extension SendMessageView {
     }
 
     var sendButton: some View {
-        Button(action: sendClbk) {
+        Button(action: sendAction) {
             Label("Отправить", systemImage: "paperplane.fill")
         }
         .tint(.blue)
         .buttonStyle(.borderedProminent)
-        .disabled(isSendButtonDisabled || isLoading)
+        .disabled(isSendButtonDisabled || !network.isConnected)
     }
 
     var textView: some View {
@@ -66,6 +73,15 @@ private extension SendMessageView {
 
 struct SendMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        SendMessageView(text: .constant(""), isLoading: false, isSendButtonDisabled: false) {}
+        SendMessageView(
+            text: .constant(""),
+            isLoading: false,
+            isSendButtonDisabled: false,
+            sendAction: {},
+            showErrorAlert: .constant(false),
+            errorTitle: .constant(""),
+            dismissError: {}
+        )
+        .environmentObject(CheckNetworkService())
     }
 }

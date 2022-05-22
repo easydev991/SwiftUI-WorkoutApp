@@ -33,12 +33,7 @@ struct CommentView: View {
     }
 
     var body: some View {
-        SendMessageView(
-            text: $commentText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: isSendButtonDisabled,
-            sendClbk: sendAction
-        )
+        content
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: dismissErrorAlert) { TextOk() }
         }
@@ -65,6 +60,18 @@ extension CommentView {
 }
 
 private extension CommentView {
+    var content: some View {
+        SendMessageView(
+            text: $commentText,
+            isLoading: viewModel.isLoading,
+            isSendButtonDisabled: isSendButtonDisabled,
+            sendAction: sendAction,
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: dismissErrorAlert
+        )
+    }
+
     func sendAction() {
         switch mode {
         case .newForGround, .newForEvent:
@@ -115,8 +122,10 @@ private extension CommentView {
 
     var isSendButtonDisabled: Bool {
         switch mode {
-        case .newForGround, .newForEvent: return commentText.isEmpty
-        case .editGround, .editEvent: return commentText == oldCommentText
+        case .newForGround, .newForEvent:
+            return commentText.isEmpty || viewModel.isLoading
+        case .editGround, .editEvent:
+            return commentText == oldCommentText || viewModel.isLoading
         }
     }
 

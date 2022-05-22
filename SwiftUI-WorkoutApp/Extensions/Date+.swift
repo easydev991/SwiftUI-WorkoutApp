@@ -20,4 +20,7 @@ extension Date {
     var isWeekend: Bool {
         Calendar.current.isDateInWeekend(self)
     }
+    var isThisYear: Bool {
+        Calendar.current.compare(Date.now, to: self, toGranularity: .year) == .orderedSame
+    }
 }

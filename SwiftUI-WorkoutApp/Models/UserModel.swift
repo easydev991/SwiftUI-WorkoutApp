@@ -17,7 +17,6 @@ struct UserModel: Identifiable, Hashable {
     let countryID: Int
     let cityID: Int
     let usesSportsGrounds: Int
-#warning("Сервер иногда шлет неправильный массив, можно маппить из списка площадок")
     let addedSportsGrounds: [SportsGround]
     let friendsCount, journalsCount: Int
 

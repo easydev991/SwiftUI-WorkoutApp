@@ -12,6 +12,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var defaults = DefaultsService()
     @StateObject private var sportsGrounds = SportsGroundsService()
+    @StateObject private var network = CheckNetworkService()
 
     init() {
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -20,6 +21,7 @@ struct SwiftUI_WorkoutAppApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(network)
                 .environmentObject(defaults)
                 .environmentObject(sportsGrounds)
         }
