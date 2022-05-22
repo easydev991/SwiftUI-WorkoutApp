@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Ячейка для экранов "Дневники" и "Сообщения"
 struct GenericListCell: View {
     private let content: Mode.Content
 
@@ -74,6 +75,7 @@ private extension GenericListCell.Mode {
             )
         }
     }
+
     struct Content {
         let imageURL: URL?
         let title, subtitle, date: String

@@ -51,6 +51,9 @@ struct DialogListView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 EditButton()
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                linkToFriends
+            }
         }
         .environment(\.editMode, $editMode)
         .onDisappear(perform: cancelTask)
@@ -58,9 +61,22 @@ struct DialogListView: View {
 }
 
 private extension DialogListView {
+    var linkToFriends: some View {
+        NavigationLink {
+            UsersListView(mode: .friends(userID: defaults.mainUserID))
+                .navigationTitle("Друзья")
+        } label: {
+            Image(systemName: "plus")
+        }
+        .opacity(hasFriends ? 1 : .zero)
+    }
+
     var showEmptyView: Bool {
+        hasFriends && viewModel.list.isEmpty
+    }
+
+    var hasFriends: Bool {
         !defaults.friendsIdsList.isEmpty
-        && viewModel.list.isEmpty
     }
 
     var showDummyText: Bool {

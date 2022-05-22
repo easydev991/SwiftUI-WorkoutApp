@@ -525,6 +525,7 @@
 				67BAF3F328361BC400DB40D9 /* PhotosCollection.swift */,
 				67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */,
 				67D9169528396C1E0098D3CB /* SendMessageView.swift */,
+				67D9167D2838DC3E0098D3CB /* GenericListCell.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -575,7 +576,6 @@
 			children = (
 				67D916802838E2460098D3CB /* DialogListView.swift */,
 				67D916822838E2520098D3CB /* DialogListViewModel.swift */,
-				67D9167D2838DC3E0098D3CB /* GenericListCell.swift */,
 			);
 			path = DialogList;
 			sourceTree = "<group>";

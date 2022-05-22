@@ -20,20 +20,24 @@ struct EmptyContentView: View {
 extension EmptyContentView {
     enum Mode {
         case events, journals, messages
-        struct Info {
-            let message: String
-            let buttonTitle: String
+    }
+}
+
+private extension EmptyContentView.Mode {
+    var info: Info {
+        switch self {
+        case .events:
+            return .init(message: "Нет запланированных мероприятий", buttonTitle: "Создать мероприятие")
+        case .journals:
+            return .init(message: "Дневников пока нет", buttonTitle: "Создать дневник")
+        case .messages:
+            return .init(message: "Чатов пока нет", buttonTitle: "Открыть список друзей")
         }
-        var info: Info {
-            switch self {
-            case .events:
-                return .init(message: "Нет запланированных мероприятий", buttonTitle: "Создать мероприятие")
-            case .journals:
-                return .init(message: "Дневников пока нет", buttonTitle: "Создать дневник")
-            case .messages:
-                return .init(message: "Чатов пока нет", buttonTitle: "Открыть список друзей")
-            }
-        }
+    }
+
+    struct Info {
+        let message: String
+        let buttonTitle: String
     }
 }
 
