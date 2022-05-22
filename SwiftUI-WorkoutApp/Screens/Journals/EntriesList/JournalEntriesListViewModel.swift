@@ -19,7 +19,7 @@ final class JournalEntriesListViewModel: ObservableObject {
 
     @MainActor
     func makeItems(for userID: Int, journalID: Int, with defaults: DefaultsService, refresh: Bool) async {
-        if isLoading && !refresh { return }
+        if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             list = try await APIService(with: defaults).getJournalEntries(for: userID, journalID: journalID)
@@ -42,10 +42,7 @@ final class JournalEntriesListViewModel: ObservableObject {
                 newEntryText = ""
                 isEntryCreated.toggle()
                 await makeItems(
-                    for: defaults.mainUserID,
-                    journalID: journalID,
-                    with: defaults,
-                    refresh: true
+                    for: defaults.mainUserID, journalID: journalID, with: defaults, refresh: true
                 )
             }
         } catch {

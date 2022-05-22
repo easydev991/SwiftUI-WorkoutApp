@@ -11,8 +11,10 @@ struct JournalsList: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
     @State private var editMode = EditMode.inactive
+    @State private var isCreatingJournal = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalGroupTask: Task<Void, Never>?
     let userID: Int
 
@@ -39,6 +41,8 @@ struct JournalsList: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
+        .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -57,7 +61,7 @@ struct JournalsList: View {
             }
         }
         .environment(\.editMode, $editMode)
-        .onDisappear(perform: cancelDeleteTask)
+        .onDisappear(perform: cancelTasks)
     }
 }
 
@@ -72,15 +76,40 @@ private extension JournalsList {
     }
 
     var addJournalButton: some View {
-        NavigationLink(destination: Text("Создать дневник")) {
-#warning("TODO: Использовать SendMessageView")
+        Button(action: showNewJournalSheet) {
             Image(systemName: "plus")
         }
         .opacity(defaults.isAuthorized ? 1 : .zero)
     }
 
+    func showNewJournalSheet() {
+        isCreatingJournal.toggle()
+    }
+
+    var newJournalSheet: some View {
+        SendMessageView(
+            text: $viewModel.newJournalTitle,
+            isLoading: viewModel.isLoading,
+            isSendButtonDisabled: !viewModel.canSaveNewJournal,
+            sendAction: saveNewJournal,
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: closeAlert
+        )
+    }
+
     func askForJournals(refresh: Bool = false) async {
         await viewModel.makeItems(for: userID, with: defaults, refresh: refresh)
+    }
+
+    func saveNewJournal() {
+        saveJournalTask = Task {
+            await viewModel.createJournal(with: defaults)
+        }
+    }
+
+    func closeSheet(isSuccess: Bool) {
+        isCreatingJournal.toggle()
     }
 
     func setupErrorAlert(with message: String) {
@@ -92,8 +121,8 @@ private extension JournalsList {
         viewModel.clearErrorMessage()
     }
 
-    func cancelDeleteTask() {
-        deleteJournalGroupTask?.cancel()
+    func cancelTasks() {
+        [saveJournalTask, deleteJournalGroupTask].forEach { $0?.cancel() }
     }
 }
 

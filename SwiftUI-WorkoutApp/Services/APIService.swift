@@ -359,6 +359,18 @@ struct APIService {
         return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
     }
 
+    /// Создает новый дневник для пользователя
+    /// - Parameter title: название дневника
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func createJournal(with title: String) async throws -> Bool {
+        let endpoint = Endpoint.createJournal(
+            userID: defaults.mainUserID,
+            title: title,
+            auth: defaults.basicAuthInfo
+        )
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
+
     /// Запрашивает записи из дневника пользователя
     /// - Parameters:
     ///   - userID: `id` пользователя
@@ -659,6 +671,10 @@ private extension APIService {
         /// **GET** ${API}/users/<user_id>/journals/<journal_id>
         case getJournal(userID: Int, journalID: Int, auth: AuthData)
 
+        // MARK: Создать новый дневник
+        /// **POST** ${API}/users/<user_id>/journals
+        case createJournal(userID: Int, title: String, auth: AuthData)
+
         // MARK: Получить записи из дневника пользователя
         /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
         case getJournalEntries(userID: Int, journalID: Int, auth: AuthData)
@@ -754,7 +770,8 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/messages/mark_as_read"
         case let .deleteDialog(dialogID, _):
             return "\(baseUrl)/dialogs/\(dialogID)"
-        case let .getJournals(userID, _):
+        case let .getJournals(userID, _),
+            let .createJournal(userID, _, _):
             return "\(baseUrl)/users/\(userID)/journals"
         case let .getJournal(userID, journalID, _),
             let .deleteJournal(userID, journalID, _):
@@ -779,7 +796,7 @@ private extension APIService.Endpoint {
                 .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
                 .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
-                .sendMessageTo, .markAsRead, .saveJournalEntry:
+                .sendMessageTo, .createJournal, .markAsRead, .saveJournalEntry:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
                 .getSportsGround, .findUsers, .getSportsGroundsForUser,
@@ -831,8 +848,9 @@ private extension APIService.Endpoint {
             let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
             let .markAsRead(_, auth), let .deleteDialog(_, auth),
             let .getJournals(_, auth), let .getJournal(_, _, auth),
-            let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
-            let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth):
+            let .createJournal(_, _, auth), let .getJournalEntries(_, _, auth),
+            let .saveJournalEntry(_, _, _, auth), let .deleteEntry(_, _, _, auth),
+            let .deleteJournal(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
             return [:]
@@ -841,7 +859,7 @@ private extension APIService.Endpoint {
 
     enum Parameter {
         enum Key: String {
-            case name, fullname, email, password, comment, message
+            case name, fullname, email, password, comment, message, title
             case genderCode = "gender"
             case usernameOrEmail = "username_or_email"
             case newPassword = "new_password"
@@ -913,6 +931,8 @@ private extension APIService.Endpoint {
             return Parameter.make(from: [.message: message])
         case let .markAsRead(userID, _):
             return Parameter.make(from: [.fromUserID: userID.description])
+        case let .createJournal(_, title, _):
+            return Parameter.make(from: [.title: title])
         case let .saveJournalEntry(_, _, message, _):
             return Parameter.make(from: [.message: message])
         }
