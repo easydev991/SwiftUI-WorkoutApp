@@ -336,13 +336,41 @@ struct APIService {
     /// Запрашивает список дневников для выбранного пользователя
     /// - Parameter userID: `id` выбранного пользователя
     /// - Returns: Список дневников
-    func getJournals(for userID: Int) async throws -> [JournalGroupResponse] {
+    func getJournals(for userID: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userID: userID, auth: defaults.basicAuthInfo)
-        let result = try await makeResult([JournalGroupResponse].self, for: endpoint.urlRequest)
+        let result = try await makeResult([JournalResponse].self, for: endpoint.urlRequest)
         if userID == defaults.mainUserID {
             await defaults.setHasJournals(!result.isEmpty)
         }
         return result
+    }
+
+    /// Запрашивает дневник пользователя; пока не используется
+    /// - Parameters:
+    ///   - userID: `id` пользователя
+    ///   - journalID: `id` выбранного дневника
+    /// - Returns: Общая информация о дневнике
+    func getJournal(for userID: Int, journalID: Int) async throws -> JournalResponse {
+        let endpoint = Endpoint.getJournal(
+            userID: userID,
+            journalID: journalID,
+            auth: defaults.basicAuthInfo
+        )
+        return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
+    }
+
+    /// Запрашивает записи из дневника пользователя
+    /// - Parameters:
+    ///   - userID: `id` пользователя
+    ///   - journalID: `id` выбранного дневника
+    /// - Returns: Все записи из выбранного дневника
+    func getJournalEntries(for userID: Int, journalID: Int) async throws -> [JournalEntryResponse] {
+        let endpoint = Endpoint.getJournalEntries(
+            userID: userID,
+            journalID: journalID,
+            auth: defaults.basicAuthInfo
+        )
+        return try await makeResult([JournalEntryResponse].self, for: endpoint.urlRequest)
     }
 
     /// Удаляет выбранный дневник
@@ -597,6 +625,14 @@ private extension APIService {
         /// **GET** ${API}/users/<user_id>/journals
         case getJournals(userID: Int, auth: AuthData)
 
+        // MARK: Получить дневник пользователя
+        /// **GET** ${API}/users/<user_id>/journals/<journal_id>
+        case getJournal(userID: Int, journalID: Int, auth: AuthData)
+
+        // MARK: Получить записи из дневника пользователя
+        /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
+        case getJournalEntries(userID: Int, journalID: Int, auth: AuthData)
+
         // MARK: Удалить дневник пользователя
         /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
         case deleteJournal(userID: Int, journalID: Int, auth: AuthData)
@@ -682,6 +718,10 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/dialogs/\(dialogID)"
         case let .getJournals(userID, _):
             return "\(baseUrl)/users/\(userID)/journals"
+        case let .getJournal(userID, journalID, _):
+            return "\(baseUrl)/users/\(userID)/journals/\(journalID)"
+        case let .getJournalEntries(userID, journalID, _):
+            return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages"
         case let .deleteJournal(userID, journalID, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)"
         }
@@ -704,7 +744,8 @@ private extension APIService.Endpoint {
         case .getUser, .getFriendsForUser, .getFriendRequests,
                 .getSportsGround, .findUsers, .getSportsGroundsForUser,
                 .getFutureEvents, .getPastEvents, .getEvent,
-                .getDialogs, .getMessages, .getJournals:
+                .getDialogs, .getMessages, .getJournals,
+                .getJournal, .getJournalEntries:
             return .get
         case .declineFriendRequest, .deleteFriend,
                 .deleteGroundComment, .deleteTrainHere,
@@ -749,7 +790,8 @@ private extension APIService.Endpoint {
             let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
             let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
             let .markAsRead(_, auth), let .deleteDialog(_, auth),
-            let .getJournals(_, auth), let .deleteJournal(_, _, auth):
+            let .getJournals(_, auth), let .getJournal(_, _, auth),
+            let .getJournalEntries(_, _, auth), let .deleteJournal(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
             return [:]
@@ -787,7 +829,7 @@ private extension APIService.Endpoint {
                 .postIsGoingToEvent, .deleteIsGoingToEvent,
                 .deleteEventComment, .deleteEvent, .getDialogs,
                 .getMessages, .deleteDialog, .getJournals,
-                .deleteJournal:
+                .getJournal, .getJournalEntries, .deleteJournal:
             return nil
         case let .registration(form):
             return Parameter.make(

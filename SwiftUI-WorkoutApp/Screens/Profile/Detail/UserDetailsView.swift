@@ -189,7 +189,7 @@ private extension UserDetailsView {
 
     var journalsLink: some View {
         NavigationLink {
-            Text("Экран с дневниками")
+            JournalsList(userID: userID)
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {

@@ -1,5 +1,5 @@
 //
-//  JournalGroupResponse.swift
+//  JournalResponse.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 22.05.2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct JournalGroupResponse: Codable, Identifiable {
+struct JournalResponse: Codable, Identifiable {
     let id: Int
     let title, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?
     let itemsCount, ownerID: Int?
@@ -29,9 +29,14 @@ struct JournalGroupResponse: Codable, Identifiable {
     }
 }
 
-extension JournalGroupResponse {
+extension JournalResponse {
     var imageURL: URL? {
         .init(string: lastMessageImage.valueOrEmpty)
+    }
+    var formattedLastMessage: String {
+        lastMessageText.valueOrEmpty
+            .withoutHTML
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     var lastMessageDateString: String {
         FormatterService.readableDate(from: lastMessageDate)
@@ -44,7 +49,7 @@ extension JournalGroupResponse {
         get { .init(commentAccess.valueOrZero) }
         set { commentAccess = newValue.rawValue }
     }
-    static var mock: JournalGroupResponse {
+    static var mock: JournalResponse {
         .init(
             id: 21758,
             title: "Test title",

@@ -51,7 +51,7 @@ struct GenericListCell: View {
 extension GenericListCell {
     enum Mode {
         case dialog(DialogResponse)
-        case journalGroup(JournalGroupResponse)
+        case journalGroup(JournalResponse)
     }
 }
 
@@ -70,7 +70,7 @@ private extension GenericListCell.Mode {
             return .init(
                 imageURL: model.imageURL,
                 title: model.title.valueOrEmpty,
-                subtitle: model.lastMessageText.valueOrEmpty,
+                subtitle: model.formattedLastMessage,
                 date: model.lastMessageDateString
             )
         }

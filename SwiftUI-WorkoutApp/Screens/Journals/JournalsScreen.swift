@@ -12,10 +12,9 @@ struct JournalsScreen: View {
 
     var body: some View {
         NavigationView {
-#warning("TODO: сверстать экран с дневниками")
             ZStack {
                 if defaults.isAuthorized {
-                    JournalGroupsList()
+                    JournalsList(userID: defaults.mainUserID)
                 } else {
                     IncognitoProfileView()
                 }

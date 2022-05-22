@@ -1,5 +1,5 @@
 //
-//  JournalGroupsListViewModel.swift
+//  JournalsListViewModel.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 22.05.2022.
@@ -7,17 +7,17 @@
 
 import Foundation
 
-final class JournalGroupsListViewModel: ObservableObject {
-    @Published var list = [JournalGroupResponse]()
+final class JournalsListViewModel: ObservableObject {
+    @Published var list = [JournalResponse]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeItems(with defaults: DefaultsService, refresh: Bool) async {
+    func makeItems(for userID: Int, with defaults: DefaultsService, refresh: Bool) async {
         if isLoading || (!list.isEmpty && !refresh) { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getJournals(for: defaults.mainUserID)
+            list = try await APIService(with: defaults).getJournals(for: userID)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -25,7 +25,7 @@ final class JournalGroupsListViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteJournalGroup(at index: Int?, with defaults: DefaultsService) async {
+    func deleteJournal(at index: Int?, with defaults: DefaultsService) async {
         guard let index = index, !isLoading else { return }
         isLoading.toggle()
         do {

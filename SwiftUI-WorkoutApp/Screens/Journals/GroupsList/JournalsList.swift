@@ -1,5 +1,5 @@
 //
-//  JournalGroupsList.swift
+//  JournalsList.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 22.05.2022.
@@ -7,29 +7,30 @@
 
 import SwiftUI
 
-struct JournalGroupsList: View {
+struct JournalsList: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = JournalGroupsListViewModel()
+    @StateObject private var viewModel = JournalsListViewModel()
     @State private var editMode = EditMode.inactive
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var deleteJournalGroupTask: Task<Void, Never>?
+    let userID: Int
 
     var body: some View {
         ZStack {
             EmptyContentView(mode: .journals)
                 .opacity(showEmptyView ? 1 : .zero)
             List {
-                ForEach($viewModel.list) { $journal in
+                ForEach(viewModel.list) { journal in
                     NavigationLink {
-                        Text("Записи в дневнике")
+                        JournalEntriesList(userID: userID, journal: journal)
                     } label: {
                         GenericListCell(for: .journalGroup(journal))
                     }
                 }
                 .onDelete { indexSet in
                     deleteJournalGroupTask = Task {
-                        await viewModel.deleteJournalGroup(at: indexSet.first, with: defaults)
+                        await viewModel.deleteJournal(at: indexSet.first, with: defaults)
                     }
                 }
             }
@@ -41,14 +42,16 @@ struct JournalGroupsList: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
-        .task { await askForJournalGroups() }
-        .refreshable { await askForJournalGroups(refresh: true) }
+        .task { await askForJournals() }
+        .refreshable { await askForJournals(refresh: true) }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 EditButton()
+                    .opacity(actionButtonOpacity)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 addJournalButton
+                    .opacity(actionButtonOpacity)
             }
         }
         .environment(\.editMode, $editMode)
@@ -56,10 +59,14 @@ struct JournalGroupsList: View {
     }
 }
 
-private extension JournalGroupsList {
+private extension JournalsList {
     var showEmptyView: Bool {
         !defaults.hasJournals
         && viewModel.list.isEmpty
+    }
+
+    var actionButtonOpacity: Double {
+        userID == defaults.mainUserID ? 1 : .zero
     }
 
     var addJournalButton: some View {
@@ -69,8 +76,8 @@ private extension JournalGroupsList {
         .opacity(defaults.isAuthorized ? 1 : .zero)
     }
 
-    func askForJournalGroups(refresh: Bool = false) async {
-        await viewModel.makeItems(with: defaults, refresh: refresh)
+    func askForJournals(refresh: Bool = false) async {
+        await viewModel.makeItems(for: userID, with: defaults, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {
@@ -89,7 +96,7 @@ private extension JournalGroupsList {
 
 struct JournalGroupsList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalGroupsList()
+        JournalsList(userID: DefaultsService().mainUserID)
             .environmentObject(DefaultsService())
     }
 }
