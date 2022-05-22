@@ -46,12 +46,14 @@ struct JournalsList: View {
         .refreshable { await askForJournals(refresh: true) }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                EditButton()
-                    .opacity(actionButtonOpacity)
+                if isMainUser {
+                    EditButton()
+                }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                addJournalButton
-                    .opacity(actionButtonOpacity)
+                if isMainUser {
+                    addJournalButton
+                }
             }
         }
         .environment(\.editMode, $editMode)
@@ -65,8 +67,8 @@ private extension JournalsList {
         && viewModel.list.isEmpty
     }
 
-    var actionButtonOpacity: Double {
-        userID == defaults.mainUserID ? 1 : .zero
+    var isMainUser: Bool {
+        userID == defaults.mainUserID
     }
 
     var addJournalButton: some View {

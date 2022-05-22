@@ -354,9 +354,9 @@
 		67627753283A4C2F009C203F /* EntriesList */ = {
 			isa = PBXGroup;
 			children = (
+				6762775A283A87AD009C203F /* JournalEntryCell.swift */,
 				67627754283A4C77009C203F /* JournalEntriesList.swift */,
 				67627756283A4CBB009C203F /* JournalEntriesListViewModel.swift */,
-				6762775A283A87AD009C203F /* JournalEntryCell.swift */,
 			);
 			path = EntriesList;
 			sourceTree = "<group>";

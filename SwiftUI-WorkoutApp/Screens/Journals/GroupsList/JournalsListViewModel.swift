@@ -29,8 +29,7 @@ final class JournalsListViewModel: ObservableObject {
         guard let index = index, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults)
-                .deleteJournal(for: defaults.mainUserID, journalID: list[index].id) {
+            if try await APIService(with: defaults).deleteJournal(journalID: list[index].id) {
                 list.remove(at: index)
             }
         } catch {
