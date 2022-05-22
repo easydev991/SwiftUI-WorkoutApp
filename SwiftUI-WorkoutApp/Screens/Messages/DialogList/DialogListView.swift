@@ -1,12 +1,6 @@
-//
-//  DialogListView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import SwiftUI
 
+/// Список диалогов
 struct DialogListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogListViewModel()

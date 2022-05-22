@@ -1,12 +1,6 @@
-//
-//  LabelWithCheckmark.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 18.04.2022.
-//
-
 import SwiftUI
 
+/// Текст с галкой
 struct TextWithCheckmark: View {
     let title: String
     let showMark: Bool

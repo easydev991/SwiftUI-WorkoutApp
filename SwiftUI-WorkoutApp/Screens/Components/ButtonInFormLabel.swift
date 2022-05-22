@@ -1,12 +1,6 @@
-//
-//  ButtonInFormLabel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 19.04.2022.
-//
-
 import SwiftUI
 
+/// Центрированный текст для формы
 struct ButtonInFormLabel: View {
     let title: String
 

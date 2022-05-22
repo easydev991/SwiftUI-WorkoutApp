@@ -1,10 +1,3 @@
-//
-//  SportsGroundListViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 13.05.2022.
-//
-
 import Foundation
 
 final class SportsGroundListViewModel: ObservableObject {

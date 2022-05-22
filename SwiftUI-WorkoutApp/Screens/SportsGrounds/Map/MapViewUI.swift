@@ -1,10 +1,3 @@
-//
-//  MapViewUI.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 23.04.2022.
-//
-
 import MapKit
 import SwiftUI
 

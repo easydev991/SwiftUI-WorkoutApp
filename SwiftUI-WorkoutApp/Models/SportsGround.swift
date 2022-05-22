@@ -1,10 +1,3 @@
-//
-//  SportsGround.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import Foundation
 import MapKit.MKGeometry
 

@@ -1,12 +1,6 @@
-//
-//  SportsGroundLocationInfo.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 19.05.2022.
-//
-
 import SwiftUI
 
+/// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {
     @Binding var ground: SportsGround
     let address: String
@@ -18,16 +12,17 @@ struct SportsGroundLocationInfo: View {
                 .frame(height: 150)
                 .cornerRadius(8)
             Text(address)
-            Button {
-                if let url = appleMapsURL,
-                   UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url)
+            if appleMapsURL != nil {
+                Button {
+                    if let url = appleMapsURL,
+                       UIApplication.shared.canOpenURL(url) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    Text("Построить маршрут")
+                        .blueMediumWeight()
                 }
-            } label: {
-                Text("Построить маршрут")
-                    .blueMediumWeight()
             }
-            .opacity(appleMapsURL == nil ? .zero : 1)
         }
     }
 }

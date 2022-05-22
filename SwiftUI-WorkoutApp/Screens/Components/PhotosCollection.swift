@@ -1,12 +1,6 @@
-//
-//  PhotosCollection.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 19.05.2022.
-//
-
 import SwiftUI
-
+#warning("TODO: Сделать картинки кликабельными и открывать на весь экран")
+/// Галерея с фотографиями
 struct PhotosCollection: View {
     let items: [Photo]
 

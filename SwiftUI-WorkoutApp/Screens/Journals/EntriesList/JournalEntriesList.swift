@@ -1,12 +1,6 @@
-//
-//  JournalEntriesList.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.05.2022.
-//
-
 import SwiftUI
 
+/// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalEntriesListViewModel()

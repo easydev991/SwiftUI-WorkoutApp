@@ -1,10 +1,3 @@
-//
-//  String+.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 11.05.2022.
-//
-
 import Foundation
 
 extension String {

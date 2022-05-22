@@ -1,10 +1,3 @@
-//
-//  SportsGroundGrade.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.04.2022.
-//
-
 struct SportsGroundGrade {
     let grade: Grade
 

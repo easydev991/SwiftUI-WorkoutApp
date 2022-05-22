@@ -1,12 +1,6 @@
-//
-//  SportsGroundView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.04.2022.
-//
-
 import SwiftUI
 
+/// Экран с детальной информацией о площадке
 struct SportsGroundView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundViewModel()

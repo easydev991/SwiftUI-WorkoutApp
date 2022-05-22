@@ -1,19 +1,10 @@
-//
-//  MessageResponse.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import Foundation
 
+/// Модель сообщения в диалоге
 struct MessageResponse: Codable, Identifiable, Hashable {
     let id: Int
-    let message: String?
     let userID: Int?
-    let name: String?
-    let created: String?
-    let imageStringURL: String?
+    let message, name, created, imageStringURL: String?
 
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"

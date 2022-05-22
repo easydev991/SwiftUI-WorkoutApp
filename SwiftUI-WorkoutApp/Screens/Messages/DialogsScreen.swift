@@ -1,13 +1,7 @@
-//
-//  MessagesScreen.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
-struct MessagesScreen: View {
+/// Экран с диалогами
+struct DialogsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
@@ -25,7 +19,7 @@ struct MessagesScreen: View {
     }
 }
 
-private extension MessagesScreen {
+private extension DialogsScreen {
     var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
         defaults.isAuthorized ? .inline : .large
     }
@@ -33,7 +27,7 @@ private extension MessagesScreen {
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesScreen()
+        DialogsScreen()
             .environmentObject(DefaultsService())
     }
 }

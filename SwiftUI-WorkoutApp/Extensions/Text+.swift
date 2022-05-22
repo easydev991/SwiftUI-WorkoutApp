@@ -1,10 +1,3 @@
-//
-//  Text+.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 03.05.2022.
-//
-
 import SwiftUI
 
 extension Text {
@@ -14,6 +7,7 @@ extension Text {
             .foregroundColor(.blue)
     }
 }
+
 struct BlueMediumWeightText: View {
     var body: some View {
         Text("Hello, World!")

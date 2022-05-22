@@ -1,10 +1,3 @@
-//
-//  Bundle+.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.04.2022.
-//
-
 import Foundation
 
 extension Bundle {

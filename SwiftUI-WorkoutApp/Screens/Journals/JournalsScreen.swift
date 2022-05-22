@@ -1,12 +1,6 @@
-//
-//  JournalsScreen.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Экран с дневниками пользователя
 struct JournalsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 

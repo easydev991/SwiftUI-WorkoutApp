@@ -1,10 +1,3 @@
-//
-//  MainUserForm.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 14.05.2022.
-//
-
 import Foundation
 
 /// Форма для отправки при регистрации или изменении данных профиля

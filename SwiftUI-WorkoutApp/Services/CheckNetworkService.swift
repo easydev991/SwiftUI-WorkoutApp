@@ -1,10 +1,3 @@
-//
-//  CheckNetworkService.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.05.2022.
-//
-
 import Foundation
 import Network
 

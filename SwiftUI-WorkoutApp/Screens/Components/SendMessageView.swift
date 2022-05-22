@@ -1,12 +1,6 @@
-//
-//  SendMessageView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import SwiftUI
 
+/// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @FocusState private var isFocused

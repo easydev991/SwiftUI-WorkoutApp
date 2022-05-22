@@ -1,12 +1,6 @@
-//
-//  RoundedDefaultImage.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 13.05.2022.
-//
-
 import SwiftUI
 
+/// Дефолтная картинка `Workout`
 struct RoundedDefaultImage: View {
     let size: CGSize
     var body: some View {

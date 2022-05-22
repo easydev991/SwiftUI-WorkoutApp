@@ -1,13 +1,6 @@
-//
-//  CacheAsyncImage.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 08.05.2022.
-//
-
 import SwiftUI
 
-/// Thanks to https://github.com/pitt500/Pokedex
+/// Прокачанная версия `AsyncImage`
 struct CacheAsyncImage<Content>: View where Content: View {
     private let url: URL?
     private let scale: CGFloat

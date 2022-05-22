@@ -1,10 +1,3 @@
-//
-//  EventsListViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.05.2022.
-//
-
 import Foundation
 
 final class EventsListViewModel: ObservableObject {

@@ -1,12 +1,6 @@
-//
-//  JournalEntryResponse.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.05.2022.
-//
-
 import Foundation
 
+/// Модель с информацией о записи в дневнике
 struct JournalEntryResponse: Codable, Identifiable {
     let id: Int
     let journalID, authorID: Int?

@@ -1,13 +1,7 @@
-//
-//  MapSnapshotView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 24.04.2022.
-//
-
 import SwiftUI
 import MapKit
 
+/// Снапшот карты
 struct MapSnapshotView: View {
     @Binding var model: SportsGround
     @State private var snapshotImage: UIImage? = nil

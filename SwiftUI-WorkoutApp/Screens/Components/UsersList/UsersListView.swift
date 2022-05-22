@@ -1,12 +1,6 @@
-//
-//  UsersListView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 24.04.2022.
-//
-
 import SwiftUI
 
+/// Экран со списком пользователей
 struct UsersListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()

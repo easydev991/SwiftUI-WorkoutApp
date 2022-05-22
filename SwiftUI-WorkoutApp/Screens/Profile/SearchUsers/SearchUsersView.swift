@@ -1,12 +1,6 @@
-//
-//  SearchUsersView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 10.05.2022.
-//
-
 import SwiftUI
 
+/// Экран для поиска других пользователей
 struct SearchUsersView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SearchUsersViewModel()

@@ -1,12 +1,6 @@
-//
-//  IncognitoProfileView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Заглушка для неавторизованного пользователя
 struct IncognitoProfileView: View {
     var body: some View {
         VStack(spacing: 16) {

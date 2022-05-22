@@ -1,13 +1,7 @@
-//
-//  WelcomeLoginButtonTitle.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
-struct WelcomeLoginButtonTitle: ViewModifier {
+/// Стиль для основных кнопок на приветственном экране
+struct WelcomeButtonTitle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .frame(height: 48)
@@ -19,7 +13,7 @@ struct WelcomeLoginButtonTitle: ViewModifier {
 }
 
 extension View {
-    func welcomeLoginButtonTitle() -> some View {
-        modifier(WelcomeLoginButtonTitle())
+    func welcomeButtonTitle() -> some View {
+        modifier(WelcomeButtonTitle())
     }
 }

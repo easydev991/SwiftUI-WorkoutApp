@@ -1,12 +1,6 @@
-//
-//  ProfileScreen.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Экран профиля пользователя
 struct ProfileScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 

@@ -1,12 +1,6 @@
-//
-//  CommentView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 23.04.2022.
-//
-
 import SwiftUI
 
+/// Экран для создания и изменения комментария к мероприятию или площадке
 struct CommentView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService

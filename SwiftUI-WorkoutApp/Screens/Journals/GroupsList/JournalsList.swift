@@ -1,12 +1,6 @@
-//
-//  JournalsList.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.05.2022.
-//
-
 import SwiftUI
 
+/// Список дневников
 struct JournalsList: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
@@ -15,7 +9,7 @@ struct JournalsList: View {
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var saveJournalTask: Task<Void, Never>?
-    @State private var deleteJournalGroupTask: Task<Void, Never>?
+    @State private var deleteJournalTask: Task<Void, Never>?
     let userID: Int
 
     var body: some View {
@@ -31,7 +25,7 @@ struct JournalsList: View {
                     }
                 }
                 .onDelete { indexSet in
-                    deleteJournalGroupTask = Task {
+                    deleteJournalTask = Task {
                         await viewModel.deleteJournal(at: indexSet.first, with: defaults)
                     }
                 }
@@ -122,7 +116,7 @@ private extension JournalsList {
     }
 
     func cancelTasks() {
-        [saveJournalTask, deleteJournalGroupTask].forEach { $0?.cancel() }
+        [saveJournalTask, deleteJournalTask].forEach { $0?.cancel() }
     }
 }
 

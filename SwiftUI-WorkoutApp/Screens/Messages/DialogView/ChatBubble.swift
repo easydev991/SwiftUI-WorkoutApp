@@ -1,10 +1,3 @@
-//
-//  ChatBubble.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 14.05.2022.
-//
-
 import SwiftUI
 
 struct ChatBubble<Content: View>: View {

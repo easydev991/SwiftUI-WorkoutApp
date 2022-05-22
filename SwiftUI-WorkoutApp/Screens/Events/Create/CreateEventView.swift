@@ -1,12 +1,6 @@
-//
-//  CreateEventView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 24.04.2022.
-//
-
 import SwiftUI
 
+/// Экран для создания мероприятия
 struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService

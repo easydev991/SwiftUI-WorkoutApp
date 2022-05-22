@@ -1,12 +1,6 @@
-//
-//  Comments.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 19.05.2022.
-//
-
 import SwiftUI
 
+/// Список комментариев
 struct Comments: View {
     let items: [Comment]
     let deleteClbk: (Int) -> Void

@@ -1,10 +1,3 @@
-//
-//  FeedbackService.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 24.04.2022.
-//
-
 import MessageUI
 
 protocol IFeedbackHelper {

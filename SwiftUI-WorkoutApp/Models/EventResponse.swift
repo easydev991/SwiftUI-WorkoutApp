@@ -1,13 +1,7 @@
-//
-//  Event.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.05.2022.
-//
-
 import Foundation
 import MapKit.MKGeometry
 
+/// Модель со всей информацией о мероприятии
 struct EventResponse: Codable, Identifiable {
     let id: Int
     /// Название мероприятия

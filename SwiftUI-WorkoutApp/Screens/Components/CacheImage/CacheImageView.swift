@@ -1,12 +1,6 @@
-//
-//  CacheImageView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 11.05.2022.
-//
-
 import SwiftUI
 
+/// Универсальная картинка с возможностью кэширования
 struct CacheImageView: View {
     let url: URL?
     var mode = Mode.user

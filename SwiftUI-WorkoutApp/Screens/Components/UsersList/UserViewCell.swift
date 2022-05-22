@@ -1,10 +1,3 @@
-//
-//  UserViewCell.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 03.05.2022.
-//
-
 import SwiftUI
 
 struct UserViewCell: View {

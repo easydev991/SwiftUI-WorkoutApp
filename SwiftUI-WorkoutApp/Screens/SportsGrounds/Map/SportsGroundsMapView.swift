@@ -1,12 +1,6 @@
-//
-//  SportsGroundsMapView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Экран с картой и площадками
 struct SportsGroundsMapView: View {
     @EnvironmentObject private var sportsGrounds: SportsGroundsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()

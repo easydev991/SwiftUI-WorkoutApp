@@ -1,12 +1,6 @@
-//
-//  EventDetailsView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.05.2022.
-//
-
 import SwiftUI
 
+/// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService

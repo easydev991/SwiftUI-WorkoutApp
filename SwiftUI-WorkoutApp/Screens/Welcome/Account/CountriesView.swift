@@ -1,10 +1,3 @@
-//
-//  CountriesView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.04.2022.
-//
-
 import SwiftUI
 
 struct CountriesView: View {

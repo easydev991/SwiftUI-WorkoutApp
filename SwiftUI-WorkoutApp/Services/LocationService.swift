@@ -1,10 +1,3 @@
-//
-//  LocationService.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 28.04.2022.
-//
-
 import MapKit.MKGeometry
 
 final class LocationService: NSObject, CLLocationManagerDelegate {

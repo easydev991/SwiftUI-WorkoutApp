@@ -1,10 +1,3 @@
-//
-//  UsersListViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 07.05.2022.
-//
-
 import Foundation
 
 final class UsersListViewModel: ObservableObject {

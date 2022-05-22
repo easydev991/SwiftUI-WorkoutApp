@@ -1,10 +1,3 @@
-//
-//  SearchUsersViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 10.05.2022.
-//
-
 import Foundation
 
 final class SearchUsersViewModel: ObservableObject {

@@ -1,10 +1,3 @@
-//
-//  SportsGroundsMapViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 30.04.2022.
-//
-
 import MapKit.MKGeometry
 
 final class SportsGroundsMapViewModel: ObservableObject {

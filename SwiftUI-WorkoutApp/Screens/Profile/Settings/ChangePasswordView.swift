@@ -1,12 +1,6 @@
-//
-//  ChangePasswordView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.04.2022.
-//
-
 import SwiftUI
 
+/// Экран для смены пароля
 struct ChangePasswordView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ChangePasswordViewModel()

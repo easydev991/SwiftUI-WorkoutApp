@@ -1,12 +1,6 @@
-//
-//  ProfileSettingsView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 19.04.2022.
-//
-
 import SwiftUI
 
+/// Экран с настройками профиля основного пользователя
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()

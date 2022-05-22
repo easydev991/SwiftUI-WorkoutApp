@@ -1,12 +1,6 @@
-//
-//  AdaptiveRoundedRectangle.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Стиль для кнопки
 struct AdaptiveRoundedRectangle: ViewModifier {
     func body(content: Content) -> some View {
         content

@@ -1,10 +1,3 @@
-//
-//  Data+.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 15.05.2022.
-//
-
 import Foundation
 
 extension Data {

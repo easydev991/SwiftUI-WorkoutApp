@@ -1,12 +1,6 @@
-//
-//  SpecificSizeImageRectangle.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 24.04.2022.
-//
-
 import SwiftUI
 
+/// Форма нужного размера для отображения картинки
 struct SpecificSizeImageRectangle: ViewModifier {
     func body(content: Content) -> some View {
         content

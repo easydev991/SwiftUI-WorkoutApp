@@ -1,12 +1,6 @@
-//
-//  WelcomeView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Приветственный экран для регистрации/авторизации
 struct WelcomeView: View {
     @EnvironmentObject private var defaults: DefaultsService
 
@@ -45,14 +39,14 @@ private extension WelcomeView {
     var registerButton: some View {
         NavigationLink(destination: AccountInfoView()) {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
-                .welcomeLoginButtonTitle()
+                .welcomeButtonTitle()
         }
     }
 
     var loginButton: some View {
         NavigationLink(destination: LoginView()) {
             Label("Войти через email", systemImage: "envelope")
-                .welcomeLoginButtonTitle()
+                .welcomeButtonTitle()
         }
     }
 

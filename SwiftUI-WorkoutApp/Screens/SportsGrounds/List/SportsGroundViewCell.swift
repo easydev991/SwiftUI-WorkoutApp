@@ -1,10 +1,3 @@
-//
-//  SportsGroundViewCell.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 13.05.2022.
-//
-
 import SwiftUI
 
 struct SportsGroundViewCell: View {

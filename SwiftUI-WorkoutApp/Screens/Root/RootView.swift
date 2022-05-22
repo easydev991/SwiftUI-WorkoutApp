@@ -1,10 +1,3 @@
-//
-//  RootView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
 struct RootView: View {
@@ -37,7 +30,7 @@ private extension RootView {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
-            MessagesScreen()
+            DialogsScreen()
                 .onAppear { selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")

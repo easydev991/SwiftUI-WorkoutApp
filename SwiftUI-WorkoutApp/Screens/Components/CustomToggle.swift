@@ -1,12 +1,6 @@
-//
-//  CustomToggle.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 18.05.2022.
-//
-
 import SwiftUI
 
+/// В отличие от стандартного тоггла не активируется при появлении экрана лишний раз
 struct CustomToggle: View {
     @Binding var isOn: Bool
     let title: String

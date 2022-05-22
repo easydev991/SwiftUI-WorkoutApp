@@ -1,12 +1,6 @@
-//
-//  EmptyContentView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 03.05.2022.
-//
-
 import SwiftUI
 
+/// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
     @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode

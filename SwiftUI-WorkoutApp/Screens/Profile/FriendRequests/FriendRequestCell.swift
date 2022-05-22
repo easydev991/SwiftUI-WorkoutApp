@@ -1,10 +1,3 @@
-//
-//  FriendRequestCell.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 08.05.2022.
-//
-
 import SwiftUI
 
 struct FriendRequestCell: View {

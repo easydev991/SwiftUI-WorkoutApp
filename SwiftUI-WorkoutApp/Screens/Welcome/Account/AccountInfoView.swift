@@ -1,12 +1,6 @@
-//
-//  AccountInfoView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.04.2022.
-//
-
 import SwiftUI
 
+/// Экран для регистрации пользователя или изменения его личных данных
 struct AccountInfoView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService

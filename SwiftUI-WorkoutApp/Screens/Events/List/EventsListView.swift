@@ -1,12 +1,6 @@
-//
-//  EventsListView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.04.2022.
-//
-
 import SwiftUI
 
+/// Экран со списком мероприятий
 struct EventsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()

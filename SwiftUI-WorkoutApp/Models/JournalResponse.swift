@@ -1,12 +1,6 @@
-//
-//  JournalResponse.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 22.05.2022.
-//
-
 import Foundation
 
+/// Модель с информацией о дневнике
 struct JournalResponse: Codable, Identifiable {
     let id: Int
     let title, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?

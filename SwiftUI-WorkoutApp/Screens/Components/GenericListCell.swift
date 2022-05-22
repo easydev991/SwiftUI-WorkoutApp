@@ -1,13 +1,6 @@
-//
-//  GenericListCell.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import SwiftUI
 
-/// Ячейка для экранов "Дневники" и "Сообщения"
+/// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {
     private let content: Mode.Content
 

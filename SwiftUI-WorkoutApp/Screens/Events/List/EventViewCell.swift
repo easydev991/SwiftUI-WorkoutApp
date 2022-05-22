@@ -1,10 +1,3 @@
-//
-//  EventViewCell.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 16.05.2022.
-//
-
 import SwiftUI
 
 struct EventViewCell: View {

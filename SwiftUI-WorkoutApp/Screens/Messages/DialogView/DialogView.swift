@@ -1,12 +1,6 @@
-//
-//  DialogView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import SwiftUI
 
+/// Экран с диалогом
 struct DialogView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService

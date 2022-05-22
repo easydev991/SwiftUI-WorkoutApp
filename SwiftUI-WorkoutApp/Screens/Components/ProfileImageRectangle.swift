@@ -1,12 +1,6 @@
-//
-//  ProfileImageRectangle.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 17.05.2022.
-//
-
 import SwiftUI
 
+/// Форма для картинки в профиле
 struct ProfileImageRectangle: ViewModifier {
     let size: CGSize
 

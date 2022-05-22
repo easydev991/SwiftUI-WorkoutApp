@@ -1,12 +1,6 @@
-//
-//  FriendRequestsView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 08.05.2022.
-//
-
 import SwiftUI
 
+/// Список заявок на добавление в друзья
 struct FriendRequestsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService

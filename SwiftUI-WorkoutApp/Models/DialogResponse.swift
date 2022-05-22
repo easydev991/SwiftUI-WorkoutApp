@@ -1,12 +1,6 @@
-//
-//  DialogResponse.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 21.05.2022.
-//
-
 import Foundation
 
+/// Модель с информацией о диалоге
 struct DialogResponse: Codable, Identifiable {
     let id: Int
     let anotherUserImageStringURL: String?
