@@ -61,8 +61,7 @@ struct JournalsList: View {
 
 private extension JournalsList {
     var showEmptyView: Bool {
-        !defaults.hasJournals
-        && viewModel.list.isEmpty
+        !defaults.hasJournals && viewModel.list.isEmpty
     }
 
     var isMainUser: Bool {
