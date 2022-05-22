@@ -29,6 +29,9 @@ final class DefaultsService: ObservableObject {
     @AppStorage(Key.friendRequests.rawValue)
     private var friendRequests = Data()
 
+    @AppStorage(Key.hasJournals.rawValue)
+    private(set) var hasJournals = false
+
     func setWelcomeShown() {
         showWelcome = false
     }
@@ -111,12 +114,17 @@ final class DefaultsService: ObservableObject {
             return []
         }
     }
+
+    @MainActor
+    func setHasJournals(_ hasJournals: Bool) {
+        self.hasJournals = hasJournals
+    }
 }
 
 private extension DefaultsService {
     enum Key: String {
         case mainUserID, isUserAuthorized,
              showWelcome, authData, userInfo,
-             friends, friendRequests
+             friends, friendRequests, hasJournals
     }
 }

@@ -1,39 +1,35 @@
 //
-//  DialogListView.swift
+//  JournalGroupsList.swift
 //  SwiftUI-WorkoutApp
 //
-//  Created by Олег Еременко on 21.05.2022.
+//  Created by Олег Еременко on 22.05.2022.
 //
 
 import SwiftUI
 
-struct DialogListView: View {
+struct JournalGroupsList: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = DialogListViewModel()
+    @StateObject private var viewModel = JournalGroupsListViewModel()
     @State private var editMode = EditMode.inactive
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var deleteDialogTask: Task<Void, Never>?
+    @State private var deleteJournalGroupTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
-            EmptyContentView(mode: .messages)
+            EmptyContentView(mode: .journals)
                 .opacity(showEmptyView ? 1 : .zero)
-            Text("Тут будут чаты с другими пользователями")
-                .multilineTextAlignment(.center)
-                .padding()
-                .opacity(showDummyText ? 1 : .zero)
             List {
-                ForEach($viewModel.list) { $dialog in
+                ForEach($viewModel.list) { $journal in
                     NavigationLink {
-                        DialogView(dialog: $dialog)
+                        Text("Записи в дневнике")
                     } label: {
-                        GenericListCell(for: .dialog(dialog))
+                        GenericListCell(for: .journalGroup(journal))
                     }
                 }
                 .onDelete { indexSet in
-                    deleteDialogTask = Task {
-                        await viewModel.deleteDialog(at: indexSet.first, with: defaults)
+                    deleteJournalGroupTask = Task {
+                        await viewModel.deleteJournalGroup(at: indexSet.first, with: defaults)
                     }
                 }
             }
@@ -45,29 +41,35 @@ struct DialogListView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
-        .task { await askForDialogs() }
-        .refreshable { await askForDialogs(refresh: true) }
+        .task { await askForJournalGroups() }
+        .refreshable { await askForJournalGroups(refresh: true) }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 EditButton()
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                addJournalButton
+            }
         }
         .environment(\.editMode, $editMode)
-        .onDisappear(perform: cancelTask)
+        .onDisappear(perform: cancelDeleteTask)
     }
 }
 
-private extension DialogListView {
+private extension JournalGroupsList {
     var showEmptyView: Bool {
-        !defaults.friendsIdsList.isEmpty
+        !defaults.hasJournals
         && viewModel.list.isEmpty
     }
 
-    var showDummyText: Bool {
-        !showEmptyView && viewModel.list.isEmpty
+    var addJournalButton: some View {
+        NavigationLink(destination: Text("Создать дневник")) {
+            Image(systemName: "plus")
+        }
+        .opacity(defaults.isAuthorized ? 1 : .zero)
     }
 
-    func askForDialogs(refresh: Bool = false) async {
+    func askForJournalGroups(refresh: Bool = false) async {
         await viewModel.makeItems(with: defaults, refresh: refresh)
     }
 
@@ -80,14 +82,14 @@ private extension DialogListView {
         viewModel.clearErrorMessage()
     }
 
-    func cancelTask() {
-        deleteDialogTask?.cancel()
+    func cancelDeleteTask() {
+        deleteJournalGroupTask?.cancel()
     }
 }
 
-struct DialogListView_Previews: PreviewProvider {
+struct JournalGroupsList_Previews: PreviewProvider {
     static var previews: some View {
-        DialogListView()
+        JournalGroupsList()
             .environmentObject(DefaultsService())
     }
 }

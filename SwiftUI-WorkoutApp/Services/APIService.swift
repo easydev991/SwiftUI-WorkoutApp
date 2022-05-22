@@ -332,6 +332,32 @@ struct APIService {
         let endpoint = Endpoint.deleteDialog(id: dialogID, auth: defaults.basicAuthInfo)
         return try await makeStatus(for: endpoint.urlRequest)
     }
+
+    /// Запрашивает список дневников для выбранного пользователя
+    /// - Parameter userID: `id` выбранного пользователя
+    /// - Returns: Список дневников
+    func getJournals(for userID: Int) async throws -> [JournalGroupResponse] {
+        let endpoint = Endpoint.getJournals(userID: userID, auth: defaults.basicAuthInfo)
+        let result = try await makeResult([JournalGroupResponse].self, for: endpoint.urlRequest)
+        if userID == defaults.mainUserID {
+            await defaults.setHasJournals(!result.isEmpty)
+        }
+        return result
+    }
+
+    /// Удаляет выбранный дневник
+    /// - Parameters:
+    ///   - userID: `id` владельца дневника
+    ///   - journalID: `id` дневника для удаления
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func deleteJournal(for userID: Int, journalID: Int) async throws -> Bool {
+        let endpoint = Endpoint.deleteJournal(
+            userID: userID,
+            journalID: journalID,
+            auth: defaults.basicAuthInfo
+        )
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
 }
 
 private extension APIService {
@@ -567,6 +593,14 @@ private extension APIService {
         /// **DELETE** ${API}/dialogs/<dialog_id>
         case deleteDialog(id: Int, auth: AuthData)
 
+        // MARK: Получить список дневников пользователя
+        /// **GET** ${API}/users/<user_id>/journals
+        case getJournals(userID: Int, auth: AuthData)
+
+        // MARK: Удалить дневник пользователя
+        /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
+        case deleteJournal(userID: Int, journalID: Int, auth: AuthData)
+
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
             var request = URLRequest(url: url)
@@ -575,219 +609,230 @@ private extension APIService {
             request.allHTTPHeaderFields = headers
             return request
         }
+    }
+}
 
-        private var urlPath: String {
-            let baseUrl = Constants.API.baseURL
-            switch self {
-            case .registration:
-                return "\(baseUrl)/registration"
-            case .login:
-                return "\(baseUrl)/auth/login"
-            case .resetPassword:
-                return "\(baseUrl)/auth/reset"
-            case let .editUser(userID, _, _):
-                return "\(baseUrl)/users/\(userID)"
-            case .changePassword:
-                return "\(baseUrl)/auth/changepass"
-            case .deleteUser:
-                return "\(baseUrl)/users/current"
-            case let .getUser(id, _):
-                return "\(baseUrl)/users/\(id)"
-            case let .getFriendsForUser(id, _):
-                return "\(baseUrl)/users/\(id)/friends"
-            case .getFriendRequests:
-                return "\(baseUrl)/friends/requests"
-            case let .acceptFriendRequest(userID, _),
-                let .declineFriendRequest(userID, _):
-                return "\(baseUrl)/friends/\(userID)/accept"
-            case let .sendFriendRequest(userID, _),
-                let .deleteFriend(userID, _):
-                return "\(baseUrl)/friends/\(userID)"
-            case let .findUsers(name, _):
-                return "\(baseUrl)/users/search?name=\(name)"
-            case let .getSportsGround(id, _):
-                return "\(baseUrl)/areas/\(id)"
-            case let .addCommentToSportsGround(groundID, _, _):
-                return "\(baseUrl)/areas/\(groundID)/comments"
-            case let .editGroundComment(groundID, commentID, _, _):
-                return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
-            case let .deleteGroundComment(groundID, commentID, _):
-                return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
-            case let .getSportsGroundsForUser(userID, _):
-                return "\(baseUrl)/users/\(userID)/areas"
-            case let .postTrainHere(groundID, _), let .deleteTrainHere(groundID, _):
-                return "\(baseUrl)/areas/\(groundID)/train"
-            case .getFutureEvents:
-                return "\(baseUrl)/trainings/current"
-            case .getPastEvents:
-                return "\(baseUrl)/trainings/last"
-            case let .getEvent(id):
-                return "\(baseUrl)/trainings/\(id)"
-            case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
-                return "\(baseUrl)/trainings/\(id)/go"
-            case let .addCommentToEvent(id, _, _):
-                return "\(baseUrl)/trainings/\(id)/comments"
-            case let .deleteEventComment(eventID, commentID, _):
-                return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
-            case let .editEventComment(eventID, commentID, _, _):
-                return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
-            case let .deleteEvent(id, _):
-                return "\(baseUrl)/trainings/\(id)"
-            case .getDialogs:
-                return "\(baseUrl)/dialogs"
-            case let .getMessages(dialogID, _):
-                return "\(baseUrl)/dialogs/\(dialogID)/messages"
-            case let .sendMessageTo(_, userID, _):
-                return "\(baseUrl)/messages/\(userID)"
-            case .markAsRead:
-                return "\(baseUrl)/messages/mark_as_read"
-            case let .deleteDialog(dialogID, _):
-                return "\(baseUrl)/dialogs/\(dialogID)"
-            }
+private extension APIService.Endpoint {
+    var urlPath: String {
+        let baseUrl = Constants.API.baseURL
+        switch self {
+        case .registration:
+            return "\(baseUrl)/registration"
+        case .login:
+            return "\(baseUrl)/auth/login"
+        case .resetPassword:
+            return "\(baseUrl)/auth/reset"
+        case let .editUser(userID, _, _):
+            return "\(baseUrl)/users/\(userID)"
+        case .changePassword:
+            return "\(baseUrl)/auth/changepass"
+        case .deleteUser:
+            return "\(baseUrl)/users/current"
+        case let .getUser(id, _):
+            return "\(baseUrl)/users/\(id)"
+        case let .getFriendsForUser(id, _):
+            return "\(baseUrl)/users/\(id)/friends"
+        case .getFriendRequests:
+            return "\(baseUrl)/friends/requests"
+        case let .acceptFriendRequest(userID, _),
+            let .declineFriendRequest(userID, _):
+            return "\(baseUrl)/friends/\(userID)/accept"
+        case let .sendFriendRequest(userID, _),
+            let .deleteFriend(userID, _):
+            return "\(baseUrl)/friends/\(userID)"
+        case let .findUsers(name, _):
+            return "\(baseUrl)/users/search?name=\(name)"
+        case let .getSportsGround(id, _):
+            return "\(baseUrl)/areas/\(id)"
+        case let .addCommentToSportsGround(groundID, _, _):
+            return "\(baseUrl)/areas/\(groundID)/comments"
+        case let .editGroundComment(groundID, commentID, _, _):
+            return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
+        case let .deleteGroundComment(groundID, commentID, _):
+            return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
+        case let .getSportsGroundsForUser(userID, _):
+            return "\(baseUrl)/users/\(userID)/areas"
+        case let .postTrainHere(groundID, _), let .deleteTrainHere(groundID, _):
+            return "\(baseUrl)/areas/\(groundID)/train"
+        case .getFutureEvents:
+            return "\(baseUrl)/trainings/current"
+        case .getPastEvents:
+            return "\(baseUrl)/trainings/last"
+        case let .getEvent(id):
+            return "\(baseUrl)/trainings/\(id)"
+        case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
+            return "\(baseUrl)/trainings/\(id)/go"
+        case let .addCommentToEvent(id, _, _):
+            return "\(baseUrl)/trainings/\(id)/comments"
+        case let .deleteEventComment(eventID, commentID, _):
+            return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
+        case let .editEventComment(eventID, commentID, _, _):
+            return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
+        case let .deleteEvent(id, _):
+            return "\(baseUrl)/trainings/\(id)"
+        case .getDialogs:
+            return "\(baseUrl)/dialogs"
+        case let .getMessages(dialogID, _):
+            return "\(baseUrl)/dialogs/\(dialogID)/messages"
+        case let .sendMessageTo(_, userID, _):
+            return "\(baseUrl)/messages/\(userID)"
+        case .markAsRead:
+            return "\(baseUrl)/messages/mark_as_read"
+        case let .deleteDialog(dialogID, _):
+            return "\(baseUrl)/dialogs/\(dialogID)"
+        case let .getJournals(userID, _):
+            return "\(baseUrl)/users/\(userID)/journals"
+        case let .deleteJournal(userID, journalID, _):
+            return "\(baseUrl)/users/\(userID)/journals/\(journalID)"
+        }
+    }
+
+    enum HTTPMethod: String {
+        case get = "GET"
+        case post = "POST"
+        case delete = "DELETE"
+    }
+
+    var method: HTTPMethod {
+        switch self {
+        case .registration, .login, .editUser, .resetPassword,
+                .changePassword, .acceptFriendRequest, .sendFriendRequest,
+                .addCommentToSportsGround, .editGroundComment, .postTrainHere,
+                .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
+                .sendMessageTo, .markAsRead:
+            return .post
+        case .getUser, .getFriendsForUser, .getFriendRequests,
+                .getSportsGround, .findUsers, .getSportsGroundsForUser,
+                .getFutureEvents, .getPastEvents, .getEvent,
+                .getDialogs, .getMessages, .getJournals:
+            return .get
+        case .declineFriendRequest, .deleteFriend,
+                .deleteGroundComment, .deleteTrainHere,
+                .deleteUser, .deleteIsGoingToEvent,
+                .deleteEventComment, .deleteEvent,
+                .deleteDialog, .deleteJournal:
+            return .delete
+        }
+    }
+
+    enum HTTPHeader {
+        enum Key: String {
+            case authorization = "Authorization"
+            case acceptEncoding = "Accept-Encoding"
         }
 
-        private var method: HTTPMethod {
-            switch self {
-            case .registration, .login, .editUser, .resetPassword,
-                    .changePassword, .acceptFriendRequest, .sendFriendRequest,
-                    .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                    .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
-                    .sendMessageTo, .markAsRead:
-                return .post
-            case .getUser, .getFriendsForUser, .getFriendRequests,
-                    .getSportsGround, .findUsers, .getSportsGroundsForUser,
-                    .getFutureEvents, .getPastEvents, .getEvent,
-                    .getDialogs, .getMessages:
-                return .get
-            case .declineFriendRequest, .deleteFriend, .deleteGroundComment, .deleteTrainHere,
-                    .deleteUser, .deleteIsGoingToEvent, .deleteEventComment, .deleteEvent,
-                    .deleteDialog:
-                return .delete
+        enum Value: String { case encodingType = "gzip" }
+
+        static func basicAuth(with input: AuthData) -> [String: String] {
+            var headers = [String: String]()
+            if let encodedString = input.base64Encoded {
+                headers[Key.authorization.rawValue] = "Basic \(encodedString)"
             }
+            headers[Key.acceptEncoding.rawValue] = Value.encodingType.rawValue
+            return headers
+        }
+    }
+
+    var headers: [String: String] {
+        switch self {
+        case let .login(auth), let .getUser(_, auth), let .editUser(_, _, auth),
+            let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
+            let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
+            let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
+            let .deleteFriend(_, auth), let .getSportsGround(_, auth),
+            let .findUsers(_, auth), let .deleteUser(auth), let .getDialogs(auth),
+            let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
+            let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
+            let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
+            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
+            let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
+            let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
+            let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
+            let .markAsRead(_, auth), let .deleteDialog(_, auth),
+            let .getJournals(_, auth), let .deleteJournal(_, _, auth):
+            return HTTPHeader.basicAuth(with: auth)
+        case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
+            return [:]
+        }
+    }
+
+    enum Parameter {
+        enum Key: String {
+            case name, fullname, email, password, comment, message
+            case genderCode = "gender"
+            case usernameOrEmail = "username_or_email"
+            case newPassword = "new_password"
+            case countryID = "country_id"
+            case cityID = "city_id"
+            case birthDate = "birth_date"
+            case fromUserID = "from_user_id"
         }
 
-        private var headers: [String: String] {
-            switch self {
-            case let .login(auth), let .getUser(_, auth), let .editUser(_, _, auth),
-                let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
-                let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
-                let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-                let .deleteFriend(_, auth), let .getSportsGround(_, auth),
-                let .findUsers(_, auth), let .deleteUser(auth), let .getDialogs(auth),
-                let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
-                let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
-                let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-                let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
-                let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
-                let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
-                let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
-                let .markAsRead(_, auth), let .deleteDialog(_, auth):
-                return HTTPHeader.basicAuth(with: auth)
-            case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
-                return [:]
-            }
+        static func make(from dict: [Key: String]) -> Data? {
+            dict
+                .map { $0.key.rawValue + "=" + $0.value }
+                .joined(separator: "&")
+                .data(using: .utf8)
         }
+    }
 
-        private var httpBody: Data? {
-            switch self {
-            case .login, .getUser, .getFriendsForUser, .getFriendRequests,
-                    .acceptFriendRequest, .declineFriendRequest, .findUsers,
-                    .sendFriendRequest, .deleteFriend, .getSportsGround,
-                    .deleteGroundComment, .getSportsGroundsForUser,
-                    .postTrainHere, .deleteTrainHere, .deleteUser,
-                    .getFutureEvents, .getPastEvents, .getEvent,
-                    .postIsGoingToEvent, .deleteIsGoingToEvent,
-                    .deleteEventComment, .deleteEvent, .getDialogs,
-                    .getMessages, .deleteDialog:
-                return nil
-            case let .registration(form):
-                return Parameter.make(
-                    from: [
-                        .name: form.userName,
-                        .fullname: form.fullName,
-                        .email: form.email,
-                        .password: form.password,
-                        .genderCode: form.genderCode.description,
-                        .countryID: form.country.id,
-                        .cityID: form.city.id,
-                        .birthDate: form.birthDateIsoString
-                    ]
-                )
-            case let .editUser(_, form, _):
-                return Parameter.make(
-                    from: [
-                        .name: form.userName,
-                        .fullname: form.fullName,
-                        .email: form.email,
-                        .genderCode: form.genderCode.description,
-                        .countryID: form.country.id,
-                        .cityID: form.city.id,
-                        .birthDate: form.birthDateIsoString
-                    ]
-                )
-            case let .resetPassword(login):
-                return Parameter.make(from: [.usernameOrEmail: login])
-            case let .changePassword(current, new, _):
-                return Parameter.make(
-                    from: [.password: current, .newPassword: new]
-                )
-            case let .addCommentToSportsGround(_, comment, _),
-                let .addCommentToEvent(_, comment, _),
-                let .editGroundComment(_, _, comment, _),
-                let .editEventComment(_, _, comment, _):
-                return Parameter.make(from: [.comment: comment])
-            case let .sendMessageTo(message, _, _):
-                return Parameter.make(from: [.message: message])
-            case let .markAsRead(userID, _):
-                return Parameter.make(from: [.fromUserID: userID.description])
-            }
-        }
-
-        enum HTTPMethod: String {
-            case get = "GET"
-            case post = "POST"
-            case delete = "DELETE"
-        }
-
-        enum HTTPHeader {
-            enum Key: String {
-                case authorization = "Authorization"
-                case acceptEncoding = "Accept-Encoding"
-            }
-
-            enum Value: String { case encodingType = "gzip" }
-
-            static func basicAuth(with input: AuthData) -> [String: String] {
-                var headers = [String: String]()
-                if let encodedString = input.base64Encoded {
-                    headers[Key.authorization.rawValue] = "Basic \(encodedString)"
-                }
-                headers[Key.acceptEncoding.rawValue] = Value.encodingType.rawValue
-                return headers
-            }
-        }
-
-        enum Parameter {
-            enum Key: String {
-                case name, fullname, email, password, comment, message
-                case genderCode = "gender"
-                case usernameOrEmail = "username_or_email"
-                case newPassword = "new_password"
-                case countryID = "country_id"
-                case cityID = "city_id"
-                case birthDate = "birth_date"
-                case fromUserID = "from_user_id"
-            }
-
-            static func make(from dict: [Key: String]) -> Data? {
-                dict
-                    .map { $0.key.rawValue + "=" + $0.value }
-                    .joined(separator: "&")
-                    .data(using: .utf8)
-            }
+    var httpBody: Data? {
+        switch self {
+        case .login, .getUser, .getFriendsForUser, .getFriendRequests,
+                .acceptFriendRequest, .declineFriendRequest, .findUsers,
+                .sendFriendRequest, .deleteFriend, .getSportsGround,
+                .deleteGroundComment, .getSportsGroundsForUser,
+                .postTrainHere, .deleteTrainHere, .deleteUser,
+                .getFutureEvents, .getPastEvents, .getEvent,
+                .postIsGoingToEvent, .deleteIsGoingToEvent,
+                .deleteEventComment, .deleteEvent, .getDialogs,
+                .getMessages, .deleteDialog, .getJournals,
+                .deleteJournal:
+            return nil
+        case let .registration(form):
+            return Parameter.make(
+                from: [
+                    .name: form.userName,
+                    .fullname: form.fullName,
+                    .email: form.email,
+                    .password: form.password,
+                    .genderCode: form.genderCode.description,
+                    .countryID: form.country.id,
+                    .cityID: form.city.id,
+                    .birthDate: form.birthDateIsoString
+                ]
+            )
+        case let .editUser(_, form, _):
+            return Parameter.make(
+                from: [
+                    .name: form.userName,
+                    .fullname: form.fullName,
+                    .email: form.email,
+                    .genderCode: form.genderCode.description,
+                    .countryID: form.country.id,
+                    .cityID: form.city.id,
+                    .birthDate: form.birthDateIsoString
+                ]
+            )
+        case let .resetPassword(login):
+            return Parameter.make(from: [.usernameOrEmail: login])
+        case let .changePassword(current, new, _):
+            return Parameter.make(
+                from: [.password: current, .newPassword: new]
+            )
+        case let .addCommentToSportsGround(_, comment, _),
+            let .addCommentToEvent(_, comment, _),
+            let .editGroundComment(_, _, comment, _),
+            let .editEventComment(_, _, comment, _):
+            return Parameter.make(from: [.comment: comment])
+        case let .sendMessageTo(message, _, _):
+            return Parameter.make(from: [.message: message])
+        case let .markAsRead(userID, _):
+            return Parameter.make(from: [.fromUserID: userID.description])
         }
     }
 }
+
 // MARK: - APIError
 private extension APIService {
     enum APIError: Error, LocalizedError {

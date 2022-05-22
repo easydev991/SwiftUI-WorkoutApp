@@ -1,5 +1,5 @@
 //
-//  MessagesScreen.swift
+//  JournalsScreen.swift
 //  SwiftUI-WorkoutApp
 //
 //  Created by Олег Еременко on 16.04.2022.
@@ -7,33 +7,40 @@
 
 import SwiftUI
 
-struct MessagesScreen: View {
+struct JournalsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
         NavigationView {
+#warning("TODO: сверстать экран с дневниками")
             ZStack {
                 if defaults.isAuthorized {
-                    DialogListView()
+                    JournalGroupsList()
                 } else {
                     IncognitoProfileView()
                 }
             }
-            .navigationTitle("Сообщения")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(titleDisplayMode)
         }
     }
 }
 
-private extension MessagesScreen {
+private extension JournalsScreen {
+    var navigationTitle: String {
+        defaults.isAuthorized
+        ? "Дневники тренировок"
+        : "Дневники"
+    }
+
     var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
         defaults.isAuthorized ? .inline : .large
     }
 }
 
-struct MessagesView_Previews: PreviewProvider {
+struct JournalsView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesScreen()
+        JournalsScreen()
             .environmentObject(DefaultsService())
     }
 }

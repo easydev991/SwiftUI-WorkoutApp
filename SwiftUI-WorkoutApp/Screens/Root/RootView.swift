@@ -43,7 +43,7 @@ private extension RootView {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
-            JournalsView()
+            JournalsScreen()
                 .onAppear { selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")

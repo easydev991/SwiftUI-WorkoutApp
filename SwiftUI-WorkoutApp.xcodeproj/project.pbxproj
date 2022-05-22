@@ -41,7 +41,6 @@
 		675462FF282FC6E6005BC86A /* MainUserForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675462FE282FC6E6005BC86A /* MainUserForm.swift */; };
 		6758B92A281D8FD7001D83D8 /* SportsGroundViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B929281D8FD7001D83D8 /* SportsGroundViewModel.swift */; };
 		6758B92C281D9283001D83D8 /* CreateEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B92B281D9283001D83D8 /* CreateEventViewModel.swift */; };
-		6758B92E281D93DF001D83D8 /* JournalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */; };
 		6758B932281DB1F7001D83D8 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B931281DB1F7001D83D8 /* LoginResponse.swift */; };
 		6758B934281DC198001D83D8 /* UserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B933281DC198001D83D8 /* UserResponse.swift */; };
 		6758B936281E5EA9001D83D8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B935281E5EA9001D83D8 /* APIService.swift */; };
@@ -58,6 +57,9 @@
 		675EC65F2815532800C2E229 /* CreateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC65E2815532800C2E229 /* CreateEventView.swift */; };
 		675EC66128155BF900C2E229 /* FeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC66028155BF900C2E229 /* FeedbackService.swift */; };
 		675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */; };
+		6762774D283A343A009C203F /* JournalGroupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762774C283A343A009C203F /* JournalGroupResponse.swift */; };
+		67627750283A3A54009C203F /* JournalGroupsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762774F283A3A54009C203F /* JournalGroupsList.swift */; };
+		67627752283A4089009C203F /* JournalGroupsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627751283A4089009C203F /* JournalGroupsListViewModel.swift */; };
 		676B3AFA283507E900DB4ADA /* EventDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B3AF9283507E900DB4ADA /* EventDetailsViewModel.swift */; };
 		678142092835575D00590746 /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678142082835575D00590746 /* CustomToggle.swift */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
@@ -68,7 +70,7 @@
 		6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA4D280AF32A00DB76F1 /* SportsGround.swift */; };
 		6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA52280AF43900DB76F1 /* EventsListView.swift */; };
 		6798AA55280AF46300DB76F1 /* MessagesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA54280AF46300DB76F1 /* MessagesScreen.swift */; };
-		6798AA57280AF48C00DB76F1 /* JournalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA56280AF48C00DB76F1 /* JournalsView.swift */; };
+		6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */; };
 		6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */; };
 		6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */; };
 		6798AA5D280AF5E500DB76F1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5C280AF5E500DB76F1 /* Constants.swift */; };
@@ -100,7 +102,7 @@
 		67BAF3F82836245100DB40D9 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* Comments.swift */; };
 		67BAF3FB28362AD100DB40D9 /* AddCommentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3FA28362AD100DB40D9 /* AddCommentButton.swift */; };
 		67D9167C2838D6610098D3CB /* DialogResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9167B2838D6610098D3CB /* DialogResponse.swift */; };
-		67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9167D2838DC3E0098D3CB /* DialogListCell.swift */; };
+		67D9167E2838DC3E0098D3CB /* GenericListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9167D2838DC3E0098D3CB /* GenericListCell.swift */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
 		67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916822838E2520098D3CB /* DialogListViewModel.swift */; };
 		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
@@ -151,7 +153,6 @@
 		675462FE282FC6E6005BC86A /* MainUserForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserForm.swift; sourceTree = "<group>"; };
 		6758B929281D8FD7001D83D8 /* SportsGroundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundViewModel.swift; sourceTree = "<group>"; };
 		6758B92B281D9283001D83D8 /* CreateEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewModel.swift; sourceTree = "<group>"; };
-		6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsViewModel.swift; sourceTree = "<group>"; };
 		6758B931281DB1F7001D83D8 /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		6758B933281DC198001D83D8 /* UserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponse.swift; sourceTree = "<group>"; };
 		6758B935281E5EA9001D83D8 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -169,6 +170,9 @@
 		675EC65E2815532800C2E229 /* CreateEventView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateEventView.swift; sourceTree = "<group>"; };
 		675EC66028155BF900C2E229 /* FeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackService.swift; sourceTree = "<group>"; };
 		675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSnapshotView.swift; sourceTree = "<group>"; };
+		6762774C283A343A009C203F /* JournalGroupResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalGroupResponse.swift; sourceTree = "<group>"; };
+		6762774F283A3A54009C203F /* JournalGroupsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalGroupsList.swift; sourceTree = "<group>"; };
+		67627751283A4089009C203F /* JournalGroupsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalGroupsListViewModel.swift; sourceTree = "<group>"; };
 		676B3AF9283507E900DB4ADA /* EventDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsViewModel.swift; sourceTree = "<group>"; };
 		678142082835575D00590746 /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,7 +184,7 @@
 		6798AA4D280AF32A00DB76F1 /* SportsGround.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGround.swift; sourceTree = "<group>"; };
 		6798AA52280AF43900DB76F1 /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
 		6798AA54280AF46300DB76F1 /* MessagesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesScreen.swift; sourceTree = "<group>"; };
-		6798AA56280AF48C00DB76F1 /* JournalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsView.swift; sourceTree = "<group>"; };
+		6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsScreen.swift; sourceTree = "<group>"; };
 		6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapView.swift; sourceTree = "<group>"; };
 		6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		6798AA5C280AF5E500DB76F1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -213,7 +217,7 @@
 		67BAF3F72836245100DB40D9 /* Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		67BAF3FA28362AD100DB40D9 /* AddCommentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentButton.swift; sourceTree = "<group>"; };
 		67D9167B2838D6610098D3CB /* DialogResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogResponse.swift; sourceTree = "<group>"; };
-		67D9167D2838DC3E0098D3CB /* DialogListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListCell.swift; sourceTree = "<group>"; };
+		67D9167D2838DC3E0098D3CB /* GenericListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericListCell.swift; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916822838E2520098D3CB /* DialogListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListViewModel.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
@@ -253,8 +257,8 @@
 		67419AD4282E8E6F004F5339 /* Journals */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA56280AF48C00DB76F1 /* JournalsView.swift */,
-				6758B92D281D93DF001D83D8 /* JournalsViewModel.swift */,
+				6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */,
+				6762774E283A3A3B009C203F /* GroupsList */,
 			);
 			path = Journals;
 			sourceTree = "<group>";
@@ -327,6 +331,15 @@
 				67B1B6D9283121CB00BED514 /* Data+.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6762774E283A3A3B009C203F /* GroupsList */ = {
+			isa = PBXGroup;
+			children = (
+				6762774F283A3A54009C203F /* JournalGroupsList.swift */,
+				67627751283A4089009C203F /* JournalGroupsListViewModel.swift */,
+			);
+			path = GroupsList;
 			sourceTree = "<group>";
 		};
 		676B3AF8283507D500DB4ADA /* Detail */ = {
@@ -456,6 +469,7 @@
 				6758B945281ED194001D83D8 /* ErrorResponse.swift */,
 				67D9167B2838D6610098D3CB /* DialogResponse.swift */,
 				67D916892838F79D0098D3CB /* MessageResponse.swift */,
+				6762774C283A343A009C203F /* JournalGroupResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -561,7 +575,7 @@
 			children = (
 				67D916802838E2460098D3CB /* DialogListView.swift */,
 				67D916822838E2520098D3CB /* DialogListViewModel.swift */,
-				67D9167D2838DC3E0098D3CB /* DialogListCell.swift */,
+				67D9167D2838DC3E0098D3CB /* GenericListCell.swift */,
 			);
 			path = DialogList;
 			sourceTree = "<group>";
@@ -676,7 +690,6 @@
 				67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */,
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* MessagesScreen.swift in Sources */,
-				6758B92E281D93DF001D83D8 /* JournalsViewModel.swift in Sources */,
 				67D9168A2838F79D0098D3CB /* MessageResponse.swift in Sources */,
 				6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */,
 				67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */,
@@ -728,23 +741,26 @@
 				6758B934281DC198001D83D8 /* UserResponse.swift in Sources */,
 				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
 				67BAF3FB28362AD100DB40D9 /* AddCommentButton.swift in Sources */,
+				67627752283A4089009C203F /* JournalGroupsListViewModel.swift in Sources */,
 				678142092835575D00590746 /* CustomToggle.swift in Sources */,
 				6798AA86280C135E00DB76F1 /* Country.swift in Sources */,
+				67627750283A3A54009C203F /* JournalGroupsList.swift in Sources */,
 				674B37B0282B9BE2001A5B66 /* CommentViewCell.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
 				670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */,
 				674D0625282AB832007E75C6 /* SearchUsersViewModel.swift in Sources */,
 				67B78718281D8792008B104F /* ChangePasswordViewModel.swift in Sources */,
 				6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */,
-				6798AA57280AF48C00DB76F1 /* JournalsView.swift in Sources */,
+				6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */,
 				67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */,
 				67E4266F28218B6E00DF82A7 /* ShortAddressService.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
 				672BE762281FD4E300579183 /* AuthData.swift in Sources */,
-				67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */,
+				67D9167E2838DC3E0098D3CB /* GenericListCell.swift in Sources */,
 				6758B92A281D8FD7001D83D8 /* SportsGroundViewModel.swift in Sources */,
 				670CA1A0280E8F9B003914A3 /* ButtonInFormLabel.swift in Sources */,
 				67D916812838E2460098D3CB /* DialogListView.swift in Sources */,
+				6762774D283A343A009C203F /* JournalGroupResponse.swift in Sources */,
 				6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */,
 				670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */,
 				67B78714281D74F3008B104F /* AccountInfoViewModel.swift in Sources */,
