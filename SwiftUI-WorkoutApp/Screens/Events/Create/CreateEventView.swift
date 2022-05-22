@@ -5,8 +5,8 @@ struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = CreateEventViewModel()
-    @State private var eventCreated = false
     @FocusState private var focus: FocusableField?
+    @State private var createEventTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
@@ -18,13 +18,11 @@ struct CreateEventView: View {
             }
             descriptionSection
         }
-        .onChange(of: viewModel.isEventCreated) { eventCreated = $0 }
-        .alert(Constants.Alert.eventCreated, isPresented: $eventCreated) {
-            closeButton
-        }
+        .onChange(of: viewModel.isEventCreated, perform: dismiss)
+        .onDisappear(perform: cancelTask)
+        .toolbar { createEventButton }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar { createEventButton }
     }
 }
 
@@ -91,22 +89,25 @@ private extension CreateEventView {
     }
 
     var createEventButton: some View {
-        Button {
-            focus = nil
-            viewModel.createEventAction()
-        } label: {
+        Button(action: createEvent) {
             Text("Сохранить")
         }
         .disabled(!viewModel.isCreateButtonActive)
     }
 
-    var closeButton: some View {
-        Button {
-            viewModel.eventAlertClosed()
-            dismiss()
-        } label: {
-            TextOk()
+    func createEvent() {
+        focus = nil
+        createEventTask = Task {
+            await viewModel.createEventAction(with: defaults)
         }
+    }
+
+    func dismiss(isEventCreated: Bool) {
+        dismiss()
+    }
+
+    func cancelTask() {
+        createEventTask?.cancel()
     }
 }
 

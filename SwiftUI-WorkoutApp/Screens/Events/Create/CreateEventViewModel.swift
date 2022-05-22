@@ -4,6 +4,8 @@ final class CreateEventViewModel: ObservableObject {
     @Published var eventName = ""
     @Published var eventDate = Date()
     @Published var eventDescription = ""
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
     @Published private(set) var isEventCreated = false
 
     var maxDate: Date {
@@ -18,15 +20,15 @@ final class CreateEventViewModel: ObservableObject {
         eventName.count >= Constants.minPasswordSize
     }
 
-    func createEventAction() {
+    func createEventAction(with defaults: DefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
 #warning("TODO: интеграция с сервером")
-        isEventCreated.toggle()
-    }
-
-    func eventAlertClosed() {
-        eventName = ""
-        eventDate = .now
-        eventDescription = ""
-        isEventCreated.toggle()
+            isEventCreated.toggle()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
     }
 }

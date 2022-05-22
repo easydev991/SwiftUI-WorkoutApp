@@ -31,7 +31,6 @@ enum Constants {
     enum Alert {
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let friendRequestSent = "Запрос отправлен!"
-        static let eventCreated = "Мероприятие создано!"
         static let passwordChanged = "Пароль успешно изменен"
         static let logout = "Выйти из учетной записи?"
         static let deleteProfile = "Удалить учетную запись без возможности восстановления?"
