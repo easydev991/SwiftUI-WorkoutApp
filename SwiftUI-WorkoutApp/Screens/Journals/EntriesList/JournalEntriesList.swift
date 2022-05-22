@@ -19,8 +19,8 @@ struct JournalEntriesList: View {
 
     var body: some View {
         ZStack {
-            List(viewModel.list) { entry in
-                Text(entry.formattedMessage)
+            List(viewModel.list) {
+                JournalEntryCell(entry: $0)
             }
             .disabled(viewModel.isLoading)
             ProgressView()

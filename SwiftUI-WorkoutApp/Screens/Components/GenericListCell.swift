@@ -22,10 +22,9 @@ struct GenericListCell: View {
                 mode: .generic
             )
             VStack(alignment: .leading, spacing: 4) {
-                HStack {
+                HStack(alignment: .top) {
                     Text(content.title)
                         .font(.headline)
-                        .fontWeight(.medium)
                         .lineLimit(1)
                     Spacer()
                     Text(content.date)

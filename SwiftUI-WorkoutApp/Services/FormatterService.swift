@@ -43,6 +43,7 @@ extension FormatterService {
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
         case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
         case dayMonthMediumTime = "d MMM, HH:mm"
+        case dayMonthYear = "d MMM yyyy"
         case mediumTime = "HH:mm"
 
         static func makeFormat(for date: Date) -> (prefix: String, date: String) {
@@ -53,7 +54,7 @@ extension FormatterService {
             } else if date.isThisYear {
                 return ("", self.dayMonthMediumTime.rawValue)
             } else {
-                return ("", self.fullDateMediumTime.rawValue)
+                return ("", self.dayMonthYear.rawValue)
             }
         }
     }

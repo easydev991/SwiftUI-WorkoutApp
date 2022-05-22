@@ -53,7 +53,7 @@ extension JournalResponse {
         .init(
             id: 21758,
             title: "Test title",
-            lastMessageImage: nil,
+            lastMessageImage: "avatar_default",
             createDate: "2022-05-21T10:48:17+03:00",
             modifyDate: "2022-05-22T09:48:17+03:00",
             lastMessageDate: "2022-05-22T09:48:29+03:00",
