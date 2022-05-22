@@ -137,7 +137,7 @@ private extension UserDetailsView {
             if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
                 friendsLink
             }
-            if viewModel.user.journalsCount > .zero {
+            if viewModel.user.journalsCount > .zero && !isMainUser {
                 journalsLink
             }
         }
