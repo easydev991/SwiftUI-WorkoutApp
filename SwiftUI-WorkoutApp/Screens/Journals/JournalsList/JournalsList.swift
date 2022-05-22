@@ -120,7 +120,7 @@ private extension JournalsList {
     }
 }
 
-struct JournalGroupsList_Previews: PreviewProvider {
+struct JournalsList_Previews: PreviewProvider {
     static var previews: some View {
         JournalsList(userID: DefaultsService().mainUserID)
             .environmentObject(DefaultsService())

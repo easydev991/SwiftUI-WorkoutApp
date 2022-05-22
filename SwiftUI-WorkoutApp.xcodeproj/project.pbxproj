@@ -266,7 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */,
-				6762774E283A3A3B009C203F /* GroupsList */,
+				6762774E283A3A3B009C203F /* JournalsList */,
 				67627753283A4C2F009C203F /* EntriesList */,
 			);
 			path = Journals;
@@ -342,13 +342,13 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		6762774E283A3A3B009C203F /* GroupsList */ = {
+		6762774E283A3A3B009C203F /* JournalsList */ = {
 			isa = PBXGroup;
 			children = (
 				6762774F283A3A54009C203F /* JournalsList.swift */,
 				67627751283A4089009C203F /* JournalsListViewModel.swift */,
 			);
-			path = GroupsList;
+			path = JournalsList;
 			sourceTree = "<group>";
 		};
 		67627753283A4C2F009C203F /* EntriesList */ = {
