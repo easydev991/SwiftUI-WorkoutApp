@@ -67,6 +67,7 @@ private extension JournalEntriesList {
     }
 
     func showSettings() {
+#warning("TODO: сверстать экран с настройками доступа дневника")
         showAccessSettings.toggle()
     }
 

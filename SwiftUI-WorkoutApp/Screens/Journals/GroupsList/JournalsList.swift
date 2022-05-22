@@ -73,6 +73,7 @@ private extension JournalsList {
 
     var addJournalButton: some View {
         NavigationLink(destination: Text("Создать дневник")) {
+#warning("TODO: Использовать SendMessageView")
             Image(systemName: "plus")
         }
         .opacity(defaults.isAuthorized ? 1 : .zero)
