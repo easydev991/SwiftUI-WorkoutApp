@@ -47,9 +47,6 @@ extension JournalResponse {
         get { .init(commentAccess.valueOrZero) }
         set { commentAccess = newValue.rawValue }
     }
-    static var emptyValue: JournalResponse {
-        .init(id: .zero, itemsCount: nil, ownerID: nil)
-    }
     static var mock: JournalResponse {
         .init(
             id: 21758,
