@@ -4,9 +4,10 @@ import SwiftUI
 struct DialogListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogListViewModel()
-    @State private var editMode = EditMode.inactive
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var indexToDelete: Int?
+    @State private var showDeleteConfirmation = false
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
@@ -25,31 +26,24 @@ struct DialogListView: View {
                         GenericListCell(for: .dialog(dialog))
                     }
                 }
-                .onDelete { indexSet in
-                    deleteDialogTask = Task {
-                        await viewModel.deleteDialog(at: indexSet.first, with: defaults)
-                    }
-                }
+                .onDelete(perform: initiateDeletion)
             }
             .disabled(viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .confirmationDialog(
+            Constants.Alert.deleteDialog,
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) { deleteDialogButton }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
         .task { await askForDialogs() }
         .refreshable { await askForDialogs(refresh: true) }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                EditButton()
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                linkToFriends
-            }
-        }
-        .environment(\.editMode, $editMode)
+        .toolbar { linkToFriends }
         .onDisappear(perform: cancelTask)
     }
 }
@@ -79,6 +73,25 @@ private extension DialogListView {
 
     func askForDialogs(refresh: Bool = false) async {
         await viewModel.makeItems(with: defaults, refresh: refresh)
+    }
+
+    func initiateDeletion(at indexSet: IndexSet) {
+        indexToDelete = indexSet.first
+        showDeleteConfirmation.toggle()
+    }
+
+    var deleteDialogButton: some View {
+        Button(role: .destructive) {
+            deleteAction(at: indexToDelete)
+        } label: {
+            Text("Удалить")
+        }
+    }
+
+    func deleteAction(at index: Int?) {
+        deleteDialogTask = Task {
+            await viewModel.deleteDialog(at: index, with: defaults)
+        }
     }
 
     func setupErrorAlert(with message: String) {

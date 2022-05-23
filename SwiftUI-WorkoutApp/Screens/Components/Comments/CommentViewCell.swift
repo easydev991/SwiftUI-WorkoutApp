@@ -57,6 +57,7 @@ private extension CommentViewCell {
                 .font(.title2)
                 .foregroundColor(.secondary)
         }
+        .onTapGesture { hapticFeedback(.rigid) }
     }
 }
 

@@ -4,10 +4,11 @@ import SwiftUI
 struct JournalsList: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
-    @State private var editMode = EditMode.inactive
     @State private var isCreatingJournal = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var indexToDelete: Int?
+    @State private var showDeleteConfirmation = false
     @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalTask: Task<Void, Never>?
     let userID: Int
@@ -24,16 +25,18 @@ struct JournalsList: View {
                         GenericListCell(for: .journalGroup(journal))
                     }
                 }
-                .onDelete { indexSet in
-                    deleteJournalTask = Task {
-                        await viewModel.deleteJournal(at: indexSet.first, with: defaults)
-                    }
-                }
+                .onDelete(perform: initiateDeletion)
+                .deleteDisabled(!isMainUser)
             }
             .disabled(viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .confirmationDialog(
+            Constants.Alert.deleteJournal,
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) { deleteJournalButton }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
         .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
@@ -42,19 +45,7 @@ struct JournalsList: View {
         }
         .task { await askForJournals() }
         .refreshable { await askForJournals(refresh: true) }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                if isMainUser {
-                    EditButton()
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if isMainUser {
-                    addJournalButton
-                }
-            }
-        }
-        .environment(\.editMode, $editMode)
+        .toolbar { addJournalButton }
         .onDisappear(perform: cancelTasks)
     }
 }
@@ -72,7 +63,7 @@ private extension JournalsList {
         Button(action: showNewJournalSheet) {
             Image(systemName: "plus")
         }
-        .opacity(defaults.isAuthorized ? 1 : .zero)
+        .opacity(defaults.isAuthorized && isMainUser ? 1 : .zero)
     }
 
     func showNewJournalSheet() {
@@ -98,6 +89,25 @@ private extension JournalsList {
     func saveNewJournal() {
         saveJournalTask = Task {
             await viewModel.createJournal(with: defaults)
+        }
+    }
+
+    func initiateDeletion(at indexSet: IndexSet) {
+        indexToDelete = indexSet.first
+        showDeleteConfirmation.toggle()
+    }
+
+    var deleteJournalButton: some View {
+        Button(role: .destructive) {
+            deleteAction(at: indexToDelete)
+        } label: {
+            Text("Удалить")
+        }
+    }
+
+    func deleteAction(at index: Int?) {
+        deleteJournalTask = Task {
+            await viewModel.deleteJournal(at: index, with: defaults)
         }
     }
 

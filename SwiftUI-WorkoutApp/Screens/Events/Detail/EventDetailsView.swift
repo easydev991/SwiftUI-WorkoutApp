@@ -10,6 +10,7 @@ struct EventDetailsView: View {
     @State private var editComment: Comment?
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var showDeleteDialog = false
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
@@ -218,14 +219,27 @@ private extension EventDetailsView {
     }
 
     var deleteButton: some View {
-        Button(role: .destructive) {
-            deleteEventTask = Task {
-                await viewModel.deleteEvent(eventID, with: defaults)
-            }
-        } label: {
-            Label("Удалить", systemImage: "trash")
+        Button(action: toggleDeleteConfirmation) {
+            Image(systemName: "trash")
         }
         .opacity(viewModel.showRefreshButton ? .zero : 1)
+        .confirmationDialog(
+            Constants.Alert.deleteEvent,
+            isPresented: $showDeleteDialog,
+            titleVisibility: .visible
+        ) {
+            Button(role: .destructive) {
+                deleteEventTask = Task {
+                    await viewModel.deleteEvent(eventID, with: defaults)
+                }
+            } label: {
+                Text("Удалить")
+            }
+        }
+    }
+
+    func toggleDeleteConfirmation() {
+        showDeleteDialog.toggle()
     }
 
     func setupErrorAlert(with message: String) {

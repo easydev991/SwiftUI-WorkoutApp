@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6705E7EC283B5DCF00DABCC8 /* View+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7EB283B5DCF00DABCC8 /* View+.swift */; };
 		670CA19A280D5583003914A3 /* TextWithCheckmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA199280D5583003914A3 /* TextWithCheckmark.swift */; };
 		670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */; };
 		670CA1A0280E8F9B003914A3 /* ButtonInFormLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19F280E8F9B003914A3 /* ButtonInFormLabel.swift */; };
@@ -123,6 +124,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6705E7EB283B5DCF00DABCC8 /* View+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+.swift"; sourceTree = "<group>"; };
 		670CA199280D5583003914A3 /* TextWithCheckmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithCheckmark.swift; sourceTree = "<group>"; };
 		670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
 		670CA19F280E8F9B003914A3 /* ButtonInFormLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonInFormLabel.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				671D7DEE282112140068E728 /* Text+.swift */,
 				674B37AD282B9758001A5B66 /* String+.swift */,
 				67B1B6D9283121CB00BED514 /* Data+.swift */,
+				6705E7EB283B5DCF00DABCC8 /* View+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -804,6 +807,7 @@
 				670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */,
 				67B78714281D74F3008B104F /* AccountInfoViewModel.swift in Sources */,
 				6762775B283A87AD009C203F /* JournalEntryCell.swift in Sources */,
+				6705E7EC283B5DCF00DABCC8 /* View+.swift in Sources */,
 				6758B946281ED194001D83D8 /* ErrorResponse.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* AccountInfoView.swift in Sources */,
 				675462FF282FC6E6005BC86A /* MainUserForm.swift in Sources */,

@@ -4,11 +4,12 @@ import SwiftUI
 struct JournalEntriesList: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalEntriesListViewModel()
-    @State private var editMode = EditMode.inactive
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var showAccessSettings = false
     @State private var showEntrySheet = false
+    @State private var indexToDelete: Int?
+    @State private var showDeleteConfirmation = false
     @State private var editAccessTask: Task<Void, Never>?
     @State private var saveNewEntryTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
@@ -21,17 +22,19 @@ struct JournalEntriesList: View {
                 ForEach(viewModel.list) {
                     JournalEntryCell(entry: $0)
                 }
-                .onDelete { indexSet in
-                    deleteEntryTask = Task {
-                        await viewModel.deleteEntry(at: indexSet.first, with: defaults)
-                    }
-                }
+                .onDelete(perform: initiateDeletion)
+                .deleteDisabled(!isMainUser)
             }
             .disabled(viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
-        .onChange(of: viewModel.isEntryCreated, perform: closeEntrySheet)
+        .confirmationDialog(
+            Constants.Alert.deleteJournalEntry,
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) { deleteEntryButton }
+        .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
@@ -106,12 +109,31 @@ private extension JournalEntriesList {
         }
     }
 
+    func initiateDeletion(at indexSet: IndexSet) {
+        indexToDelete = indexSet.first
+        showDeleteConfirmation.toggle()
+    }
+
+    var deleteEntryButton: some View {
+        Button(role: .destructive) {
+            deleteAction(at: indexToDelete)
+        } label: {
+            Text("Удалить")
+        }
+    }
+
+    func deleteAction(at index: Int?) {
+        deleteEntryTask = Task {
+            await viewModel.deleteEntry(at: index, with: defaults)
+        }
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }
 
-    func closeEntrySheet(isSuccess: Bool) {
+    func closeNewEntrySheet(isSuccess: Bool) {
         showEntrySheet.toggle()
     }
 
