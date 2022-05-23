@@ -18,9 +18,9 @@ struct JournalsList: View {
             EmptyContentView(mode: .journals)
                 .opacity(showEmptyView ? 1 : .zero)
             List {
-                ForEach(viewModel.list) { journal in
+                ForEach($viewModel.list) { $journal in
                     NavigationLink {
-                        JournalEntriesList(userID: userID, journal: journal)
+                        JournalEntriesList(userID: userID, journal: $journal)
                     } label: {
                         GenericListCell(for: .journalGroup(journal))
                     }

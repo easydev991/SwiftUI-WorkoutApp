@@ -3,13 +3,13 @@ import Foundation
 /// Модель с информацией о дневнике
 struct JournalResponse: Codable, Identifiable {
     let id: Int
-    let title, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?
+    var titleOptional, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?
     let itemsCount, ownerID: Int?
     var viewAccess, commentAccess: Int?
 
     enum CodingKeys: String, CodingKey {
-        case title
         case id = "journal_id"
+        case titleOptional = "title"
         case itemsCount = "count"
         case lastMessageImage = "last_message_image"
         case createDate = "create_date"
@@ -26,6 +26,10 @@ struct JournalResponse: Codable, Identifiable {
 extension JournalResponse {
     var imageURL: URL? {
         .init(string: lastMessageImage.valueOrEmpty)
+    }
+    var title: String {
+        get { titleOptional.valueOrEmpty }
+        set { titleOptional = newValue }
     }
     var formattedLastMessage: String {
         lastMessageText.valueOrEmpty
@@ -46,7 +50,7 @@ extension JournalResponse {
     static var mock: JournalResponse {
         .init(
             id: 21758,
-            title: "Test title",
+            titleOptional: "Test title",
             lastMessageImage: "avatar_default",
             createDate: "2022-05-21T10:48:17+03:00",
             modifyDate: "2022-05-22T09:48:17+03:00",

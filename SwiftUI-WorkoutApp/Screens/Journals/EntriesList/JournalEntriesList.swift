@@ -14,7 +14,7 @@ struct JournalEntriesList: View {
     @State private var saveNewEntryTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
     let userID: Int
-    let journal: JournalResponse
+    @Binding var journal: JournalResponse
 
     var body: some View {
         ZStack {
@@ -42,6 +42,7 @@ struct JournalEntriesList: View {
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .sheet(isPresented: $showEntrySheet) { newEntrySheet }
+        .sheet(isPresented: $showAccessSettings) { settingsSheet }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -51,7 +52,7 @@ struct JournalEntriesList: View {
             }
         }
         .onDisappear(perform: cancelTasks)
-        .navigationTitle(journal.title.valueOrEmpty)
+        .navigationTitle(journal.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -64,8 +65,23 @@ private extension JournalEntriesList {
     }
 
     func showSettings() {
-#warning("TODO: сверстать экран с настройками доступа дневника")
         showAccessSettings.toggle()
+    }
+
+    var settingsSheet: some View {
+        JournalSettingsView(
+            journal: $journal,
+            isLoading: viewModel.isLoading,
+            isSaveButtonDisabled: viewModel.isLoading,
+            saveAction: saveChanges,
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: closeAlert
+        )
+    }
+
+    func saveChanges() {
+
     }
 
     var addEntryButton: some View {
@@ -148,7 +164,7 @@ private extension JournalEntriesList {
 
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntriesList(userID: DefaultsService().mainUserID, journal: .mock)
+        JournalEntriesList(userID: DefaultsService().mainUserID, journal: .constant(.mock))
             .environmentObject(DefaultsService())
     }
 }

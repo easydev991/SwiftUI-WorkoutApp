@@ -61,7 +61,7 @@ private extension GenericListCell.Mode {
         case let .journalGroup(model):
             return .init(
                 imageURL: model.imageURL,
-                title: model.title.valueOrEmpty,
+                title: model.title,
                 subtitle: model.formattedLastMessage,
                 date: model.lastMessageDateString
             )
