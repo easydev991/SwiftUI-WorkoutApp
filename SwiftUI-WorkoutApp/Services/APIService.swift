@@ -338,7 +338,7 @@ struct APIService {
         return result
     }
 
-    /// Запрашивает дневник пользователя; пока не используется
+    /// Запрашивает дневник пользователя
     /// - Parameters:
     ///   - userID: `id` пользователя
     ///   - journalID: `id` выбранного дневника
@@ -350,6 +350,18 @@ struct APIService {
             auth: defaults.basicAuthInfo
         )
         return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
+    }
+
+    func editJournalSettings(for journalID: Int, title: String, viewAccess: Constants.JournalAccess, commentAccess: Constants.JournalAccess) async throws -> Bool {
+        let endpoint = Endpoint.editJournalSettings(
+            userID: defaults.mainUserID,
+            journalID: journalID,
+            title: title,
+            viewAccess: viewAccess.rawValue,
+            commentAccess: commentAccess.rawValue,
+            auth: defaults.basicAuthInfo
+        )
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Создает новый дневник для пользователя
@@ -664,6 +676,10 @@ private extension APIService {
         /// **GET** ${API}/users/<user_id>/journals/<journal_id>
         case getJournal(userID: Int, journalID: Int, auth: AuthData)
 
+        // MARK: Изменить настройки дневника
+        /// **PUT** ${API}/users/<user_id>/journals/<journal_id>
+        case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int, auth: AuthData)
+
         // MARK: Создать новый дневник
         /// **POST** ${API}/users/<user_id>/journals
         case createJournal(userID: Int, title: String, auth: AuthData)
@@ -767,7 +783,8 @@ private extension APIService.Endpoint {
             let .createJournal(userID, _, _):
             return "\(baseUrl)/users/\(userID)/journals"
         case let .getJournal(userID, journalID, _),
-            let .deleteJournal(userID, journalID, _):
+            let .deleteJournal(userID, journalID, _),
+            let .editJournalSettings(userID, journalID, _, _, _, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)"
         case let .getJournalEntries(userID, journalID, _),
             let .saveJournalEntry(userID, journalID, _, _):
@@ -780,6 +797,7 @@ private extension APIService.Endpoint {
     enum HTTPMethod: String {
         case get = "GET"
         case post = "POST"
+        case put = "PUT"
         case delete = "DELETE"
     }
 
@@ -803,6 +821,8 @@ private extension APIService.Endpoint {
                 .deleteEventComment, .deleteEvent,
                 .deleteDialog, .deleteJournal, .deleteEntry:
             return .delete
+        case .editJournalSettings(_, _, _, _, _, _):
+            return .put
         }
     }
 
@@ -843,7 +863,7 @@ private extension APIService.Endpoint {
             let .getJournals(_, auth), let .getJournal(_, _, auth),
             let .createJournal(_, _, auth), let .getJournalEntries(_, _, auth),
             let .saveJournalEntry(_, _, _, auth), let .deleteEntry(_, _, _, auth),
-            let .deleteJournal(_, _, auth):
+            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
             return [:]
@@ -853,6 +873,8 @@ private extension APIService.Endpoint {
     enum Parameter {
         enum Key: String {
             case name, fullname, email, password, comment, message, title
+            case viewAccess = "view_access"
+            case commentAccess = "comment_access"
             case genderCode = "gender"
             case usernameOrEmail = "username_or_email"
             case newPassword = "new_password"
@@ -928,6 +950,14 @@ private extension APIService.Endpoint {
             return Parameter.make(from: [.title: title])
         case let .saveJournalEntry(_, _, message, _):
             return Parameter.make(from: [.message: message])
+        case let .editJournalSettings(_, _, title, viewAccess, commentAccess, _):
+            return Parameter.make(
+                from: [
+                    .title: title,
+                    .viewAccess: viewAccess.description,
+                    .commentAccess: commentAccess.description
+                ]
+            )
         }
     }
 }

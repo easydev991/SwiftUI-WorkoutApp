@@ -8,7 +8,7 @@ struct JournalsScreen: View {
         NavigationView {
             ZStack {
                 if defaults.isAuthorized {
-                    JournalsList(userID: defaults.mainUserID)
+                    JournalsList(for: defaults.mainUserID)
                 } else {
                     IncognitoProfileView()
                 }

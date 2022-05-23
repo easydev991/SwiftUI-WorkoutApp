@@ -11,7 +11,11 @@ struct JournalsList: View {
     @State private var showDeleteConfirmation = false
     @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalTask: Task<Void, Never>?
-    let userID: Int
+    private let userID: Int
+
+    init(for userID: Int) {
+        self.userID = userID
+    }
 
     var body: some View {
         ZStack {
@@ -20,7 +24,7 @@ struct JournalsList: View {
             List {
                 ForEach($viewModel.list) { $journal in
                     NavigationLink {
-                        JournalEntriesList(userID: userID, journal: $journal)
+                        JournalEntriesList(for: userID, in: $journal)
                     } label: {
                         GenericListCell(for: .journalGroup(journal))
                     }
@@ -131,7 +135,7 @@ private extension JournalsList {
 
 struct JournalsList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalsList(userID: DefaultsService().mainUserID)
+        JournalsList(for: DefaultsService().mainUserID)
             .environmentObject(DefaultsService())
     }
 }

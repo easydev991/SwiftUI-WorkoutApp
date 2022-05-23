@@ -1,7 +1,7 @@
 import Foundation
 
 /// Модель с информацией о дневнике
-struct JournalResponse: Codable, Identifiable {
+struct JournalResponse: Codable, Identifiable, Equatable {
     let id: Int
     var titleOptional, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?
     let itemsCount, ownerID: Int?
@@ -46,6 +46,9 @@ extension JournalResponse {
     var commentAccessType: Constants.JournalAccess {
         get { .init(commentAccess.valueOrZero) }
         set { commentAccess = newValue.rawValue }
+    }
+    static var emptyValue: JournalResponse {
+        .init(id: .zero, itemsCount: nil, ownerID: nil)
     }
     static var mock: JournalResponse {
         .init(

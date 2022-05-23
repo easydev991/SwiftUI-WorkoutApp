@@ -3,18 +3,27 @@ import SwiftUI
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = JournalEntriesListViewModel()
+    @StateObject private var viewModel: JournalEntriesListViewModel
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var showAccessSettings = false
     @State private var showEntrySheet = false
     @State private var indexToDelete: Int?
     @State private var showDeleteConfirmation = false
+    @State private var needUpdateJournal = false
     @State private var editAccessTask: Task<Void, Never>?
     @State private var saveNewEntryTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
-    let userID: Int
-    @Binding var journal: JournalResponse
+    @State private var updateJournalTask: Task<Void, Never>?
+
+    init(for userID: Int, in journal: Binding<JournalResponse>) {
+        _viewModel = StateObject(
+            wrappedValue: .init(
+                for: userID,
+                with: journal.wrappedValue
+            )
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -34,15 +43,22 @@ struct JournalEntriesList: View {
             isPresented: $showDeleteConfirmation,
             titleVisibility: .visible
         ) { deleteEntryButton }
+        .onChange(of: viewModel.isSettingsUpdated, perform: closeSettingsSheet)
         .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: needUpdateJournal, perform: updateJournal)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .sheet(isPresented: $showEntrySheet) { newEntrySheet }
-        .sheet(isPresented: $showAccessSettings) { settingsSheet }
+        .sheet(isPresented: $showAccessSettings) {
+            JournalSettingsView(
+                with: viewModel.currentJournal,
+                needUpdate: $needUpdateJournal
+            )
+        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -52,7 +68,7 @@ struct JournalEntriesList: View {
             }
         }
         .onDisappear(perform: cancelTasks)
-        .navigationTitle(journal.title)
+        .navigationTitle(viewModel.currentJournal.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -68,20 +84,14 @@ private extension JournalEntriesList {
         showAccessSettings.toggle()
     }
 
-    var settingsSheet: some View {
-        JournalSettingsView(
-            journal: $journal,
-            isLoading: viewModel.isLoading,
-            isSaveButtonDisabled: viewModel.isLoading,
-            saveAction: saveChanges,
-            showErrorAlert: $showErrorAlert,
-            errorTitle: $errorTitle,
-            dismissError: closeAlert
-        )
+    func closeSettingsSheet(isSuccess: Bool) {
+        showAccessSettings.toggle()
     }
 
-    func saveChanges() {
-
+    func updateJournal(isSuccess: Bool) {
+        updateJournalTask = Task {
+            await viewModel.updateJournal(with: defaults)
+        }
     }
 
     var addEntryButton: some View {
@@ -107,16 +117,11 @@ private extension JournalEntriesList {
     }
 
     var isMainUser: Bool {
-        userID == defaults.mainUserID
+        viewModel.userID == defaults.mainUserID
     }
 
     func askForEntries(refresh: Bool = false) async {
-        await viewModel.makeItems(
-            for: userID,
-            journalID: journal.id,
-            with: defaults,
-            refresh: refresh
-        )
+        await viewModel.makeItems(with: defaults, refresh: refresh)
     }
 
     func saveNewEntry() {
@@ -158,13 +163,13 @@ private extension JournalEntriesList {
     }
 
     func cancelTasks() {
-        [editAccessTask, saveNewEntryTask, deleteEntryTask].forEach { $0?.cancel() }
+        [editAccessTask, saveNewEntryTask, deleteEntryTask, updateJournalTask].forEach { $0?.cancel() }
     }
 }
 
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntriesList(userID: DefaultsService().mainUserID, journal: .constant(.mock))
+        JournalEntriesList(for: DefaultsService().mainUserID, in: .constant(.mock))
             .environmentObject(DefaultsService())
     }
 }
