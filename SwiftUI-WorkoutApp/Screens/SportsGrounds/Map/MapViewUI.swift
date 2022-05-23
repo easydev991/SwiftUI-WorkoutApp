@@ -29,6 +29,7 @@ struct MapViewUI: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
+#warning("TODO: поправить дублирование пинов после обновления экрана")
         mapView.addAnnotations(annotations)
     }
 
@@ -63,6 +64,7 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         switch annotation {
         case is MKClusterAnnotation:
+            // где-то тут лишние цифры добавляются
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterIdentifier) as? MKMarkerAnnotationView
             ?? .init(annotation: annotation, reuseIdentifier: clusterIdentifier)
             view.canShowCallout = true

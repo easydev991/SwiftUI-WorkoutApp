@@ -4,7 +4,6 @@ import SwiftUI
 struct SwiftUI_WorkoutAppApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var defaults = DefaultsService()
-    @StateObject private var sportsGrounds = SportsGroundsService()
     @StateObject private var network = CheckNetworkService()
 
     init() {
@@ -16,7 +15,6 @@ struct SwiftUI_WorkoutAppApp: App {
             RootView()
                 .environmentObject(network)
                 .environmentObject(defaults)
-                .environmentObject(sportsGrounds)
         }
         .onChange(of: scenePhase) { newValue in
             switch newValue {

@@ -159,6 +159,12 @@ struct APIService {
         return try await makeResult([UserResponse].self, for: endpoint.urlRequest)
     }
 
+    /// Загружает список всех площадок
+    /// - Returns: Список всех площадок
+    func getAllSportsGrounds() async throws -> [SportsGround] {
+        try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest)
+    }
+
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
@@ -586,6 +592,10 @@ private extension APIService {
         /// **GET** ${API}/users/search?name=<user>
         case findUsers(with: String, auth: AuthData)
 
+        // MARK: Получить список всех площадок
+        /// **GET** ${API}/areas
+        case getAllSportsGrounds
+
         // MARK: Получить выбранную площадку:
         /// **GET** ${API}/areas/<id>
         case getSportsGround(id: Int, auth: AuthData)
@@ -741,6 +751,8 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/friends/\(userID)"
         case let .findUsers(name, _):
             return "\(baseUrl)/users/search?name=\(name)"
+        case .getAllSportsGrounds:
+            return "\(baseUrl)/areas?fields=short"
         case let .getSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
         case let .addCommentToSportsGround(groundID, _, _):
@@ -810,7 +822,8 @@ private extension APIService.Endpoint {
                 .sendMessageTo, .createJournal, .markAsRead, .saveJournalEntry:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
-                .getSportsGround, .findUsers, .getSportsGroundsForUser,
+                .getAllSportsGrounds, .getSportsGround,
+                .findUsers, .getSportsGroundsForUser,
                 .getFutureEvents, .getPastEvents, .getEvent,
                 .getDialogs, .getMessages, .getJournals,
                 .getJournal, .getJournalEntries:
@@ -865,14 +878,15 @@ private extension APIService.Endpoint {
             let .saveJournalEntry(_, _, _, auth), let .deleteEntry(_, _, _, auth),
             let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth):
             return HTTPHeader.basicAuth(with: auth)
-        case .registration, .resetPassword, .getFutureEvents, .getPastEvents, .getEvent:
+        case .registration, .resetPassword, .getAllSportsGrounds,
+                .getFutureEvents, .getPastEvents, .getEvent:
             return [:]
         }
     }
 
     enum Parameter {
         enum Key: String {
-            case name, fullname, email, password, comment, message, title
+            case name, fullname, email, password, comment, message, title, fields
             case viewAccess = "view_access"
             case commentAccess = "comment_access"
             case genderCode = "gender"
@@ -882,6 +896,10 @@ private extension APIService.Endpoint {
             case cityID = "city_id"
             case birthDate = "birth_date"
             case fromUserID = "from_user_id"
+        }
+
+        enum Value: String {
+            case short
         }
 
         static func make(from dict: [Key: String]) -> Data? {
@@ -904,7 +922,7 @@ private extension APIService.Endpoint {
                 .deleteEventComment, .deleteEvent, .getDialogs,
                 .getMessages, .deleteDialog, .getJournals,
                 .getJournal, .getJournalEntries, .deleteEntry,
-                .deleteJournal:
+                .deleteJournal, .getAllSportsGrounds:
             return nil
         case let .registration(form):
             return Parameter.make(
@@ -919,6 +937,8 @@ private extension APIService.Endpoint {
                     .birthDate: form.birthDateIsoString
                 ]
             )
+//        case .getAllSportsGrounds:
+//            return Parameter.make(from: [.fields: Parameter.Value.short.rawValue])
         case let .editUser(_, form, _):
             return Parameter.make(
                 from: [
