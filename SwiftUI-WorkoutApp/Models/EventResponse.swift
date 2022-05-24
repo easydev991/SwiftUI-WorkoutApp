@@ -5,16 +5,15 @@ import MapKit.MKGeometry
 struct EventResponse: Codable, Identifiable {
     let id: Int
     /// Название мероприятия
-    let title: String?
-    let eventDescription, fullAddress, createDate, modifyDate, beginDate: String?
-    let countryID, cityID, commentsCount: Int?
+    var title: String?
+    var eventDescription: String?
+    let fullAddress, createDate, modifyDate: String?
+    var beginDate: String?
+    var countryID, cityID: Int?
+    let commentsCount: Int?
     var commentsOptional: [Comment]?
-    var comments: [Comment] {
-        get { commentsOptional ?? [] }
-        set { commentsOptional = newValue }
-    }
     let previewImageStringURL: String?
-    let sportsGroundID: Int?
+    var sportsGroundID: Int?
     let latitude, longitude: String?
     /// Количество участников
     let participantsCount: Int?
@@ -54,9 +53,12 @@ struct EventResponse: Codable, Identifiable {
 
 extension EventResponse {
     var formattedTitle: String {
-        title.valueOrEmpty
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .capitalizingFirstLetter
+        get {
+            title.valueOrEmpty
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .capitalizingFirstLetter
+        }
+        set { title = newValue }
     }
     var shortAddress: String {
         if let countryID = countryID, let cityID = cityID {
@@ -69,9 +71,12 @@ extension EventResponse {
         !formattedDescription.isEmpty
     }
     var formattedDescription: String {
-        eventDescription.valueOrEmpty
-            .withoutHTML
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        get {
+            eventDescription.valueOrEmpty
+                .withoutHTML
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        set { eventDescription = newValue }
     }
     var sportsGround: SportsGround {
         get {
@@ -84,6 +89,10 @@ extension EventResponse {
     }
     var eventDateString: String {
         FormatterService.readableDate(from: beginDate)
+    }
+    var comments: [Comment] {
+        get { commentsOptional ?? [] }
+        set { commentsOptional = newValue }
     }
     var participants: [UserResponse] {
         get { participantsOptional ?? [] }

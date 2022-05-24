@@ -1,20 +1,40 @@
 import SwiftUI
 
 /// Экран со списком площадок, где пользователь тренируется, или которые он добавил
-struct SportsGroundListView: View {
+struct SportsGroundsListView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    let mode: Mode
+    @Binding private var groundInfo: SportsGround
+    private let mode: Mode
+
+    init(
+        for mode: Mode,
+        ground: Binding<SportsGround> = .constant(.emptyValue)
+    ) {
+        self.mode = mode
+        _groundInfo = ground
+    }
 
     var body: some View {
         ZStack {
             List(viewModel.list) { ground in
-                NavigationLink {
-                    SportsGroundView(mode: .full(ground))
-                } label: {
-                    SportsGroundViewCell(model: ground)
+                switch mode {
+                case .event:
+                    Button {
+                        groundInfo = ground
+                        dismiss()
+                    } label: {
+                        SportsGroundViewCell(model: ground)
+                    }
+                default:
+                    NavigationLink {
+                        SportsGroundView(mode: .full(ground))
+                    } label: {
+                        SportsGroundViewCell(model: ground)
+                    }
                 }
             }
             .disabled(viewModel.isLoading)
@@ -31,14 +51,15 @@ struct SportsGroundListView: View {
     }
 }
 
-extension SportsGroundListView {
+extension SportsGroundsListView {
     enum Mode {
         case usedBy(userID: Int)
+        case event(userID: Int)
         case added(list: [SportsGround])
     }
 }
 
-private extension SportsGroundListView {
+private extension SportsGroundsListView {
     func askForGrounds(refresh: Bool = false) async {
         await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
@@ -55,7 +76,7 @@ private extension SportsGroundListView {
 
 struct SportsGroundListView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundListView(mode: .usedBy(userID: DefaultsService().mainUserID))
+        SportsGroundsListView(for: .usedBy(userID: DefaultsService().mainUserID))
             .environmentObject(DefaultsService())
     }
 }

@@ -139,7 +139,7 @@ private extension UserDetailsView {
 
     var usesSportsGroundsLink: some View {
         NavigationLink {
-            SportsGroundListView(mode: .usedBy(userID: userID))
+            SportsGroundsListView(for: .usedBy(userID: userID))
                 .navigationTitle("Где тренируется")
         } label: {
             HStack {
@@ -153,7 +153,7 @@ private extension UserDetailsView {
 
     var addedSportsGroundsLink: some View {
         NavigationLink {
-            SportsGroundListView(mode: .added(list: viewModel.user.addedSportsGrounds))
+            SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
                 .navigationTitle("Добавленные")
         } label: {
             Label("Добавил площадки", systemImage: "mappin.and.ellipse")

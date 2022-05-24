@@ -3,23 +3,25 @@ import SwiftUI
 struct CountriesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
-    @ObservedObject var viewModel: AccountInfoViewModel
+    @Binding var allCountries: [Country]
+    let selectedCountry: Country
+    let countryClbk: (Country) -> Void
     private var filteredCountries: [Country] {
         searchQuery.isEmpty
-        ? viewModel.countries
-        : viewModel.countries.filter { $0.name.contains(searchQuery) }
+        ? allCountries
+        : allCountries.filter { $0.name.contains(searchQuery) }
     }
 
     var body: some View {
         List {
             ForEach(filteredCountries) { country in
                 Button {
-                    viewModel.selectCountry(country)
+                    countryClbk(country)
                     dismiss()
                 } label: {
                     TextWithCheckmark(
                         title: country.name,
-                        showMark: country.name == viewModel.userForm.country.name
+                        showMark: country == selectedCountry
                     )
                 }
             }
@@ -35,6 +37,10 @@ struct CountriesView: View {
 
 struct CountriesView_Previews: PreviewProvider {
     static var previews: some View {
-        CountriesView(viewModel: .init())
+        CountriesView(
+            allCountries: .constant([.defaultCountry]),
+            selectedCountry: .defaultCountry,
+            countryClbk: {_ in}
+        )
     }
 }

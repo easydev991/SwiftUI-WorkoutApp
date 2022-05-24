@@ -91,7 +91,13 @@ private extension AccountInfoView {
     }
 
     var countryPicker: some View {
-        NavigationLink(destination: CountriesView(viewModel: viewModel)) {
+        NavigationLink {
+            CountriesView(
+                allCountries: $viewModel.countries,
+                selectedCountry: viewModel.userForm.country,
+                countryClbk: viewModel.selectCountry
+            )
+        } label: {
             HStack {
                 Image(systemName: "globe")
                     .foregroundColor(.secondary)

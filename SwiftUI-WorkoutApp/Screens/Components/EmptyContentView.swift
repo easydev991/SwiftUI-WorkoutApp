@@ -45,7 +45,7 @@ private extension EmptyContentView {
             NavigationLink {
                 switch mode {
                 case .events:
-                    CreateEventView(mode: .regular)
+                    CreateOrEditEventView(for: .regularCreate, userInfo: defaults.mainUserInfo ?? .emptyValue)
                 case .journals:
                     Text("Создать дневник")
                 case .messages:

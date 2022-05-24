@@ -59,7 +59,12 @@ private extension EventsListView {
     }
 
     var addEventButton: some View {
-        NavigationLink(destination: CreateEventView(mode: .regular)) {
+        NavigationLink {
+            CreateOrEditEventView(
+                for: .regularCreate,
+                userInfo: defaults.mainUserInfo ?? .emptyValue
+            )
+        } label: {
             Image(systemName: "plus")
         }
         .opacity(isAddEventButtonHidden ? .zero : 1)
