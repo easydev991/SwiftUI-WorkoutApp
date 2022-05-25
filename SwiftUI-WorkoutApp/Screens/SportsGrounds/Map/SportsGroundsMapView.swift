@@ -4,6 +4,7 @@ import SwiftUI
 struct SportsGroundsMapView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
+    @State private var needUpdateRecent = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
 
@@ -11,7 +12,10 @@ struct SportsGroundsMapView: View {
         NavigationView {
             ZStack {
                 NavigationLink(isActive: $viewModel.openDetails) {
-                    SportsGroundView(mode: .limited(id: viewModel.selectedGround.id))
+                    SportsGroundDetailView(
+                        .limited(id: viewModel.selectedGround.id),
+                        refreshOnDelete: $needUpdateRecent
+                    )
                 } label: { EmptyView() }
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
@@ -26,13 +30,21 @@ struct SportsGroundsMapView: View {
                     .opacity(viewModel.isLoading ? 1 : .zero)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+            .onChange(of: needUpdateRecent, perform: updateRecent)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }
             .task { await askForGrounds() }
             .onAppear(perform: viewModel.onAppearAction)
             .onDisappear(perform: viewModel.onDisappearAction)
-            .toolbar { refreshButton }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    refreshButton
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    createGroundButton
+                }
+            }
             .navigationTitle("Площадки")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -48,11 +60,26 @@ private extension SportsGroundsMapView {
     }
 
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeGrounds(with: defaults, refresh: refresh)
+        await viewModel.makeGrounds(refresh: refresh)
     }
 
     func refreshAction() {
         Task { await askForGrounds(refresh: true) }
+    }
+
+    var createGroundButton: some View {
+        NavigationLink {
+            SportsGroundFormView(needRefreshOnSave: $needUpdateRecent)
+        } label: {
+            Image(systemName: "plus")
+        }
+        .opacity(viewModel.isLoading ? .zero : 1)
+    }
+
+    func updateRecent(isSuccess: Bool) {
+        refreshAction()
+#warning("TODO: удалять площадку по ID из viewModel.list без запроса к сети ")
+//        Task { await viewModel.askForNewGround() }
     }
 
     func setupErrorAlert(with message: String) {

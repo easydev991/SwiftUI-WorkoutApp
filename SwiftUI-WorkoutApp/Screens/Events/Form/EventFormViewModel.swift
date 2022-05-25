@@ -1,6 +1,6 @@
 import Foundation
 
-final class CreateOrEditEventViewModel: ObservableObject {
+final class EventFormViewModel: ObservableObject {
     @Published var eventInfo: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
@@ -18,7 +18,7 @@ final class CreateOrEditEventViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveEvent(mode: CreateOrEditEventView.Mode, with defaults: DefaultsService) async {
+    func saveEvent(mode: EventFormView.Mode, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {

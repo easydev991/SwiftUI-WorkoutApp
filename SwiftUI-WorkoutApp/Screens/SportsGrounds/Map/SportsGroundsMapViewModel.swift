@@ -18,11 +18,25 @@ final class SportsGroundsMapViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeGrounds(with defaults: DefaultsService, refresh: Bool) async {
+    func makeGrounds(refresh: Bool) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         isLoading.toggle()
         do {
-            list = try await APIService(with: defaults).getAllSportsGrounds()
+            list = try await APIService().getAllSportsGrounds()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func askForNewGround() async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let dateString = FormatterService.isoStringFromFullDate(Constants.fiveMinutesAgo)
+            let newGrounds = try await APIService().getUpdatedSportsGrounds(from: dateString)
+            list.append(contentsOf: newGrounds)
         } catch {
             errorMessage = error.localizedDescription
         }

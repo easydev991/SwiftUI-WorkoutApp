@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Экран для создания мероприятия
-struct CreateOrEditEventView: View {
+/// Экран для создания/изменения мероприятия
+struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: CreateOrEditEventViewModel
+    @StateObject private var viewModel: EventFormViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @FocusState private var focus: FocusableField?
@@ -51,7 +51,7 @@ struct CreateOrEditEventView: View {
     }
 }
 
-extension CreateOrEditEventView {
+extension EventFormView {
     enum Mode {
         /// Для экрана "Мероприятия"
         case regularCreate
@@ -61,7 +61,7 @@ extension CreateOrEditEventView {
     }
 }
 
-private extension CreateOrEditEventView {
+private extension EventFormView {
     enum FocusableField: Hashable {
         case eventName
         case eventDescription
@@ -124,7 +124,7 @@ private extension CreateOrEditEventView {
         Button(action: saveAction) {
             Text("Сохранить")
         }
-        .disabled(!viewModel.eventInfo.isReadyToSend)
+        .disabled(!viewModel.eventInfo.isReadyToSend || viewModel.isLoading)
     }
 
     func saveAction() {
@@ -155,7 +155,7 @@ private extension CreateOrEditEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateOrEditEventView(for: .regularCreate, needRefresh: .constant(false))
+        EventFormView(for: .regularCreate, needRefresh: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

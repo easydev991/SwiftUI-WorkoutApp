@@ -1,19 +1,27 @@
 import SwiftUI
 
 /// Экран с детальной информацией о площадке
-struct SportsGroundView: View {
+struct SportsGroundDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = SportsGroundViewModel()
-    @State private var needUpdateComments = false
+    @StateObject private var viewModel = SportsGroundDetailViewModel()
+    @State private var needRefresh = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
+    @State private var showDeleteDialog = false
     @State private var editComment: Comment?
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
+    @State private var deleteGroundTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
+    @Binding private var needRefreshOnDelete: Bool
+    private let mode: Mode
 
-    let mode: Mode
+    init(_ mode: Mode, refreshOnDelete: Binding<Bool> = .constant(false)) {
+        self.mode = mode
+        _needRefreshOnDelete = refreshOnDelete
+    }
 
     var body: some View {
         ZStack {
@@ -46,10 +54,11 @@ struct SportsGroundView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
+        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needUpdateComments, perform: refreshAction)
+        .onChange(of: needRefresh, perform: refreshAction)
         .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needUpdateComments)
+            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
         }
         .sheet(item: $editComment) {
             CommentView(
@@ -60,23 +69,40 @@ struct SportsGroundView: View {
                         oldComment: $0.formattedBody
                     )
                 ),
-                isSent: $needUpdateComments
+                isSent: $needRefresh
             )
         }
         .onDisappear(perform: cancelTasks)
-        .toolbar { refreshButton }
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Group {
+                    if viewModel.showRefreshButton {
+                        refreshButton
+                    }
+                    if isGroundAuthor {
+                        deleteButton
+                        editGroundButton
+                    }
+                }
+                .disabled(viewModel.isLoading)
+            }
+        }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-extension SportsGroundView {
+extension SportsGroundDetailView {
     enum Mode {
         case full(SportsGround)
         case limited(id: Int)
     }
 }
-private extension SportsGroundView {
+private extension SportsGroundDetailView {
+    var isGroundAuthor: Bool {
+        viewModel.ground.authorID == defaults.mainUserID
+    }
+
     var titleSubtitleSection: some View {
         Section {
             HStack {
@@ -140,7 +166,7 @@ private extension SportsGroundView {
 
     var createEventLink: some View {
         NavigationLink {
-            CreateOrEditEventView(for: .createForSelected(viewModel.ground))
+            EventFormView(for: .createForSelected(viewModel.ground))
         } label: {
             Text("Создать мероприятие").blueMediumWeight()
         }
@@ -183,7 +209,40 @@ private extension SportsGroundView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(viewModel.showRefreshButton ? 1 : .zero)
+    }
+
+    var deleteButton: some View {
+        Button(action: toggleDeleteConfirmation) {
+            Image(systemName: "trash")
+        }
+        .confirmationDialog(
+            Constants.Alert.deleteGround,
+            isPresented: $showDeleteDialog,
+            titleVisibility: .visible
+        ) {
+            Button(role: .destructive) {
+                deleteGroundTask = Task {
+                    await viewModel.deleteGround(with: defaults)
+                }
+            } label: {
+                Text("Удалить")
+            }
+        }
+    }
+
+    func toggleDeleteConfirmation() {
+        showDeleteDialog.toggle()
+    }
+
+    var editGroundButton: some View {
+        NavigationLink {
+            SportsGroundFormView(
+                with: viewModel.ground,
+                needRefreshOnSave: $needRefresh
+            )
+        } label: {
+            Image(systemName: "rectangle.and.pencil.and.ellipsis")
+        }
     }
 
     func refreshAction(refresh: Bool = false) {
@@ -191,20 +250,16 @@ private extension SportsGroundView {
     }
 
     func askForInfo(refresh: Bool = false) async {
+        let groundID: Int
         switch mode {
-        case let .full(ground):
-            await viewModel.makeSportsGroundInfo(
-                groundID: ground.id,
-                with: defaults,
-                refresh: refresh
-            )
-        case let .limited(id):
-            await viewModel.makeSportsGroundInfo(
-                groundID: id,
-                with: defaults,
-                refresh: refresh
-            )
+        case let .full(ground): groundID = ground.id
+        case let .limited(id): groundID = id
         }
+        await viewModel.makeSportsGroundInfo(
+            groundID: groundID,
+            with: defaults,
+            refresh: refresh
+        )
     }
 
     func setupErrorAlert(with message: String) {
@@ -216,15 +271,21 @@ private extension SportsGroundView {
         viewModel.clearErrorMessage()
     }
 
+    func dismissDeleted(isDeleted: Bool) {
+        dismiss()
+        needRefreshOnDelete.toggle()
+    }
+
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, changeTrainHereTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask,
+         changeTrainHereTask, deleteGroundTask].forEach { $0?.cancel() }
     }
 }
 
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundView(mode: .full(.mock))
+            SportsGroundDetailView(.full(.mock), refreshOnDelete: .constant(false))
                 .environmentObject(DefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }

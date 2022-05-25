@@ -1,7 +1,8 @@
 import Foundation
 
-final class SportsGroundViewModel: ObservableObject {
+final class SportsGroundDetailViewModel: ObservableObject {
     @Published var ground = SportsGround.emptyValue
+    @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     var showRefreshButton: Bool {
@@ -49,6 +50,18 @@ final class SportsGroundViewModel: ObservableObject {
                     ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
             }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func deleteGround(with defaults: DefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            isDeleted = try await APIService(with: defaults).delete(groundID: ground.id)
         } catch {
             errorMessage = error.localizedDescription
         }

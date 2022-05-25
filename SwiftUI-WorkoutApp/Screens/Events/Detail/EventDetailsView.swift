@@ -240,7 +240,7 @@ private extension EventDetailsView {
 
     var editEventButton: some View {
         NavigationLink {
-            CreateOrEditEventView(
+            EventFormView(
                 for: .editExisting(viewModel.event),
                 needRefresh: $needUpdate
             )

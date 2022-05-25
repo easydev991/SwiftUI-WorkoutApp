@@ -1,10 +1,3 @@
-//
-//  EventForm.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 25.05.2022.
-//
-
 import Foundation
 
 /// Форма для отправки создании/изменении мероприятия

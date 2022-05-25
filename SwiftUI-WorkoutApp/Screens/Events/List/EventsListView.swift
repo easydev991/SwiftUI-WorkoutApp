@@ -60,7 +60,7 @@ private extension EventsListView {
 
     var addEventButton: some View {
         NavigationLink {
-            CreateOrEditEventView(for: .regularCreate, needRefresh: $needRefreshEvent)
+            EventFormView(for: .regularCreate, needRefresh: $needRefreshEvent)
         } label: {
             Image(systemName: "plus")
         }

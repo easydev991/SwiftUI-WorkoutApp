@@ -19,26 +19,12 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         "Тренируется \(usersTrainHereCount.valueOrZero) чел."
     }
     var commentsOptional: [Comment]?
-    var comments: [Comment] {
-        get { commentsOptional ?? [] }
-        set { commentsOptional = newValue }
-    }
-    /// Пользователи, которые тренируются на этой площадке
     var usersTrainHere: [UserResponse]?
-    var participants: [UserResponse] {
-        get { usersTrainHere ?? [] }
-        set { usersTrainHere = newValue }
-    }
     var trainHereOptional: Bool?
-    /// Пользователь тренируется на этой площадке
-    var trainHere: Bool {
-        get { trainHereOptional.isTrue }
-        set { trainHereOptional = newValue }
-    }
     var title: String? { "Площадка № \(id)" }
     var subtitle: String? {
-        let grade = SportsGroundGrade(id: typeID).grade.rawValue
-        let size = SportsGroundSize(id: sizeID.valueOrZero).size.rawValue
+        let grade = SportsGroundGrade(id: typeID).rawValue
+        let size = SportsGroundSize(id: sizeID.valueOrZero).rawValue
         return grade + " / " + size
     }
     var shortTitle: String { "№ \(id)" }
@@ -159,6 +145,23 @@ struct Comment: Codable, Identifiable, Hashable {
 }
 
 extension SportsGround {
+    var comments: [Comment] {
+        get { commentsOptional ?? [] }
+        set { commentsOptional = newValue }
+    }
+
+    /// Пользователи, которые тренируются на этой площадке
+    var participants: [UserResponse] {
+        get { usersTrainHere ?? [] }
+        set { usersTrainHere = newValue }
+    }
+
+    /// Пользователь тренируется на этой площадке
+    var trainHere: Bool {
+        get { trainHereOptional.isTrue }
+        set { trainHereOptional = newValue }
+    }
+
     static var emptyValue: SportsGround {
         .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }

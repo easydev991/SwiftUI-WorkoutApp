@@ -6,6 +6,7 @@ enum Constants {
     static let defaultUserAge = Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
     static let minUserAge = Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
     static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
+    static let fiveMinutesAgo = Calendar.current.date(byAdding: .minute, value: -5, to: .now) ?? .now
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"
@@ -33,6 +34,7 @@ enum Constants {
         static let friendRequestSent = "Запрос отправлен!"
         static let passwordChanged = "Пароль успешно изменен"
         static let deleteEvent = "Удалить мероприятие?"
+        static let deleteGround = "Удалить площадку?"
         static let deleteJournal = "Удалить дневник?"
         static let deleteJournalEntry = "Удалить запись из дневника?"
         static let deleteDialog = "Удалить диалог?"

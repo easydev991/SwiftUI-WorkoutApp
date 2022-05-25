@@ -165,12 +165,35 @@ struct APIService {
         try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest)
     }
 
+    /// Загружает список всех площадок, обновленных после указанной даты
+    /// - Parameter stringDate: дата отсечки для поиска обновленных площадок
+    /// - Returns: Список обновленных площадок
+    func getUpdatedSportsGrounds(from stringDate: String) async throws -> [SportsGround] {
+        let endpoint = Endpoint.getUpdatedSportsGrounds(from: stringDate)
+        return try await makeResult([SportsGround].self, for: endpoint.urlRequest)
+    }
+
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
     func getSportsGround(id: Int) async throws -> SportsGround {
         let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
         return try await makeResult(SportsGround.self, for: endpoint.urlRequest)
+    }
+
+    /// Изменяет данные выбранной площадки
+    /// - Parameters:
+    ///   - id: `id` площадки
+    ///   - form: форма с данными о площадке
+    /// - Returns: Обновленная информация о площадке
+    func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
+        let endpoint: Endpoint
+        if let id = id {
+            endpoint = Endpoint.editSportsGround(id: id, form: form, auth: defaults.basicAuthInfo)
+        } else {
+            endpoint = Endpoint.createSportsGround(form: form, auth: defaults.basicAuthInfo)
+        }
+        return try await makeResult(SportsGroundResult.self, for: endpoint.urlRequest)
     }
 
     /// Добавить комментарий для площадки
@@ -297,12 +320,18 @@ struct APIService {
     /// Удалить мероприятие
     /// - Parameter eventID: `id` мероприятия
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
     func delete(eventID: Int) async throws -> Bool {
         let endpoint = Endpoint.deleteEvent(id: eventID, auth: defaults.basicAuthInfo)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
+    /// Удалить площадку
+    /// - Parameter groundID: `id` площадки
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func delete(groundID: Int) async throws -> Bool {
+        let endpoint = Endpoint.deleteSportsGround(id: groundID, auth: defaults.basicAuthInfo)
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
 
     /// Запрашивает список диалогов для текущего пользователя
     /// - Returns: Список диалогов
@@ -609,9 +638,25 @@ private extension APIService {
         /// **GET** ${API}/areas
         case getAllSportsGrounds
 
+        // MARK: Получить список площадок, обновленных после указанной даты
+        /// **GET** ${API}/areas/last/<date>
+        case getUpdatedSportsGrounds(from: String)
+
         // MARK: Получить выбранную площадку:
         /// **GET** ${API}/areas/<id>
         case getSportsGround(id: Int, auth: AuthData)
+
+        // MARK: Добавить новую спортплощадку
+        /// **POST** ${API}/areas
+        case createSportsGround(form: SportsGroundForm, auth: AuthData)
+
+        // MARK: Изменить выбранную спортплощадку
+        /// **POST** ${API}/areas/<id>
+        case editSportsGround(id: Int, form: SportsGroundForm, auth: AuthData)
+
+        // MARK: Удалить площадку
+        /// **DELETE** ${API}/areas/<id>
+        case deleteSportsGround(id: Int, auth: AuthData)
 
         // MARK: Добавить комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments
@@ -774,7 +819,13 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/users/search?name=\(name)"
         case .getAllSportsGrounds:
             return "\(baseUrl)/areas?fields=short"
-        case let .getSportsGround(id, _):
+        case let .getUpdatedSportsGrounds(date):
+            return "\(baseUrl)/areas/last/\(date)"
+        case .createSportsGround:
+            return "\(baseUrl)/areas"
+        case let .getSportsGround(id, _),
+            let .editSportsGround(id, _, _),
+            let .deleteSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
         case let .addCommentToSportsGround(groundID, _, _):
             return "\(baseUrl)/areas/\(groundID)/comments"
@@ -843,20 +894,23 @@ private extension APIService.Endpoint {
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
                 .createEvent, .editEvent, .postIsGoingToEvent,
                 .addCommentToEvent, .editEventComment, .sendMessageTo,
-                .createJournal, .markAsRead, .saveJournalEntry:
+                .createJournal, .markAsRead, .saveJournalEntry,
+                .createSportsGround, .editSportsGround:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
                 .getAllSportsGrounds, .getSportsGround,
                 .findUsers, .getSportsGroundsForUser,
                 .getFutureEvents, .getPastEvents, .getEvent,
                 .getDialogs, .getMessages, .getJournals,
-                .getJournal, .getJournalEntries:
+                .getJournal, .getJournalEntries,
+                .getUpdatedSportsGrounds:
             return .get
         case .declineFriendRequest, .deleteFriend,
                 .deleteGroundComment, .deleteTrainHere,
                 .deleteUser, .deleteIsGoingToEvent,
                 .deleteEventComment, .deleteEvent,
-                .deleteDialog, .deleteJournal, .deleteEntry:
+                .deleteDialog, .deleteJournal,
+                .deleteEntry, .deleteSportsGround:
             return .delete
         case .editJournalSettings:
             return .put
@@ -901,17 +955,22 @@ private extension APIService.Endpoint {
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
             let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
-            let .editJournalSettings(_, _, _, _, _, auth), let .editEvent(_, _, auth):
+            let .editJournalSettings(_, _, _, _, _, auth), let .editEvent(_, _, auth),
+            let .createSportsGround(_, auth), let .editSportsGround(_, _, auth),
+            let .deleteSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getAllSportsGrounds,
-                .getFutureEvents, .getPastEvents, .getEvent:
+                .getUpdatedSportsGrounds, .getFutureEvents,
+                .getPastEvents, .getEvent:
             return [:]
         }
     }
 
     enum Parameter {
         enum Key: String {
-            case name, fullname, email, password, comment, message, title, description, date
+            case name, fullname, email, password,
+                 comment, message, title, description, date,
+                 address, latitude, longitude
             case areaID = "area_id"
             case viewAccess = "view_access"
             case commentAccess = "comment_access"
@@ -922,6 +981,8 @@ private extension APIService.Endpoint {
             case cityID = "city_id"
             case birthDate = "birth_date"
             case fromUserID = "from_user_id"
+            case typeID = "type_id"
+            case classID = "class_id"
         }
 
         enum Value: String {
@@ -948,7 +1009,8 @@ private extension APIService.Endpoint {
                 .deleteEventComment, .deleteEvent, .getDialogs,
                 .getMessages, .deleteDialog, .getJournals,
                 .getJournal, .getJournalEntries, .deleteEntry,
-                .deleteJournal, .getAllSportsGrounds:
+                .deleteJournal, .getAllSportsGrounds,
+                .getUpdatedSportsGrounds, .deleteSportsGround:
             return nil
         case let .registration(form):
             return Parameter.make(
@@ -1010,6 +1072,17 @@ private extension APIService.Endpoint {
                     .title: title,
                     .viewAccess: viewAccess.description,
                     .commentAccess: commentAccess.description
+                ]
+            )
+        case let .createSportsGround(form, _), let .editSportsGround(_, form, _):
+            return Parameter.make(
+                from: [
+                    .address: form.address,
+                    .latitude: form.latitude,
+                    .longitude: form.longitude,
+                    .cityID: form.cityID.description,
+                    .typeID: form.typeID.description,
+                    .classID: form.sizeID.description
                 ]
             )
         }
