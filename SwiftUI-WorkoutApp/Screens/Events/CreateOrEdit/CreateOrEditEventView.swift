@@ -76,7 +76,7 @@ private extension CreateOrEditEventView {
             DatePicker(
                 "Дата и время",
                 selection: $viewModel.eventInfo.date,
-                in: Constants.minEventFutureDate...Constants.maxEventFutureDate
+                in: .now...Constants.maxEventFutureDate
             )
             .labelsHidden()
         }
