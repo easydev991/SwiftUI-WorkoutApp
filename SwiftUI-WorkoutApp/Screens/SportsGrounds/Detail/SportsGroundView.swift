@@ -55,7 +55,7 @@ struct SportsGroundView: View {
             CommentView(
                 mode: .editGround(
                     .init(
-                        mainID: viewModel.ground.id,
+                        objectID: viewModel.ground.id,
                         commentID: $0.id,
                         oldComment: $0.formattedBody
                     )

@@ -37,9 +37,9 @@ final class CommentViewModel: ObservableObject {
             let isOk: Bool
             switch mode {
             case let .editGround(info):
-                isOk = try await APIService(with: defaults).editComment(for: .ground(id: info.mainID), commentID: info.commentID, newComment: newComment)
+                isOk = try await APIService(with: defaults).editComment(for: .ground(id: info.objectID), commentID: info.commentID, newComment: newComment)
             case let .editEvent(info):
-                isOk = try await APIService(with: defaults).editComment(for: .event(id: info.mainID), commentID: info.commentID, newComment: newComment)
+                isOk = try await APIService(with: defaults).editComment(for: .event(id: info.objectID), commentID: info.commentID, newComment: newComment)
             default: isOk = false
             }
             if isOk { isSuccess.toggle() }

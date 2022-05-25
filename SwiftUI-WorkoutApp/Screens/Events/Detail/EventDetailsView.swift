@@ -4,7 +4,7 @@ import SwiftUI
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = EventDetailsViewModel()
+    @StateObject private var viewModel: EventDetailsViewModel
     @State private var needUpdate = false
     @State private var isCreatingComment = false
     @State private var editComment: Comment?
@@ -15,8 +15,15 @@ struct EventDetailsView: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    @Binding var needRefreshOnDelete: Bool
-    let eventID: Int
+    @Binding private var needRefreshOnDelete: Bool
+
+    init(
+        with event: EventResponse,
+        refreshOnDelete: Binding<Bool>
+    ) {
+        _viewModel = StateObject(wrappedValue: .init(with: event))
+        _needRefreshOnDelete = refreshOnDelete
+    }
 
     var body: some View {
         ZStack {
@@ -64,7 +71,7 @@ struct EventDetailsView: View {
             CommentView(
                 mode: .editEvent(
                     .init(
-                        mainID: eventID,
+                        objectID: viewModel.event.id,
                         commentID: $0.id,
                         oldComment: $0.formattedBody
                     )
@@ -75,12 +82,12 @@ struct EventDetailsView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if viewModel.showRefreshButton {
-                    refreshButton
-                }
                 if isAuthor {
-                    deleteButton
-                    editEventButton
+                    Group {
+                        deleteButton
+                        editEventButton
+                    }
+                    .disabled(viewModel.isLoading)
                 }
             }
         }
@@ -187,7 +194,7 @@ private extension EventDetailsView {
             items: viewModel.event.comments,
             deleteClbk: { id in
                 deleteCommentTask = Task {
-                    await viewModel.delete(commentID: id, for: eventID, with: defaults)
+                    await viewModel.delete(commentID: id, with: defaults)
                 }
             },
             editClbk: { comment in
@@ -197,22 +204,14 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(eventID, with: defaults, refresh: refresh)
+        await viewModel.askForEvent(with: defaults, refresh: refresh)
     }
 
     func changeIsGoingToEvent(newStatus: Bool) {
         goingToEventTask = Task {
             await viewModel.changeIsGoingToEvent(
-                eventID, isGoing: newStatus, with: defaults
+                isGoing: newStatus, with: defaults
             )
-        }
-    }
-
-    var refreshButton: some View {
-        Button {
-            refreshAction()
-        } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
         }
     }
 
@@ -224,7 +223,6 @@ private extension EventDetailsView {
         Button(action: toggleDeleteConfirmation) {
             Image(systemName: "trash")
         }
-        .opacity(viewModel.showRefreshButton ? .zero : 1)
         .confirmationDialog(
             Constants.Alert.deleteEvent,
             isPresented: $showDeleteDialog,
@@ -232,7 +230,7 @@ private extension EventDetailsView {
         ) {
             Button(role: .destructive) {
                 deleteEventTask = Task {
-                    await viewModel.deleteEvent(eventID, with: defaults)
+                    await viewModel.deleteEvent(viewModel.event.id, with: defaults)
                 }
             } label: {
                 Text("Удалить")
@@ -284,7 +282,7 @@ private extension EventDetailsView {
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(needRefreshOnDelete: .constant(false), eventID: 4378)
+        EventDetailsView(with: .mock, refreshOnDelete: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

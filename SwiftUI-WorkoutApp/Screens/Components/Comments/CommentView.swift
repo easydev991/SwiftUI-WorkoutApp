@@ -47,7 +47,7 @@ extension CommentView {
         case editEvent(EditInfo)
 
         struct EditInfo {
-            let mainID, commentID: Int
+            let objectID, commentID: Int
             let oldComment: String
         }
     }

@@ -47,7 +47,7 @@ private extension EventsListView {
                 .opacity(isEmptyViewHidden ? .zero : 1)
             List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
                 NavigationLink {
-                    EventDetailsView(needRefreshOnDelete: $needRefreshEvent, eventID: event.id)
+                    EventDetailsView(with: event, refreshOnDelete: $needRefreshEvent)
                 } label: {
                     EventViewCell(for: $event)
                 }

@@ -1,23 +1,24 @@
 import Foundation
 
 final class EventDetailsViewModel: ObservableObject {
-    @Published var event = EventResponse.emptyValue
+    @Published var event: EventResponse
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var isGoing = false
-    var showRefreshButton: Bool {
-        event.id == .zero && !errorMessage.isEmpty
+
+    init(with event: EventResponse) {
+        self.event = event
     }
 
     @MainActor
-    func askForEvent(_ id: Int, with defaults: DefaultsService, refresh: Bool) async {
-        if (isLoading || event.id != .zero) && !refresh {
+    func askForEvent(with defaults: DefaultsService, refresh: Bool) async {
+        if isLoading && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }
         do {
-            event = try await APIService().getEvent(by: id)
+            event = try await APIService().getEvent(by: event.id)
             let isUserGoing = event.participantsOptional?.contains(where: { $0.userID == defaults.mainUserID })
             isGoing = isUserGoing.isTrue
         } catch {
@@ -27,11 +28,11 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeIsGoingToEvent(_ id: Int, isGoing: Bool, with defaults: DefaultsService) async {
+    func changeIsGoingToEvent(isGoing: Bool, with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).changeIsGoingToEvent(for: id, isGoing: isGoing) {
+            if try await APIService(with: defaults).changeIsGoingToEvent(for: event.id, isGoing: isGoing) {
                 self.isGoing = isGoing
                 if isGoing, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
@@ -46,11 +47,11 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(commentID: Int, for eventID: Int, with defaults: DefaultsService) async {
+    func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteComment(from: .event(id: eventID), commentID: commentID) {
+            if try await APIService(with: defaults).deleteComment(from: .event(id: event.id), commentID: commentID) {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {

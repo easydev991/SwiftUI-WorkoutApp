@@ -5,17 +5,17 @@ final class EventsListViewModel: ObservableObject {
     @Published var pastEvents = [EventResponse]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    private let oldEvents = Bundle.main.decodeJson(
+        [EventResponse].self,
+        fileName: "oldEvents.json"
+    )
+
     func isEmpty(for type: EventType) -> Bool {
         switch type {
         case .future: return futureEvents.isEmpty
         case .past: return pastEvents.isEmpty
         }
     }
-
-    private let oldEvents = Bundle.main.decodeJson(
-        [EventResponse].self,
-        fileName: "oldEvents.json"
-    )
 
     @MainActor
     func askForEvents(type: EventType, refresh: Bool) async {
