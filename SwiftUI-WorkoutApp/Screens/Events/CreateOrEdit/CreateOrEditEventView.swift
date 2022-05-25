@@ -10,13 +10,15 @@ struct CreateOrEditEventView: View {
     @FocusState private var focus: FocusableField?
     @State private var saveEventTask: Task<Void, Never>?
     private let mode: Mode
+    @Binding private var needRefreshOnSave: Bool
 
-    init(for mode: Mode, userInfo: UserResponse) {
+    init(for mode: Mode, needRefresh: Binding<Bool> = .constant(false)) {
         self.mode = mode
+        _needRefreshOnSave = needRefresh
         if case let .editExisting(event) = mode {
-            _viewModel = StateObject(wrappedValue: .init(with: event, for: userInfo))
+            _viewModel = StateObject(wrappedValue: .init(with: event))
         } else {
-            _viewModel = StateObject(wrappedValue: .init(with: nil, for: userInfo))
+            _viewModel = StateObject(wrappedValue: .init(with: nil))
         }
     }
 
@@ -64,13 +66,8 @@ private extension CreateOrEditEventView {
 
     var eventNameSection: some View {
         Section {
-            TextField("Название", text: $viewModel.eventInfo.formattedTitle)
+            TextField("Название", text: $viewModel.eventInfo.title)
                 .focused($focus, equals: .eventName)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        focus = .eventName
-                    }
-                }
         }
     }
 
@@ -78,7 +75,7 @@ private extension CreateOrEditEventView {
         Section("Дата и время") {
             DatePicker(
                 "Дата и время",
-                selection: $viewModel.eventDate,
+                selection: $viewModel.eventInfo.date,
                 in: Constants.minEventFutureDate...Constants.maxEventFutureDate
             )
             .labelsHidden()
@@ -90,7 +87,7 @@ private extension CreateOrEditEventView {
             switch mode {
             case .regularCreate:
                 NavigationLink(destination: groundsListView) {
-                    Text(viewModel.sportsGround.name ?? "Выбрать")
+                    Text(viewModel.eventInfo.sportsGround.name ?? "Выбрать")
                         .blueMediumWeight()
                 }
             case let .createForSelected(ground):
@@ -106,7 +103,7 @@ private extension CreateOrEditEventView {
     var groundsListView: some View {
         SportsGroundsListView(
             for: .event(userID: defaults.mainUserID),
-            ground: $viewModel.sportsGround
+            ground: $viewModel.eventInfo.sportsGround
         )
         .navigationTitle("Выбери площадку")
         .navigationBarTitleDisplayMode(.inline)
@@ -114,9 +111,9 @@ private extension CreateOrEditEventView {
 
     var descriptionSection: some View {
         Section("Описание") {
-            TextEditor(text: $viewModel.eventInfo.formattedDescription)
-                .frame(height: 150)
+            TextEditor(text: $viewModel.eventInfo.description)
                 .focused($focus, equals: .eventDescription)
+                .frame(height: 150)
         }
     }
 
@@ -124,7 +121,7 @@ private extension CreateOrEditEventView {
         Button(action: saveAction) {
             Text("Сохранить")
         }
-        .disabled(!viewModel.canSaveEvent)
+        .disabled(!viewModel.eventInfo.isReadyToSend)
     }
 
     func saveAction() {
@@ -143,8 +140,9 @@ private extension CreateOrEditEventView {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isSaved: Bool) {
+    func dismiss(isSuccess: Bool) {
         dismiss()
+        needRefreshOnSave.toggle()
     }
 
     func cancelTask() {
@@ -154,7 +152,7 @@ private extension CreateOrEditEventView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateOrEditEventView(for: .regularCreate, userInfo: .emptyValue)
+        CreateOrEditEventView(for: .regularCreate, needRefresh: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

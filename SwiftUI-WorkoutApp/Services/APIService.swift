@@ -245,7 +245,6 @@ struct APIService {
     ///   - groundID: `id` площадки
     ///   - trainHere: `true` - тренируюсь здесь, `false` - не тренируюсь здесь
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
     func changeTrainHereStatus(for groundID: Int, trainHere: Bool) async throws -> Bool {
         let endpoint: Endpoint = trainHere
         ? .postTrainHere(groundID, auth: defaults.basicAuthInfo)
@@ -266,6 +265,15 @@ struct APIService {
     /// - Returns: Вся информация по мероприятию
     func getEvent(by id: Int) async throws -> EventResponse {
         try await makeResult(EventResponse.self, for: Endpoint.getEvent(id: id).urlRequest)
+    }
+
+    /// Отправляет новое мероприятие на сервер
+    /// - Parameter form: форма с данными по мероприятию
+    /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
+    func createEvent(_ form: EventForm) async throws -> EventResult {
+#warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents")
+        let endpoint = Endpoint.createEvent(form: form, auth: defaults.basicAuthInfo)
+        return try await makeResult(EventResult.self, for: endpoint.urlRequest)
     }
 
     /// Изменить статус "пойду на мероприятие" для мероприятия
@@ -636,6 +644,10 @@ private extension APIService {
         /// **GET** ${API}/trainings/<event_id>
         case getEvent(id: Int)
 
+        // MARK: Создать новое мероприятие
+        /// **POST** ${API}/trainings
+        case createEvent(form: EventForm, auth: AuthData)
+
         // MARK: Сообщить, что пользователь пойдет на мероприятие
         case postIsGoingToEvent(id: Int, auth: AuthData)
 
@@ -771,6 +783,8 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/trainings/last"
         case let .getEvent(id):
             return "\(baseUrl)/trainings/\(id)"
+        case .createEvent:
+            return "\(baseUrl)/trainings"
         case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
             return "\(baseUrl)/trainings/\(id)/go"
         case let .addCommentToEvent(id, _, _):
@@ -818,7 +832,7 @@ private extension APIService.Endpoint {
         case .registration, .login, .editUser, .resetPassword,
                 .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
+                .createEvent, .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
                 .sendMessageTo, .createJournal, .markAsRead, .saveJournalEntry:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
@@ -868,15 +882,16 @@ private extension APIService.Endpoint {
             let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
             let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
             let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
-            let .addCommentToEvent(_, _, auth), let .deleteEventComment(_, _, auth),
-            let .editEventComment(_, _, _, auth), let .deleteEvent(_, auth),
-            let .getMessages(_, auth), let .sendMessageTo(_, _, auth),
-            let .markAsRead(_, auth), let .deleteDialog(_, auth),
-            let .getJournals(_, auth), let .getJournal(_, _, auth),
-            let .createJournal(_, _, auth), let .getJournalEntries(_, _, auth),
-            let .saveJournalEntry(_, _, _, auth), let .deleteEntry(_, _, _, auth),
-            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth):
+            let .createEvent(_, auth), let .postIsGoingToEvent(_, auth),
+            let .deleteIsGoingToEvent(_, auth), let .addCommentToEvent(_, _, auth),
+            let .deleteEventComment(_, _, auth), let .editEventComment(_, _, _, auth),
+            let .deleteEvent(_, auth), let .getMessages(_, auth),
+            let .sendMessageTo(_, _, auth), let .markAsRead(_, auth),
+            let .deleteDialog(_, auth), let .getJournals(_, auth),
+            let .getJournal(_, _, auth), let .createJournal(_, _, auth),
+            let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
+            let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
+            let .editJournalSettings(_, _, _, _, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getAllSportsGrounds,
                 .getFutureEvents, .getPastEvents, .getEvent:
@@ -886,7 +901,8 @@ private extension APIService.Endpoint {
 
     enum Parameter {
         enum Key: String {
-            case name, fullname, email, password, comment, message, title, fields
+            case name, fullname, email, password, comment, message, title, description, date
+            case areaID = "area_id"
             case viewAccess = "view_access"
             case commentAccess = "comment_access"
             case genderCode = "gender"
@@ -937,8 +953,6 @@ private extension APIService.Endpoint {
                     .birthDate: form.birthDateIsoString
                 ]
             )
-//        case .getAllSportsGrounds:
-//            return Parameter.make(from: [.fields: Parameter.Value.short.rawValue])
         case let .editUser(_, form, _):
             return Parameter.make(
                 from: [
@@ -957,6 +971,16 @@ private extension APIService.Endpoint {
             return Parameter.make(
                 from: [.password: current, .newPassword: new]
             )
+        case let .createEvent(form, _):
+            let params = Parameter.make(
+                from: [
+                    .title: form.title,
+                    .description: form.description,
+                    .date: form.dateIsoString,
+                    .areaID: form.sportsGround.id.description
+                ]
+            )
+            return params
         case let .addCommentToSportsGround(_, comment, _),
             let .addCommentToEvent(_, comment, _),
             let .editGroundComment(_, _, comment, _),

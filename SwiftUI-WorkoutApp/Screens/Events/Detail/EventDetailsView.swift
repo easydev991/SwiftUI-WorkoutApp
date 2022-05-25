@@ -260,10 +260,8 @@ private extension EventDetailsView {
     }
 
     func dismissDeleted(isDeleted: Bool) {
-        if isDeleted {
-            dismiss()
-            needRefreshOnDelete.toggle()
-        }
+        dismiss()
+        needRefreshOnDelete.toggle()
     }
 
     func cancelTasks() {

@@ -22,9 +22,9 @@ struct FormatterService {
         return dateFormatter.string(from: date).appending("Z")
     }
 
-    static func dateFromShortIsoString(_ string: String?) -> Date {
+    static func dateFromString(_ string: String?, format: DateFormat) -> Date {
         let formatter = DateFormatter()
-        formatter.dateFormat = DateFormat.isoShortDate.rawValue
+        formatter.dateFormat = format.rawValue
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.date(from: string.valueOrEmpty) ?? .now
     }

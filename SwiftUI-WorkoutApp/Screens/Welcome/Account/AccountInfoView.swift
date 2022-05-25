@@ -110,7 +110,13 @@ private extension AccountInfoView {
     }
 
     var cityPicker: some View {
-        NavigationLink(destination: CitiesView(viewModel: viewModel)) {
+        NavigationLink {
+            CitiesView(
+                allCities: $viewModel.cities,
+                selectedCity: viewModel.userForm.city,
+                cityClbk: viewModel.selectCity
+            )
+        } label: {
             HStack {
                 Image(systemName: "signpost.right")
                     .foregroundColor(.secondary)

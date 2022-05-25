@@ -3,22 +3,24 @@ import SwiftUI
 struct CitiesView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
-    @ObservedObject var viewModel: AccountInfoViewModel
+    @Binding var allCities: [City]
+    let selectedCity: City
+    let cityClbk: (City) -> Void
     private var filteredCities: [City] {
         searchQuery.isEmpty
-        ? viewModel.cities
-        : viewModel.cities.filter { $0.name.contains(searchQuery) }
+        ? allCities
+        : allCities.filter { $0.name.contains(searchQuery) }
     }
 
     var body: some View {
         List(filteredCities) { city in
             Button {
-                viewModel.selectCity(city)
+                cityClbk(city)
                 dismiss()
             } label: {
                 TextWithCheckmark(
                     title: city.name,
-                    showMark: city.name == viewModel.userForm.city.name
+                    showMark: city == selectedCity
                 )
             }
         }
@@ -33,6 +35,10 @@ struct CitiesView: View {
 
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        CitiesView(viewModel: .init())
+        CitiesView(
+            allCities: .constant([.defaultCity]),
+            selectedCity: .defaultCity,
+            cityClbk: {_ in}
+        )
     }
 }

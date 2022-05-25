@@ -41,7 +41,10 @@ extension UserResponse {
         return components.year.valueOrZero
     }
     var birthDate: Date {
-        FormatterService.dateFromShortIsoString(birthDateIsoString)
+        FormatterService.dateFromString(
+            birthDateIsoString,
+            format: .isoShortDate
+        )
     }
     var avatarURL: URL? {
         .init(string: imageStringURL.valueOrEmpty)

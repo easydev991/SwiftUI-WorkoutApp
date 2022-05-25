@@ -25,7 +25,7 @@ struct EventsListView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: selectedEventType) { _ in askForEvents() }
-        .onChange(of: needRefresh, perform: refreshIfNeeded)
+        .onChange(of: needRefresh, perform: refresh)
         .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
         .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
         .onDisappear(perform: cancelTask)
@@ -60,10 +60,7 @@ private extension EventsListView {
 
     var addEventButton: some View {
         NavigationLink {
-            CreateOrEditEventView(
-                for: .regularCreate,
-                userInfo: defaults.mainUserInfo ?? .emptyValue
-            )
+            CreateOrEditEventView(for: .regularCreate, needRefresh: $needRefresh)
         } label: {
             Image(systemName: "plus")
         }
@@ -89,8 +86,8 @@ private extension EventsListView {
         }
     }
 
-    func refreshIfNeeded(_ needRefresh: Bool) {
-        if needRefresh { askForEvents(refresh: true) }
+    func refresh(_ needRefresh: Bool) {
+        askForEvents(refresh: true)
     }
 
     func setupErrorAlert(with message: String) {

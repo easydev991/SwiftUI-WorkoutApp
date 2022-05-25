@@ -11,6 +11,7 @@ final class EventsListViewModel: ObservableObject {
         case .past: return pastEvents.isEmpty
         }
     }
+
     private let oldEvents = Bundle.main.decodeJson(
         [EventResponse].self,
         fileName: "oldEvents.json"

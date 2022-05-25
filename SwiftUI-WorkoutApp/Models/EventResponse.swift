@@ -51,6 +51,12 @@ struct EventResponse: Codable, Identifiable {
     }
 }
 
+extension EventResponse: Equatable {
+    static func == (lhs: EventResponse, rhs: EventResponse) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 extension EventResponse {
     var formattedTitle: String {
         get {
