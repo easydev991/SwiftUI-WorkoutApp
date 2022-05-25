@@ -7,9 +7,14 @@ final class CreateOrEditEventViewModel: ObservableObject {
     @Published private(set) var isSuccess = false
     private var eventID: Int?
 
-    init(with event: EventResponse?) {
+    init(with event: EventResponse? = nil) {
         eventID = event?.id
         eventInfo = .init(event)
+    }
+
+    init(with sportsGround: SportsGround) {
+        eventInfo = .emptyValue
+        eventInfo.sportsGround = sportsGround
     }
 
     @MainActor

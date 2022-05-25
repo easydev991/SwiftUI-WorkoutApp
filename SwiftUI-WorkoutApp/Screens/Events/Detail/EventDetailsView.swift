@@ -127,7 +127,7 @@ private extension EventDetailsView {
     var locationInfo: some View {
         SportsGroundLocationInfo(
             ground: $viewModel.event.sportsGround,
-            address: viewModel.event.fullAddress.valueOrEmpty,
+            address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
             appleMapsURL: viewModel.event.sportsGround.appleMapsURL
         )
     }

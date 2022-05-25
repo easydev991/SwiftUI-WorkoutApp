@@ -15,10 +15,13 @@ struct CreateOrEditEventView: View {
     init(for mode: Mode, needRefresh: Binding<Bool> = .constant(false)) {
         self.mode = mode
         _needRefreshOnSave = needRefresh
-        if case let .editExisting(event) = mode {
+        switch mode {
+        case let .editExisting(event):
             _viewModel = StateObject(wrappedValue: .init(with: event))
-        } else {
-            _viewModel = StateObject(wrappedValue: .init(with: nil))
+        case let .createForSelected(ground):
+            _viewModel = StateObject(wrappedValue: .init(with: ground))
+        case .regularCreate:
+            _viewModel = StateObject(wrappedValue: .init())
         }
     }
 
