@@ -39,8 +39,11 @@ struct UserDetailsView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
-                    searchUsersLink
-                    settingsLink
+                    Group {
+                        searchUsersLink
+                        settingsLink
+                    }
+                    .disabled(viewModel.isLoading)
                 }
             }
         }

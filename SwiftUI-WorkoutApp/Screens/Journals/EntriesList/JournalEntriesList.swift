@@ -62,8 +62,11 @@ struct JournalEntriesList: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
-                    settingsButton
-                    addEntryButton
+                    Group {
+                        settingsButton
+                        addEntryButton
+                    }
+                    .disabled(viewModel.isLoading)
                 }
             }
         }
