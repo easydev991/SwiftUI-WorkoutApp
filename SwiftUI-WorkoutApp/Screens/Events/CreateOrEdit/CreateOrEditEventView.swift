@@ -94,7 +94,7 @@ private extension CreateOrEditEventView {
                 Text(ground.name.valueOrEmpty)
             case let .editExisting(event):
                 NavigationLink(destination: groundsListView) {
-                    Text(event.sportsGround.name.valueOrEmpty)
+                    Text(event.sportsGround.shortTitle)
                 }
             }
         }
@@ -127,7 +127,7 @@ private extension CreateOrEditEventView {
     func saveAction() {
         focus = nil
         saveEventTask = Task {
-            await viewModel.saveEvent(with: defaults)
+            await viewModel.saveEvent(mode: mode, with: defaults)
         }
     }
 

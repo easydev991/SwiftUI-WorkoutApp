@@ -1,8 +1,8 @@
 import Foundation
 
 final class EventsListViewModel: ObservableObject {
-    @Published private(set) var futureEvents = [EventResponse]()
-    @Published private(set) var pastEvents = [EventResponse]()
+    @Published var futureEvents = [EventResponse]()
+    @Published var pastEvents = [EventResponse]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     func isEmpty(for type: EventType) -> Bool {

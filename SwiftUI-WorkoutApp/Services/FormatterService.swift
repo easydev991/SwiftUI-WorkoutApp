@@ -22,6 +22,11 @@ struct FormatterService {
         return dateFormatter.string(from: date).appending("Z")
     }
 
+    static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
+        let isoFormatter = ISO8601DateFormatter()
+        return isoFormatter.date(from: string.valueOrEmpty) ?? .now
+    }
+
     static func dateFromString(_ string: String?, format: DateFormat) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue

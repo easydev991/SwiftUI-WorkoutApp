@@ -270,9 +270,14 @@ struct APIService {
     /// Отправляет новое мероприятие на сервер
     /// - Parameter form: форма с данными по мероприятию
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
-    func createEvent(_ form: EventForm) async throws -> EventResult {
-#warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents")
-        let endpoint = Endpoint.createEvent(form: form, auth: defaults.basicAuthInfo)
+    func saveEvent(_ form: EventForm, eventID: Int?) async throws -> EventResult {
+#warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents внутри EventsListViewModel")
+        let endpoint: Endpoint
+        if let eventID = eventID {
+            endpoint = .editEvent(id: eventID, form: form, auth: defaults.basicAuthInfo)
+        } else {
+            endpoint = .createEvent(form: form, auth: defaults.basicAuthInfo)
+        }
         return try await makeResult(EventResult.self, for: endpoint.urlRequest)
     }
 
@@ -648,6 +653,10 @@ private extension APIService {
         /// **POST** ${API}/trainings
         case createEvent(form: EventForm, auth: AuthData)
 
+        // MARK: Изменить существующее мероприятие
+        /// **POST** ${API}/trainings/<id>
+        case editEvent(id: Int, form: EventForm, auth: AuthData)
+
         // MARK: Сообщить, что пользователь пойдет на мероприятие
         case postIsGoingToEvent(id: Int, auth: AuthData)
 
@@ -793,7 +802,7 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
         case let .editEventComment(eventID, commentID, _, _):
             return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
-        case let .deleteEvent(id, _):
+        case let .deleteEvent(id, _), let .editEvent(id, _, _):
             return "\(baseUrl)/trainings/\(id)"
         case .getDialogs:
             return "\(baseUrl)/dialogs"
@@ -832,8 +841,9 @@ private extension APIService.Endpoint {
         case .registration, .login, .editUser, .resetPassword,
                 .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                .createEvent, .postIsGoingToEvent, .addCommentToEvent, .editEventComment,
-                .sendMessageTo, .createJournal, .markAsRead, .saveJournalEntry:
+                .createEvent, .editEvent, .postIsGoingToEvent,
+                .addCommentToEvent, .editEventComment, .sendMessageTo,
+                .createJournal, .markAsRead, .saveJournalEntry:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
                 .getAllSportsGrounds, .getSportsGround,
@@ -848,7 +858,7 @@ private extension APIService.Endpoint {
                 .deleteEventComment, .deleteEvent,
                 .deleteDialog, .deleteJournal, .deleteEntry:
             return .delete
-        case .editJournalSettings(_, _, _, _, _, _):
+        case .editJournalSettings:
             return .put
         }
     }
@@ -891,7 +901,7 @@ private extension APIService.Endpoint {
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
             let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
-            let .editJournalSettings(_, _, _, _, _, auth):
+            let .editJournalSettings(_, _, _, _, _, auth), let .editEvent(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getAllSportsGrounds,
                 .getFutureEvents, .getPastEvents, .getEvent:
@@ -971,7 +981,7 @@ private extension APIService.Endpoint {
             return Parameter.make(
                 from: [.password: current, .newPassword: new]
             )
-        case let .createEvent(form, _):
+        case let .createEvent(form, _), let .editEvent(_, form, _):
             let params = Parameter.make(
                 from: [
                     .title: form.title,

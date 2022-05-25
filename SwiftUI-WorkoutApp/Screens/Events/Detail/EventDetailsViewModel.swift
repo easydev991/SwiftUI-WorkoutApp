@@ -7,7 +7,7 @@ final class EventDetailsViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
     @Published var isGoing = false
     var showRefreshButton: Bool {
-        event.id == .zero && !isLoading
+        event.id == .zero && !errorMessage.isEmpty
     }
 
     @MainActor

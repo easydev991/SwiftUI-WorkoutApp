@@ -4,7 +4,7 @@ import SwiftUI
 struct EventsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
-    @State private var needRefresh = false
+    @State private var needRefreshEvent = false
     @State private var selectedEventType = EventType.future
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -25,7 +25,7 @@ struct EventsListView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: selectedEventType) { _ in askForEvents() }
-        .onChange(of: needRefresh, perform: refresh)
+        .onChange(of: needRefreshEvent, perform: refresh)
         .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
         .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
         .onDisappear(perform: cancelTask)
@@ -45,11 +45,11 @@ private extension EventsListView {
         ZStack {
             EmptyContentView(mode: .events)
                 .opacity(isEmptyViewHidden ? .zero : 1)
-            List(selectedEventType == .future ? viewModel.futureEvents : viewModel.pastEvents) { event in
+            List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
                 NavigationLink {
-                    EventDetailsView(needRefreshOnDelete: $needRefresh, eventID: event.id)
+                    EventDetailsView(needRefreshOnDelete: $needRefreshEvent, eventID: event.id)
                 } label: {
-                    EventViewCell(event: event)
+                    EventViewCell(for: $event)
                 }
             }
             .opacity(viewModel.isLoading ? .zero : 1)
@@ -60,7 +60,7 @@ private extension EventsListView {
 
     var addEventButton: some View {
         NavigationLink {
-            CreateOrEditEventView(for: .regularCreate, needRefresh: $needRefresh)
+            CreateOrEditEventView(for: .regularCreate, needRefresh: $needRefreshEvent)
         } label: {
             Image(systemName: "plus")
         }

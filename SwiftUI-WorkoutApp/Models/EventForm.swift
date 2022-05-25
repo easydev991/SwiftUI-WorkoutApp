@@ -16,7 +16,7 @@ struct EventForm: Codable {
     init(_ event: EventResponse?) {
         self.title = (event?.formattedTitle).valueOrEmpty
         self.description = (event?.formattedDescription).valueOrEmpty
-        self.date = FormatterService.dateFromString(event?.beginDate, format: .isoDateTimeSec)
+        self.date = FormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
         self.sportsGround = event?.sportsGround ?? .emptyValue
     }
 }

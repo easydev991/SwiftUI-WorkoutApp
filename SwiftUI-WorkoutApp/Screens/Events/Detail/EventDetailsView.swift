@@ -5,7 +5,7 @@ struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventDetailsViewModel()
-    @State private var needUpdateComments = false
+    @State private var needUpdate = false
     @State private var isCreatingComment = false
     @State private var editComment: Comment?
     @State private var showErrorAlert = false
@@ -53,11 +53,11 @@ struct EventDetailsView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
-        .onChange(of: needUpdateComments, perform: refreshAction)
+        .onChange(of: needUpdate, perform: refreshAction)
         .sheet(isPresented: $isCreatingComment) {
             CommentView(
                 mode: .newForEvent(id: viewModel.event.id),
-                isSent: $needUpdateComments
+                isSent: $needUpdate
             )
         }
         .sheet(item: $editComment) {
@@ -69,15 +69,18 @@ struct EventDetailsView: View {
                         oldComment: $0.formattedBody
                     )
                 ),
-                isSent: $needUpdateComments
+                isSent: $needUpdate
             )
         }
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                refreshButton
+                if viewModel.showRefreshButton {
+                    refreshButton
+                }
                 if isAuthor {
                     deleteButton
+                    editEventButton
                 }
             }
         }
@@ -211,7 +214,6 @@ private extension EventDetailsView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(viewModel.showRefreshButton ? 1 : .zero)
     }
 
     func refreshAction(refresh: Bool = false) {
@@ -235,6 +237,17 @@ private extension EventDetailsView {
             } label: {
                 Text("Удалить")
             }
+        }
+    }
+
+    var editEventButton: some View {
+        NavigationLink {
+            CreateOrEditEventView(
+                for: .editExisting(viewModel.event),
+                needRefresh: $needUpdate
+            )
+        } label: {
+            Image(systemName: "rectangle.and.pencil.and.ellipsis")
         }
     }
 
