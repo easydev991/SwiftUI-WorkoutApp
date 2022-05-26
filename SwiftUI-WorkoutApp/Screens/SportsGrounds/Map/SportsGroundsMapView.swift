@@ -5,6 +5,7 @@ struct SportsGroundsMapView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var needUpdateRecent = false
+    @State private var isGroundDeleted = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
 
@@ -14,7 +15,7 @@ struct SportsGroundsMapView: View {
                 NavigationLink(isActive: $viewModel.openDetails) {
                     SportsGroundDetailView(
                         for: viewModel.selectedGround,
-                        refreshOnDelete: $needUpdateRecent
+                        refreshOnDelete: $isGroundDeleted
                     )
                 } label: { EmptyView() }
                 MapViewUI(
@@ -31,6 +32,7 @@ struct SportsGroundsMapView: View {
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: needUpdateRecent, perform: updateRecent)
+            .onChange(of: isGroundDeleted, perform: updateDeleted)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }
@@ -86,9 +88,11 @@ private extension SportsGroundsMapView {
     }
 
     func updateRecent(isSuccess: Bool) {
-        refreshAction()
-#warning("TODO: удалять площадку по ID из viewModel.list без запроса к сети ")
-//        Task { await viewModel.askForNewGround() }
+        Task { await viewModel.checkForRecentUpdates() }
+    }
+
+    func updateDeleted(isDeleted: Bool) {
+        viewModel.deleteSportsGroundFromList()
     }
 
     func setupErrorAlert(with message: String) {

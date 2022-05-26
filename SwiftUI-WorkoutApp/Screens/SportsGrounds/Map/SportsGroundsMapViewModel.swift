@@ -33,17 +33,27 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     @MainActor
-    func askForNewGround() async {
+    func checkForRecentUpdates() async {
         if isLoading { return }
         isLoading.toggle()
         do {
             let dateString = FormatterService.isoStringFromFullDate(Constants.fiveMinutesAgo)
-            let newGrounds = try await APIService().getUpdatedSportsGrounds(from: dateString)
-            list.append(contentsOf: newGrounds)
+            let updatedGrounds = try await APIService().getUpdatedSportsGrounds(from: dateString)
+            updatedGrounds.forEach { ground in
+                if !list.contains(ground) {
+                    list.append(ground)
+                } else if let index = list.firstIndex(where: { $0.id == ground.id }) {
+                    list[index] = ground
+                }
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()
+    }
+
+    func deleteSportsGroundFromList() {
+        list.removeAll(where: { $0.id == selectedGround.id })
     }
 
     func onAppearAction() {

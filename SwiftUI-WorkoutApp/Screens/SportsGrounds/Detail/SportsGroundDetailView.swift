@@ -42,7 +42,7 @@ struct SportsGroundDetailView: View {
                     AddCommentButton(isCreatingComment: $isCreatingComment)
                 }
             }
-            .opacity(viewModel.ground.id == .zero ? .zero : 1)
+            .opacity(viewModel.isLoading ? 0.5 : 1)
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
