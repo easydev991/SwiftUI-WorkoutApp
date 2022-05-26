@@ -15,8 +15,8 @@ struct SportsGroundForm: Codable {
         latitude = (sportsGround?.latitude).valueOrEmpty
         longitude = (sportsGround?.longitude).valueOrEmpty
         cityID = (sportsGround?.cityID).valueOrZero
-        typeID = (sportsGround?.typeID).valueOrZero
-        sizeID = (sportsGround?.sizeID).valueOrZero
+        typeID = sportsGround?.typeID ?? SportsGroundGrade.soviet.code
+        sizeID = sportsGround?.sizeID ?? SportsGroundSize.small.code
     }
 }
 

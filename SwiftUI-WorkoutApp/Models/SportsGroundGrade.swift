@@ -18,4 +18,16 @@ enum SportsGroundGrade: String, CaseIterable {
         default: self = .other // id = 7
         }
     }
+
+    var code: Int {
+        switch self {
+        case .soviet: return 1
+        case .modern: return 2
+        case .collars: return 3
+        case .underTheHood: return 4
+        case .broken: return 5
+        case .legendary: return 6
+        case .other: return 7
+        }
+    }
 }

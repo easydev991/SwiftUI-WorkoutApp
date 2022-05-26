@@ -10,4 +10,12 @@ enum SportsGroundSize: String, CaseIterable {
         default: self = .large // id = 3
         }
     }
+
+    var code: Int {
+        switch self {
+        case .small: return 1
+        case .medium: return 2
+        case .large: return 3
+        }
+    }
 }

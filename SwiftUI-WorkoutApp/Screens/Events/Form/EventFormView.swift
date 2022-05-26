@@ -9,8 +9,8 @@ struct EventFormView: View {
     @State private var alertMessage = ""
     @FocusState private var focus: FocusableField?
     @State private var saveEventTask: Task<Void, Never>?
-    private let mode: Mode
     @Binding private var needRefreshOnSave: Bool
+    private let mode: Mode
 
     init(for mode: Mode, needRefresh: Binding<Bool> = .constant(false)) {
         self.mode = mode

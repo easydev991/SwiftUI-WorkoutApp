@@ -23,6 +23,8 @@ struct SportsGroundFormView: View {
         ZStack {
             Form {
                 addressSection
+                typePicker
+                sizePicker
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .animation(.easeInOut, value: viewModel.isLoading)
@@ -47,6 +49,24 @@ private extension SportsGroundFormView {
                 .focused($isFocused)
         }
     }
+
+    var typePicker: some View {
+        Picker("Тип площадки", selection: $viewModel.groundForm.typeID) {
+            ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
+                Text(SportsGroundGrade(id: $0).rawValue)
+            }
+        }
+    }
+
+    var sizePicker: some View {
+        Picker("Размер площадки", selection: $viewModel.groundForm.sizeID) {
+            ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
+                Text(SportsGroundSize(id: $0).rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
