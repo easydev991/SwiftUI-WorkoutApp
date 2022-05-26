@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation.CLLocation
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
@@ -11,11 +12,19 @@ struct SportsGroundFormView: View {
     @Binding private var needRefreshOnSave: Bool
     @State private var saveGroundTask: Task<Void, Never>?
 
-    init(
-        with ground: SportsGround? = nil,
-        needRefreshOnSave: Binding<Bool>
-    ) {
-        _viewModel = StateObject(wrappedValue: .init(with: ground))
+    init(_ mode: Mode, needRefreshOnSave: Binding<Bool>) {
+        switch mode {
+        case let .createNew(address, coordinate, cityID):
+            _viewModel = StateObject(
+                wrappedValue: .init(
+                    address.wrappedValue,
+                    coordinate.wrappedValue,
+                    cityID
+                )
+            )
+        case let .editExisting(ground):
+            _viewModel = StateObject(wrappedValue: .init(with: ground))
+        }
         self._needRefreshOnSave = needRefreshOnSave
     }
 
@@ -31,6 +40,7 @@ struct SportsGroundFormView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -39,6 +49,17 @@ struct SportsGroundFormView: View {
         .toolbar { saveButton }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension SportsGroundFormView {
+    enum Mode {
+        case createNew(
+            address: Binding<String>,
+            coordinate: Binding<CLLocationCoordinate2D>,
+            cityID: Int
+        )
+        case editExisting(SportsGround)
     }
 }
 
@@ -102,7 +123,7 @@ private extension SportsGroundFormView {
 
 struct CreateOrEditGroundView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundFormView(with: .mock, needRefreshOnSave: .constant(false))
+        SportsGroundFormView(.editExisting(.mock), needRefreshOnSave: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

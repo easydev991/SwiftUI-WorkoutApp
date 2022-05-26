@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation.CLLocation
 
 final class SportsGroundFormViewModel: ObservableObject {
     @Published var groundForm: SportsGroundForm
@@ -10,6 +11,18 @@ final class SportsGroundFormViewModel: ObservableObject {
     init(with ground: SportsGround?) {
         groundForm = .init(ground)
         groundID = ground?.id
+    }
+
+    init(
+        _ address: String,
+        _ coordinate: CLLocationCoordinate2D,
+        _ cityID: Int
+    ) {
+        groundForm = .init(
+            address: address,
+            coordinate: coordinate,
+            cityID: cityID
+        )
     }
 
     @MainActor

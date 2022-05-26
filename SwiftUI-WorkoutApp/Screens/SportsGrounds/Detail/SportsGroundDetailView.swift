@@ -217,7 +217,7 @@ private extension SportsGroundDetailView {
     var editGroundButton: some View {
         NavigationLink {
             SportsGroundFormView(
-                with: viewModel.ground,
+                .editExisting(viewModel.ground),
                 needRefreshOnSave: $needRefresh
             )
         } label: {

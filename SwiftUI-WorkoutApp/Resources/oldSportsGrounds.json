@@ -9363,7 +9363,7 @@
         "country_id": 17,
         "comments_count": 2,
         "preview": "https://workout.su/uploads/userfiles/A3Cllu6D_6M.jpg",
-        "trainings": 1
+        "trainings": 2
     },
     {
         "id": 2200,
@@ -63263,7 +63263,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2017/11/2017-11-11-18-11-30-vpl.jpg",
-        "trainings": 0
+        "trainings": 1
     },
     {
         "id": 7884,
@@ -94973,7 +94973,7 @@
         "country_id": 17,
         "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/2020/01/2020-01-16-16-01-47-wv_.jpg",
-        "trainings": 0
+        "trainings": 1
     },
     {
         "id": 10484,
@@ -98921,7 +98921,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2020/06/2020-06-14-12-06-40-fdg.jpg",
-        "trainings": 1
+        "trainings": 2
     },
     {
         "id": 10794,
@@ -107391,7 +107391,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2021/06/2021-06-18-19-06-55-lmo.jpg",
-        "trainings": 0
+        "trainings": 1
     },
     {
         "id": 11429,
@@ -112109,6 +112109,48 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2022/05/2022-05-23-18-05-19-azw.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 11787,
+        "name": "№11787 Средняя Современная",
+        "class_id": 2,
+        "type_id": 2,
+        "longitude": "29.789443016161393",
+        "latitude": "59.99003442202283",
+        "address": "Интернациональная улица, 6А",
+        "city_id": 69,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2022/05/2022-05-24-16-05-42-w1p.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 11788,
+        "name": "№11788 Средняя Современная",
+        "class_id": 2,
+        "type_id": 2,
+        "longitude": "37.605075",
+        "latitude": "55.675658",
+        "address": "Нагорная улица",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2022/05/2022-05-25-13-05-11-vwi.jpg",
         "trainings": 0
+    },
+    {
+        "id": 11789,
+        "name": "№11789 Средняя Современная",
+        "class_id": 2,
+        "type_id": 2,
+        "longitude": "29.79683518322418",
+        "latitude": "59.98639606516349",
+        "address": "Тулонская аллея, 11",
+        "city_id": 69,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2022/05/2022-05-25-14-05-24-5ou.jpg",
+        "trainings": 1
     }
 ]

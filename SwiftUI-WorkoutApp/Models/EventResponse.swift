@@ -1,5 +1,4 @@
 import Foundation
-import MapKit.MKGeometry
 
 /// Модель со всей информацией о мероприятии
 struct EventResponse: Codable, Identifiable {

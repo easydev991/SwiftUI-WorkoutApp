@@ -1,5 +1,5 @@
 import Foundation
-import MapKit.MKGeometry
+import CoreLocation.CLLocation
 
 /// Форма для отправки при создании/изменении площадки
 struct SportsGroundForm: Codable {
@@ -17,6 +17,19 @@ struct SportsGroundForm: Codable {
         cityID = (sportsGround?.cityID).valueOrZero
         typeID = sportsGround?.typeID ?? SportsGroundGrade.soviet.code
         sizeID = sportsGround?.sizeID ?? SportsGroundSize.small.code
+    }
+
+    init(
+        address: String,
+        coordinate: CLLocationCoordinate2D,
+        cityID: Int
+    ) {
+        self.address = address
+        self.latitude = coordinate.latitude.description
+        self.longitude = coordinate.longitude.description
+        self.cityID = cityID
+        typeID = SportsGroundGrade.soviet.code
+        sizeID = SportsGroundSize.small.code
     }
 }
 

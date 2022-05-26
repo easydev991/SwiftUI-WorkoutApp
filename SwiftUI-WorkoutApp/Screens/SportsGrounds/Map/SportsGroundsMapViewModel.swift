@@ -1,20 +1,23 @@
 import MapKit.MKGeometry
 
-final class SportsGroundsMapViewModel: ObservableObject {
+final class SportsGroundsMapViewModel: NSObject, ObservableObject {
+    private let manager = CLLocationManager()
     @Published var list = Bundle.main.decodeJson(
         [SportsGround].self,
-        fileName: "areas.json"
+        fileName: "oldSportsGrounds.json"
     )
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var openDetails = false
     @Published var selectedGround = SportsGround.emptyValue
+    @Published var addressString = ""
+    @Published var region = MKCoordinateRegion()
 
-    private let locationService = LocationService()
-
-    var mapRegion: MKCoordinateRegion {
-        get { locationService.region }
-        set { locationService.region = newValue }
+    override init() {
+        super.init()
+        manager.delegate = self
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
     }
 
     @MainActor
@@ -44,12 +47,61 @@ final class SportsGroundsMapViewModel: ObservableObject {
     }
 
     func onAppearAction() {
-        locationService.setEnabled(true)
+        manager.stopUpdatingLocation()
     }
 
     func onDisappearAction() {
-        locationService.setEnabled(false)
+        manager.startUpdatingLocation()
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+
+extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
+    @MainActor
+    func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        if let location = locations.last {
+            region = .init(
+                center: location.coordinate,
+                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+            CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+                if let target = places?.first {
+                    self?.addressString = target.thoroughfare.valueOrEmpty
+                    + " " + target.subThoroughfare.valueOrEmpty
+                }
+            }
+        }
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .authorizedAlways, .authorizedWhenInUse:
+            manager.requestLocation()
+        case .restricted:
+#if DEBUG
+            print("--- Запрещен доступ к геолокации")
+#endif
+        case .denied:
+#if DEBUG
+            print("--- Отклонен запрос на доступ к геолокации")
+#endif
+        @unknown default: break
+        }
+    }
+
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: Error
+    ) {
+#if DEBUG
+        print("--- LocationManager столкнулся с ошибкой: \(error.localizedDescription)")
+#endif
+    }
 }

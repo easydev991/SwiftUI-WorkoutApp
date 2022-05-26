@@ -19,7 +19,7 @@ struct SportsGroundsMapView: View {
                 } label: { EmptyView() }
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
-                    region: $viewModel.mapRegion,
+                    region: $viewModel.region,
                     annotations: $viewModel.list,
                     selectedPlace: $viewModel.selectedGround,
                     openDetails: $viewModel.openDetails
@@ -42,7 +42,9 @@ struct SportsGroundsMapView: View {
                     refreshButton
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    createGroundButton
+                    if defaults.isAuthorized {
+                        createGroundButton
+                    }
                 }
             }
             .navigationTitle("Площадки")
@@ -69,7 +71,14 @@ private extension SportsGroundsMapView {
 
     var createGroundButton: some View {
         NavigationLink {
-            SportsGroundFormView(needRefreshOnSave: $needUpdateRecent)
+            SportsGroundFormView(
+                .createNew(
+                    address: $viewModel.addressString,
+                    coordinate: $viewModel.region.center,
+                    cityID: (defaults.mainUserInfo?.cityID).valueOrZero
+                ),
+                needRefreshOnSave: $needUpdateRecent
+            )
         } label: {
             Image(systemName: "plus")
         }
