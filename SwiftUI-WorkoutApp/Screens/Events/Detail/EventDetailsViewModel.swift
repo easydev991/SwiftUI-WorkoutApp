@@ -13,7 +13,7 @@ final class EventDetailsViewModel: ObservableObject {
 
     @MainActor
     func askForEvent(with defaults: DefaultsService, refresh: Bool) async {
-        if isLoading && !refresh {
+        if (isLoading || event.isFull) && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }

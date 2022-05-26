@@ -1,22 +1,21 @@
 import Foundation
 
 final class SportsGroundDetailViewModel: ObservableObject {
-    @Published var ground = SportsGround.emptyValue
+    @Published var ground: SportsGround
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    var showRefreshButton: Bool {
-        ground.id == .zero && !isLoading
+
+    init(with ground: SportsGround) {
+        self.ground = ground
     }
 
     @MainActor
-    func makeSportsGroundInfo(groundID: Int, with defaults: DefaultsService, refresh: Bool = false) async {
-        if (isLoading || ground.id != .zero) && !refresh {
-            return
-        }
+    func makeSportsGroundInfo(with defaults: DefaultsService, refresh: Bool = false) async {
+        if (isLoading || ground.isFull) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            ground = try await APIService(with: defaults).getSportsGround(id: groundID)
+            ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -38,11 +37,15 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus(groundID: Int, trainHere: Bool, with defaults: DefaultsService) async {
+    func changeTrainHereStatus(with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).changeTrainHereStatus(for: groundID, trainHere: trainHere) {
+            let trainHere = !ground.trainHere
+            if try await APIService(with: defaults).changeTrainHereStatus(
+                for: ground.id,
+                trainHere: trainHere
+            ) {
                 ground.trainHere = trainHere
                 if trainHere, let userInfo = defaults.mainUserInfo {
                     ground.participants.append(userInfo)

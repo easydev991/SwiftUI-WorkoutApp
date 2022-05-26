@@ -107,6 +107,10 @@ extension EventResponse {
     var authorID: Int {
         (author?.userID).valueOrZero
     }
+    /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
+    var isFull: Bool {
+        participantsCount.valueOrZero > .zero && !participants.isEmpty
+    }
     static var emptyValue: EventResponse {
         .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
     }

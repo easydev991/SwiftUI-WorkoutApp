@@ -31,7 +31,7 @@ struct SportsGroundsListView: View {
                     }
                 default:
                     NavigationLink {
-                        SportsGroundDetailView(.full(ground))
+                        SportsGroundDetailView(for: ground)
                     } label: {
                         SportsGroundViewCell(model: ground)
                     }

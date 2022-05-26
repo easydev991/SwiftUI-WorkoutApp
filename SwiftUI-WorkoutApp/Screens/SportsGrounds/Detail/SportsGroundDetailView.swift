@@ -4,7 +4,7 @@ import SwiftUI
 struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = SportsGroundDetailViewModel()
+    @StateObject private var viewModel: SportsGroundDetailViewModel
     @State private var needRefresh = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -16,11 +16,10 @@ struct SportsGroundDetailView: View {
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
     @Binding private var needRefreshOnDelete: Bool
-    private let mode: Mode
 
-    init(_ mode: Mode, refreshOnDelete: Binding<Bool> = .constant(false)) {
-        self.mode = mode
+    init(for ground: SportsGround, refreshOnDelete: Binding<Bool> = .constant(false)) {
         _needRefreshOnDelete = refreshOnDelete
+        _viewModel = StateObject(wrappedValue: .init(with: ground))
     }
 
     var body: some View {
@@ -44,11 +43,11 @@ struct SportsGroundDetailView: View {
                 }
             }
             .opacity(viewModel.ground.id == .zero ? .zero : 1)
-            .disabled(viewModel.isLoading)
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -76,9 +75,6 @@ struct SportsGroundDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Group {
-                    if viewModel.showRefreshButton {
-                        refreshButton
-                    }
                     if isGroundAuthor {
                         deleteButton
                         editGroundButton
@@ -92,12 +88,6 @@ struct SportsGroundDetailView: View {
     }
 }
 
-extension SportsGroundDetailView {
-    enum Mode {
-        case full(SportsGround)
-        case limited(id: Int)
-    }
-}
 private extension SportsGroundDetailView {
     var isGroundAuthor: Bool {
         viewModel.ground.authorID == defaults.mainUserID
@@ -129,21 +119,19 @@ private extension SportsGroundDetailView {
                !participants.isEmpty {
                 linkToParticipantsView
             }
-            CustomToggle(isOn: $viewModel.ground.trainHere, title: "Тренируюсь здесь") {
-                changeTrainHereStatus(newStatus: !viewModel.ground.trainHere)
-            }
+            CustomToggle(
+                isOn: $viewModel.ground.trainHere,
+                title: "Тренируюсь здесь",
+                action: changeTrainHereStatus
+            )
             .disabled(viewModel.isLoading)
             createEventLink
         }
     }
 
-    func changeTrainHereStatus(newStatus: Bool) {
+    func changeTrainHereStatus() {
         changeTrainHereTask = Task {
-            await viewModel.changeTrainHereStatus(
-                groundID: viewModel.ground.id,
-                trainHere: newStatus,
-                with: defaults
-            )
+            await viewModel.changeTrainHereStatus(with: defaults)
         }
     }
 
@@ -203,14 +191,6 @@ private extension SportsGroundDetailView {
         )
     }
 
-    var refreshButton: some View {
-        Button {
-            refreshButtonTask = Task { await askForInfo() }
-        } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
-        }
-    }
-
     var deleteButton: some View {
         Button(action: toggleDeleteConfirmation) {
             Image(systemName: "trash")
@@ -250,16 +230,7 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        let groundID: Int
-        switch mode {
-        case let .full(ground): groundID = ground.id
-        case let .limited(id): groundID = id
-        }
-        await viewModel.makeSportsGroundInfo(
-            groundID: groundID,
-            with: defaults,
-            refresh: refresh
-        )
+        await viewModel.makeSportsGroundInfo(with: defaults, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {
@@ -285,7 +256,7 @@ private extension SportsGroundDetailView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundDetailView(.full(.mock), refreshOnDelete: .constant(false))
+            SportsGroundDetailView(for: .mock, refreshOnDelete: .constant(false))
                 .environmentObject(DefaultsService())
                 .previewDevice("iPhone SE (3rd generation)")
         }

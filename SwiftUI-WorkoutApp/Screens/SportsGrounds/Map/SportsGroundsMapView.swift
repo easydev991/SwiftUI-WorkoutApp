@@ -13,7 +13,7 @@ struct SportsGroundsMapView: View {
             ZStack {
                 NavigationLink(isActive: $viewModel.openDetails) {
                     SportsGroundDetailView(
-                        .limited(id: viewModel.selectedGround.id),
+                        for: viewModel.selectedGround,
                         refreshOnDelete: $needUpdateRecent
                     )
                 } label: { EmptyView() }

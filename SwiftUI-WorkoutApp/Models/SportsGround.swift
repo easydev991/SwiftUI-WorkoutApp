@@ -101,6 +101,10 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         self.usersTrainHere = usersTrainHere
         self.trainHereOptional = trainHere
     }
+
+    convenience init(id: Int) {
+        self.init(id: id, typeID: .zero, address: nil, author: nil, canEdit: nil, mine: nil, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+    }
 }
 
 struct Photo: Codable, Identifiable {
@@ -160,6 +164,12 @@ extension SportsGround {
     var trainHere: Bool {
         get { trainHereOptional.isTrue }
         set { trainHereOptional = newValue }
+    }
+
+    /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
+    var isFull: Bool {
+        usersTrainHereCount.valueOrZero > .zero && !participants.isEmpty
+        || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
 
     static var emptyValue: SportsGround {
