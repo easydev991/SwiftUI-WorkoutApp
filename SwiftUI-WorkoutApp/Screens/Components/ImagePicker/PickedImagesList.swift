@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PickedImagesList: View {
     @State private var isShowingPicker = false
-    @State private var images = [UIImage]()
+    @Binding var images: [UIImage]
 
     var body: some View {
         List {
@@ -11,38 +11,40 @@ struct PickedImagesList: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .background(Color.secondary.opacity(0.5))
+                        .frame(maxWidth: 100)
                         .cornerRadius(8)
                     Spacer()
-                    Button(role: .destructive, action: deleteAction) {
-                        Image(systemName: "trash")
-                            .font(.title2)
-                    }
+                    Text("Для удаления потяни справа налево")
                 }
             }
+            .onDelete(perform: deletePhoto)
             Button {
                 isShowingPicker.toggle()
             } label: {
-                Label("Добавить фотограцию", systemImage: "plus.circle.fill")
+                Label("Добавить фотографии", systemImage: "plus.circle.fill")
                     .foregroundColor(.blue)
             }
         }
         .sheet(isPresented: $isShowingPicker) {
-            ImagePicker(selectedImages: $images)
+            ImagePicker(
+                selectedImages: $images,
+                showPicker: $isShowingPicker
+            )
         }
     }
 }
 
 private extension PickedImagesList {
-    func deleteAction() {
-
+    func deletePhoto(at offsets: IndexSet) {
+        if let index = offsets.first {
+            images.remove(at: index)
+        }
     }
 }
 
 struct PickedImagesList_Previews: PreviewProvider {
     static var previews: some View {
-        PickedImagesList()
+        PickedImagesList(images: .constant([]))
             .padding()
     }
 }

@@ -40,6 +40,9 @@ struct SportsGroundDetailView: View {
                 }
                 if defaults.isAuthorized {
                     AddCommentButton(isCreatingComment: $isCreatingComment)
+                        .sheet(isPresented: $isCreatingComment) {
+                            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
+                        }
                 }
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
@@ -48,17 +51,6 @@ struct SportsGroundDetailView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
-        .task { await askForInfo() }
-        .refreshable { await askForInfo(refresh: true) }
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
-        }
-        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needRefresh, perform: refreshAction)
-        .sheet(isPresented: $isCreatingComment) {
-            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
-        }
         .sheet(item: $editComment) {
             CommentView(
                 mode: .editGround(
@@ -71,6 +63,14 @@ struct SportsGroundDetailView: View {
                 isSent: $needRefresh
             )
         }
+        .task { await askForInfo() }
+        .refreshable { await askForInfo(refresh: true) }
+        .alert(alertMessage, isPresented: $showErrorAlert) {
+            Button(action: closeAlert) { TextOk() }
+        }
+        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: needRefresh, perform: refreshAction)
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {

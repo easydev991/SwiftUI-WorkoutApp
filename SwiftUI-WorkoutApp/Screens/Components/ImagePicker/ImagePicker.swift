@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImages: [UIImage]
+    @Binding var showPicker: Bool
 
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var configuration = PHPickerConfiguration()
@@ -19,7 +20,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         .init(with: self)
     }
 
-    final class Coordinator: NSObject, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
+    final class Coordinator: NSObject, PHPickerViewControllerDelegate {
         let parent: ImagePicker
 
         init(with parent: ImagePicker) {
@@ -31,9 +32,11 @@ struct ImagePicker: UIViewControllerRepresentable {
                 if image.itemProvider.canLoadObject(ofClass: UIImage.self) {
                     image.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] result, error in
                         if let selectedImage = result as? UIImage,
-                           let data = selectedImage.jpegData(compressionQuality: 0.1),
+                           let data = selectedImage.jpegData(compressionQuality: .zero),
                            let compressedImage = UIImage(data: data) {
-                            self?.parent.selectedImages.append(compressedImage)
+                            DispatchQueue.main.async {
+                                self?.parent.selectedImages.append(compressedImage)
+                            }
                         } else {
                             print("didFinishPicking error: \(error?.localizedDescription ?? "")")
                         }
@@ -42,7 +45,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                     print("Ошибка: не удается загрузить картинку")
                 }
             }
-            picker.dismiss(animated: true)
+            parent.showPicker.toggle()
         }
     }
 }

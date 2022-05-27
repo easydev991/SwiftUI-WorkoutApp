@@ -44,6 +44,12 @@ struct EventDetailsView: View {
                 }
                 if defaults.isAuthorized {
                     AddCommentButton(isCreatingComment: $isCreatingComment)
+                        .sheet(isPresented: $isCreatingComment) {
+                            CommentView(
+                                mode: .newForEvent(id: viewModel.event.id),
+                                isSent: $needUpdate
+                            )
+                        }
                 }
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
@@ -51,21 +57,6 @@ struct EventDetailsView: View {
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
-        }
-        .task { await askForInfo() }
-        .refreshable { await askForInfo(refresh: true) }
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
-        }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
-        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
-        .onChange(of: needUpdate, perform: refreshAction)
-        .sheet(isPresented: $isCreatingComment) {
-            CommentView(
-                mode: .newForEvent(id: viewModel.event.id),
-                isSent: $needUpdate
-            )
         }
         .sheet(item: $editComment) {
             CommentView(
@@ -79,6 +70,15 @@ struct EventDetailsView: View {
                 isSent: $needUpdate
             )
         }
+        .task { await askForInfo() }
+        .refreshable { await askForInfo(refresh: true) }
+        .alert(alertMessage, isPresented: $showErrorAlert) {
+            Button(action: closeAlert) { TextOk() }
+        }
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
+        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
+        .onChange(of: needUpdate, perform: refreshAction)
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {

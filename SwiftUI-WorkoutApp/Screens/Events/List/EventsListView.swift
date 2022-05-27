@@ -16,18 +16,18 @@ struct EventsListView: View {
                 segmentedControl
                 content
             }
-            .toolbar { addEventButton }
+            .alert(alertMessage, isPresented: $showErrorAlert) {
+                Button(action: closeAlert) { TextOk() }
+            }
+            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+            .onChange(of: selectedEventType) { _ in askForEvents() }
+            .onChange(of: needRefreshEvent, perform: refresh)
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
+            .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
+            .toolbar { addEventButton }
         }
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
-        }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: selectedEventType) { _ in askForEvents() }
-        .onChange(of: needRefreshEvent, perform: refresh)
         .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
-        .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
         .onDisappear(perform: cancelTask)
     }
 }

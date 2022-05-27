@@ -29,7 +29,7 @@ struct CommentView: View {
     var body: some View {
         content
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: dismissErrorAlert) { TextOk() }
+            Button(action: closeAlert) { TextOk() }
         }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -58,15 +58,16 @@ private extension CommentView {
         SendMessageView(
             text: $commentText,
             isLoading: viewModel.isLoading,
-            isSendButtonDisabled: isSendButtonDisabled,
+            isSendButtonDisabled: !canSend,
             sendAction: sendAction,
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
-            dismissError: dismissErrorAlert
+            dismissError: closeAlert
         )
     }
 
     func sendAction() {
+#warning("TODO: рефактор")
         switch mode {
         case .newForGround, .newForEvent:
             addCommentTask = Task {
@@ -93,7 +94,7 @@ private extension CommentView {
         dismiss()
     }
 
-    func dismissErrorAlert() {
+    func closeAlert() {
         viewModel.closedErrorAlert()
     }
 
@@ -114,12 +115,12 @@ private extension CommentView {
         }
     }
 
-    var isSendButtonDisabled: Bool {
+    var canSend: Bool {
         switch mode {
         case .newForGround, .newForEvent:
-            return commentText.isEmpty || viewModel.isLoading
+            return !commentText.isEmpty && !viewModel.isLoading
         case .editGround, .editEvent:
-            return commentText == oldCommentText || viewModel.isLoading
+            return commentText != oldCommentText && !viewModel.isLoading
         }
     }
 

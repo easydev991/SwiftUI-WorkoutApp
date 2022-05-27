@@ -35,7 +35,6 @@ struct UserDetailsView: View {
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isMessageSent, perform: endMessaging)
-        .sheet(isPresented: $isMessaging) { messageSheet }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -105,6 +104,7 @@ private extension UserDetailsView {
             Text("Отправить сообщение")
                 .fontWeight(.medium)
         }
+        .sheet(isPresented: $isMessaging) { messageSheet }
     }
 
     var friendActionButton: some View {

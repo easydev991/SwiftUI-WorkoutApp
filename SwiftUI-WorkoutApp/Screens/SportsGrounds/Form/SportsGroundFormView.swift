@@ -34,12 +34,14 @@ struct SportsGroundFormView: View {
                 addressSection
                 typePicker
                 sizePicker
+                photoPicker
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .animation(.easeInOut, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
@@ -65,8 +67,8 @@ extension SportsGroundFormView {
 
 private extension SportsGroundFormView {
     var addressSection: some View {
-        Section {
-            TextField("Адрес", text: $viewModel.groundForm.address)
+        Section("Адрес площадки") {
+            TextField("Улица, номер дома или локация", text: $viewModel.groundForm.address)
                 .focused($isFocused)
         }
     }
@@ -80,12 +82,20 @@ private extension SportsGroundFormView {
     }
 
     var sizePicker: some View {
-        Picker("Размер площадки", selection: $viewModel.groundForm.sizeID) {
-            ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
-                Text(SportsGroundSize(id: $0).rawValue)
+        Section("Размер площадки") {
+            Picker("Размер площадки", selection: $viewModel.groundForm.sizeID) {
+                ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
+                    Text(SportsGroundSize(id: $0).rawValue)
+                }
             }
+            .pickerStyle(.segmented)
         }
-        .pickerStyle(.segmented)
+    }
+
+    var photoPicker: some View {
+        Section("Фотографии") {
+            PickedImagesList(images: $viewModel.newImages)
+        }
     }
 
     func setupErrorAlert(with message: String) {
@@ -97,7 +107,7 @@ private extension SportsGroundFormView {
         Button(action: saveAction) {
             Text("Сохранить")
         }
-        .disabled(!viewModel.groundForm.isReadyToSend || viewModel.isLoading)
+        .disabled(!viewModel.isFormReady || viewModel.isLoading)
     }
 
     func saveAction() {

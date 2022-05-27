@@ -10,19 +10,17 @@ final class CommentViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk: Bool
             switch mode {
             case let .newForGround(id):
-                isOk = try await APIService(with: defaults).addComment(
+                isSuccess = try await APIService(with: defaults).addComment(
                     to: .ground(id: id), comment: comment
                 )
             case let .newForEvent(id):
-                isOk = try await APIService(with: defaults).addComment(
+                isSuccess = try await APIService(with: defaults).addComment(
                     to: .event(id: id), comment: comment
                 )
-            default: isOk = false
+            default: break
             }
-            if isOk { isSuccess.toggle() }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -34,15 +32,13 @@ final class CommentViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let isOk: Bool
             switch mode {
             case let .editGround(info):
-                isOk = try await APIService(with: defaults).editComment(for: .ground(id: info.objectID), commentID: info.commentID, newComment: newComment)
+                isSuccess = try await APIService(with: defaults).editComment(for: .ground(id: info.objectID), commentID: info.commentID, newComment: newComment)
             case let .editEvent(info):
-                isOk = try await APIService(with: defaults).editComment(for: .event(id: info.objectID), commentID: info.commentID, newComment: newComment)
-            default: isOk = false
+                isSuccess = try await APIService(with: defaults).editComment(for: .event(id: info.objectID), commentID: info.commentID, newComment: newComment)
+            default: break
             }
-            if isOk { isSuccess.toggle() }
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -29,6 +29,7 @@ struct JournalEntriesList: View {
         ZStack {
             List {
                 ForEach(viewModel.list) {
+#warning("TODO: добавить редактирование записи")
                     JournalEntryCell(entry: $0)
                 }
                 .onDelete(perform: initiateDeletion)
@@ -52,13 +53,6 @@ struct JournalEntriesList: View {
         }
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
-        .sheet(isPresented: $showEntrySheet) { newEntrySheet }
-        .sheet(isPresented: $showAccessSettings) {
-            JournalSettingsView(
-                with: viewModel.currentJournal,
-                needUpdate: $needUpdateJournal
-            )
-        }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -81,6 +75,12 @@ private extension JournalEntriesList {
         Button(action: showSettings) {
             Image(systemName: "gearshape.fill")
         }
+        .sheet(isPresented: $showAccessSettings) {
+            JournalSettingsView(
+                with: viewModel.currentJournal,
+                needUpdate: $needUpdateJournal
+            )
+        }
     }
 
     func showSettings() {
@@ -101,6 +101,7 @@ private extension JournalEntriesList {
         Button(action: showNewEntry) {
             Image(systemName: "plus")
         }
+        .sheet(isPresented: $showEntrySheet) { newEntrySheet }
     }
 
     func showNewEntry() {

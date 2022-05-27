@@ -9,6 +9,7 @@ struct SportsGroundForm: Codable {
     var cityID: Int
     var typeID: Int
     var sizeID: Int
+    var newImagesData = [Data]()
 
     init(_ sportsGround: SportsGround? = nil) {
         address = (sportsGround?.address).valueOrEmpty
@@ -51,6 +52,16 @@ extension SportsGroundForm {
         set { sizeID = Int(newValue).valueOrZero }
     }
 
+    /// Готовность формы к созданию новой площадки
+    var isReadyToCreate: Bool {
+        !address.isEmpty
+        && !latitude.isEmpty
+        && !longitude.isEmpty
+        && cityID != .zero
+        && !newImagesData.isEmpty
+    }
+
+    /// Готовность формы к отправке обновлений по площадке
     var isReadyToSend: Bool {
         !address.isEmpty
         && !latitude.isEmpty
