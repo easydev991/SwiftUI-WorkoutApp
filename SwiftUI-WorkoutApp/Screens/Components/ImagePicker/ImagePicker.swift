@@ -1,22 +1,19 @@
-import PhotosUI
 import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImages: [UIImage]
     @Binding var showPicker: Bool
 
-    func makeUIViewController(context: Context) -> PHPickerViewController {
-        var configuration = PHPickerConfiguration(photoLibrary: .shared())
-        configuration.filter = .images
-        configuration.selection = .ordered
-        configuration.preferredAssetRepresentationMode = .current
-        let picker = PHPickerViewController(configuration: configuration)
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
         picker.delegate = context.coordinator
+        picker.allowsEditing = true
+        picker.sourceType = .photoLibrary
         return picker
     }
 
     func updateUIViewController(
-        _ uiViewController: PHPickerViewController,
+        _ uiViewController: UIImagePickerController,
         context: Context
     ) {}
 
@@ -24,31 +21,27 @@ struct ImagePicker: UIViewControllerRepresentable {
         .init(with: self)
     }
 
-    final class Coordinator: NSObject, PHPickerViewControllerDelegate {
+    final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
 
         init(with parent: ImagePicker) {
             self.parent = parent
         }
 
-        func picker(
-            _ picker: PHPickerViewController,
-            didFinishPicking results: [PHPickerResult]
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
         ) {
-            parent.showPicker.toggle()
-            guard let provider = results.first?.itemProvider,
-                  provider.canLoadObject(ofClass: UIImage.self) else {
-                return
+            if let image = info[.editedImage] as? UIImage,
+               let compressedData = image.jpegData(compressionQuality: .zero),
+               let compressedImage = UIImage(data: compressedData) {
+                parent.selectedImages.append(compressedImage)
             }
-            provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
-                if let image = image as? UIImage,
-                   let compressedData = image.jpegData(compressionQuality: .zero),
-                   let newImage = UIImage(data: compressedData) {
-                    DispatchQueue.main.async {
-                        self?.parent.selectedImages.append(newImage)
-                    }
-                }
-            }
+            parent.showPicker = false
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.showPicker = false
         }
     }
 }

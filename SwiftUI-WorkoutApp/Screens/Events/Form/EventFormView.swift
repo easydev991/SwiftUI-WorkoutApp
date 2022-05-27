@@ -127,7 +127,7 @@ private extension EventFormView {
         Section("Описание") {
             TextEditor(text: $viewModel.eventInfo.description)
                 .focused($focus, equals: .eventDescription)
-                .frame(height: 150)
+                .frame(height: 100)
         }
     }
 
