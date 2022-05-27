@@ -6,15 +6,19 @@ struct ImagePicker: UIViewControllerRepresentable {
     @Binding var showPicker: Bool
 
     func makeUIViewController(context: Context) -> PHPickerViewController {
-        var configuration = PHPickerConfiguration()
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
         configuration.filter = .images
-        configuration.selectionLimit = .zero
+        configuration.selection = .ordered
+        configuration.preferredAssetRepresentationMode = .current
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = context.coordinator
         return picker
     }
 
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    func updateUIViewController(
+        _ uiViewController: PHPickerViewController,
+        context: Context
+    ) {}
 
     func makeCoordinator() -> Coordinator {
         .init(with: self)
@@ -27,25 +31,24 @@ struct ImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            results.forEach { image in
-                if image.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    image.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] result, error in
-                        if let selectedImage = result as? UIImage,
-                           let data = selectedImage.jpegData(compressionQuality: .zero),
-                           let compressedImage = UIImage(data: data) {
-                            DispatchQueue.main.async {
-                                self?.parent.selectedImages.append(compressedImage)
-                            }
-                        } else {
-                            print("didFinishPicking error: \(error?.localizedDescription ?? "")")
-                        }
+        func picker(
+            _ picker: PHPickerViewController,
+            didFinishPicking results: [PHPickerResult]
+        ) {
+            parent.showPicker.toggle()
+            guard let provider = results.first?.itemProvider,
+                  provider.canLoadObject(ofClass: UIImage.self) else {
+                return
+            }
+            provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
+                if let image = image as? UIImage,
+                   let compressedData = image.jpegData(compressionQuality: .zero),
+                   let newImage = UIImage(data: compressedData) {
+                    DispatchQueue.main.async {
+                        self?.parent.selectedImages.append(newImage)
                     }
-                } else {
-                    print("Ошибка: не удается загрузить картинку")
                 }
             }
-            parent.showPicker.toggle()
         }
     }
 }

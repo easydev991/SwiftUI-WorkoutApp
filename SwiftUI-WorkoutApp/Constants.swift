@@ -3,6 +3,7 @@ import UIKit.UIDevice
 
 enum Constants {
     static let minPasswordSize = 6
+    static let photosLimit = 15
     static let defaultUserAge = Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
     static let minUserAge = Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
     static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now

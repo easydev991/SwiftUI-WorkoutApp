@@ -1,10 +1,12 @@
 import Foundation
+import UIKit.UIImage
 
 final class EventFormViewModel: ObservableObject {
     @Published var eventInfo: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isSuccess = false
+    @Published var newImages = [UIImage]()
     private var eventID: Int?
 
     init(with event: EventResponse? = nil) {

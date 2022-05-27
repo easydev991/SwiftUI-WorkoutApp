@@ -8,6 +8,7 @@ struct SportsGroundFormView: View {
     @StateObject private var viewModel: SportsGroundFormViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var isShowingPicker = false
     @FocusState private var isFocused: Bool
     @Binding private var needRefreshOnSave: Bool
     @State private var saveGroundTask: Task<Void, Never>?
@@ -34,7 +35,10 @@ struct SportsGroundFormView: View {
                 addressSection
                 typePicker
                 sizePicker
-                photoPicker
+                if !viewModel.newImages.isEmpty {
+                    pickedImagesList
+                }
+                pickImagesButton
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .animation(.easeInOut, value: viewModel.isLoading)
@@ -42,6 +46,12 @@ struct SportsGroundFormView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
+        .sheet(isPresented: $isShowingPicker) {
+            ImagePicker(
+                selectedImages: $viewModel.newImages,
+                showPicker: $isShowingPicker
+            )
+        }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
@@ -92,10 +102,20 @@ private extension SportsGroundFormView {
         }
     }
 
-    var photoPicker: some View {
+    var pickedImagesList: some View {
         Section("Фотографии") {
             PickedImagesList(images: $viewModel.newImages)
         }
+    }
+
+    var pickImagesButton: some View {
+        Button {
+            isShowingPicker.toggle()
+        } label: {
+            Label("Добавить фотографию", systemImage: "plus.circle.fill")
+                .foregroundColor(.blue)
+        }
+        .disabled(viewModel.newImages.count == 15 || viewModel.isLoading)
     }
 
     func setupErrorAlert(with message: String) {

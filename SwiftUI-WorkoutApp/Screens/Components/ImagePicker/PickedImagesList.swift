@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct PickedImagesList: View {
-    @State private var isShowingPicker = false
     @Binding var images: [UIImage]
 
     var body: some View {
@@ -15,21 +14,11 @@ struct PickedImagesList: View {
                         .cornerRadius(8)
                     Spacer()
                     Text("Для удаления потяни справа налево")
+                        .font(.callout)
+                        .foregroundColor(.secondary)
                 }
             }
             .onDelete(perform: deletePhoto)
-            Button {
-                isShowingPicker.toggle()
-            } label: {
-                Label("Добавить фотографии", systemImage: "plus.circle.fill")
-                    .foregroundColor(.blue)
-            }
-        }
-        .sheet(isPresented: $isShowingPicker) {
-            ImagePicker(
-                selectedImages: $images,
-                showPicker: $isShowingPicker
-            )
         }
     }
 }

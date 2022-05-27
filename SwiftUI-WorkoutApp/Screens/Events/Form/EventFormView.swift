@@ -7,6 +7,7 @@ struct EventFormView: View {
     @StateObject private var viewModel: EventFormViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var isShowingPicker = false
     @FocusState private var focus: FocusableField?
     @State private var saveEventTask: Task<Void, Never>?
     @Binding private var needRefreshOnSave: Bool
@@ -32,6 +33,10 @@ struct EventFormView: View {
                 datePickerSection
                 sportsGroundSection
                 descriptionSection
+                if !viewModel.newImages.isEmpty {
+                    pickedImagesList
+                }
+                pickImagesButton
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .animation(.easeInOut, value: viewModel.isLoading)
@@ -39,6 +44,12 @@ struct EventFormView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
+        .sheet(isPresented: $isShowingPicker) {
+            ImagePicker(
+                selectedImages: $viewModel.newImages,
+                showPicker: $isShowingPicker
+            )
+        }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -118,6 +129,22 @@ private extension EventFormView {
                 .focused($focus, equals: .eventDescription)
                 .frame(height: 150)
         }
+    }
+
+    var pickedImagesList: some View {
+        Section("Фотографии") {
+            PickedImagesList(images: $viewModel.newImages)
+        }
+    }
+
+    var pickImagesButton: some View {
+        Button {
+            isShowingPicker.toggle()
+        } label: {
+            Label("Добавить фотографию", systemImage: "plus.circle.fill")
+                .foregroundColor(.blue)
+        }
+        .disabled(viewModel.newImages.count == 15 || viewModel.isLoading)
     }
 
     var saveButton: some View {
