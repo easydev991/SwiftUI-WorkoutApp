@@ -418,6 +418,13 @@ struct APIService {
         return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
     }
 
+    /// Меняет настройки дневника
+    /// - Parameters:
+    ///   - journalID: `id` выбранного дневника
+    ///   - title: название дневника
+    ///   - viewAccess: доступ на просмотр
+    ///   - commentAccess: доступ на комментирование
+    /// - Returns: `true` в случае успеха, `false` при ошибках
     func editJournalSettings(for journalID: Int, title: String, viewAccess: Constants.JournalAccess, commentAccess: Constants.JournalAccess) async throws -> Bool {
         let endpoint = Endpoint.editJournalSettings(
             userID: defaults.mainUserID,
@@ -936,12 +943,13 @@ private extension APIService.Endpoint {
             let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
             let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-            let .deleteFriend(_, auth),
-            let .findUsers(_, auth), let .deleteUser(auth), let .getDialogs(auth),
+            let .deleteFriend(_, auth), let .findUsers(_, auth),
+            let .deleteUser(auth), let .getDialogs(auth),
             let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
             let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
             let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth), let .addCommentToEvent(_, _, auth),
+            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
+            let .addCommentToEvent(_, _, auth), let .deleteSportsGround(_, auth),
             let .deleteEventComment(_, _, auth), let .editEventComment(_, _, _, auth),
             let .deleteEvent(_, auth), let .getMessages(_, auth),
             let .sendMessageTo(_, _, auth), let .markAsRead(_, auth),
@@ -949,8 +957,7 @@ private extension APIService.Endpoint {
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
             let .editEntry(_,_,_,_, auth), let .deleteEntry(_, _, _, auth),
-            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth),
-            let .deleteSportsGround(_, auth):
+            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword,
                 .getAllSportsGrounds, .getSportsGround,
@@ -980,10 +987,6 @@ private extension APIService.Endpoint {
             case fromUserID = "from_user_id"
             case typeID = "type_id"
             case classID = "class_id"
-        }
-
-        enum Value: String {
-            case short
         }
 
         static func make(from dict: [Key: String], with media: [MediaFile] = []) -> Data? {
@@ -1058,9 +1061,7 @@ private extension APIService.Endpoint {
         case let .resetPassword(login):
             return Parameter.make(from: [.usernameOrEmail: login])
         case let .changePassword(current, new, _):
-            return Parameter.make(
-                from: [.password: current, .newPassword: new]
-            )
+            return Parameter.make(from: [.password: current, .newPassword: new])
         case let .addCommentToSportsGround(_, comment, _),
             let .addCommentToEvent(_, comment, _),
             let .editGroundComment(_, _, comment, _),
