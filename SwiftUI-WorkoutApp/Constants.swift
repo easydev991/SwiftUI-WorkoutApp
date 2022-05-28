@@ -68,11 +68,13 @@ enum Constants {
         }
     }
 
-    enum CommentType {
+    enum TextEntryType {
         /// Комментарий к площадке
         case ground(id: Int)
         /// Комментарий к мероприятию
         case event(id: Int)
+        /// Запись в дневнике
+        case journal(id: Int)
     }
 
     enum JournalAccess: Int, CaseIterable, CustomStringConvertible {

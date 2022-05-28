@@ -52,7 +52,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteComment(from: .ground(id: ground.id), commentID: commentID) {
+            if try await APIService(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
                 ground.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {

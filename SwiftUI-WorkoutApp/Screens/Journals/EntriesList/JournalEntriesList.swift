@@ -8,13 +8,15 @@ struct JournalEntriesList: View {
     @State private var errorTitle = ""
     @State private var showAccessSettings = false
     @State private var showEntrySheet = false
-    @State private var indexToDelete: Int?
-    @State private var showDeleteConfirmation = false
+    @State private var entryIdToDelete: Int?
+    @State private var showDeleteDialog = false
+    @State private var editEntry: JournalEntryResponse?
+    @State private var needUpdateEntries = false
     @State private var needUpdateJournal = false
     @State private var editAccessTask: Task<Void, Never>?
-    @State private var saveNewEntryTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
     @State private var updateJournalTask: Task<Void, Never>?
+    @State private var updateEntriesTask: Task<Void, Never>?
 
     init(for userID: Int, in journal: Binding<JournalResponse>) {
         _viewModel = StateObject(
@@ -29,25 +31,39 @@ struct JournalEntriesList: View {
         ZStack {
             List {
                 ForEach(viewModel.list) {
-#warning("TODO: добавить редактирование записи")
-                    JournalEntryCell(entry: $0)
+                    JournalEntryCell(
+                        model: $0,
+                        deleteClbk: initiateDeletion,
+                        editClbk: setupEntryToEdit
+                    )
                 }
-                .onDelete(perform: initiateDeletion)
-                .deleteDisabled(!isMainUser)
             }
-            .disabled(viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
+        .sheet(item: $editEntry) {
+            TextEntryView(
+                mode: .editJournalEntry(
+                    .init(
+                        parentObjectID: viewModel.currentJournal.id,
+                        entryID: $0.id,
+                        oldEntry: $0.formattedMessage
+                    )
+                ),
+                isSent: $needUpdateEntries
+            )
+        }
         .confirmationDialog(
             Constants.Alert.deleteJournalEntry,
-            isPresented: $showDeleteConfirmation,
+            isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteEntryButton }
         .onChange(of: viewModel.isSettingsUpdated, perform: closeSettingsSheet)
         .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: needUpdateJournal, perform: updateJournal)
+        .onChange(of: needUpdateEntries, perform: updateEntries)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -91,9 +107,19 @@ private extension JournalEntriesList {
         showAccessSettings.toggle()
     }
 
+    func setupEntryToEdit(_ entry: JournalEntryResponse) {
+        editEntry = entry
+    }
+
     func updateJournal(isSuccess: Bool) {
         updateJournalTask = Task {
             await viewModel.updateJournal(with: defaults)
+        }
+    }
+
+    func updateEntries(isSuccess: Bool) {
+        updateEntriesTask = Task {
+            await viewModel.makeItems(with: defaults, refresh: true)
         }
     }
 
@@ -101,23 +127,16 @@ private extension JournalEntriesList {
         Button(action: showNewEntry) {
             Image(systemName: "plus")
         }
-        .sheet(isPresented: $showEntrySheet) { newEntrySheet }
+        .sheet(isPresented: $showEntrySheet) {
+            TextEntryView(
+                mode: .newForJournal(id: viewModel.currentJournal.id),
+                isSent: $needUpdateEntries
+            )
+        }
     }
 
     func showNewEntry() {
         showEntrySheet.toggle()
-    }
-
-    var newEntrySheet: some View {
-        SendMessageView(
-            text: $viewModel.newEntryText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: !viewModel.canSaveNewEntry,
-            sendAction: saveNewEntry,
-            showErrorAlert: $showErrorAlert,
-            errorTitle: $errorTitle,
-            dismissError: closeAlert
-        )
     }
 
     var isMainUser: Bool {
@@ -128,28 +147,18 @@ private extension JournalEntriesList {
         await viewModel.makeItems(with: defaults, refresh: refresh)
     }
 
-    func saveNewEntry() {
-        saveNewEntryTask = Task {
-            await viewModel.saveNewEntry(with: defaults)
-        }
-    }
-
-    func initiateDeletion(at indexSet: IndexSet) {
-        indexToDelete = indexSet.first
-        showDeleteConfirmation.toggle()
+    func initiateDeletion(for id: Int) {
+        entryIdToDelete = id
+        showDeleteDialog.toggle()
     }
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
-            deleteAction(at: indexToDelete)
+            deleteEntryTask = Task {
+                await viewModel.delete(entryIdToDelete, with: defaults)
+            }
         } label: {
             Text("Удалить")
-        }
-    }
-
-    func deleteAction(at index: Int?) {
-        deleteEntryTask = Task {
-            await viewModel.deleteEntry(at: index, with: defaults)
         }
     }
 
@@ -167,7 +176,7 @@ private extension JournalEntriesList {
     }
 
     func cancelTasks() {
-        [editAccessTask, saveNewEntryTask, deleteEntryTask, updateJournalTask].forEach { $0?.cancel() }
+        [editAccessTask, deleteEntryTask, updateJournalTask, updateEntriesTask].forEach { $0?.cancel() }
     }
 }
 

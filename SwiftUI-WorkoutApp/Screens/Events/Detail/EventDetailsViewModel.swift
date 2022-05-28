@@ -54,7 +54,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteComment(from: .event(id: event.id), commentID: commentID) {
+            if try await APIService(with: defaults).deleteEntry(from: .event(id: event.id), entryID: commentID) {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {

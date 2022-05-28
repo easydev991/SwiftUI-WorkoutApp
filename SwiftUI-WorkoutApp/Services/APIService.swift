@@ -187,6 +187,7 @@ struct APIService {
     ///   - form: форма с данными о площадке
     /// - Returns: Обновленная информация о площадке
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
+#warning("TODO: когда на бэке поправят формат данных в ответе по полям city_id, type_id, class_id, заменить эту модель на SportsGround")
         let endpoint: Endpoint
         if let id = id {
             endpoint = Endpoint.editSportsGround(id: id, form: form, auth: defaults.basicAuthInfo)
@@ -201,56 +202,78 @@ struct APIService {
     ///   - model: тип комментария (к площадке или мероприятию)
     ///   - comment: текст комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func addComment(to model: Constants.CommentType, comment: String) async throws -> Bool {
+    func addNewEntry(to model: Constants.TextEntryType, entryText: String) async throws -> Bool {
         let endpoint: Endpoint
         switch model {
         case let .ground(id):
-            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: comment, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: entryText, auth: defaults.basicAuthInfo)
         case let .event(id):
-            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: comment, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: entryText, auth: defaults.basicAuthInfo)
+        case let .journal(id):
+            endpoint = Endpoint.saveJournalEntry(
+                userID: defaults.mainUserID,
+                journalID: id,
+                message: entryText,
+                auth: defaults.basicAuthInfo
+            )
         }
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Изменить свой комментарий для площадки
     /// - Parameters:
-    ///   - commentType: тип комментария (к площадке или мероприятию)
-    ///   - commentID: `id` комментария
-    ///   - newComment: текст измененного комментария
+    ///   - type: тип записи
+    ///   - entryID: `id` записи
+    ///   - newEntryText: текст измененной записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editComment(for commentType: Constants.CommentType, commentID: Int, newComment: String) async throws -> Bool {
+    func editEntry(for type: Constants.TextEntryType, entryID: Int, newEntryText: String) async throws -> Bool {
         let endpoint: Endpoint
-        switch commentType {
+        switch type {
         case let .ground(id):
-            endpoint = Endpoint.editGroundComment(
+            endpoint = .editGroundComment(
                 groundID: id,
-                commentID: commentID,
-                newComment: newComment,
+                commentID: entryID,
+                newComment: newEntryText,
                 auth: defaults.basicAuthInfo
             )
         case let .event(id):
-            endpoint = Endpoint.editEventComment(
+            endpoint = .editEventComment(
                 eventID: id,
-                commentID: commentID,
-                newComment: newComment,
+                commentID: entryID,
+                newComment: newEntryText,
+                auth: defaults.basicAuthInfo
+            )
+        case let .journal(id):
+            endpoint = .editEntry(
+                userID: defaults.mainUserID,
+                journalID: id,
+                entryID: entryID,
+                newEntryText: newEntryText,
                 auth: defaults.basicAuthInfo
             )
         }
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
-    /// Удалить комментарий для площадки
+    /// Удалить запись
     /// - Parameters:
-    ///   - commentType: тип комментария (к площадке или мероприятию)
-    ///   - commentID: `id` комментария
+    ///   - type: тип записи
+    ///   - entryID: `id` записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func deleteComment(from commentType: Constants.CommentType, commentID: Int) async throws -> Bool {
+    func deleteEntry(from type: Constants.TextEntryType, entryID: Int) async throws -> Bool {
         let endpoint: Endpoint
-        switch commentType {
+        switch type {
         case let .ground(id):
-            endpoint = Endpoint.deleteGroundComment(id, commentID: commentID, auth: defaults.basicAuthInfo)
+            endpoint = .deleteGroundComment(id, commentID: entryID, auth: defaults.basicAuthInfo)
         case let .event(id):
-            endpoint = Endpoint.deleteEventComment(id, commentID: commentID, auth: defaults.basicAuthInfo)
+            endpoint = .deleteEventComment(id, commentID: entryID, auth: defaults.basicAuthInfo)
+        case let .journal(id):
+            endpoint = .deleteEntry(
+                userID: defaults.mainUserID,
+                journalID: id,
+                entryID: entryID,
+                auth: defaults.basicAuthInfo
+            )
         }
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -309,7 +332,6 @@ struct APIService {
     ///   - groundID: `id` мероприятия
     ///   - trainHere: `true` - иду на мероприятие, `false` - не иду
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
     func changeIsGoingToEvent(for eventID: Int, isGoing: Bool) async throws -> Bool {
         let endpoint: Endpoint = isGoing
         ? .postIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
@@ -436,36 +458,6 @@ struct APIService {
             auth: defaults.basicAuthInfo
         )
         return try await makeResult([JournalEntryResponse].self, for: endpoint.urlRequest)
-    }
-
-    /// Отправляет новую запись в дневник пользователя
-    /// - Parameters:
-    ///   - journalID: `id` выбранного дневника
-    ///   - message: сообщение в новой записи
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    func saveJournalEntry(journalID: Int, message: String) async throws -> Bool {
-        let endpoint = Endpoint.saveJournalEntry(
-            userID: defaults.mainUserID,
-            journalID: journalID,
-            message: message,
-            auth: defaults.basicAuthInfo
-        )
-        return try await makeStatus(for: endpoint.urlRequest)
-    }
-
-    /// Удаляет запись в дневнике пользователя
-    /// - Parameters:
-    ///   - journalID: `id` дневника
-    ///   - entryID: `id` записи для удаления
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    func deleteJournalEntry(journalID: Int, entryID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteEntry(
-            userID: defaults.mainUserID,
-            journalID: journalID,
-            entryID: entryID,
-            auth: defaults.basicAuthInfo
-        )
-        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Удаляет выбранный дневник
@@ -768,6 +760,10 @@ private extension APIService {
         /// **POST** ${API}/users/<user_id>/journals/<journal_id>/messages
         case saveJournalEntry(userID: Int, journalID: Int, message: String, auth: AuthData)
 
+        // MARK: Изменить запись в дневнике пользователя
+        /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
+        case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String, auth: AuthData)
+
         // MARK: Удалить запись в дневнике пользователя
         /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
         case deleteEntry(userID: Int, journalID: Int, entryID: Int, auth: AuthData)
@@ -875,7 +871,8 @@ private extension APIService.Endpoint {
         case let .getJournalEntries(userID, journalID, _),
             let .saveJournalEntry(userID, journalID, _, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages"
-        case let .deleteEntry(userID, journalID, entryID, _):
+        case let .editEntry(userID, journalID, entryID, _, _),
+            let .deleteEntry(userID, journalID, entryID, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
         }
     }
@@ -912,7 +909,7 @@ private extension APIService.Endpoint {
                 .deleteDialog, .deleteJournal,
                 .deleteEntry, .deleteSportsGround:
             return .delete
-        case .editJournalSettings:
+        case .editJournalSettings, .editEntry:
             return .put
         }
     }
@@ -955,8 +952,9 @@ private extension APIService.Endpoint {
             let .deleteDialog(_, auth), let .getJournals(_, auth),
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
-            let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
-            let .editJournalSettings(_, _, _, _, _, auth), let .deleteSportsGround(_, auth):
+            let .editEntry(_,_,_,_, auth), let .deleteEntry(_, _, _, auth),
+            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth),
+            let .deleteSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword,
                 .getAllSportsGrounds, .getSportsGround,
@@ -1078,7 +1076,8 @@ private extension APIService.Endpoint {
             return Parameter.make(from: [.fromUserID: userID.description])
         case let .createJournal(_, title, _):
             return Parameter.make(from: [.title: title])
-        case let .saveJournalEntry(_, _, message, _):
+        case let .saveJournalEntry(_, _, message, _),
+            let .editEntry(_,_,_, message, _):
             return Parameter.make(from: [.message: message])
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess, _):
             return Parameter.make(

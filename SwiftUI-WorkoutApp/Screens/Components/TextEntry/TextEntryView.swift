@@ -1,27 +1,29 @@
 import SwiftUI
 
-/// Экран для создания и изменения комментария к мероприятию или площадке
-struct CommentView: View {
+/// Экран для создания и изменения текстовой записи (комментарий к площадке, мерпориятию или дневнику)
+struct TextEntryView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = CommentViewModel()
-    @State private var commentText = ""
+    @StateObject private var viewModel = TextEntryViewModel()
+    @State private var entryText = ""
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var addCommentTask: Task<Void, Never>?
-    @State private var editCommentTask: Task<Void, Never>?
+    @State private var addEntryTask: Task<Void, Never>?
+    @State private var editEntryTask: Task<Void, Never>?
     @FocusState private var isFocused
 
     private let mode: Mode
-    private var oldCommentText: String?
-    @Binding private var isCommentSent: Bool
+    private var oldEntryText: String?
+    @Binding private var isEntrySent: Bool
 
     init(mode: Mode, isSent: Binding<Bool>) {
         self.mode = mode
-        _isCommentSent = isSent
+        _isEntrySent = isSent
         switch mode {
-        case let .editGround(info), let .editEvent(info):
-            oldCommentText = info.oldComment
+        case let .editGround(info),
+            let .editEvent(info),
+            let .editJournalEntry(info):
+            oldEntryText = info.oldEntry
         default: break
         }
     }
@@ -33,30 +35,32 @@ struct CommentView: View {
         }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onAppear(perform: setupOldCommentIfNeeded)
+        .onAppear(perform: setupOldEntryIfNeeded)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Комментарий")
     }
 }
 
-extension CommentView {
+extension TextEntryView {
     enum Mode {
         case newForGround(id: Int)
         case newForEvent(id: Int)
+        case newForJournal(id: Int)
         case editGround(EditInfo)
         case editEvent(EditInfo)
+        case editJournalEntry(EditInfo)
 
         struct EditInfo {
-            let objectID, commentID: Int
-            let oldComment: String
+            let parentObjectID, entryID: Int
+            let oldEntry: String
         }
     }
 }
 
-private extension CommentView {
+private extension TextEntryView {
     var content: some View {
         SendMessageView(
-            text: $commentText,
+            text: $entryText,
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: !canSend,
             sendAction: sendAction,
@@ -69,19 +73,19 @@ private extension CommentView {
     func sendAction() {
 #warning("TODO: рефактор")
         switch mode {
-        case .newForGround, .newForEvent:
-            addCommentTask = Task {
-                await viewModel.addComment(
+        case .newForGround, .newForEvent, .newForJournal:
+            addEntryTask = Task {
+                await viewModel.addNewEntry(
                     mode,
-                    comment: commentText,
+                    entryText: entryText,
                     defaults: defaults
                 )
             }
-        case .editGround, .editEvent:
-            editCommentTask = Task {
-                await viewModel.editComment(
+        case .editGround, .editEvent, .editJournalEntry:
+            editEntryTask = Task {
+                await viewModel.editEntry(
                     for: mode,
-                    newComment: commentText,
+                    entryText: entryText,
                     with: defaults
                 )
             }
@@ -90,7 +94,7 @@ private extension CommentView {
     }
 
     func dismiss(isSuccess: Bool) {
-        isCommentSent.toggle()
+        isEntrySent.toggle()
         dismiss()
     }
 
@@ -109,29 +113,29 @@ private extension CommentView {
         }
     }
 
-    func setupOldCommentIfNeeded() {
-        if let oldComment = oldCommentText {
-            commentText = oldComment
+    func setupOldEntryIfNeeded() {
+        if let oldEntry = oldEntryText {
+            entryText = oldEntry
         }
     }
 
     var canSend: Bool {
         switch mode {
-        case .newForGround, .newForEvent:
-            return !commentText.isEmpty && !viewModel.isLoading
-        case .editGround, .editEvent:
-            return commentText != oldCommentText && !viewModel.isLoading
+        case .newForGround, .newForEvent, .newForJournal:
+            return !entryText.isEmpty && !viewModel.isLoading
+        case .editGround, .editEvent, .editJournalEntry:
+            return entryText != oldEntryText && !viewModel.isLoading
         }
     }
 
     func cancelTasks() {
-        [addCommentTask, editCommentTask].forEach { $0?.cancel() }
+        [addEntryTask, editEntryTask].forEach { $0?.cancel() }
     }
 }
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView(mode: .newForGround(id: .zero), isSent: .constant(false))
+        TextEntryView(mode: .newForGround(id: .zero), isSent: .constant(false))
             .environmentObject(DefaultsService())
     }
 }

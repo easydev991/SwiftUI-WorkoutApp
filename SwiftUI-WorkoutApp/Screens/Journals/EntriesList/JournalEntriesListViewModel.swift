@@ -31,34 +31,12 @@ final class JournalEntriesListViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveNewEntry(with defaults: DefaultsService) async {
-        if isLoading { return }
+    func delete(_ entryID: Int?, with defaults: DefaultsService) async {
+        guard let entryID = entryID, !isLoading else { return }
         isLoading.toggle()
         do {
-            let journalID = (list.first?.journalID).valueOrZero
-            if try await APIService(with: defaults).saveJournalEntry(
-                journalID: journalID,
-                message: newEntryText
-            ) {
-                newEntryText = ""
-                isEntryCreated.toggle()
-                await makeItems(with: defaults, refresh: true)
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-        isLoading.toggle()
-    }
-
-    @MainActor
-    func deleteEntry(at index: Int?, with defaults: DefaultsService) async {
-        guard let index = index, !isLoading else { return }
-        isLoading.toggle()
-        do {
-            let journalID = list[index].journalID.valueOrZero
-            let entryID = list[index].id
-            if try await APIService(with: defaults).deleteJournalEntry(journalID: journalID, entryID: entryID) {
-                list.remove(at: index)
+            if try await APIService(with: defaults).deleteEntry(from: .journal(id: currentJournal.id), entryID: entryID) {
+                list.removeAll(where: { $0.id == entryID })
             }
         } catch {
             errorMessage = error.localizedDescription

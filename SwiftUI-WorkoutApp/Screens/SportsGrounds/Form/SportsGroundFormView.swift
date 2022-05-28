@@ -109,13 +109,10 @@ private extension SportsGroundFormView {
     }
 
     var pickImagesButton: some View {
-        Button {
-            isFocused = false
-            isShowingPicker.toggle()
-        } label: {
-            Label("Добавить фотографию", systemImage: "plus.circle.fill")
-                .foregroundColor(.blue)
-        }
+        AddPhotoButton(
+            isAddingPhotos: $isShowingPicker,
+            focusClbk: { isFocused = false }
+        )
         .disabled(!viewModel.canAddImages)
     }
 

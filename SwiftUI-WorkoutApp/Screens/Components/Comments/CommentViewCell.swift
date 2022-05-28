@@ -12,9 +12,9 @@ struct CommentViewCell: View {
                 CacheImageView(url: model.user?.avatarURL)
                 nameDate
                 Spacer()
-                menuButton
-                .disabled(!isMenuAvailable)
-                .opacity(isMenuAvailable ? 1 : .zero)
+                if isMenuAvailable {
+                    menuButton
+                }
             }
             Text(.init(model.formattedBody))
                 .fixedSize(horizontal: false, vertical: true)
@@ -36,10 +36,6 @@ private extension CommentViewCell {
         }
     }
 
-    var isMenuAvailable: Bool {
-        (model.user?.userID).valueOrZero == defaults.mainUserID
-    }
-
     var menuButton: some View {
         Menu {
             Button {
@@ -58,6 +54,10 @@ private extension CommentViewCell {
                 .foregroundColor(.secondary)
         }
         .onTapGesture { hapticFeedback(.rigid) }
+    }
+
+    var isMenuAvailable: Bool {
+        (model.user?.userID).valueOrZero == defaults.mainUserID
     }
 }
 

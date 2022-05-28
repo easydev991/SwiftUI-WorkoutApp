@@ -138,13 +138,10 @@ private extension EventFormView {
     }
 
     var pickImagesButton: some View {
-        Button {
-            focus = nil
-            isShowingPicker.toggle()
-        } label: {
-            Label("Добавить фотографию", systemImage: "plus.circle.fill")
-                .foregroundColor(.blue)
-        }
+        AddPhotoButton(
+            isAddingPhotos: $isShowingPicker,
+            focusClbk: { focus = nil }
+        )
         .disabled(!viewModel.canAddImages)
     }
 

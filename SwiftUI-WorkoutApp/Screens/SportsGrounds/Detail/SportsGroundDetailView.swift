@@ -41,7 +41,7 @@ struct SportsGroundDetailView: View {
                 if defaults.isAuthorized {
                     AddCommentButton(isCreatingComment: $isCreatingComment)
                         .sheet(isPresented: $isCreatingComment) {
-                            CommentView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
+                            TextEntryView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
                         }
                 }
             }
@@ -52,12 +52,12 @@ struct SportsGroundDetailView: View {
         }
         .disabled(viewModel.isLoading)
         .sheet(item: $editComment) {
-            CommentView(
+            TextEntryView(
                 mode: .editGround(
                     .init(
-                        objectID: viewModel.ground.id,
-                        commentID: $0.id,
-                        oldComment: $0.formattedBody
+                        parentObjectID: viewModel.ground.id,
+                        entryID: $0.id,
+                        oldEntry: $0.formattedBody
                     )
                 ),
                 isSent: $needRefresh
