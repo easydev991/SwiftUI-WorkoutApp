@@ -70,30 +70,26 @@ struct APIService {
         return result.userName == model.userName
     }
 
-    /// Меняет текущий пароль на новый, в случае успеха сохраняет новый пароль в `defaults`
+    /// Меняет текущий пароль на новый
     /// - Parameters:
     ///   - current: текущий пароль
     ///   - new: новый пароль
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func changePassword(current: String, new: String) async throws -> Bool {
-        let authData = defaults.basicAuthInfo
         let endpoint = Endpoint.changePassword(
-            currentPass: current, newPass: new, auth: authData
+            currentPass: current,
+            newPass: new,
+            auth: defaults.basicAuthInfo
         )
-        let isSuccess = try await makeStatus(for: endpoint.urlRequest)
-        if isSuccess {
-            await defaults.saveAuthData(.init(login: authData.login, password: new))
-        }
-        return isSuccess
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
         let endpoint = Endpoint.deleteUser(auth: defaults.basicAuthInfo)
-        guard let request = endpoint.urlRequest else { return }
-        let (_, response) = try await urlSession.data(for: request)
-        let isDeleted = try handle(response)
-        if isDeleted { await defaults.triggerLogout() }
+        if try await makeStatus(for: endpoint.urlRequest) {
+            await defaults.triggerLogout()
+        }
     }
 
     /// Загружает список друзей для выбранного пользователя; для главного пользователя в случае успеха сохраняет идентификаторы друзей в `defaults`
