@@ -92,7 +92,7 @@ private extension JournalsList {
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             deleteJournalTask = Task {
-                await viewModel.delete(journalID: journalIdToDelete, with: defaults)
+                await viewModel.delete(journalID: journalIdToDelete)
             }
         } label: {
             Text("Удалить")
@@ -112,7 +112,7 @@ private extension JournalsList {
     }
 
     func askForJournals(refresh: Bool = false) async {
-        await viewModel.makeItems(for: userID, with: defaults, refresh: refresh)
+        await viewModel.makeItems(for: userID, refresh: refresh)
     }
 
     func saveNewJournal() {

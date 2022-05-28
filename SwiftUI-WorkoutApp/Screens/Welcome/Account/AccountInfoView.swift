@@ -33,6 +33,8 @@ struct AccountInfoView: View {
                     saveChangesButtonSection
                 }
             }
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }

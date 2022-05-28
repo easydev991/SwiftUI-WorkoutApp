@@ -40,10 +40,12 @@ struct JournalSettingsView: View {
                     saveButton
                 }
             }
-            .disabled(viewModel.isLoading)
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .animation(.easeInOut, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .interactiveDismissDisabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isSettingsUpdated, perform: finishSettings)

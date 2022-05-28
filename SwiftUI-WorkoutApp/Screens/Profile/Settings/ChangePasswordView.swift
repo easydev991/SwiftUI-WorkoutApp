@@ -3,8 +3,8 @@ import SwiftUI
 /// Экран для смены пароля
 struct ChangePasswordView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ChangePasswordViewModel()
-    @State private var showSuccess = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var changePasswordTask: Task<Void, Never>?
@@ -24,17 +24,16 @@ struct ChangePasswordView: View {
                     changePasswordButton
                 }
             }
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .animation(.easeOut, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
-        .alert(Constants.Alert.passwordChanged, isPresented: $showSuccess) {
-            Button(action: dismissView) { TextOk() }
-        }
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: viewModel.errorAlertClosed) { TextOk() }
         }
-        .onChange(of: viewModel.isChangeSuccessful, perform: toggleSuccessAlert)
+        .onChange(of: viewModel.isChangeSuccessful, perform: performLogout)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTask)
         .navigationTitle("Изменить пароль")
@@ -93,8 +92,8 @@ private extension ChangePasswordView {
         changePasswordTask = Task { await viewModel.changePasswordAction() }
     }
 
-    func toggleSuccessAlert(showAlert: Bool) {
-        showSuccess = showAlert
+    func performLogout(needRelogin: Bool) {
+        defaults.triggerLogout()
     }
 
     func setupErrorAlert(with message: String) {
@@ -104,10 +103,6 @@ private extension ChangePasswordView {
 
     func cancelTask() {
         changePasswordTask?.cancel()
-    }
-
-    func dismissView() {
-        dismiss()
     }
 }
 

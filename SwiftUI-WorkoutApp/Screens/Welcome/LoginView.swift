@@ -19,7 +19,10 @@ struct LoginView: View {
                 loginPasswordSection
                 buttonsSection
             }
-            progressView
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .animation(.default, value: viewModel.isLoading)
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
@@ -112,11 +115,6 @@ private extension LoginView {
                 .tint(.blue)
             Spacer()
         }
-    }
-
-    var progressView: some View {
-        ProgressView()
-            .opacity(viewModel.isLoading ? 1 : .zero)
     }
 
     func toggleResetInfoAlert(showAlert: Bool) {

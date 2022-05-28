@@ -54,8 +54,8 @@ struct EventDetailsView: View {
                         }
                 }
             }
-            .opacity(viewModel.event.id == .zero ? .zero : 1)
-            .animation(.default, value: viewModel.isLoading)
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .animation(.easeInOut, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }

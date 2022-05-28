@@ -60,9 +60,7 @@ final class AccountInfoViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm) {
-                isProfileSaved.toggle()
-            }
+            isProfileSaved = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
         } catch {
             errorMessage = error.localizedDescription
         }
