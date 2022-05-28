@@ -2,19 +2,26 @@ import MapKit.MKGeometry
 
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
-    @Published var list = Bundle.main.decodeJson(
-        [SportsGround].self,
-        fileName: "oldSportsGrounds.json"
-    )
+    @Published var filter = SportsGroundFilter() {
+        didSet { applyFilter() }
+    }
+    @Published var list = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var openDetails = false
     @Published var selectedGround = SportsGround.emptyValue
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
+    private var defaultList = Bundle.main.decodeJson(
+        [SportsGround].self,
+        fileName: "oldSportsGrounds.json"
+    ) {
+        didSet { applyFilter() }
+    }
 
     override init() {
         super.init()
+        applyFilter()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
@@ -25,7 +32,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if (isLoading || !list.isEmpty) && !refresh { return }
         isLoading.toggle()
         do {
-            list = try await APIService().getAllSportsGrounds()
+            defaultList = try await APIService().getAllSportsGrounds()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -57,11 +64,11 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     func onAppearAction() {
-        manager.stopUpdatingLocation()
+        manager.startUpdatingLocation()
     }
 
     func onDisappearAction() {
-        manager.startUpdatingLocation()
+        manager.stopUpdatingLocation()
     }
 
     func clearErrorMessage() { errorMessage = "" }
@@ -95,13 +102,9 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             manager.requestLocation()
         case .restricted:
-#if DEBUG
-            print("--- Запрещен доступ к геолокации")
-#endif
+            errorMessage = "Запрещен доступ к геолокации"
         case .denied:
-#if DEBUG
-            print("--- Отклонен запрос на доступ к геолокации")
-#endif
+            errorMessage = "Для работы карты необходимо разрешить доступ к геолокации в настройках"
         @unknown default: break
         }
     }
@@ -110,8 +113,29 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
-#if DEBUG
-        print("--- LocationManager столкнулся с ошибкой: \(error.localizedDescription)")
-#endif
+        errorMessage = error.localizedDescription
+    }
+}
+
+private extension SportsGroundsMapViewModel {
+    func applyFilter() {
+        let countryID = DefaultsService().mainUserCountry
+        let cityID = DefaultsService().mainUserCity
+        var result = [SportsGround]()
+        result = defaultList.filter { ground in
+            filter.size.map { $0.code }.contains(ground.sizeID)
+            && filter.type.map { $0.code }.contains(ground.typeID)
+        }
+        guard countryID != .zero else {
+            list = result
+            return
+        }
+        if filter.onlyMyCity {
+            result = result.filter {
+                $0.countryID == countryID
+                && $0.cityID == cityID
+            }
+        }
+        list = result
     }
 }

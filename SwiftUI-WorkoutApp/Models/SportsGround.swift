@@ -3,11 +3,11 @@ import MapKit.MKGeometry
 
 /// Модель данных спортивной площадки
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
-    let id, typeID: Int
+    let id, typeID, sizeID: Int
     let address: String?
     let author: UserResponse?
     let canEdit, mine: Bool?
-    let cityID, sizeID, commentsCount, countryID: Int?
+    let cityID, commentsCount, countryID: Int?
     let createDate, modifyDate: String?
     let equipmentIDS: [Int]?
     let latitude, longitude: String
@@ -24,7 +24,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     var title: String? { "Площадка № \(id)" }
     var subtitle: String? {
         let grade = SportsGroundGrade(id: typeID).rawValue
-        let size = SportsGroundSize(id: sizeID.valueOrZero).rawValue
+        let size = SportsGroundSize(id: sizeID).rawValue
         return grade + " / " + size
     }
     var shortTitle: String { "№ \(id)" }
@@ -77,15 +77,15 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, address: String?, author: UserResponse?, canEdit: Bool?, mine: Bool?, cityID: Int?, sizeID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int]?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, canEdit: Bool?, mine: Bool?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int]?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
+        self.sizeID = sizeID
         self.address = address
         self.author = author
         self.canEdit = canEdit
         self.mine = mine
         self.cityID = cityID
-        self.sizeID = sizeID
         self.commentsCount = commentsCount
         self.countryID = countryID
         self.createDate = createDate
@@ -103,7 +103,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     convenience init(id: Int) {
-        self.init(id: id, typeID: .zero, address: nil, author: nil, canEdit: nil, mine: nil, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, canEdit: nil, mine: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
     }
 }
 
@@ -169,7 +169,7 @@ extension SportsGround {
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: SportsGround {
-        .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
+        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
     static var mock: SportsGround {
         Bundle.main.decodeJson(

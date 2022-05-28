@@ -4,6 +4,12 @@ final class DefaultsService: ObservableObject {
     @AppStorage(Key.mainUserID.rawValue)
     private(set) var mainUserID = Int.zero
 
+    @AppStorage(Key.mainUserCountry.rawValue)
+    private(set) var mainUserCountry = Int.zero
+
+    @AppStorage(Key.mainUserCity.rawValue)
+    private(set) var mainUserCity = Int.zero
+
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
 
@@ -36,6 +42,8 @@ final class DefaultsService: ObservableObject {
         friendsIds = .init()
         friendRequests = .init()
         mainUserID = .zero
+        mainUserCountry = .zero
+        mainUserCity = .zero
         isAuthorized = false
         showWelcome = true
     }
@@ -58,6 +66,8 @@ final class DefaultsService: ObservableObject {
     @MainActor
     func saveUserInfo(_ info: UserResponse) {
         mainUserID = info.userID.valueOrZero
+        mainUserCountry = info.countryID.valueOrZero
+        mainUserCity = info.cityID.valueOrZero
         if !isAuthorized {
             showWelcome = false
             isAuthorized = true
@@ -116,8 +126,8 @@ final class DefaultsService: ObservableObject {
 
 private extension DefaultsService {
     enum Key: String {
-        case mainUserID, isUserAuthorized,
-             showWelcome, authData, userInfo,
-             friends, friendRequests, hasJournals
+        case mainUserID, isUserAuthorized, showWelcome,
+             authData, userInfo, friends, friendRequests,
+             hasJournals, mainUserCountry, mainUserCity
     }
 }

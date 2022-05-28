@@ -56,17 +56,8 @@ struct JournalSettingsView: View {
 
 private extension JournalSettingsView {
     var headerView: some View {
-        HStack {
-            Text("Настройки дневника")
-                .font(.title3)
-                .fontWeight(.medium)
-            Spacer()
-            Button(action: close) {
-                DismissButton()
-            }
+        HeaderForSheet(title: "Настройки дневника", action: close)
             .disabled(viewModel.isLoading)
-        }
-        .padding()
     }
 
     var visibilitySettings: some View {

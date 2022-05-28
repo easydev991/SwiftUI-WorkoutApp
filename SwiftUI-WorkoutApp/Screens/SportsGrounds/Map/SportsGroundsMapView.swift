@@ -8,6 +8,7 @@ struct SportsGroundsMapView: View {
     @State private var isGroundDeleted = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var showFilters = false
 
     var body: some View {
         NavigationView {
@@ -40,8 +41,15 @@ struct SportsGroundsMapView: View {
             .onAppear(perform: viewModel.onAppearAction)
             .onDisappear(perform: viewModel.onDisappearAction)
             .toolbar {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    Group {
+                        filterButton
+                        refreshButton
+                    }
+                    .disabled(viewModel.isLoading)
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    refreshButton
+
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if defaults.isAuthorized {
@@ -56,11 +64,20 @@ struct SportsGroundsMapView: View {
 }
 
 private extension SportsGroundsMapView {
+    var filterButton: some View {
+        Button {
+            showFilters.toggle()
+        } label: {
+            Image(systemName: "line.3.horizontal.decrease.circle")
+        }
+        .sheet(isPresented: $showFilters) {
+            SportsGroundFilterView(filter: $viewModel.filter)
+        }
+    }
     var refreshButton: some View {
         Button(action: refreshAction) {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(viewModel.isLoading ? .zero : 1)
     }
 
     func askForGrounds(refresh: Bool = false) async {

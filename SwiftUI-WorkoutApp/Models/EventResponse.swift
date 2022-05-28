@@ -85,7 +85,7 @@ extension EventResponse {
     }
     var sportsGround: SportsGround {
         get {
-            .init(id: sportsGroundID.valueOrZero, typeID: .zero, address: fullAddress, author: author, canEdit: false, mine: false, cityID: cityID, sizeID: nil, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, canEdit: false, mine: false, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
         }
         set {}
     }
