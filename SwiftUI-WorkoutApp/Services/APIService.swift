@@ -177,7 +177,7 @@ struct APIService {
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
     func getSportsGround(id: Int) async throws -> SportsGround {
-        let endpoint = Endpoint.getSportsGround(id: id, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getSportsGround(id: id)
         return try await makeResult(SportsGround.self, for: endpoint.urlRequest)
     }
 
@@ -644,7 +644,7 @@ private extension APIService {
 
         // MARK: Получить выбранную площадку:
         /// **GET** ${API}/areas/<id>
-        case getSportsGround(id: Int, auth: AuthData)
+        case getSportsGround(id: Int)
 
         // MARK: Добавить новую спортплощадку
         /// **POST** ${API}/areas
@@ -823,7 +823,7 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/areas/last/\(date)"
         case .createSportsGround:
             return "\(baseUrl)/areas"
-        case let .getSportsGround(id, _),
+        case let .getSportsGround(id),
             let .editSportsGround(id, _, _),
             let .deleteSportsGround(id, _):
             return "\(baseUrl)/areas/\(id)"
@@ -943,7 +943,7 @@ private extension APIService.Endpoint {
             let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
             let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
             let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-            let .deleteFriend(_, auth), let .getSportsGround(_, auth),
+            let .deleteFriend(_, auth),
             let .findUsers(_, auth), let .deleteUser(auth), let .getDialogs(auth),
             let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
             let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
@@ -958,7 +958,8 @@ private extension APIService.Endpoint {
             let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
             let .editJournalSettings(_, _, _, _, _, auth), let .deleteSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
-        case .registration, .resetPassword, .getAllSportsGrounds,
+        case .registration, .resetPassword,
+                .getAllSportsGrounds, .getSportsGround,
                 .getUpdatedSportsGrounds, .getFutureEvents,
                 .getPastEvents, .getEvent:
             return [:]

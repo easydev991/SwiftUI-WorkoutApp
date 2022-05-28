@@ -11,29 +11,17 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeSportsGroundInfo(with defaults: DefaultsService, refresh: Bool = false) async {
-        if (isLoading || ground.isFull) && !refresh { return }
+    func askForSportsGround(refresh: Bool) async {
+        if (isLoading || ground.isFull) && !refresh {
+            return
+        }
         if !refresh { isLoading.toggle() }
         do {
-            ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
+            ground = try await APIService().getSportsGround(id: ground.id)
         } catch {
             errorMessage = error.localizedDescription
         }
         if !refresh { isLoading.toggle() }
-    }
-
-    @MainActor
-    func delete(groundID: Int, commentID: Int, with defaults: DefaultsService) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            if try await APIService(with: defaults).deleteComment(from: .ground(id: groundID), commentID: commentID) {
-                ground.comments.removeAll(where: { $0.id == commentID} )
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-        isLoading.toggle()
     }
 
     @MainActor
@@ -52,6 +40,20 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 } else {
                     ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func delete(commentID: Int, with defaults: DefaultsService) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService(with: defaults).deleteComment(from: .ground(id: ground.id), commentID: commentID) {
+                ground.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
             errorMessage = error.localizedDescription

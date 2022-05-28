@@ -153,29 +153,24 @@ extension SportsGround {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
-
     /// Пользователи, которые тренируются на этой площадке
     var participants: [UserResponse] {
         get { usersTrainHere ?? [] }
         set { usersTrainHere = newValue }
     }
-
     /// Пользователь тренируется на этой площадке
     var trainHere: Bool {
         get { trainHereOptional.isTrue }
         set { trainHereOptional = newValue }
     }
-
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         usersTrainHereCount.valueOrZero > .zero && !participants.isEmpty
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
-
     static var emptyValue: SportsGround {
         .init(id: .zero, typeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, sizeID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
-
     static var mock: SportsGround {
         Bundle.main.decodeJson(
             [SportsGround].self,

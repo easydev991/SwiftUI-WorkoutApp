@@ -175,7 +175,6 @@ private extension SportsGroundDetailView {
             deleteClbk: { id in
                 deleteCommentTask = Task {
                     await viewModel.delete(
-                        groundID: viewModel.ground.id,
                         commentID: id,
                         with: defaults
                     )
@@ -228,7 +227,7 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundInfo(with: defaults, refresh: refresh)
+        await viewModel.askForSportsGround(refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {

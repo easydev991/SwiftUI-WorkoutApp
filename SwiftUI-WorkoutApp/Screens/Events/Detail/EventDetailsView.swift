@@ -170,9 +170,11 @@ private extension EventDetailsView {
     }
 
     var isGoingToggle: some View {
-        CustomToggle(isOn: $viewModel.isGoing, title: "Пойду на мероприятие") {
-            changeIsGoingToEvent(newStatus: !viewModel.isGoing)
-        }
+        CustomToggle(
+            isOn: $viewModel.event.trainHere,
+            title: "Пойду на мероприятие",
+            action: changeIsGoingToEvent
+        )
         .disabled(viewModel.isLoading)
     }
 
@@ -211,11 +213,9 @@ private extension EventDetailsView {
         await viewModel.askForEvent(with: defaults, refresh: refresh)
     }
 
-    func changeIsGoingToEvent(newStatus: Bool) {
+    func changeIsGoingToEvent() {
         goingToEventTask = Task {
-            await viewModel.changeIsGoingToEvent(
-                isGoing: newStatus, with: defaults
-            )
+            await viewModel.changeIsGoingToEvent(with: defaults)
         }
     }
 
@@ -234,7 +234,7 @@ private extension EventDetailsView {
         ) {
             Button(role: .destructive) {
                 deleteEventTask = Task {
-                    await viewModel.deleteEvent(viewModel.event.id, with: defaults)
+                    await viewModel.deleteEvent(with: defaults)
                 }
             } label: {
                 Text("Удалить")

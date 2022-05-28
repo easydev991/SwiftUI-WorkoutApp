@@ -26,7 +26,7 @@ struct EventResponse: Codable, Identifiable {
     let name: String?
     let author: UserResponse?
     let canEdit: Bool?
-    var trainHere: Bool?
+    var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id, title, latitude, longitude, photos, author, name
@@ -45,7 +45,7 @@ struct EventResponse: Codable, Identifiable {
         case participantsOptional = "training_users"
         case isOrganizer = "is_organizer"
         case canEdit = "can_edit"
-        case trainHere = "train_here"
+        case trainHereOptional = "train_here"
         case commentsOptional = "comments"
     }
 }
@@ -103,15 +103,21 @@ extension EventResponse {
         get { participantsOptional ?? [] }
         set { participantsOptional = newValue }
     }
+    /// Пользователь тренируется на этой площадке
+    var trainHere: Bool {
+        get { trainHereOptional.isTrue }
+        set { trainHereOptional = newValue }
+    }
     var authorID: Int {
         (author?.userID).valueOrZero
     }
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         participantsCount.valueOrZero > .zero && !participants.isEmpty
+        || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHere: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHereOptional: nil)
     }
     static var mock: EventResponse {
         Bundle.main.decodeJson(

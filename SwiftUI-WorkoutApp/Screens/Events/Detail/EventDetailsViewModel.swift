@@ -5,7 +5,6 @@ final class EventDetailsViewModel: ObservableObject {
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    @Published var isGoing = false
 
     init(with event: EventResponse) {
         self.event = event
@@ -19,8 +18,8 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService().getEvent(by: event.id)
-            let isUserGoing = event.participantsOptional?.contains(where: { $0.userID == defaults.mainUserID })
-            isGoing = isUserGoing.isTrue
+            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserID })
+            event.trainHere = isUserGoing
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -28,13 +27,17 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeIsGoingToEvent(isGoing: Bool, with defaults: DefaultsService) async {
+    func changeIsGoingToEvent(with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).changeIsGoingToEvent(for: event.id, isGoing: isGoing) {
-                self.isGoing = isGoing
-                if isGoing, let userInfo = defaults.mainUserInfo {
+            let trainHere = !event.trainHere
+            if try await APIService(with: defaults).changeIsGoingToEvent(
+                for: event.id,
+                isGoing: trainHere
+            ) {
+                event.trainHere = trainHere
+                if trainHere, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
                 } else {
                     event.participants.removeAll(where: { $0.userID == defaults.mainUserID })
@@ -61,11 +64,11 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteEvent(_ id: Int, with defaults: DefaultsService) async {
+    func deleteEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isDeleted = try await APIService(with: defaults).delete(eventID: id)
+            isDeleted = try await APIService(with: defaults).delete(eventID: event.id)
         } catch {
             errorMessage = error.localizedDescription
         }
