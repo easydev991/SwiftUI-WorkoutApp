@@ -4,8 +4,6 @@ enum SportsGroundGrade: String, CaseIterable {
     case collars = "Хомуты"
     case underTheHood = "Под навесом"
     case legendary = "Легендарная"
-    case broken = "Разрушена"
-    case other = "Разное"
 
     init(id: Int) {
         switch id {
@@ -13,9 +11,7 @@ enum SportsGroundGrade: String, CaseIterable {
         case 2: self = .modern
         case 3: self = .collars
         case 4: self = .underTheHood
-        case 5: self = .broken
-        case 6: self = .legendary
-        default: self = .other // id = 7
+        default: self = .legendary
         }
     }
 
@@ -25,9 +21,7 @@ enum SportsGroundGrade: String, CaseIterable {
         case .modern: return 2
         case .collars: return 3
         case .underTheHood: return 4
-        case .broken: return 5
         case .legendary: return 6
-        case .other: return 7
         }
     }
 }

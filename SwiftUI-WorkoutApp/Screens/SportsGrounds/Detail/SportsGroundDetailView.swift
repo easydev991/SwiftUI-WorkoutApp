@@ -26,7 +26,7 @@ struct SportsGroundDetailView: View {
         ZStack {
             Form {
                 titleSubtitleSection
-                mapInfo
+                locationInfo
                 if let photos = viewModel.ground.photos,
                    !photos.isEmpty {
                     PhotosCollection(items: photos)
@@ -74,13 +74,13 @@ struct SportsGroundDetailView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Group {
-                    if isGroundAuthor {
+                if isGroundAuthor {
+                    Group {
                         deleteButton
                         editGroundButton
                     }
+                    .disabled(viewModel.isLoading)
                 }
-                .disabled(viewModel.isLoading)
             }
         }
         .navigationTitle("Площадка")
@@ -89,10 +89,6 @@ struct SportsGroundDetailView: View {
 }
 
 private extension SportsGroundDetailView {
-    var isGroundAuthor: Bool {
-        viewModel.ground.authorID == defaults.mainUserID
-    }
-
     var titleSubtitleSection: some View {
         Section {
             HStack {
@@ -105,7 +101,7 @@ private extension SportsGroundDetailView {
         }
     }
 
-    var mapInfo: some View {
+    var locationInfo: some View {
         SportsGroundLocationInfo(
             ground: $viewModel.ground,
             address: viewModel.ground.address.valueOrEmpty,
@@ -169,7 +165,7 @@ private extension SportsGroundDetailView {
                         .fontWeight(.medium)
                 }
             }
-            .disabled(!defaults.isAuthorized)
+            .disabled(!defaults.isAuthorized || viewModel.ground.authorID == defaults.mainUserID)
         }
     }
 
@@ -185,10 +181,12 @@ private extension SportsGroundDetailView {
                     )
                 }
             },
-            editClbk: { comment in
-                editComment = comment
-            }
+            editClbk: setupCommentToEdit
         )
+    }
+
+    func setupCommentToEdit(_ comment: Comment) {
+        editComment = comment
     }
 
     var deleteButton: some View {
@@ -225,7 +223,7 @@ private extension SportsGroundDetailView {
         }
     }
 
-    func refreshAction(refresh: Bool = false) {
+    func refreshAction(refresh: Bool) {
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
@@ -236,6 +234,10 @@ private extension SportsGroundDetailView {
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
+    }
+
+    var isGroundAuthor: Bool {
+        viewModel.ground.authorID == defaults.mainUserID
     }
 
     func closeAlert() {
@@ -258,7 +260,6 @@ struct SportsGroundView_Previews: PreviewProvider {
         Group {
             SportsGroundDetailView(for: .mock, refreshOnDelete: .constant(false))
                 .environmentObject(DefaultsService())
-                .previewDevice("iPhone SE (3rd generation)")
         }
     }
 }

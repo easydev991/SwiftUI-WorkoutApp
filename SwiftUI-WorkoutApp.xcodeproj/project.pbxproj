@@ -42,6 +42,7 @@
 		674D0625282AB832007E75C6 /* SearchUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */; };
 		67515696283FE9E100501346 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515695283FE9E100501346 /* ImagePicker.swift */; };
 		67515699283FEC3100501346 /* PickedImagesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515698283FEC3100501346 /* PickedImagesList.swift */; };
+		6751569B2841316400501346 /* MediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751569A2841316400501346 /* MediaFile.swift */; };
 		675462FB282F8CBF005BC86A /* ChatBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675462FA282F8CBF005BC86A /* ChatBubble.swift */; };
 		675462FF282FC6E6005BC86A /* MainUserForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675462FE282FC6E6005BC86A /* MainUserForm.swift */; };
 		6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */; };
@@ -168,6 +169,7 @@
 		674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersViewModel.swift; sourceTree = "<group>"; };
 		67515695283FE9E100501346 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		67515698283FEC3100501346 /* PickedImagesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedImagesList.swift; sourceTree = "<group>"; };
+		6751569A2841316400501346 /* MediaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFile.swift; sourceTree = "<group>"; };
 		675462FA282F8CBF005BC86A /* ChatBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubble.swift; sourceTree = "<group>"; };
 		675462FE282FC6E6005BC86A /* MainUserForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserForm.swift; sourceTree = "<group>"; };
 		6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailViewModel.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				67D916892838F79D0098D3CB /* MessageResponse.swift */,
 				6762774C283A343A009C203F /* JournalResponse.swift */,
 				67627758283A6148009C203F /* JournalEntryResponse.swift */,
+				6751569A2841316400501346 /* MediaFile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -810,6 +813,7 @@
 				67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */,
 				67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */,
 				675462FB282F8CBF005BC86A /* ChatBubble.swift in Sources */,
+				6751569B2841316400501346 /* MediaFile.swift in Sources */,
 				67627759283A6149009C203F /* JournalEntryResponse.swift in Sources */,
 				67B7871C281D8A49008B104F /* UserDetailsViewModel.swift in Sources */,
 				6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */,

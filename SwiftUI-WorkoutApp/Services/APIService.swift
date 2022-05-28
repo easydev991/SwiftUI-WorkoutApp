@@ -918,19 +918,21 @@ private extension APIService.Endpoint {
     }
 
     enum HTTPHeader {
+        static let boundary = "FFF"
+
         enum Key: String {
             case authorization = "Authorization"
-            case acceptEncoding = "Accept-Encoding"
+            case contentType = "Content-Type"
         }
 
-        enum Value: String { case encodingType = "gzip" }
-
-        static func basicAuth(with input: AuthData) -> [String: String] {
+        static func basicAuth(with input: AuthData, withMultipart: Bool = false) -> [String: String] {
             var headers = [String: String]()
             if let encodedString = input.base64Encoded {
                 headers[Key.authorization.rawValue] = "Basic \(encodedString)"
             }
-            headers[Key.acceptEncoding.rawValue] = Value.encodingType.rawValue
+            if withMultipart {
+                headers[Key.contentType.rawValue] = "multipart/form-data; boundary=\(boundary)"
+            }
             return headers
         }
     }
@@ -946,8 +948,7 @@ private extension APIService.Endpoint {
             let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
             let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
             let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-            let .createEvent(_, auth), let .postIsGoingToEvent(_, auth),
-            let .deleteIsGoingToEvent(_, auth), let .addCommentToEvent(_, _, auth),
+            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth), let .addCommentToEvent(_, _, auth),
             let .deleteEventComment(_, _, auth), let .editEventComment(_, _, _, auth),
             let .deleteEvent(_, auth), let .getMessages(_, auth),
             let .sendMessageTo(_, _, auth), let .markAsRead(_, auth),
@@ -955,14 +956,15 @@ private extension APIService.Endpoint {
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
             let .deleteEntry(_, _, _, auth), let .deleteJournal(_, _, auth),
-            let .editJournalSettings(_, _, _, _, _, auth), let .editEvent(_, _, auth),
-            let .createSportsGround(_, auth), let .editSportsGround(_, _, auth),
-            let .deleteSportsGround(_, auth):
+            let .editJournalSettings(_, _, _, _, _, auth), let .deleteSportsGround(_, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword, .getAllSportsGrounds,
                 .getUpdatedSportsGrounds, .getFutureEvents,
                 .getPastEvents, .getEvent:
             return [:]
+        case let .createSportsGround(_, auth), let .editSportsGround(_, _, auth),
+            let .createEvent(_, auth), let .editEvent(_, _, auth):
+            return HTTPHeader.basicAuth(with: auth, withMultipart: true)
         }
     }
 
@@ -989,11 +991,32 @@ private extension APIService.Endpoint {
             case short
         }
 
-        static func make(from dict: [Key: String]) -> Data? {
+        static func make(from dict: [Key: String], with media: [MediaFile] = []) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")
                 .data(using: .utf8)
+        }
+
+        static func makeMultipartData(from dict: [Key: String], with media: [MediaFile]?) -> Data {
+            let boundary = HTTPHeader.boundary
+            let lineBreak = "\r\n"
+            var body = Data()
+
+            dict.forEach { key, value in
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(key.rawValue)\"\(lineBreak + lineBreak)")
+                body.append("\(value + lineBreak)")
+            }
+            media?.forEach { photo in
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
+                body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
+                body.append(photo.data)
+                body.append(lineBreak)
+            }
+            body.append("--\(boundary)--\(lineBreak)")
+            return body
         }
     }
 
@@ -1043,16 +1066,6 @@ private extension APIService.Endpoint {
             return Parameter.make(
                 from: [.password: current, .newPassword: new]
             )
-        case let .createEvent(form, _), let .editEvent(_, form, _):
-            let params = Parameter.make(
-                from: [
-                    .title: form.title,
-                    .description: form.description,
-                    .date: form.dateIsoString,
-                    .areaID: form.sportsGround.id.description
-                ]
-            )
-            return params
         case let .addCommentToSportsGround(_, comment, _),
             let .addCommentToEvent(_, comment, _),
             let .editGroundComment(_, _, comment, _),
@@ -1074,8 +1087,19 @@ private extension APIService.Endpoint {
                     .commentAccess: commentAccess.description
                 ]
             )
+        case let .createEvent(form, _), let .editEvent(_, form, _):
+            let params = Parameter.makeMultipartData(
+                from: [
+                    .title: form.title,
+                    .description: form.description,
+                    .date: form.dateIsoString,
+                    .areaID: form.sportsGround.id.description
+                ],
+                with: form.newImagesData
+            )
+            return params
         case let .createSportsGround(form, _), let .editSportsGround(_, form, _):
-            return Parameter.make(
+            return Parameter.makeMultipartData(
                 from: [
                     .address: form.address,
                     .latitude: form.latitude,
@@ -1083,7 +1107,8 @@ private extension APIService.Endpoint {
                     .cityID: form.cityID.description,
                     .typeID: form.typeID.description,
                     .classID: form.sizeID.description
-                ]
+                ],
+                with: form.newImagesData
             )
         }
     }

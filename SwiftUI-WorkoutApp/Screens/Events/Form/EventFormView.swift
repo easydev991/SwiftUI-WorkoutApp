@@ -50,11 +50,11 @@ struct EventFormView: View {
                 showPicker: $isShowingPicker
             )
         }
-        .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
+        .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onDisappear(perform: cancelTask)
         .toolbar { saveButton }
         .navigationTitle("Мероприятие")
@@ -139,12 +139,13 @@ private extension EventFormView {
 
     var pickImagesButton: some View {
         Button {
+            focus = nil
             isShowingPicker.toggle()
         } label: {
             Label("Добавить фотографию", systemImage: "plus.circle.fill")
                 .foregroundColor(.blue)
         }
-        .disabled(viewModel.newImages.count == 15 || viewModel.isLoading)
+        .disabled(!viewModel.canAddImages)
     }
 
     var saveButton: some View {
@@ -157,7 +158,7 @@ private extension EventFormView {
     func saveAction() {
         focus = nil
         saveEventTask = Task {
-            await viewModel.saveEvent(mode: mode, with: defaults)
+            await viewModel.saveEvent(with: defaults)
         }
     }
 

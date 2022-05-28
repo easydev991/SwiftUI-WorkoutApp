@@ -16,6 +16,10 @@ final class SportsGroundFormViewModel: ObservableObject {
         ? groundForm.isReadyToCreate
         : groundForm.isReadyToSend
     }
+    var canAddImages: Bool {
+        (groundForm.photosCount + newImages.count) < Constants.photosLimit
+        && !isLoading
+    }
 
     init(with ground: SportsGround?) {
         groundForm = .init(ground)
@@ -39,10 +43,7 @@ final class SportsGroundFormViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let result = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm)
-            if result.id != .zero {
-                isSuccess.toggle()
-            }
+            isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -54,8 +55,8 @@ final class SportsGroundFormViewModel: ObservableObject {
 
 private extension SportsGroundFormViewModel {
     func addNewImagesToForm() {
-        groundForm.newImagesData = newImages.map {
-            $0.jpegData(compressionQuality: .zero) ?? .init()
+        groundForm.newImagesData = newImages.enumerated().map {
+            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
         }
     }
 }

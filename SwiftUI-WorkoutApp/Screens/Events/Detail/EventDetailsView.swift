@@ -5,12 +5,12 @@ struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: EventDetailsViewModel
-    @State private var needUpdate = false
-    @State private var isCreatingComment = false
-    @State private var editComment: Comment?
+    @State private var needRefresh = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
+    @State private var isCreatingComment = false
     @State private var showDeleteDialog = false
+    @State private var editComment: Comment?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
@@ -21,8 +21,8 @@ struct EventDetailsView: View {
         with event: EventResponse,
         refreshOnDelete: Binding<Bool>
     ) {
-        _viewModel = StateObject(wrappedValue: .init(with: event))
         _needRefreshOnDelete = refreshOnDelete
+        _viewModel = StateObject(wrappedValue: .init(with: event))
     }
 
     var body: some View {
@@ -33,7 +33,9 @@ struct EventDetailsView: View {
                 if viewModel.event.hasDescription {
                     descriptionSection
                 }
-                participantsSection
+                if defaults.isAuthorized {
+                    participantsSection
+                }
                 if let photos = viewModel.event.photos,
                    !photos.isEmpty {
                     PhotosCollection(items: photos)
@@ -47,17 +49,17 @@ struct EventDetailsView: View {
                         .sheet(isPresented: $isCreatingComment) {
                             CommentView(
                                 mode: .newForEvent(id: viewModel.event.id),
-                                isSent: $needUpdate
+                                isSent: $needRefresh
                             )
                         }
                 }
             }
             .opacity(viewModel.event.id == .zero ? .zero : 1)
-            .disabled(viewModel.isLoading)
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .sheet(item: $editComment) {
             CommentView(
                 mode: .editEvent(
@@ -67,7 +69,7 @@ struct EventDetailsView: View {
                         oldComment: $0.formattedBody
                     )
                 ),
-                isSent: $needUpdate
+                isSent: $needRefresh
             )
         }
         .task { await askForInfo() }
@@ -75,10 +77,10 @@ struct EventDetailsView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
-        .onChange(of: needUpdate, perform: refreshAction)
+        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: needRefresh, perform: refreshAction)
+        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -144,7 +146,7 @@ private extension EventDetailsView {
                !participants.isEmpty {
                 linkToParticipants
             }
-            if defaults.isAuthorized && (viewModel.event.isCurrent).isTrue {
+            if (viewModel.event.isCurrent).isTrue {
                 isGoingToggle
             }
         }
@@ -197,10 +199,12 @@ private extension EventDetailsView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: { comment in
-                editComment = comment
-            }
+            editClbk: setupCommentToEdit
         )
+    }
+
+    func setupCommentToEdit(_ comment: Comment) {
+        editComment = comment
     }
 
     func askForInfo(refresh: Bool = false) async {
@@ -215,8 +219,8 @@ private extension EventDetailsView {
         }
     }
 
-    func refreshAction(refresh: Bool = false) {
-        refreshButtonTask = Task { await askForInfo(refresh: refresh) }
+    func refreshAction(refresh: Bool) {
+        refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
     var deleteButton: some View {
@@ -242,7 +246,7 @@ private extension EventDetailsView {
         NavigationLink {
             EventFormView(
                 for: .editExisting(viewModel.event),
-                needRefresh: $needUpdate
+                needRefresh: $needRefresh
             )
         } label: {
             Image(systemName: "rectangle.and.pencil.and.ellipsis")
@@ -276,7 +280,7 @@ private extension EventDetailsView {
     }
 
     func cancelTasks() {
-        [goingToEventTask, deleteCommentTask, refreshButtonTask, deleteEventTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, goingToEventTask, deleteEventTask].forEach { $0?.cancel() }
     }
 }
 

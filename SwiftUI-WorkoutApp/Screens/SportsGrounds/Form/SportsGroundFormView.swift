@@ -110,12 +110,13 @@ private extension SportsGroundFormView {
 
     var pickImagesButton: some View {
         Button {
+            isFocused = false
             isShowingPicker.toggle()
         } label: {
             Label("Добавить фотографию", systemImage: "plus.circle.fill")
                 .foregroundColor(.blue)
         }
-        .disabled(viewModel.newImages.count == 15 || viewModel.isLoading)
+        .disabled(!viewModel.canAddImages)
     }
 
     func setupErrorAlert(with message: String) {

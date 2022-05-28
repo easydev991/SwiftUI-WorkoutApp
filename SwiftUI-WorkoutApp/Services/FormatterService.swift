@@ -15,11 +15,20 @@ struct FormatterService {
         }
     }
 
-    static func isoStringFromFullDate(_ date: Date) -> String {
+    static func stringFromFullDate(_ date: Date, format: DateFormat = .isoDateTimeSec, iso: Bool = true) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = DateFormat.isoDateTimeSec.rawValue
-        return dateFormatter.string(from: date).appending("Z")
+        dateFormatter.dateFormat = format.rawValue
+        var string = dateFormatter.string(from: date)
+        if iso { string.append("Z") }
+        return string
+    }
+
+    static func serverFiveMinutesAgo(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = DateFormat.serverDateTimeSec.rawValue
+        return dateFormatter.string(from: date)
     }
 
     static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
@@ -38,6 +47,7 @@ struct FormatterService {
 extension FormatterService {
     enum DateFormat: String {
         case isoShortDate = "yyyy-MM-dd"
+        case serverDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
         case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
         case dayMonthMediumTime = "d MMM, HH:mm"

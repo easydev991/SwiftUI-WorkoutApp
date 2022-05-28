@@ -5,19 +5,22 @@ struct EventForm: Codable {
     var title, description: String
     var date: Date
     var sportsGround: SportsGround
+    let photosCount: Int
+    var newImagesData = [MediaFile]()
 
     init(_ event: EventResponse?) {
         self.title = (event?.formattedTitle).valueOrEmpty
         self.description = (event?.formattedDescription).valueOrEmpty
         self.date = FormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
         self.sportsGround = event?.sportsGround ?? .emptyValue
+        self.photosCount = (event?.photos?.count).valueOrZero
     }
 }
 
 extension EventForm {
     /// Пример: "1990-08-12T00:00:00.000Z"
     var dateIsoString: String {
-        FormatterService.isoStringFromFullDate(date)
+        FormatterService.stringFromFullDate(date)
     }
 
     var countryID: Int {

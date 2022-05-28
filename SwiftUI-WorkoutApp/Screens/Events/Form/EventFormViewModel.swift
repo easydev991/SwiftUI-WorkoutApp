@@ -6,8 +6,14 @@ final class EventFormViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isSuccess = false
-    @Published var newImages = [UIImage]()
+    @Published var newImages = [UIImage]() {
+        didSet { addNewImagesToForm() }
+    }
     private var eventID: Int?
+    var canAddImages: Bool {
+        (eventInfo.photosCount + newImages.count) < Constants.photosLimit
+        && !isLoading
+    }
 
     init(with event: EventResponse? = nil) {
         eventID = event?.id
@@ -20,7 +26,7 @@ final class EventFormViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveEvent(mode: EventFormView.Mode, with defaults: DefaultsService) async {
+    func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -32,4 +38,12 @@ final class EventFormViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+private extension EventFormViewModel {
+    func addNewImagesToForm() {
+        eventInfo.newImagesData = newImages.enumerated().map {
+            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
+        }
+    }
 }
