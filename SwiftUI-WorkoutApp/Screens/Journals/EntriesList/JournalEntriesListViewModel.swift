@@ -44,17 +44,5 @@ final class JournalEntriesListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
-    func updateJournal(with defaults: DefaultsService) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            currentJournal = try await APIService(with: defaults).getJournal(for: defaults.mainUserID, journalID: currentJournal.id)
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-        isLoading.toggle()
-    }
-
     func clearErrorMessage() { errorMessage = "" }
 }

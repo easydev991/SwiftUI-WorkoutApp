@@ -17,16 +17,16 @@ struct JournalSettingsView: View {
     @State private var journal: JournalResponse
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @Binding private var updateOnSuccess: Bool
+    private let updateOnSuccess: (Int) -> Void
     @State private var saveJournalChangesTask: Task<Void, Never>?
 
     init(
         with journalToEdit: JournalResponse,
-        needUpdate: Binding<Bool>
+        updatedClbk: @escaping (Int) -> Void
     ) {
         initialJournal = journalToEdit
         _journal = .init(initialValue: journalToEdit)
-        _updateOnSuccess = needUpdate
+        updateOnSuccess = updatedClbk
     }
 
     var body: some View {
@@ -129,7 +129,7 @@ private extension JournalSettingsView {
     func close() { dismiss() }
 
     func finishSettings(isSuccess: Bool) {
-        updateOnSuccess.toggle()
+        updateOnSuccess(journal.id)
         close()
     }
 
@@ -140,7 +140,7 @@ private extension JournalSettingsView {
 
 struct JournalSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        JournalSettingsView(with: .mock, needUpdate: .constant(false))
+        JournalSettingsView(with: .mock, updatedClbk: {_ in})
             .environmentObject(CheckNetworkService())
     }
 }

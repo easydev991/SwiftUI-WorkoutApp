@@ -6,7 +6,6 @@ struct JournalEntriesList: View {
     @StateObject private var viewModel: JournalEntriesListViewModel
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var showAccessSettings = false
     @State private var showEntrySheet = false
     @State private var entryIdToDelete: Int?
     @State private var showDeleteDialog = false
@@ -15,7 +14,6 @@ struct JournalEntriesList: View {
     @State private var needUpdateJournal = false
     @State private var editAccessTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
-    @State private var updateJournalTask: Task<Void, Never>?
     @State private var updateEntriesTask: Task<Void, Never>?
 
     init(for userID: Int, in journal: Binding<JournalResponse>) {
@@ -59,10 +57,8 @@ struct JournalEntriesList: View {
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteEntryButton }
-        .onChange(of: viewModel.isSettingsUpdated, perform: closeSettingsSheet)
         .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needUpdateJournal, perform: updateJournal)
         .onChange(of: needUpdateEntries, perform: updateEntries)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
@@ -70,14 +66,8 @@ struct JournalEntriesList: View {
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isMainUser {
-                    Group {
-                        settingsButton
-                        addEntryButton
-                    }
-                    .disabled(viewModel.isLoading)
-                }
+            if isMainUser {
+                addEntryButton
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -87,34 +77,8 @@ struct JournalEntriesList: View {
 }
 
 private extension JournalEntriesList {
-    var settingsButton: some View {
-        Button(action: showSettings) {
-            Image(systemName: "gearshape.fill")
-        }
-        .sheet(isPresented: $showAccessSettings) {
-            JournalSettingsView(
-                with: viewModel.currentJournal,
-                needUpdate: $needUpdateJournal
-            )
-        }
-    }
-
-    func showSettings() {
-        showAccessSettings.toggle()
-    }
-
-    func closeSettingsSheet(isSuccess: Bool) {
-        showAccessSettings.toggle()
-    }
-
     func setupEntryToEdit(_ entry: JournalEntryResponse) {
         editEntry = entry
-    }
-
-    func updateJournal(isSuccess: Bool) {
-        updateJournalTask = Task {
-            await viewModel.updateJournal(with: defaults)
-        }
     }
 
     func updateEntries(isSuccess: Bool) {
@@ -127,6 +91,7 @@ private extension JournalEntriesList {
         Button(action: showNewEntry) {
             Image(systemName: "plus")
         }
+        .disabled(viewModel.isLoading)
         .sheet(isPresented: $showEntrySheet) {
             TextEntryView(
                 mode: .newForJournal(id: viewModel.currentJournal.id),
@@ -176,7 +141,7 @@ private extension JournalEntriesList {
     }
 
     func cancelTasks() {
-        [editAccessTask, deleteEntryTask, updateJournalTask, updateEntriesTask].forEach { $0?.cancel() }
+        [editAccessTask, deleteEntryTask, updateEntriesTask].forEach { $0?.cancel() }
     }
 }
 

@@ -57,7 +57,7 @@ private extension CommentViewCell {
     }
 
     var isMenuAvailable: Bool {
-        (model.user?.userID).valueOrZero == defaults.mainUserID
+        model.user?.userID == defaults.mainUserID
     }
 }
 

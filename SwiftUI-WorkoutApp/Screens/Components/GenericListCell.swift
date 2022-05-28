@@ -2,36 +2,40 @@ import SwiftUI
 
 /// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {
-    private let content: Mode.Content
+    @EnvironmentObject private var defaults: DefaultsService
+    private let mode: Mode
 
     init(for mode: Mode) {
-        content = mode.content
+        self.mode = mode
     }
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             CacheImageView(
-                url: content.imageURL,
+                url: mode.content.imageURL,
                 mode: .generic
             )
             VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .top) {
-                    Text(content.title)
+                    Text(mode.content.title)
                         .font(.headline)
                         .lineLimit(1)
                     Spacer()
-                    Text(content.date)
+                    Text(mode.content.date)
                         .font(.callout)
                         .foregroundColor(.secondary)
+                    if isMenuAvailable {
+                        menuButton
+                    }
                 }
                 HStack {
-                    Text(content.subtitle)
+                    Text(mode.content.subtitle)
                         .font(.callout)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
                     Spacer()
-                    if content.unreadCount > .zero {
-                        Image(systemName: "\(content.unreadCount).circle.fill")
+                    if mode.content.unreadCount > .zero {
+                        Image(systemName: "\(mode.content.unreadCount).circle.fill")
                             .foregroundColor(.blue)
                     }
                 }
@@ -43,7 +47,11 @@ struct GenericListCell: View {
 extension GenericListCell {
     enum Mode {
         case dialog(DialogResponse)
-        case journalGroup(JournalResponse)
+        case journal(
+            info: JournalResponse,
+            editClbk: (JournalResponse) -> Void,
+            deleteClbk: (Int) -> Void
+        )
     }
 }
 
@@ -58,7 +66,7 @@ private extension GenericListCell.Mode {
                 date: model.lastMessageDateString,
                 unreadCount: model.unreadMessagesCount
             )
-        case let .journalGroup(model):
+        case let .journal(model, _, _):
             return .init(
                 imageURL: model.imageURL,
                 title: model.title,
@@ -75,7 +83,42 @@ private extension GenericListCell.Mode {
     }
 }
 
-struct DialogListCell_Previews: PreviewProvider {
+private extension GenericListCell {
+    var menuButton: some View {
+        Menu {
+            Button {
+                if case let .journal(info, edit, _) = mode {
+                    edit(info)
+                }
+            } label: {
+                Label("Настроить", systemImage: "gearshape.fill")
+            }
+            Button(role: .destructive) {
+                if case let .journal(info, _, delete) = mode {
+                    delete(info.id)
+                }
+            } label: {
+                Label("Удалить", systemImage: "trash")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle.fill")
+                .font(.title2)
+                .foregroundColor(.secondary)
+        }
+        .onTapGesture { hapticFeedback(.rigid) }
+    }
+
+    var isMenuAvailable: Bool {
+        switch mode {
+        case .dialog:
+            return false
+        case let .journal(info, _, _):
+            return info.ownerID == defaults.mainUserID
+        }
+    }
+}
+
+struct GenericListCell_Previews: PreviewProvider {
     static var previews: some View {
         GenericListCell(for: .dialog(.mock))
             .padding()

@@ -7,8 +7,10 @@ struct JournalsList: View {
     @State private var isCreatingJournal = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var indexToDelete: Int?
-    @State private var showDeleteConfirmation = false
+    @State private var journalIdToDelete: Int?
+    @State private var journalToEdit: JournalResponse?
+    @State private var showDeleteDialog = false
+    @State private var updateListTask: Task<Void, Never>?
     @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalTask: Task<Void, Never>?
     private let userID: Int
@@ -26,19 +28,24 @@ struct JournalsList: View {
                     NavigationLink {
                         JournalEntriesList(for: userID, in: $journal)
                     } label: {
-                        GenericListCell(for: .journalGroup(journal))
+                        GenericListCell(
+                            for: .journal(
+                                info: journal,
+                                editClbk: setupJournalToEdit,
+                                deleteClbk: initiateDeletion
+                            )
+                        )
                     }
                 }
-                .onDelete(perform: initiateDeletion)
-                .deleteDisabled(!isMainUser)
             }
-            .disabled(viewModel.isLoading)
+            .sheet(item: $journalToEdit, content: showSettingsSheet)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .disabled(viewModel.isLoading)
         .confirmationDialog(
             Constants.Alert.deleteJournal,
-            isPresented: $showDeleteConfirmation,
+            isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteJournalButton }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -70,10 +77,6 @@ private extension JournalsList {
         .opacity(defaults.isAuthorized && isMainUser ? 1 : .zero)
     }
 
-    func showNewJournalSheet() {
-        isCreatingJournal.toggle()
-    }
-
     var newJournalSheet: some View {
         SendMessageView(
             text: $viewModel.newJournalTitle,
@@ -86,6 +89,28 @@ private extension JournalsList {
         )
     }
 
+    var deleteJournalButton: some View {
+        Button(role: .destructive) {
+            deleteJournalTask = Task {
+                await viewModel.delete(journalID: journalIdToDelete, with: defaults)
+            }
+        } label: {
+            Text("Удалить")
+        }
+    }
+
+    func showNewJournalSheet() {
+        isCreatingJournal.toggle()
+    }
+
+    func setupJournalToEdit(_ journal: JournalResponse) {
+        journalToEdit = journal
+    }
+
+    func showSettingsSheet(for journal: JournalResponse) -> some View {
+        JournalSettingsView(with: journal, updatedClbk: update)
+    }
+
     func askForJournals(refresh: Bool = false) async {
         await viewModel.makeItems(for: userID, with: defaults, refresh: refresh)
     }
@@ -96,23 +121,15 @@ private extension JournalsList {
         }
     }
 
-    func initiateDeletion(at indexSet: IndexSet) {
-        indexToDelete = indexSet.first
-        showDeleteConfirmation.toggle()
-    }
-
-    var deleteJournalButton: some View {
-        Button(role: .destructive) {
-            deleteAction(at: indexToDelete)
-        } label: {
-            Text("Удалить")
+    func update(journalID: Int) {
+        updateListTask = Task {
+            await viewModel.update(journalID: journalID, with: defaults)
         }
     }
 
-    func deleteAction(at index: Int?) {
-        deleteJournalTask = Task {
-            await viewModel.deleteJournal(at: index, with: defaults)
-        }
+    func initiateDeletion(for journalID: Int) {
+        journalIdToDelete = journalID
+        showDeleteDialog.toggle()
     }
 
     func closeSheet(isSuccess: Bool) {
@@ -129,7 +146,7 @@ private extension JournalsList {
     }
 
     func cancelTasks() {
-        [saveJournalTask, deleteJournalTask].forEach { $0?.cancel() }
+        [saveJournalTask, deleteJournalTask, updateListTask].forEach { $0?.cancel() }
     }
 }
 
