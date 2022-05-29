@@ -29,7 +29,7 @@ struct SportsGroundDetailView: View {
                 locationInfo
                 if let photos = viewModel.ground.photos,
                    !photos.isEmpty {
-                    PhotosCollection(items: photos)
+                    PhotosGallery(items: photos)
                 }
                 if defaults.isAuthorized {
                     participantsAndEventSection
@@ -158,7 +158,7 @@ private extension SportsGroundDetailView {
 
     var authorSection: some View {
         Section("Добавил") {
-            NavigationLink(destination: UserDetailsView(userID: viewModel.ground.authorID)) {
+            NavigationLink(destination: UserDetailsView(for: viewModel.ground.author)) {
                 HStack(spacing: 16) {
                     CacheImageView(url: viewModel.ground.author?.avatarURL)
                     Text(viewModel.ground.authorName)

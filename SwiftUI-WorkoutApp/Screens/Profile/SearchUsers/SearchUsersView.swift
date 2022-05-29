@@ -20,11 +20,11 @@ struct SearchUsersView: View {
                         .focused($isFocused)
                 }
                 Section("Результаты поиска") {
-                    List(viewModel.users) { user in
+                    List(viewModel.users) { model in
                         NavigationLink {
-                            UserDetailsView(userID: user.id)
+                            UserDetailsView(from: model)
                         } label: {
-                            UserViewCell(model: user)
+                            UserViewCell(model: model)
                         }
                     }
                 }

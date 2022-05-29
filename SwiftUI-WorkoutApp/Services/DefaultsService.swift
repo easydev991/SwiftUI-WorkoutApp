@@ -77,7 +77,6 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    @MainActor
     var mainUserInfo: UserResponse? {
         if let info = try? JSONDecoder().decode(UserResponse.self, from: userInfo) {
             return info

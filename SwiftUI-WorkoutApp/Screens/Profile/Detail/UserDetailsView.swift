@@ -3,7 +3,7 @@ import SwiftUI
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = UserDetailsViewModel()
+    @StateObject private var viewModel: UserDetailsViewModel
     @State private var isMessaging = false
     @State private var messageText = ""
     @State private var isFriendRequestSent = false
@@ -11,7 +11,18 @@ struct UserDetailsView: View {
     @State private var errorTitle = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
-    let userID: Int
+
+    init(for user: UserResponse?) {
+        _viewModel = StateObject(wrappedValue: .init(with: user))
+    }
+
+    init(from model: UserModel) {
+        _viewModel = StateObject(wrappedValue: .init(from: model))
+    }
+
+    init(from dialog: DialogResponse) {
+        _viewModel = StateObject(wrappedValue: .init(from: dialog))
+    }
 
     var body: some View {
         ZStack {
@@ -23,7 +34,7 @@ struct UserDetailsView: View {
                 socialInfoSection
             }
             .disabled(viewModel.isLoading)
-            .opacity(viewModel.user.isEmpty ? .zero : 1)
+            .opacity(viewModel.user.isFull ? 1 : .zero)
             .animation(.default, value: viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
@@ -73,21 +84,7 @@ private extension UserDetailsView {
     }
 
     var avatarImageView: some View {
-        CacheAsyncImage(
-            url: viewModel.user.imageURL,
-            dummySize: .init(width: 100, height: 100)
-        ) { phase in
-            switch phase {
-            case let .success(image):
-                image
-                    .resizable()
-                    .applyProfileImageStyle()
-            default:
-                Image("defaultWorkoutImage")
-                    .resizable()
-                    .applyProfileImageStyle()
-            }
-        }
+        CacheImageView(url: viewModel.user.imageURL, mode: .profileAvatar)
     }
 
     var communicationSection: some View {
@@ -109,7 +106,7 @@ private extension UserDetailsView {
 
     var friendActionButton: some View {
         Button {
-            friendActionTask = Task { await viewModel.friendAction(with: defaults) }
+            friendActionTask = Task { await viewModel.friendAction() }
         } label: {
             Text(viewModel.friendActionOption.rawValue)
                 .fontWeight(.medium)
@@ -142,7 +139,7 @@ private extension UserDetailsView {
 
     var usesSportsGroundsLink: some View {
         NavigationLink {
-            SportsGroundsListView(for: .usedBy(userID: userID))
+            SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
                 .navigationTitle("Где тренируется")
         } label: {
             HStack {
@@ -186,7 +183,7 @@ private extension UserDetailsView {
 
     var journalsLink: some View {
         NavigationLink {
-            JournalsList(for: userID)
+            JournalsList(for: viewModel.user.id)
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -212,7 +209,7 @@ private extension UserDetailsView {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
-        await viewModel.makeUserInfo(for: userID, with: defaults, refresh: refresh)
+        await viewModel.makeUserInfo(with: defaults, refresh: refresh)
         if isMainUser {
             await viewModel.checkFriendRequests(with: defaults)
         }
@@ -232,7 +229,7 @@ private extension UserDetailsView {
 
     func sendMessage() {
         sendMessageTask = Task {
-            await viewModel.send(messageText, to: userID, with: defaults)
+            await viewModel.send(messageText, with: defaults)
         }
     }
 
@@ -257,7 +254,7 @@ private extension UserDetailsView {
     }
 
     var isMainUser: Bool {
-        userID == defaults.mainUserID
+        viewModel.user.id == defaults.mainUserID
     }
 
     func cancelTasks() {
@@ -267,7 +264,7 @@ private extension UserDetailsView {
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserDetailsView(userID: DefaultsService().mainUserID)
+        UserDetailsView(for: .emptyValue)
             .environmentObject(DefaultsService())
     }
 }
