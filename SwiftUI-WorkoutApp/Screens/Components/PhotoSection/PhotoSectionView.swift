@@ -2,11 +2,19 @@ import SwiftUI
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {
-    @State private var showAll = false
+    @State private var showAllPhotos = false
     private let items: [Photo]
+    private let canDelete: Bool
+    private let deletePhotoClbk: (Photo) -> Void
 
-    init(with photos: [Photo]) {
+    init(
+        with photos: [Photo],
+        canDelete: Bool,
+        deleteClbk: @escaping (Photo) -> Void
+    ) {
         items = photos
+        self.canDelete = canDelete
+        deletePhotoClbk = deleteClbk
     }
 
     var body: some View {
@@ -30,11 +38,11 @@ private extension PhotoSectionView {
 
     var showAllButton: some View {
         Button {
-            showAll.toggle()
+            showAllPhotos.toggle()
         } label: {
             ButtonInFormLabel(title: "Показать все")
         }
-        .sheet(isPresented: $showAll) {
+        .sheet(isPresented: $showAllPhotos) {
             photosSheet
         }
     }
@@ -42,25 +50,30 @@ private extension PhotoSectionView {
     var photosSheet: some View {
         VStack(spacing: .zero) {
             HeaderForSheet(title: "Фотографии") {
-                showAll.toggle()
+                showAllPhotos.toggle()
             }
             ScrollView {
                 LazyVStack {
-                    ForEach(items) {
-                        CacheAsyncImage(url: $0.imageURL) {
-                            Image(uiImage: $0).resizable()
-                        }
-                        .scaledToFill()
-                        .cornerRadius(8)
+                    ForEach(items) { photo in
+                        DeletablePhotoCell(
+                            photo: photo,
+                            canDelete: canDelete,
+                            deleteClbk: deleteAction
+                        )
                     }
                 }
             }
         }
     }
+
+    func deleteAction(photo: Photo) {
+        showAllPhotos.toggle()
+        deletePhotoClbk(photo)
+    }
 }
 
 struct PhotosCollection_Previews: PreviewProvider {
     static var previews: some View {
-        PhotoSectionView(with: [.mock, .mock, .mock])
+        PhotoSectionView(with: [.mock, .mock, .mock], canDelete: true, deleteClbk: {_ in})
     }
 }

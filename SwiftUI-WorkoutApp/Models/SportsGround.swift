@@ -107,7 +107,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 }
 
-struct Photo: Codable, Identifiable {
+struct Photo: Codable, Identifiable, Equatable {
     let id: Int
     let stringURL: String?
 

@@ -13,6 +13,7 @@ struct EventDetailsView: View {
     @State private var editComment: Comment?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
+    @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
     @Binding private var needRefreshOnDelete: Bool
@@ -38,7 +39,11 @@ struct EventDetailsView: View {
                 }
                 if let photos = viewModel.event.photos,
                    !photos.isEmpty {
-                    PhotoSectionView(with: photos)
+                    PhotoSectionView(
+                        with: photos,
+                        canDelete: isAuthor,
+                        deleteClbk: deletePhoto
+                    )
                 }
                 authorSection
                 if !viewModel.event.comments.isEmpty {
@@ -210,7 +215,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(with: defaults, refresh: refresh)
+        await viewModel.askForEvent(refresh: refresh)
     }
 
     func changeIsGoingToEvent() {
@@ -257,6 +262,12 @@ private extension EventDetailsView {
         showDeleteDialog.toggle()
     }
 
+    func deletePhoto(photo: Photo) {
+        deletePhotoTask = Task {
+            await viewModel.delete(photo)
+        }
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
@@ -280,7 +291,7 @@ private extension EventDetailsView {
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, goingToEventTask, deleteEventTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, goingToEventTask, deletePhotoTask, deleteEventTask].forEach { $0?.cancel() }
     }
 }
 

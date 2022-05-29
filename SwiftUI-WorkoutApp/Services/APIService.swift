@@ -476,6 +476,25 @@ struct APIService {
         )
         return try await makeStatus(for: endpoint.urlRequest)
     }
+
+    func deletePhoto(from container: PhotoContainer) async throws -> Bool {
+        let endpoint: Endpoint
+        switch container {
+        case let .event(input):
+            endpoint = .deleteEventPhoto(
+                eventID: input.containerID,
+                photoID: input.photoID,
+                auth: defaults.basicAuthInfo
+            )
+        case let .sportsGround(input):
+            endpoint = .deleteGroundPhoto(
+                groundID: input.containerID,
+                photoID: input.photoID,
+                auth: defaults.basicAuthInfo
+            )
+        }
+        return try await makeStatus(for: endpoint.urlRequest)
+    }
 }
 
 private extension APIService {
@@ -698,9 +717,11 @@ private extension APIService {
         case editEvent(id: Int, form: EventForm, auth: AuthData)
 
         // MARK: Сообщить, что пользователь пойдет на мероприятие
+        /// **POST** ${API}/trainings/<event_id>/go
         case postIsGoingToEvent(id: Int, auth: AuthData)
 
         // MARK: Сообщить, что пользователь не пойдет на мероприятие
+        /// **DELETE** ${API}/trainings/<event_id>/go
         case deleteIsGoingToEvent(id: Int, auth: AuthData)
 
         // MARK: Добавить комментарий для мероприятия
@@ -774,6 +795,14 @@ private extension APIService {
         // MARK: Удалить дневник пользователя
         /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
         case deleteJournal(userID: Int, journalID: Int, auth: AuthData)
+
+        // MARK: Удалить фото мероприятия
+        /// **DELETE** ${API}/trainings/<event_id>/photos/<photo_id>
+        case deleteEventPhoto(eventID: Int, photoID: Int, auth: AuthData)
+
+        // MARK: Удалить фото площадки
+        /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
+        case deleteGroundPhoto(groundID: Int, photoID: Int, auth: AuthData)
 
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
@@ -877,6 +906,10 @@ private extension APIService.Endpoint {
         case let .editEntry(userID, journalID, entryID, _, _),
             let .deleteEntry(userID, journalID, entryID, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
+        case let .deleteEventPhoto(eventID, photoID, _):
+            return "\(baseUrl)/trainings/\(eventID)/photos/\(photoID)"
+        case let .deleteGroundPhoto(groundID, photoID, _):
+            return "\(baseUrl)/areas/\(groundID)/photos/\(photoID)"
         }
     }
 
@@ -910,7 +943,8 @@ private extension APIService.Endpoint {
                 .deleteUser, .deleteIsGoingToEvent,
                 .deleteEventComment, .deleteEvent,
                 .deleteDialog, .deleteJournal,
-                .deleteEntry, .deleteSportsGround:
+                .deleteEntry, .deleteSportsGround,
+                .deleteEventPhoto, .deleteGroundPhoto:
             return .delete
         case .editJournalSettings, .editEntry:
             return .put
@@ -957,7 +991,8 @@ private extension APIService.Endpoint {
             let .getJournal(_, _, auth), let .createJournal(_, _, auth),
             let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
             let .editEntry(_,_,_,_, auth), let .deleteEntry(_, _, _, auth),
-            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth):
+            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth),
+            let .deleteEventPhoto(_, _, auth), let .deleteGroundPhoto(_, _, auth):
             return HTTPHeader.basicAuth(with: auth)
         case .registration, .resetPassword,
                 .getAllSportsGrounds, .getSportsGround,
@@ -1031,7 +1066,8 @@ private extension APIService.Endpoint {
                 .getMessages, .deleteDialog, .getJournals,
                 .getJournal, .getJournalEntries, .deleteEntry,
                 .deleteJournal, .getAllSportsGrounds,
-                .getUpdatedSportsGrounds, .deleteSportsGround:
+                .getUpdatedSportsGrounds, .deleteSportsGround,
+                .deleteEventPhoto, .deleteGroundPhoto:
             return nil
         case let .registration(form):
             return Parameter.make(

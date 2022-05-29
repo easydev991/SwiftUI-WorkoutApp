@@ -11,14 +11,14 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func askForEvent(with defaults: DefaultsService, refresh: Bool) async {
+    func askForEvent(refresh: Bool) async {
         if (isLoading || event.isFull) && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService().getEvent(by: event.id)
-            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserID })
+            let isUserGoing = event.participants.contains(where: { $0.userID == DefaultsService().mainUserID })
             event.trainHere = isUserGoing
         } catch {
             errorMessage = error.localizedDescription
@@ -42,6 +42,20 @@ final class EventDetailsViewModel: ObservableObject {
                 } else {
                     event.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
+    func delete(_ photo: Photo) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService().deletePhoto(from: .event(.init(containerID: event.id, photoID: photo.id))) {
+                await askForEvent(refresh: true)
             }
         } catch {
             errorMessage = error.localizedDescription

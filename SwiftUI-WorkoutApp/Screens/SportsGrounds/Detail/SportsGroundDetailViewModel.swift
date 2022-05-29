@@ -48,6 +48,20 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
+    func delete(_ photo: Photo) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService().deletePhoto(from: .sportsGround(.init(containerID: ground.id, photoID: photo.id))) {
+                await askForSportsGround(refresh: true)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading.toggle()
+    }
+
+    @MainActor
     func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

@@ -14,6 +14,7 @@ struct SportsGroundDetailView: View {
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteGroundTask: Task<Void, Never>?
+    @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
     @Binding private var needRefreshOnDelete: Bool
 
@@ -29,7 +30,11 @@ struct SportsGroundDetailView: View {
                 locationInfo
                 if let photos = viewModel.ground.photos,
                    !photos.isEmpty {
-                    PhotoSectionView(with: photos)
+                    PhotoSectionView(
+                        with: photos,
+                        canDelete: isGroundAuthor,
+                        deleteClbk: deletePhoto
+                    )
                 }
                 if defaults.isAuthorized {
                     participantsAndEventSection
@@ -230,6 +235,12 @@ private extension SportsGroundDetailView {
         await viewModel.askForSportsGround(refresh: refresh)
     }
 
+    func deletePhoto(photo: Photo) {
+        deletePhotoTask = Task {
+            await viewModel.delete(photo)
+        }
+    }
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
@@ -249,8 +260,7 @@ private extension SportsGroundDetailView {
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask,
-         changeTrainHereTask, deleteGroundTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, changeTrainHereTask, deletePhotoTask, deleteGroundTask].forEach { $0?.cancel() }
     }
 }
 
