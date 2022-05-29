@@ -38,7 +38,7 @@ struct EventDetailsView: View {
                 }
                 if let photos = viewModel.event.photos,
                    !photos.isEmpty {
-                    PhotosCollection(items: photos)
+                    PhotosGallery(items: photos)
                 }
                 authorSection
                 if !viewModel.event.comments.isEmpty {
@@ -181,7 +181,7 @@ private extension EventDetailsView {
     var authorSection: some View {
         Section("Организатор") {
             NavigationLink {
-                UserDetailsView(userID: viewModel.event.authorID)
+                UserDetailsView(for: viewModel.event.author)
             } label: {
                 HStack(spacing: 16) {
                     CacheImageView(url: viewModel.event.author?.avatarURL)

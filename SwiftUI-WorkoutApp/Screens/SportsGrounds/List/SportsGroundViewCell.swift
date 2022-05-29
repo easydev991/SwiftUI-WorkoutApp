@@ -7,7 +7,7 @@ struct SportsGroundViewCell: View {
         HStack(spacing: 16) {
             CacheImageView(
                 url: model.previewImageURL,
-                mode: .sportsGround
+                mode: .groundListItem
             )
             VStack(alignment: .leading, spacing: 4) {
                 Text(model.longTitle)

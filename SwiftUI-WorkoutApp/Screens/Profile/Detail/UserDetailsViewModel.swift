@@ -4,27 +4,35 @@ final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
     @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
-    @Published private(set) var user = UserModel.emptyValue
+    @Published private(set) var user: UserModel
     @Published private(set) var errorMessage = ""
     @Published private(set) var isMessageSent = false
 
+    init(with userInfo: UserResponse?) {
+        user = .init(userInfo)
+    }
+
+    init(from model: UserModel) {
+        user = model
+    }
+
+    init(from dialog: DialogResponse) {
+        user = .init(from: dialog)
+    }
+
     @MainActor
-    func makeUserInfo(
-        for userID: Int,
-        with defaults: DefaultsService,
-        refresh: Bool = false
-    ) async {
-        let isMainUser = userID == defaults.mainUserID
-        if user.id != .zero, !refresh { return }
+    func makeUserInfo(with defaults: DefaultsService, refresh: Bool) async {
+        let isMainUser = user.id == defaults.mainUserID
+        if user.isFull && !refresh { return }
         if !refresh { isLoading.toggle() }
         if isMainUser, !refresh,
            let mainUserInfo = defaults.mainUserInfo {
             user = .init(mainUserInfo)
         } else {
             do {
-                let info = try await APIService(with: defaults).getUserByID(userID)
+                let info = try await APIService().getUserByID(user.id)
                 if !isMainUser {
-                    friendActionOption = defaults.friendsIdsList.contains(userID)
+                    friendActionOption = defaults.friendsIdsList.contains(user.id)
                     ? .removeFriend
                     : .sendFriendRequest
                 }
@@ -42,11 +50,11 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func friendAction(with defaults: DefaultsService) async {
+    func friendAction() async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption) {
+            if try await APIService().friendAction(userID: user.id, option: friendActionOption) {
                 switch friendActionOption {
                 case .sendFriendRequest:
                     requestedFriendship.toggle()
@@ -61,11 +69,11 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func send(_ message: String, to userID: Int, with defaults: DefaultsService) async {
+    func send(_ message: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).sendMessage(message, to: userID) {
+            if try await APIService(with: defaults).sendMessage(message, to: user.id) {
                 isMessageSent.toggle()
             }
         } catch {

@@ -1,37 +1,31 @@
 import SwiftUI
 
-/// Универсальная картинка с возможностью кэширования
 struct CacheImageView: View {
     let url: URL?
-    var mode = Mode.user
+    var mode = Mode.userListItem
 
     var body: some View {
-        CacheAsyncImage(url: url, dummySize: mode.size) { phase in
-            switch phase {
-            case let .success(image):
-                image
-                    .resizable()
-                    .applySpecificSize(mode.size)
-            default:
-                Image("defaultWorkoutImage")
-                    .resizable()
-                    .applySpecificSize(mode.size)
-            }
+        CacheAsyncImage(url: url, dummySize: mode.size) {
+            Image(uiImage: $0).resizable()
         }
+        .applySpecificSize(mode.size)
     }
 }
 
 extension CacheImageView {
     enum Mode {
-        case user, sportsGround, dialog, generic, journalEntry
+        case userListItem, groundListItem, eventListItem,
+             dialogListItem, genericListItem, journalEntry, profileAvatar
         var size: CGSize {
             switch self {
-            case .user:
+            case .userListItem:
                 return .init(width: 36, height: 36)
-            case .sportsGround, .dialog:
+            case .groundListItem, .eventListItem, .dialogListItem:
                 return .init(width: 60, height: 60)
-            case .generic, .journalEntry:
+            case .genericListItem, .journalEntry:
                 return .init(width: 24, height: 24)
+            case .profileAvatar:
+                return .init(width: 200, height: 200)
             }
         }
     }

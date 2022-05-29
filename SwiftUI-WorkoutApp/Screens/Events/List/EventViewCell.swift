@@ -11,7 +11,7 @@ struct EventViewCell: View {
         HStack(alignment: .top, spacing: 16) {
             CacheImageView(
                 url: event.previewImageURL,
-                mode: .sportsGround
+                mode: .eventListItem
             )
             VStack(alignment: .leading, spacing: 4) {
                 Text(event.formattedTitle)

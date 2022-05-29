@@ -54,11 +54,11 @@ struct DialogView: View {
 private extension DialogView {
     var linkToAnotherUser: some View {
         NavigationLink {
-            UserDetailsView(userID: dialog.anotherUserID.valueOrZero)
+            UserDetailsView(from: dialog)
         } label: {
             CacheImageView(
                 url: dialog.anotherUserImageURL,
-                mode: .user
+                mode: .userListItem
             )
         }
         .disabled(viewModel.isLoading)

@@ -8,7 +8,7 @@ struct ProfileScreen: View {
         NavigationView {
             ZStack {
                 if defaults.isAuthorized {
-                    UserDetailsView(userID: defaults.mainUserID)
+                    UserDetailsView(for: defaults.mainUserInfo)
                 } else {
                     IncognitoProfileView()
                 }

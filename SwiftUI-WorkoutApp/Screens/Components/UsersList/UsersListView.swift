@@ -14,14 +14,14 @@ struct UsersListView: View {
                 if !viewModel.friendRequests.isEmpty {
                     friendRequestsSection
                 }
-                List(viewModel.users, id: \.self) { user in
+                List(viewModel.users, id: \.self) { model in
                     NavigationLink {
-                        UserDetailsView(userID: user.id)
+                        UserDetailsView(from: model)
                             .navigationBarTitleDisplayMode(.inline)
                     } label: {
-                        UserViewCell(model: user)
+                        UserViewCell(model: model)
                     }
-                    .disabled(isLinkDisabled(for: user.id))
+                    .disabled(isLinkDisabled(for: model.id))
                 }
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
