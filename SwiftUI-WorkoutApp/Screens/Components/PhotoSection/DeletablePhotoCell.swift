@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DeletablePhotoCell: View {
+    @EnvironmentObject private var network: CheckNetworkService
     let photo: Photo
     let canDelete: Bool
     var deleteClbk: (Photo) -> Void
@@ -13,7 +14,7 @@ struct DeletablePhotoCell: View {
         .cornerRadius(8)
         .overlay(alignment: .topTrailing) {
             menuButton
-                .opacity(canDelete ? 1 : .zero)
+                .opacity(showMenuButton ? 1 : .zero)
         }
     }
 }
@@ -33,10 +34,15 @@ private extension DeletablePhotoCell {
         .padding()
         .onTapGesture { hapticFeedback(.rigid) }
     }
+
+    var showMenuButton: Bool {
+        canDelete && network.isConnected
+    }
 }
 
 struct DeletablePhotoCell_Previews: PreviewProvider {
     static var previews: some View {
         DeletablePhotoCell(photo: .mock, canDelete: true, deleteClbk: {_ in})
+            .environmentObject(CheckNetworkService())
     }
 }

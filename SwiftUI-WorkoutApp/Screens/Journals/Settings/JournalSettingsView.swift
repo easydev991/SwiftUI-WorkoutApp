@@ -58,7 +58,7 @@ struct JournalSettingsView: View {
 
 private extension JournalSettingsView {
     var headerView: some View {
-        HeaderForSheet(title: "Настройки дневника", action: close)
+        HeaderForSheet(title: "Настройки дневника")
             .disabled(viewModel.isLoading)
     }
 
@@ -119,11 +119,9 @@ private extension JournalSettingsView {
         viewModel.clearErrorMessage()
     }
 
-    func close() { dismiss() }
-
     func finishSettings(isSuccess: Bool) {
         updateOnSuccess(journal.id)
-        close()
+        dismiss()
     }
 
     func cancelTask() {

@@ -1,14 +1,13 @@
 import SwiftUI
 
 struct SportsGroundFilterView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @Binding var filter: SportsGroundFilter
     private let defaultFilter = SportsGroundFilter()
 
     var body: some View {
         VStack(spacing: .zero) {
-            HeaderForSheet(title: "Фильтр площадок", action: close)
+            HeaderForSheet(title: "Фильтр площадок")
             Form {
                 Section("Размер") {
                     ForEach(defaultFilter.size, id: \.self) { size in
@@ -82,7 +81,6 @@ private extension SportsGroundFilterView {
         .disabled(filter == defaultFilter)
 
     }
-    func close() { dismiss() }
 }
 
 struct SportsGroundFilterView_Previews: PreviewProvider {

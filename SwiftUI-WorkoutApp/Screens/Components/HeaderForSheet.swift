@@ -1,15 +1,18 @@
 import SwiftUI
 
 struct HeaderForSheet: View {
+    @Environment(\.dismiss) private var dismiss
     let title: String
-    let action: () -> Void
+
     var body: some View {
         HStack {
             Text(title)
                 .font(.title3)
                 .fontWeight(.medium)
             Spacer()
-            Button(action: action) {
+            Button {
+                dismiss()
+            } label: {
                 DismissButton()
             }
         }
@@ -19,6 +22,6 @@ struct HeaderForSheet: View {
 
 struct HeaderForSheet_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderForSheet(title: "Настройки дневника", action: {})
+        HeaderForSheet(title: "Настройки дневника")
     }
 }

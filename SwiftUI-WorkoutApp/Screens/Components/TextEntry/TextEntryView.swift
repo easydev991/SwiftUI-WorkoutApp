@@ -33,11 +33,10 @@ struct TextEntryView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
-        .onChange(of: viewModel.isSuccess, perform: dismiss)
+        .onChange(of: viewModel.isSuccess, perform: dismissOnSuccess)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onAppear(perform: setupOldEntryIfNeeded)
         .onDisappear(perform: cancelTasks)
-        .navigationTitle("Комментарий")
     }
 }
 
@@ -57,9 +56,25 @@ extension TextEntryView {
     }
 }
 
+private extension TextEntryView.Mode {
+    var headerTitle: String {
+        switch self {
+        case .newForEvent, .newForGround:
+            return "Новый комментарий"
+        case .editEvent, .editGround:
+            return "Изменить комментарий"
+        case .newForJournal:
+            return "Новая запись"
+        case .editJournalEntry:
+            return "Изменить запись"
+        }
+    }
+}
+
 private extension TextEntryView {
     var content: some View {
         SendMessageView(
+            header: mode.headerTitle,
             text: $entryText,
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: !canSend,
@@ -71,7 +86,6 @@ private extension TextEntryView {
     }
 
     func sendAction() {
-#warning("TODO: рефактор")
         switch mode {
         case .newForGround, .newForEvent, .newForJournal:
             addEntryTask = Task {
@@ -93,7 +107,7 @@ private extension TextEntryView {
         isFocused.toggle()
     }
 
-    func dismiss(isSuccess: Bool) {
+    func dismissOnSuccess(isSuccess: Bool) {
         isEntrySent.toggle()
         dismiss()
     }

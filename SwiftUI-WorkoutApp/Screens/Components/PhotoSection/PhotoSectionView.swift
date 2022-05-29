@@ -49,9 +49,7 @@ private extension PhotoSectionView {
 
     var photosSheet: some View {
         VStack(spacing: .zero) {
-            HeaderForSheet(title: "Фотографии") {
-                showAllPhotos.toggle()
-            }
+            HeaderForSheet(title: "Фотографии")
             ScrollView {
                 LazyVStack {
                     ForEach(items) { photo in

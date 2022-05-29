@@ -217,6 +217,7 @@ private extension UserDetailsView {
 
     var messageSheet: some View {
         SendMessageView(
+            header: "Новое сообщение",
             text: $messageText,
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,

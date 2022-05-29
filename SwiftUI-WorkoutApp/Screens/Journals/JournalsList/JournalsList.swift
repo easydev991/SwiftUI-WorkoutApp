@@ -79,6 +79,7 @@ private extension JournalsList {
 
     var newJournalSheet: some View {
         SendMessageView(
+            header: "Новый дневник",
             text: $viewModel.newJournalTitle,
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: !viewModel.canSaveNewJournal,

@@ -3,7 +3,9 @@ import SwiftUI
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {
     @EnvironmentObject private var network: CheckNetworkService
+    @Environment(\.dismiss) private var dismiss
     @FocusState private var isFocused
+    let header: String
     @Binding var text: String
     let isLoading: Bool
     let isSendButtonDisabled: Bool
@@ -14,15 +16,18 @@ struct SendMessageView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 32) {
-                sendButtonStack
-                textView
+            VStack {
+                HeaderForSheet(title: header)
+                Group {
+                    textView
+                    sendButtonStack
+                }
+                .padding(.horizontal)
                 Spacer()
             }
             ProgressView()
                 .opacity(isLoading ? 1 : .zero)
         }
-        .padding()
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: dismissError) { TextOk() }
         }
@@ -68,6 +73,7 @@ private extension SendMessageView {
 struct SendMessageView_Previews: PreviewProvider {
     static var previews: some View {
         SendMessageView(
+            header: "Новый комментарий",
             text: .constant(""),
             isLoading: false,
             isSendButtonDisabled: false,
