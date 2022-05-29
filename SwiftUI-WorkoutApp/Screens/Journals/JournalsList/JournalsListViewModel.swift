@@ -60,6 +60,7 @@ final class JournalsListViewModel: ObservableObject {
         do {
             if try await APIService().deleteJournal(journalID: journalID) {
                 list.removeAll(where: { $0.id == journalID })
+                DefaultsService().setUserNeedUpdate(true)
             }
         } catch {
             errorMessage = error.localizedDescription

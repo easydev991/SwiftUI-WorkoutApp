@@ -1,12 +1,14 @@
 import SwiftUI
 
-/// Экран со списком площадок, где пользователь тренируется, или которые он добавил
+/// Экран со списком площадок
 struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var deletedSportsGroundId = Int.zero
+    /// Площадка для мероприятия
     @Binding private var groundInfo: SportsGround
     private let mode: Mode
 
@@ -31,7 +33,10 @@ struct SportsGroundsListView: View {
                     }
                 default:
                     NavigationLink {
-                        SportsGroundDetailView(for: ground)
+                        SportsGroundDetailView(
+                            for: ground,
+                            deletedGroundId: $deletedSportsGroundId
+                        )
                     } label: {
                         SportsGroundViewCell(model: ground)
                     }
@@ -43,7 +48,9 @@ struct SportsGroundsListView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
+        .onChange(of: deletedSportsGroundId, perform: updateDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.list, perform: dismissIfEmpty)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -63,7 +70,11 @@ extension SportsGroundsListView {
 
 private extension SportsGroundsListView {
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
+        await viewModel.makeSportsGroundsFor(mode, refresh: refresh)
+    }
+
+    func updateDeleted(deletedGroundId: Int) {
+        viewModel.deleteSportsGround(id: deletedGroundId)
     }
 
     func setupErrorAlert(with message: String) {
@@ -73,6 +84,13 @@ private extension SportsGroundsListView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+    }
+
+    func dismissIfEmpty(list: [SportsGround]) {
+        if list.isEmpty {
+            defaults.setUserNeedUpdate(true)
+            dismiss()
+        }
     }
 }
 

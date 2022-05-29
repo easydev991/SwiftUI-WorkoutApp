@@ -8,8 +8,8 @@ struct DialogView: View {
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
+    @State private var refreshDialogTask: Task<Void, Never>?
     @Namespace private var chatScrollView
-
     @Binding var dialog: DialogResponse
 
     var body: some View {
@@ -30,11 +30,7 @@ struct DialogView: View {
                         }
                     }
                 }
-                HStack {
-                    newMessageTextField
-                    sendMessageButton
-                }
-                .padding()
+                sendMessageBar
             }
         }
         .onChange(of: viewModel.markedAsRead, perform: updateDialogUnreadCount)
@@ -42,16 +38,34 @@ struct DialogView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
-        .task { await markAsRead() }
-        .task { await viewModel.makeItems(for: dialog.id, with: defaults) }
+        .task(priority: .low) { await markAsRead() }
+        .task(priority: .high) { await askForMessages() }
         .onDisappear(perform: cancelTasks)
-        .toolbar { linkToAnotherUser }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButton
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                linkToAnotherUser
+            }
+        }
         .navigationTitle(dialog.anotherUserName.valueOrEmpty)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 private extension DialogView {
+    var refreshButton: some View {
+        Button {
+            refreshDialogTask = Task {
+                await askForMessages(refresh: true)
+            }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .disabled(isToolbarItemDisabled)
+    }
+
     var linkToAnotherUser: some View {
         NavigationLink {
             UserDetailsView(from: dialog)
@@ -61,7 +75,11 @@ private extension DialogView {
                 mode: .userListItem
             )
         }
-        .disabled(viewModel.isLoading)
+        .disabled(isToolbarItemDisabled)
+    }
+
+    var isToolbarItemDisabled: Bool {
+        viewModel.isLoading || !network.isConnected
     }
 
     func chatCell(for message: MessageResponse) -> some View {
@@ -77,6 +95,14 @@ private extension DialogView {
         }
         .foregroundColor(.white)
         .background(Color(uiColor: messageType(for: message).color))
+    }
+
+    var sendMessageBar: some View {
+        HStack {
+            newMessageTextField
+            sendMessageButton
+        }
+        .padding()
     }
 
     var newMessageTextField: some View {
@@ -110,13 +136,17 @@ private extension DialogView {
 
     func markAsRead() async {
         if dialog.unreadMessagesCount > .zero {
-            await viewModel.markAsRead(from: dialog.anotherUserID.valueOrZero, with: defaults)
+            await viewModel.markAsRead(from: dialog.anotherUserID.valueOrZero)
         }
     }
 
+    func askForMessages(refresh: Bool = false) async {
+        await viewModel.makeItems(for: dialog.id, refresh: refresh)
+    }
+
     func sendMessage() {
-        sendMessageTask = Task {
-            await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero, with: defaults)
+        sendMessageTask = Task(priority: .userInitiated) {
+            await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero)
         }
     }
 
@@ -136,7 +166,7 @@ private extension DialogView {
     }
 
     func cancelTasks() {
-        sendMessageTask?.cancel()
+        [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
     }
 }
 

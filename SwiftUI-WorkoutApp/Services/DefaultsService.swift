@@ -1,6 +1,9 @@
 import SwiftUI
 
 final class DefaultsService: ObservableObject {
+    @AppStorage(Key.needUpdateUser.rawValue)
+    private(set) var needUpdateUser = false
+
     @AppStorage(Key.mainUserID.rawValue)
     private(set) var mainUserID = Int.zero
 
@@ -64,6 +67,11 @@ final class DefaultsService: ObservableObject {
     }
 
     @MainActor
+    func setUserNeedUpdate(_ newValue: Bool) {
+        needUpdateUser = newValue
+    }
+
+    @MainActor
     func saveUserInfo(_ info: UserResponse) {
         mainUserID = info.userID.valueOrZero
         mainUserCountry = info.countryID.valueOrZero
@@ -74,6 +82,7 @@ final class DefaultsService: ObservableObject {
         }
         if let data = try? JSONEncoder().encode(info) {
             userInfo = data
+            setUserNeedUpdate(false)
         }
     }
 
@@ -127,6 +136,7 @@ private extension DefaultsService {
     enum Key: String {
         case mainUserID, isUserAuthorized, showWelcome,
              authData, userInfo, friends, friendRequests,
-             hasJournals, mainUserCountry, mainUserCity
+             hasJournals, mainUserCountry, mainUserCity,
+             needUpdateUser
     }
 }

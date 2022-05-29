@@ -142,6 +142,9 @@ private extension SportsGroundFormView {
     func dismiss(isSuccess: Bool) {
         dismiss()
         needRefreshOnSave.toggle()
+        if viewModel.isNewSportsGround {
+            defaults.setUserNeedUpdate(true)
+        }
     }
 
     func cancelTask() {

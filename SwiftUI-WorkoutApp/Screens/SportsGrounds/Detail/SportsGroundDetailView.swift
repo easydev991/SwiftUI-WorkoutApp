@@ -17,10 +17,16 @@ struct SportsGroundDetailView: View {
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
     @Binding private var needRefreshOnDelete: Bool
+    @Binding private var deletedGroundId: Int
 
-    init(for ground: SportsGround, refreshOnDelete: Binding<Bool> = .constant(false)) {
-        _needRefreshOnDelete = refreshOnDelete
+    init(
+        for ground: SportsGround,
+        refreshOnDelete: Binding<Bool> = .constant(false),
+        deletedGroundId: Binding<Int> = .constant(.zero)
+    ) {
         _viewModel = StateObject(wrappedValue: .init(with: ground))
+        _needRefreshOnDelete = refreshOnDelete
+        _deletedGroundId = deletedGroundId
     }
 
     var body: some View {
@@ -132,7 +138,7 @@ private extension SportsGroundDetailView {
 
     func changeTrainHereStatus() {
         changeTrainHereTask = Task {
-            await viewModel.changeTrainHereStatus(with: defaults)
+            await viewModel.changeTrainHereStatus()
         }
     }
 
@@ -257,6 +263,8 @@ private extension SportsGroundDetailView {
     func dismissDeleted(isDeleted: Bool) {
         dismiss()
         needRefreshOnDelete.toggle()
+        deletedGroundId = viewModel.ground.id
+        defaults.setUserNeedUpdate(true)
     }
 
     func cancelTasks() {

@@ -21,7 +21,7 @@ struct UsersListView: View {
                     } label: {
                         UserViewCell(model: model)
                     }
-                    .disabled(isLinkDisabled(for: model.id))
+                    .disabled(model.id == defaults.mainUserID)
                 }
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
@@ -63,12 +63,8 @@ private extension UsersListView {
         }
     }
 
-    func isLinkDisabled(for userID: Int) -> Bool {
-        userID == defaults.mainUserID || !defaults.isAuthorized
-    }
-
     func askForUsers(refresh: Bool = false) async {
-        await viewModel.makeInfo(for: mode, with: defaults, refresh: refresh)
+        await viewModel.makeInfo(for: mode, refresh: refresh)
     }
 
     func setupErrorAlert(with message: String) {

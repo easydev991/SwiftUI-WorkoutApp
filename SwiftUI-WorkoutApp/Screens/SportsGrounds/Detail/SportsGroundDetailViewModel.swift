@@ -25,12 +25,13 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus(with defaults: DefaultsService) async {
-        if isLoading || !defaults.isAuthorized { return }
+    func changeTrainHereStatus() async {
+        if isLoading { return }
         isLoading.toggle()
         do {
+            let defaults = DefaultsService()
             let trainHere = !ground.trainHere
-            if try await APIService(with: defaults).changeTrainHereStatus(
+            if try await APIService().changeTrainHereStatus(
                 for: ground.id,
                 trainHere: trainHere
             ) {
@@ -40,6 +41,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 } else {
                     ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
+                defaults.setUserNeedUpdate(true)
             }
         } catch {
             errorMessage = error.localizedDescription

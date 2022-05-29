@@ -209,9 +209,9 @@ private extension UserDetailsView {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
-        await viewModel.makeUserInfo(with: defaults, refresh: refresh)
+        await viewModel.makeUserInfo(refresh: refresh)
         if isMainUser {
-            await viewModel.checkFriendRequests(with: defaults)
+            await viewModel.checkFriendRequests()
         }
     }
 
@@ -230,7 +230,7 @@ private extension UserDetailsView {
 
     func sendMessage() {
         sendMessageTask = Task {
-            await viewModel.send(messageText, with: defaults)
+            await viewModel.send(messageText)
         }
     }
 

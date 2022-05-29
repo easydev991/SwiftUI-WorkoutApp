@@ -21,32 +21,33 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeUserInfo(with defaults: DefaultsService, refresh: Bool) async {
+    func makeUserInfo(refresh: Bool) async {
+        let defaults = DefaultsService()
         let isMainUser = user.id == defaults.mainUserID
-        if user.isFull && !refresh { return }
         if !refresh { isLoading.toggle() }
-        if isMainUser, !refresh,
-           let mainUserInfo = defaults.mainUserInfo {
-            user = .init(mainUserInfo)
-        } else {
-            do {
-                let info = try await APIService().getUserByID(user.id)
-                if !isMainUser {
-                    friendActionOption = defaults.friendsIdsList.contains(user.id)
-                    ? .removeFriend
-                    : .sendFriendRequest
-                }
-                user = .init(info)
-            } catch {
-                errorMessage = error.localizedDescription
+        if isMainUser {
+            if !refresh && !defaults.needUpdateUser,
+               let mainUserInfo = defaults.mainUserInfo {
+                user = .init(mainUserInfo)
+            } else {
+                await makeUserInfo(for: user.id)
             }
+        } else {
+            if user.isFull && !refresh {
+                isLoading.toggle()
+                return
+            }
+            await makeUserInfo(for: user.id)
+            friendActionOption = defaults.friendsIdsList.contains(user.id)
+            ? .removeFriend
+            : .sendFriendRequest
         }
         if !refresh { isLoading.toggle() }
     }
 
     @MainActor
-    func checkFriendRequests(with defaults: DefaultsService) async {
-        try? await APIService(with: defaults).getFriendRequests()
+    func checkFriendRequests() async {
+        try? await APIService().getFriendRequests()
     }
 
     @MainActor
@@ -69,11 +70,11 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func send(_ message: String, with defaults: DefaultsService) async {
+    func send(_ message: String) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).sendMessage(message, to: user.id) {
+            if try await APIService().sendMessage(message, to: user.id) {
                 isMessageSent.toggle()
             }
         } catch {
@@ -83,4 +84,15 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+private extension UserDetailsViewModel {
+    func makeUserInfo(for userID: Int) async {
+        do {
+            let info = try await APIService().getUserByID(user.id)
+            user = .init(info)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }

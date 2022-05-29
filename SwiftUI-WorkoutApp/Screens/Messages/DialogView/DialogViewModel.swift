@@ -8,11 +8,11 @@ final class DialogViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeItems(for dialogID: Int, with defaults: DefaultsService, refresh: Bool = false) async {
+    func makeItems(for dialogID: Int, refresh: Bool = false) async {
         if isLoading && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getMessages(for: dialogID).reversed()
+            list = try await APIService().getMessages(for: dialogID).reversed()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -20,9 +20,9 @@ final class DialogViewModel: ObservableObject {
     }
 
     @MainActor
-    func markAsRead(from userID: Int, with defaults: DefaultsService) async {
+    func markAsRead(from userID: Int) async {
         do {
-            if try await APIService(with: defaults).markAsRead(from: userID) {
+            if try await APIService().markAsRead(from: userID) {
                 markedAsRead = true
             }
         } catch {
@@ -31,13 +31,13 @@ final class DialogViewModel: ObservableObject {
     }
 
     @MainActor
-    func sendMessage(in dialog: Int, to userID: Int, with defaults: DefaultsService) async {
+    func sendMessage(in dialog: Int, to userID: Int) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).sendMessage(newMessage, to: userID) {
+            if try await APIService().sendMessage(newMessage, to: userID) {
                 newMessage = ""
-                await makeItems(for: dialog, with: defaults, refresh: true)
+                await makeItems(for: dialog, refresh: true)
             }
         } catch {
             errorMessage = error.localizedDescription

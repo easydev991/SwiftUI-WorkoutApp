@@ -20,6 +20,9 @@ final class SportsGroundFormViewModel: ObservableObject {
         (groundForm.photosCount + newImages.count) < Constants.photosLimit
         && !isLoading
     }
+    var isNewSportsGround: Bool {
+        groundID == nil
+    }
 
     init(with ground: SportsGround?) {
         groundForm = .init(ground)

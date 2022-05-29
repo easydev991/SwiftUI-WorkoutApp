@@ -10,7 +10,11 @@ struct FriendRequestsView: View {
 
     var body: some View {
         List(viewModel.friendRequests, id: \.self) { item in
-            FriendRequestCell(model: item, acceptClbk: accept, declineClbk: decline)
+            FriendRequestCell(
+                model: item,
+                acceptClbk: accept,
+                declineClbk: decline
+            )
         }
         .disabled(viewModel.isLoading)
         .animation(.default, value: viewModel.friendRequests)
@@ -24,13 +28,13 @@ struct FriendRequestsView: View {
 private extension FriendRequestsView {
     func accept(userID: Int) {
         acceptRequestTask = Task {
-            await viewModel.respondToFriendRequest(from: userID, with: defaults, accept: true)
+            await viewModel.respondToFriendRequest(from: userID, accept: true)
         }
     }
 
     func decline(userID: Int) {
         declineRequestTask = Task {
-            await viewModel.respondToFriendRequest(from: userID, with: defaults, accept: false)
+            await viewModel.respondToFriendRequest(from: userID, accept: false)
         }
     }
 

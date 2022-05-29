@@ -135,6 +135,7 @@ private extension JournalsList {
 
     func closeSheet(isSuccess: Bool) {
         isCreatingJournal.toggle()
+        defaults.setUserNeedUpdate(true)
     }
 
     func setupErrorAlert(with message: String) {
