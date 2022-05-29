@@ -1,9 +1,13 @@
 import SwiftUI
 
 /// Галерея с фотографиями
-struct PhotosGallery: View {
+struct PhotoSectionView: View {
     @State private var showAll = false
-    let items: [Photo]
+    private let items: [Photo]
+
+    init(with photos: [Photo]) {
+        items = photos
+    }
 
     var body: some View {
         Section("Фотографии") {
@@ -15,14 +19,13 @@ struct PhotosGallery: View {
     }
 }
 
-private extension PhotosGallery {
+private extension PhotoSectionView {
     var previewImage: some View {
-        CacheAsyncImage(url: items.first?.imageURL) {
-            Image(uiImage: $0).resizable()
+        HStack {
+            Spacer()
+            CacheImageView(url: items.first?.imageURL, mode: .eventPhoto)
+            Spacer()
         }
-        .scaledToFill()
-        .frame(maxHeight: 150)
-        .cornerRadius(8)
     }
 
     var showAllButton: some View {
@@ -41,13 +44,15 @@ private extension PhotosGallery {
             HeaderForSheet(title: "Фотографии") {
                 showAll.toggle()
             }
-            List {
-                ForEach(items) {
-                    CacheAsyncImage(url: $0.imageURL) {
-                        Image(uiImage: $0).resizable()
+            ScrollView {
+                LazyVStack {
+                    ForEach(items) {
+                        CacheAsyncImage(url: $0.imageURL) {
+                            Image(uiImage: $0).resizable()
+                        }
+                        .scaledToFill()
+                        .cornerRadius(8)
                     }
-                    .scaledToFill()
-                    .cornerRadius(8)
                 }
             }
         }
@@ -56,6 +61,6 @@ private extension PhotosGallery {
 
 struct PhotosCollection_Previews: PreviewProvider {
     static var previews: some View {
-        PhotosGallery(items: [.mock, .mock, .mock])
+        PhotoSectionView(with: [.mock, .mock, .mock])
     }
 }

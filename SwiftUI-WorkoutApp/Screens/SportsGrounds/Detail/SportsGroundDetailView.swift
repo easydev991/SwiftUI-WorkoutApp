@@ -29,7 +29,7 @@ struct SportsGroundDetailView: View {
                 locationInfo
                 if let photos = viewModel.ground.photos,
                    !photos.isEmpty {
-                    PhotosGallery(items: photos)
+                    PhotoSectionView(with: photos)
                 }
                 if defaults.isAuthorized {
                     participantsAndEventSection

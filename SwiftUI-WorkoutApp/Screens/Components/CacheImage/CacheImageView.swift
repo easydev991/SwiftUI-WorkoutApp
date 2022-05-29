@@ -15,7 +15,8 @@ struct CacheImageView: View {
 extension CacheImageView {
     enum Mode {
         case userListItem, groundListItem, eventListItem,
-             dialogListItem, genericListItem, journalEntry, profileAvatar
+             dialogListItem, genericListItem, journalEntry,
+             profileAvatar, eventPhoto, groundPhoto
         var size: CGSize {
             switch self {
             case .userListItem:
@@ -24,7 +25,7 @@ extension CacheImageView {
                 return .init(width: 60, height: 60)
             case .genericListItem, .journalEntry:
                 return .init(width: 24, height: 24)
-            case .profileAvatar:
+            case .profileAvatar, .eventPhoto, .groundPhoto:
                 return .init(width: 200, height: 200)
             }
         }

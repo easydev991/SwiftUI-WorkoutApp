@@ -38,7 +38,7 @@ struct EventDetailsView: View {
                 }
                 if let photos = viewModel.event.photos,
                    !photos.isEmpty {
-                    PhotosGallery(items: photos)
+                    PhotoSectionView(with: photos)
                 }
                 authorSection
                 if !viewModel.event.comments.isEmpty {

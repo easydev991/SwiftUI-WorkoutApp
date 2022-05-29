@@ -8,7 +8,7 @@ struct CacheAsyncImage<Content: View>: View {
 
     init(
         url: URL?,
-        dummySize: CGSize = .init(width: 36, height: 36),
+        dummySize: CGSize = .init(width: 100, height: 100),
         @ViewBuilder content: @escaping (UIImage) -> Content
     ) {
         self.dummySize = dummySize

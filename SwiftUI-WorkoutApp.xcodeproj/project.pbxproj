@@ -114,7 +114,7 @@
 		67B78718281D8792008B104F /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78717281D8792008B104F /* ChangePasswordViewModel.swift */; };
 		67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */; };
 		67B7871C281D8A49008B104F /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B7871B281D8A49008B104F /* UserDetailsViewModel.swift */; };
-		67BAF3F428361BC400DB40D9 /* PhotosGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotosGallery.swift */; };
+		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
 		67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */; };
 		67BAF3F82836245100DB40D9 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* Comments.swift */; };
 		67BAF3FB28362AD100DB40D9 /* AddCommentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3FA28362AD100DB40D9 /* AddCommentButton.swift */; };
@@ -250,7 +250,7 @@
 		67B78717281D8792008B104F /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsViewModel.swift; sourceTree = "<group>"; };
 		67B7871B281D8A49008B104F /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
-		67BAF3F328361BC400DB40D9 /* PhotosGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosGallery.swift; sourceTree = "<group>"; };
+		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundLocationInfo.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		67BAF3FA28362AD100DB40D9 /* AddCommentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentButton.swift; sourceTree = "<group>"; };
@@ -641,7 +641,7 @@
 				671D7DE928200F870068E728 /* TextOk.swift */,
 				67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */,
 				678142082835575D00590746 /* CustomToggle.swift */,
-				67BAF3F328361BC400DB40D9 /* PhotosGallery.swift */,
+				67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */,
 				67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */,
 				67D9169528396C1E0098D3CB /* SendMessageView.swift */,
 				67D9167D2838DC3E0098D3CB /* GenericListCell.swift */,
@@ -824,7 +824,7 @@
 				672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */,
 				6798AA70280B42BC00DB76F1 /* WelcomeButtonTitle.swift in Sources */,
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
-				67BAF3F428361BC400DB40D9 /* PhotosGallery.swift in Sources */,
+				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* Comments.swift in Sources */,
 				67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */,
 				67C87FCD28434DC500D6377D /* CacheAsyncImage.swift in Sources */,
