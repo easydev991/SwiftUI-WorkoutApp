@@ -10,8 +10,6 @@ struct JournalEntriesList: View {
     @State private var entryIdToDelete: Int?
     @State private var showDeleteDialog = false
     @State private var editEntry: JournalEntryResponse?
-    @State private var needUpdateEntries = false
-    @State private var needUpdateJournal = false
     @State private var editAccessTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
     @State private var updateEntriesTask: Task<Void, Never>?
@@ -51,7 +49,7 @@ struct JournalEntriesList: View {
                         oldEntry: $0.formattedMessage
                     )
                 ),
-                isSent: $needUpdateEntries
+                refreshClbk: updateEntries
             )
         }
         .confirmationDialog(
@@ -61,7 +59,6 @@ struct JournalEntriesList: View {
         ) { deleteEntryButton }
         .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needUpdateEntries, perform: updateEntries)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -83,7 +80,7 @@ private extension JournalEntriesList {
         editEntry = entry
     }
 
-    func updateEntries(isSuccess: Bool) {
+    func updateEntries() {
         updateEntriesTask = Task {
             await viewModel.makeItems(with: defaults, refresh: true)
         }
@@ -97,7 +94,7 @@ private extension JournalEntriesList {
         .sheet(isPresented: $showEntrySheet) {
             TextEntryView(
                 mode: .newForJournal(id: viewModel.currentJournal.id),
-                isSent: $needUpdateEntries
+                refreshClbk: updateEntries
             )
         }
     }

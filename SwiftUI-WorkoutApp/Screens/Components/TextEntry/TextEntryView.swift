@@ -14,11 +14,11 @@ struct TextEntryView: View {
 
     private let mode: Mode
     private var oldEntryText: String?
-    @Binding private var isEntrySent: Bool
+    private let refreshClbk: () -> Void
 
-    init(mode: Mode, isSent: Binding<Bool>) {
+    init(mode: Mode, refreshClbk: @escaping () -> Void) {
         self.mode = mode
-        _isEntrySent = isSent
+        self.refreshClbk = refreshClbk
         switch mode {
         case let .editGround(info),
             let .editEvent(info),
@@ -108,7 +108,7 @@ private extension TextEntryView {
     }
 
     func dismissOnSuccess(isSuccess: Bool) {
-        isEntrySent.toggle()
+        refreshClbk()
         dismiss()
     }
 
@@ -149,7 +149,7 @@ private extension TextEntryView {
 
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
-        TextEntryView(mode: .newForGround(id: .zero), isSent: .constant(false))
+        TextEntryView(mode: .newForGround(id: .zero), refreshClbk: {})
             .environmentObject(DefaultsService())
     }
 }

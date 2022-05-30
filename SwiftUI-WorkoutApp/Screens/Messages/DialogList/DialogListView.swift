@@ -7,28 +7,17 @@ struct DialogListView: View {
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var indexToDelete: Int?
+    @State private var openFriendList = false
     @State private var showDeleteConfirmation = false
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
-            EmptyContentView(mode: .messages)
-                .opacity(showEmptyView ? 1 : .zero)
-            Text("Тут будут чаты с другими пользователями")
-                .multilineTextAlignment(.center)
-                .padding()
-                .opacity(showDummyText ? 1 : .zero)
-            List {
-                ForEach($viewModel.list) { $dialog in
-                    NavigationLink {
-                        DialogView(dialog: $dialog)
-                    } label: {
-                        GenericListCell(for: .dialog(dialog))
-                    }
-                }
-                .onDelete(perform: initiateDeletion)
+            if viewModel.list.isEmpty {
+                emptyContentView
+            } else {
+                dialogList
             }
-            .disabled(viewModel.isLoading)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
@@ -50,25 +39,65 @@ struct DialogListView: View {
 
 private extension DialogListView {
     var linkToFriends: some View {
-        NavigationLink {
-            UsersListView(mode: .friends(userID: defaults.mainUserID))
-                .navigationTitle("Друзья")
+        NavigationLink(isActive: $openFriendList) {
+            if hasFriends {
+                UsersListView(mode: .friends(userID: defaults.mainUserID))
+                    .navigationTitle("Друзья")
+            } else {
+                SearchUsersView()
+            }
         } label: {
             Image(systemName: "plus")
         }
         .opacity(hasFriends ? 1 : .zero)
     }
 
-    var showEmptyView: Bool {
-        hasFriends && viewModel.list.isEmpty
+    var emptyViewButtonTitle: String {
+        hasFriends
+        ? "Открыть список друзей"
+        : "Найти пользователя"
+    }
+
+    var emptyContentView: some View {
+        EmptyContentView(
+            message: "Чатов пока нет",
+            buttonTitle: emptyViewButtonTitle,
+            action: emptyViewAction
+        )
+        .opacity(viewModel.isLoading ? .zero : 1)
+        .animation(.default, value: viewModel.isLoading)
+    }
+
+    var dialogList: some View {
+        List {
+            ForEach($viewModel.list) { $dialog in
+                NavigationLink {
+                    DialogView(dialog: $dialog)
+                } label: {
+                    GenericListCell(for: .dialog(dialog))
+                }
+            }
+            .onDelete(perform: initiateDeletion)
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .animation(.default, value: viewModel.isLoading)
+        .disabled(viewModel.isLoading)
+    }
+
+    var deleteDialogButton: some View {
+        Button(role: .destructive) {
+            deleteAction(at: indexToDelete)
+        } label: {
+            Text("Удалить")
+        }
     }
 
     var hasFriends: Bool {
-        !defaults.friendsIdsList.isEmpty
+        defaults.hasFriends
     }
 
-    var showDummyText: Bool {
-        !showEmptyView && viewModel.list.isEmpty
+    func emptyViewAction() {
+        openFriendList.toggle()
     }
 
     func askForDialogs(refresh: Bool = false) async {
@@ -78,14 +107,6 @@ private extension DialogListView {
     func initiateDeletion(at indexSet: IndexSet) {
         indexToDelete = indexSet.first
         showDeleteConfirmation.toggle()
-    }
-
-    var deleteDialogButton: some View {
-        Button(role: .destructive) {
-            deleteAction(at: indexToDelete)
-        } label: {
-            Text("Удалить")
-        }
     }
 
     func deleteAction(at index: Int?) {

@@ -8,7 +8,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var list = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    @Published var openDetails = false
     @Published var selectedGround = SportsGround.emptyValue
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()

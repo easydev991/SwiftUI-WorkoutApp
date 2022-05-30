@@ -15,7 +15,11 @@ struct FormatterService {
         }
     }
 
-    static func stringFromFullDate(_ date: Date, format: DateFormat = .isoDateTimeSec, iso: Bool = true) -> String {
+    static func stringFromFullDate(
+        _ date: Date,
+        format: DateFormat = .isoDateTimeSec,
+        iso: Bool = true
+    ) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format.rawValue

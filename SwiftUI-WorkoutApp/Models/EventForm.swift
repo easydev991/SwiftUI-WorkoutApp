@@ -18,9 +18,13 @@ struct EventForm: Codable {
 }
 
 extension EventForm {
-    /// Пример: "1990-08-12T00:00:00.000Z"
+    /// Пример: "2022-05-30T19:32:00"
     var dateIsoString: String {
-        FormatterService.stringFromFullDate(date)
+        FormatterService.stringFromFullDate(
+            date,
+            format: .serverDateTimeSec,
+            iso: false
+        )
     }
 
     var countryID: Int {

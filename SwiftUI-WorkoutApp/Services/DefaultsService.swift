@@ -31,8 +31,14 @@ final class DefaultsService: ObservableObject {
     @AppStorage(Key.friendRequests.rawValue)
     private var friendRequests = Data()
 
+    @AppStorage(Key.hasSportsGrounds.rawValue)
+    private(set) var hasSportsGrounds = false
+
     @AppStorage(Key.hasJournals.rawValue)
     private(set) var hasJournals = false
+
+    @AppStorage(Key.hasFriends.rawValue)
+    private(set) var hasFriends = false
 
     func setWelcomeShown() {
         showWelcome = false
@@ -77,6 +83,9 @@ final class DefaultsService: ObservableObject {
         mainUserID = info.userID.valueOrZero
         mainUserCountry = info.countryID.valueOrZero
         mainUserCity = info.cityID.valueOrZero
+        hasFriends = info.friendsCount.valueOrZero != .zero
+        setHasSportsGrounds(info.usedSportsGroundsCount != .zero)
+        setHasJournals(info.journalsCount.valueOrZero != .zero)
         if !isAuthorized {
             showWelcome = false
             isAuthorized = true
@@ -97,6 +106,7 @@ final class DefaultsService: ObservableObject {
 
     @MainActor
     func saveFriendsIds(_ ids: [Int]) {
+        hasFriends = !ids.isEmpty
         if let data = try? JSONEncoder().encode(ids) {
             friendsIds = data
         }
@@ -131,6 +141,11 @@ final class DefaultsService: ObservableObject {
     func setHasJournals(_ hasJournals: Bool) {
         self.hasJournals = hasJournals
     }
+
+    @MainActor
+    func setHasSportsGrounds(_ hasGrounds: Bool) {
+        self.hasSportsGrounds = hasGrounds
+    }
 }
 
 private extension DefaultsService {
@@ -138,6 +153,6 @@ private extension DefaultsService {
         case mainUserID, isUserAuthorized, showWelcome,
              authData, userInfo, friends, friendRequests,
              hasJournals, mainUserCountry, mainUserCity,
-             needUpdateUser
+             needUpdateUser, hasSportsGrounds, hasFriends
     }
 }

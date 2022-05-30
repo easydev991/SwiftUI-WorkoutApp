@@ -34,9 +34,7 @@ struct MapViewUI: UIViewRepresentable {
         mapView.addAnnotations(annotations)
     }
 
-    func makeCoordinator() -> MapCoordinator {
-        MapCoordinator(self)
-    }
+    func makeCoordinator() -> MapCoordinator { .init(self) }
 }
 
 final class MapCoordinator: NSObject, MKMapViewDelegate {

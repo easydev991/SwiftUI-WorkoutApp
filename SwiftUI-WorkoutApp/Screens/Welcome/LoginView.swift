@@ -74,6 +74,7 @@ private extension LoginView {
                 .foregroundColor(.secondary)
             SecureField("Пароль", text: $viewModel.password)
                 .focused($focus, equals: .password)
+                .onSubmit(loginAction)
         }
     }
 

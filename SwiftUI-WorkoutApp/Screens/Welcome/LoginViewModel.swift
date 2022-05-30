@@ -32,8 +32,8 @@ final class LoginViewModel: ObservableObject {
             try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
             errorMessage = error.localizedDescription
-            isLoading.toggle()
         }
+        isLoading.toggle()
     }
 
     @MainActor

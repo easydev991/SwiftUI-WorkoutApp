@@ -5,7 +5,6 @@ struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: SportsGroundDetailViewModel
-    @State private var needRefresh = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
@@ -16,17 +15,14 @@ struct SportsGroundDetailView: View {
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    @Binding private var needRefreshOnDelete: Bool
-    @Binding private var deletedGroundId: Int
+    private let onDeletionClbk: (Int) -> Void
 
     init(
         for ground: SportsGround,
-        refreshOnDelete: Binding<Bool> = .constant(false),
-        deletedGroundId: Binding<Int> = .constant(.zero)
+        onDeletion: @escaping (Int) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: ground))
-        _needRefreshOnDelete = refreshOnDelete
-        _deletedGroundId = deletedGroundId
+        onDeletionClbk = onDeletion
     }
 
     var body: some View {
@@ -52,7 +48,10 @@ struct SportsGroundDetailView: View {
                 if defaults.isAuthorized {
                     AddCommentButton(isCreatingComment: $isCreatingComment)
                         .sheet(isPresented: $isCreatingComment) {
-                            TextEntryView(mode: .newForGround(id: viewModel.ground.id), isSent: $needRefresh)
+                            TextEntryView(
+                                mode: .newForGround(id: viewModel.ground.id),
+                                refreshClbk: refreshAction
+                            )
                         }
                 }
             }
@@ -71,7 +70,7 @@ struct SportsGroundDetailView: View {
                         oldEntry: $0.formattedBody
                     )
                 ),
-                isSent: $needRefresh
+                refreshClbk: refreshAction
             )
         }
         .task { await askForInfo() }
@@ -81,7 +80,6 @@ struct SportsGroundDetailView: View {
         }
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needRefresh, perform: refreshAction)
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -226,14 +224,14 @@ private extension SportsGroundDetailView {
         NavigationLink {
             SportsGroundFormView(
                 .editExisting(viewModel.ground),
-                needRefreshOnSave: $needRefresh
+                refreshClbk: refreshAction
             )
         } label: {
             Image(systemName: "rectangle.and.pencil.and.ellipsis")
         }
     }
 
-    func refreshAction(refresh: Bool) {
+    func refreshAction() {
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
@@ -262,8 +260,7 @@ private extension SportsGroundDetailView {
 
     func dismissDeleted(isDeleted: Bool) {
         dismiss()
-        needRefreshOnDelete.toggle()
-        deletedGroundId = viewModel.ground.id
+        onDeletionClbk(viewModel.ground.id)
         defaults.setUserNeedUpdate(true)
     }
 
@@ -275,7 +272,7 @@ private extension SportsGroundDetailView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundDetailView(for: .mock, refreshOnDelete: .constant(false))
+            SportsGroundDetailView(for: .mock, onDeletion: {_ in})
                 .environmentObject(DefaultsService())
         }
     }

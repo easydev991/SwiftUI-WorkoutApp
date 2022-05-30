@@ -7,7 +7,6 @@ struct SportsGroundsListView: View {
     @StateObject private var viewModel = SportsGroundListViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var deletedSportsGroundId = Int.zero
     /// Площадка для мероприятия
     @Binding private var groundInfo: SportsGround
     private let mode: Mode
@@ -35,7 +34,7 @@ struct SportsGroundsListView: View {
                     NavigationLink {
                         SportsGroundDetailView(
                             for: ground,
-                            deletedGroundId: $deletedSportsGroundId
+                            onDeletion: updateDeleted
                         )
                     } label: {
                         SportsGroundViewCell(model: ground)
@@ -48,7 +47,6 @@ struct SportsGroundsListView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .disabled(viewModel.isLoading)
-        .onChange(of: deletedSportsGroundId, perform: updateDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.list, perform: dismissIfEmpty)
         .alert(errorTitle, isPresented: $showErrorAlert) {

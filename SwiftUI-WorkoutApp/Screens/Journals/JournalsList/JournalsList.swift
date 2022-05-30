@@ -21,24 +21,11 @@ struct JournalsList: View {
 
     var body: some View {
         ZStack {
-            EmptyContentView(mode: .journals)
-                .opacity(showEmptyView ? 1 : .zero)
-            List {
-                ForEach($viewModel.list) { $journal in
-                    NavigationLink {
-                        JournalEntriesList(for: userID, in: $journal)
-                    } label: {
-                        GenericListCell(
-                            for: .journal(
-                                info: journal,
-                                editClbk: setupJournalToEdit,
-                                deleteClbk: initiateDeletion
-                            )
-                        )
-                    }
-                }
+            if viewModel.list.isEmpty {
+                emptyContentView
+            } else {
+                journalsList
             }
-            .sheet(item: $journalToEdit, content: showSettingsSheet)
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
@@ -62,8 +49,36 @@ struct JournalsList: View {
 }
 
 private extension JournalsList {
-    var showEmptyView: Bool {
-        !defaults.hasJournals && viewModel.list.isEmpty
+    var emptyContentView: some View {
+        EmptyContentView(
+            message: "Дневников пока нет",
+            buttonTitle: "Создать дневник",
+            action: showNewJournalSheet
+        )
+        .opacity(viewModel.isLoading ? .zero : 1)
+        .animation(.default, value: viewModel.isLoading)
+    }
+
+    var journalsList: some View {
+        List {
+            ForEach($viewModel.list) { $journal in
+                NavigationLink {
+                    JournalEntriesList(for: userID, in: $journal)
+                } label: {
+                    GenericListCell(
+                        for: .journal(
+                            info: journal,
+                            editClbk: setupJournalToEdit,
+                            deleteClbk: initiateDeletion
+                        )
+                    )
+                }
+            }
+        }
+        .sheet(item: $journalToEdit, content: showSettingsSheet)
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .animation(.default, value: viewModel.isLoading)
+        .disabled(viewModel.isLoading)
     }
 
     var isMainUser: Bool {

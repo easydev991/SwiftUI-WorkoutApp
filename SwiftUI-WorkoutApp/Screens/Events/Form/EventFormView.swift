@@ -10,12 +10,12 @@ struct EventFormView: View {
     @State private var isShowingPicker = false
     @FocusState private var focus: FocusableField?
     @State private var saveEventTask: Task<Void, Never>?
-    @Binding private var needRefreshOnSave: Bool
     private let mode: Mode
+    private var refreshClbk: (() -> Void)?
 
-    init(for mode: Mode, needRefresh: Binding<Bool> = .constant(false)) {
+    init(for mode: Mode, refreshClbk: (() -> Void)? = nil) {
         self.mode = mode
-        _needRefreshOnSave = needRefresh
+        self.refreshClbk = refreshClbk
         switch mode {
         case let .editExisting(event):
             _viewModel = StateObject(wrappedValue: .init(with: event))
@@ -68,6 +68,7 @@ extension EventFormView {
         case regularCreate
         /// Для детальной страницы площадки
         case createForSelected(SportsGround)
+        /// Для редактирования мероприятия
         case editExisting(EventResponse)
     }
 }
@@ -169,8 +170,8 @@ private extension EventFormView {
     }
 
     func dismiss(isSuccess: Bool) {
+        refreshClbk?()
         dismiss()
-        needRefreshOnSave.toggle()
     }
 
     func cancelTask() {
@@ -180,7 +181,7 @@ private extension EventFormView {
 
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
-        EventFormView(for: .regularCreate, needRefresh: .constant(false))
+        EventFormView(for: .regularCreate, refreshClbk: {})
             .environmentObject(DefaultsService())
     }
 }

@@ -4,8 +4,8 @@ import SwiftUI
 struct EventsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
-    @State private var needRefreshEvent = false
     @State private var selectedEventType = EventType.future
+    @State private var isCreatingEvent = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
@@ -14,18 +14,25 @@ struct EventsListView: View {
         NavigationView {
             VStack {
                 segmentedControl
-                content
+                ZStack {
+                    if showEmptyView {
+                        emptyView
+                    } else {
+                        eventsList
+                    }
+                    ProgressView()
+                        .opacity(viewModel.isLoading ? 1 : .zero)
+                }
             }
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: selectedEventType) { _ in askForEvents() }
-            .onChange(of: needRefreshEvent, perform: refresh)
+            .onChange(of: selectedEventType, perform: selectedEventAction)
+            .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
+            .toolbar { addEventLink }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
-            .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
-            .toolbar { addEventButton }
         }
         .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
         .onDisappear(perform: cancelTask)
@@ -41,43 +48,53 @@ private extension EventsListView {
         .padding(.horizontal)
     }
 
-    var content: some View {
-        ZStack {
-            EmptyContentView(mode: .events)
-                .opacity(isEmptyViewHidden ? .zero : 1)
-            List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
-                NavigationLink {
-                    EventDetailsView(with: event, refreshOnDelete: $needRefreshEvent)
-                } label: {
-                    EventViewCell(for: $event)
-                }
-            }
-            .opacity(viewModel.isLoading ? .zero : 1)
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
-        }
+    var emptyView: some View {
+        EmptyContentView(
+            message: "Нет запланированных мероприятий",
+            buttonTitle: "Создать мероприятие",
+            action: createEventAction
+        )
     }
 
-    var addEventButton: some View {
-        NavigationLink {
-            EventFormView(for: .regularCreate, needRefresh: $needRefreshEvent)
+    var eventsList: some View {
+        List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
+            NavigationLink {
+                EventDetailsView(with: event, deleteClbk: refreshAction)
+            } label: {
+                EventViewCell(for: $event)
+            }
+        }
+        .opacity(viewModel.isLoading ? .zero : 1)
+    }
+
+    func createEventAction() {
+        isCreatingEvent.toggle()
+    }
+
+    var addEventLink: some View {
+        NavigationLink(isActive: $isCreatingEvent) {
+            EventFormView(
+                for: .regularCreate,
+                refreshClbk: refreshAction
+            )
         } label: {
             Image(systemName: "plus")
         }
-        .opacity(isAddEventButtonHidden ? .zero : 1)
+        .opacity(showAddEventButton ? 1 : .zero)
     }
 
-    var isAddEventButtonHidden: Bool {
-        if let usedGrounds = defaults.mainUserInfo?.usedSportsGroundsCount,
-           usedGrounds > .zero {
-            return false
-        } else {
-            return true
-        }
+    var showAddEventButton: Bool {
+        defaults.hasSportsGrounds && defaults.isAuthorized
     }
 
-    var isEmptyViewHidden: Bool {
-        viewModel.isEmpty(for: .future) || viewModel.isLoading || selectedEventType == .past
+    var showEmptyView: Bool {
+        viewModel.isEmpty(for: .future)
+        && !viewModel.isLoading
+        && selectedEventType == .future
+    }
+
+    func selectedEventAction(_ type: EventType) {
+        askForEvents()
     }
 
     func askForEvents(refresh: Bool = false) {
@@ -86,7 +103,7 @@ private extension EventsListView {
         }
     }
 
-    func refresh(_ needRefresh: Bool) {
+    func refreshAction() {
         askForEvents(refresh: true)
     }
 

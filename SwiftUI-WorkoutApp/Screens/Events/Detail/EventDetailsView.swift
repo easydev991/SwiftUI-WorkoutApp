@@ -5,7 +5,6 @@ struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: EventDetailsViewModel
-    @State private var needRefresh = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
@@ -16,14 +15,14 @@ struct EventDetailsView: View {
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    @Binding private var needRefreshOnDelete: Bool
+    private let onDeletion: () -> Void
 
     init(
         with event: EventResponse,
-        refreshOnDelete: Binding<Bool>
+        deleteClbk: @escaping () -> Void
     ) {
-        _needRefreshOnDelete = refreshOnDelete
         _viewModel = StateObject(wrappedValue: .init(with: event))
+        onDeletion = deleteClbk
     }
 
     var body: some View {
@@ -54,7 +53,7 @@ struct EventDetailsView: View {
                         .sheet(isPresented: $isCreatingComment) {
                             TextEntryView(
                                 mode: .newForEvent(id: viewModel.event.id),
-                                isSent: $needRefresh
+                                refreshClbk: refreshAction
                             )
                         }
                 }
@@ -74,7 +73,7 @@ struct EventDetailsView: View {
                         oldEntry: $0.formattedBody
                     )
                 ),
-                isSent: $needRefresh
+                refreshClbk: refreshAction
             )
         }
         .task { await askForInfo() }
@@ -84,7 +83,6 @@ struct EventDetailsView: View {
         }
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: needRefresh, perform: refreshAction)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onDisappear(perform: cancelTasks)
         .toolbar {
@@ -141,7 +139,9 @@ private extension EventDetailsView {
 
     var descriptionSection: some View {
         Section("Описание") {
-            Text(viewModel.event.formattedDescription)
+            Text(.init(viewModel.event.formattedDescription))
+                .tint(.blue)
+                .textSelection(.enabled)
         }
     }
 
@@ -224,7 +224,7 @@ private extension EventDetailsView {
         }
     }
 
-    func refreshAction(refresh: Bool) {
+    func refreshAction() {
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
@@ -251,7 +251,7 @@ private extension EventDetailsView {
         NavigationLink {
             EventFormView(
                 for: .editExisting(viewModel.event),
-                needRefresh: $needRefresh
+                refreshClbk: refreshAction
             )
         } label: {
             Image(systemName: "rectangle.and.pencil.and.ellipsis")
@@ -287,7 +287,7 @@ private extension EventDetailsView {
 
     func dismissDeleted(isDeleted: Bool) {
         dismiss()
-        needRefreshOnDelete.toggle()
+        onDeletion()
     }
 
     func cancelTasks() {
@@ -297,7 +297,7 @@ private extension EventDetailsView {
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(with: .mock, refreshOnDelete: .constant(false))
+        EventDetailsView(with: .mock, deleteClbk: {})
             .environmentObject(DefaultsService())
     }
 }

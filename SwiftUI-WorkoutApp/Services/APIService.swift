@@ -281,7 +281,9 @@ struct APIService {
         let endpoint: Endpoint = trainHere
         ? .postTrainHere(groundID)
         : .deleteTrainHere(groundID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        let isOk = try await makeStatus(for: endpoint.urlRequest)
+        await defaults.setHasSportsGrounds(trainHere)
+        return isOk
     }
 
     /// Запрашивает список мероприятий

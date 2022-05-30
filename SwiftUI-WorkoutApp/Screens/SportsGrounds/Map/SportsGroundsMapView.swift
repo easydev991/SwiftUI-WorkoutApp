@@ -5,18 +5,18 @@ struct SportsGroundsMapView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var needUpdateRecent = false
-    @State private var isGroundDeleted = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showFilters = false
+    @State private var openDetails = false
 
     var body: some View {
         NavigationView {
             ZStack {
-                NavigationLink(isActive: $viewModel.openDetails) {
+                NavigationLink(isActive: $openDetails) {
                     SportsGroundDetailView(
                         for: viewModel.selectedGround,
-                        refreshOnDelete: $isGroundDeleted
+                        onDeletion: updateDeleted
                     )
                 } label: { EmptyView() }
                 MapViewUI(
@@ -24,7 +24,7 @@ struct SportsGroundsMapView: View {
                     region: $viewModel.region,
                     annotations: $viewModel.list,
                     selectedPlace: $viewModel.selectedGround,
-                    openDetails: $viewModel.openDetails
+                    openDetails: $openDetails
                 )
                 .opacity(viewModel.isLoading ? 0.5 : 1)
                 .animation(.easeInOut, value: viewModel.isLoading)
@@ -32,8 +32,6 @@ struct SportsGroundsMapView: View {
                     .opacity(viewModel.isLoading ? 1 : .zero)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: needUpdateRecent, perform: updateRecent)
-            .onChange(of: isGroundDeleted, perform: updateDeleted)
             .onChange(of: defaults.mainUserCountry, perform: resetFilter)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
@@ -97,7 +95,7 @@ private extension SportsGroundsMapView {
                     coordinate: $viewModel.region.center,
                     cityID: (defaults.mainUserInfo?.cityID).valueOrZero
                 ),
-                needRefreshOnSave: $needUpdateRecent
+                refreshClbk: updateRecent
             )
         } label: {
             Image(systemName: "plus")
@@ -105,11 +103,11 @@ private extension SportsGroundsMapView {
         .opacity(viewModel.isLoading ? .zero : 1)
     }
 
-    func updateRecent(isSuccess: Bool = true) {
+    func updateRecent() {
         Task { await viewModel.checkForRecentUpdates() }
     }
 
-    func updateDeleted(isDeleted: Bool = true) {
+    func updateDeleted(groundID: Int) {
         viewModel.deleteSportsGroundFromList()
     }
 

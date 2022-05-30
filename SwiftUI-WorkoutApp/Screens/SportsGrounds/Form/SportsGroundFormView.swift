@@ -10,10 +10,10 @@ struct SportsGroundFormView: View {
     @State private var alertMessage = ""
     @State private var isShowingPicker = false
     @FocusState private var isFocused: Bool
-    @Binding private var needRefreshOnSave: Bool
+    private let refreshClbk: () -> Void
     @State private var saveGroundTask: Task<Void, Never>?
 
-    init(_ mode: Mode, needRefreshOnSave: Binding<Bool>) {
+    init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
         switch mode {
         case let .createNew(address, coordinate, cityID):
             _viewModel = StateObject(
@@ -26,7 +26,7 @@ struct SportsGroundFormView: View {
         case let .editExisting(ground):
             _viewModel = StateObject(wrappedValue: .init(with: ground))
         }
-        self._needRefreshOnSave = needRefreshOnSave
+        self.refreshClbk = refreshClbk
     }
 
     var body: some View {
@@ -141,7 +141,7 @@ private extension SportsGroundFormView {
 
     func dismiss(isSuccess: Bool) {
         dismiss()
-        needRefreshOnSave.toggle()
+        refreshClbk()
         if viewModel.isNewSportsGround {
             defaults.setUserNeedUpdate(true)
         }
@@ -154,7 +154,7 @@ private extension SportsGroundFormView {
 
 struct CreateOrEditGroundView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundFormView(.editExisting(.mock), needRefreshOnSave: .constant(false))
+        SportsGroundFormView(.editExisting(.mock), refreshClbk: {})
             .environmentObject(DefaultsService())
     }
 }
