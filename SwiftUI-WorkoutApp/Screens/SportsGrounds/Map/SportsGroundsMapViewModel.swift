@@ -63,6 +63,8 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         list.removeAll(where: { $0.id == selectedGround.id })
     }
 
+    func resetFilter() { applyFilter() }
+
     func onAppearAction() {
         manager.startUpdatingLocation()
     }

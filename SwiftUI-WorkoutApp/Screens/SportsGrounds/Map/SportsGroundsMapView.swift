@@ -34,6 +34,7 @@ struct SportsGroundsMapView: View {
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: needUpdateRecent, perform: updateRecent)
             .onChange(of: isGroundDeleted, perform: updateDeleted)
+            .onChange(of: defaults.mainUserCountry, perform: resetFilter)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }
@@ -104,12 +105,16 @@ private extension SportsGroundsMapView {
         .opacity(viewModel.isLoading ? .zero : 1)
     }
 
-    func updateRecent(isSuccess: Bool) {
+    func updateRecent(isSuccess: Bool = true) {
         Task { await viewModel.checkForRecentUpdates() }
     }
 
-    func updateDeleted(isDeleted: Bool) {
+    func updateDeleted(isDeleted: Bool = true) {
         viewModel.deleteSportsGroundFromList()
+    }
+
+    func resetFilter(countryID: Int = .zero) {
+        viewModel.resetFilter()
     }
 
     func setupErrorAlert(with message: String) {
