@@ -203,7 +203,7 @@ private extension EventDetailsView {
             items: viewModel.event.comments,
             deleteClbk: { id in
                 deleteCommentTask = Task {
-                    await viewModel.delete(commentID: id, with: defaults)
+                    await viewModel.delete(commentID: id)
                 }
             },
             editClbk: setupCommentToEdit
@@ -220,7 +220,7 @@ private extension EventDetailsView {
 
     func changeIsGoingToEvent() {
         goingToEventTask = Task {
-            await viewModel.changeIsGoingToEvent(with: defaults)
+            await viewModel.changeIsGoingToEvent()
         }
     }
 
@@ -277,9 +277,7 @@ private extension EventDetailsView {
         viewModel.event.authorID == defaults.mainUserID
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func dismissNotAuth(isAuth: Bool) {
         if !isAuth { dismiss() }

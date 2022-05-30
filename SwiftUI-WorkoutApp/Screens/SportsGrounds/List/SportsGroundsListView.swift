@@ -80,9 +80,7 @@ private extension SportsGroundsListView {
         errorTitle = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func dismissIfEmpty(list: [SportsGround]) {
         if list.isEmpty {

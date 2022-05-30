@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {
-    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SearchUsersViewModel()
     @State private var query = ""
     @State private var showErrorAlert = false
@@ -47,7 +46,7 @@ struct SearchUsersView: View {
 
 private extension SearchUsersView {
     func search() {
-        searchTask = Task { await viewModel.searchFor(user: query, with: defaults) }
+        searchTask = Task { await viewModel.searchFor(user: query) }
     }
 
     func setupErrorAlert(with message: String) {
@@ -61,9 +60,7 @@ private extension SearchUsersView {
         }
     }
 
-    func cancelSearch() {
-        searchTask?.cancel()
-    }
+    func cancelSearch() { searchTask?.cancel() }
 }
 
 struct SearchUsersView_Previews: PreviewProvider {

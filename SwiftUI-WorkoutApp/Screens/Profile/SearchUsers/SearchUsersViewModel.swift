@@ -6,12 +6,12 @@ final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func searchFor(user: String, with defaults: DefaultsService) async {
+    func searchFor(user: String) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             let name = user.replacingOccurrences(of: " ", with: "")
-            let result = try await APIService(with: defaults).findUsers(with: name)
+            let result = try await APIService().findUsers(with: name)
             users = result.map(UserModel.init)
         } catch {
             errorMessage = error.localizedDescription

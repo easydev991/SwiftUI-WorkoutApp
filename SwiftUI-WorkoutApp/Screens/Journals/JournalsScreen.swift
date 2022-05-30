@@ -13,21 +13,9 @@ struct JournalsScreen: View {
                     IncognitoProfileView()
                 }
             }
-            .navigationTitle(navigationTitle)
-            .navigationBarTitleDisplayMode(titleDisplayMode)
+            .navigationTitle(defaults.isAuthorized ? "Дневники тренировок" : "Дневники")
+            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
-    }
-}
-
-private extension JournalsScreen {
-    var navigationTitle: String {
-        defaults.isAuthorized
-        ? "Дневники тренировок"
-        : "Дневники"
-    }
-
-    var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
-        defaults.isAuthorized ? .inline : .large
     }
 }
 

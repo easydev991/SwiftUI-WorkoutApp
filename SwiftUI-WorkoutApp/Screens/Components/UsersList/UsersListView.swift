@@ -72,9 +72,7 @@ private extension UsersListView {
         errorTitle = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 }
 
 struct UsersListView_Previews: PreviewProvider {

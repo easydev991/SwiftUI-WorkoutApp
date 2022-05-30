@@ -246,9 +246,7 @@ private extension UserDetailsView {
         errorTitle = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count

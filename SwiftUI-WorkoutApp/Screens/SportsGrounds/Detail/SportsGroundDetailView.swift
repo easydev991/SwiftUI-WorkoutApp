@@ -183,10 +183,7 @@ private extension SportsGroundDetailView {
             items: viewModel.ground.comments,
             deleteClbk: { id in
                 deleteCommentTask = Task {
-                    await viewModel.delete(
-                        commentID: id,
-                        with: defaults
-                    )
+                    await viewModel.delete(commentID: id)
                 }
             },
             editClbk: setupCommentToEdit
@@ -208,7 +205,7 @@ private extension SportsGroundDetailView {
         ) {
             Button(role: .destructive) {
                 deleteGroundTask = Task {
-                    await viewModel.deleteGround(with: defaults)
+                    await viewModel.deleteGround()
                 }
             } label: {
                 Text("Удалить")
@@ -254,9 +251,7 @@ private extension SportsGroundDetailView {
         viewModel.ground.authorID == defaults.mainUserID
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func dismissDeleted(isDeleted: Bool) {
         dismiss()

@@ -82,7 +82,7 @@ private extension JournalEntriesList {
 
     func updateEntries() {
         updateEntriesTask = Task {
-            await viewModel.makeItems(with: defaults, refresh: true)
+            await viewModel.makeItems(refresh: true)
         }
     }
 
@@ -99,16 +99,12 @@ private extension JournalEntriesList {
         }
     }
 
-    func showNewEntry() {
-        showEntrySheet.toggle()
-    }
+    func showNewEntry() { showEntrySheet.toggle() }
 
-    var isMainUser: Bool {
-        viewModel.userID == defaults.mainUserID
-    }
+    var isMainUser: Bool { viewModel.userID == defaults.mainUserID }
 
     func askForEntries(refresh: Bool = false) async {
-        await viewModel.makeItems(with: defaults, refresh: refresh)
+        await viewModel.makeItems(refresh: refresh)
     }
 
     func initiateDeletion(for id: Int) {
@@ -135,9 +131,7 @@ private extension JournalEntriesList {
         showEntrySheet.toggle()
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func cancelTasks() {
         [editAccessTask, deleteEntryTask, updateEntriesTask].forEach { $0?.cancel() }

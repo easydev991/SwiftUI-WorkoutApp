@@ -156,7 +156,7 @@ private extension EventFormView {
     func saveAction() {
         focus = nil
         saveEventTask = Task {
-            await viewModel.saveEvent(with: defaults)
+            await viewModel.saveEvent()
         }
     }
 
@@ -165,18 +165,14 @@ private extension EventFormView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func dismiss(isSuccess: Bool) {
         refreshClbk?()
         dismiss()
     }
 
-    func cancelTask() {
-        saveEventTask?.cancel()
-    }
+    func cancelTask() { saveEventTask?.cancel() }
 }
 
 struct CreateEventView_Previews: PreviewProvider {

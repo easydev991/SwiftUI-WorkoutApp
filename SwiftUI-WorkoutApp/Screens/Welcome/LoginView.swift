@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Экран для авторизации/восстановления пароля
 struct LoginView: View {
-    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = LoginViewModel()
     // Вызывает утечку памяти, если разместить внутри viewModel
     @State private var showResetInfoAlert = false
@@ -94,7 +93,7 @@ private extension LoginView {
 
     func loginAction() {
         focus = nil
-        loginTask = Task { await viewModel.loginAction(with: defaults) }
+        loginTask = Task { await viewModel.loginAction() }
     }
 
     var forgotPasswordButton: some View {
@@ -139,6 +138,5 @@ private extension LoginView {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(DefaultsService())
     }
 }

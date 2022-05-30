@@ -3,7 +3,6 @@ import SwiftUI
 /// Экран для создания и изменения текстовой записи (комментарий к площадке, мерпориятию или дневнику)
 struct TextEntryView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = TextEntryViewModel()
     @State private var entryText = ""
     @State private var showErrorAlert = false
@@ -91,16 +90,14 @@ private extension TextEntryView {
             addEntryTask = Task {
                 await viewModel.addNewEntry(
                     mode,
-                    entryText: entryText,
-                    defaults: defaults
+                    entryText: entryText
                 )
             }
         case .editGround, .editEvent, .editJournalEntry:
             editEntryTask = Task {
                 await viewModel.editEntry(
                     for: mode,
-                    entryText: entryText,
-                    with: defaults
+                    entryText: entryText
                 )
             }
         }
@@ -112,9 +109,7 @@ private extension TextEntryView {
         dismiss()
     }
 
-    func closeAlert() {
-        viewModel.closedErrorAlert()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
@@ -150,6 +145,5 @@ private extension TextEntryView {
 struct CreateCommentView_Previews: PreviewProvider {
     static var previews: some View {
         TextEntryView(mode: .newForGround(id: .zero), refreshClbk: {})
-            .environmentObject(DefaultsService())
     }
 }

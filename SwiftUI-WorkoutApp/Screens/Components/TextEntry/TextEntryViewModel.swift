@@ -6,21 +6,21 @@ final class TextEntryViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func addNewEntry(_ mode: TextEntryView.Mode, entryText: String, defaults: DefaultsService) async {
+    func addNewEntry(_ mode: TextEntryView.Mode, entryText: String) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             switch mode {
             case let .newForGround(id):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await APIService().addNewEntry(
                     to: .ground(id: id), entryText: entryText
                 )
             case let .newForEvent(id):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await APIService().addNewEntry(
                     to: .event(id: id), entryText: entryText
                 )
             case let .newForJournal(id):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await APIService().addNewEntry(
                     to: .journal(id: id), entryText: entryText
                 )
             default: break
@@ -32,17 +32,17 @@ final class TextEntryViewModel: ObservableObject {
     }
 
     @MainActor
-    func editEntry(for mode: TextEntryView.Mode, entryText: String, with defaults: DefaultsService) async {
+    func editEntry(for mode: TextEntryView.Mode, entryText: String) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             switch mode {
             case let .editGround(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .ground(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService().editEntry(for: .ground(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
             case let .editEvent(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .event(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService().editEntry(for: .event(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
             case let .editJournalEntry(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .journal(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService().editEntry(for: .journal(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
             default: break
             }
         } catch {
@@ -51,5 +51,5 @@ final class TextEntryViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func closedErrorAlert() { errorMessage = "" }
+    func clearErrorMessage() { errorMessage = "" }
 }
