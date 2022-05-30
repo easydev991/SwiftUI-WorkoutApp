@@ -64,11 +64,11 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(commentID: Int) async {
+    func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
+            if try await APIService(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
                 ground.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
@@ -78,11 +78,11 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteGround() async {
+    func deleteGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isDeleted = try await APIService().delete(groundID: ground.id)
+            isDeleted = try await APIService(with: defaults).delete(groundID: ground.id)
         } catch {
             errorMessage = error.localizedDescription
         }

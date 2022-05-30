@@ -92,12 +92,16 @@ private extension DialogListView {
         }
     }
 
-    var hasFriends: Bool { defaults.hasFriends }
+    var hasFriends: Bool {
+        defaults.hasFriends
+    }
 
-    func emptyViewAction() { openFriendList.toggle() }
+    func emptyViewAction() {
+        openFriendList.toggle()
+    }
 
     func askForDialogs(refresh: Bool = false) async {
-        await viewModel.makeItems(refresh: refresh)
+        await viewModel.makeItems(with: defaults, refresh: refresh)
     }
 
     func initiateDeletion(at indexSet: IndexSet) {
@@ -107,7 +111,7 @@ private extension DialogListView {
 
     func deleteAction(at index: Int?) {
         deleteDialogTask = Task {
-            await viewModel.deleteDialog(at: index)
+            await viewModel.deleteDialog(at: index, with: defaults)
         }
     }
 
@@ -116,9 +120,13 @@ private extension DialogListView {
         errorTitle = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
-    func cancelTask() { deleteDialogTask?.cancel() }
+    func cancelTask() {
+        deleteDialogTask?.cancel()
+    }
 }
 
 struct DialogListView_Previews: PreviewProvider {

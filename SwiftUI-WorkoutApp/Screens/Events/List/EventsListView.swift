@@ -112,9 +112,13 @@ private extension EventsListView {
         alertMessage = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
-    func cancelTask() { eventsTask?.cancel() }
+    func cancelTask() {
+        eventsTask?.cancel()
+    }
 }
 
 struct EventsView_Previews: PreviewProvider {

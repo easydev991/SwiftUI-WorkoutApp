@@ -131,11 +131,13 @@ private extension SportsGroundFormView {
     func saveAction() {
         isFocused = false
         saveGroundTask = Task {
-            await viewModel.saveGround()
+            await viewModel.saveGround(with: defaults)
         }
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
     func dismiss(isSuccess: Bool) {
         dismiss()
@@ -145,7 +147,9 @@ private extension SportsGroundFormView {
         }
     }
 
-    func cancelTask() { saveGroundTask?.cancel() }
+    func cancelTask() {
+        saveGroundTask?.cancel()
+    }
 }
 
 struct CreateOrEditGroundView_Previews: PreviewProvider {

@@ -94,7 +94,7 @@ private extension ProfileSettingsView {
     }
 
     func deleteProfile() {
-        deleteProfileTask = Task { await viewModel.deleteProfile() }
+        deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
     }
 
     var appVersionView: some View {
@@ -123,9 +123,13 @@ private extension ProfileSettingsView {
         alertMessage = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
-    func cancelTask() { deleteProfileTask?.cancel() }
+    func cancelTask() {
+        deleteProfileTask?.cancel()
+    }
 }
 
 struct ProfileSettingsView_Previews: PreviewProvider {

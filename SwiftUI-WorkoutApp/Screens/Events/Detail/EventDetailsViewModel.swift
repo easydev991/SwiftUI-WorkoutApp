@@ -27,13 +27,12 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeIsGoingToEvent() async {
-        let defaults = DefaultsService()
+    func changeIsGoingToEvent(with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
         do {
             let trainHere = !event.trainHere
-            if try await APIService().changeIsGoingToEvent(
+            if try await APIService(with: defaults).changeIsGoingToEvent(
                 for: event.id,
                 isGoing: trainHere
             ) {
@@ -65,11 +64,11 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(commentID: Int) async {
+    func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().deleteEntry(from: .event(id: event.id), entryID: commentID) {
+            if try await APIService(with: defaults).deleteEntry(from: .event(id: event.id), entryID: commentID) {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
@@ -83,7 +82,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isDeleted = try await APIService().delete(eventID: event.id)
+            isDeleted = try await APIService(with: defaults).delete(eventID: event.id)
         } catch {
             errorMessage = error.localizedDescription
         }

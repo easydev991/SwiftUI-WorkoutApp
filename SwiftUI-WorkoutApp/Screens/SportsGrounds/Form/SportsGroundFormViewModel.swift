@@ -42,11 +42,11 @@ final class SportsGroundFormViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveGround() async {
+    func saveGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isSuccess = try await APIService().saveSportsGround(id: groundID, form: groundForm).id != .zero
+            isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
             errorMessage = error.localizedDescription
         }

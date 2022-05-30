@@ -1,7 +1,15 @@
 import Foundation
 
 struct APIService {
-    private let defaults = DefaultsService()
+    private let defaults: DefaultsService
+
+    init(with defaults: DefaultsService) {
+        self.defaults = defaults
+    }
+
+    init() {
+        self.init(with: .init())
+    }
 
     /// Выполняет регистрацию пользователя
     /// - Parameter model: необходимые для регистрации данные

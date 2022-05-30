@@ -81,7 +81,9 @@ private extension JournalsList {
         .disabled(viewModel.isLoading)
     }
 
-    var isMainUser: Bool { userID == defaults.mainUserID }
+    var isMainUser: Bool {
+        userID == defaults.mainUserID
+    }
 
     var addJournalButton: some View {
         Button(action: showNewJournalSheet) {
@@ -113,7 +115,9 @@ private extension JournalsList {
         }
     }
 
-    func showNewJournalSheet() { isCreatingJournal.toggle() }
+    func showNewJournalSheet() {
+        isCreatingJournal.toggle()
+    }
 
     func setupJournalToEdit(_ journal: JournalResponse) {
         journalToEdit = journal
@@ -154,7 +158,9 @@ private extension JournalsList {
         errorTitle = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
     func cancelTasks() {
         [saveJournalTask, deleteJournalTask, updateListTask].forEach { $0?.cancel() }

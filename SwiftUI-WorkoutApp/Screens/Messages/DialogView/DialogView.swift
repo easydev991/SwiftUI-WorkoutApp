@@ -151,7 +151,9 @@ private extension DialogView {
     }
 
     func messageType(for message: MessageResponse) -> Constants.MessageType {
-        message.userID == defaults.mainUserID ? .sent : .incoming
+        message.userID == defaults.mainUserID
+        ? .sent
+        : .incoming
     }
 
     func setupErrorAlert(with message: String) {
@@ -159,7 +161,9 @@ private extension DialogView {
         errorTitle = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
     func cancelTasks() {
         [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }

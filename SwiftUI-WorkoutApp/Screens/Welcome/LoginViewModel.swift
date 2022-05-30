@@ -25,11 +25,11 @@ final class LoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func loginAction() async {
+    func loginAction(with userDefaults: DefaultsService) async {
         if !canLogIn { return }
         isLoading.toggle()
         do {
-            try await APIService().logInWith(login, password)
+            try await APIService(with: userDefaults).logInWith(login, password)
         } catch {
             errorMessage = error.localizedDescription
         }

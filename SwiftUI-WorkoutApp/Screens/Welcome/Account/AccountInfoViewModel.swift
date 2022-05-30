@@ -44,11 +44,11 @@ final class AccountInfoViewModel: ObservableObject {
     }
 
     @MainActor
-    func registerAction() async {
+    func registerAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            try await APIService().registration(with: userForm)
+            try await APIService(with: defaults).registration(with: userForm)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -60,7 +60,7 @@ final class AccountInfoViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isProfileSaved = try await APIService().editUser(defaults.mainUserID, model: userForm)
+            isProfileSaved = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -26,11 +26,11 @@ final class EventFormViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveEvent() async {
+    func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isSuccess = try await APIService().saveEvent(eventInfo, eventID: eventID).id != .zero
+            isSuccess = try await APIService(with: defaults).saveEvent(eventInfo, eventID: eventID).id != .zero
         } catch {
             errorMessage = error.localizedDescription
         }

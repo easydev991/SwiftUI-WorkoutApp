@@ -20,11 +20,11 @@ final class ProfileSettingsViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteProfile() async {
+    func deleteProfile(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            try await APIService().deleteUser()
+            try await APIService(with: defaults).deleteUser()
         } catch {
             errorMessage = error.localizedDescription
         }

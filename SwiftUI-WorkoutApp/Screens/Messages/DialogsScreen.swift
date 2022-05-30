@@ -14,8 +14,14 @@ struct DialogsScreen: View {
                 }
             }
             .navigationTitle("Сообщения")
-            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
+            .navigationBarTitleDisplayMode(titleDisplayMode)
         }
+    }
+}
+
+private extension DialogsScreen {
+    var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
+        defaults.isAuthorized ? .inline : .large
     }
 }
 

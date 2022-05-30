@@ -187,7 +187,7 @@ private extension AccountInfoView {
 
     func registerAction() {
         focus = nil
-        registrationTask = Task { await viewModel.registerAction() }
+        registrationTask = Task { await viewModel.registerAction(with: defaults) }
     }
 
     var saveChangesButtonSection: some View {

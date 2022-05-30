@@ -1,7 +1,15 @@
+//
+//  JournalSettingsView.swift
+//  SwiftUI-WorkoutApp
+//
+//  Created by Олег Еременко on 23.05.2022.
+//
+
 import SwiftUI
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var network: CheckNetworkService
     private let options = Constants.JournalAccess.allCases
     private let initialJournal: JournalResponse
@@ -91,7 +99,7 @@ private extension JournalSettingsView {
 
     func saveChanges() {
         saveJournalChangesTask = Task {
-            await viewModel.editJournalSettings(for: journal)
+            await viewModel.editJournalSettings(for: journal, with: defaults)
         }
     }
 
@@ -107,14 +115,18 @@ private extension JournalSettingsView {
         alertMessage = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 
     func finishSettings(isSuccess: Bool) {
         updateOnSuccess(journal.id)
         dismiss()
     }
 
-    func cancelTask() { saveJournalChangesTask?.cancel() }
+    func cancelTask() {
+        saveJournalChangesTask?.cancel()
+    }
 }
 
 struct JournalSettingsView_Previews: PreviewProvider {

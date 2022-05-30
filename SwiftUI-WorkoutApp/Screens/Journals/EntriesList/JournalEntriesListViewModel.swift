@@ -19,11 +19,11 @@ final class JournalEntriesListViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeItems(refresh: Bool) async {
+    func makeItems(with defaults: DefaultsService, refresh: Bool) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService().getJournalEntries(for: userID, journalID: currentJournal.id)
+            list = try await APIService(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -35,7 +35,7 @@ final class JournalEntriesListViewModel: ObservableObject {
         guard let entryID = entryID, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService().deleteEntry(from: .journal(id: currentJournal.id), entryID: entryID) {
+            if try await APIService(with: defaults).deleteEntry(from: .journal(id: currentJournal.id), entryID: entryID) {
                 list.removeAll(where: { $0.id == entryID })
             }
         } catch {

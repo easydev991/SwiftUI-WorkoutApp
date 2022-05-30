@@ -101,7 +101,9 @@ private extension ChangePasswordView {
         errorTitle = message
     }
 
-    func cancelTask() { changePasswordTask?.cancel() }
+    func cancelTask() {
+        changePasswordTask?.cancel()
+    }
 }
 
 struct ChangePasswordView_Previews: PreviewProvider {

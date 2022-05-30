@@ -6,11 +6,11 @@ final class DialogListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeItems(refresh: Bool) async {
+    func makeItems(with defaults: DefaultsService, refresh: Bool) async {
         if isLoading || (!list.isEmpty && !refresh) { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService().getDialogs()
+            list = try await APIService(with: defaults).getDialogs()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -18,11 +18,11 @@ final class DialogListViewModel: ObservableObject {
     }
 
     @MainActor
-    func deleteDialog(at index: Int?) async {
+    func deleteDialog(at index: Int?, with defaults: DefaultsService) async {
         guard let index = index, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService().deleteDialog(list[index].id) {
+            if try await APIService(with: defaults).deleteDialog(list[index].id) {
                 list.remove(at: index)
             }
         } catch {

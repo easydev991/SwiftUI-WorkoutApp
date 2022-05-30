@@ -1,3 +1,10 @@
+//
+//  JournalSettingsViewModel.swift
+//  SwiftUI-WorkoutApp
+//
+//  Created by Олег Еременко on 23.05.2022.
+//
+
 import Foundation
 
 final class JournalSettingsViewModel: ObservableObject {
@@ -6,11 +13,11 @@ final class JournalSettingsViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func editJournalSettings(for journal: JournalResponse) async {
+    func editJournalSettings(for journal: JournalResponse, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().editJournalSettings(
+            if try await APIService(with: defaults).editJournalSettings(
                 for: journal.id, title: journal.title, viewAccess: journal.viewAccessType, commentAccess: journal.commentAccessType) {
                 isSettingsUpdated.toggle()
             }

@@ -120,7 +120,9 @@ private extension SportsGroundsMapView {
         alertMessage = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+    }
 }
 
 struct SportsGroundsMapView_Previews: PreviewProvider {
