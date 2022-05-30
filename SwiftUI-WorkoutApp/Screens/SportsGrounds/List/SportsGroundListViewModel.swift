@@ -7,17 +7,23 @@ final class SportsGroundListViewModel: ObservableObject {
 
     @MainActor
     func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool) async {
+        if isLoading { return }
         switch mode {
         case let .usedBy(userID), let .event(userID):
-            if isLoading || (!list.isEmpty && !refresh) { return }
-#warning("TODO: обновлять список для mainUser, если needUpdateUser == true")
-            if !refresh { isLoading.toggle() }
-            do {
-                list = try await APIService().getSportsGroundsForUser(userID)
-            } catch {
-                errorMessage = error.localizedDescription
+            let defaults = DefaultsService()
+            let isMainUser = userID == defaults.mainUserID
+            let needUpdate = list.isEmpty || refresh
+            if isMainUser {
+#warning("TODO: вместо needUpdateUser проверять список площадок пользователя в БД, чтобы не делать лишние запросы")
+                if !needUpdate && !defaults.needUpdateUser { return }
+                isLoading.toggle()
+                await makeList(for: userID)
+            } else {
+                if !needUpdate { return }
+                isLoading.toggle()
+                await makeList(for: userID)
             }
-            if !refresh { isLoading.toggle() }
+            isLoading.toggle()
         case let .added(list):
             self.list = list
         }
@@ -29,4 +35,18 @@ final class SportsGroundListViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+private extension SportsGroundListViewModel {
+    func makeList(for userID: Int) async {
+        do {
+            if userID == DefaultsService().mainUserID {
+#warning("TODO: интеграция с БД")
+                await DefaultsService().setUserNeedUpdate(false)
+            }
+            list = try await APIService().getSportsGroundsForUser(userID)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }
