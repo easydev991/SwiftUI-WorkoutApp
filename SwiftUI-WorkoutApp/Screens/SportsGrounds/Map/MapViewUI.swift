@@ -29,6 +29,7 @@ struct MapViewUI: UIViewRepresentable {
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
+#warning("TODO: поправить бесконечное обновление карты")
         mapView.removeAnnotations(mapView.annotations)
         mapView.addAnnotations(annotations)
     }
