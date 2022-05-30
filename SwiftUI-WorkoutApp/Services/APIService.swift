@@ -7,7 +7,6 @@ struct APIService {
         self.defaults = defaults
     }
 
-    /// Для запросов без базовой аутентификации
     init() {
         self.init(with: .init())
     }
@@ -39,7 +38,7 @@ struct APIService {
     /// - Returns: Вся информация о пользователе
     @discardableResult
     func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
-        let endpoint = Endpoint.getUser(id: userID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getUser(id: userID)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         if loginFlow || userID == defaults.mainUserID {
             await defaults.saveUserInfo(result)
@@ -63,7 +62,7 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
         let authData = defaults.basicAuthInfo
-        let endpoint = Endpoint.editUser(id: id, form: model, auth: authData)
+        let endpoint = Endpoint.editUser(id: id, form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
         await defaults.saveUserInfo(result)
@@ -76,11 +75,7 @@ struct APIService {
     ///   - new: новый пароль
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func changePassword(current: String, new: String) async throws -> Bool {
-        let endpoint = Endpoint.changePassword(
-            currentPass: current,
-            newPass: new,
-            auth: defaults.basicAuthInfo
-        )
+        let endpoint = Endpoint.changePassword(currentPass: current, newPass: new)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -97,7 +92,7 @@ struct APIService {
     /// - Returns: Список друзей выбранного пользователя
     @discardableResult
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
-        let endpoint = Endpoint.getFriendsForUser(id: id, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getFriendsForUser(id: id)
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         if id == defaults.mainUserID {
             await defaults.saveFriendsIds(result.compactMap(\.userID))
@@ -119,8 +114,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func respondToFriendRequest(from userID: Int, accept: Bool) async throws -> Bool {
         let endpoint: Endpoint = accept
-        ? .acceptFriendRequest(from: userID, auth: defaults.basicAuthInfo)
-        : .declineFriendRequest(from: userID, auth: defaults.basicAuthInfo)
+        ? .acceptFriendRequest(from: userID)
+        : .declineFriendRequest(from: userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess {
             if accept {
@@ -138,8 +133,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func friendAction(userID: Int, option: Constants.FriendAction) async throws -> Bool {
         let endpoint: Endpoint = option == .sendFriendRequest
-        ? .sendFriendRequest(to: userID, auth: defaults.basicAuthInfo)
-        : .deleteFriend(userID, auth: defaults.basicAuthInfo)
+        ? .sendFriendRequest(to: userID)
+        : .deleteFriend(userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess && option == .removeFriend {
             try await getFriendsForUser(id: defaults.mainUserID)
@@ -151,7 +146,7 @@ struct APIService {
     /// - Parameter name: текст для поиска
     /// - Returns: Список пользователей, чей логин содержит указанный текст
     func findUsers(with name: String) async throws -> [UserResponse] {
-        let endpoint = Endpoint.findUsers(with: name, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.findUsers(with: name)
         return try await makeResult([UserResponse].self, for: endpoint.urlRequest)
     }
 
@@ -186,9 +181,9 @@ struct APIService {
 #warning("TODO: когда на бэке поправят формат данных в ответе по полям city_id, type_id, class_id, заменить эту модель на SportsGround")
         let endpoint: Endpoint
         if let id = id {
-            endpoint = Endpoint.editSportsGround(id: id, form: form, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.editSportsGround(id: id, form: form)
         } else {
-            endpoint = Endpoint.createSportsGround(form: form, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.createSportsGround(form: form)
         }
         return try await makeResult(SportsGroundResult.self, for: endpoint.urlRequest)
     }
@@ -202,15 +197,14 @@ struct APIService {
         let endpoint: Endpoint
         switch model {
         case let .ground(id):
-            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: entryText, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
-            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: entryText, auth: defaults.basicAuthInfo)
+            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: entryText)
         case let .journal(id):
             endpoint = Endpoint.saveJournalEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
-                message: entryText,
-                auth: defaults.basicAuthInfo
+                message: entryText
             )
         }
         return try await makeStatus(for: endpoint.urlRequest)
@@ -229,23 +223,20 @@ struct APIService {
             endpoint = .editGroundComment(
                 groundID: id,
                 commentID: entryID,
-                newComment: newEntryText,
-                auth: defaults.basicAuthInfo
+                newComment: newEntryText
             )
         case let .event(id):
             endpoint = .editEventComment(
                 eventID: id,
                 commentID: entryID,
-                newComment: newEntryText,
-                auth: defaults.basicAuthInfo
+                newComment: newEntryText
             )
         case let .journal(id):
             endpoint = .editEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
                 entryID: entryID,
-                newEntryText: newEntryText,
-                auth: defaults.basicAuthInfo
+                newEntryText: newEntryText
             )
         }
         return try await makeStatus(for: endpoint.urlRequest)
@@ -260,15 +251,14 @@ struct APIService {
         let endpoint: Endpoint
         switch type {
         case let .ground(id):
-            endpoint = .deleteGroundComment(id, commentID: entryID, auth: defaults.basicAuthInfo)
+            endpoint = .deleteGroundComment(id, commentID: entryID)
         case let .event(id):
-            endpoint = .deleteEventComment(id, commentID: entryID, auth: defaults.basicAuthInfo)
+            endpoint = .deleteEventComment(id, commentID: entryID)
         case let .journal(id):
             endpoint = .deleteEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
-                entryID: entryID,
-                auth: defaults.basicAuthInfo
+                entryID: entryID
             )
         }
         return try await makeStatus(for: endpoint.urlRequest)
@@ -278,7 +268,7 @@ struct APIService {
     /// - Parameter userID: `id` пользователя
     /// - Returns: Список площадок, где тренируется пользователь
     func getSportsGroundsForUser(_ userID: Int) async throws -> [SportsGround] {
-        let endpoint = Endpoint.getSportsGroundsForUser(userID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getSportsGroundsForUser(userID)
         return try await makeResult([SportsGround].self, for: endpoint.urlRequest)
     }
 
@@ -289,8 +279,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func changeTrainHereStatus(for groundID: Int, trainHere: Bool) async throws -> Bool {
         let endpoint: Endpoint = trainHere
-        ? .postTrainHere(groundID, auth: defaults.basicAuthInfo)
-        : .deleteTrainHere(groundID, auth: defaults.basicAuthInfo)
+        ? .postTrainHere(groundID)
+        : .deleteTrainHere(groundID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -316,9 +306,9 @@ struct APIService {
 #warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents внутри EventsListViewModel")
         let endpoint: Endpoint
         if let eventID = eventID {
-            endpoint = .editEvent(id: eventID, form: form, auth: defaults.basicAuthInfo)
+            endpoint = .editEvent(id: eventID, form: form)
         } else {
-            endpoint = .createEvent(form: form, auth: defaults.basicAuthInfo)
+            endpoint = .createEvent(form: form)
         }
         return try await makeResult(EventResult.self, for: endpoint.urlRequest)
     }
@@ -330,8 +320,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func changeIsGoingToEvent(for eventID: Int, isGoing: Bool) async throws -> Bool {
         let endpoint: Endpoint = isGoing
-        ? .postIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
-        : .deleteIsGoingToEvent(id: eventID, auth: defaults.basicAuthInfo)
+        ? .postIsGoingToEvent(id: eventID)
+        : .deleteIsGoingToEvent(id: eventID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -339,7 +329,7 @@ struct APIService {
     /// - Parameter eventID: `id` мероприятия
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(eventID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteEvent(id: eventID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.deleteEvent(id: eventID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -347,7 +337,7 @@ struct APIService {
     /// - Parameter groundID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(groundID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteSportsGround(id: groundID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.deleteSportsGround(id: groundID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -362,7 +352,7 @@ struct APIService {
     /// - Parameter dialog: `id` диалога
     /// - Returns: Сообщения в диалоге
     func getMessages(for dialog: Int) async throws -> [MessageResponse] {
-        let endpoint = Endpoint.getMessages(dialogID: dialog, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getMessages(dialogID: dialog)
         return try await makeResult([MessageResponse].self, for: endpoint.urlRequest)
     }
 
@@ -372,7 +362,7 @@ struct APIService {
     ///   - userID: `id` получателя сообщения
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func sendMessage(_ message: String, to userID: Int) async throws -> Bool {
-        let endpoint = Endpoint.sendMessageTo(message, userID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.sendMessageTo(message, userID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -380,7 +370,7 @@ struct APIService {
     /// - Parameter userID: `id` выбранного пользователя
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func markAsRead(from userID: Int) async throws -> Bool {
-        let endpoint = Endpoint.markAsRead(from: userID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.markAsRead(from: userID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -388,7 +378,7 @@ struct APIService {
     /// - Parameter dialogID: `id` диалога для удаления
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func deleteDialog(_ dialogID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteDialog(id: dialogID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.deleteDialog(id: dialogID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -396,7 +386,7 @@ struct APIService {
     /// - Parameter userID: `id` выбранного пользователя
     /// - Returns: Список дневников
     func getJournals(for userID: Int) async throws -> [JournalResponse] {
-        let endpoint = Endpoint.getJournals(userID: userID, auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getJournals(userID: userID)
         let result = try await makeResult([JournalResponse].self, for: endpoint.urlRequest)
         if userID == defaults.mainUserID {
             await defaults.setHasJournals(!result.isEmpty)
@@ -412,8 +402,7 @@ struct APIService {
     func getJournal(for userID: Int, journalID: Int) async throws -> JournalResponse {
         let endpoint = Endpoint.getJournal(
             userID: userID,
-            journalID: journalID,
-            auth: defaults.basicAuthInfo
+            journalID: journalID
         )
         return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
     }
@@ -431,8 +420,7 @@ struct APIService {
             journalID: journalID,
             title: title,
             viewAccess: viewAccess.rawValue,
-            commentAccess: commentAccess.rawValue,
-            auth: defaults.basicAuthInfo
+            commentAccess: commentAccess.rawValue
         )
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -443,8 +431,7 @@ struct APIService {
     func createJournal(with title: String) async throws -> Bool {
         let endpoint = Endpoint.createJournal(
             userID: defaults.mainUserID,
-            title: title,
-            auth: defaults.basicAuthInfo
+            title: title
         )
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -457,8 +444,7 @@ struct APIService {
     func getJournalEntries(for userID: Int, journalID: Int) async throws -> [JournalEntryResponse] {
         let endpoint = Endpoint.getJournalEntries(
             userID: userID,
-            journalID: journalID,
-            auth: defaults.basicAuthInfo
+            journalID: journalID
         )
         return try await makeResult([JournalEntryResponse].self, for: endpoint.urlRequest)
     }
@@ -471,8 +457,7 @@ struct APIService {
     func deleteJournal(journalID: Int) async throws -> Bool {
         let endpoint = Endpoint.deleteJournal(
             userID: defaults.mainUserID,
-            journalID: journalID,
-            auth: defaults.basicAuthInfo
+            journalID: journalID
         )
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -483,14 +468,12 @@ struct APIService {
         case let .event(input):
             endpoint = .deleteEventPhoto(
                 eventID: input.containerID,
-                photoID: input.photoID,
-                auth: defaults.basicAuthInfo
+                photoID: input.photoID
             )
         case let .sportsGround(input):
             endpoint = .deleteGroundPhoto(
                 groundID: input.containerID,
-                photoID: input.photoID,
-                auth: defaults.basicAuthInfo
+                photoID: input.photoID
             )
         }
         return try await makeStatus(for: endpoint.urlRequest)
@@ -604,11 +587,11 @@ private extension APIService {
 
         // MARK: Изменить данные пользователя
         /// **POST** ${API}/users/<user_id>
-        case editUser(id: Int, form: MainUserForm, auth: AuthData)
+        case editUser(id: Int, form: MainUserForm)
 
         // MARK: Изменить пароль
         /// **POST** ${API}/auth/changepass
-        case changePassword(currentPass: String, newPass: String, auth: AuthData)
+        case changePassword(currentPass: String, newPass: String)
 
         // MARK: Удалить профиль текущего пользователя
         /// **DELETE** ${API}/users/current
@@ -617,12 +600,12 @@ private extension APIService {
         // MARK: Получить профиль пользователя
         /// **GET** ${API}/users/<id>
         /// `id` - идентификатор пользователя, чей профиль нужно получить
-        case getUser(id: Int, auth: AuthData)
+        case getUser(id: Int)
 
         // MARK: Получить список друзей пользователя
         /// **GET** ${API}/users/<id>/friends
         /// `id` - идентификатор пользователя, чьих друзей нужно получить
-        case getFriendsForUser(id: Int, auth: AuthData)
+        case getFriendsForUser(id: Int)
 
         // MARK: Получить список заявок на добавление в друзья
         /// **GET** ${API}/friends/requests
@@ -630,23 +613,23 @@ private extension APIService {
 
         // MARK: Принять заявку на добавление в друзья
         /// **POST** ${API}/friends/<id>/accept
-        case acceptFriendRequest(from: Int, auth: AuthData)
+        case acceptFriendRequest(from: Int)
 
         // MARK: Отклонить заявку на добавление в друзья
         /// **DELETE**  ${API}/friends/<user_id>/accept
-        case declineFriendRequest(from: Int, auth: AuthData)
+        case declineFriendRequest(from: Int)
 
         // MARK: Отправить запрос на добавление в друзья
         /// **POST**  ${API}/friends/<user_id>
-        case sendFriendRequest(to: Int, auth: AuthData)
+        case sendFriendRequest(to: Int)
 
         // MARK: Удалить пользователя из списка друзей
         /// **DELETE**  ${API}/friends/<user_id>
-        case deleteFriend(_ friendID: Int, auth: AuthData)
+        case deleteFriend(_ friendID: Int)
 
         // MARK: Найти пользователей по логину
         /// **GET** ${API}/users/search?name=<user>
-        case findUsers(with: String, auth: AuthData)
+        case findUsers(with: String)
 
         // MARK: Получить список всех площадок
         /// **GET** ${API}/areas
@@ -662,39 +645,39 @@ private extension APIService {
 
         // MARK: Добавить новую спортплощадку
         /// **POST** ${API}/areas
-        case createSportsGround(form: SportsGroundForm, auth: AuthData)
+        case createSportsGround(form: SportsGroundForm)
 
         // MARK: Изменить выбранную спортплощадку
         /// **POST** ${API}/areas/<id>
-        case editSportsGround(id: Int, form: SportsGroundForm, auth: AuthData)
+        case editSportsGround(id: Int, form: SportsGroundForm)
 
         // MARK: Удалить площадку
         /// **DELETE** ${API}/areas/<id>
-        case deleteSportsGround(id: Int, auth: AuthData)
+        case deleteSportsGround(id: Int)
 
         // MARK: Добавить комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments
-        case addCommentToSportsGround(groundID: Int, comment: String, auth: AuthData)
+        case addCommentToSportsGround(groundID: Int, comment: String)
 
         // MARK: Изменить свой комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
-        case editGroundComment(groundID: Int, commentID: Int, newComment: String, auth: AuthData)
+        case editGroundComment(groundID: Int, commentID: Int, newComment: String)
 
         // MARK: Удалить свой комментарий для площадки
         /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
-        case deleteGroundComment(_ groundID: Int, commentID: Int, auth: AuthData)
+        case deleteGroundComment(_ groundID: Int, commentID: Int)
 
         // MARK: Получить список площадок, где тренируется пользователь
         /// **GET** ${API}/users/<user_id>/areas
-        case getSportsGroundsForUser(_ userID: Int, auth: AuthData)
+        case getSportsGroundsForUser(_ userID: Int)
 
         // MARK: Сообщить, что пользователь тренируется на площадке
         /// **POST** ${API}/areas/<area_id>/train
-        case postTrainHere(_ groundID: Int, auth: AuthData)
+        case postTrainHere(_ groundID: Int)
 
         // MARK: Сообщить, что пользователь не тренируется на площадке
         /// **DELETE** ${API}/areas/<area_id>/train
-        case deleteTrainHere(_ groundID: Int, auth: AuthData)
+        case deleteTrainHere(_ groundID: Int)
 
         // MARK: Получить список предстоящих мероприятий
         /// **GET** ${API}/trainings/current
@@ -710,35 +693,35 @@ private extension APIService {
 
         // MARK: Создать новое мероприятие
         /// **POST** ${API}/trainings
-        case createEvent(form: EventForm, auth: AuthData)
+        case createEvent(form: EventForm)
 
         // MARK: Изменить существующее мероприятие
         /// **POST** ${API}/trainings/<id>
-        case editEvent(id: Int, form: EventForm, auth: AuthData)
+        case editEvent(id: Int, form: EventForm)
 
         // MARK: Сообщить, что пользователь пойдет на мероприятие
         /// **POST** ${API}/trainings/<event_id>/go
-        case postIsGoingToEvent(id: Int, auth: AuthData)
+        case postIsGoingToEvent(id: Int)
 
         // MARK: Сообщить, что пользователь не пойдет на мероприятие
         /// **DELETE** ${API}/trainings/<event_id>/go
-        case deleteIsGoingToEvent(id: Int, auth: AuthData)
+        case deleteIsGoingToEvent(id: Int)
 
         // MARK: Добавить комментарий для мероприятия
         /// **POST** ${API}/trainings/<event_id>/comments
-        case addCommentToEvent(eventID: Int, comment: String, auth: AuthData)
+        case addCommentToEvent(eventID: Int, comment: String)
 
         // MARK: Удалить свой комментарий для мероприятия
         /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
-        case deleteEventComment(_ eventID: Int, commentID: Int, auth: AuthData)
+        case deleteEventComment(_ eventID: Int, commentID: Int)
 
         // MARK: Изменить свой комментарий для мероприятия
         /// **POST** ${API}/trainings/<training_id>/comments/<comment_id>
-        case editEventComment(eventID: Int, commentID: Int, newComment: String, auth: AuthData)
+        case editEventComment(eventID: Int, commentID: Int, newComment: String)
 
         // MARK: Удалить мероприятие
         /// **DELETE** ${API}/trainings/<event_id>
-        case deleteEvent(id: Int, auth: AuthData)
+        case deleteEvent(id: Int)
 
         // MARK: Получить список диалогов
         /// **GET** ${API}/dialogs
@@ -746,63 +729,63 @@ private extension APIService {
 
         // MARK: Получить сообщения в диалоге
         /// **GET** ${API}/dialogs/<dialog_id>/messages
-        case getMessages(dialogID: Int, auth: AuthData)
+        case getMessages(dialogID: Int)
 
         // MARK: Отправить сообщение пользователю
         /// **POST** ${API}/messages/<user_id>
-        case sendMessageTo(_ message: String, _ userID: Int, auth: AuthData)
+        case sendMessageTo(_ message: String, _ userID: Int)
 
         // MARK: Отметить сообщения как прочитанные
         /// **POST** ${API}/messages/mark_as_read
-        case markAsRead(from: Int, auth: AuthData)
+        case markAsRead(from: Int)
 
         // MARK: Удалить выбранный диалог
         /// **DELETE** ${API}/dialogs/<dialog_id>
-        case deleteDialog(id: Int, auth: AuthData)
+        case deleteDialog(id: Int)
 
         // MARK: Получить список дневников пользователя
         /// **GET** ${API}/users/<user_id>/journals
-        case getJournals(userID: Int, auth: AuthData)
+        case getJournals(userID: Int)
 
         // MARK: Получить дневник пользователя
         /// **GET** ${API}/users/<user_id>/journals/<journal_id>
-        case getJournal(userID: Int, journalID: Int, auth: AuthData)
+        case getJournal(userID: Int, journalID: Int)
 
         // MARK: Изменить настройки дневника
         /// **PUT** ${API}/users/<user_id>/journals/<journal_id>
-        case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int, auth: AuthData)
+        case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int)
 
         // MARK: Создать новый дневник
         /// **POST** ${API}/users/<user_id>/journals
-        case createJournal(userID: Int, title: String, auth: AuthData)
+        case createJournal(userID: Int, title: String)
 
         // MARK: Получить записи из дневника пользователя
         /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
-        case getJournalEntries(userID: Int, journalID: Int, auth: AuthData)
+        case getJournalEntries(userID: Int, journalID: Int)
 
         // MARK: Сохранить новую запись в дневнике пользователя
         /// **POST** ${API}/users/<user_id>/journals/<journal_id>/messages
-        case saveJournalEntry(userID: Int, journalID: Int, message: String, auth: AuthData)
+        case saveJournalEntry(userID: Int, journalID: Int, message: String)
 
         // MARK: Изменить запись в дневнике пользователя
         /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
-        case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String, auth: AuthData)
+        case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String)
 
         // MARK: Удалить запись в дневнике пользователя
         /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
-        case deleteEntry(userID: Int, journalID: Int, entryID: Int, auth: AuthData)
+        case deleteEntry(userID: Int, journalID: Int, entryID: Int)
 
         // MARK: Удалить дневник пользователя
         /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
-        case deleteJournal(userID: Int, journalID: Int, auth: AuthData)
+        case deleteJournal(userID: Int, journalID: Int)
 
         // MARK: Удалить фото мероприятия
         /// **DELETE** ${API}/trainings/<event_id>/photos/<photo_id>
-        case deleteEventPhoto(eventID: Int, photoID: Int, auth: AuthData)
+        case deleteEventPhoto(eventID: Int, photoID: Int)
 
         // MARK: Удалить фото площадки
         /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
-        case deleteGroundPhoto(groundID: Int, photoID: Int, auth: AuthData)
+        case deleteGroundPhoto(groundID: Int, photoID: Int)
 
         var urlRequest: URLRequest? {
             guard let url = URL(string: urlPath) else { return nil }
@@ -825,25 +808,25 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/auth/login"
         case .resetPassword:
             return "\(baseUrl)/auth/reset"
-        case let .editUser(userID, _, _):
+        case let .editUser(userID, _):
             return "\(baseUrl)/users/\(userID)"
         case .changePassword:
             return "\(baseUrl)/auth/changepass"
         case .deleteUser:
             return "\(baseUrl)/users/current"
-        case let .getUser(id, _):
+        case let .getUser(id):
             return "\(baseUrl)/users/\(id)"
-        case let .getFriendsForUser(id, _):
+        case let .getFriendsForUser(id):
             return "\(baseUrl)/users/\(id)/friends"
         case .getFriendRequests:
             return "\(baseUrl)/friends/requests"
-        case let .acceptFriendRequest(userID, _),
-            let .declineFriendRequest(userID, _):
+        case let .acceptFriendRequest(userID),
+            let .declineFriendRequest(userID):
             return "\(baseUrl)/friends/\(userID)/accept"
-        case let .sendFriendRequest(userID, _),
-            let .deleteFriend(userID, _):
+        case let .sendFriendRequest(userID),
+            let .deleteFriend(userID):
             return "\(baseUrl)/friends/\(userID)"
-        case let .findUsers(name, _):
+        case let .findUsers(name):
             return "\(baseUrl)/users/search?name=\(name)"
         case .getAllSportsGrounds:
             return "\(baseUrl)/areas?fields=short"
@@ -852,18 +835,18 @@ private extension APIService.Endpoint {
         case .createSportsGround:
             return "\(baseUrl)/areas"
         case let .getSportsGround(id),
-            let .editSportsGround(id, _, _),
-            let .deleteSportsGround(id, _):
+            let .editSportsGround(id, _),
+            let .deleteSportsGround(id):
             return "\(baseUrl)/areas/\(id)"
-        case let .addCommentToSportsGround(groundID, _, _):
+        case let .addCommentToSportsGround(groundID, _):
             return "\(baseUrl)/areas/\(groundID)/comments"
-        case let .editGroundComment(groundID, commentID, _, _):
+        case let .editGroundComment(groundID, commentID, _):
             return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
-        case let .deleteGroundComment(groundID, commentID, _):
+        case let .deleteGroundComment(groundID, commentID):
             return "\(baseUrl)/areas/\(groundID)/comments/\(commentID)"
-        case let .getSportsGroundsForUser(userID, _):
+        case let .getSportsGroundsForUser(userID):
             return "\(baseUrl)/users/\(userID)/areas"
-        case let .postTrainHere(groundID, _), let .deleteTrainHere(groundID, _):
+        case let .postTrainHere(groundID), let .deleteTrainHere(groundID):
             return "\(baseUrl)/areas/\(groundID)/train"
         case .getFutureEvents:
             return "\(baseUrl)/trainings/current"
@@ -873,42 +856,42 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/trainings/\(id)"
         case .createEvent:
             return "\(baseUrl)/trainings"
-        case let .postIsGoingToEvent(id, _), let .deleteIsGoingToEvent(id, _):
+        case let .postIsGoingToEvent(id), let .deleteIsGoingToEvent(id):
             return "\(baseUrl)/trainings/\(id)/go"
-        case let .addCommentToEvent(id, _, _):
+        case let .addCommentToEvent(id, _):
             return "\(baseUrl)/trainings/\(id)/comments"
-        case let .deleteEventComment(eventID, commentID, _):
+        case let .deleteEventComment(eventID, commentID):
             return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
-        case let .editEventComment(eventID, commentID, _, _):
+        case let .editEventComment(eventID, commentID, _):
             return "\(baseUrl)/trainings/\(eventID)/comments/\(commentID)"
-        case let .deleteEvent(id, _), let .editEvent(id, _, _):
+        case let .deleteEvent(id), let .editEvent(id, _):
             return "\(baseUrl)/trainings/\(id)"
         case .getDialogs:
             return "\(baseUrl)/dialogs"
-        case let .getMessages(dialogID, _):
+        case let .getMessages(dialogID):
             return "\(baseUrl)/dialogs/\(dialogID)/messages"
-        case let .sendMessageTo(_, userID, _):
+        case let .sendMessageTo(_, userID):
             return "\(baseUrl)/messages/\(userID)"
         case .markAsRead:
             return "\(baseUrl)/messages/mark_as_read"
-        case let .deleteDialog(dialogID, _):
+        case let .deleteDialog(dialogID):
             return "\(baseUrl)/dialogs/\(dialogID)"
-        case let .getJournals(userID, _),
-            let .createJournal(userID, _, _):
+        case let .getJournals(userID),
+            let .createJournal(userID, _):
             return "\(baseUrl)/users/\(userID)/journals"
-        case let .getJournal(userID, journalID, _),
-            let .deleteJournal(userID, journalID, _),
-            let .editJournalSettings(userID, journalID, _, _, _, _):
+        case let .getJournal(userID, journalID),
+            let .deleteJournal(userID, journalID),
+            let .editJournalSettings(userID, journalID, _, _, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)"
-        case let .getJournalEntries(userID, journalID, _),
-            let .saveJournalEntry(userID, journalID, _, _):
+        case let .getJournalEntries(userID, journalID),
+            let .saveJournalEntry(userID, journalID, _):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages"
-        case let .editEntry(userID, journalID, entryID, _, _),
-            let .deleteEntry(userID, journalID, entryID, _):
+        case let .editEntry(userID, journalID, entryID, _),
+            let .deleteEntry(userID, journalID, entryID):
             return "\(baseUrl)/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
-        case let .deleteEventPhoto(eventID, photoID, _):
+        case let .deleteEventPhoto(eventID, photoID):
             return "\(baseUrl)/trainings/\(eventID)/photos/\(photoID)"
-        case let .deleteGroundPhoto(groundID, photoID, _):
+        case let .deleteGroundPhoto(groundID, photoID):
             return "\(baseUrl)/areas/\(groundID)/photos/\(photoID)"
         }
     }
@@ -959,7 +942,10 @@ private extension APIService.Endpoint {
             case contentType = "Content-Type"
         }
 
-        static func basicAuth(with input: AuthData, withMultipart: Bool = false) -> [String: String] {
+        static func basicAuth(
+            with input: AuthData = DefaultsService().basicAuthInfo,
+            withMultipart: Bool = false
+        ) -> [String: String] {
             var headers = [String: String]()
             if let encodedString = input.base64Encoded {
                 headers[Key.authorization.rawValue] = "Basic \(encodedString)"
@@ -973,35 +959,37 @@ private extension APIService.Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case let .login(auth), let .getUser(_, auth), let .editUser(_, _, auth),
-            let .changePassword(_, _, auth), let .getFriendsForUser(_, auth),
-            let .getFriendRequests(auth), let .acceptFriendRequest(_, auth),
-            let .declineFriendRequest(_, auth), let .sendFriendRequest(_, auth),
-            let .deleteFriend(_, auth), let .findUsers(_, auth),
-            let .deleteUser(auth), let .getDialogs(auth),
-            let .addCommentToSportsGround(_, _, auth), let .editGroundComment(_, _, _, auth),
-            let .deleteGroundComment(_, _, auth), let .getSportsGroundsForUser(_, auth),
-            let .postTrainHere(_, auth), let .deleteTrainHere(_, auth),
-            let .postIsGoingToEvent(_, auth), let .deleteIsGoingToEvent(_, auth),
-            let .addCommentToEvent(_, _, auth), let .deleteSportsGround(_, auth),
-            let .deleteEventComment(_, _, auth), let .editEventComment(_, _, _, auth),
-            let .deleteEvent(_, auth), let .getMessages(_, auth),
-            let .sendMessageTo(_, _, auth), let .markAsRead(_, auth),
-            let .deleteDialog(_, auth), let .getJournals(_, auth),
-            let .getJournal(_, _, auth), let .createJournal(_, _, auth),
-            let .getJournalEntries(_, _, auth), let .saveJournalEntry(_, _, _, auth),
-            let .editEntry(_,_,_,_, auth), let .deleteEntry(_, _, _, auth),
-            let .deleteJournal(_, _, auth), let .editJournalSettings(_, _, _, _, _, auth),
-            let .deleteEventPhoto(_, _, auth), let .deleteGroundPhoto(_, _, auth):
+        case let .login(auth):
             return HTTPHeader.basicAuth(with: auth)
+        case .getUser, .editUser,
+                .changePassword, .getFriendsForUser,
+                .getFriendRequests, .acceptFriendRequest,
+                .declineFriendRequest, .sendFriendRequest,
+                .deleteFriend, .findUsers,
+                .deleteUser, .getDialogs,
+                .addCommentToSportsGround, .editGroundComment,
+                .deleteGroundComment, .getSportsGroundsForUser,
+                .postTrainHere, .deleteTrainHere,
+                .postIsGoingToEvent, .deleteIsGoingToEvent,
+                .addCommentToEvent, .deleteSportsGround,
+                .deleteEventComment, .editEventComment,
+                .deleteEvent, .getMessages,
+                .sendMessageTo, .markAsRead,
+                .deleteDialog, .getJournals,
+                .getJournal, .createJournal,
+                .getJournalEntries, .saveJournalEntry,
+                .editEntry, .deleteEntry,
+                .deleteJournal, .editJournalSettings,
+                .deleteEventPhoto, .deleteGroundPhoto:
+            return HTTPHeader.basicAuth()
         case .registration, .resetPassword,
                 .getAllSportsGrounds, .getSportsGround,
                 .getUpdatedSportsGrounds, .getFutureEvents,
                 .getPastEvents, .getEvent:
             return [:]
-        case let .createSportsGround(_, auth), let .editSportsGround(_, _, auth),
-            let .createEvent(_, auth), let .editEvent(_, _, auth):
-            return HTTPHeader.basicAuth(with: auth, withMultipart: true)
+        case .createSportsGround, .editSportsGround,
+                .createEvent, .editEvent:
+            return HTTPHeader.basicAuth(withMultipart: true)
         }
     }
 
@@ -1024,14 +1012,20 @@ private extension APIService.Endpoint {
             case classID = "class_id"
         }
 
-        static func make(from dict: [Key: String], with media: [MediaFile] = []) -> Data? {
+        static func makeBody(
+            from dict: [Key: String],
+            with media: [MediaFile] = []
+        ) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")
                 .data(using: .utf8)
         }
 
-        static func makeMultipartData(from dict: [Key: String], with media: [MediaFile]?) -> Data {
+        static func makeBodyWithMultipartForm(
+            from dict: [Key: String],
+            with media: [MediaFile]?
+        ) -> Data {
             let boundary = HTTPHeader.boundary
             let lineBreak = "\r\n"
             var body = Data()
@@ -1070,7 +1064,7 @@ private extension APIService.Endpoint {
                 .deleteEventPhoto, .deleteGroundPhoto:
             return nil
         case let .registration(form):
-            return Parameter.make(
+            return Parameter.makeBody(
                 from: [
                     .name: form.userName,
                     .fullname: form.fullName,
@@ -1082,8 +1076,8 @@ private extension APIService.Endpoint {
                     .birthDate: form.birthDateIsoString
                 ]
             )
-        case let .editUser(_, form, _):
-            return Parameter.make(
+        case let .editUser(_, form):
+            return Parameter.makeBody(
                 from: [
                     .name: form.userName,
                     .fullname: form.fullName,
@@ -1095,33 +1089,33 @@ private extension APIService.Endpoint {
                 ]
             )
         case let .resetPassword(login):
-            return Parameter.make(from: [.usernameOrEmail: login])
-        case let .changePassword(current, new, _):
-            return Parameter.make(from: [.password: current, .newPassword: new])
-        case let .addCommentToSportsGround(_, comment, _),
-            let .addCommentToEvent(_, comment, _),
-            let .editGroundComment(_, _, comment, _),
-            let .editEventComment(_, _, comment, _):
-            return Parameter.make(from: [.comment: comment])
-        case let .sendMessageTo(message, _, _):
-            return Parameter.make(from: [.message: message])
-        case let .markAsRead(userID, _):
-            return Parameter.make(from: [.fromUserID: userID.description])
-        case let .createJournal(_, title, _):
-            return Parameter.make(from: [.title: title])
-        case let .saveJournalEntry(_, _, message, _),
-            let .editEntry(_,_,_, message, _):
-            return Parameter.make(from: [.message: message])
-        case let .editJournalSettings(_, _, title, viewAccess, commentAccess, _):
-            return Parameter.make(
+            return Parameter.makeBody(from: [.usernameOrEmail: login])
+        case let .changePassword(current, new):
+            return Parameter.makeBody(from: [.password: current, .newPassword: new])
+        case let .addCommentToSportsGround(_, comment),
+            let .addCommentToEvent(_, comment),
+            let .editGroundComment(_, _, comment),
+            let .editEventComment(_, _, comment):
+            return Parameter.makeBody(from: [.comment: comment])
+        case let .sendMessageTo(message, _):
+            return Parameter.makeBody(from: [.message: message])
+        case let .markAsRead(userID):
+            return Parameter.makeBody(from: [.fromUserID: userID.description])
+        case let .createJournal(_, title):
+            return Parameter.makeBody(from: [.title: title])
+        case let .saveJournalEntry(_, _, message),
+            let .editEntry(_,_,_, message):
+            return Parameter.makeBody(from: [.message: message])
+        case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
+            return Parameter.makeBody(
                 from: [
                     .title: title,
                     .viewAccess: viewAccess.description,
                     .commentAccess: commentAccess.description
                 ]
             )
-        case let .createEvent(form, _), let .editEvent(_, form, _):
-            let params = Parameter.makeMultipartData(
+        case let .createEvent(form), let .editEvent(_, form):
+            let params = Parameter.makeBodyWithMultipartForm(
                 from: [
                     .title: form.title,
                     .description: form.description,
@@ -1131,8 +1125,8 @@ private extension APIService.Endpoint {
                 with: form.newImagesData
             )
             return params
-        case let .createSportsGround(form, _), let .editSportsGround(_, form, _):
-            return Parameter.makeMultipartData(
+        case let .createSportsGround(form), let .editSportsGround(_, form):
+            return Parameter.makeBodyWithMultipartForm(
                 from: [
                     .address: form.address,
                     .latitude: form.latitude,
