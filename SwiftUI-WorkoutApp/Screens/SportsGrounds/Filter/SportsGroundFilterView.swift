@@ -78,8 +78,13 @@ private extension SportsGroundFilterView {
         } label: {
             ButtonInFormLabel(title: "Сбросить фильтры")
         }
-        .disabled(filter == defaultFilter)
+        .disabled(!canResetFilter)
+    }
 
+    var canResetFilter: Bool {
+        filter.size.count < 3
+        || filter.type.count < 3
+        || filter.onlyMyCity != defaultFilter.onlyMyCity
     }
 }
 
