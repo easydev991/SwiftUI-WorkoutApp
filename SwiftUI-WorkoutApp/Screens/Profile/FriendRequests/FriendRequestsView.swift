@@ -28,13 +28,13 @@ struct FriendRequestsView: View {
 private extension FriendRequestsView {
     func accept(userID: Int) {
         acceptRequestTask = Task {
-            await viewModel.respondToFriendRequest(from: userID, accept: true)
+            await viewModel.respondToFriendRequest(from: userID, accept: true, with: defaults)
         }
     }
 
     func decline(userID: Int) {
         declineRequestTask = Task {
-            await viewModel.respondToFriendRequest(from: userID, accept: false)
+            await viewModel.respondToFriendRequest(from: userID, accept: false, with: defaults)
         }
     }
 
@@ -50,5 +50,6 @@ private extension FriendRequestsView {
 struct FriendRequestsView_Previews: PreviewProvider {
     static var previews: some View {
         FriendRequestsView(viewModel: .init())
+            .environmentObject(DefaultsService())
     }
 }

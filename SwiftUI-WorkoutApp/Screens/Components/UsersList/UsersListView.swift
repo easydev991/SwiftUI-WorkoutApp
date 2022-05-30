@@ -64,7 +64,7 @@ private extension UsersListView {
     }
 
     func askForUsers(refresh: Bool = false) async {
-        await viewModel.makeInfo(for: mode, refresh: refresh)
+        await viewModel.makeInfo(for: mode, refresh: refresh, with: defaults)
     }
 
     func setupErrorAlert(with message: String) {

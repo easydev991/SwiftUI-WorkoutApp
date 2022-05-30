@@ -215,7 +215,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(refresh: refresh)
+        await viewModel.askForEvent(refresh: refresh, mainUserID: defaults.mainUserID)
     }
 
     func changeIsGoingToEvent() {
@@ -264,7 +264,7 @@ private extension EventDetailsView {
 
     func deletePhoto(photo: Photo) {
         deletePhotoTask = Task {
-            await viewModel.delete(photo)
+            await viewModel.delete(photo, mainUserID: defaults.mainUserID)
         }
     }
 

@@ -108,7 +108,7 @@ private extension JournalsList {
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             deleteJournalTask = Task {
-                await viewModel.delete(journalID: journalIdToDelete)
+                await viewModel.delete(journalID: journalIdToDelete, with: defaults)
             }
         } label: {
             Text("Удалить")

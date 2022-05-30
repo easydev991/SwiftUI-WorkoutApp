@@ -68,7 +68,7 @@ extension SportsGroundsListView {
 
 private extension SportsGroundsListView {
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundsFor(mode, refresh: refresh)
+        await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
 
     func updateDeleted(deletedGroundId: Int) {

@@ -54,13 +54,13 @@ final class JournalsListViewModel: ObservableObject {
     }
 
     @MainActor
-    func delete(journalID: Int?) async {
+    func delete(journalID: Int?, with defaults: DefaultsService) async {
         guard let journalID = journalID, !isLoading else { return }
         isLoading.toggle()
         do {
             if try await APIService().deleteJournal(journalID: journalID) {
                 list.removeAll(where: { $0.id == journalID })
-                DefaultsService().setUserNeedUpdate(true)
+                defaults.setUserNeedUpdate(true)
             }
         } catch {
             errorMessage = error.localizedDescription

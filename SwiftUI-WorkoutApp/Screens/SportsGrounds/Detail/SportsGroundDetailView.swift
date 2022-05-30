@@ -136,7 +136,7 @@ private extension SportsGroundDetailView {
 
     func changeTrainHereStatus() {
         changeTrainHereTask = Task {
-            await viewModel.changeTrainHereStatus()
+            await viewModel.changeTrainHereStatus(with: defaults)
         }
     }
 

@@ -209,7 +209,7 @@ private extension UserDetailsView {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
-        await viewModel.makeUserInfo(refresh: refresh)
+        await viewModel.makeUserInfo(refresh: refresh, with: defaults)
         if isMainUser {
             await viewModel.checkFriendRequests()
         }

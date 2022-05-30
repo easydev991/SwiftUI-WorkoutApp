@@ -21,8 +21,7 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     @MainActor
-    func makeUserInfo(refresh: Bool) async {
-        let defaults = DefaultsService()
+    func makeUserInfo(refresh: Bool, with defaults: DefaultsService) async {
         let isMainUser = user.id == defaults.mainUserID
         if !refresh { isLoading.toggle() }
         if isMainUser {
@@ -30,14 +29,14 @@ final class UserDetailsViewModel: ObservableObject {
                let mainUserInfo = defaults.mainUserInfo {
                 user = .init(mainUserInfo)
             } else {
-                await makeUserInfo(for: user.id)
+                await makeUserInfo(for: user.id, with: defaults)
             }
         } else {
             if user.isFull && !refresh {
                 isLoading.toggle()
                 return
             }
-            await makeUserInfo(for: user.id)
+            await makeUserInfo(for: user.id, with: defaults)
             friendActionOption = defaults.friendsIdsList.contains(user.id)
             ? .removeFriend
             : .sendFriendRequest
@@ -87,9 +86,9 @@ final class UserDetailsViewModel: ObservableObject {
 }
 
 private extension UserDetailsViewModel {
-    func makeUserInfo(for userID: Int) async {
+    func makeUserInfo(for userID: Int, with defaults: DefaultsService) async {
         do {
-            let info = try await APIService().getUserByID(user.id)
+            let info = try await APIService(with: defaults).getUserByID(user.id)
             user = .init(info)
         } catch {
             errorMessage = error.localizedDescription

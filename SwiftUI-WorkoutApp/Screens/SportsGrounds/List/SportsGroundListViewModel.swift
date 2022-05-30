@@ -6,22 +6,21 @@ final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     @MainActor
-    func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool) async {
+    func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool, with defaults: DefaultsService) async {
         if isLoading { return }
         switch mode {
         case let .usedBy(userID), let .event(userID):
-            let defaults = DefaultsService()
             let isMainUser = userID == defaults.mainUserID
             let needUpdate = list.isEmpty || refresh
             if isMainUser {
 #warning("TODO: вместо needUpdateUser проверять список площадок пользователя в БД, чтобы не делать лишние запросы")
                 if !needUpdate && !defaults.needUpdateUser { return }
                 isLoading.toggle()
-                await makeList(for: userID)
+                await makeList(for: userID, with: defaults)
             } else {
                 if !needUpdate { return }
                 isLoading.toggle()
-                await makeList(for: userID)
+                await makeList(for: userID, with: defaults)
             }
             isLoading.toggle()
         case let .added(list):
@@ -38,13 +37,13 @@ final class SportsGroundListViewModel: ObservableObject {
 }
 
 private extension SportsGroundListViewModel {
-    func makeList(for userID: Int) async {
+    func makeList(for userID: Int, with defaults: DefaultsService) async {
         do {
-            if userID == DefaultsService().mainUserID {
+            if userID == defaults.mainUserID {
 #warning("TODO: интеграция с БД")
-                await DefaultsService().setUserNeedUpdate(false)
+                await defaults.setUserNeedUpdate(false)
             }
-            list = try await APIService().getSportsGroundsForUser(userID)
+            list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -25,13 +25,12 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func changeTrainHereStatus() async {
+    func changeTrainHereStatus(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let defaults = DefaultsService()
             let trainHere = !ground.trainHere
-            if try await APIService().changeTrainHereStatus(
+            if try await APIService(with: defaults).changeTrainHereStatus(
                 for: ground.id,
                 trainHere: trainHere
             ) {
