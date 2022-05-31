@@ -7,6 +7,7 @@ struct DialogView: View {
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @FocusState private var isMessageBarFocused: Bool
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var refreshDialogTask: Task<Void, Never>?
     @Namespace private var chatScrollView
@@ -30,6 +31,11 @@ struct DialogView: View {
                         }
                     }
                 }
+                .simultaneousGesture(
+                    DragGesture().onChanged { _ in
+                        isMessageBarFocused = false
+                    }
+                )
                 sendMessageBar
             }
         }
@@ -87,6 +93,7 @@ private extension DialogView {
             Text(message.formattedMessage)
                 .padding(.top, 12)
                 .padding(.horizontal, 20)
+                .textSelection(.enabled)
             Text(message.messageDateString)
                 .font(.caption2)
                 .padding(.horizontal, 16)
@@ -107,6 +114,7 @@ private extension DialogView {
 
     var newMessageTextField: some View {
         TextEditor(text: $viewModel.newMessage)
+            .focused($isMessageBarFocused)
             .frame(maxHeight: 40)
             .padding(.horizontal, 8)
             .overlay(
