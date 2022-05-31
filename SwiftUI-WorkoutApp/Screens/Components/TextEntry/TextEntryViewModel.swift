@@ -1,11 +1,11 @@
 import Foundation
 
+@MainActor
 final class TextEntryViewModel: ObservableObject {
     @Published private(set) var isSuccess = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    @MainActor
     func addNewEntry(_ mode: TextEntryView.Mode, entryText: String, defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
@@ -31,7 +31,6 @@ final class TextEntryViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func editEntry(for mode: TextEntryView.Mode, entryText: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Экран со списком мероприятий
 struct EventsListView: View {
+    @EnvironmentObject private var tabViewModel: TabViewModel
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
@@ -29,17 +30,36 @@ struct EventsListView: View {
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: selectedEventType, perform: selectedEventAction)
-            .refreshable { await viewModel.askForEvents(type: selectedEventType, refresh: true) }
-            .toolbar { addEventLink }
+            .refreshable { await askForEvents(refresh: true) }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    refreshButton
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    addEventLink
+                }
+            }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .task { await viewModel.askForEvents(type: selectedEventType, refresh: false) }
+        .task { await askForEvents() }
         .onDisappear(perform: cancelTask)
     }
 }
 
 private extension EventsListView {
+    var refreshButton: some View {
+        Button {
+            eventsTask = Task {
+                await askForEvents()
+            }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .opacity(showEmptyView ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) { Text($0.rawValue) }
@@ -51,9 +71,26 @@ private extension EventsListView {
     var emptyView: some View {
         EmptyContentView(
             message: "Нет запланированных мероприятий",
-            buttonTitle: "Создать мероприятие",
-            action: createEventAction
+            buttonTitle: emptyViewButtonTitle,
+            action: emptyViewAction,
+            hintText: emptyViewHintText
         )
+        .opacity(showEmptyView ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
+    var emptyViewButtonTitle: String {
+        showAddEventButton ? "Создать мероприятие" : "Выбрать площадку"
+    }
+
+    var emptyViewHintText: String {
+        if !defaults.isAuthorized {
+            return ""
+        } else {
+            return showAddEventButton
+            ? ""
+            : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
+        }
     }
 
     var eventsList: some View {
@@ -67,8 +104,12 @@ private extension EventsListView {
         .opacity(viewModel.isLoading ? .zero : 1)
     }
 
-    func createEventAction() {
-        isCreatingEvent.toggle()
+    func emptyViewAction() {
+        if showAddEventButton {
+            isCreatingEvent.toggle()
+        } else {
+            tabViewModel.selectTab(.map)
+        }
     }
 
     var addEventLink: some View {
@@ -88,23 +129,24 @@ private extension EventsListView {
     }
 
     var showEmptyView: Bool {
-        viewModel.isEmpty(for: .future)
-        && !viewModel.isLoading
-        && selectedEventType == .future
+        selectedEventType == .future
+        && viewModel.futureEvents.isEmpty
     }
 
     func selectedEventAction(_ type: EventType) {
-        askForEvents()
-    }
-
-    func askForEvents(refresh: Bool = false) {
         eventsTask = Task {
-            await viewModel.askForEvents(type: selectedEventType, refresh: refresh)
+            await askForEvents()
         }
     }
 
+    func askForEvents(refresh: Bool = false) async {
+        await viewModel.askForEvents(type: selectedEventType, refresh: refresh, with: defaults)
+    }
+
     func refreshAction() {
-        askForEvents(refresh: true)
+        eventsTask = Task {
+            await askForEvents(refresh: true)
+        }
     }
 
     func setupErrorAlert(with message: String) {
@@ -124,6 +166,7 @@ private extension EventsListView {
 struct EventsView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
+            .environmentObject(TabViewModel())
             .environmentObject(DefaultsService())
     }
 }

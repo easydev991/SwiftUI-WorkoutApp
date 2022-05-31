@@ -43,7 +43,7 @@ struct AccountInfoView: View {
             await viewModel.updateFormIfNeeded(with: defaults)
         }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: viewModel.clearErrorMessage) { TextOk() }
+            Button { viewModel.clearErrorMessage() } label: { TextOk() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isProfileSaved, perform: close)
@@ -97,7 +97,7 @@ private extension AccountInfoView {
             CountriesView(
                 allCountries: $viewModel.countries,
                 selectedCountry: viewModel.userForm.country,
-                countryClbk: viewModel.selectCountry
+                countryClbk: { viewModel.selectCountry($0) }
             )
         } label: {
             HStack {
@@ -116,7 +116,7 @@ private extension AccountInfoView {
             CitiesView(
                 allCities: $viewModel.cities,
                 selectedCity: viewModel.userForm.city,
-                cityClbk: viewModel.selectCity
+                cityClbk: { viewModel.selectCity($0) }
             )
         } label: {
             HStack {

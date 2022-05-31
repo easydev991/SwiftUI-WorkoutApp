@@ -37,7 +37,10 @@ private extension WelcomeView {
     }
 
     var registerButton: some View {
-        NavigationLink(destination: AccountInfoView()) {
+        NavigationLink {
+            AccountInfoView()
+                .navigationTitle("Регистрация")
+        } label: {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
                 .welcomeButtonTitle()
         }
@@ -51,7 +54,7 @@ private extension WelcomeView {
     }
 
     var skipLoginButton: some View {
-        Button(action: defaults.setWelcomeShown) {
+        Button { defaults.setWelcomeShown() } label: {
             Text("Пропустить")
                 .frame(height: 48)
                 .font(.subheadline)

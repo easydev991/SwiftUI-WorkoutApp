@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class ChangePasswordViewModel: ObservableObject {
     @Published var currentPasswordText = ""
     @Published var newPasswordText = ""
@@ -13,12 +14,13 @@ final class ChangePasswordViewModel: ObservableObject {
         || newPasswordText != newPasswordAgainText
     }
 
-    @MainActor
-    func changePasswordAction() async {
+    func changePasswordAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isChangeSuccessful = try await APIService().changePassword(current: currentPasswordText, new: newPasswordText)
+            isChangeSuccessful = try await APIService(with: defaults).changePassword(
+                current: currentPasswordText, new: newPasswordText
+            )
         } catch {
             errorMessage = error.localizedDescription
         }

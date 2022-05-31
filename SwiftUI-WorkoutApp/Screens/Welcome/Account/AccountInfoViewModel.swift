@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class AccountInfoViewModel: ObservableObject {
     @Published var userForm = MainUserForm.emptyValue
     @Published var countries = [Country]()
@@ -23,7 +24,6 @@ final class AccountInfoViewModel: ObservableObject {
         makeCountryAndCityData()
     }
 
-    @MainActor
     func updateFormIfNeeded(with defaults: DefaultsService) async {
         if defaults.isAuthorized, userForm.userName.isEmpty,
            let userInfo = defaults.mainUserInfo {
@@ -43,7 +43,6 @@ final class AccountInfoViewModel: ObservableObject {
         userForm.city = city
     }
 
-    @MainActor
     func registerAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
@@ -55,7 +54,6 @@ final class AccountInfoViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func saveChangesAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

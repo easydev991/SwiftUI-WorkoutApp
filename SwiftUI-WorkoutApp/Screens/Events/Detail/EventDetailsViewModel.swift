@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class EventDetailsViewModel: ObservableObject {
     @Published var event: EventResponse
     @Published private(set) var isDeleted = false
@@ -10,15 +11,14 @@ final class EventDetailsViewModel: ObservableObject {
         self.event = event
     }
 
-    @MainActor
-    func askForEvent(refresh: Bool, mainUserID: Int) async {
+    func askForEvent(refresh: Bool, with defaults: DefaultsService) async {
         if (isLoading || event.isFull) && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }
         do {
-            event = try await APIService().getEvent(by: event.id)
-            let isUserGoing = event.participants.contains(where: { $0.userID == mainUserID })
+            event = try await APIService(with: defaults).getEvent(by: event.id)
+            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserID })
             event.trainHere = isUserGoing
         } catch {
             errorMessage = error.localizedDescription
@@ -26,7 +26,6 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    @MainActor
     func changeIsGoingToEvent(with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
         isLoading.toggle()
@@ -49,13 +48,14 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
-    func delete(_ photo: Photo, mainUserID: Int) async {
+    func delete(_ photo: Photo, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().deletePhoto(from: .event(.init(containerID: event.id, photoID: photo.id))) {
-                await askForEvent(refresh: true, mainUserID: mainUserID)
+            if try await APIService(with: defaults).deletePhoto(
+                from: .event(.init(containerID: event.id, photoID: photo.id))
+            ) {
+                await askForEvent(refresh: true, with: defaults)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -63,7 +63,6 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
@@ -77,7 +76,6 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func deleteEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

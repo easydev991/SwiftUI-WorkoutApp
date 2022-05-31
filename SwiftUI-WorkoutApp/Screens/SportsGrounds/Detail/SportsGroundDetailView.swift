@@ -236,12 +236,12 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForSportsGround(refresh: refresh)
+        await viewModel.askForSportsGround(refresh: refresh, with: defaults)
     }
 
     func deletePhoto(photo: Photo) {
         deletePhotoTask = Task {
-            await viewModel.delete(photo)
+            await viewModel.delete(photo, with: defaults)
         }
     }
 

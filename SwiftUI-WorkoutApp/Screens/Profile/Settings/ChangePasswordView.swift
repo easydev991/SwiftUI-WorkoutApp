@@ -31,7 +31,7 @@ struct ChangePasswordView: View {
         }
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: viewModel.errorAlertClosed) { TextOk() }
+            Button { viewModel.errorAlertClosed() } label: { TextOk() }
         }
         .onChange(of: viewModel.isChangeSuccessful, perform: performLogout)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -89,7 +89,7 @@ private extension ChangePasswordView {
 
     func changePasswordTapped() {
         focus = nil
-        changePasswordTask = Task { await viewModel.changePasswordAction() }
+        changePasswordTask = Task { await viewModel.changePasswordAction(with: defaults) }
     }
 
     func performLogout(needRelogin: Bool) {

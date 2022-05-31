@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class JournalEntriesListViewModel: ObservableObject {
     let userID: Int
     @Published var currentJournal: JournalResponse
@@ -18,7 +19,6 @@ final class JournalEntriesListViewModel: ObservableObject {
         currentJournal = journal
     }
 
-    @MainActor
     func makeItems(with defaults: DefaultsService, refresh: Bool) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
@@ -30,7 +30,6 @@ final class JournalEntriesListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    @MainActor
     func delete(_ entryID: Int?, with defaults: DefaultsService) async {
         guard let entryID = entryID, !isLoading else { return }
         isLoading.toggle()

@@ -136,17 +136,17 @@ private extension DialogView {
 
     func markAsRead() async {
         if dialog.unreadMessagesCount > .zero {
-            await viewModel.markAsRead(from: dialog.anotherUserID.valueOrZero)
+            await viewModel.markAsRead(from: dialog.anotherUserID.valueOrZero, with: defaults)
         }
     }
 
     func askForMessages(refresh: Bool = false) async {
-        await viewModel.makeItems(for: dialog.id, refresh: refresh)
+        await viewModel.makeItems(for: dialog.id, refresh: refresh, with: defaults)
     }
 
     func sendMessage() {
         sendMessageTask = Task(priority: .userInitiated) {
-            await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero)
+            await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero, with: defaults)
         }
     }
 

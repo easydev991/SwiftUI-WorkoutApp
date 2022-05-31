@@ -6,6 +6,7 @@ struct EmptyContentView: View {
     let message: String
     let buttonTitle: String
     let action: () -> Void
+    var hintText = ""
 
     var body: some View {
         VStack(spacing: 16) {
@@ -18,6 +19,11 @@ struct EmptyContentView: View {
                     .roundedRectangleStyle()
             }
             .opacity(defaults.isAuthorized ? 1 : .zero)
+            if !hintText.isEmpty {
+                Text(hintText)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+            }
             Spacer()
         }
         .padding()

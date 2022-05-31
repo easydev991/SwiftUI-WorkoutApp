@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Список дневников
-struct JournalsList: View {
+struct JournalsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
     @State private var isCreatingJournal = false
@@ -48,15 +48,15 @@ struct JournalsList: View {
     }
 }
 
-private extension JournalsList {
+private extension JournalsListView {
     var emptyContentView: some View {
         EmptyContentView(
             message: "Дневников пока нет",
             buttonTitle: "Создать дневник",
             action: showNewJournalSheet
         )
-        .opacity(viewModel.isLoading ? .zero : 1)
-        .animation(.default, value: viewModel.isLoading)
+        .opacity(viewModel.list.isEmpty ? 1 : .zero)
+        .disabled(viewModel.isLoading)
     }
 
     var journalsList: some View {
@@ -128,7 +128,7 @@ private extension JournalsList {
     }
 
     func askForJournals(refresh: Bool = false) async {
-        await viewModel.makeItems(for: userID, refresh: refresh)
+        await viewModel.makeItems(for: userID, refresh: refresh, with: defaults)
     }
 
     func saveNewJournal() {
@@ -167,9 +167,9 @@ private extension JournalsList {
     }
 }
 
-struct JournalsList_Previews: PreviewProvider {
+struct JournalsListView_Previews: PreviewProvider {
     static var previews: some View {
-        JournalsList(for: DefaultsService().mainUserID)
+        JournalsListView(for: DefaultsService().mainUserID)
             .environmentObject(DefaultsService())
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct SwiftUI_WorkoutAppApp: App {
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = CheckNetworkService()
 
@@ -13,6 +14,7 @@ struct SwiftUI_WorkoutAppApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
         }

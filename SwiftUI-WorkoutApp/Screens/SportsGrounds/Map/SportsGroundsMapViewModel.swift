@@ -1,9 +1,12 @@
 import MapKit.MKGeometry
 
+@MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
+    private var userCountryID = Int.zero
+    private var userCityID = Int.zero
     @Published var filter = SportsGroundFilter() {
-        didSet { applyFilter() }
+        didSet { applyFilter(userCountryID, userCityID) }
     }
     @Published var list = [SportsGround]()
     @Published private(set) var isLoading = false
@@ -11,40 +14,41 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var selectedGround = SportsGround.emptyValue
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
+    @Published var needUpdateMap = false
     private var defaultList = Bundle.main.decodeJson(
         [SportsGround].self,
         fileName: "oldSportsGrounds.json"
-    ) {
-        didSet { applyFilter() }
-    }
+    )
 
     override init() {
         super.init()
-        applyFilter()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
     }
 
-    @MainActor
-    func makeGrounds(refresh: Bool) async {
+    func makeGrounds(refresh: Bool, with defaults: DefaultsService) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
+        if list.isEmpty {
+            applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
+            return
+        }
         isLoading.toggle()
         do {
-            defaultList = try await APIService().getAllSportsGrounds()
+            defaultList = try await APIService(with: defaults).getAllSportsGrounds()
+            applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading.toggle()
     }
 
-    @MainActor
-    func checkForRecentUpdates() async {
+    func checkForRecentUpdates(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             let dateString = FormatterService.serverFiveMinutesAgo(from: Constants.fiveMinutesAgo)
-            let updatedGrounds = try await APIService().getUpdatedSportsGrounds(from: dateString)
+            let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(from: dateString)
             updatedGrounds.forEach { ground in
                 if !list.contains(ground) {
                     list.append(ground)
@@ -52,6 +56,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
                     list[index] = ground
                 }
             }
+            applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -60,9 +65,17 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
     func deleteSportsGroundFromList() {
         list.removeAll(where: { $0.id == selectedGround.id })
+        applyFilter(userCountryID, userCityID)
     }
 
-    func resetFilter() { applyFilter() }
+    func updateFilter(with defaults: DefaultsService) {
+        userCountryID = defaults.mainUserCountry
+        userCityID = defaults.mainUserCity
+        if !defaults.isAuthorized && !filter.onlyMyCity {
+            // Сбрасываем фильтр, чтобы не горела кнопка "Сбросить фильтры"
+            filter = .init()
+        }
+    }
 
     func onAppearAction() {
         manager.startUpdatingLocation()
@@ -75,9 +88,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     func clearErrorMessage() { errorMessage = "" }
 }
 
-
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
-    @MainActor
     func locationManager(
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
@@ -119,9 +130,7 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
 }
 
 private extension SportsGroundsMapViewModel {
-    func applyFilter() {
-        let countryID = DefaultsService().mainUserCountry
-        let cityID = DefaultsService().mainUserCity
+    func applyFilter(_ countryID: Int, _ cityID: Int) {
         var result = [SportsGround]()
         result = defaultList.filter { ground in
             filter.size.map { $0.code }.contains(ground.sizeID)
@@ -129,6 +138,7 @@ private extension SportsGroundsMapViewModel {
         }
         guard countryID != .zero else {
             list = result
+            needUpdateMap = true
             return
         }
         if filter.onlyMyCity {
@@ -138,5 +148,6 @@ private extension SportsGroundsMapViewModel {
             }
         }
         list = result
+        needUpdateMap = true
     }
 }

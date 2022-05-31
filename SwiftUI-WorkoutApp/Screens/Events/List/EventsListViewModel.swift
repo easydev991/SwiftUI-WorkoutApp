@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class EventsListViewModel: ObservableObject {
     @Published var futureEvents = [EventResponse]()
     @Published var pastEvents = [EventResponse]()
@@ -10,22 +11,14 @@ final class EventsListViewModel: ObservableObject {
         fileName: "oldEvents.json"
     )
 
-    func isEmpty(for type: EventType) -> Bool {
-        switch type {
-        case .future: return futureEvents.isEmpty
-        case .past: return pastEvents.isEmpty
-        }
-    }
-
-    @MainActor
-    func askForEvents(type: EventType, refresh: Bool) async {
+    func askForEvents(type: EventType, refresh: Bool, with defaults: DefaultsService) async {
         if isLoading && !refresh
             || (type == .future && !futureEvents.isEmpty && !refresh)
             || (type == .past && !pastEvents.isEmpty && !refresh)
         { return }
         if !refresh { isLoading.toggle() }
         do {
-            let list = try await APIService().getEvents(of: type).sorted { $0.id > $1.id }
+            let list = try await APIService(with: defaults).getEvents(of: type)
             switch type {
             case .future: futureEvents = list
             case .past: pastEvents = list

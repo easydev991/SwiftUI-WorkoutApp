@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
@@ -21,10 +22,10 @@ struct SportsGroundsMapView: View {
                 } label: { EmptyView() }
                 MapViewUI(
                     viewKey: "SportsGroundsMapView",
-                    region: $viewModel.region,
+                    region: viewModel.region,
                     annotations: $viewModel.list,
-                    selectedPlace: $viewModel.selectedGround,
-                    openDetails: $openDetails
+                    needUpdateMap: $viewModel.needUpdateMap,
+                    openSelected: openDetailsView
                 )
                 .opacity(viewModel.isLoading ? 0.5 : 1)
                 .animation(.easeInOut, value: viewModel.isLoading)
@@ -32,13 +33,16 @@ struct SportsGroundsMapView: View {
                     .opacity(viewModel.isLoading ? 1 : .zero)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: defaults.mainUserCountry, perform: resetFilter)
+            .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }
             .task { await askForGrounds() }
-            .onAppear(perform: viewModel.onAppearAction)
-            .onDisappear(perform: viewModel.onDisappearAction)
+            .onAppear {
+                viewModel.onAppearAction()
+                updateFilterCountry(countryID: defaults.mainUserCountry)
+            }
+            .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Group {
@@ -80,7 +84,7 @@ private extension SportsGroundsMapView {
     }
 
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeGrounds(refresh: refresh)
+        await viewModel.makeGrounds(refresh: refresh, with: defaults)
     }
 
     func refreshAction() {
@@ -103,16 +107,21 @@ private extension SportsGroundsMapView {
         .opacity(viewModel.isLoading ? .zero : 1)
     }
 
+    func openDetailsView(_ ground: SportsGround) {
+        viewModel.selectedGround = ground
+        openDetails.toggle()
+    }
+
     func updateRecent() {
-        Task { await viewModel.checkForRecentUpdates() }
+        Task { await viewModel.checkForRecentUpdates(with: defaults) }
     }
 
     func updateDeleted(groundID: Int) {
         viewModel.deleteSportsGroundFromList()
     }
 
-    func resetFilter(countryID: Int = .zero) {
-        viewModel.resetFilter()
+    func updateFilterCountry(countryID: Int) {
+        viewModel.updateFilter(with: defaults)
     }
 
     func setupErrorAlert(with message: String) {

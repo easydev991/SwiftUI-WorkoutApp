@@ -106,7 +106,7 @@ private extension UserDetailsView {
 
     var friendActionButton: some View {
         Button {
-            friendActionTask = Task { await viewModel.friendAction() }
+            friendActionTask = Task { await viewModel.friendAction(with: defaults) }
         } label: {
             Text(viewModel.friendActionOption.rawValue)
                 .fontWeight(.medium)
@@ -183,7 +183,7 @@ private extension UserDetailsView {
 
     var journalsLink: some View {
         NavigationLink {
-            JournalsList(for: viewModel.user.id)
+            JournalsListView(for: viewModel.user.id)
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
@@ -211,7 +211,7 @@ private extension UserDetailsView {
     func askForUserInfo(refresh: Bool = false) async {
         await viewModel.makeUserInfo(refresh: refresh, with: defaults)
         if isMainUser {
-            await viewModel.checkFriendRequests()
+            await viewModel.checkFriendRequests(with: defaults)
         }
     }
 
@@ -230,7 +230,7 @@ private extension UserDetailsView {
 
     func sendMessage() {
         sendMessageTask = Task {
-            await viewModel.send(messageText)
+            await viewModel.send(messageText, with: defaults)
         }
     }
 

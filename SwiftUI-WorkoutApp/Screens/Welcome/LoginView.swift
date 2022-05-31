@@ -26,10 +26,12 @@ struct LoginView: View {
         }
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: viewModel.clearErrorMessage) { TextOk() }
+            Button { viewModel.clearErrorMessage() } label: {
+                TextOk()
+            }
         }
         .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
-            Button(action: viewModel.resetSuccessfulAlertClosed) { TextOk() }
+            Button { viewModel.resetSuccessfulAlertClosed() } label: { TextOk() }
         }
         .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
         .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
@@ -100,12 +102,12 @@ private extension LoginView {
     var forgotPasswordButton: some View {
         Button(action: forgotPasswordAction) { forgotPasswordLabel }
             .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
-                Button(action: viewModel.warningAlertClosed) { TextOk() }
+                Button { viewModel.warningAlertClosed() } label: { TextOk() }
             }
     }
 
     func forgotPasswordAction() {
-        resetPasswordTask = Task { await viewModel.forgotPasswordTapped() }
+        resetPasswordTask = Task { await viewModel.forgotPasswordTapped(with: defaults) }
         focus = viewModel.canRestorePassword ? nil : .username
     }
 

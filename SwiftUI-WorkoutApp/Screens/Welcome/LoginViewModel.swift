@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class LoginViewModel: ObservableObject {
     @Published var login = ""
     @Published var password = ""
@@ -17,14 +18,13 @@ final class LoginViewModel: ObservableObject {
     func clearErrorMessage() { errorMessage = "" }
 
     func warningAlertClosed() {
-        showForgotPasswordAlert.toggle()
+        showForgotPasswordAlert = false
     }
 
     func resetSuccessfulAlertClosed() {
-        showResetSuccessfulAlert.toggle()
+        showResetSuccessfulAlert = false
     }
 
-    @MainActor
     func loginAction(with userDefaults: DefaultsService) async {
         if !canLogIn { return }
         isLoading.toggle()
@@ -36,20 +36,17 @@ final class LoginViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
-    func forgotPasswordTapped() async {
+    func forgotPasswordTapped(with defaults: DefaultsService) async {
         if canRestorePassword {
             isLoading.toggle()
             do {
-                if try await APIService().resetPassword(for: login) {
-                    showResetSuccessfulAlert.toggle()
-                }
+                showResetSuccessfulAlert = try await APIService(with: defaults).resetPassword(for: login)
             } catch {
                 errorMessage = error.localizedDescription
             }
             isLoading.toggle()
         } else {
-            showForgotPasswordAlert.toggle()
+            showForgotPasswordAlert = true
         }
     }
 }

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct RootView: View {
+    @EnvironmentObject private var viewModel: TabViewModel
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var selectedTab = Tab.events
 
     var body: some View {
         ZStack {
@@ -18,38 +18,34 @@ struct RootView: View {
 }
 
 private extension RootView {
-    enum Tab: Int, Hashable {
-        case events = 0, messages, journal, map, profile
-    }
-
     var tabView: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $viewModel.selectedTab) {
             EventsListView()
-                .onAppear { selectTab(.events) }
+                .onAppear { viewModel.selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
             DialogsScreen()
-                .onAppear { selectTab(.messages) }
+                .onAppear { viewModel.selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
             JournalsScreen()
-                .onAppear { selectTab(.journal) }
+                .onAppear { viewModel.selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal)
             SportsGroundsMapView()
-                .onAppear { selectTab(.map) }
+                .onAppear { viewModel.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map)
             ProfileScreen()
-                .onAppear { selectTab(.profile) }
+                .onAppear { viewModel.selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }
@@ -57,10 +53,6 @@ private extension RootView {
         }
         .transition(.move(edge: .trailing).combined(with: .scale))
         .navigationViewStyle(.stack)
-    }
-
-    func selectTab(_ tab: RootView.Tab) {
-        selectedTab = tab
     }
 }
 

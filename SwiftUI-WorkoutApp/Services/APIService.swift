@@ -7,16 +7,12 @@ struct APIService {
         self.defaults = defaults
     }
 
-    init() {
-        self.init(with: .init())
-    }
-
     /// Выполняет регистрацию пользователя
     /// - Parameter model: необходимые для регистрации данные
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
-        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
+        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest, needAuth: false)
         await defaults.saveAuthData(.init(login: model.userName, password: model.password))
         await defaults.saveUserInfo(result)
     }
@@ -27,9 +23,8 @@ struct APIService {
     ///   - password: пароль от учетной записи
     func logInWith(_ login: String, _ password: String) async throws {
         let authData = AuthData(login: login, password: password)
-        let endpoint = Endpoint.login(auth: authData)
-        let result = try await makeResult(LoginResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(authData)
+        let result = try await makeResult(LoginResponse.self, for: Endpoint.login.urlRequest)
         try await getUserByID(result.userID, loginFlow: true)
     }
 
@@ -40,7 +35,8 @@ struct APIService {
     func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
-        if loginFlow || userID == defaults.mainUserID {
+        let mainUserID = await defaults.mainUserID
+        if loginFlow || userID == mainUserID {
             await defaults.saveUserInfo(result)
         }
         return result
@@ -51,7 +47,7 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func resetPassword(for login: String) async throws -> Bool {
         let endpoint = Endpoint.resetPassword(login: login)
-        let response = try await makeResult(LoginResponse.self, for: endpoint.urlRequest)
+        let response = try await makeResult(LoginResponse.self, for: endpoint.urlRequest, needAuth: false)
         return response.userID != .zero
     }
 
@@ -61,7 +57,7 @@ struct APIService {
     ///   - model: данные для изменения
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
-        let authData = defaults.basicAuthInfo
+        let authData = await defaults.basicAuthInfo
         let endpoint = Endpoint.editUser(id: id, form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
@@ -81,7 +77,7 @@ struct APIService {
 
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
-        let endpoint = Endpoint.deleteUser(auth: defaults.basicAuthInfo)
+        let endpoint = await Endpoint.deleteUser(auth: defaults.basicAuthInfo)
         if try await makeStatus(for: endpoint.urlRequest) {
             await defaults.triggerLogout()
         }
@@ -94,7 +90,7 @@ struct APIService {
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id)
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
-        if id == defaults.mainUserID {
+        if await id == defaults.mainUserID {
             await defaults.saveFriendsIds(result.compactMap(\.userID))
         }
         return result
@@ -102,7 +98,7 @@ struct APIService {
 
     /// Загружает список заявок на добавление в друзья, в случае успеха - сохраняет в `defaults`
     func getFriendRequests() async throws {
-        let endpoint = Endpoint.getFriendRequests(auth: defaults.basicAuthInfo)
+        let endpoint = Endpoint.getFriendRequests
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         await defaults.saveFriendRequests(result)
     }
@@ -153,7 +149,11 @@ struct APIService {
     /// Загружает список всех площадок
     /// - Returns: Список всех площадок
     func getAllSportsGrounds() async throws -> [SportsGround] {
-        try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest)
+        try await makeResult(
+            [SportsGround].self,
+            for: Endpoint.getAllSportsGrounds.urlRequest,
+            needAuth: false
+        )
     }
 
     /// Загружает список всех площадок, обновленных после указанной даты
@@ -161,15 +161,22 @@ struct APIService {
     /// - Returns: Список обновленных площадок
     func getUpdatedSportsGrounds(from stringDate: String) async throws -> [SportsGround] {
         let endpoint = Endpoint.getUpdatedSportsGrounds(from: stringDate)
-        return try await makeResult([SportsGround].self, for: endpoint.urlRequest)
+        return try await makeResult(
+            [SportsGround].self,
+            for: endpoint.urlRequest,
+            needAuth: false
+        )
     }
 
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
     func getSportsGround(id: Int) async throws -> SportsGround {
-        let endpoint = Endpoint.getSportsGround(id: id)
-        return try await makeResult(SportsGround.self, for: endpoint.urlRequest)
+        try await makeResult(
+            SportsGround.self,
+            for: Endpoint.getSportsGround(id: id).urlRequest,
+            needAuth: false
+        )
     }
 
     /// Изменяет данные выбранной площадки
@@ -197,11 +204,11 @@ struct APIService {
         let endpoint: Endpoint
         switch model {
         case let .ground(id):
-            endpoint = Endpoint.addCommentToSportsGround(groundID: id, comment: entryText)
+            endpoint = .addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
-            endpoint = Endpoint.addCommentToEvent(eventID: id, comment: entryText)
+            endpoint = .addCommentToEvent(eventID: id, comment: entryText)
         case let .journal(id):
-            endpoint = Endpoint.saveJournalEntry(
+            endpoint = await .saveJournalEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
                 message: entryText
@@ -232,7 +239,7 @@ struct APIService {
                 newComment: newEntryText
             )
         case let .journal(id):
-            endpoint = .editEntry(
+            endpoint = await .editEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
                 entryID: entryID,
@@ -255,7 +262,7 @@ struct APIService {
         case let .event(id):
             endpoint = .deleteEventComment(id, commentID: entryID)
         case let .journal(id):
-            endpoint = .deleteEntry(
+            endpoint = await .deleteEntry(
                 userID: defaults.mainUserID,
                 journalID: id,
                 entryID: entryID
@@ -291,14 +298,18 @@ struct APIService {
     /// - Returns: Список мероприятий
     func getEvents(of type: EventType) async throws -> [EventResponse] {
         let endpoint: Endpoint = type == .future ? .getFutureEvents : .getPastEvents
-        return try await makeResult([EventResponse].self, for: endpoint.urlRequest)
+        return try await makeResult([EventResponse].self, for: endpoint.urlRequest, needAuth: false)
     }
 
     /// Запрашивает конкретное мероприятие
     /// - Parameter id: `id` мероприятия
     /// - Returns: Вся информация по мероприятию
     func getEvent(by id: Int) async throws -> EventResponse {
-        try await makeResult(EventResponse.self, for: Endpoint.getEvent(id: id).urlRequest)
+        try await makeResult(
+            EventResponse.self,
+            for: Endpoint.getEvent(id: id).urlRequest,
+            needAuth: false
+        )
     }
 
     /// Отправляет новое мероприятие на сервер
@@ -331,23 +342,20 @@ struct APIService {
     /// - Parameter eventID: `id` мероприятия
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(eventID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteEvent(id: eventID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        try await makeStatus(for: Endpoint.deleteEvent(id: eventID).urlRequest)
     }
 
     /// Удалить площадку
     /// - Parameter groundID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(groundID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteSportsGround(id: groundID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        try await makeStatus(for: Endpoint.deleteSportsGround(id: groundID).urlRequest)
     }
 
     /// Запрашивает список диалогов для текущего пользователя
     /// - Returns: Список диалогов
     func getDialogs() async throws -> [DialogResponse] {
-        let endpoint = Endpoint.getDialogs(auth: defaults.basicAuthInfo)
-        return try await makeResult([DialogResponse].self, for: endpoint.urlRequest)
+        try await makeResult([DialogResponse].self, for: Endpoint.getDialogs.urlRequest)
     }
 
     /// Запрашивает сообщения для выбранного диалога, по умолчанию лимит 30 сообщений
@@ -364,24 +372,21 @@ struct APIService {
     ///   - userID: `id` получателя сообщения
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func sendMessage(_ message: String, to userID: Int) async throws -> Bool {
-        let endpoint = Endpoint.sendMessageTo(message, userID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        try await makeStatus(for: Endpoint.sendMessageTo(message, userID).urlRequest)
     }
 
     /// Отмечает сообщения от выбранного пользователя как прочитанные
     /// - Parameter userID: `id` выбранного пользователя
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func markAsRead(from userID: Int) async throws -> Bool {
-        let endpoint = Endpoint.markAsRead(from: userID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        try await makeStatus(for: Endpoint.markAsRead(from: userID).urlRequest)
     }
 
     /// Удаляет выбранный диалог
     /// - Parameter dialogID: `id` диалога для удаления
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func deleteDialog(_ dialogID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteDialog(id: dialogID)
-        return try await makeStatus(for: endpoint.urlRequest)
+        try await makeStatus(for: Endpoint.deleteDialog(id: dialogID).urlRequest)
     }
 
     /// Запрашивает список дневников для выбранного пользователя
@@ -390,7 +395,7 @@ struct APIService {
     func getJournals(for userID: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userID: userID)
         let result = try await makeResult([JournalResponse].self, for: endpoint.urlRequest)
-        if userID == defaults.mainUserID {
+        if await userID == defaults.mainUserID {
             await defaults.setHasJournals(!result.isEmpty)
         }
         return result
@@ -417,7 +422,7 @@ struct APIService {
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editJournalSettings(for journalID: Int, title: String, viewAccess: Constants.JournalAccess, commentAccess: Constants.JournalAccess) async throws -> Bool {
-        let endpoint = Endpoint.editJournalSettings(
+        let endpoint = await Endpoint.editJournalSettings(
             userID: defaults.mainUserID,
             journalID: journalID,
             title: title,
@@ -431,7 +436,7 @@ struct APIService {
     /// - Parameter title: название дневника
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func createJournal(with title: String) async throws -> Bool {
-        let endpoint = Endpoint.createJournal(
+        let endpoint = await Endpoint.createJournal(
             userID: defaults.mainUserID,
             title: title
         )
@@ -457,7 +462,7 @@ struct APIService {
     ///   - journalID: `id` дневника для удаления
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func deleteJournal(journalID: Int) async throws -> Bool {
-        let endpoint = Endpoint.deleteJournal(
+        let endpoint = await Endpoint.deleteJournal(
             userID: defaults.mainUserID,
             journalID: journalID
         )
@@ -491,24 +496,41 @@ private extension APIService {
         return .init(configuration: config)
     }
 
+    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
+        if needAuth,
+           let encodedString = await defaults.basicAuthInfo.base64Encoded {
+            var requestWithBasicAuth = request
+            requestWithBasicAuth?.setValue(
+                "Basic \(encodedString)",
+                forHTTPHeaderField: "Authorization"
+            )
+            return requestWithBasicAuth
+        } else {
+            return request
+        }
+    }
+
     /// Загружает данные в нужном формате или отдает ошибку
     /// - Parameters:
     ///   - type: тип, который нужно загрузить
     ///   - request: запрос, по которому нужно обратиться
     /// - Returns: Вся информация по запрошенному типу
-    func makeResult<T: Codable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
-        guard let request = request else { throw APIError.badRequest }
+    func makeResult<T: Codable>(_ type: T.Type, for request: URLRequest?, needAuth: Bool = true) async throws -> T {
+        guard let request = await finalRequest(request, needAuth: needAuth) else {
+            throw APIError.badRequest
+        }
         let (data, response) = try await urlSession.data(for: request)
-        let result = try handle(type.self, data, response)
-        return result
+        return try handle(type.self, data, response)
     }
 
     /// Выполняет действие, не требующее указания типа
     /// - Parameter request: запрос, по которому нужно обратиться
     /// - Returns: Статус действия
     func makeStatus(for request: URLRequest?) async throws -> Bool {
-        guard let request = request else { throw APIError.badRequest }
-        let (_, response) = try await urlSession.data(for: request)
+        guard let request = await finalRequest(request) else {
+            throw APIError.badRequest
+        }
+        let response = try await urlSession.data(for: request).1
         return try handle(response)
     }
 
@@ -580,8 +602,8 @@ private extension APIService {
         case registration(form: MainUserForm)
 
         // MARK: Авторизация
-        /// **POST** ${API}/auth/login,
-        case login(auth: AuthData)
+        /// **POST** ${API}/auth/login
+        case login
 
         // MARK: Восстановление пароля
         /// **POST** ${API}/auth/reset
@@ -611,7 +633,7 @@ private extension APIService {
 
         // MARK: Получить список заявок на добавление в друзья
         /// **GET** ${API}/friends/requests
-        case getFriendRequests(auth: AuthData)
+        case getFriendRequests
 
         // MARK: Принять заявку на добавление в друзья
         /// **POST** ${API}/friends/<id>/accept
@@ -727,7 +749,7 @@ private extension APIService {
 
         // MARK: Получить список диалогов
         /// **GET** ${API}/dialogs
-        case getDialogs(auth: AuthData)
+        case getDialogs
 
         // MARK: Получить сообщения в диалоге
         /// **GET** ${API}/dialogs/<dialog_id>/messages
@@ -938,60 +960,18 @@ private extension APIService.Endpoint {
 
     enum HTTPHeader {
         static let boundary = "FFF"
-
-        enum Key: String {
-            case authorization = "Authorization"
-            case contentType = "Content-Type"
-        }
-
-        static func basicAuth(
-            with input: AuthData = DefaultsService().basicAuthInfo,
-            withMultipart: Bool = false
-        ) -> [String: String] {
-            var headers = [String: String]()
-            if let encodedString = input.base64Encoded {
-                headers[Key.authorization.rawValue] = "Basic \(encodedString)"
-            }
-            if withMultipart {
-                headers[Key.contentType.rawValue] = "multipart/form-data; boundary=\(boundary)"
-            }
-            return headers
+        enum Key: String { case contentType = "Content-Type" }
+        static var withMultipartFormData: [String: String] {
+            [Key.contentType.rawValue : "multipart/form-data; boundary=\(boundary)"]
         }
     }
 
     var headers: [String: String] {
         switch self {
-        case let .login(auth):
-            return HTTPHeader.basicAuth(with: auth)
-        case .getUser, .editUser,
-                .changePassword, .getFriendsForUser,
-                .getFriendRequests, .acceptFriendRequest,
-                .declineFriendRequest, .sendFriendRequest,
-                .deleteFriend, .findUsers,
-                .deleteUser, .getDialogs,
-                .addCommentToSportsGround, .editGroundComment,
-                .deleteGroundComment, .getSportsGroundsForUser,
-                .postTrainHere, .deleteTrainHere,
-                .postIsGoingToEvent, .deleteIsGoingToEvent,
-                .addCommentToEvent, .deleteSportsGround,
-                .deleteEventComment, .editEventComment,
-                .deleteEvent, .getMessages,
-                .sendMessageTo, .markAsRead,
-                .deleteDialog, .getJournals,
-                .getJournal, .createJournal,
-                .getJournalEntries, .saveJournalEntry,
-                .editEntry, .deleteEntry,
-                .deleteJournal, .editJournalSettings,
-                .deleteEventPhoto, .deleteGroundPhoto:
-            return HTTPHeader.basicAuth()
-        case .registration, .resetPassword,
-                .getAllSportsGrounds, .getSportsGround,
-                .getUpdatedSportsGrounds, .getFutureEvents,
-                .getPastEvents, .getEvent:
-            return [:]
         case .createSportsGround, .editSportsGround,
                 .createEvent, .editEvent:
-            return HTTPHeader.basicAuth(withMultipart: true)
+            return HTTPHeader.withMultipartFormData
+        default: return [:]
         }
     }
 

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 final class DefaultsService: ObservableObject {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
@@ -44,7 +45,6 @@ final class DefaultsService: ObservableObject {
         showWelcome = false
     }
 
-    @MainActor
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
@@ -57,7 +57,6 @@ final class DefaultsService: ObservableObject {
         showWelcome = true
     }
 
-    @MainActor
     func saveAuthData(_ info: AuthData) {
         if let data = try? JSONEncoder().encode(info) {
             authData = data
@@ -73,12 +72,10 @@ final class DefaultsService: ObservableObject {
     }
 
 #warning("TODO: убрать после интеграции с БД")
-    @MainActor
     func setUserNeedUpdate(_ newValue: Bool) {
         needUpdateUser = newValue
     }
 
-    @MainActor
     func saveUserInfo(_ info: UserResponse) {
         mainUserID = info.userID.valueOrZero
         mainUserCountry = info.countryID.valueOrZero
@@ -104,7 +101,6 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    @MainActor
     func saveFriendsIds(_ ids: [Int]) {
         hasFriends = !ids.isEmpty
         if let data = try? JSONEncoder().encode(ids) {
@@ -112,7 +108,6 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    @MainActor
     var friendsIdsList: [Int] {
         if let array = try? JSONDecoder().decode([Int].self, from: friendsIds) {
             return array
@@ -121,14 +116,12 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    @MainActor
     func saveFriendRequests(_ array: [UserResponse]) {
         if let data = try? JSONEncoder().encode(array) {
             friendRequests = data
         }
     }
 
-    @MainActor
     var friendRequestsList: [UserResponse] {
         if let array = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
             return array
@@ -137,12 +130,10 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    @MainActor
     func setHasJournals(_ hasJournals: Bool) {
         self.hasJournals = hasJournals
     }
 
-    @MainActor
     func setHasSportsGrounds(_ hasGrounds: Bool) {
         self.hasSportsGrounds = hasGrounds
     }

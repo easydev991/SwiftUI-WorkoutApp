@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
@@ -20,7 +21,6 @@ final class UserDetailsViewModel: ObservableObject {
         user = .init(from: dialog)
     }
 
-    @MainActor
     func makeUserInfo(refresh: Bool, with defaults: DefaultsService) async {
         let isMainUser = user.id == defaults.mainUserID
         if !refresh { isLoading.toggle() }
@@ -44,17 +44,15 @@ final class UserDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    @MainActor
-    func checkFriendRequests() async {
-        try? await APIService().getFriendRequests()
+    func checkFriendRequests(with defaults: DefaultsService) async {
+        try? await APIService(with: defaults).getFriendRequests()
     }
 
-    @MainActor
-    func friendAction() async {
+    func friendAction(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().friendAction(userID: user.id, option: friendActionOption) {
+            if try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption) {
                 switch friendActionOption {
                 case .sendFriendRequest:
                     requestedFriendship.toggle()
@@ -68,12 +66,11 @@ final class UserDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
-    func send(_ message: String) async {
+    func send(_ message: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().sendMessage(message, to: user.id) {
+            if try await APIService(with: defaults).sendMessage(message, to: user.id) {
                 isMessageSent.toggle()
             }
         } catch {

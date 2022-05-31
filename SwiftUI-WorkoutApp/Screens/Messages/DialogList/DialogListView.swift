@@ -52,20 +52,20 @@ private extension DialogListView {
         .opacity(hasFriends ? 1 : .zero)
     }
 
-    var emptyViewButtonTitle: String {
-        hasFriends
-        ? "Открыть список друзей"
-        : "Найти пользователя"
-    }
-
     var emptyContentView: some View {
         EmptyContentView(
             message: "Чатов пока нет",
             buttonTitle: emptyViewButtonTitle,
             action: emptyViewAction
         )
-        .opacity(viewModel.isLoading ? .zero : 1)
-        .animation(.default, value: viewModel.isLoading)
+        .opacity(viewModel.list.isEmpty ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
+    var emptyViewButtonTitle: String {
+        hasFriends
+        ? "Открыть список друзей"
+        : "Найти пользователя"
     }
 
     var dialogList: some View {

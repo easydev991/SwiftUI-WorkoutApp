@@ -3,10 +3,10 @@ import SwiftUI
 
 struct MapViewUI: UIViewRepresentable {
     let viewKey: String
-    @Binding var region: MKCoordinateRegion
+    let region: MKCoordinateRegion
     @Binding var annotations: [SportsGround]
-    @Binding var selectedPlace: SportsGround
-    @Binding var openDetails: Bool
+    @Binding var needUpdateMap: Bool
+    let openSelected: (SportsGround) -> Void
 
     private static var mapViewStore = [String : MKMapView]()
 
@@ -23,15 +23,17 @@ struct MapViewUI: UIViewRepresentable {
         }
         mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
-        mapView.isRotateEnabled = true
+        mapView.isRotateEnabled = false
         mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
         return mapView
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
-#warning("TODO: поправить бесконечное обновление карты")
-        mapView.removeAnnotations(mapView.annotations)
-        mapView.addAnnotations(annotations)
+        if needUpdateMap {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(annotations)
+            needUpdateMap = false
+        }
     }
 
     func makeCoordinator() -> MapCoordinator { .init(self) }
@@ -55,8 +57,7 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if let place = view.annotation as? SportsGround {
-            parent.selectedPlace = place
-            parent.openDetails.toggle()
+            parent.openSelected(place)
         }
     }
 

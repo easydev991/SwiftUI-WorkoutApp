@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class SportsGroundDetailViewModel: ObservableObject {
     @Published var ground: SportsGround
     @Published private(set) var isDeleted = false
@@ -10,21 +11,19 @@ final class SportsGroundDetailViewModel: ObservableObject {
         self.ground = ground
     }
 
-    @MainActor
-    func askForSportsGround(refresh: Bool) async {
+    func askForSportsGround(refresh: Bool, with defaults: DefaultsService) async {
         if (isLoading || ground.isFull) && !refresh {
             return
         }
         if !refresh { isLoading.toggle() }
         do {
-            ground = try await APIService().getSportsGround(id: ground.id)
+            ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
         } catch {
             errorMessage = error.localizedDescription
         }
         if !refresh { isLoading.toggle() }
     }
 
-    @MainActor
     func changeTrainHereStatus(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
@@ -48,13 +47,14 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
-    func delete(_ photo: Photo) async {
+    func delete(_ photo: Photo, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().deletePhoto(from: .sportsGround(.init(containerID: ground.id, photoID: photo.id))) {
-                await askForSportsGround(refresh: true)
+            if try await APIService(with: defaults).deletePhoto(
+                from: .sportsGround(.init(containerID: ground.id, photoID: photo.id))
+            ) {
+                await askForSportsGround(refresh: true, with: defaults)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -62,7 +62,6 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func delete(commentID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
@@ -76,7 +75,6 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func deleteGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

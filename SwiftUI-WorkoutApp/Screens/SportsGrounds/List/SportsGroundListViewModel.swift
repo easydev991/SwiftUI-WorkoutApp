@@ -1,11 +1,11 @@
 import Foundation
 
+@MainActor
 final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var list = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    @MainActor
     func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool, with defaults: DefaultsService) async {
         if isLoading { return }
         switch mode {
@@ -41,7 +41,7 @@ private extension SportsGroundListViewModel {
         do {
             if userID == defaults.mainUserID {
 #warning("TODO: интеграция с БД")
-                await defaults.setUserNeedUpdate(false)
+                defaults.setUserNeedUpdate(false)
             }
             list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
         } catch {

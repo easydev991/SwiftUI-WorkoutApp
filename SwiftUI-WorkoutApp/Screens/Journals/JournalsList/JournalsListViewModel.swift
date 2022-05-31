@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class JournalsListViewModel: ObservableObject {
     @Published var list = [JournalResponse]()
     @Published var newJournalTitle = ""
@@ -10,27 +11,25 @@ final class JournalsListViewModel: ObservableObject {
         !isLoading && !newJournalTitle.isEmpty
     }
 
-    @MainActor
-    func makeItems(for userID: Int, refresh: Bool) async {
+    func makeItems(for userID: Int, refresh: Bool, with defaults: DefaultsService) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService().getJournals(for: userID)
+            list = try await APIService(with: defaults).getJournals(for: userID)
         } catch {
             errorMessage = error.localizedDescription
         }
         if !refresh { isLoading.toggle() }
     }
 
-    @MainActor
     func createJournal(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService().createJournal(with: newJournalTitle) {
+            if try await APIService(with: defaults).createJournal(with: newJournalTitle) {
                 newJournalTitle = ""
                 isJournalCreated.toggle()
-                await makeItems(for: defaults.mainUserID, refresh: true)
+                await makeItems(for: defaults.mainUserID, refresh: true, with: defaults)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -38,12 +37,11 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func update(journalID: Int, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let result = try await APIService().getJournal(for: defaults.mainUserID, journalID: journalID)
+            let result = try await APIService(with: defaults).getJournal(for: defaults.mainUserID, journalID: journalID)
             if let index = list.firstIndex(where: { $0.id == journalID }) {
                 list[index] = result
             }
@@ -53,12 +51,11 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    @MainActor
     func delete(journalID: Int?, with defaults: DefaultsService) async {
         guard let journalID = journalID, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService().deleteJournal(journalID: journalID) {
+            if try await APIService(with: defaults).deleteJournal(journalID: journalID) {
                 list.removeAll(where: { $0.id == journalID })
                 defaults.setUserNeedUpdate(true)
             }
