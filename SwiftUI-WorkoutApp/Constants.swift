@@ -7,7 +7,7 @@ enum Constants {
     static let defaultUserAge = Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
     static let minUserAge = Calendar.current.date(byAdding: .year, value: -5, to: .now) ?? .now
     static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
-    static let fiveMinutesAgo = Calendar.current.date(byAdding: .minute, value: -5, to: .now) ?? .now
+    static let halfMinuteAgo = Calendar.current.date(byAdding: .second, value: -30, to: .now) ?? .now
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"

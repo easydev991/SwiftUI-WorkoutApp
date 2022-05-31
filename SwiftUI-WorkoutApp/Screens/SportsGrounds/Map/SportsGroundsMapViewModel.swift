@@ -5,16 +5,16 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage = ""
     @Published var filter = SportsGroundFilter() {
         didSet { applyFilter(userCountryID, userCityID) }
     }
     @Published var list = [SportsGround]()
-    @Published private(set) var isLoading = false
-    @Published private(set) var errorMessage = ""
     @Published var selectedGround = SportsGround.emptyValue
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
-    @Published var needUpdateMap = false
+    @Published var needUpdateAnnotations = false
     private var defaultList = Bundle.main.decodeJson(
         [SportsGround].self,
         fileName: "oldSportsGrounds.json"
@@ -47,8 +47,9 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let dateString = FormatterService.serverFiveMinutesAgo(from: Constants.fiveMinutesAgo)
-            let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(from: dateString)
+            let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(
+                since: FormatterService.halfMinuteAgoDateString()
+            )
             updatedGrounds.forEach { ground in
                 if !list.contains(ground) {
                     list.append(ground)
@@ -65,7 +66,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
     func deleteSportsGroundFromList() {
         list.removeAll(where: { $0.id == selectedGround.id })
-        applyFilter(userCountryID, userCityID)
+        needUpdateAnnotations.toggle()
     }
 
     func updateFilter(with defaults: DefaultsService) {
@@ -138,7 +139,7 @@ private extension SportsGroundsMapViewModel {
         }
         guard countryID != .zero else {
             list = result
-            needUpdateMap = true
+            needUpdateAnnotations.toggle()
             return
         }
         if filter.onlyMyCity {
@@ -148,6 +149,6 @@ private extension SportsGroundsMapViewModel {
             }
         }
         list = result
-        needUpdateMap = true
+        needUpdateAnnotations.toggle()
     }
 }

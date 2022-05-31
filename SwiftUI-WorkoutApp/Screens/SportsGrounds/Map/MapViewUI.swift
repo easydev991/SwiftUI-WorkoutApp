@@ -32,7 +32,7 @@ struct MapViewUI: UIViewRepresentable {
         if needUpdateMap {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(annotations)
-            needUpdateMap = false
+            needUpdateMap.toggle()
         }
     }
 

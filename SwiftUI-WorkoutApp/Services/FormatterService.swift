@@ -28,11 +28,11 @@ struct FormatterService {
         return string
     }
 
-    static func serverFiveMinutesAgo(from date: Date) -> String {
+    static func halfMinuteAgoDateString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = DateFormat.serverDateTimeSec.rawValue
-        return dateFormatter.string(from: date)
+        return dateFormatter.string(from: Constants.halfMinuteAgo)
     }
 
     static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
