@@ -48,7 +48,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
         do {
             let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(
-                since: FormatterService.halfMinuteAgoDateString()
+                from: FormatterService.halfMinuteAgoDateString()
             )
             updatedGrounds.forEach { ground in
                 if !list.contains(ground) {

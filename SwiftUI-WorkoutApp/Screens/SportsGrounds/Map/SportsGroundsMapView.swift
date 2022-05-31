@@ -24,7 +24,7 @@ struct SportsGroundsMapView: View {
                     viewKey: "SportsGroundsMapView",
                     region: viewModel.region,
                     annotations: $viewModel.list,
-                    needUpdateMap: $viewModel.needUpdateMap,
+                    needUpdateMap: $viewModel.needUpdateAnnotations,
                     openSelected: openDetailsView
                 )
                 .opacity(viewModel.isLoading ? 0.5 : 1)
