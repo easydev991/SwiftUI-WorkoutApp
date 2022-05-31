@@ -51,10 +51,10 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
                 from: FormatterService.halfMinuteAgoDateString()
             )
             updatedGrounds.forEach { ground in
-                if !list.contains(ground) {
-                    list.append(ground)
+                if !defaultList.contains(ground) {
+                    defaultList.append(ground)
                 } else if let index = list.firstIndex(where: { $0.id == ground.id }) {
-                    list[index] = ground
+                    defaultList[index] = ground
                 }
             }
             applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
