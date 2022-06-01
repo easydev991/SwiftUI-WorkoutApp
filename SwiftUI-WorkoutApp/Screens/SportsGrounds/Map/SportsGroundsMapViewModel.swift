@@ -5,6 +5,10 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
+    private var defaultList = Bundle.main.decodeJson(
+        [SportsGround].self,
+        fileName: "oldSportsGrounds.json"
+    )
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var filter = SportsGroundFilter() {
@@ -15,10 +19,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
     @Published var needUpdateAnnotations = false
-    private var defaultList = Bundle.main.decodeJson(
-        [SportsGround].self,
-        fileName: "oldSportsGrounds.json"
-    )
 
     override init() {
         super.init()

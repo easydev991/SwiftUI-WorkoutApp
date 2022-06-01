@@ -1,5 +1,4 @@
 import SwiftUI
-import MapKit
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
@@ -9,23 +8,23 @@ struct SportsGroundsMapView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showFilters = false
-    @State private var openDetails = false
+    @State private var showDetailsView = false
 
     var body: some View {
         NavigationView {
             ZStack {
-                NavigationLink(isActive: $openDetails) {
+                NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
                         for: viewModel.selectedGround,
                         onDeletion: updateDeleted
                     )
                 } label: { EmptyView() }
                 MapViewUI(
-                    viewKey: "SportsGroundsMapView",
+                    key: "SportsGroundsMapView",
                     region: viewModel.region,
                     annotations: $viewModel.list,
-                    needUpdateMap: $viewModel.needUpdateAnnotations,
-                    openSelected: openDetailsView
+                    needUpdate: $viewModel.needUpdateAnnotations,
+                    openDetails: openDetailsView
                 )
                 .opacity(viewModel.isLoading ? 0.5 : 1)
                 .animation(.easeInOut, value: viewModel.isLoading)
@@ -109,7 +108,7 @@ private extension SportsGroundsMapView {
 
     func openDetailsView(_ ground: SportsGround) {
         viewModel.selectedGround = ground
-        openDetails.toggle()
+        showDetailsView.toggle()
     }
 
     func updateRecent() {

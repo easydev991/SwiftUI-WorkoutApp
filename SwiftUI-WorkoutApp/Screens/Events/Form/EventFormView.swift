@@ -8,8 +8,8 @@ struct EventFormView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isShowingPicker = false
-    @FocusState private var focus: FocusableField?
     @State private var saveEventTask: Task<Void, Never>?
+    @FocusState private var focus: FocusableField?
     private let mode: Mode
     private var refreshClbk: (() -> Void)?
 

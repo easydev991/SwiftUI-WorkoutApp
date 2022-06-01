@@ -7,10 +7,10 @@ struct DialogView: View {
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @FocusState private var isMessageBarFocused: Bool
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var refreshDialogTask: Task<Void, Never>?
     @Namespace private var chatScrollView
+    @FocusState private var isMessageBarFocused: Bool
     @Binding var dialog: DialogResponse
 
     var body: some View {

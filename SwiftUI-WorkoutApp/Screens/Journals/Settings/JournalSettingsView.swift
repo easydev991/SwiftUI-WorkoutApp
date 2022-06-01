@@ -4,14 +4,14 @@ struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var network: CheckNetworkService
-    private let options = Constants.JournalAccess.allCases
-    private let initialJournal: JournalResponse
     @StateObject private var viewModel = JournalSettingsViewModel()
     @State private var journal: JournalResponse
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    private let updateOnSuccess: (Int) -> Void
     @State private var saveJournalChangesTask: Task<Void, Never>?
+    private let options = Constants.JournalAccess.allCases
+    private let updateOnSuccess: (Int) -> Void
+    private let initialJournal: JournalResponse
 
     init(
         with journalToEdit: JournalResponse,

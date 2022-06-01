@@ -8,6 +8,20 @@ struct MapViewUI: UIViewRepresentable {
     @Binding var needUpdateMap: Bool
     let openSelected: (SportsGround) -> Void
 
+    init(
+        key: String,
+        region: MKCoordinateRegion,
+        annotations: Binding<[SportsGround]>,
+        needUpdate: Binding<Bool>,
+        openDetails: @escaping (SportsGround) -> Void
+    ) {
+        self.viewKey = key
+        self.region = region
+        self._annotations = annotations
+        self._needUpdateMap = needUpdate
+        self.openSelected = openDetails
+    }
+
     private static var mapViewStore = [String : MKMapView]()
 
     func makeUIView(context: Context) -> MKMapView {

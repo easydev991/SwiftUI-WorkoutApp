@@ -4,15 +4,35 @@ import SwiftUI
 struct SendMessageView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @Environment(\.dismiss) private var dismiss
-    @FocusState private var isFocused
-    let header: String
     @Binding var text: String
-    let isLoading: Bool
-    let isSendButtonDisabled: Bool
-    let sendAction: () -> Void
     @Binding var showErrorAlert: Bool
     @Binding var errorTitle: String
-    let dismissError: () -> Void
+    @FocusState private var isFocused
+    private let header: String
+    private let isLoading: Bool
+    private let isSendButtonDisabled: Bool
+    private let sendAction: () -> Void
+    private let dismissError: () -> Void
+
+    init(
+        header: String,
+        text: Binding<String>,
+        isLoading: Bool,
+        isSendButtonDisabled: Bool,
+        sendAction: @escaping () -> Void,
+        showErrorAlert: Binding<Bool>,
+        errorTitle: Binding<String>,
+        dismissError: @escaping () -> Void
+    ) {
+        self.header = header
+        self._text = text
+        self.isLoading = isLoading
+        self.isSendButtonDisabled = isSendButtonDisabled
+        self.sendAction = sendAction
+        self._showErrorAlert = showErrorAlert
+        self._errorTitle = errorTitle
+        self.dismissError = dismissError
+    }
 
     var body: some View {
         ZStack {

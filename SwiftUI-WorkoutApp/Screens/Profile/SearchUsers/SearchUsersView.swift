@@ -7,8 +7,8 @@ struct SearchUsersView: View {
     @State private var query = ""
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @FocusState private var isFocused
     @State private var searchTask: Task<Void, Never>?
+    @FocusState private var isFocused
 
     var body: some View {
         ZStack {

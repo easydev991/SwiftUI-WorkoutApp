@@ -9,9 +9,9 @@ struct SportsGroundFormView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isShowingPicker = false
+    @State private var saveGroundTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
     private let refreshClbk: () -> Void
-    @State private var saveGroundTask: Task<Void, Never>?
 
     init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
         switch mode {
