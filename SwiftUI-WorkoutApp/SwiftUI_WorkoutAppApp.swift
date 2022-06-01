@@ -18,25 +18,13 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(network)
                 .environmentObject(defaults)
         }
-        .onChange(of: scenePhase) { newValue in
-            switch newValue {
-            case .background:
-#if DEBUG
-                print("---background")
-#endif
-            case .inactive:
-#if DEBUG
-                print("---inactive")
-#endif
-            case .active:
-#if DEBUG
-                print("---active")
-#endif
-            @unknown default:
-#if DEBUG
-                print("---unknown")
-#endif
+        .onChange(of: scenePhase) {
+            if case .background = $0 {
+                defaults.setUserNeedUpdate(true)
             }
+#if DEBUG
+            print("--- scenePhase = \($0)")
+#endif
         }
     }
 }

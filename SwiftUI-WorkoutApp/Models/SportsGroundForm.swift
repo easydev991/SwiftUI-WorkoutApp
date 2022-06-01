@@ -1,5 +1,4 @@
 import Foundation
-import CoreLocation.CLLocation
 
 /// Форма для отправки при создании/изменении площадки
 struct SportsGroundForm: Codable {
@@ -12,24 +11,25 @@ struct SportsGroundForm: Codable {
     let photosCount: Int
     var newImagesData = [MediaFile]()
 
-    init(_ sportsGround: SportsGround? = nil) {
-        address = (sportsGround?.address).valueOrEmpty
-        latitude = (sportsGround?.latitude).valueOrEmpty
-        longitude = (sportsGround?.longitude).valueOrEmpty
-        cityID = (sportsGround?.cityID).valueOrZero
-        typeID = sportsGround?.typeID ?? SportsGroundGrade.soviet.code
-        sizeID = sportsGround?.sizeID ?? SportsGroundSize.small.code
-        photosCount = (sportsGround?.photos?.count).valueOrZero
+    init(_ sportsGround: SportsGround) {
+        address = sportsGround.address.valueOrEmpty
+        latitude = sportsGround.latitude
+        longitude = sportsGround.longitude
+        cityID = sportsGround.cityID.valueOrZero
+        typeID = sportsGround.typeID
+        sizeID = sportsGround.sizeID
+        photosCount = (sportsGround.photos?.count).valueOrZero
     }
 
     init(
         address: String,
-        coordinate: CLLocationCoordinate2D,
+        latitude: Double,
+        longitude: Double,
         cityID: Int
     ) {
         self.address = address
-        self.latitude = coordinate.latitude.description
-        self.longitude = coordinate.longitude.description
+        self.latitude = latitude.description
+        self.longitude = longitude.description
         self.cityID = cityID
         typeID = SportsGroundGrade.soviet.code
         sizeID = SportsGroundSize.small.code
@@ -38,13 +38,6 @@ struct SportsGroundForm: Codable {
 }
 
 extension SportsGroundForm {
-    var coordinate: CLLocationCoordinate2D {
-        get { .init(latitude: Double(latitude) ?? .zero, longitude: Double(longitude) ?? .zero) }
-        set {
-            latitude = newValue.latitude.description
-            longitude = newValue.longitude.description
-        }
-    }
     var gradeString: String {
         get { SportsGroundGrade(id: typeID).rawValue }
         set { typeID = Int(newValue).valueOrZero }

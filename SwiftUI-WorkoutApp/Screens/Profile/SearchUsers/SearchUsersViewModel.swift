@@ -1,11 +1,11 @@
 import Foundation
 
+@MainActor
 final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var users = [UserModel]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    @MainActor
     func searchFor(user: String, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

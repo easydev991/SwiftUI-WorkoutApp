@@ -1,6 +1,7 @@
 import Foundation
 import UIKit.UIImage
 
+@MainActor
 final class EventFormViewModel: ObservableObject {
     @Published var eventInfo: EventForm
     @Published private(set) var isLoading = false
@@ -25,7 +26,6 @@ final class EventFormViewModel: ObservableObject {
         eventInfo.sportsGround = sportsGround
     }
 
-    @MainActor
     func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

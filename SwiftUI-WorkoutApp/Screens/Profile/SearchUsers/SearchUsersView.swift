@@ -34,7 +34,7 @@ struct SearchUsersView: View {
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: viewModel.clearErrorMessage) { TextOk() }
+            Button { viewModel.clearErrorMessage() } label: { TextOk() }
         }
         .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

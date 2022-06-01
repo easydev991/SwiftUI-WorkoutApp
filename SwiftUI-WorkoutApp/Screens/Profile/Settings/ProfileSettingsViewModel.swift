@@ -1,5 +1,6 @@
 import StoreKit
 
+@MainActor
 final class ProfileSettingsViewModel: ObservableObject {
     private let feedbackHelper: IFeedbackHelper
     @Published private(set) var isLoading = false
@@ -19,7 +20,6 @@ final class ProfileSettingsViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func deleteProfile(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

@@ -107,13 +107,13 @@ private extension ProfileSettingsView {
     }
 
     var feedbackButton: some View {
-        Button(action: viewModel.feedbackAction) {
+        Button { viewModel.feedbackAction() } label: {
             Text("Отправить обратную связь")
         }
     }
 
     var rateAppButton: some View {
-        Button(action: viewModel.rateAppAction) {
+        Button { viewModel.rateAppAction() } label: {
             Text("Оценить приложение")
         }
     }

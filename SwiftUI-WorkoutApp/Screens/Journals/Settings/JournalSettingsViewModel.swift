@@ -1,18 +1,11 @@
-//
-//  JournalSettingsViewModel.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Олег Еременко on 23.05.2022.
-//
-
 import Foundation
 
+@MainActor
 final class JournalSettingsViewModel: ObservableObject {
     @Published private(set) var isSettingsUpdated = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    @MainActor
     func editJournalSettings(for journal: JournalResponse, with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

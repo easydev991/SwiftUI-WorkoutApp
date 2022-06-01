@@ -19,7 +19,8 @@ struct SportsGroundFormView: View {
             _viewModel = StateObject(
                 wrappedValue: .init(
                     address.wrappedValue,
-                    coordinate.wrappedValue,
+                    coordinate.wrappedValue.latitude,
+                    coordinate.wrappedValue.longitude,
                     cityID
                 )
             )

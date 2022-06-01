@@ -55,6 +55,10 @@ final class DefaultsService: ObservableObject {
         mainUserCity = .zero
         isAuthorized = false
         showWelcome = true
+        hasFriends = false
+        hasJournals = false
+        hasSportsGrounds = false
+        needUpdateUser = true
     }
 
     func saveAuthData(_ info: AuthData) {

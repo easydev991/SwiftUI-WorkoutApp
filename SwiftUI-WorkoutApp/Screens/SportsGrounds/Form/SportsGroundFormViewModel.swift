@@ -1,7 +1,7 @@
 import Foundation
-import CoreLocation.CLLocation
 import UIKit.UIImage
 
+@MainActor
 final class SportsGroundFormViewModel: ObservableObject {
     @Published var groundForm: SportsGroundForm
     @Published private(set) var isLoading = false
@@ -24,24 +24,33 @@ final class SportsGroundFormViewModel: ObservableObject {
         groundID == nil
     }
 
-    init(with ground: SportsGround?) {
+    /// Инициализирует viewModel для изменения существующей площадки
+    /// - Parameter ground: вся информация о площадке
+    init(with ground: SportsGround) {
         groundForm = .init(ground)
-        groundID = ground?.id
+        groundID = ground.id
     }
 
+    /// Инициализирует viewModel для создания новой площадки
+    /// - Parameters:
+    ///   - address: адрес текущего местоположения
+    ///   - latitude: широта текущего местоположения
+    ///   - longitude: долгота текущего местоположения
+    ///   - cityID: `id` города пользователя
     init(
         _ address: String,
-        _ coordinate: CLLocationCoordinate2D,
+        _ latitude: Double,
+        _ longitude: Double,
         _ cityID: Int
     ) {
         groundForm = .init(
             address: address,
-            coordinate: coordinate,
+            latitude: latitude,
+            longitude: longitude,
             cityID: cityID
         )
     }
 
-    @MainActor
     func saveGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
