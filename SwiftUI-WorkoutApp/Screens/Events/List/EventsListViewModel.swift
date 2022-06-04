@@ -6,10 +6,6 @@ final class EventsListViewModel: ObservableObject {
     @Published var pastEvents = [EventResponse]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    private let oldEvents = Bundle.main.decodeJson(
-        [EventResponse].self,
-        fileName: "oldEvents.json"
-    )
 
     func askForEvents(type: EventType, refresh: Bool, with defaults: DefaultsService) async {
         if isLoading && !refresh
@@ -25,7 +21,7 @@ final class EventsListViewModel: ObservableObject {
             }
         } catch {
             if type == .past {
-                pastEvents = oldEvents
+                setupOldEventsFromBundle()
             }
             errorMessage = error.localizedDescription
         }
@@ -33,4 +29,18 @@ final class EventsListViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+private extension EventsListViewModel {
+    func setupOldEventsFromBundle() {
+        do {
+            let oldEvents = try Bundle.main.decodeJson(
+                [EventResponse].self,
+                fileName: "oldEvents.json"
+            )
+            pastEvents = oldEvents
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }

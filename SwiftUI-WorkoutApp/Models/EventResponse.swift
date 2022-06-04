@@ -116,7 +116,7 @@ extension EventResponse {
         .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, photos: nil, authorName: nil, author: nil, trainHereOptional: nil)
     }
     static var mock: EventResponse {
-        Bundle.main.decodeJson(
+        try! Bundle.main.decodeJson(
             [EventResponse].self,
             fileName: "oldEvents.json"
         ).first!

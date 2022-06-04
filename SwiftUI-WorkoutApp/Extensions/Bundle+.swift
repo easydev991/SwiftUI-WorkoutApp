@@ -6,9 +6,9 @@ extension Bundle {
         fileName : String,
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
-    ) -> T {
+    ) throws -> T {
         guard let url = self.url(forResource: fileName, withExtension: nil) else {
-            fatalError("Не удалось загрузить файл: \(fileName)")
+            throw BundleError.cannotLoad(fileName)
         }
         do {
             let jsonData = try Data(contentsOf: url)
@@ -18,7 +18,21 @@ extension Bundle {
             let result = try decoder.decode(type, from: jsonData)
             return result
         } catch {
-            fatalError("Ошибка преобразования json: \(error)")
+            throw BundleError.decodingError(error)
+        }
+    }
+
+    enum BundleError: Error, LocalizedError {
+        case cannotLoad(_ fileName: String)
+        case decodingError(_ error: Error)
+
+        var errorDescription: String? {
+            switch self {
+            case let .cannotLoad(fileName):
+                return "Не удалось загрузить файл: \(fileName)"
+            case let .decodingError(error):
+                return "Ошибка преобразования json: \(error)"
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 @MainActor
 final class AccountInfoViewModel: ObservableObject {
@@ -70,18 +71,25 @@ final class AccountInfoViewModel: ObservableObject {
 
 private extension AccountInfoViewModel {
     func makeCountryAndCityData() {
-        let _countries = Bundle.main.decodeJson(
-            [Country].self,
-            fileName: "countries.json"
-        )
-        guard let russia = _countries.first(where: { $0.name == "Россия" }),
-              let moscow = russia.cities.first(where: { $0.name == "Москва" }) else {
-            fatalError("Россия и Москва должны быть в файле countries.json")
+        do {
+            let allCountries = try Bundle.main.decodeJson(
+                [Country].self,
+                fileName: "countries.json"
+            )
+            if let russia = allCountries.first(where: { $0.name == "Россия" }),
+               let moscow = russia.cities.first(where: { $0.name == "Москва" }) {
+                countries = allCountries.sorted { $0.name < $1.name }
+                userForm.country = russia
+                cities = russia.cities.sorted { $0.name < $1.name }
+                userForm.city = moscow
+            } else {
+    #if DEBUG
+                print("--- Россия и Москва должны быть в файле countries.json")
+    #endif
+            }
+        } catch {
+            errorMessage = error.localizedDescription
         }
-        countries = _countries.sorted { $0.name < $1.name }
-        userForm.country = russia
-        cities = russia.cities.sorted { $0.name < $1.name }
-        userForm.city = moscow
     }
 
     func updateCityIfNeeded(for country: Country) {

@@ -5,10 +5,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
-    private var defaultList = Bundle.main.decodeJson(
-        [SportsGround].self,
-        fileName: "oldSportsGrounds.json"
-    )
+    private var defaultList = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published var filter = SportsGroundFilter() {
@@ -28,18 +25,20 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     func makeGrounds(refresh: Bool, with defaults: DefaultsService) async {
-        if (isLoading || !list.isEmpty) && !refresh { return }
-        if list.isEmpty {
+        if (isLoading || !defaultList.isEmpty) && !refresh { return }
+        if defaultList.isEmpty {
+            fillDefaultList()
             applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
             return
         }
         isLoading.toggle()
         do {
             defaultList = try await APIService(with: defaults).getAllSportsGrounds()
-            applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         } catch {
+            fillDefaultList()
             errorMessage = error.localizedDescription
         }
+        applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         isLoading.toggle()
     }
 
@@ -127,10 +126,6 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didFailWithError error: Error
     ) {
         errorMessage = error.localizedDescription
-        #if DEBUG
-        print("locationManager didFailWithError")
-        print(error)
-        #endif
     }
 }
 
@@ -141,18 +136,27 @@ private extension SportsGroundsMapViewModel {
             filter.size.map { $0.code }.contains(ground.sizeID)
             && filter.type.map { $0.code }.contains(ground.typeID)
         }
-        guard countryID != .zero else {
+        guard countryID != .zero, filter.onlyMyCity else {
             list = result
             needUpdateAnnotations.toggle()
             return
         }
-        if filter.onlyMyCity {
-            result = result.filter {
-                $0.countryID == countryID
-                && $0.cityID == cityID
-            }
+        list = result.filter {
+            $0.countryID == countryID
+            && $0.cityID == cityID
         }
-        list = result
         needUpdateAnnotations.toggle()
+    }
+
+    func fillDefaultList() {
+        do {
+            let oldGrounds = try Bundle.main.decodeJson(
+                [SportsGround].self,
+                fileName: "oldSportsGrounds.json"
+            )
+            defaultList = oldGrounds
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

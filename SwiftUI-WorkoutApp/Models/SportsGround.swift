@@ -165,7 +165,7 @@ extension SportsGround {
         .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
     static var mock: SportsGround {
-        Bundle.main.decodeJson(
+        try! Bundle.main.decodeJson(
             [SportsGround].self,
             fileName: "oldSportsGrounds.json"
         ).first!
