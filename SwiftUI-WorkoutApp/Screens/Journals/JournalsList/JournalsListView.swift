@@ -55,7 +55,7 @@ private extension JournalsListView {
             buttonTitle: "Создать дневник",
             action: showNewJournalSheet
         )
-        .opacity(viewModel.list.isEmpty ? 1 : .zero)
+        .opacity(viewModel.list.isEmpty && isMainUser ? 1 : .zero)
         .disabled(viewModel.isLoading)
     }
 
