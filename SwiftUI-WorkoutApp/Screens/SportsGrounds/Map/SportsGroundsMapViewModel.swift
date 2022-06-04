@@ -127,6 +127,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didFailWithError error: Error
     ) {
         errorMessage = error.localizedDescription
+        #if DEBUG
+        print("locationManager didFailWithError")
+        print(error)
+        #endif
     }
 }
 

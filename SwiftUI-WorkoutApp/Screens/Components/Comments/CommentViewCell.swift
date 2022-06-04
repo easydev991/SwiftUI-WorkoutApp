@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CommentViewCell: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     let model: Comment
     let deleteClbk: (Int) -> Void
@@ -58,6 +59,7 @@ private extension CommentViewCell {
 
     var isMenuAvailable: Bool {
         model.user?.userID == defaults.mainUserID
+        && network.isConnected
     }
 }
 
@@ -68,7 +70,7 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
             deleteClbk: {_ in},
             editClbk: {_ in}
         )
+        .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
-        .padding()
     }
 }

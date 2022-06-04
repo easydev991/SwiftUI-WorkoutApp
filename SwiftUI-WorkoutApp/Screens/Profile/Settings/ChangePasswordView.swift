@@ -3,6 +3,7 @@ import SwiftUI
 /// Экран для смены пароля
 struct ChangePasswordView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ChangePasswordViewModel()
     @State private var showErrorAlert = false
@@ -84,7 +85,10 @@ private extension ChangePasswordView {
         Button(action: changePasswordTapped) {
             ButtonInFormLabel(title: "Сохранить изменения")
         }
-        .disabled(viewModel.isChangeButtonDisabled)
+        .disabled(
+            viewModel.isChangeButtonDisabled
+            || !network.isConnected
+        )
     }
 
     func changePasswordTapped() {
@@ -109,5 +113,6 @@ private extension ChangePasswordView {
 struct ChangePasswordView_Previews: PreviewProvider {
     static var previews: some View {
         ChangePasswordView()
+            .environmentObject(CheckNetworkService())
     }
 }

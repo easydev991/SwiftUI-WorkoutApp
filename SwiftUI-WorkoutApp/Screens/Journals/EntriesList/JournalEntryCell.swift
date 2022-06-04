@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct JournalEntryCell: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     let model: JournalEntryResponse
     let deleteClbk: (Int) -> Void
@@ -50,6 +51,7 @@ private extension JournalEntryCell {
                 .font(.title2)
                 .foregroundColor(.secondary)
         }
+        .opacity(network.isConnected ? 1 : .zero)
         .onTapGesture { hapticFeedback(.rigid) }
     }
 
@@ -61,7 +63,7 @@ private extension JournalEntryCell {
 struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntryCell(model: .mock, deleteClbk: {_ in}, editClbk: {_ in})
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
-            .padding()
     }
 }

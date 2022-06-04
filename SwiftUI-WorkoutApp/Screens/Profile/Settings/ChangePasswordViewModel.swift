@@ -9,7 +9,8 @@ final class ChangePasswordViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     var isChangeButtonDisabled: Bool {
-        currentPasswordText.count < Constants.minPasswordSize
+        isLoading
+        || currentPasswordText.count < Constants.minPasswordSize
         || newPasswordText.count < Constants.minPasswordSize
         || newPasswordText != newPasswordAgainText
     }

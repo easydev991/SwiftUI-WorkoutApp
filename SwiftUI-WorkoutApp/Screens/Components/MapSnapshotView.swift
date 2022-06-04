@@ -8,26 +8,24 @@ struct MapSnapshotView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            content
-                .onAppear {
-                    generateSnapshot(for: geometry.size)
+            ZStack {
+                if let image = snapshotImage {
+                    Image(uiImage: image)
+                } else {
+                    RoundedDefaultImage(size: geometry.size)
                 }
-                .onChange(of: model) { _ in
-                    generateSnapshot(for: geometry.size)
-                }
+            }
+            .onAppear {
+                generateSnapshot(for: geometry.size)
+            }
+            .onChange(of: model) { _ in
+                generateSnapshot(for: geometry.size)
+            }
         }
     }
 }
 
 private extension MapSnapshotView {
-    var content: AnyView {
-        if let image = snapshotImage {
-            return AnyView(Image(uiImage: image))
-        } else {
-            return AnyView(centeredProgressView)
-        }
-    }
-
     var centeredProgressView: some View {
         VStack {
             Spacer()
@@ -85,7 +83,7 @@ private extension MapSnapshotView {
                 snapshotImage = image
             } else {
 #if DEBUG
-                print("--- Error with snapshot: ",(error?.localizedDescription).valueOrEmpty)
+                print("--- Error with snapshot: ", error)
 #endif
             }
         }

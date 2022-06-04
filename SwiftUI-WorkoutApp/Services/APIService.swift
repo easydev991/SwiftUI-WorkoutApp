@@ -492,7 +492,6 @@ private extension APIService {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = Constants.API.timeOut
         config.timeoutIntervalForResource = Constants.API.timeOut
-        config.waitsForConnectivity = true
         return .init(configuration: config)
     }
 

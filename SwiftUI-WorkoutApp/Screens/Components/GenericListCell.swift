@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     private let mode: Mode
 
@@ -113,7 +114,7 @@ private extension GenericListCell {
         case .dialog:
             return false
         case let .journal(info, _, _):
-            return info.ownerID == defaults.mainUserID
+            return (info.ownerID == defaults.mainUserID) && network.isConnected
         }
     }
 }
@@ -121,6 +122,7 @@ private extension GenericListCell {
 struct GenericListCell_Previews: PreviewProvider {
     static var previews: some View {
         GenericListCell(for: .dialog(.mock))
-            .padding()
+            .environmentObject(CheckNetworkService())
+            .previewLayout(.sizeThatFits)
     }
 }

@@ -4,6 +4,7 @@ import CoreLocation.CLLocation
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: SportsGroundFormViewModel
     @State private var showErrorAlert = false
@@ -126,7 +127,11 @@ private extension SportsGroundFormView {
         Button(action: saveAction) {
             Text("Сохранить")
         }
-        .disabled(!viewModel.isFormReady || viewModel.isLoading)
+        .disabled(
+            viewModel.isLoading
+            || !viewModel.isFormReady
+            || !network.isConnected
+        )
     }
 
     func saveAction() {
@@ -156,6 +161,7 @@ private extension SportsGroundFormView {
 struct CreateOrEditGroundView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundFormView(.editExisting(.mock), refreshClbk: {})
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

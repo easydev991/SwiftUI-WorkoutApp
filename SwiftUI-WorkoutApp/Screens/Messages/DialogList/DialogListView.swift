@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Список диалогов
 struct DialogListView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogListViewModel()
     @State private var showErrorAlert = false
@@ -9,6 +10,7 @@ struct DialogListView: View {
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
     @State private var showDeleteConfirmation = false
+    @State private var refreshTask: Task<Void, Never>?
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
@@ -32,12 +34,31 @@ struct DialogListView: View {
         }
         .task { await askForDialogs() }
         .refreshable { await askForDialogs(refresh: true) }
-        .toolbar { linkToFriends }
-        .onDisappear(perform: cancelTask)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButton
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                linkToFriends
+            }
+        }
+        .onDisappear(perform: cancelTasks)
     }
 }
 
 private extension DialogListView {
+    var refreshButton: some View {
+        Button {
+            refreshTask = Task {
+                await askForDialogs()
+            }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .opacity(showEmptyView ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
     var linkToFriends: some View {
         NavigationLink(isActive: $openFriendList) {
             if hasFriends {
@@ -50,6 +71,7 @@ private extension DialogListView {
             Image(systemName: "plus")
         }
         .opacity(hasFriends ? 1 : .zero)
+        .disabled(!network.isConnected)
     }
 
     var emptyContentView: some View {
@@ -58,8 +80,12 @@ private extension DialogListView {
             buttonTitle: emptyViewButtonTitle,
             action: emptyViewAction
         )
-        .opacity(viewModel.list.isEmpty ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : .zero)
         .disabled(viewModel.isLoading)
+    }
+
+    var showEmptyView: Bool {
+        viewModel.list.isEmpty
     }
 
     var emptyViewButtonTitle: String {
@@ -124,14 +150,15 @@ private extension DialogListView {
         viewModel.clearErrorMessage()
     }
 
-    func cancelTask() {
-        deleteDialogTask?.cancel()
+    func cancelTasks() {
+        [refreshTask, deleteDialogTask].forEach { $0?.cancel() }
     }
 }
 
 struct DialogListView_Previews: PreviewProvider {
     static var previews: some View {
         DialogListView()
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

@@ -75,7 +75,6 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-#warning("TODO: убрать после интеграции с БД")
     func setUserNeedUpdate(_ newValue: Bool) {
         needUpdateUser = newValue
     }

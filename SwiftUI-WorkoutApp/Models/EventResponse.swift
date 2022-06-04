@@ -19,17 +19,15 @@ struct EventResponse: Codable, Identifiable {
     var participantsOptional: [UserResponse]?
     /// `true` - предстоящее мероприятие, `false` - прошедшее
     let isCurrent: Bool?
-    /// `true` - пользователь является организатором, `false` - не является
-    let isOrganizer: Bool?
     let photos: [Photo]?
     /// Логин автора мероприятия
-    let name: String?
+    let authorName: String?
     let author: UserResponse?
-    let canEdit: Bool?
     var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {
-        case id, title, latitude, longitude, photos, author, name
+        case id, title, latitude, longitude, photos, author
+        case authorName = "name"
         case fullAddress = "address"
         case previewImageStringURL = "preview"
         case eventDescription = "description"
@@ -43,8 +41,6 @@ struct EventResponse: Codable, Identifiable {
         case participantsCount = "user_count"
         case isCurrent = "is_current"
         case participantsOptional = "training_users"
-        case isOrganizer = "is_organizer"
-        case canEdit = "can_edit"
         case trainHereOptional = "train_here"
         case commentsOptional = "comments"
     }
@@ -85,7 +81,7 @@ extension EventResponse {
     }
     var sportsGround: SportsGround {
         get {
-            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, canEdit: false, mine: false, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
         }
         set {}
     }
@@ -117,7 +113,7 @@ extension EventResponse {
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, isOrganizer: nil, photos: nil, name: nil, author: nil, canEdit: nil, trainHereOptional: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, photos: nil, authorName: nil, author: nil, trainHereOptional: nil)
     }
     static var mock: EventResponse {
         Bundle.main.decodeJson(

@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: UserDetailsViewModel
     @State private var isMessaging = false
@@ -200,6 +201,7 @@ private extension UserDetailsView {
         NavigationLink(destination: SearchUsersView()) {
             Image(systemName: "magnifyingglass")
         }
+        .disabled(!network.isConnected)
     }
 
     var settingsLink: some View {
@@ -266,6 +268,7 @@ private extension UserDetailsView {
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
         UserDetailsView(for: .emptyValue)
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

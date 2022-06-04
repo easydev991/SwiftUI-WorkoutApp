@@ -6,10 +6,8 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let id, typeID, sizeID: Int
     let address: String?
     let author: UserResponse?
-    let canEdit, mine: Bool?
     let cityID, commentsCount, countryID: Int?
     let createDate, modifyDate: String?
-    let equipmentIDS: [Int]?
     let latitude, longitude: String
     let name: String?
     let photos: [Photo]?
@@ -61,14 +59,12 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
 
     enum CodingKeys: String, CodingKey {
         case address, author
-        case canEdit = "can_edit"
         case cityID = "city_id"
         case sizeID = "class_id"
         case commentsCount = "comments_count"
         case countryID = "country_id"
         case createDate = "create_date"
-        case equipmentIDS = "equipment_ids"
-        case id, latitude, longitude, mine, name, photos, preview
+        case id, latitude, longitude, name, photos, preview
         case usersTrainHereCount = "trainings"
         case commentsOptional = "comments"
         case modifyDate = "modify_date"
@@ -77,20 +73,17 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, canEdit: Bool?, mine: Bool?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, equipmentIDS: [Int]?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
         self.sizeID = sizeID
         self.address = address
         self.author = author
-        self.canEdit = canEdit
-        self.mine = mine
         self.cityID = cityID
         self.commentsCount = commentsCount
         self.countryID = countryID
         self.createDate = createDate
         self.modifyDate = modifyDate
-        self.equipmentIDS = equipmentIDS
         self.latitude = latitude
         self.longitude = longitude
         self.name = name
@@ -103,7 +96,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     convenience init(id: Int) {
-        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, canEdit: nil, mine: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
     }
 }
 
@@ -169,7 +162,7 @@ extension SportsGround {
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: SportsGround {
-        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, canEdit: false, mine: false, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, equipmentIDS: [], latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
+        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
     static var mock: SportsGround {
         Bundle.main.decodeJson(

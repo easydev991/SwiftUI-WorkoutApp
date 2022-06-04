@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: JournalEntriesListViewModel
     @State private var showErrorAlert = false
@@ -90,7 +91,7 @@ private extension JournalEntriesList {
         Button(action: showNewEntry) {
             Image(systemName: "plus")
         }
-        .disabled(viewModel.isLoading)
+        .disabled(viewModel.isLoading || !network.isConnected)
         .sheet(isPresented: $showEntrySheet) {
             TextEntryView(
                 mode: .newForJournal(id: viewModel.currentJournal.id),
@@ -147,6 +148,7 @@ private extension JournalEntriesList {
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntriesList(for: DefaultsService().mainUserID, in: .constant(.mock))
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

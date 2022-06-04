@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Список дневников
 struct JournalsListView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
     @State private var isCreatingJournal = false
@@ -43,19 +44,46 @@ struct JournalsListView: View {
         }
         .task { await askForJournals() }
         .refreshable { await askForJournals(refresh: true) }
-        .toolbar { addJournalButton }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButton
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                addJournalButton
+            }
+        }
         .onDisappear(perform: cancelTasks)
     }
 }
 
 private extension JournalsListView {
+    var refreshButton: some View {
+        Button {
+            updateListTask = Task {
+                await askForJournals()
+            }
+        } label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+        }
+        .opacity(showEmptyView ? 1 : .zero)
+        .disabled(viewModel.isLoading)
+    }
+
+    var addJournalButton: some View {
+        Button(action: showNewJournalSheet) {
+            Image(systemName: "plus")
+        }
+        .opacity(showAddJournalButton ? 1 : .zero)
+        .disabled(!network.isConnected)
+    }
+
     var emptyContentView: some View {
         EmptyContentView(
             message: "Дневников пока нет",
             buttonTitle: "Создать дневник",
             action: showNewJournalSheet
         )
-        .opacity(viewModel.list.isEmpty && isMainUser ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : .zero)
         .disabled(viewModel.isLoading)
     }
 
@@ -81,15 +109,16 @@ private extension JournalsListView {
         .disabled(viewModel.isLoading)
     }
 
+    var showEmptyView: Bool {
+        viewModel.list.isEmpty && isMainUser
+    }
+
     var isMainUser: Bool {
         userID == defaults.mainUserID
     }
 
-    var addJournalButton: some View {
-        Button(action: showNewJournalSheet) {
-            Image(systemName: "plus")
-        }
-        .opacity(defaults.isAuthorized && isMainUser ? 1 : .zero)
+    var showAddJournalButton: Bool {
+        defaults.isAuthorized && isMainUser
     }
 
     var newJournalSheet: some View {
@@ -170,6 +199,7 @@ private extension JournalsListView {
 struct JournalsListView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsListView(for: DefaultsService().mainUserID)
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

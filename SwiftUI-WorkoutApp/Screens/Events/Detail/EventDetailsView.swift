@@ -3,6 +3,7 @@ import SwiftUI
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: EventDetailsViewModel
     @State private var showErrorAlert = false
@@ -87,7 +88,7 @@ struct EventDetailsView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isAuthor {
+                if isAuthor && network.isConnected {
                     Group {
                         deleteButton
                         editEventButton
@@ -180,7 +181,7 @@ private extension EventDetailsView {
             title: "Пойду на мероприятие",
             action: changeIsGoingToEvent
         )
-        .disabled(viewModel.isLoading)
+        .disabled(viewModel.isLoading || !network.isConnected)
     }
 
     var authorSection: some View {
@@ -190,11 +191,15 @@ private extension EventDetailsView {
             } label: {
                 HStack(spacing: 16) {
                     CacheImageView(url: viewModel.event.author?.avatarURL)
-                    Text(viewModel.event.name.valueOrEmpty)
+                    Text(viewModel.event.authorName.valueOrEmpty)
                         .fontWeight(.medium)
                 }
             }
-            .disabled(!defaults.isAuthorized || viewModel.event.authorID == defaults.mainUserID)
+            .disabled(
+                !defaults.isAuthorized
+                || viewModel.event.authorID == defaults.mainUserID
+                || !network.isConnected
+            )
         }
     }
 
@@ -298,6 +303,7 @@ private extension EventDetailsView {
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         EventDetailsView(with: .mock, deleteClbk: {})
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

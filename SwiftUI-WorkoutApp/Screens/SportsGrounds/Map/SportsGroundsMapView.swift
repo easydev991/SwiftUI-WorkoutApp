@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var needUpdateRecent = false
@@ -104,6 +105,7 @@ private extension SportsGroundsMapView {
             Image(systemName: "plus")
         }
         .opacity(viewModel.isLoading ? .zero : 1)
+        .disabled(!network.isConnected)
     }
 
     func openDetailsView(_ ground: SportsGround) {
@@ -136,6 +138,7 @@ private extension SportsGroundsMapView {
 struct SportsGroundsMapView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsMapView()
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

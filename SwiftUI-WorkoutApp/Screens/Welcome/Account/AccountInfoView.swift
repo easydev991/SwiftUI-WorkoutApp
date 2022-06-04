@@ -3,6 +3,7 @@ import SwiftUI
 /// Экран для регистрации пользователя или изменения его личных данных
 struct AccountInfoView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = AccountInfoViewModel()
     @State private var showErrorAlert = false
@@ -195,7 +196,10 @@ private extension AccountInfoView {
             Button(action: saveChangesAction) {
                 ButtonInFormLabel(title: "Сохранить")
             }
-            .disabled(!viewModel.isButtonAvailable(with: defaults))
+            .disabled(
+                !viewModel.isButtonAvailable(with: defaults)
+                || !network.isConnected
+            )
         }
     }
 
@@ -220,6 +224,7 @@ private extension AccountInfoView {
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
         AccountInfoView()
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

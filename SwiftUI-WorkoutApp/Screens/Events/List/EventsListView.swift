@@ -3,6 +3,7 @@ import SwiftUI
 /// Экран со списком мероприятий
 struct EventsListView: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
@@ -106,7 +107,9 @@ private extension EventsListView {
 
     func emptyViewAction() {
         if showAddEventButton {
-            isCreatingEvent.toggle()
+            if network.isConnected {
+                isCreatingEvent.toggle()
+            }
         } else {
             tabViewModel.selectTab(.map)
         }
@@ -122,10 +125,12 @@ private extension EventsListView {
             Image(systemName: "plus")
         }
         .opacity(showAddEventButton ? 1 : .zero)
+        .disabled(!network.isConnected)
     }
 
     var showAddEventButton: Bool {
-        defaults.hasSportsGrounds && defaults.isAuthorized
+        defaults.hasSportsGrounds
+        && defaults.isAuthorized
     }
 
     var showEmptyView: Bool {
@@ -167,6 +172,7 @@ struct EventsView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
             .environmentObject(TabViewModel())
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

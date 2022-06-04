@@ -1,6 +1,6 @@
 import Foundation
 
-/// Упрощенная модель данных пользователя (ничего лишнего)
+/// Упрощенная модель данных пользователя
 struct UserModel: Identifiable, Hashable {
     let id: Int
     let imageURL: URL?

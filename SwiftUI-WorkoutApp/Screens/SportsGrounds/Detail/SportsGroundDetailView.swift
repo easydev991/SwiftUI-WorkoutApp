@@ -3,6 +3,7 @@ import SwiftUI
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: SportsGroundDetailViewModel
     @State private var showErrorAlert = false
@@ -88,7 +89,7 @@ struct SportsGroundDetailView: View {
                         deleteButton
                         editGroundButton
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(viewModel.isLoading || !network.isConnected)
                 }
             }
         }
@@ -129,7 +130,7 @@ private extension SportsGroundDetailView {
                 title: "Тренируюсь здесь",
                 action: changeTrainHereStatus
             )
-            .disabled(viewModel.isLoading)
+            .disabled(viewModel.isLoading || !network.isConnected)
             createEventLink
         }
     }
@@ -163,6 +164,7 @@ private extension SportsGroundDetailView {
         } label: {
             Text("Создать мероприятие").blueMediumWeight()
         }
+        .disabled(!network.isConnected)
     }
 
     var authorSection: some View {
@@ -174,7 +176,11 @@ private extension SportsGroundDetailView {
                         .fontWeight(.medium)
                 }
             }
-            .disabled(!defaults.isAuthorized || viewModel.ground.authorID == defaults.mainUserID)
+            .disabled(
+                !defaults.isAuthorized
+                || viewModel.ground.authorID == defaults.mainUserID
+                || !network.isConnected
+            )
         }
     }
 
@@ -273,6 +279,7 @@ struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SportsGroundDetailView(for: .mock, onDeletion: {_ in})
+                .environmentObject(CheckNetworkService())
                 .environmentObject(DefaultsService())
         }
     }

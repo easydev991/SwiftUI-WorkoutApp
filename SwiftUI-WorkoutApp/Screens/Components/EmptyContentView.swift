@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     let message: String
     let buttonTitle: String
@@ -14,11 +15,16 @@ struct EmptyContentView: View {
             Text(message)
                 .font(.title2)
                 .multilineTextAlignment(.center)
-            Button(action: action) {
-                Text(buttonTitle)
-                    .roundedRectangleStyle()
+            if network.isConnected {
+                Button(action: action) {
+                    Text(buttonTitle)
+                        .roundedRectangleStyle()
+                }
+                .opacity(defaults.isAuthorized ? 1 : .zero)
+            } else {
+                Image(systemName: "wifi.exclamationmark")
+                    .font(.system(size: 60))
             }
-            .opacity(defaults.isAuthorized ? 1 : .zero)
             if !hintText.isEmpty {
                 Text(hintText)
                     .multilineTextAlignment(.center)
@@ -37,6 +43,7 @@ struct EmptyContentView_Previews: PreviewProvider {
             buttonTitle: "Открыть список друзей",
             action: {}
         )
+        .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
     }
 }

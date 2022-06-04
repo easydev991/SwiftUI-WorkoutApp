@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Экран со списком пользователей
 struct UsersListView: View {
+    @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
     @State private var showErrorAlert = false
@@ -29,7 +30,7 @@ struct UsersListView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
-        .disabled(viewModel.isLoading)
+        .disabled(viewModel.isLoading || !network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }
@@ -80,6 +81,7 @@ private extension UsersListView {
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
         UsersListView(mode: .friends(userID: DefaultsService().mainUserID))
+            .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
 }

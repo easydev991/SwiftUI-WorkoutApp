@@ -6,6 +6,7 @@ struct RoundedDefaultImage: View {
     var body: some View {
         Image("defaultWorkoutImage")
             .resizable()
+            .scaledToFit()
             .frame(width: size.width, height: size.height)
             .cornerRadius(8)
     }
