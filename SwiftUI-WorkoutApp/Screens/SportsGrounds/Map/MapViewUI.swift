@@ -38,6 +38,19 @@ struct MapViewUI: UIViewRepresentable {
         mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
         mapView.isRotateEnabled = false
+        let trackingButton = MKUserTrackingButton(mapView: mapView)
+        trackingButton.translatesAutoresizingMaskIntoConstraints = false
+        mapView.addSubview(trackingButton)
+        NSLayoutConstraint.activate([
+            trackingButton.topAnchor.constraint(
+                equalTo: mapView.layoutMarginsGuide.topAnchor,
+                constant: 60
+            ),
+            trackingButton.trailingAnchor.constraint(
+                equalTo: mapView.layoutMarginsGuide.trailingAnchor,
+                constant: -8
+            )
+        ])
         mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
         return mapView
     }
