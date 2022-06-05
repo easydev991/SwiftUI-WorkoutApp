@@ -1,5 +1,70 @@
 [
     {
+        "id": 4379,
+        "title": "Тестовое",
+        "description": "Доделал весь UI в новом приложении, осталось дополировать: сохранять в памяти приложения списки пользователей, мероприятия и площадки",
+        "create_date": "2022-05-30T16:33:00+00:00",
+        "modify_date": "2022-05-30T16:33:00+00:00",
+        "begin_date": "2022-05-30T16:33:00+00:00",
+        "country_id": 17,
+        "city_id": 1,
+        "comment_count": 10,
+        "preview": "https://workout.su/thumbs/6_100x100_FFFFFF//uploads/userfiles/2022/05/2022-05-17-09-05-59-6sq.jpg",
+        "area_id": 5464,
+        "latitude": "55.72681766162947",
+        "longitude": "37.50063106774381",
+        "user_count": 4,
+        "is_current": false,
+        "photos": [
+            {
+                "id": 1,
+                "photo": "https://workout.su/uploads/userfiles/2022/05/2022-05-17-09-05-59-6sq.jpg"
+            },
+            {
+                "id": 2,
+                "photo": "https://workout.su/uploads/userfiles/2022/05/2022-05-24-19-05-45-sgr.jpg"
+            },
+            {
+                "id": 3,
+                "photo": "https://workout.su/uploads/userfiles/2022/05/2022-05-28-11-05-27-qes.jpg"
+            }
+        ],
+        "author": {
+            "id": 10367,
+            "name": "ninenineone",
+            "image": "https://workout.su/uploads/avatars/2018/01/2018-01-28-13-01-38-asm.jpg",
+            "purchase_customer_editor": false,
+            "lang": "ru"
+        },
+        "name": "ninenineone"
+    },
+    {
+        "id": 4380,
+        "title": "1",
+        "description": "<i data-ed3=\"3\"></i><p>1</p>",
+        "create_date": "2022-05-17T10:00:00+00:00",
+        "modify_date": "2022-05-17T10:00:00+00:00",
+        "begin_date": "2022-05-17T10:00:00+00:00",
+        "country_id": 5,
+        "city_id": 377,
+        "comment_count": 0,
+        "preview": "https://workout.su/thumbs/6_100x100_FFFFFF//img/avatar_default.jpg",
+        "area_id": null,
+        "latitude": "53.886844056357006",
+        "longitude": "27.563767432642635",
+        "user_count": 1,
+        "is_current": false,
+        "photos": [],
+        "author": {
+            "id": 229819,
+            "name": "fkmx1",
+            "image": "https://workout.su/img/avatar_default.jpg",
+            "purchase_customer_editor": false,
+            "lang": "en"
+        },
+        "name": "fkmx1"
+    },
+    {
         "id": 4378,
         "title": "Совместная тренировка",
         "description": "<i data-ed3=\"3\"></i><p>Лето уже давайте тренить!!!</p><p><br></p><p>Задание от Балашихи по отжиманиям!</p>",
@@ -1489,62 +1554,5 @@
             "lang": "ru"
         },
         "name": "dAppEr"
-    },
-    {
-        "id": 4324,
-        "title": "Тренировка",
-        "description": "Площадка за школой №43",
-        "create_date": "2021-07-22T15:30:00+00:00",
-        "modify_date": "2021-07-22T15:30:00+00:00",
-        "begin_date": "2021-07-22T15:30:00+00:00",
-        "country_id": 17,
-        "city_id": 102,
-        "comment_count": 0,
-        "preview": "https://workout.su/thumbs/6_100x100_FFFFFF//uploads/userfiles/2021/07/2021-07-19-21-07-19-zlg.jpg",
-        "area_id": null,
-        "latitude": "61.7676714",
-        "longitude": "34.30071526886458",
-        "user_count": 1,
-        "is_current": false,
-        "photos": [
-            {
-                "id": 1,
-                "photo": "https://workout.su/uploads/userfiles/2021/07/2021-07-19-21-07-19-zlg.jpg"
-            }
-        ],
-        "author": {
-            "id": 92650,
-            "name": "MegaW1nd",
-            "image": "https://workout.su/uploads/avatars/2021/07/2021-07-12-10-07-22-skm.jpg",
-            "purchase_customer_editor": false,
-            "lang": "ru"
-        },
-        "name": "MegaW1nd"
-    },
-    {
-        "id": 4323,
-        "title": "Тренировка",
-        "description": "Площадка за школой №43",
-        "create_date": "2021-07-18T16:00:00+00:00",
-        "modify_date": "2021-07-18T16:00:00+00:00",
-        "begin_date": "2021-07-18T16:00:00+00:00",
-        "country_id": 17,
-        "city_id": 102,
-        "comment_count": 0,
-        "preview": "https://workout.su/thumbs/6_100x100_FFFFFF//img/avatar_default.jpg",
-        "area_id": null,
-        "latitude": "61.7676714",
-        "longitude": "34.30071526886458",
-        "user_count": 1,
-        "is_current": false,
-        "photos": [],
-        "author": {
-            "id": 92650,
-            "name": "MegaW1nd",
-            "image": "https://workout.su/uploads/avatars/2021/07/2021-07-12-10-07-22-skm.jpg",
-            "purchase_customer_editor": false,
-            "lang": "ru"
-        },
-        "name": "MegaW1nd"
     }
 ]
