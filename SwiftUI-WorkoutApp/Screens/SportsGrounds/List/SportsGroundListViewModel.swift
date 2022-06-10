@@ -13,7 +13,6 @@ final class SportsGroundListViewModel: ObservableObject {
             let isMainUser = userID == defaults.mainUserID
             let needUpdate = list.isEmpty || refresh
             if isMainUser {
-#warning("TODO: вместо needUpdateUser проверять список площадок пользователя в БД, чтобы не делать лишние запросы")
                 if !needUpdate && !defaults.needUpdateUser { return }
                 isLoading.toggle()
                 await makeList(for: userID, with: defaults)
@@ -29,7 +28,6 @@ final class SportsGroundListViewModel: ObservableObject {
     }
 
     func deleteSportsGround(id: Int) {
-#warning("TODO: обновлять список добавленных пользователем площадок в БД")
         list.removeAll(where: { $0.id == id })
     }
 
@@ -40,7 +38,6 @@ private extension SportsGroundListViewModel {
     func makeList(for userID: Int, with defaults: DefaultsService) async {
         do {
             if userID == defaults.mainUserID {
-#warning("TODO: интеграция с БД")
                 defaults.setUserNeedUpdate(false)
             }
             list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
