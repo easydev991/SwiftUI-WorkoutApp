@@ -12,12 +12,6 @@ enum Constants {
     static let oldAppStoreAddress = "https://itunes.apple.com/us/app/jobsy/id1035159361"
     static let rulesOfService = "https://workout.su/pravila"
 
-    enum API {
-        static let baseURL = "https://workout.su/api/v3"
-        static let timeOut = TimeInterval(15)
-        static let codeOK = 200
-    }
-
     enum Feedback {
         static let subject = "Обратная связь"
         static let toEmail = "info@workout.su"
@@ -43,58 +37,8 @@ enum Constants {
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
     }
 
-    enum Gender: String, CaseIterable, CustomStringConvertible, Codable {
-        case male = "Мужской"
-        case female = "Женский"
-        init(_ code: Int?) {
-            self = code == .zero ? .male : .female
-        }
-        var code: Int { self == .male ? .zero : 1 }
-        var description: String {
-            self == .male ? "Мужчина" : "Женщина"
-        }
-    }
-
     enum FriendAction: String {
         case sendFriendRequest = "Добавить в друзья"
         case removeFriend = "Удалить из друзей"
-    }
-
-    enum MessageType {
-        case incoming, sent
-        var color: UIColor {
-            self == .incoming ? .systemGreen : .systemBlue
-        }
-    }
-
-    enum TextEntryType {
-        /// Комментарий к площадке
-        case ground(id: Int)
-        /// Комментарий к мероприятию
-        case event(id: Int)
-        /// Запись в дневнике
-        case journal(id: Int)
-    }
-
-    enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
-        case all = 0
-        case friends = 1
-        case nobody = 2
-
-        init(_ rawValue: Int?) {
-            switch rawValue {
-            case 0: self = .all
-            case 1: self = .friends
-            case 2: self = .nobody
-            default: self = .all
-            }
-        }
-        var description: String {
-            switch self {
-            case .all: return "Все"
-            case .friends: return "Друзья"
-            case .nobody: return "Только я"
-            }
-        }
     }
 }

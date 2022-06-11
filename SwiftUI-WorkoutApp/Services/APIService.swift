@@ -196,12 +196,12 @@ struct APIService {
 
     /// Добавить комментарий для площадки
     /// - Parameters:
-    ///   - model: тип комментария (к площадке или мероприятию)
+    ///   - option: тип комментария (к площадке или мероприятию)
     ///   - comment: текст комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func addNewEntry(to model: Constants.TextEntryType, entryText: String) async throws -> Bool {
+    func addNewEntry(to option: TextEntryOption, entryText: String) async throws -> Bool {
         let endpoint: Endpoint
-        switch model {
+        switch option {
         case let .ground(id):
             endpoint = .addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
@@ -218,13 +218,13 @@ struct APIService {
 
     /// Изменить свой комментарий для площадки
     /// - Parameters:
-    ///   - type: тип записи
+    ///   - option: тип записи
     ///   - entryID: `id` записи
     ///   - newEntryText: текст измененной записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editEntry(for type: Constants.TextEntryType, entryID: Int, newEntryText: String) async throws -> Bool {
+    func editEntry(for option: TextEntryOption, entryID: Int, newEntryText: String) async throws -> Bool {
         let endpoint: Endpoint
-        switch type {
+        switch option {
         case let .ground(id):
             endpoint = .editGroundComment(
                 groundID: id,
@@ -250,12 +250,12 @@ struct APIService {
 
     /// Удалить запись
     /// - Parameters:
-    ///   - type: тип записи
+    ///   - option: тип записи
     ///   - entryID: `id` записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func deleteEntry(from type: Constants.TextEntryType, entryID: Int) async throws -> Bool {
+    func deleteEntry(from option: TextEntryOption, entryID: Int) async throws -> Bool {
         let endpoint: Endpoint
-        switch type {
+        switch option {
         case let .ground(id):
             endpoint = .deleteGroundComment(id, commentID: entryID)
         case let .event(id):
@@ -419,7 +419,7 @@ struct APIService {
     ///   - viewAccess: доступ на просмотр
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editJournalSettings(for journalID: Int, title: String, viewAccess: Constants.JournalAccess, commentAccess: Constants.JournalAccess) async throws -> Bool {
+    func editJournalSettings(for journalID: Int, title: String, viewAccess: JournalAccess, commentAccess: JournalAccess) async throws -> Bool {
         let endpoint = await Endpoint.editJournalSettings(
             userID: defaults.mainUserID,
             journalID: journalID,
@@ -486,10 +486,14 @@ struct APIService {
 }
 
 private extension APIService {
+    static var baseURL: String { "https://workout.su/api/v3" }
+    var timeOut: TimeInterval { .init(15) }
+    var codeOK: Int { 200 }
+
     var urlSession: URLSession {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = Constants.API.timeOut
-        config.timeoutIntervalForResource = Constants.API.timeOut
+        config.timeoutIntervalForRequest = timeOut
+        config.timeoutIntervalForResource = timeOut
         return .init(configuration: config)
     }
 
@@ -546,7 +550,7 @@ private extension APIService {
             throw APIError.noData
         }
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != Constants.API.codeOK {
+        if responseCode != codeOK {
             throw handleError(from: data, with: responseCode)
         }
 #if DEBUG
@@ -569,10 +573,10 @@ private extension APIService {
         print("--- Получили статус по запросу:", (response?.url?.absoluteString).valueOrEmpty)
         print(responseCode.valueOrZero)
 #endif
-        if responseCode != Constants.API.codeOK {
+        if responseCode != codeOK {
             throw APIError(with: responseCode)
         }
-        return responseCode == Constants.API.codeOK
+        return responseCode == codeOK
     }
 
     /// Обрабатывает ошибки
@@ -822,7 +826,7 @@ private extension APIService {
 
 private extension APIService.Endpoint {
     var urlPath: String {
-        let baseUrl = Constants.API.baseURL
+        let baseUrl = APIService.baseURL
         switch self {
         case .registration:
             return "\(baseUrl)/registration"

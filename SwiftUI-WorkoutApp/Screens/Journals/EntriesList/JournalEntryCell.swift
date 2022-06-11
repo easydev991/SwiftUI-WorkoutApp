@@ -18,6 +18,7 @@ struct JournalEntryCell: View {
                     Text(model.authorName.valueOrEmpty)
                         .font(.headline)
                         .lineLimit(1)
+                        .textSelection(.enabled)
                     Spacer()
                     Text(model.messageDateString)
                         .font(.callout)

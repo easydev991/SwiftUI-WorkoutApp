@@ -158,7 +158,7 @@ private extension DialogView {
         }
     }
 
-    func messageType(for message: MessageResponse) -> Constants.MessageType {
+    func messageType(for message: MessageResponse) -> MessageType {
         message.userID == defaults.mainUserID
         ? .sent
         : .incoming

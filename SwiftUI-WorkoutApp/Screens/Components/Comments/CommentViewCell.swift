@@ -30,6 +30,7 @@ private extension CommentViewCell {
         VStack(alignment: .leading) {
             Text((model.user?.userName).valueOrEmpty)
                 .fontWeight(.medium)
+                .textSelection(.enabled)
             Text(model.formattedDateString)
                 .foregroundColor(.secondary)
                 .font(.caption)

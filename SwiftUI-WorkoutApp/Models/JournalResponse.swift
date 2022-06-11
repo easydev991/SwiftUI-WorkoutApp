@@ -39,11 +39,11 @@ extension JournalResponse {
     var lastMessageDateString: String {
         FormatterService.readableDate(from: lastMessageDate)
     }
-    var viewAccessType: Constants.JournalAccess {
+    var viewAccessType: JournalAccess {
         get { .init(viewAccess.valueOrZero) }
         set { viewAccess = newValue.rawValue }
     }
-    var commentAccessType: Constants.JournalAccess {
+    var commentAccessType: JournalAccess {
         get { .init(commentAccess.valueOrZero) }
         set { commentAccess = newValue.rawValue }
     }

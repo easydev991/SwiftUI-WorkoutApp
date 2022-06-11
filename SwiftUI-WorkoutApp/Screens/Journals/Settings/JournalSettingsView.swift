@@ -9,7 +9,7 @@ struct JournalSettingsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
-    private let options = Constants.JournalAccess.allCases
+    private let options = JournalAccess.allCases
     private let updateOnSuccess: (Int) -> Void
     private let initialJournal: JournalResponse
 

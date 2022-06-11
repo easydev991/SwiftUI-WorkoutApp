@@ -134,8 +134,8 @@ private extension AccountInfoView {
     var genderPicker: some View {
         Menu {
             Picker("", selection: $viewModel.userForm.genderCode) {
-                ForEach(Constants.Gender.allCases.map(\.code), id: \.self) {
-                    Text(Constants.Gender($0).rawValue)
+                ForEach(Gender.allCases.map(\.code), id: \.self) {
+                    Text(Gender($0).rawValue)
                 }
             }
         } label: {
@@ -144,7 +144,7 @@ private extension AccountInfoView {
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.gender))
                 Spacer()
-                Text(Constants.Gender(viewModel.userForm.genderCode).rawValue)
+                Text(Gender(viewModel.userForm.genderCode).rawValue)
                     .foregroundColor(.secondary)
             }
         }

@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct ChatBubble<Content: View>: View {
-    private let messageType: Constants.MessageType
+    private let messageType: MessageType
     private let content: () -> Content
 
     init(
-        _ messageType: Constants.MessageType,
+        _ messageType: MessageType,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.messageType = messageType
@@ -28,8 +28,8 @@ struct ChatBubble<Content: View>: View {
 }
 
 struct ChatBubbleShape: Shape {
-    private let position: Constants.MessageType
-    init(_ position: Constants.MessageType) {
+    private let position: MessageType
+    init(_ position: MessageType) {
         self.position = position
     }
 
