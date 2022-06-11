@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 struct ErrorResponse: Codable {
     let errors: [String]?

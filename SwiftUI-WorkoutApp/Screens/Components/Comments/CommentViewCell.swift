@@ -77,5 +77,6 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
         )
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
+        .previewLayout(.sizeThatFits)
     }
 }

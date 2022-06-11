@@ -21,6 +21,10 @@ struct Comments: View {
 
 struct Comments_Previews: PreviewProvider {
     static var previews: some View {
-        Comments(items: [.mock, .mock], deleteClbk: {_ in}, editClbk: {_ in})
+        Form {
+            Comments(items: [.mock, .mock], deleteClbk: {_ in}, editClbk: {_ in})
+        }
+        .environmentObject(DefaultsService())
+        .environmentObject(CheckNetworkService())
     }
 }

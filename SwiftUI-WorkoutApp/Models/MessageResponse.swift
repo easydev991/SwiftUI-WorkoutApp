@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 /// Модель сообщения в диалоге
 struct MessageResponse: Codable, Identifiable, Hashable {

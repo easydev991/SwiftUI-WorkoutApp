@@ -1,5 +1,4 @@
 import SwiftUI
-import Utils
 
 struct JournalEntryCell: View {
     @EnvironmentObject private var network: CheckNetworkService
@@ -63,8 +62,13 @@ private extension JournalEntryCell {
 
 struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntryCell(model: .mock, deleteClbk: {_ in}, editClbk: {_ in})
-            .environmentObject(CheckNetworkService())
-            .environmentObject(DefaultsService())
+        JournalEntryCell(
+            model: .mock,
+            deleteClbk: {_ in},
+            editClbk: {_ in}
+        )
+        .environmentObject(CheckNetworkService())
+        .environmentObject(DefaultsService())
+        .previewLayout(.sizeThatFits)
     }
 }

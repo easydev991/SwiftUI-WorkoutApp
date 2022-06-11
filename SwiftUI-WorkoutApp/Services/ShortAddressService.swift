@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 struct ShortAddressService {
     func addressFor(_ countryID: Int, _ cityID: Int) -> String {

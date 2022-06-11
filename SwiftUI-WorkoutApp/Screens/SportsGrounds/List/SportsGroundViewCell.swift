@@ -26,5 +26,6 @@ struct SportsGroundViewCell: View {
 struct SportsGroundsForUserView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundViewCell(model: .mock)
+            .previewLayout(.sizeThatFits)
     }
 }

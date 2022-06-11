@@ -159,5 +159,6 @@ struct ChatBubble_Previews: PreviewProvider {
             }
         }
         .textSelection(.enabled)
+        .previewLayout(.sizeThatFits)
     }
 }

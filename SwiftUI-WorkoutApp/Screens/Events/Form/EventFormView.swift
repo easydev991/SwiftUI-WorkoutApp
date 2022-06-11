@@ -1,5 +1,4 @@
 import SwiftUI
-import Utils
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {

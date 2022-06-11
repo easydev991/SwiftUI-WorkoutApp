@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 import MapKit.MKGeometry
 
 /// Модель данных спортивной площадки

@@ -41,9 +41,11 @@ struct EmptyContentView_Previews: PreviewProvider {
         EmptyContentView(
             message: "Чатов пока нет",
             buttonTitle: "Открыть список друзей",
-            action: {}
+            action: {},
+            hintText: "Подсказка"
         )
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
+        .previewLayout(.sizeThatFits)
     }
 }

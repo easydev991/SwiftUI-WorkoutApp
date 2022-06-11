@@ -552,9 +552,8 @@ private extension APIService {
             throw handleError(from: data, with: responseCode)
         }
 #if DEBUG
-        print("--- Получили ответ:")
-        print(response)
-        print("--- Полученный JSON:\n\(data.prettyJson)")
+        print("--- Получили JSON по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print(data.prettyJson)
         do {
             _ = try JSONDecoder().decode(type, from: data)
         } catch {
@@ -567,11 +566,11 @@ private extension APIService {
 
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) throws -> Bool {
-#if DEBUG
-        print("--- Получили ответ:")
-        print(response)
-#endif
         let responseCode = (response as? HTTPURLResponse)?.statusCode
+#if DEBUG
+        print("--- Получили статус по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print(responseCode.valueOrZero)
+#endif
         if responseCode != Constants.API.codeOK {
             throw APIError(with: responseCode)
         }

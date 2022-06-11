@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 /// Модель со всей информацией о мероприятии
 struct EventResponse: Codable, Identifiable {

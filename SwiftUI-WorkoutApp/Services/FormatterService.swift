@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 struct FormatterService {
     static func readableDate(from string: String?) -> String {

@@ -1,5 +1,4 @@
 import SwiftUI
-import Utils
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
