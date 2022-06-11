@@ -557,9 +557,6 @@ private extension APIService {
         }
 #endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
-#if DEBUG
-        print("--- Преобразованные данные:\n\(decodedInfo)")
-#endif
         return decodedInfo
     }
 
