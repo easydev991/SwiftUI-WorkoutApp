@@ -64,7 +64,10 @@ private extension SendMessageView {
     }
 
     var sendButton: some View {
-        Button(action: sendAction) {
+        Button {
+            isFocused = false
+            sendAction()
+        } label: {
             Label("Отправить", systemImage: "paperplane.fill")
         }
         .tint(.blue)
