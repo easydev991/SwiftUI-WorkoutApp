@@ -1,5 +1,6 @@
 import SwiftUI
 import MapKit
+import Utils
 
 /// Снапшот карты
 struct MapSnapshotView: View {
@@ -94,5 +95,6 @@ struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
         MapSnapshotView(model: .constant(.emptyValue))
             .frame(width: .infinity, height: 150)
+            .previewLayout(.sizeThatFits)
     }
 }

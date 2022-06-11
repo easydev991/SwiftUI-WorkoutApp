@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Упрощенная модель данных пользователя
 struct UserModel: Identifiable, Hashable {

@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Форма для отправки при регистрации или изменении данных профиля
 struct MainUserForm: Codable, Equatable {

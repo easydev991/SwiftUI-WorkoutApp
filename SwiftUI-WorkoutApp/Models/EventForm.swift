@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Форма для отправки создании/изменении мероприятия
 struct EventForm: Codable {

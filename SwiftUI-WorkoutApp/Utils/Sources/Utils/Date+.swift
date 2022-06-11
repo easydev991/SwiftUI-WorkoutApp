@@ -1,6 +1,6 @@
 import Foundation
 
-extension Date {
+public extension Date {
     var isToday: Bool {
         Calendar.current.isDateInToday(self)
     }

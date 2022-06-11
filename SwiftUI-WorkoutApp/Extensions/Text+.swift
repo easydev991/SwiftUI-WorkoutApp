@@ -8,15 +8,10 @@ extension Text {
     }
 }
 
-struct BlueMediumWeightText: View {
-    var body: some View {
-        Text("Hello, World!")
-            .blueMediumWeight()
-    }
-}
-
 struct BlueMediumWeightText_Previews: PreviewProvider {
     static var previews: some View {
-        BlueMediumWeightText()
+        Text("Hello, World!")
+            .blueMediumWeight()
+            .previewLayout(.sizeThatFits)
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-extension Data {
+public extension Data {
     var prettyJson: String {
         do {
             let object = try JSONSerialization.jsonObject(with: self, options: [.fragmentsAllowed])

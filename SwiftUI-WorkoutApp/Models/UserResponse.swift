@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Модель данных пользователя со всеми доступными свойствами
 struct UserResponse: Codable, Hashable {

@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {

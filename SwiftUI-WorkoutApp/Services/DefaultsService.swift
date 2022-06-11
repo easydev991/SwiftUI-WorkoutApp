@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 @MainActor
 final class DefaultsService: ObservableObject {

@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Модель с информацией о дневнике
 struct JournalResponse: Codable, Identifiable, Equatable {

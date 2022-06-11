@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 /// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {

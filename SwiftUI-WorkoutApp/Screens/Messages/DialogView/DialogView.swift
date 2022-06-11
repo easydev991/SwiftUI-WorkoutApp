@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 /// Экран с диалогом
 struct DialogView: View {

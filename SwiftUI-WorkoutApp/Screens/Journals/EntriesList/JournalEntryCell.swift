@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 struct JournalEntryCell: View {
     @EnvironmentObject private var network: CheckNetworkService

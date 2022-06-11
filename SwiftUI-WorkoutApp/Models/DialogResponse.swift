@@ -1,4 +1,5 @@
 import Foundation
+import Utils
 
 /// Модель с информацией о диалоге
 struct DialogResponse: Codable, Identifiable {
