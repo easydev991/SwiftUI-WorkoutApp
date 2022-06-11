@@ -185,7 +185,6 @@ struct APIService {
     ///   - form: форма с данными о площадке
     /// - Returns: Обновленная информация о площадке
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
-#warning("TODO: когда на бэке поправят формат данных в ответе по полям city_id, type_id, class_id, заменить эту модель на SportsGround")
         let endpoint: Endpoint
         if let id = id {
             endpoint = Endpoint.editSportsGround(id: id, form: form)
@@ -316,7 +315,6 @@ struct APIService {
     /// - Parameter form: форма с данными по мероприятию
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
     func saveEvent(_ form: EventForm, eventID: Int?) async throws -> EventResult {
-#warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents внутри EventsListViewModel")
         let endpoint: Endpoint
         if let eventID = eventID {
             endpoint = .editEvent(id: eventID, form: form)
