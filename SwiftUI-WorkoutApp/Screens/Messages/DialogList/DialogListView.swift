@@ -14,15 +14,19 @@ struct DialogListView: View {
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
-        ZStack {
+        Group {
             if viewModel.list.isEmpty {
                 emptyContentView
             } else {
                 dialogList
             }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .confirmationDialog(
             Constants.Alert.deleteDialog,
             isPresented: $showDeleteConfirmation,

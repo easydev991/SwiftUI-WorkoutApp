@@ -29,22 +29,22 @@ struct EventFormView: View {
     }
 
     var body: some View {
-        ZStack {
-            Form {
-                eventNameSection
-                datePickerSection
-                sportsGroundSection
-                descriptionSection
-                if !viewModel.newImages.isEmpty {
-                    pickedImagesList
-                }
-                pickImagesButton
+        Form {
+            eventNameSection
+            datePickerSection
+            sportsGroundSection
+            descriptionSection
+            if !viewModel.newImages.isEmpty {
+                pickedImagesList
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+            pickImagesButton
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(isPresented: $isShowingPicker) {
             ImagePicker(

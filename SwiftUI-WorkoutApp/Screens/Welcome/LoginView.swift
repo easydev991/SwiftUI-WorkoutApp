@@ -14,16 +14,16 @@ struct LoginView: View {
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        ZStack {
-            Form {
-                loginPasswordSection
-                buttonsSection
-            }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.default, value: viewModel.isLoading)
+        Form {
+            loginPasswordSection
+            buttonsSection
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button { viewModel.clearErrorMessage() } label: {

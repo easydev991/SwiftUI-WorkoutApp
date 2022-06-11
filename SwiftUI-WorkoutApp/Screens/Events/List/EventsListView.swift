@@ -16,16 +16,18 @@ struct EventsListView: View {
         NavigationView {
             VStack {
                 segmentedControl
-                ZStack {
-                    if showEmptyView {
-                        emptyView
-                    } else {
-                        eventsList
-                    }
-                    ProgressView()
-                        .opacity(viewModel.isLoading ? 1 : .zero)
+                if showEmptyView {
+                    emptyView
+                } else {
+                    eventsList
                 }
             }
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+            .overlay {
+                ProgressView()
+                    .opacity(viewModel.isLoading ? 1 : .zero)
+            }
+            .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button(action: closeAlert) { TextOk() }
             }

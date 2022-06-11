@@ -28,40 +28,40 @@ struct SportsGroundDetailView: View {
     }
 
     var body: some View {
-        ZStack {
-            Form {
-                titleSubtitleSection
-                locationInfo
-                if let photos = viewModel.ground.photos,
-                   !photos.isEmpty {
-                    PhotoSectionView(
-                        with: photos,
-                        canDelete: isGroundAuthor,
-                        deleteClbk: deletePhoto
-                    )
-                }
-                if defaults.isAuthorized {
-                    participantsAndEventSection
-                }
-                authorSection
-                if !viewModel.ground.comments.isEmpty {
-                    commentsSection
-                }
-                if defaults.isAuthorized {
-                    AddCommentButton(isCreatingComment: $isCreatingComment)
-                        .sheet(isPresented: $isCreatingComment) {
-                            TextEntryView(
-                                mode: .newForGround(id: viewModel.ground.id),
-                                refreshClbk: refreshAction
-                            )
-                        }
-                }
+        Form {
+            titleSubtitleSection
+            locationInfo
+            if let photos = viewModel.ground.photos,
+               !photos.isEmpty {
+                PhotoSectionView(
+                    with: photos,
+                    canDelete: isGroundAuthor,
+                    deleteClbk: deletePhoto
+                )
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.default, value: viewModel.isLoading)
+            if defaults.isAuthorized {
+                participantsAndEventSection
+            }
+            authorSection
+            if !viewModel.ground.comments.isEmpty {
+                commentsSection
+            }
+            if defaults.isAuthorized {
+                AddCommentButton(isCreatingComment: $isCreatingComment)
+                    .sheet(isPresented: $isCreatingComment) {
+                        TextEntryView(
+                            mode: .newForGround(id: viewModel.ground.id),
+                            refreshClbk: refreshAction
+                        )
+                    }
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(item: $editComment) {
             TextEntryView(

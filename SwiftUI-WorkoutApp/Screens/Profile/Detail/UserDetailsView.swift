@@ -26,20 +26,20 @@ struct UserDetailsView: View {
     }
 
     var body: some View {
-        ZStack {
-            Form {
-                userInfoSection
-                if !isMainUser {
-                    communicationSection
-                }
-                socialInfoSection
+        Form {
+            userInfoSection
+            if !isMainUser {
+                communicationSection
             }
-            .disabled(viewModel.isLoading)
-            .opacity(viewModel.user.isFull ? 1 : .zero)
-            .animation(.default, value: viewModel.isLoading)
+            socialInfoSection
+        }
+        .opacity(viewModel.user.isFull ? 1 : .zero)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
+        .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }
         }

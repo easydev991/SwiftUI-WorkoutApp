@@ -28,43 +28,43 @@ struct EventDetailsView: View {
     }
 
     var body: some View {
-        ZStack {
-            Form {
-                mainInfo
-                locationInfo
-                if viewModel.event.hasDescription {
-                    descriptionSection
-                }
-                if defaults.isAuthorized {
-                    participantsSection
-                }
-                if let photos = viewModel.event.photos,
-                   !photos.isEmpty {
-                    PhotoSectionView(
-                        with: photos,
-                        canDelete: isAuthor,
-                        deleteClbk: deletePhoto
-                    )
-                }
-                authorSection
-                if !viewModel.event.comments.isEmpty {
-                    commentsSection
-                }
-                if defaults.isAuthorized {
-                    AddCommentButton(isCreatingComment: $isCreatingComment)
-                        .sheet(isPresented: $isCreatingComment) {
-                            TextEntryView(
-                                mode: .newForEvent(id: viewModel.event.id),
-                                refreshClbk: refreshAction
-                            )
-                        }
-                }
+        Form {
+            mainInfo
+            locationInfo
+            if viewModel.event.hasDescription {
+                descriptionSection
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+            if defaults.isAuthorized {
+                participantsSection
+            }
+            if let photos = viewModel.event.photos,
+               !photos.isEmpty {
+                PhotoSectionView(
+                    with: photos,
+                    canDelete: isAuthor,
+                    deleteClbk: deletePhoto
+                )
+            }
+            authorSection
+            if !viewModel.event.comments.isEmpty {
+                commentsSection
+            }
+            if defaults.isAuthorized {
+                AddCommentButton(isCreatingComment: $isCreatingComment)
+                    .sheet(isPresented: $isCreatingComment) {
+                        TextEntryView(
+                            mode: .newForEvent(id: viewModel.event.id),
+                            refreshClbk: refreshAction
+                        )
+                    }
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(item: $editComment) {
             TextEntryView(

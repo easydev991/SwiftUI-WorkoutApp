@@ -13,32 +13,32 @@ struct AccountInfoView: View {
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        ZStack {
-            Form {
-                Section {
-                    loginField
-                    emailField
-                    if !defaults.isAuthorized {
-                        passwordField
-                    }
-                    nameField
-                    genderPicker
-                    birthdayPicker
-                    countryPicker
-                    cityPicker
-                }
+        Form {
+            Section {
+                loginField
+                emailField
                 if !defaults.isAuthorized {
-                    rulesOfServiceSection
-                    registerButtonSection
-                } else {
-                    saveChangesButtonSection
+                    passwordField
                 }
+                nameField
+                genderPicker
+                birthdayPicker
+                countryPicker
+                cityPicker
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.default, value: viewModel.isLoading)
+            if !defaults.isAuthorized {
+                rulesOfServiceSection
+                registerButtonSection
+            } else {
+                saveChangesButtonSection
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .task {
             await viewModel.updateFormIfNeeded(with: defaults)

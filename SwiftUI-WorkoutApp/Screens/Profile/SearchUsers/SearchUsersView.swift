@@ -11,32 +11,33 @@ struct SearchUsersView: View {
     @FocusState private var isFocused
 
     var body: some View {
-        ZStack {
-            Form {
-                Section {
-                    TextField("Найти пользователя", text: $query)
-                        .onSubmit(search)
-                        .submitLabel(.search)
-                        .focused($isFocused)
-                }
-                Section("Результаты поиска") {
-                    List(viewModel.users) { model in
-                        NavigationLink {
-                            UserDetailsView(from: model)
-                        } label: {
-                            UserViewCell(model: model)
-                        }
+        Form {
+            Section {
+                TextField("Найти пользователя", text: $query)
+                    .onSubmit(search)
+                    .submitLabel(.search)
+                    .focused($isFocused)
+            }
+            Section("Результаты поиска") {
+                List(viewModel.users) { model in
+                    NavigationLink {
+                        UserDetailsView(from: model)
+                    } label: {
+                        UserViewCell(model: model)
                     }
                 }
-                .opacity(viewModel.users.isEmpty ? .zero : 1)
             }
+            .opacity(viewModel.users.isEmpty ? .zero : 1)
+        }
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
+        .disabled(viewModel.isLoading)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button { viewModel.clearErrorMessage() } label: { TextOk() }
         }
-        .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onAppear(perform: showKeyboard)
         .onDisappear(perform: cancelSearch)

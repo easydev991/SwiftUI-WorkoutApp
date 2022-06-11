@@ -25,21 +25,21 @@ struct JournalEntriesList: View {
     }
 
     var body: some View {
-        ZStack {
-            List {
-                ForEach(viewModel.list) {
-                    JournalEntryCell(
-                        model: $0,
-                        deleteClbk: initiateDeletion,
-                        editClbk: setupEntryToEdit
-                    )
-                }
+        List {
+            ForEach(viewModel.list) {
+                JournalEntryCell(
+                    model: $0,
+                    deleteClbk: initiateDeletion,
+                    editClbk: setupEntryToEdit
+                )
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(item: $editEntry) {
             TextEntryView(

@@ -11,22 +11,23 @@ struct ProfileSettingsView: View {
     @State private var deleteProfileTask: Task<Void, Never>?
 
     var body: some View {
-        ZStack {
-            Form {
-                Section("Профиль") {
-                    editAccountLink
-                    changePasswordLink
-                    logoutButton
-                }
-                Section("Информация о приложении") {
-                    appVersionView
-                    feedbackButton
-                    rateAppButton
-                }
+        Form {
+            Section("Профиль") {
+                editAccountLink
+                changePasswordLink
+                logoutButton
             }
+            Section("Информация о приложении") {
+                appVersionView
+                feedbackButton
+                rateAppButton
+            }
+        }
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
