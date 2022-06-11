@@ -83,7 +83,7 @@ private extension MapSnapshotView {
                 snapshotImage = image
             } else {
 #if DEBUG
-                print("--- Error with snapshot: ", error)
+                print("--- Error with snapshot: ", (error?.localizedDescription).valueOrEmpty)
 #endif
             }
         }
@@ -94,5 +94,6 @@ struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
         MapSnapshotView(model: .constant(.emptyValue))
             .frame(width: .infinity, height: 150)
+            .previewLayout(.sizeThatFits)
     }
 }

@@ -10,26 +10,26 @@ struct UsersListView: View {
     let mode: Mode
 
     var body: some View {
-        ZStack {
-            Form {
-                if !viewModel.friendRequests.isEmpty {
-                    friendRequestsSection
-                }
-                List(viewModel.users, id: \.self) { model in
-                    NavigationLink {
-                        UserDetailsView(from: model)
-                            .navigationBarTitleDisplayMode(.inline)
-                    } label: {
-                        UserViewCell(model: model)
-                    }
-                    .disabled(model.id == defaults.mainUserID)
-                }
+        Form {
+            if !viewModel.friendRequests.isEmpty {
+                friendRequestsSection
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+            List(viewModel.users, id: \.self) { model in
+                NavigationLink {
+                    UserDetailsView(from: model)
+                        .navigationBarTitleDisplayMode(.inline)
+                } label: {
+                    UserViewCell(model: model)
+                }
+                .disabled(model.id == defaults.mainUserID)
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading || !network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: closeAlert) { TextOk() }

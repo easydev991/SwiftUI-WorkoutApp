@@ -18,6 +18,7 @@ struct JournalEntryCell: View {
                     Text(model.authorName.valueOrEmpty)
                         .font(.headline)
                         .lineLimit(1)
+                        .textSelection(.enabled)
                     Spacer()
                     Text(model.messageDateString)
                         .font(.callout)
@@ -62,8 +63,13 @@ private extension JournalEntryCell {
 
 struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntryCell(model: .mock, deleteClbk: {_ in}, editClbk: {_ in})
-            .environmentObject(CheckNetworkService())
-            .environmentObject(DefaultsService())
+        JournalEntryCell(
+            model: .mock,
+            deleteClbk: {_ in},
+            editClbk: {_ in}
+        )
+        .environmentObject(CheckNetworkService())
+        .environmentObject(DefaultsService())
+        .previewLayout(.sizeThatFits)
     }
 }

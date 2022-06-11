@@ -30,6 +30,7 @@ private extension CommentViewCell {
         VStack(alignment: .leading) {
             Text((model.user?.userName).valueOrEmpty)
                 .fontWeight(.medium)
+                .textSelection(.enabled)
             Text(model.formattedDateString)
                 .foregroundColor(.secondary)
                 .font(.caption)
@@ -66,11 +67,17 @@ private extension CommentViewCell {
 struct SportsGroundCommentView_Previews: PreviewProvider {
     static var previews: some View {
         CommentViewCell(
-            model: .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue),
+            model: .init(
+                id: .zero,
+                body: "Test comment",
+                date: "2013-01-16T03:35:54+04:00",
+                user: .mock
+            ),
             deleteClbk: {_ in},
             editClbk: {_ in}
         )
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
+        .previewLayout(.sizeThatFits)
     }
 }

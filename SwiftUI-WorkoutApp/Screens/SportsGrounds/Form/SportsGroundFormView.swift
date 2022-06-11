@@ -32,21 +32,21 @@ struct SportsGroundFormView: View {
     }
 
     var body: some View {
-        ZStack {
-            Form {
-                addressSection
-                typePicker
-                sizePicker
-                if !viewModel.newImages.isEmpty {
-                    pickedImagesList
-                }
-                pickImagesButton
+        Form {
+            addressSection
+            typePicker
+            sizePicker
+            if !viewModel.newImages.isEmpty {
+                pickedImagesList
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+            pickImagesButton
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(isPresented: $isShowingPicker) {
             ImagePicker(

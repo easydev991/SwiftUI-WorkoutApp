@@ -17,5 +17,6 @@ struct ButtonInFormLabel: View {
 struct ButtonInFormLabel_Previews: PreviewProvider {
     static var previews: some View {
         ButtonInFormLabel(title: "Кнопка")
+            .previewLayout(.sizeThatFits)
     }
 }

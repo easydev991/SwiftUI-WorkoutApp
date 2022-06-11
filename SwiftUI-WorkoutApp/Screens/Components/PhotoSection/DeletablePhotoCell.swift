@@ -42,7 +42,12 @@ private extension DeletablePhotoCell {
 
 struct DeletablePhotoCell_Previews: PreviewProvider {
     static var previews: some View {
-        DeletablePhotoCell(photo: .mock, canDelete: true, deleteClbk: {_ in})
-            .environmentObject(CheckNetworkService())
+        DeletablePhotoCell(
+            photo: .mock,
+            canDelete: true,
+            deleteClbk: {_ in}
+        )
+        .environmentObject(CheckNetworkService())
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -67,12 +67,8 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    var basicAuthInfo: AuthData {
-        if let info = try? JSONDecoder().decode(AuthData.self, from: authData) {
-            return info
-        } else {
-            return .emptyValue
-        }
+    func basicAuthInfo() throws -> AuthData {
+        try JSONDecoder().decode(AuthData.self, from: authData)
     }
 
     func setUserNeedUpdate(_ newValue: Bool) {

@@ -12,24 +12,24 @@ struct ChangePasswordView: View {
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        ZStack {
-            Form {
-                Section("Минимум 6 символов") {
-                    passwordField
-                }
-                Section {
-                    newPasswordField
-                    newPasswordAgainField
-                }
-                Section {
-                    changePasswordButton
-                }
+        Form {
+            Section("Минимум 6 символов") {
+                passwordField
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeOut, value: viewModel.isLoading)
+            Section {
+                newPasswordField
+                newPasswordAgainField
+            }
+            Section {
+                changePasswordButton
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button { viewModel.errorAlertClosed() } label: { TextOk() }

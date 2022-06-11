@@ -37,6 +37,6 @@ struct CustomToggle: View {
 struct CustomToggle_Previews: PreviewProvider {
     static var previews: some View {
         CustomToggle(isOn: .constant(true), title: "Тренируюсь здесь") {}
-            .padding()
+            .previewLayout(.sizeThatFits)
     }
 }

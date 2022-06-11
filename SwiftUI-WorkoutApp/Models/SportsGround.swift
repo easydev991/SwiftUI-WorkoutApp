@@ -137,7 +137,7 @@ struct Comment: Codable, Identifiable, Hashable {
     }
 
     static var mock: Comment {
-        .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .emptyValue)
+        .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .mock)
     }
 }
 

@@ -1,13 +1,13 @@
 import Foundation
 
-extension Bundle {
+public extension Bundle {
     func decodeJson<T: Decodable>(
-        _ type : T.Type,
-        fileName : String,
+        _ type: T.Type,
+        fileName: String,
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
     ) throws -> T {
-        guard let url = self.url(forResource: fileName, withExtension: nil) else {
+        guard let url = url(forResource: fileName, withExtension: nil) else {
             throw BundleError.cannotLoad(fileName)
         }
         do {
@@ -26,7 +26,7 @@ extension Bundle {
         case cannotLoad(_ fileName: String)
         case decodingError(_ error: Error)
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case let .cannotLoad(fileName):
                 return "Не удалось загрузить файл: \(fileName)"

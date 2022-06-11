@@ -14,6 +14,10 @@ struct RoundedDefaultImage: View {
 
 struct RoundedRectDefaultImage_Previews: PreviewProvider {
     static var previews: some View {
-        RoundedDefaultImage(size: .init(width: 45, height: 45))
+        Group {
+            RoundedDefaultImage(size: .init(width: 45, height: 45))
+            RoundedDefaultImage(size: .init(width: 60, height: 60))
+        }
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -35,19 +35,20 @@ struct SendMessageView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack {
-                HeaderForSheet(title: header)
-                Group {
-                    textView
-                    sendButtonStack
-                }
-                .padding(.horizontal)
-                Spacer()
+        VStack {
+            HeaderForSheet(title: header)
+            Group {
+                textView
+                sendButtonStack
             }
+            .padding(.horizontal)
+            Spacer()
+        }
+        .overlay {
             ProgressView()
                 .opacity(isLoading ? 1 : .zero)
         }
+        .disabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button(action: dismissError) { TextOk() }
         }
@@ -63,7 +64,10 @@ private extension SendMessageView {
     }
 
     var sendButton: some View {
-        Button(action: sendAction) {
+        Button {
+            isFocused = false
+            sendAction()
+        } label: {
             Label("Отправить", systemImage: "paperplane.fill")
         }
         .tint(.blue)

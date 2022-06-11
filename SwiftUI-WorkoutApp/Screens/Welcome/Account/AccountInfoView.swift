@@ -13,32 +13,32 @@ struct AccountInfoView: View {
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        ZStack {
-            Form {
-                Section {
-                    loginField
-                    emailField
-                    if !defaults.isAuthorized {
-                        passwordField
-                    }
-                    nameField
-                    genderPicker
-                    birthdayPicker
-                    countryPicker
-                    cityPicker
-                }
+        Form {
+            Section {
+                loginField
+                emailField
                 if !defaults.isAuthorized {
-                    rulesOfServiceSection
-                    registerButtonSection
-                } else {
-                    saveChangesButtonSection
+                    passwordField
                 }
+                nameField
+                genderPicker
+                birthdayPicker
+                countryPicker
+                cityPicker
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.default, value: viewModel.isLoading)
+            if !defaults.isAuthorized {
+                rulesOfServiceSection
+                registerButtonSection
+            } else {
+                saveChangesButtonSection
+            }
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .task {
             await viewModel.updateFormIfNeeded(with: defaults)
@@ -134,8 +134,8 @@ private extension AccountInfoView {
     var genderPicker: some View {
         Menu {
             Picker("", selection: $viewModel.userForm.genderCode) {
-                ForEach(Constants.Gender.allCases.map(\.code), id: \.self) {
-                    Text(Constants.Gender($0).rawValue)
+                ForEach(Gender.allCases.map(\.code), id: \.self) {
+                    Text(Gender($0).rawValue)
                 }
             }
         } label: {
@@ -144,7 +144,7 @@ private extension AccountInfoView {
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.gender))
                 Spacer()
-                Text(Constants.Gender(viewModel.userForm.genderCode).rawValue)
+                Text(Gender(viewModel.userForm.genderCode).rawValue)
                     .foregroundColor(.secondary)
             }
         }

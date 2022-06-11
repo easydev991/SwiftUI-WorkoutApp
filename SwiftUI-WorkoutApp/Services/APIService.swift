@@ -57,7 +57,7 @@ struct APIService {
     ///   - model: данные для изменения
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
-        let authData = await defaults.basicAuthInfo
+        let authData = try await defaults.basicAuthInfo()
         let endpoint = Endpoint.editUser(id: id, form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
@@ -77,7 +77,7 @@ struct APIService {
 
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
-        let endpoint = await Endpoint.deleteUser(auth: defaults.basicAuthInfo)
+        let endpoint = try await Endpoint.deleteUser(auth: defaults.basicAuthInfo())
         if try await makeStatus(for: endpoint.urlRequest) {
             await defaults.triggerLogout()
         }
@@ -185,7 +185,6 @@ struct APIService {
     ///   - form: форма с данными о площадке
     /// - Returns: Обновленная информация о площадке
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
-#warning("TODO: когда на бэке поправят формат данных в ответе по полям city_id, type_id, class_id, заменить эту модель на SportsGround")
         let endpoint: Endpoint
         if let id = id {
             endpoint = Endpoint.editSportsGround(id: id, form: form)
@@ -197,12 +196,12 @@ struct APIService {
 
     /// Добавить комментарий для площадки
     /// - Parameters:
-    ///   - model: тип комментария (к площадке или мероприятию)
+    ///   - option: тип комментария (к площадке или мероприятию)
     ///   - comment: текст комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func addNewEntry(to model: Constants.TextEntryType, entryText: String) async throws -> Bool {
+    func addNewEntry(to option: TextEntryOption, entryText: String) async throws -> Bool {
         let endpoint: Endpoint
-        switch model {
+        switch option {
         case let .ground(id):
             endpoint = .addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
@@ -219,13 +218,13 @@ struct APIService {
 
     /// Изменить свой комментарий для площадки
     /// - Parameters:
-    ///   - type: тип записи
+    ///   - option: тип записи
     ///   - entryID: `id` записи
     ///   - newEntryText: текст измененной записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editEntry(for type: Constants.TextEntryType, entryID: Int, newEntryText: String) async throws -> Bool {
+    func editEntry(for option: TextEntryOption, entryID: Int, newEntryText: String) async throws -> Bool {
         let endpoint: Endpoint
-        switch type {
+        switch option {
         case let .ground(id):
             endpoint = .editGroundComment(
                 groundID: id,
@@ -251,12 +250,12 @@ struct APIService {
 
     /// Удалить запись
     /// - Parameters:
-    ///   - type: тип записи
+    ///   - option: тип записи
     ///   - entryID: `id` записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func deleteEntry(from type: Constants.TextEntryType, entryID: Int) async throws -> Bool {
+    func deleteEntry(from option: TextEntryOption, entryID: Int) async throws -> Bool {
         let endpoint: Endpoint
-        switch type {
+        switch option {
         case let .ground(id):
             endpoint = .deleteGroundComment(id, commentID: entryID)
         case let .event(id):
@@ -316,7 +315,6 @@ struct APIService {
     /// - Parameter form: форма с данными по мероприятию
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
     func saveEvent(_ form: EventForm, eventID: Int?) async throws -> EventResult {
-#warning("TODO: Поменять формат ответа, когда на бэке починят, чтобы сохранять мероприятие в список futureEvents внутри EventsListViewModel")
         let endpoint: Endpoint
         if let eventID = eventID {
             endpoint = .editEvent(id: eventID, form: form)
@@ -421,7 +419,7 @@ struct APIService {
     ///   - viewAccess: доступ на просмотр
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editJournalSettings(for journalID: Int, title: String, viewAccess: Constants.JournalAccess, commentAccess: Constants.JournalAccess) async throws -> Bool {
+    func editJournalSettings(for journalID: Int, title: String, viewAccess: JournalAccess, commentAccess: JournalAccess) async throws -> Bool {
         let endpoint = await Endpoint.editJournalSettings(
             userID: defaults.mainUserID,
             journalID: journalID,
@@ -488,25 +486,15 @@ struct APIService {
 }
 
 private extension APIService {
+    static var baseURL: String { "https://workout.su/api/v3" }
+    var timeOut: TimeInterval { .init(15) }
+    var codeOK: Int { 200 }
+
     var urlSession: URLSession {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = Constants.API.timeOut
-        config.timeoutIntervalForResource = Constants.API.timeOut
+        config.timeoutIntervalForRequest = timeOut
+        config.timeoutIntervalForResource = timeOut
         return .init(configuration: config)
-    }
-
-    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
-        if needAuth,
-           let encodedString = await defaults.basicAuthInfo.base64Encoded {
-            var requestWithBasicAuth = request
-            requestWithBasicAuth?.setValue(
-                "Basic \(encodedString)",
-                forHTTPHeaderField: "Authorization"
-            )
-            return requestWithBasicAuth
-        } else {
-            return request
-        }
     }
 
     /// Загружает данные в нужном формате или отдает ошибку
@@ -533,6 +521,25 @@ private extension APIService {
         return try handle(response)
     }
 
+    /// Формирует итоговый запрос к серверу
+    /// - Parameters:
+    ///   - request: первоначальный запрос
+    ///   - needAuth: `true` - нужна базовая аутентификация, `false` - не нужна
+    /// - Returns: Итоговый запрос к серверу
+    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
+        if needAuth,
+           let encodedString = try? await defaults.basicAuthInfo().base64Encoded {
+            var requestWithBasicAuth = request
+            requestWithBasicAuth?.setValue(
+                "Basic \(encodedString)",
+                forHTTPHeaderField: "Authorization"
+            )
+            return requestWithBasicAuth
+        } else {
+            return request
+        }
+    }
+
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
     func handle<T: Decodable>(
         _ type: T.Type,
@@ -543,13 +550,12 @@ private extension APIService {
             throw APIError.noData
         }
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != Constants.API.codeOK {
+        if responseCode != codeOK {
             throw handleError(from: data, with: responseCode)
         }
 #if DEBUG
-        print("--- Получили ответ:")
-        dump(response)
-        print("--- Полученный JSON:\n\(data.prettyJson)")
+        print("--- Получили JSON по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print(data.prettyJson)
         do {
             _ = try JSONDecoder().decode(type, from: data)
         } catch {
@@ -557,23 +563,20 @@ private extension APIService {
         }
 #endif
         let decodedInfo = try JSONDecoder().decode(type, from: data)
-#if DEBUG
-        print("--- Преобразованные данные:\n\(decodedInfo)")
-#endif
         return decodedInfo
     }
 
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) throws -> Bool {
-#if DEBUG
-        print("--- Получили ответ:")
-        dump(response)
-#endif
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != Constants.API.codeOK {
+#if DEBUG
+        print("--- Получили статус по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print(responseCode.valueOrZero)
+#endif
+        if responseCode != codeOK {
             throw APIError(with: responseCode)
         }
-        return responseCode == Constants.API.codeOK
+        return responseCode == codeOK
     }
 
     /// Обрабатывает ошибки
@@ -823,7 +826,7 @@ private extension APIService {
 
 private extension APIService.Endpoint {
     var urlPath: String {
-        let baseUrl = Constants.API.baseURL
+        let baseUrl = APIService.baseURL
         switch self {
         case .registration:
             return "\(baseUrl)/registration"

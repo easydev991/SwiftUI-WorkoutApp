@@ -9,5 +9,6 @@ struct TextOk: View {
 struct TextOk_Previews: PreviewProvider {
     static var previews: some View {
         TextOk()
+            .previewLayout(.sizeThatFits)
     }
 }

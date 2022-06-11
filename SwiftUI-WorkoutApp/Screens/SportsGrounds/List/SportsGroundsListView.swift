@@ -20,32 +20,32 @@ struct SportsGroundsListView: View {
     }
 
     var body: some View {
-        ZStack {
-            List(viewModel.list) { ground in
-                switch mode {
-                case .event:
-                    Button {
-                        groundInfo = ground
-                        dismiss()
-                    } label: {
-                        SportsGroundViewCell(model: ground)
-                    }
-                default:
-                    NavigationLink {
-                        SportsGroundDetailView(
-                            for: ground,
-                            onDeletion: updateDeleted
-                        )
-                    } label: {
-                        SportsGroundViewCell(model: ground)
-                    }
+        List(viewModel.list) { ground in
+            switch mode {
+            case .event:
+                Button {
+                    groundInfo = ground
+                    dismiss()
+                } label: {
+                    SportsGroundViewCell(model: ground)
+                }
+            default:
+                NavigationLink {
+                    SportsGroundDetailView(
+                        for: ground,
+                        onDeletion: updateDeleted
+                    )
+                } label: {
+                    SportsGroundViewCell(model: ground)
                 }
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.list, perform: dismissIfEmpty)

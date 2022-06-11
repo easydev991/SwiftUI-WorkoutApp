@@ -1,4 +1,5 @@
 import SwiftUI
+import Utils
 
 struct SportsGroundViewCell: View {
     let model: SportsGround
@@ -25,5 +26,6 @@ struct SportsGroundViewCell: View {
 struct SportsGroundsForUserView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundViewCell(model: .mock)
+            .previewLayout(.sizeThatFits)
     }
 }

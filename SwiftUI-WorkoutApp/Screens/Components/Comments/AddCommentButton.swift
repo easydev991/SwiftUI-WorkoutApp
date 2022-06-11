@@ -16,5 +16,6 @@ struct AddCommentButton: View {
 struct AddCommentButton_Previews: PreviewProvider {
     static var previews: some View {
         AddCommentButton(isCreatingComment: .constant(false))
+            .previewLayout(.sizeThatFits)
     }
 }

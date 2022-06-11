@@ -18,5 +18,6 @@ struct TextWithCheckmark: View {
 struct LabelWithCheckmark_Previews: PreviewProvider {
     static var previews: some View {
         TextWithCheckmark(title: "Text", showMark: true)
+            .previewLayout(.sizeThatFits)
     }
 }

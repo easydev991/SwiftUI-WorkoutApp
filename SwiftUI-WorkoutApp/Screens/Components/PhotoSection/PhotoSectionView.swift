@@ -70,8 +70,10 @@ private extension PhotoSectionView {
     }
 }
 
-struct PhotosCollection_Previews: PreviewProvider {
+struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotoSectionView(with: [.mock, .mock, .mock], canDelete: true, deleteClbk: {_ in})
+        Form {
+            PhotoSectionView(with: [.mock, .mock, .mock], canDelete: true, deleteClbk: {_ in})
+        }
     }
 }

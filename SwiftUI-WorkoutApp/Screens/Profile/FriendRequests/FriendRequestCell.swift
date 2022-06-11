@@ -37,9 +37,13 @@ private extension FriendRequestCell {
     func decline() { declineClbk(model.id) }
 }
 
-struct FriendRequestRow_Previews: PreviewProvider {
+struct FriendRequestCell_Previews: PreviewProvider {
     static var previews: some View {
-        FriendRequestCell(model: .emptyValue, acceptClbk: {_ in}, declineClbk: {_ in})
-            .previewDevice("iPhone 13 mini")
+        FriendRequestCell(
+            model: .emptyValue,
+            acceptClbk: {_ in},
+            declineClbk: {_ in}
+        )
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -33,7 +33,11 @@ private extension PickedImagesList {
 
 struct PickedImagesList_Previews: PreviewProvider {
     static var previews: some View {
-        PickedImagesList(images: .constant([]))
-            .padding()
+        PickedImagesList(
+            images: .constant([
+                .init(named: "defaultWorkoutImage")!,
+                .init(named: "defaultWorkoutImage")!
+            ])
+        )
     }
 }

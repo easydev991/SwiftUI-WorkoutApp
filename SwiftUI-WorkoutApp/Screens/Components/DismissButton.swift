@@ -17,5 +17,6 @@ struct DismissButton: View {
 struct DismissButton_Previews: PreviewProvider {
     static var previews: some View {
         DismissButton()
+            .previewLayout(.sizeThatFits)
     }
 }

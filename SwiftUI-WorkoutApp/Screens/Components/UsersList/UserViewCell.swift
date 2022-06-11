@@ -17,8 +17,9 @@ struct UserViewCell: View {
     }
 }
 
-struct UserViewRow_Previews: PreviewProvider {
+struct UserViewCell_Previews: PreviewProvider {
     static var previews: some View {
-        UserViewCell(model: .emptyValue)
+        UserViewCell(model: .mock)
+            .previewLayout(.sizeThatFits)
     }
 }

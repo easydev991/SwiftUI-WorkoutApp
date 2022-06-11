@@ -18,5 +18,6 @@ struct AddPhotoButton: View {
 struct AddPhotoButton_Previews: PreviewProvider {
     static var previews: some View {
         AddPhotoButton(isAddingPhotos: .constant(false), focusClbk: {})
+            .previewLayout(.sizeThatFits)
     }
 }

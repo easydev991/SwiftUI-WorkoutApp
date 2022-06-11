@@ -9,7 +9,7 @@ struct JournalSettingsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
-    private let options = Constants.JournalAccess.allCases
+    private let options = JournalAccess.allCases
     private let updateOnSuccess: (Int) -> Void
     private let initialJournal: JournalResponse
 
@@ -23,21 +23,21 @@ struct JournalSettingsView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack(spacing: .zero) {
-                headerView
-                Form {
-                    TextField("Название дневника", text: $journal.title)
-                    visibilitySettings
-                    commentsSettings
-                    saveButton
-                }
+        VStack(spacing: .zero) {
+            headerView
+            Form {
+                TextField("Название дневника", text: $journal.title)
+                visibilitySettings
+                commentsSettings
+                saveButton
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .animation(.easeInOut, value: viewModel.isLoading)
+        }
+        .opacity(viewModel.isLoading ? 0.5 : 1)
+        .overlay {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : .zero)
         }
+        .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .interactiveDismissDisabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

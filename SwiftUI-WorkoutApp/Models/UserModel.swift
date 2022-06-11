@@ -76,4 +76,7 @@ extension UserModel {
     static var emptyValue: UserModel {
         .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, addedSportsGrounds: [], friendsCount: .zero, journalsCount: .zero)
     }
+    static var mock: UserModel {
+        .init(.mock)
+    }
 }

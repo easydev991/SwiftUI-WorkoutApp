@@ -35,5 +35,6 @@ extension CacheImageView {
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
         CacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
+            .previewLayout(.sizeThatFits)
     }
 }
