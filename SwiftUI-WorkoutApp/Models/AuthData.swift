@@ -7,8 +7,4 @@ struct AuthData: Codable {
     var base64Encoded: String? {
         (login + ":" + password).data(using: .utf8)?.base64EncodedString()
     }
-
-    static var emptyValue: Self {
-        .init(login: "", password: "")
-    }
 }

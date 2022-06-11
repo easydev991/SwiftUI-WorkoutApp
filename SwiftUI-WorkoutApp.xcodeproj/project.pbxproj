@@ -576,6 +576,7 @@
 		6798AA5F280AF61700DB76F1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				672BE761281FD4E300579183 /* AuthData.swift */,
 				6798AA85280C135E00DB76F1 /* Country.swift */,
 				672BE767281FD60F00579183 /* City.swift */,
 				6798AA4D280AF32A00DB76F1 /* SportsGround.swift */,
@@ -583,7 +584,6 @@
 				675EC64A28128B7E00C2E229 /* SportsGroundGrade.swift */,
 				67891E32283E8E6900B10802 /* SportsGroundForm.swift */,
 				67891E39283EB15300B10802 /* SportsGroundResult.swift */,
-				672BE761281FD4E300579183 /* AuthData.swift */,
 				6758B931281DB1F7001D83D8 /* LoginResponse.swift */,
 				6758B933281DC198001D83D8 /* UserResponse.swift */,
 				67E4266C2821429500DF82A7 /* UserModel.swift */,

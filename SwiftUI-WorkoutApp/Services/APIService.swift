@@ -57,7 +57,7 @@ struct APIService {
     ///   - model: данные для изменения
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
-        let authData = await defaults.basicAuthInfo
+        let authData = try await defaults.basicAuthInfo()
         let endpoint = Endpoint.editUser(id: id, form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
         await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
@@ -77,7 +77,7 @@ struct APIService {
 
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
-        let endpoint = await Endpoint.deleteUser(auth: defaults.basicAuthInfo)
+        let endpoint = try await Endpoint.deleteUser(auth: defaults.basicAuthInfo())
         if try await makeStatus(for: endpoint.urlRequest) {
             await defaults.triggerLogout()
         }
@@ -495,20 +495,6 @@ private extension APIService {
         return .init(configuration: config)
     }
 
-    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
-        if needAuth,
-           let encodedString = await defaults.basicAuthInfo.base64Encoded {
-            var requestWithBasicAuth = request
-            requestWithBasicAuth?.setValue(
-                "Basic \(encodedString)",
-                forHTTPHeaderField: "Authorization"
-            )
-            return requestWithBasicAuth
-        } else {
-            return request
-        }
-    }
-
     /// Загружает данные в нужном формате или отдает ошибку
     /// - Parameters:
     ///   - type: тип, который нужно загрузить
@@ -533,6 +519,25 @@ private extension APIService {
         return try handle(response)
     }
 
+    /// Формирует итоговый запрос к серверу
+    /// - Parameters:
+    ///   - request: первоначальный запрос
+    ///   - needAuth: `true` - нужна базовая аутентификация, `false` - не нужна
+    /// - Returns: Итоговый запрос к серверу
+    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
+        if needAuth,
+           let encodedString = try? await defaults.basicAuthInfo().base64Encoded {
+            var requestWithBasicAuth = request
+            requestWithBasicAuth?.setValue(
+                "Basic \(encodedString)",
+                forHTTPHeaderField: "Authorization"
+            )
+            return requestWithBasicAuth
+        } else {
+            return request
+        }
+    }
+
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
     func handle<T: Decodable>(
         _ type: T.Type,
@@ -548,7 +553,7 @@ private extension APIService {
         }
 #if DEBUG
         print("--- Получили ответ:")
-        dump(response)
+        print(response)
         print("--- Полученный JSON:\n\(data.prettyJson)")
         do {
             _ = try JSONDecoder().decode(type, from: data)
@@ -564,7 +569,7 @@ private extension APIService {
     func handle(_ response: URLResponse?) throws -> Bool {
 #if DEBUG
         print("--- Получили ответ:")
-        dump(response)
+        print(response)
 #endif
         let responseCode = (response as? HTTPURLResponse)?.statusCode
         if responseCode != Constants.API.codeOK {
