@@ -74,7 +74,7 @@ private extension UserDetailsView {
                     VStack(spacing: 4) {
                         Text(viewModel.user.name)
                             .fontWeight(.bold)
-                        Text(viewModel.user.gender) + Text("yearsCount \(viewModel.user.age)", tableName: "Plurals")
+                        Text(viewModel.user.gender) + Text("yearsCount \(viewModel.user.age)")
                         Text(viewModel.user.shortAddress)
                             .multilineTextAlignment(.center)
                     }
@@ -267,7 +267,7 @@ private extension UserDetailsView {
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserDetailsView(for: .emptyValue)
+        UserDetailsView(for: .mock)
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

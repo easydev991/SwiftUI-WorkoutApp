@@ -166,10 +166,7 @@ private extension EventDetailsView {
             HStack {
                 Text("Идут")
                 Spacer()
-                Text(
-                    "peopleTrainHere \(viewModel.event.participants.count)",
-                    tableName: "Plurals"
-                )
+                Text("peopleTrainHere \(viewModel.event.participants.count)")
                 .foregroundColor(.secondary)
             }
         }

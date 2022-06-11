@@ -149,10 +149,7 @@ private extension SportsGroundDetailView {
             HStack {
                 Text("Здесь тренируются")
                 Spacer()
-                Text(
-                    "peopleTrainHere \(viewModel.ground.participants.count)",
-                    tableName: "Plurals"
-                )
+                Text("peopleTrainHere \(viewModel.ground.participants.count)")
                 .foregroundColor(.secondary)
             }
         }
