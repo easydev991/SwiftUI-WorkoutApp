@@ -114,9 +114,7 @@ private extension ProfileSettingsView {
     }
 
     var rateAppButton: some View {
-        Button { viewModel.rateAppAction() } label: {
-            Text("Оценить приложение")
-        }
+        Link("Оценить приложение", destination: Constants.appStoreURL)
     }
 
     func setupErrorAlert(with message: String) {

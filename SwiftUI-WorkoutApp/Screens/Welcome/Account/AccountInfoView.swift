@@ -165,7 +165,7 @@ private extension AccountInfoView {
 
     var rulesOfServiceSection: some View {
         Section {
-            Link(destination: URL(string: Constants.rulesOfService)!) {
+            Link(destination: Constants.rulesOfService) {
                 HStack {
                     Spacer()
                     Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
