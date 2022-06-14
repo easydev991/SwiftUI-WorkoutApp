@@ -1,4 +1,4 @@
-import StoreKit
+import Foundation
 
 @MainActor
 final class ProfileSettingsViewModel: ObservableObject {
@@ -12,12 +12,6 @@ final class ProfileSettingsViewModel: ObservableObject {
 
     func feedbackAction() {
         feedbackHelper.sendFeedback()
-    }
-
-    func rateAppAction() {
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-            SKStoreReviewController.requestReview(in: windowScene)
-        }
     }
 
     func deleteProfile(with defaults: DefaultsService) async {
