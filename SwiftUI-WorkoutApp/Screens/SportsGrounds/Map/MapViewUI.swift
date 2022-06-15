@@ -5,20 +5,23 @@ struct MapViewUI: UIViewRepresentable {
     let viewKey: String
     let region: MKCoordinateRegion
     @Binding var annotations: [SportsGround]
-    @Binding var needUpdateMap: Bool
+    @Binding var needUpdateAnnotations: Bool
+    @Binding var needUpdateRegion: Bool
     let openSelected: (SportsGround) -> Void
 
     init(
         key: String,
         region: MKCoordinateRegion,
         annotations: Binding<[SportsGround]>,
-        needUpdate: Binding<Bool>,
+        needUpdateAnnotations: Binding<Bool>,
+        needUpdateRegion: Binding<Bool>,
         openDetails: @escaping (SportsGround) -> Void
     ) {
         self.viewKey = key
         self.region = region
         self._annotations = annotations
-        self._needUpdateMap = needUpdate
+        self._needUpdateAnnotations = needUpdateAnnotations
+        self._needUpdateRegion = needUpdateRegion
         self.openSelected = openDetails
     }
 
@@ -37,7 +40,28 @@ struct MapViewUI: UIViewRepresentable {
         }
         mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
-        mapView.isRotateEnabled = false
+        mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
+        setupTrackingButton(on: mapView)
+        return mapView
+    }
+
+    func updateUIView(_ mapView: MKMapView, context: Context) {
+        if needUpdateAnnotations {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(annotations)
+            needUpdateAnnotations.toggle()
+        }
+        if needUpdateRegion {
+            mapView.setRegion(region, animated: false)
+            needUpdateRegion.toggle()
+        }
+    }
+
+    func makeCoordinator() -> MapCoordinator { .init(self) }
+}
+
+private extension MapViewUI {
+    func setupTrackingButton(on mapView: MKMapView) {
         let trackingButton = MKUserTrackingButton(mapView: mapView)
         trackingButton.translatesAutoresizingMaskIntoConstraints = false
         mapView.addSubview(trackingButton)
@@ -51,19 +75,7 @@ struct MapViewUI: UIViewRepresentable {
                 constant: -8
             )
         ])
-        mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
-        return mapView
     }
-
-    func updateUIView(_ mapView: MKMapView, context: Context) {
-        if needUpdateMap {
-            mapView.removeAnnotations(mapView.annotations)
-            mapView.addAnnotations(annotations)
-            needUpdateMap.toggle()
-        }
-    }
-
-    func makeCoordinator() -> MapCoordinator { .init(self) }
 }
 
 final class MapCoordinator: NSObject, MKMapViewDelegate {

@@ -17,6 +17,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
     @Published var needUpdateAnnotations = false
+    @Published var needUpdateRegion = false
 
     override init() {
         super.init()
@@ -95,10 +96,14 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didUpdateLocations locations: [CLLocation]
     ) {
         if let location = locations.last {
+            let needUpdateMap = !isRegionSet
             region = .init(
                 center: location.coordinate,
                 span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
+            if needUpdateMap {
+                needUpdateRegion.toggle()
+            }
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
                 if let target = places?.first {
                     self?.addressString = target.thoroughfare.valueOrEmpty
@@ -135,6 +140,11 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
 }
 
 private extension SportsGroundsMapViewModel {
+    var isRegionSet: Bool {
+        region.center.latitude != .zero
+        && region.center.longitude != .zero
+    }
+
     func applyFilter(_ countryID: Int, _ cityID: Int) {
         var result = [SportsGround]()
         result = defaultList.filter { ground in
