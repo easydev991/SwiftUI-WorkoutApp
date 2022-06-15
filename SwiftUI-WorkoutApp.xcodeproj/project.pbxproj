@@ -1126,7 +1126,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SwiftUI-WorkoutApp/Resources/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Street Workout: Площадки и Тренировки";
+				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1159,7 +1159,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SwiftUI-WorkoutApp/Resources/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Street Workout: Площадки и Тренировки";
+				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
