@@ -8,6 +8,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var defaultList = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    @Published private(set) var locationErrorMessage = ""
     @Published var filter = SportsGroundFilter() {
         didSet { applyFilter(userCountryID, userCityID) }
     }
@@ -112,11 +113,12 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
+            locationErrorMessage = ""
             manager.requestLocation()
         case .restricted:
-            errorMessage = "Запрещен доступ к геолокации"
+            locationErrorMessage = Constants.Alert.locationPermissionDenied
         case .denied:
-            errorMessage = "Для работы карты необходимо разрешить доступ к геолокации в настройках"
+            locationErrorMessage = Constants.Alert.needLocationPermission
         @unknown default: break
         }
     }
@@ -125,7 +127,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
-        errorMessage = error.localizedDescription
+        locationErrorMessage = Constants.Alert.needLocationPermission
+        #if DEBUG
+        print("--- locationManager didFailWithError: \(error.localizedDescription)")
+        #endif
     }
 }
 
