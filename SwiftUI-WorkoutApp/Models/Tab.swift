@@ -1,5 +1,5 @@
 import Foundation
 
 enum Tab: Int, Hashable {
-    case events = 0, messages, journal, map, profile
+    case map = 0, events, messages, journal, profile
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 final class TabViewModel: ObservableObject {
-    @Published var selectedTab = Tab.events
+    @Published var selectedTab = Tab.map
 
     func selectTab(_ tab: Tab) {
         selectedTab = tab

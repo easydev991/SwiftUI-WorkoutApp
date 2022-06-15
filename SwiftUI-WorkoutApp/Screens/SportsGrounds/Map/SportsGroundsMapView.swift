@@ -14,23 +14,28 @@ struct SportsGroundsMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                NavigationLink(isActive: $showDetailsView) {
-                    SportsGroundDetailView(
-                        for: viewModel.selectedGround,
-                        onDeletion: updateDeleted
+                if showDummyView {
+                    dummyView
+                } else {
+                    NavigationLink(isActive: $showDetailsView) {
+                        SportsGroundDetailView(
+                            for: viewModel.selectedGround,
+                            onDeletion: updateDeleted
+                        )
+                    } label: { EmptyView() }
+                    MapViewUI(
+                        key: "SportsGroundsMapView",
+                        region: viewModel.region,
+                        annotations: $viewModel.list,
+                        needUpdateAnnotations: $viewModel.needUpdateAnnotations,
+                        needUpdateRegion: $viewModel.needUpdateRegion,
+                        openDetails: openDetailsView
                     )
-                } label: { EmptyView() }
-                MapViewUI(
-                    key: "SportsGroundsMapView",
-                    region: viewModel.region,
-                    annotations: $viewModel.list,
-                    needUpdate: $viewModel.needUpdateAnnotations,
-                    openDetails: openDetailsView
-                )
-                .opacity(viewModel.isLoading ? 0.5 : 1)
-                .animation(.easeInOut, value: viewModel.isLoading)
-                ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : .zero)
+                    .opacity(viewModel.isLoading ? 0.5 : 1)
+                    .animation(.easeInOut, value: viewModel.isLoading)
+                    ProgressView()
+                        .opacity(viewModel.isLoading ? 1 : .zero)
+                }
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
@@ -49,10 +54,7 @@ struct SportsGroundsMapView: View {
                         filterButton
                         refreshButton
                     }
-                    .disabled(viewModel.isLoading)
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-
+                    .disabled(viewModel.isLoading || showDummyView)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if defaults.isAuthorized {
@@ -77,10 +79,32 @@ private extension SportsGroundsMapView {
             SportsGroundFilterView(filter: $viewModel.filter)
         }
     }
+
     var refreshButton: some View {
         Button(action: refreshAction) {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
+    }
+
+    var showDummyView: Bool {
+        !viewModel.locationErrorMessage.isEmpty
+    }
+
+    var dummyView: some View {
+        VStack {
+            Text(viewModel.locationErrorMessage)
+                .multilineTextAlignment(.center)
+            Button {
+                if let settingsURL = URL(string: UIApplication.openSettingsURLString),
+                   UIApplication.shared.canOpenURL(settingsURL) {
+                    UIApplication.shared.open(settingsURL)
+                }
+            } label: {
+                Text("Открыть настройки")
+                    .roundedRectangleStyle()
+            }
+        }
+        .padding()
     }
 
     func askForGrounds(refresh: Bool = false) async {
@@ -105,7 +129,7 @@ private extension SportsGroundsMapView {
             Image(systemName: "plus")
         }
         .opacity(viewModel.isLoading ? .zero : 1)
-        .disabled(!network.isConnected)
+        .disabled(!network.isConnected || showDummyView)
     }
 
     func openDetailsView(_ ground: SportsGround) {

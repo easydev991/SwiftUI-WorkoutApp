@@ -8,6 +8,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var defaultList = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    @Published private(set) var locationErrorMessage = ""
     @Published var filter = SportsGroundFilter() {
         didSet { applyFilter(userCountryID, userCityID) }
     }
@@ -16,6 +17,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
     @Published var needUpdateAnnotations = false
+    @Published var needUpdateRegion = false
 
     override init() {
         super.init()
@@ -94,10 +96,14 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didUpdateLocations locations: [CLLocation]
     ) {
         if let location = locations.last {
+            let needUpdateMap = !isRegionSet
             region = .init(
                 center: location.coordinate,
                 span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
+            if needUpdateMap {
+                needUpdateRegion.toggle()
+            }
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
                 if let target = places?.first {
                     self?.addressString = target.thoroughfare.valueOrEmpty
@@ -112,11 +118,12 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
+            locationErrorMessage = ""
             manager.requestLocation()
         case .restricted:
-            errorMessage = "Запрещен доступ к геолокации"
+            locationErrorMessage = Constants.Alert.locationPermissionDenied
         case .denied:
-            errorMessage = "Для работы карты необходимо разрешить доступ к геолокации в настройках"
+            locationErrorMessage = Constants.Alert.needLocationPermission
         @unknown default: break
         }
     }
@@ -125,11 +132,19 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
-        errorMessage = error.localizedDescription
+        locationErrorMessage = Constants.Alert.needLocationPermission
+        #if DEBUG
+        print("--- locationManager didFailWithError: \(error.localizedDescription)")
+        #endif
     }
 }
 
 private extension SportsGroundsMapViewModel {
+    var isRegionSet: Bool {
+        region.center.latitude != .zero
+        && region.center.longitude != .zero
+    }
+
     func applyFilter(_ countryID: Int, _ cityID: Int) {
         var result = [SportsGround]()
         result = defaultList.filter { ground in

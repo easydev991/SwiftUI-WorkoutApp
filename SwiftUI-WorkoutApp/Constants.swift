@@ -35,6 +35,8 @@ enum Constants {
         static let logout = "Выйти из учетной записи?"
         static let deleteProfile = "Удалить учетную запись без возможности восстановления?"
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
+        static let locationPermissionDenied = "Запрещен доступ к геолокации"
+        static let needLocationPermission = "Для работы карты необходимо разрешить доступ к геолокации в настройках"
     }
 
     enum FriendAction: String {

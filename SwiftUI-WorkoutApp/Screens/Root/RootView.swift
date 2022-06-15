@@ -20,6 +20,12 @@ struct RootView: View {
 private extension RootView {
     var tabView: some View {
         TabView(selection: $viewModel.selectedTab) {
+            SportsGroundsMapView()
+                .onAppear { viewModel.selectTab(.map) }
+                .tabItem {
+                    Label("Площадки", systemImage: "map.circle")
+                }
+                .tag(Tab.map)
             EventsListView()
                 .onAppear { viewModel.selectTab(.events) }
                 .tabItem {
@@ -38,12 +44,6 @@ private extension RootView {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal)
-            SportsGroundsMapView()
-                .onAppear { viewModel.selectTab(.map) }
-                .tabItem {
-                    Label("Площадки", systemImage: "map.circle")
-                }
-                .tag(Tab.map)
             ProfileScreen()
                 .onAppear { viewModel.selectTab(.profile) }
                 .tabItem {
