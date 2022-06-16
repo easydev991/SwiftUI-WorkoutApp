@@ -9,10 +9,11 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
+    @Published private(set) var ignoreUserLocation = false
     @Published var filter = SportsGroundFilter() {
         didSet { applyFilter(userCountryID, userCityID) }
     }
-    @Published var list = [SportsGround]()
+    @Published var sportsGrounds = [SportsGround]()
     @Published var selectedGround = SportsGround.emptyValue
     @Published var addressString = ""
     @Published var region = MKCoordinateRegion()
@@ -54,7 +55,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             updatedGrounds.forEach { ground in
                 if !defaultList.contains(ground) {
                     defaultList.append(ground)
-                } else if let index = list.firstIndex(where: { $0.id == ground.id }) {
+                } else if let index = sportsGrounds.firstIndex(where: { $0.id == ground.id }) {
                     defaultList[index] = ground
                 }
             }
@@ -66,15 +67,14 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     func deleteSportsGroundFromList() {
-        list.removeAll(where: { $0.id == selectedGround.id })
+        sportsGrounds.removeAll(where: { $0.id == selectedGround.id })
         needUpdateAnnotations.toggle()
     }
 
     func updateFilter(with defaults: DefaultsService) {
         userCountryID = defaults.mainUserCountry
         userCityID = defaults.mainUserCity
-        if !defaults.isAuthorized && !filter.onlyMyCity {
-            // Сбрасываем фильтр, чтобы не горела кнопка "Сбросить фильтры"
+        if !defaults.isAuthorized {
             filter = .init()
         }
     }
@@ -85,6 +85,19 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
     func onDisappearAction() {
         manager.stopUpdatingLocation()
+    }
+
+    func setupDefaultLocation() {
+        ignoreUserLocation = true
+        let coordinates = ShortAddressService().coordinates(userCountryID, userCityID)
+        region = .init(
+            center: .init(
+                latitude: coordinates.0,
+                longitude: coordinates.1
+            ),
+            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        needUpdateRegion.toggle()
     }
 
     func clearErrorMessage() { errorMessage = "" }
@@ -119,11 +132,19 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
             manager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
             locationErrorMessage = ""
+            ignoreUserLocation = false
+            region = .init()
             manager.requestLocation()
         case .restricted:
-            locationErrorMessage = Constants.Alert.locationPermissionDenied
+            if !ignoreUserLocation {
+                locationErrorMessage = Constants.Alert.locationPermissionDenied
+                setupDefaultLocation()
+            }
         case .denied:
-            locationErrorMessage = Constants.Alert.needLocationPermission
+            if !ignoreUserLocation {
+                locationErrorMessage = Constants.Alert.needLocationPermission
+                setupDefaultLocation()
+            }
         @unknown default: break
         }
     }
@@ -132,7 +153,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
-        locationErrorMessage = Constants.Alert.needLocationPermission
+        if !ignoreUserLocation && !isRegionSet {
+            locationErrorMessage = Constants.Alert.needLocationPermission
+            setupDefaultLocation()
+        }
         #if DEBUG
         print("--- locationManager didFailWithError: \(error.localizedDescription)")
         #endif
@@ -152,11 +176,11 @@ private extension SportsGroundsMapViewModel {
             && filter.type.map { $0.code }.contains(ground.typeID)
         }
         guard countryID != .zero, filter.onlyMyCity else {
-            list = result
+            sportsGrounds = result
             needUpdateAnnotations.toggle()
             return
         }
-        list = result.filter {
+        sportsGrounds = result.filter {
             $0.countryID == countryID
             && $0.cityID == cityID
         }

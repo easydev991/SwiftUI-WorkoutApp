@@ -14,28 +14,27 @@ struct SportsGroundsMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if showDummyView {
-                    dummyView
-                } else {
+                MapViewUI(
+                    key: "SportsGroundsMapView",
+                    region: viewModel.region,
+                    annotations: $viewModel.sportsGrounds,
+                    needUpdateAnnotations: $viewModel.needUpdateAnnotations,
+                    needUpdateRegion: $viewModel.needUpdateRegion,
+                    openDetails: openDetailsView
+                )
+                .opacity(viewModel.isLoading ? 0.5 : 1)
+                .overlay(alignment: .bottom) {
                     NavigationLink(isActive: $showDetailsView) {
                         SportsGroundDetailView(
                             for: viewModel.selectedGround,
                             onDeletion: updateDeleted
                         )
                     } label: { EmptyView() }
-                    MapViewUI(
-                        key: "SportsGroundsMapView",
-                        region: viewModel.region,
-                        annotations: $viewModel.list,
-                        needUpdateAnnotations: $viewModel.needUpdateAnnotations,
-                        needUpdateRegion: $viewModel.needUpdateRegion,
-                        openDetails: openDetailsView
-                    )
-                    .opacity(viewModel.isLoading ? 0.5 : 1)
-                    .animation(.easeInOut, value: viewModel.isLoading)
-                    ProgressView()
-                        .opacity(viewModel.isLoading ? 1 : .zero)
+                    locationSettingsReminder
                 }
+                .animation(.easeInOut, value: viewModel.isLoading)
+                ProgressView()
+                    .opacity(viewModel.isLoading ? 1 : .zero)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
@@ -54,7 +53,7 @@ struct SportsGroundsMapView: View {
                         filterButton
                         refreshButton
                     }
-                    .disabled(viewModel.isLoading || showDummyView)
+                    .disabled(viewModel.isLoading)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if defaults.isAuthorized {
@@ -86,14 +85,14 @@ private extension SportsGroundsMapView {
         }
     }
 
-    var showDummyView: Bool {
-        !viewModel.locationErrorMessage.isEmpty
-    }
-
-    var dummyView: some View {
+    var locationSettingsReminder: some View {
         VStack {
             Text(viewModel.locationErrorMessage)
+                .frame(maxWidth: .infinity)
+                .foregroundColor(Color("ButtonTitle"))
                 .multilineTextAlignment(.center)
+                .padding(.horizontal)
+                .background(Color("ButtonBackground").cornerRadius(8))
             Button {
                 if let settingsURL = URL(string: UIApplication.openSettingsURLString),
                    UIApplication.shared.canOpenURL(settingsURL) {
@@ -102,9 +101,13 @@ private extension SportsGroundsMapView {
             } label: {
                 Text("Открыть настройки")
                     .roundedRectangleStyle()
+                    .padding(.bottom, 32)
             }
+            .disabled(viewModel.isLoading)
         }
         .padding()
+        .opacity(viewModel.ignoreUserLocation ? 1 : .zero)
+        .animation(.easeInOut, value: viewModel.ignoreUserLocation)
     }
 
     func askForGrounds(refresh: Bool = false) async {
@@ -129,7 +132,7 @@ private extension SportsGroundsMapView {
             Image(systemName: "plus")
         }
         .opacity(viewModel.isLoading ? .zero : 1)
-        .disabled(!network.isConnected || showDummyView)
+        .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
     }
 
     func openDetailsView(_ ground: SportsGround) {

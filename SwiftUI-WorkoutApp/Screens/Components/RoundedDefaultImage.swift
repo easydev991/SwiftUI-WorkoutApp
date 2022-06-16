@@ -7,8 +7,8 @@ struct RoundedDefaultImage: View {
         Image("defaultWorkoutImage")
             .resizable()
             .scaledToFit()
-            .frame(width: size.width, height: size.height)
             .cornerRadius(8)
+            .frame(width: size.width, height: size.height)
     }
 }
 

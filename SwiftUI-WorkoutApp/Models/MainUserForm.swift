@@ -26,7 +26,7 @@ struct MainUserForm: Codable, Equatable {
         self.password = ""
         self.birthDate = user.birthDate
         self.country = .init(cities: [], id: user.countryID.valueOrZero.description, name: "")
-        self.city = .init(id: user.cityID.valueOrZero.description, name: "")
+        self.city = .init(id: user.cityID.valueOrZero.description)
         self.genderCode = user.genderCode.valueOrZero
     }
 }

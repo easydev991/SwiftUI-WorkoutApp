@@ -9,13 +9,12 @@ struct SportsGroundLocationInfo: View {
     var body: some View {
         Section {
             MapSnapshotView(model: $ground)
-                .frame(height: 150)
                 .cornerRadius(8)
+                .frame(height: 150)
             Text(address)
-            if appleMapsURL != nil {
+            if let url = appleMapsURL {
                 Button {
-                    if let url = appleMapsURL,
-                       UIApplication.shared.canOpenURL(url) {
+                    if UIApplication.shared.canOpenURL(url) {
                         UIApplication.shared.open(url)
                     }
                 } label: {
