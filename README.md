@@ -8,6 +8,7 @@
 - 5.5 дюйма: iPhone 8 plus
 - 4.7 дюйма: iPhone 8
 
-2. Название приложения на экране смартфона - это текст в поле Display Name (Xcode -> SwiftUI-WorkoutApp -> Target: SwiftUI-WorkoutApp -> General)
+2. Настройка базовых параметров приложения находится на вкладке General (Xcode -> SwiftUI-WorkoutApp -> Target: SwiftUI-WorkoutApp -> General)
+- Название приложения на экране смартфона - поле Display Name
 - Версия приложения для магазина - поле Version 
 - Версия сборки для testFlight - поле Build
