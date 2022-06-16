@@ -9,6 +9,5 @@
 - 4.7 дюйма: iPhone 8
 
 2. Название приложения на экране смартфона - это текст в поле Display Name (Xcode -> SwiftUI-WorkoutApp -> Target: SwiftUI-WorkoutApp -> General)
-3. На той же вкладке:
-3.1. Версия приложения для магазина - поле Version 
-3.2. Версия сборки для testFlight - поле Build
+- Версия приложения для магазина - поле Version 
+- Версия сборки для testFlight - поле Build
