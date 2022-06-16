@@ -1,5 +1,5 @@
 # SwiftUI-WorkoutApp
-[Проект для приложения с площадками Workout](https://itunes.apple.com/us/app/jobsy/id1035159361).
+[Ссылка на приложение в AppStore](https://itunes.apple.com/us/app/jobsy/id1035159361)
 
 ## TODO
 1. Сохранять в CoreData
