@@ -15,6 +15,7 @@ struct MapSnapshotView: View {
                     RoundedDefaultImage(size: geometry.size)
                 }
             }
+            .animation(.easeInOut, value: snapshotImage)
             .onAppear {
                 generateSnapshot(for: geometry.size)
             }
@@ -26,18 +27,6 @@ struct MapSnapshotView: View {
 }
 
 private extension MapSnapshotView {
-    var centeredProgressView: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                ProgressView()
-                Spacer()
-            }
-            Spacer()
-        }
-    }
-
     func generateSnapshot(for size: CGSize) {
         if snapshotImage != nil
             || model.coordinate.latitude == .zero

@@ -276,7 +276,9 @@ private extension EventDetailsView {
     }
 
     var isAuthor: Bool {
-        viewModel.event.authorID == defaults.mainUserID
+        defaults.isAuthorized
+        ? viewModel.event.authorID == defaults.mainUserID
+        : false
     }
 
     func closeAlert() {

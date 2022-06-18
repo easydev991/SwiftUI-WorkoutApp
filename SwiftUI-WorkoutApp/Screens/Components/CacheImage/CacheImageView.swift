@@ -26,7 +26,7 @@ extension CacheImageView {
             case .genericListItem, .journalEntry:
                 return .init(width: 24, height: 24)
             case .profileAvatar, .eventPhoto, .groundPhoto:
-                return .init(width: 200, height: 200)
+                return .init(width: 300, height: 250)
             }
         }
     }
@@ -34,7 +34,14 @@ extension CacheImageView {
 
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
-        CacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
-            .previewLayout(.sizeThatFits)
+        Group {
+            CacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
+            CacheImageView(
+                url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
+                mode: .profileAvatar
+            )
+        }
+        .previewDevice("iPhone 13 mini")
+        .previewLayout(.sizeThatFits)
     }
 }

@@ -6,9 +6,9 @@ struct ProfileImageRectangle: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .scaledToFill()
-            .frame(width: size.width, height: size.height)
+            .scaledToFit()
             .cornerRadius(8)
+            .frame(width: size.width, height: size.height)
     }
 }
 

@@ -254,7 +254,9 @@ private extension SportsGroundDetailView {
     }
 
     var isGroundAuthor: Bool {
-        viewModel.ground.authorID == defaults.mainUserID
+        defaults.isAuthorized
+        ? viewModel.ground.authorID == defaults.mainUserID
+        : false
     }
 
     func closeAlert() {
