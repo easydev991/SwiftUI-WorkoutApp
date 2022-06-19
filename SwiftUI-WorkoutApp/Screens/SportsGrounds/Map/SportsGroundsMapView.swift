@@ -15,26 +15,29 @@ struct SportsGroundsMapView: View {
         NavigationView {
             ZStack {
                 MapViewUI(
-                    key: "SportsGroundsMapView",
-                    region: viewModel.region,
-                    annotations: $viewModel.sportsGrounds,
-                    needUpdateAnnotations: $viewModel.needUpdateAnnotations,
-                    needUpdateRegion: $viewModel.needUpdateRegion,
-                    openDetails: openDetailsView
+                    "SportsGroundsMapView",
+                    viewModel.region,
+                    viewModel.sportsGrounds,
+                    $viewModel.needUpdateAnnotations,
+                    $viewModel.needUpdateRegion,
+                    $viewModel.ignoreUserLocation,
+                    openDetailsClbk: openDetailsView
                 )
-                .opacity(viewModel.isLoading ? 0.5 : 1)
-                .overlay(alignment: .bottom) {
-                    NavigationLink(isActive: $showDetailsView) {
-                        SportsGroundDetailView(
-                            for: viewModel.selectedGround,
-                            onDeletion: updateDeleted
-                        )
-                    } label: { EmptyView() }
-                    locationSettingsReminder
-                }
+                .opacity(mapOpacity)
                 .animation(.easeInOut, value: viewModel.isLoading)
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : .zero)
+            }
+            .overlay(
+                alignment: viewModel.isRegionSet ? .bottom : .center
+            ) {
+                NavigationLink(isActive: $showDetailsView) {
+                    SportsGroundDetailView(
+                        for: viewModel.selectedGround,
+                        onDeletion: updateDeleted
+                    )
+                } label: { EmptyView() }
+                locationSettingsReminder
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
@@ -53,7 +56,7 @@ struct SportsGroundsMapView: View {
                         filterButton
                         refreshButton
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(isLeftToolbarPartDisabled)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if defaults.isAuthorized {
@@ -62,7 +65,9 @@ struct SportsGroundsMapView: View {
                 }
             }
             .navigationTitle("Площадки")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(
+                needToHideMap ? .large : .inline
+            )
         }
     }
 }
@@ -85,6 +90,27 @@ private extension SportsGroundsMapView {
         }
     }
 
+    var needToHideMap: Bool {
+        !viewModel.isRegionSet && viewModel.ignoreUserLocation
+    }
+
+    var mapOpacity: Double {
+        if needToHideMap {
+            return .zero
+        }
+        if viewModel.isLoading {
+            return 0.5
+        } else {
+            return 1
+        }
+    }
+
+    var isLeftToolbarPartDisabled: Bool {
+        viewModel.isRegionSet
+        ? viewModel.isLoading
+        : viewModel.isLoading || viewModel.ignoreUserLocation
+    }
+
     var locationSettingsReminder: some View {
         VStack {
             Text(viewModel.locationErrorMessage)
@@ -101,11 +127,11 @@ private extension SportsGroundsMapView {
             } label: {
                 Text("Открыть настройки")
                     .roundedRectangleStyle()
-                    .padding(.bottom, 32)
             }
             .disabled(viewModel.isLoading)
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom, 32)
         .opacity(viewModel.ignoreUserLocation ? 1 : .zero)
         .animation(.easeInOut, value: viewModel.ignoreUserLocation)
     }

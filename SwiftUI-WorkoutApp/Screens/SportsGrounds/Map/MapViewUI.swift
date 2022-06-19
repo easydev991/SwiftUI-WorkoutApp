@@ -2,30 +2,33 @@ import MapKit
 import SwiftUI
 
 struct MapViewUI: UIViewRepresentable {
+    /// Уникальный идентификатор карты, чтобы не плодить дубли
     let viewKey: String
     let region: MKCoordinateRegion
-    @Binding var annotations: [SportsGround]
+    let annotations: [SportsGround]
     @Binding var needUpdateAnnotations: Bool
     @Binding var needUpdateRegion: Bool
+    @Binding var ignoreUserLocation: Bool
     let openSelected: (SportsGround) -> Void
+    private static var mapViewStore = [String: MKMapView]()
 
     init(
-        key: String,
-        region: MKCoordinateRegion,
-        annotations: Binding<[SportsGround]>,
-        needUpdateAnnotations: Binding<Bool>,
-        needUpdateRegion: Binding<Bool>,
-        openDetails: @escaping (SportsGround) -> Void
+        _ key: String,
+        _ region: MKCoordinateRegion,
+        _ pins: [SportsGround],
+        _ needUpdatePins: Binding<Bool>,
+        _ needUpdateRegion: Binding<Bool>,
+        _ ignoreUserLocation: Binding<Bool>,
+        openDetailsClbk: @escaping (SportsGround) -> Void
     ) {
         self.viewKey = key
         self.region = region
-        self._annotations = annotations
-        self._needUpdateAnnotations = needUpdateAnnotations
+        self.annotations = pins
+        self._needUpdateAnnotations = needUpdatePins
         self._needUpdateRegion = needUpdateRegion
-        self.openSelected = openDetails
+        self._ignoreUserLocation = ignoreUserLocation
+        self.openSelected = openDetailsClbk
     }
-
-    private static var mapViewStore = [String : MKMapView]()
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView: MKMapView
@@ -41,7 +44,7 @@ struct MapViewUI: UIViewRepresentable {
         mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
         mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
-        setupTrackingButton(on: mapView)
+        addTrackingButton(to: mapView)
         return mapView
     }
 
@@ -55,13 +58,21 @@ struct MapViewUI: UIViewRepresentable {
             mapView.setRegion(region, animated: false)
             needUpdateRegion.toggle()
         }
+        if ignoreUserLocation {
+            setTrackingButtonHidden(true, on: mapView)
+        } else {
+            setTrackingButtonHidden(false, on: mapView)
+        }
     }
 
     func makeCoordinator() -> MapCoordinator { .init(self) }
 }
 
 private extension MapViewUI {
-    func setupTrackingButton(on mapView: MKMapView) {
+    func addTrackingButton(to mapView: MKMapView) {
+        if mapView.subviews.contains(where: { $0 is MKUserTrackingButton }) {
+            return
+        }
         let trackingButton = MKUserTrackingButton(mapView: mapView)
         trackingButton.translatesAutoresizingMaskIntoConstraints = false
         mapView.addSubview(trackingButton)
@@ -75,6 +86,16 @@ private extension MapViewUI {
                 constant: -8
             )
         ])
+    }
+
+    func setTrackingButtonHidden(_ isHidden: Bool, on mapView: MKMapView) {
+        guard let trackingButton = mapView.subviews.first(where: { $0 is MKUserTrackingButton }) else { return
+        }
+        if isHidden && trackingButton.isHidden
+            || !isHidden && !trackingButton.isHidden {
+            return
+        }
+        trackingButton.isHidden = isHidden
     }
 }
 
