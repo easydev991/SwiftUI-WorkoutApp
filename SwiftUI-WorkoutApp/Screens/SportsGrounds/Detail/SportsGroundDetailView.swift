@@ -81,6 +81,7 @@ struct SportsGroundDetailView: View {
         }
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -261,6 +262,10 @@ private extension SportsGroundDetailView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+    }
+
+    func dismissNotAuth(isAuth: Bool) {
+        if !isAuth { dismiss() }
     }
 
     func dismissDeleted(isDeleted: Bool) {

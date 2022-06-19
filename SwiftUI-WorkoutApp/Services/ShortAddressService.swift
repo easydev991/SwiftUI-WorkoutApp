@@ -2,6 +2,9 @@ import Foundation
 
 struct ShortAddressService {
     func addressFor(_ countryID: Int, _ cityID: Int) -> String {
+        if countryID == .zero || cityID == .zero {
+            return ""
+        }
         do {
             let country = try countries().first(where: { $0.id == String(countryID) })
             let city = country?.cities.first(where: { $0.id == String(cityID) })
@@ -17,16 +20,16 @@ struct ShortAddressService {
     }
 
     func coordinates(_ countryID: Int, _ cityID: Int) -> (Double, Double) {
+        if countryID == .zero || cityID == .zero {
+            return (.zero, .zero)
+        }
         do {
             let city = try city(with: cityID, in: countryID)
-            let lat = Double(city.lat) ?? .zero
-            let lon = Double(city.lon) ?? .zero
+            let lat = Double((city?.lat).valueOrEmpty) ?? .zero
+            let lon = Double((city?.lon).valueOrEmpty) ?? .zero
             return (lat, lon)
         } catch {
-            let defaultCity = City.defaultCity
-            let lat = Double(defaultCity.lat) ?? .zero
-            let lon = Double(defaultCity.lon) ?? .zero
-            return (lat, lon)
+            return (.zero, .zero)
         }
     }
 }
@@ -39,12 +42,8 @@ private extension ShortAddressService {
         )
     }
 
-    func city(with id: Int, in countryID: Int) throws -> City {
-        do {
-            let country = try countries().first(where: { $0.id == String(countryID) })
-            return country?.cities.first(where: { $0.id == String(id) }) ?? .defaultCity
-        } catch {
-            return .defaultCity
-        }
+    func city(with id: Int, in countryID: Int) throws -> City? {
+        let country = try countries().first(where: { $0.id == String(countryID) })
+        return country?.cities.first(where: { $0.id == String(id) })
     }
 }

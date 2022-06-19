@@ -6,10 +6,13 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
     private var defaultList = [SportsGround]()
+    var isRegionSet: Bool {
+        region.center.latitude != .zero
+        && region.center.longitude != .zero
+    }
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
-    @Published private(set) var ignoreUserLocation = false
     @Published var filter = SportsGroundFilter() {
         didSet { applyFilter(userCountryID, userCityID) }
     }
@@ -19,6 +22,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var region = MKCoordinateRegion()
     @Published var needUpdateAnnotations = false
     @Published var needUpdateRegion = false
+    @Published var ignoreUserLocation = false
 
     override init() {
         super.init()
@@ -75,7 +79,10 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         userCountryID = defaults.mainUserCountry
         userCityID = defaults.mainUserCity
         if !defaults.isAuthorized {
-            filter = .init()
+            filter.onlyMyCity = false
+        }
+        if !locationErrorMessage.isEmpty {
+            setupDefaultLocation()
         }
     }
 
@@ -85,19 +92,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
     func onDisappearAction() {
         manager.stopUpdatingLocation()
-    }
-
-    func setupDefaultLocation() {
-        ignoreUserLocation = true
-        let coordinates = ShortAddressService().coordinates(userCountryID, userCityID)
-        region = .init(
-            center: .init(
-                latitude: coordinates.0,
-                longitude: coordinates.1
-            ),
-            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        )
-        needUpdateRegion.toggle()
     }
 
     func clearErrorMessage() { errorMessage = "" }
@@ -137,12 +131,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
             manager.requestLocation()
         case .restricted:
             if !ignoreUserLocation {
-                locationErrorMessage = Constants.Alert.locationPermissionDenied
-                setupDefaultLocation()
+                setupDefaultLocation(permissionDenied: true)
             }
         case .denied:
             if !ignoreUserLocation {
-                locationErrorMessage = Constants.Alert.needLocationPermission
                 setupDefaultLocation()
             }
         @unknown default: break
@@ -154,7 +146,6 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didFailWithError error: Error
     ) {
         if !ignoreUserLocation && !isRegionSet {
-            locationErrorMessage = Constants.Alert.needLocationPermission
             setupDefaultLocation()
         }
         #if DEBUG
@@ -164,11 +155,6 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
 }
 
 private extension SportsGroundsMapViewModel {
-    var isRegionSet: Bool {
-        region.center.latitude != .zero
-        && region.center.longitude != .zero
-    }
-
     func applyFilter(_ countryID: Int, _ cityID: Int) {
         var result = [SportsGround]()
         result = defaultList.filter { ground in
@@ -197,5 +183,24 @@ private extension SportsGroundsMapViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func setupDefaultLocation(permissionDenied: Bool = false) {
+        ignoreUserLocation = true
+        locationErrorMessage = permissionDenied
+        ? Constants.Alert.locationPermissionDenied
+        : Constants.Alert.needLocationPermission
+        let coordinates = ShortAddressService().coordinates(userCountryID, userCityID)
+        guard coordinates != (.zero, .zero) else {
+            return
+        }
+        region = .init(
+            center: .init(
+                latitude: coordinates.0,
+                longitude: coordinates.1
+            ),
+            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        needUpdateRegion.toggle()
     }
 }
