@@ -25,7 +25,7 @@ final class UsersListViewModel: ObservableObject {
                 friendRequests = defaults.friendRequestsList.map(UserModel.init)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -44,7 +44,7 @@ private extension UsersListViewModel {
             let friends = try await APIService(with: defaults).getFriendsForUser(id: id)
             users = friends.map(UserModel.init)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }

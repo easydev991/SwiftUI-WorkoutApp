@@ -23,7 +23,7 @@ final class EventsListViewModel: ObservableObject {
             if type == .past {
                 setupOldEventsFromBundle()
             }
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -40,7 +40,7 @@ private extension EventsListViewModel {
             )
             pastEvents = oldEvents
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 }

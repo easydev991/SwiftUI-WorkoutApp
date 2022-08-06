@@ -20,7 +20,7 @@ final class ProfileSettingsViewModel: ObservableObject {
         do {
             try await APIService(with: defaults).deleteUser()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

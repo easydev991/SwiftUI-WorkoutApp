@@ -57,7 +57,7 @@ final class SportsGroundFormViewModel: ObservableObject {
         do {
             isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
