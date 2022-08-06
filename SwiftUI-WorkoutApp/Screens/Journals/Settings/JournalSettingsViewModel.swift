@@ -15,7 +15,7 @@ final class JournalSettingsViewModel: ObservableObject {
                 isSettingsUpdated.toggle()
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

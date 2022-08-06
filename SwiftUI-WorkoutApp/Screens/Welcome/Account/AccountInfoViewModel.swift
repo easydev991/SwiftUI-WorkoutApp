@@ -50,7 +50,7 @@ final class AccountInfoViewModel: ObservableObject {
         do {
             try await APIService(with: defaults).registration(with: userForm)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -61,7 +61,7 @@ final class AccountInfoViewModel: ObservableObject {
         do {
             isProfileSaved = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -88,7 +88,7 @@ private extension AccountInfoViewModel {
     #endif
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 

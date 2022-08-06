@@ -25,7 +25,7 @@ final class JournalEntriesListViewModel: ObservableObject {
         do {
             list = try await APIService(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -38,7 +38,7 @@ final class JournalEntriesListViewModel: ObservableObject {
                 list.removeAll(where: { $0.id == entryID })
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
