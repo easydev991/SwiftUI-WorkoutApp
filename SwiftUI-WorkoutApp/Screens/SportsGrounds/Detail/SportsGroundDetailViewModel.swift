@@ -19,7 +19,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         do {
             ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -42,7 +42,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -57,7 +57,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 await askForSportsGround(refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -70,7 +70,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 ground.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -81,7 +81,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         do {
             isDeleted = try await APIService(with: defaults).delete(groundID: ground.id)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

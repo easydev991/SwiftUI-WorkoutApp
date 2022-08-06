@@ -42,7 +42,7 @@ private extension SportsGroundListViewModel {
             }
             list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 }

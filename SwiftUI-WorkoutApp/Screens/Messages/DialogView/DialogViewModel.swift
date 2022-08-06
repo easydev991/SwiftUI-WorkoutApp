@@ -14,7 +14,7 @@ final class DialogViewModel: ObservableObject {
         do {
             list = try await APIService(with: defaults).getMessages(for: dialogID).reversed()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -25,7 +25,7 @@ final class DialogViewModel: ObservableObject {
                 markedAsRead = true
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 
@@ -38,7 +38,7 @@ final class DialogViewModel: ObservableObject {
                 await makeItems(for: dialog, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

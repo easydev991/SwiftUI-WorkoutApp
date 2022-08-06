@@ -26,7 +26,7 @@ final class TextEntryViewModel: ObservableObject {
             default: break
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -45,7 +45,7 @@ final class TextEntryViewModel: ObservableObject {
             default: break
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

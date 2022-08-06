@@ -43,7 +43,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             defaultList = try await APIService(with: defaults).getAllSportsGrounds()
         } catch {
             fillDefaultList()
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         isLoading.toggle()
@@ -65,7 +65,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             }
             applyFilter(defaults.mainUserCountry, defaults.mainUserCity)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -181,7 +181,7 @@ private extension SportsGroundsMapViewModel {
             )
             defaultList = oldGrounds
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 

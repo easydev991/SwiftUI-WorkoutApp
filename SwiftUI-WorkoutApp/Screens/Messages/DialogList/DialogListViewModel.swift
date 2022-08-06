@@ -12,7 +12,7 @@ final class DialogListViewModel: ObservableObject {
         do {
             list = try await APIService(with: defaults).getDialogs()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -26,7 +26,7 @@ final class DialogListViewModel: ObservableObject {
                 list.remove(at: index)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

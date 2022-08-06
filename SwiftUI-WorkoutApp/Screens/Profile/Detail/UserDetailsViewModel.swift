@@ -61,7 +61,7 @@ final class UserDetailsViewModel: ObservableObject {
                 }
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -74,7 +74,7 @@ final class UserDetailsViewModel: ObservableObject {
                 isMessageSent.toggle()
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -88,7 +88,7 @@ private extension UserDetailsViewModel {
             let info = try await APIService(with: defaults).getUserByID(user.id)
             user = .init(info)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
     }
 }

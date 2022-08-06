@@ -23,7 +23,7 @@ final class ChangePasswordViewModel: ObservableObject {
                 current: currentPasswordText, new: newPasswordText
             )
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

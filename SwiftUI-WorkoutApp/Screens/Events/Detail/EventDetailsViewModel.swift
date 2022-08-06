@@ -21,7 +21,7 @@ final class EventDetailsViewModel: ObservableObject {
             let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserID })
             event.trainHere = isUserGoing
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -43,7 +43,7 @@ final class EventDetailsViewModel: ObservableObject {
                 }
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -58,7 +58,7 @@ final class EventDetailsViewModel: ObservableObject {
                 await askForEvent(refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -71,7 +71,7 @@ final class EventDetailsViewModel: ObservableObject {
                 event.comments.removeAll(where: { $0.id == commentID} )
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -82,7 +82,7 @@ final class EventDetailsViewModel: ObservableObject {
         do {
             isDeleted = try await APIService(with: defaults).delete(eventID: event.id)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }

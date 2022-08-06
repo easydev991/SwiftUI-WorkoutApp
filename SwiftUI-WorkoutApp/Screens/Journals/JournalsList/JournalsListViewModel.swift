@@ -17,7 +17,7 @@ final class JournalsListViewModel: ObservableObject {
         do {
             list = try await APIService(with: defaults).getJournals(for: userID)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -32,7 +32,7 @@ final class JournalsListViewModel: ObservableObject {
                 await makeItems(for: defaults.mainUserID, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -46,7 +46,7 @@ final class JournalsListViewModel: ObservableObject {
                 list[index] = result
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -60,7 +60,7 @@ final class JournalsListViewModel: ObservableObject {
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
