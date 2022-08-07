@@ -109,9 +109,7 @@ private extension EventsListView {
 
     func emptyViewAction() {
         if showAddEventButton {
-            if network.isConnected {
-                isCreatingEvent.toggle()
-            }
+            isCreatingEvent.toggle()
         } else {
             tabViewModel.selectTab(.map)
         }
