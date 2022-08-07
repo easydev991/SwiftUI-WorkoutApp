@@ -21,31 +21,26 @@ private extension RootView {
     var tabView: some View {
         TabView(selection: $viewModel.selectedTab) {
             SportsGroundsMapView()
-                .onAppear { viewModel.selectTab(.map) }
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
                 .tag(Tab.map)
             EventsListView()
-                .onAppear { viewModel.selectTab(.events) }
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
                 .tag(Tab.events)
             DialogsScreen()
-                .onAppear { viewModel.selectTab(.messages) }
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
             JournalsScreen()
-                .onAppear { viewModel.selectTab(.journal) }
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
                 .tag(Tab.journal)
             ProfileScreen()
-                .onAppear { viewModel.selectTab(.profile) }
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }
