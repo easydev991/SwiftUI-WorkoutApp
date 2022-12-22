@@ -8,11 +8,12 @@ struct WelcomeView: View {
         NavigationView {
             ZStack {
                 Color.black
-                logo
+                Image("login_logo")
                 buttonsView
             }
             .ignoresSafeArea()
         }
+        .navigationViewStyle(.stack)
         .transition(
             .move(edge: .leading)
             .combined(with: .scale)
@@ -22,10 +23,6 @@ struct WelcomeView: View {
 }
 
 private extension WelcomeView {
-    var logo: some View {
-        Image("login_logo")
-    }
-
     var buttonsView: some View {
         VStack(spacing: 16) {
             Spacer()

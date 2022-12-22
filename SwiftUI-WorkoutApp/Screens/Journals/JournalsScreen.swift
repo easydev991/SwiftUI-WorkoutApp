@@ -16,6 +16,7 @@ struct JournalsScreen: View {
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(titleDisplayMode)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

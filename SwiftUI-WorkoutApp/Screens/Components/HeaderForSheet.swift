@@ -13,7 +13,15 @@ struct HeaderForSheet: View {
             Button {
                 dismiss()
             } label: {
-                DismissButton()
+                Circle()
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(Color("ButtonBackground"))
+                    .opacity(0.6)
+                    .overlay {
+                        Image(systemName: "xmark")
+                            .imageScale(.medium)
+                            .foregroundColor(Color("ButtonTitle"))
+                    }
             }
         }
         .padding()

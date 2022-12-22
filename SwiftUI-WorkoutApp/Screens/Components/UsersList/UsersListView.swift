@@ -32,7 +32,7 @@ struct UsersListView: View {
         .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading || !network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }

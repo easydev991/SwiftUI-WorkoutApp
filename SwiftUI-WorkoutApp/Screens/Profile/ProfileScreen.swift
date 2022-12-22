@@ -15,6 +15,7 @@ struct ProfileScreen: View {
             }
             .navigationTitle("Профиль")
         }
+        .navigationViewStyle(.stack)
         .ignoresSafeArea()
     }
 }

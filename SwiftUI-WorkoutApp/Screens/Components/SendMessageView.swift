@@ -50,7 +50,7 @@ struct SendMessageView: View {
         }
         .disabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: dismissError) { TextOk() }
+            Button("Ok", action: dismissError)
         }
     }
 }

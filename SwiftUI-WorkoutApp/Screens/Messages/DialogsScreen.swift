@@ -16,6 +16,7 @@ struct DialogsScreen: View {
             .navigationTitle("Сообщения")
             .navigationBarTitleDisplayMode(titleDisplayMode)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

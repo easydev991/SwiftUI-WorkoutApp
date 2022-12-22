@@ -3,14 +3,14 @@ import SwiftUI
 
 struct MapViewUI: UIViewRepresentable {
     /// Уникальный идентификатор карты, чтобы не плодить дубли
-    let viewKey: String
-    let region: MKCoordinateRegion
-    let annotations: [SportsGround]
-    @Binding var needUpdateAnnotations: Bool
-    @Binding var needUpdateRegion: Bool
-    @Binding var ignoreUserLocation: Bool
-    let openSelected: (SportsGround) -> Void
+    private let viewKey: String
+    private let region: MKCoordinateRegion
+    private let annotations: [SportsGround]
+    @Binding private var needUpdateAnnotations: Bool
+    @Binding private var needUpdateRegion: Bool
+    @Binding private var ignoreUserLocation: Bool
     private static var mapViewStore = [String: MKMapView]()
+    let openSelected: (SportsGround) -> Void
 
     init(
         _ key: String,
@@ -70,9 +70,7 @@ struct MapViewUI: UIViewRepresentable {
 
 private extension MapViewUI {
     func addTrackingButton(to mapView: MKMapView) {
-        if mapView.subviews.contains(where: { $0 is MKUserTrackingButton }) {
-            return
-        }
+        if mapView.subviews.contains(where: { $0 is MKUserTrackingButton }) { return }
         let trackingButton = MKUserTrackingButton(mapView: mapView)
         trackingButton.translatesAutoresizingMaskIntoConstraints = false
         mapView.addSubview(trackingButton)
@@ -89,12 +87,8 @@ private extension MapViewUI {
     }
 
     func setTrackingButtonHidden(_ isHidden: Bool, on mapView: MKMapView) {
-        guard let trackingButton = mapView.subviews.first(where: { $0 is MKUserTrackingButton }) else { return
-        }
-        if isHidden && trackingButton.isHidden
-            || !isHidden && !trackingButton.isHidden {
-            return
-        }
+        guard let trackingButton = mapView.subviews.first(where: { $0 is MKUserTrackingButton }) else { return }
+        if isHidden && trackingButton.isHidden || !isHidden && !trackingButton.isHidden { return }
         trackingButton.isHidden = isHidden
     }
 }
