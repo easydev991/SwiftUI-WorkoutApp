@@ -50,7 +50,7 @@ struct SportsGroundsListView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.list, perform: dismissIfEmpty)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }

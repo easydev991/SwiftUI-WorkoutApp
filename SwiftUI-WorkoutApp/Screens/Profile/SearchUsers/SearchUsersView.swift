@@ -36,7 +36,7 @@ struct SearchUsersView: View {
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button { viewModel.clearErrorMessage() } label: { TextOk() }
+            Button("Ok") { viewModel.clearErrorMessage() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onAppear(perform: showKeyboard)

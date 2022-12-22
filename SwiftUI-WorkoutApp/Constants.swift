@@ -9,7 +9,7 @@ enum Constants {
     static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
     static let halfMinuteAgo = Calendar.current.date(byAdding: .second, value: -30, to: .now) ?? .now
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
-    static let appStoreURL = URL(string: "https://itunes.apple.com/us/app/jobsy/id1035159361")!
+    static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
     static let rulesOfService = URL(string: "https://workout.su/pravila")!
 
     enum Feedback {
@@ -18,10 +18,6 @@ enum Constants {
         static let question = "Над чем нам стоит поработать?"
         static let sysVersion = "iOS: \(UIDevice.current.systemVersion)"
         static let appVersion = "App version: \(Constants.appVersion)"
-        static var completeURL: URL? {
-            let _subject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
-            return .init(string: "mailto:\(toEmail)?subject=\(_subject.valueOrEmpty)")
-        }
     }
 
     enum Alert {

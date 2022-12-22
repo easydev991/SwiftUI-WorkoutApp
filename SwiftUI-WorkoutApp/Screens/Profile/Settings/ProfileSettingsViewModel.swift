@@ -1,17 +1,22 @@
 import Foundation
+import FeedbackSender
 
 @MainActor
 final class ProfileSettingsViewModel: ObservableObject {
-    private let feedbackHelper: IFeedbackHelper
+    private let feedbackSender: FeedbackSender
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
     init() {
-        feedbackHelper = FeedbackService()
+        feedbackSender = FeedbackSenderImp()
     }
 
     func feedbackAction() {
-        feedbackHelper.sendFeedback()
+        feedbackSender.sendFeedback(
+            subject: Constants.Feedback.subject,
+            messageBody: "\(Constants.Feedback.sysVersion)\n\(Constants.Feedback.appVersion)\n\n\(Constants.Feedback.question)\n",
+            recipients: [Constants.Feedback.toEmail]
+        )
     }
 
     func deleteProfile(with defaults: DefaultsService) async {

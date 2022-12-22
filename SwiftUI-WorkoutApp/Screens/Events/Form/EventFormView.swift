@@ -53,7 +53,7 @@ struct EventFormView: View {
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onDisappear(perform: cancelTask)

@@ -43,7 +43,7 @@ struct JournalSettingsView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isSettingsUpdated, perform: finishSettings)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onDisappear(perform: cancelTask)
     }

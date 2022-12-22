@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "feedbacksender",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/FeedbackSender",
+      "state" : {
+        "revision" : "7e1a70b3df04d1d79d1a3fe1512572f916a22b7a",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}

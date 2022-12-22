@@ -29,7 +29,7 @@ struct EventsListView: View {
             }
             .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button(action: closeAlert) { TextOk() }
+                Button("Ok", action: closeAlert)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: selectedEventType, perform: selectedEventAction)
@@ -45,6 +45,7 @@ struct EventsListView: View {
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(.stack)
         .task { await askForEvents() }
         .onDisappear(perform: cancelTask)
     }
