@@ -32,7 +32,7 @@ struct ChangePasswordView: View {
         .animation(.easeOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button { viewModel.errorAlertClosed() } label: { TextOk() }
+            Button("Ok") { viewModel.errorAlertClosed() }
         }
         .onChange(of: viewModel.isChangeSuccessful, perform: performLogout)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

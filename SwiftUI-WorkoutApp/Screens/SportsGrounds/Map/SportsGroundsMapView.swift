@@ -28,9 +28,7 @@ struct SportsGroundsMapView: View {
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : .zero)
             }
-            .overlay(
-                alignment: viewModel.isRegionSet ? .bottom : .center
-            ) {
+            .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
                         for: viewModel.selectedGround,
@@ -42,7 +40,7 @@ struct SportsGroundsMapView: View {
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
             .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button(action: closeAlert) { TextOk() }
+                Button("Ok", action: closeAlert)
             }
             .task { await askForGrounds() }
             .onAppear {
@@ -65,9 +63,7 @@ struct SportsGroundsMapView: View {
                 }
             }
             .navigationTitle("Площадки")
-            .navigationBarTitleDisplayMode(
-                needToHideMap ? .large : .inline
-            )
+            .navigationBarTitleDisplayMode(needToHideMap ? .large : .inline)
         }
     }
 }

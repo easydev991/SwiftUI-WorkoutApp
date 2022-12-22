@@ -44,7 +44,7 @@ struct AccountInfoView: View {
             await viewModel.updateFormIfNeeded(with: defaults)
         }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button { viewModel.clearErrorMessage() } label: { TextOk() }
+            Button("Ok") { viewModel.clearErrorMessage() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isProfileSaved, perform: close)

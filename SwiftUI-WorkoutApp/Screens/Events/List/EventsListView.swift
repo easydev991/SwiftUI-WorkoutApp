@@ -29,7 +29,7 @@ struct EventsListView: View {
             }
             .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button(action: closeAlert) { TextOk() }
+                Button("Ok", action: closeAlert)
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: selectedEventType, perform: selectedEventAction)

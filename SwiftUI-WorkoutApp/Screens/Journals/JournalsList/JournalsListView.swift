@@ -44,7 +44,7 @@ struct JournalsListView: View {
         .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
         .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .task { await askForJournals() }
         .refreshable { await askForJournals(refresh: true) }

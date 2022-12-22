@@ -61,7 +61,7 @@ struct JournalEntriesList: View {
         .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }

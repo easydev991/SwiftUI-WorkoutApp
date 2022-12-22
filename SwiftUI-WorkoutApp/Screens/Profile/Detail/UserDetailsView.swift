@@ -41,7 +41,7 @@ struct UserDetailsView: View {
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
@@ -113,7 +113,7 @@ private extension UserDetailsView {
                 .fontWeight(.medium)
         }
         .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
-            Button {} label: { TextOk() }
+            Button("Ok") {}
         }
     }
 

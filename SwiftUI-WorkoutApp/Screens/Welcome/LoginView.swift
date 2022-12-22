@@ -26,12 +26,10 @@ struct LoginView: View {
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button { viewModel.clearErrorMessage() } label: {
-                TextOk()
-            }
+            Button("Ok") { viewModel.clearErrorMessage() }
         }
         .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
-            Button { viewModel.resetSuccessfulAlertClosed() } label: { TextOk() }
+            Button("Ok") { viewModel.resetSuccessfulAlertClosed() }
         }
         .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
         .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
@@ -102,7 +100,7 @@ private extension LoginView {
     var forgotPasswordButton: some View {
         Button(action: forgotPasswordAction) { forgotPasswordLabel }
             .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
-                Button { viewModel.warningAlertClosed() } label: { TextOk() }
+                Button("Ok") { viewModel.warningAlertClosed() }
             }
     }
 

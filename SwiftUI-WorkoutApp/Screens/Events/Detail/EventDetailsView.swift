@@ -80,7 +80,7 @@ struct EventDetailsView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -239,12 +239,10 @@ private extension EventDetailsView {
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive) {
+            Button("Удалить", role: .destructive) {
                 deleteEventTask = Task {
                     await viewModel.deleteEvent(with: defaults)
                 }
-            } label: {
-                Text("Удалить")
             }
         }
     }

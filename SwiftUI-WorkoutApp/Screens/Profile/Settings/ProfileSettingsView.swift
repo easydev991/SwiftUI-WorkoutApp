@@ -31,7 +31,7 @@ struct ProfileSettingsView: View {
         .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .toolbar { deleteProfileButton }
         .onDisappear(perform: cancelTask)
@@ -68,10 +68,8 @@ private extension ProfileSettingsView {
             isPresented: $showLogoutDialog,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive) {
+            Button("Выйти", role: .destructive) {
                 defaults.triggerLogout()
-            } label: {
-                Text("Выйти")
             }
         }
     }
@@ -88,9 +86,7 @@ private extension ProfileSettingsView {
             isPresented: $showDeleteProfileDialog,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive, action: deleteProfile) {
-                Text("Удалить учетную запись")
-            }
+            Button("Удалить учетную запись", role: .destructive, action: deleteProfile)
         }
     }
 

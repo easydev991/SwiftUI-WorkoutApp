@@ -42,7 +42,7 @@ struct DialogView: View {
         .onChange(of: viewModel.markedAsRead, perform: updateDialogUnreadCount)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .task(priority: .low) { await markAsRead() }
         .task(priority: .high) { await askForMessages() }

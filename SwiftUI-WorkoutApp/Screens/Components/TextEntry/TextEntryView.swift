@@ -31,7 +31,7 @@ struct TextEntryView: View {
     var body: some View {
         content
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.isSuccess, perform: dismissOnSuccess)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

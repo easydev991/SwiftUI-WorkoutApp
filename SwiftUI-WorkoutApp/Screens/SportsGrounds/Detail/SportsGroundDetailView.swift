@@ -77,7 +77,7 @@ struct SportsGroundDetailView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -210,12 +210,10 @@ private extension SportsGroundDetailView {
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive) {
+            Button("Удалить", role: .destructive) {
                 deleteGroundTask = Task {
                     await viewModel.deleteGround(with: defaults)
                 }
-            } label: {
-                Text("Удалить")
             }
         }
     }

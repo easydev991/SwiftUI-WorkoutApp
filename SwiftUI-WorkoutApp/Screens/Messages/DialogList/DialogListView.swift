@@ -34,7 +34,7 @@ struct DialogListView: View {
         ) { deleteDialogButton }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button(action: closeAlert) { TextOk() }
+            Button("Ok", action: closeAlert)
         }
         .task { await askForDialogs() }
         .refreshable { await askForDialogs(refresh: true) }
