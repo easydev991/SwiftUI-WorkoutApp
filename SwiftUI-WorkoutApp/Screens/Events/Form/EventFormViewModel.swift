@@ -7,13 +7,18 @@ final class EventFormViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isSuccess = false
-    @Published var newImages = [UIImage]() {
-        didSet { addNewImagesToForm() }
-    }
+    @Published var newImages = [UIImage]()
     private var eventID: Int?
+    var imagesLimit: Int {
+        eventID == nil
+        ? Constants.photosLimit - newImages.count
+        : Constants.photosLimit - newImages.count - eventInfo.photosCount
+    }
     var canAddImages: Bool {
-        (eventInfo.photosCount + newImages.count) < Constants.photosLimit
-        && !isLoading
+        guard !isLoading else { return false }
+        return eventID == nil
+        ? newImages.count < Constants.photosLimit
+        : (newImages.count + eventInfo.photosCount) < Constants.photosLimit
     }
 
     init(with event: EventResponse? = nil) {
@@ -29,8 +34,11 @@ final class EventFormViewModel: ObservableObject {
     func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
+        eventInfo.newImagesData = newImages.enumerated().map {
+            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
+        }
         do {
-            isSuccess = try await APIService(with: defaults).saveEvent(eventInfo, eventID: eventID).id != .zero
+            isSuccess = try await APIService(with: defaults).saveEvent(id: eventID, form: eventInfo).id != .zero
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
@@ -38,12 +46,4 @@ final class EventFormViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
-}
-
-private extension EventFormViewModel {
-    func addNewImagesToForm() {
-        eventInfo.newImagesData = newImages.enumerated().map {
-            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
-        }
-    }
 }

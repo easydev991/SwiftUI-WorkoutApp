@@ -54,7 +54,6 @@ extension SportsGroundForm {
         && !latitude.isEmpty
         && !longitude.isEmpty
         && cityID != .zero
-        && !newImagesData.isEmpty
     }
 
     /// Готовность формы к отправке обновлений по площадке

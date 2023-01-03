@@ -186,7 +186,7 @@ struct APIService {
     /// - Returns: Обновленная информация о площадке
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
         let endpoint: Endpoint
-        if let id = id {
+        if let id {
             endpoint = Endpoint.editSportsGround(id: id, form: form)
         } else {
             endpoint = Endpoint.createSportsGround(form: form)
@@ -312,12 +312,14 @@ struct APIService {
     }
 
     /// Отправляет новое мероприятие на сервер
-    /// - Parameter form: форма с данными по мероприятию
+    /// - Parameters:
+    ///   - id: `id` мероприятия
+    ///   - form: форма с данными о мероприятии
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
-    func saveEvent(_ form: EventForm, eventID: Int?) async throws -> EventResult {
+    func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
         let endpoint: Endpoint
-        if let eventID = eventID {
-            endpoint = .editEvent(id: eventID, form: form)
+        if let id {
+            endpoint = .editEvent(id: id, form: form)
         } else {
             endpoint = .createEvent(form: form)
         }
@@ -1133,6 +1135,7 @@ private extension APIService {
         case badRequest
         case invalidCredentials
         case notFound
+        case payloadTooLarge
         case serverError
         case customError(String)
 
@@ -1152,6 +1155,7 @@ private extension APIService {
             case 400: self = .badRequest
             case 401: self = .invalidCredentials
             case 404: self = .notFound
+            case 413: self = .payloadTooLarge
             case 500: self = .serverError
             default: self = .noResponse
             }
@@ -1169,6 +1173,8 @@ private extension APIService {
                 return "Некорректное имя пользователя или пароль"
             case .notFound:
                 return "Запрашиваемый ресурс не найден"
+            case .payloadTooLarge:
+                return "Объем данных для загрузки на сервер превышает лимит"
             case .serverError:
                 return "Внутренняя ошибка сервера"
             case let .customError(error):

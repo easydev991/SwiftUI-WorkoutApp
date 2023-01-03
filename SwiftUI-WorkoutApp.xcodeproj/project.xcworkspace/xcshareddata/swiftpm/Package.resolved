@@ -8,6 +8,15 @@
         "revision" : "7e1a70b3df04d1d79d1a3fe1512572f916a22b7a",
         "version" : "1.0.0"
       }
+    },
+    {
+      "identity" : "imagepicker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/ImagePicker",
+      "state" : {
+        "revision" : "160f4183740c95095ffb96aac316b64824fa779c",
+        "version" : "1.0.2"
+      }
     }
   ],
   "version" : 2

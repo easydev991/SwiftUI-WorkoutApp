@@ -1,4 +1,5 @@
 import SwiftUI
+import ImagePicker
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
@@ -47,8 +48,10 @@ struct EventFormView: View {
         .disabled(viewModel.isLoading)
         .sheet(isPresented: $isShowingPicker) {
             ImagePicker(
-                selectedImages: $viewModel.newImages,
-                showPicker: $isShowingPicker
+                pickedImages: $viewModel.newImages,
+                isPresented: $isShowingPicker,
+                selectionLimit: viewModel.imagesLimit,
+                compressionQuality: .zero
             )
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

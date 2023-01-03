@@ -7,18 +7,23 @@ final class SportsGroundFormViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isSuccess = false
-    @Published var newImages = [UIImage]() {
-        didSet { addNewImagesToForm() }
-    }
+    @Published var newImages = [UIImage]()
     private var groundID: Int?
     var isFormReady: Bool {
         groundID == nil
-        ? groundForm.isReadyToCreate
+        ? groundForm.isReadyToCreate && !newImages.isEmpty
         : groundForm.isReadyToSend
     }
+    var imagesLimit: Int {
+        groundID == nil
+        ? Constants.photosLimit - newImages.count
+        : Constants.photosLimit - newImages.count - groundForm.photosCount
+    }
     var canAddImages: Bool {
-        (groundForm.photosCount + newImages.count) < Constants.photosLimit
-        && !isLoading
+        guard !isLoading else { return false }
+        return groundID == nil
+        ? newImages.count < Constants.photosLimit
+        : (newImages.count + groundForm.photosCount) < Constants.photosLimit
     }
     var isNewSportsGround: Bool {
         groundID == nil
@@ -54,6 +59,9 @@ final class SportsGroundFormViewModel: ObservableObject {
     func saveGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
+        groundForm.newImagesData = newImages.enumerated().map {
+            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
+        }
         do {
             isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
@@ -63,12 +71,4 @@ final class SportsGroundFormViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
-}
-
-private extension SportsGroundFormViewModel {
-    func addNewImagesToForm() {
-        groundForm.newImagesData = newImages.enumerated().map {
-            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
-        }
-    }
 }

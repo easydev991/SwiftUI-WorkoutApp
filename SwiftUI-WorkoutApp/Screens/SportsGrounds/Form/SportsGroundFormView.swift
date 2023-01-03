@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation.CLLocation
+import ImagePicker
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
@@ -50,8 +51,10 @@ struct SportsGroundFormView: View {
         .disabled(viewModel.isLoading)
         .sheet(isPresented: $isShowingPicker) {
             ImagePicker(
-                selectedImages: $viewModel.newImages,
-                showPicker: $isShowingPicker
+                pickedImages: $viewModel.newImages,
+                isPresented: $isShowingPicker,
+                selectionLimit: viewModel.imagesLimit,
+                compressionQuality: .zero
             )
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -128,8 +131,8 @@ private extension SportsGroundFormView {
             Text("Сохранить")
         }
         .disabled(
-            viewModel.isLoading
-            || !viewModel.isFormReady
+            !viewModel.isFormReady
+            || viewModel.isLoading
             || !network.isConnected
         )
     }
