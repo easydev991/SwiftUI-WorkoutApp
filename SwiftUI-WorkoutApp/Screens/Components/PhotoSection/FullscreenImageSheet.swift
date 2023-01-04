@@ -4,8 +4,7 @@ struct FullScreenImageSheet: View {
     let image: UIImage
 
     var body: some View {
-        VStack {
-            HeaderForSheet(title: "Фото")
+        ContentInSheet(title: "Фото") {
             ImageDetailView(image: image)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scaledToFit()

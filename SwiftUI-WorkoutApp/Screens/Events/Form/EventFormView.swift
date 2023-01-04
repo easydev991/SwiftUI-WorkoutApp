@@ -9,7 +9,8 @@ struct EventFormView: View {
     @StateObject private var viewModel: EventFormViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var isShowingPicker = false
+    @State private var showImagePicker = false
+    @State private var showGroundPicker = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
     private let mode: Mode
@@ -48,7 +49,7 @@ struct EventFormView: View {
         }
         .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
-        .sheet(isPresented: $isShowingPicker) {
+        .sheet(isPresented: $showImagePicker) {
             viewModel.deleteExtraImagesIfNeeded()
         } content: {
             ImagePicker(
@@ -108,27 +109,30 @@ private extension EventFormView {
         Section("Площадка") {
             switch mode {
             case .regularCreate:
-                NavigationLink(destination: groundsListView) {
+                Button {
+                    showGroundPicker.toggle()
+                } label: {
                     Text(viewModel.eventInfo.sportsGround.name ?? "Выбрать")
                         .blueMediumWeight()
                 }
             case let .createForSelected(ground):
                 Text(ground.name.valueOrEmpty)
             case let .editExisting(event):
-                NavigationLink(destination: groundsListView) {
+                Button {
+                    showGroundPicker.toggle()
+                } label: {
                     Text(event.sportsGround.shortTitle)
                 }
             }
         }
-    }
-
-    var groundsListView: some View {
-        SportsGroundsListView(
-            for: .event(userID: defaults.mainUserID),
-            ground: $viewModel.eventInfo.sportsGround
-        )
-        .navigationTitle("Выбери площадку")
-        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showGroundPicker) {
+            ContentInSheet(title: "Выбери площадку", spacing: .zero) {
+                SportsGroundsListView(
+                    for: .event(userID: defaults.mainUserID),
+                    ground: $viewModel.eventInfo.sportsGround
+                )
+            }
+        }
     }
 
     var descriptionSection: some View {
@@ -151,7 +155,7 @@ private extension EventFormView {
 
     var pickImagesButton: some View {
         AddPhotoButton(
-            isAddingPhotos: $isShowingPicker,
+            isAddingPhotos: $showImagePicker,
             focusClbk: { focus = nil }
         )
         .disabled(!viewModel.canAddImages)

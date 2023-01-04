@@ -23,8 +23,7 @@ struct JournalSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
-            headerView
+        ContentInSheet(title: "Настройки дневника", spacing: .zero) {
             Form {
                 TextField("Название дневника", text: $journal.title)
                 visibilitySettings
@@ -50,11 +49,6 @@ struct JournalSettingsView: View {
 }
 
 private extension JournalSettingsView {
-    var headerView: some View {
-        HeaderForSheet(title: "Настройки дневника")
-            .disabled(viewModel.isLoading)
-    }
-
     var visibilitySettings: some View {
         Section("Кто видит записи") {
             Picker(
