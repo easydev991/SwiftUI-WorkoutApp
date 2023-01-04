@@ -35,14 +35,15 @@ struct SendMessageView: View {
     }
 
     var body: some View {
-        VStack {
-            HeaderForSheet(title: header)
-            Group {
-                textView
-                sendButtonStack
+        ContentInSheet(title: header) {
+            VStack {
+                Group {
+                    textView
+                    sendButtonStack
+                }
+                .padding(.horizontal)
+                Spacer()
             }
-            .padding(.horizontal)
-            Spacer()
         }
         .overlay {
             ProgressView()

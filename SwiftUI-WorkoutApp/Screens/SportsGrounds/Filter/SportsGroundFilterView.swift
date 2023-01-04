@@ -6,8 +6,7 @@ struct SportsGroundFilterView: View {
     private let defaultFilter = SportsGroundFilter()
 
     var body: some View {
-        VStack(spacing: .zero) {
-            HeaderForSheet(title: "Фильтр площадок")
+        ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
             Form {
                 Section("Размер") {
                     ForEach(defaultFilter.size, id: \.self) { size in
