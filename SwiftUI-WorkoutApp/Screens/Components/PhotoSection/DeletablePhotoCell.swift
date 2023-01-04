@@ -48,10 +48,10 @@ private extension DeletablePhotoCell {
 struct DeletablePhotoCell_Previews: PreviewProvider {
     static var previews: some View {
         DeletablePhotoCell(
-            photo: .mock,
+            photo: .preview,
             canDelete: true,
-            onTapClbk: {_ in},
-            deleteClbk: {_ in}
+            onTapClbk: { _ in },
+            deleteClbk: { _ in }
         )
         .environmentObject(CheckNetworkService())
         .previewLayout(.sizeThatFits)

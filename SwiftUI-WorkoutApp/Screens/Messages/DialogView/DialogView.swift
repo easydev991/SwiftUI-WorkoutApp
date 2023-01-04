@@ -180,7 +180,7 @@ private extension DialogView {
 
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
-        DialogView(dialog: .constant(.mock))
+        DialogView(dialog: .constant(.preview))
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

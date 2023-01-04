@@ -64,9 +64,9 @@ private extension JournalEntryCell {
 struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntryCell(
-            model: .mock,
-            deleteClbk: {_ in},
-            editClbk: {_ in}
+            model: .preview,
+            deleteClbk: { _ in },
+            editClbk: { _ in }
         )
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())

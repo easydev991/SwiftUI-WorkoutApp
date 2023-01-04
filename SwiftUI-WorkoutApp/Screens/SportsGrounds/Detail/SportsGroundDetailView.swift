@@ -280,7 +280,7 @@ private extension SportsGroundDetailView {
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SportsGroundDetailView(for: .mock, onDeletion: {_ in})
+            SportsGroundDetailView(for: .preview, onDeletion: { _ in })
                 .environmentObject(CheckNetworkService())
                 .environmentObject(DefaultsService())
         }

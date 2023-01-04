@@ -1,5 +1,4 @@
 import Foundation
-import UIKit.UIDevice
 
 enum Constants {
     static let minPasswordSize = 6
@@ -11,14 +10,6 @@ enum Constants {
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
     static let rulesOfService = URL(string: "https://workout.su/pravila")!
-
-    enum Feedback {
-        static let subject = "Обратная связь"
-        static let toEmail = "info@workout.su"
-        static let question = "Над чем нам стоит поработать?"
-        static let sysVersion = "iOS: \(UIDevice.current.systemVersion)"
-        static let appVersion = "App version: \(Constants.appVersion)"
-    }
 
     enum Alert {
         static let forgotPassword = "Для восстановления пароля введите логин или email"
@@ -33,10 +24,5 @@ enum Constants {
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         static let locationPermissionDenied = "Запрещен доступ к геолокации"
         static let needLocationPermission = "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках"
-    }
-
-    enum FriendAction: String {
-        case sendFriendRequest = "Добавить в друзья"
-        case removeFriend = "Удалить из друзей"
     }
 }

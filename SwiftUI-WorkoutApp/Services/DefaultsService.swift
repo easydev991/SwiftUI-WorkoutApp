@@ -1,7 +1,20 @@
 import SwiftUI
 
 @MainActor
-final class DefaultsService: ObservableObject {
+protocol DefaultsProtocol {
+    var mainUserID: Int { get }
+    func saveAuthData(_ info: AuthData)
+    func basicAuthInfo() throws -> AuthData
+    func saveUserInfo(_ info: UserResponse)
+    func saveFriendsIds(_ ids: [Int])
+    func saveFriendRequests(_ array: [UserResponse])
+    func setHasJournals(_ hasJournals: Bool)
+    func setHasSportsGrounds(_ hasGrounds: Bool)
+    func triggerLogout()
+}
+
+@MainActor
+final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
 

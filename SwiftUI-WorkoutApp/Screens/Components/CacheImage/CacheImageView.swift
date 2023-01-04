@@ -5,7 +5,7 @@ struct CacheImageView: View {
     var mode = Mode.userListItem
 
     var body: some View {
-        CacheAsyncImage(url: url, dummySize: mode.size) {
+        CacheAsyncImage(url: url, placeholderSize: mode.size) {
             Image(uiImage: $0).resizable()
         }
         .applySpecificSize(mode.size)

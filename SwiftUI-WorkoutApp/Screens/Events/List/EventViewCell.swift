@@ -30,7 +30,7 @@ struct EventViewCell: View {
 
 struct EventViewCell_Previews: PreviewProvider {
     static var previews: some View {
-        EventViewCell(for: .constant(.mock))
+        EventViewCell(for: .constant(.preview))
             .previewLayout(.sizeThatFits)
     }
 }

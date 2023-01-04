@@ -118,7 +118,7 @@ private extension JournalSettingsView {
 
 struct JournalSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        JournalSettingsView(with: .mock, updatedClbk: {_ in})
+        JournalSettingsView(with: .preview, updatedClbk: { _ in })
             .environmentObject(CheckNetworkService())
     }
 }

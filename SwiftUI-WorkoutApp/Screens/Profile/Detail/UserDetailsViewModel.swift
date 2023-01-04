@@ -4,7 +4,7 @@ import Foundation
 final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
-    @Published private(set) var friendActionOption = Constants.FriendAction.sendFriendRequest
+    @Published private(set) var friendActionOption = FriendAction.sendFriendRequest
     @Published private(set) var user: UserModel
     @Published private(set) var errorMessage = ""
     @Published private(set) var isMessageSent = false

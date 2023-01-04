@@ -54,7 +54,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
         do {
             let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(
-                from: FormatterService.halfMinuteAgoDateString()
+                from: FormatterService.halfMinuteAgoDateString
             )
             updatedGrounds.forEach { ground in
                 if !defaultList.contains(ground) {
@@ -148,9 +148,9 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         if !ignoreUserLocation && !isRegionSet {
             setupDefaultLocation()
         }
-        #if DEBUG
+#if DEBUG
         print("--- locationManager didFailWithError: \(error.localizedDescription)")
-        #endif
+#endif
     }
 }
 
@@ -191,9 +191,7 @@ private extension SportsGroundsMapViewModel {
         ? Constants.Alert.locationPermissionDenied
         : Constants.Alert.needLocationPermission
         let coordinates = ShortAddressService().coordinates(userCountryID, userCityID)
-        guard coordinates != (.zero, .zero) else {
-            return
-        }
+        guard coordinates != (.zero, .zero) else { return }
         region = .init(
             center: .init(
                 latitude: coordinates.0,

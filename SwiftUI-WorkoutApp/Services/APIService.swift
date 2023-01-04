@@ -1,9 +1,9 @@
 import Foundation
 
 struct APIService {
-    private let defaults: DefaultsService
+    private let defaults: DefaultsProtocol
 
-    init(with defaults: DefaultsService) {
+    init(with defaults: DefaultsProtocol) {
         self.defaults = defaults
     }
 
@@ -127,7 +127,7 @@ struct APIService {
     ///   - userID: `id` пользователя, к которому применяется действие
     ///   - option: вид действия - отправить заявку на добавление в друзья или удалить из списка друзей
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func friendAction(userID: Int, option: Constants.FriendAction) async throws -> Bool {
+    func friendAction(userID: Int, option: FriendAction) async throws -> Bool {
         let endpoint: Endpoint = option == .sendFriendRequest
         ? .sendFriendRequest(to: userID)
         : .deleteFriend(userID)

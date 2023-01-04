@@ -172,7 +172,7 @@ private extension SportsGroundFormView {
 
 struct CreateOrEditGroundView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundFormView(.editExisting(.mock), refreshClbk: {})
+        SportsGroundFormView(.editExisting(.preview), refreshClbk: {})
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

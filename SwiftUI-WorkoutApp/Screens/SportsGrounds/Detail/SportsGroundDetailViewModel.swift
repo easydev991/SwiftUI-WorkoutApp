@@ -12,9 +12,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
     }
 
     func askForSportsGround(refresh: Bool, with defaults: DefaultsService) async {
-        if (isLoading || ground.isFull) && !refresh {
-            return
-        }
+        if (isLoading || ground.isFull) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             ground = try await APIService(with: defaults).getSportsGround(id: ground.id)

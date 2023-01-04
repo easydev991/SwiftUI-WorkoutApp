@@ -267,7 +267,7 @@ private extension UserDetailsView {
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserDetailsView(for: .mock)
+        UserDetailsView(for: .preview)
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }
