@@ -3,32 +3,45 @@ import UIKit.UIImage
 
 @MainActor
 final class EventFormViewModel: ObservableObject {
-    @Published var eventInfo: EventForm
+    @Published var eventForm: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isSuccess = false
     @Published var newImages = [UIImage]()
     private var eventID: Int?
+    private let oldEventForm: EventForm
+    var isFormReady: Bool {
+        eventID == nil
+        ? eventForm.isReadyToCreate && !newImages.isEmpty
+        : eventForm.isReadyToUpdate(old: oldEventForm)
+    }
     var imagesLimit: Int {
         eventID == nil
         ? Constants.photosLimit - newImages.count
-        : Constants.photosLimit - newImages.count - eventInfo.photosCount
+        : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
     var canAddImages: Bool {
         guard !isLoading else { return false }
         return eventID == nil
         ? newImages.count < Constants.photosLimit
-        : (newImages.count + eventInfo.photosCount) < Constants.photosLimit
+        : (newImages.count + eventForm.photosCount) < Constants.photosLimit
     }
 
+    /// Инициализирует viewModel для создания/изменения существующего мероприятия
+    /// - Parameter event: вся информация о мероприятии
     init(with event: EventResponse? = nil) {
         eventID = event?.id
-        eventInfo = .init(event)
+        eventForm = .init(event)
+        oldEventForm = .init(event)
     }
 
+    /// Инициализирует viewModel для создания нового мероприятия на выбранной площадке
+    /// - Parameters:
+    ///   - sportsGround: площадка для мероприятия
     init(with sportsGround: SportsGround) {
-        eventInfo = .emptyValue
-        eventInfo.sportsGround = sportsGround
+        oldEventForm = .emptyValue
+        eventForm = .emptyValue
+        eventForm.sportsGround = sportsGround
     }
 
     func deleteExtraImagesIfNeeded() {
@@ -40,11 +53,11 @@ final class EventFormViewModel: ObservableObject {
     func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
-        eventInfo.newImagesData = newImages.enumerated().map {
+        eventForm.newImagesData = newImages.enumerated().map {
             .init(withImage: $0.element, forKey: ($0.offset + 1).description)
         }
         do {
-            isSuccess = try await APIService(with: defaults).saveEvent(id: eventID, form: eventInfo).id != .zero
+            isSuccess = try await APIService(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

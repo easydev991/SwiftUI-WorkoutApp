@@ -10,6 +10,7 @@ struct SportsGroundsMapView: View {
     @State private var alertMessage = ""
     @State private var showFilters = false
     @State private var showDetailsView = false
+    @State private var showGroundCreationSheet = false
 
     var body: some View {
         NavigationView {
@@ -142,20 +143,25 @@ private extension SportsGroundsMapView {
     }
 
     var createGroundButton: some View {
-        NavigationLink {
-            SportsGroundFormView(
-                .createNew(
-                    address: $viewModel.addressString,
-                    coordinate: $viewModel.region.center,
-                    cityID: (defaults.mainUserInfo?.cityID).valueOrZero
-                ),
-                refreshClbk: updateRecent
-            )
+        Button {
+            showGroundCreationSheet.toggle()
         } label: {
             Image(systemName: "plus")
         }
         .opacity(viewModel.isLoading ? .zero : 1)
         .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
+        .sheet(isPresented: $showGroundCreationSheet) {
+            ContentInSheet(title: "Новая площадка", spacing: .zero) {
+                SportsGroundFormView(
+                    .createNew(
+                        address: $viewModel.addressString,
+                        coordinate: $viewModel.region.center,
+                        cityID: (defaults.mainUserInfo?.cityID).valueOrZero
+                    ),
+                    refreshClbk: updateRecent
+                )
+            }
+        }
     }
 
     func openDetailsView(_ ground: SportsGround) {
