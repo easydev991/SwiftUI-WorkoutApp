@@ -41,6 +41,7 @@ struct EventFormView: View {
             if viewModel.imagesLimit > 0 {
                 pickImagesButton
             }
+            saveButton
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
@@ -64,7 +65,6 @@ struct EventFormView: View {
         }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onDisappear(perform: cancelTask)
-        .toolbar { saveButton }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -89,7 +89,7 @@ private extension EventFormView {
 
     var eventNameSection: some View {
         Section {
-            TextField("Название", text: $viewModel.eventInfo.title)
+            TextField("Название", text: $viewModel.eventForm.title)
                 .focused($focus, equals: .eventName)
         }
     }
@@ -98,7 +98,7 @@ private extension EventFormView {
         Section("Дата и время") {
             DatePicker(
                 "Дата и время",
-                selection: $viewModel.eventInfo.date,
+                selection: $viewModel.eventForm.date,
                 in: .now...Constants.maxEventFutureDate
             )
             .labelsHidden()
@@ -112,7 +112,7 @@ private extension EventFormView {
                 Button {
                     showGroundPicker.toggle()
                 } label: {
-                    Text(viewModel.eventInfo.sportsGround.name ?? "Выбрать")
+                    Text(viewModel.eventForm.sportsGround.name ?? "Выбрать")
                         .blueMediumWeight()
                 }
             case let .createForSelected(ground):
@@ -129,7 +129,7 @@ private extension EventFormView {
             ContentInSheet(title: "Выбери площадку", spacing: .zero) {
                 SportsGroundsListView(
                     for: .event(userID: defaults.mainUserID),
-                    ground: $viewModel.eventInfo.sportsGround
+                    ground: $viewModel.eventForm.sportsGround
                 )
             }
         }
@@ -137,7 +137,7 @@ private extension EventFormView {
 
     var descriptionSection: some View {
         Section("Описание") {
-            TextEditor(text: $viewModel.eventInfo.description)
+            TextEditor(text: $viewModel.eventForm.description)
                 .focused($focus, equals: .eventDescription)
                 .frame(height: 100)
         }
@@ -162,14 +162,16 @@ private extension EventFormView {
     }
 
     var saveButton: some View {
-        Button(action: saveAction) {
-            Text("Сохранить")
+        Section {
+            Button(action: saveAction) {
+                ButtonInFormLabel(title: "Сохранить")
+            }
+            .disabled(
+                !viewModel.isFormReady
+                || viewModel.isLoading
+                || !network.isConnected
+            )
         }
-        .disabled(
-            !viewModel.eventInfo.isReadyToSend
-            || viewModel.isLoading
-            || !network.isConnected
-        )
     }
 
     func saveAction() {

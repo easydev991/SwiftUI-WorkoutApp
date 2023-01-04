@@ -43,6 +43,7 @@ struct SportsGroundFormView: View {
             if viewModel.imagesLimit > 0 {
                 pickImagesButton
             }
+            saveButton
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
@@ -66,7 +67,6 @@ struct SportsGroundFormView: View {
         }
         .onChange(of: viewModel.isSuccess, perform: dismiss)
         .onDisappear(perform: cancelTask)
-        .toolbar { saveButton }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -134,14 +134,16 @@ private extension SportsGroundFormView {
     }
 
     var saveButton: some View {
-        Button(action: saveAction) {
-            Text("Сохранить")
+        Section {
+            Button(action: saveAction) {
+                ButtonInFormLabel(title: "Сохранить")
+            }
+            .disabled(
+                !viewModel.isFormReady
+                || viewModel.isLoading
+                || !network.isConnected
+            )
         }
-        .disabled(
-            !viewModel.isFormReady
-            || viewModel.isLoading
-            || !network.isConnected
-        )
     }
 
     func saveAction() {

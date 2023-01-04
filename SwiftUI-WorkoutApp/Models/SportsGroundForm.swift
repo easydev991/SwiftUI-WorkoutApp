@@ -57,10 +57,19 @@ extension SportsGroundForm {
     }
 
     /// Готовность формы к отправке обновлений по площадке
-    var isReadyToSend: Bool {
-        !address.isEmpty
-        && !latitude.isEmpty
-        && !longitude.isEmpty
-        && cityID != .zero
+    func isReadyToUpdate(old: SportsGroundForm) -> Bool {
+        isReadyToCreate
+        && (self != old) || !newImagesData.isEmpty
+    }
+}
+
+extension SportsGroundForm: Equatable {
+    static func == (lhs: SportsGroundForm, rhs: SportsGroundForm) -> Bool {
+        lhs.address == rhs.address
+        && lhs.latitude == rhs.latitude
+        && lhs.longitude == rhs.longitude
+        && lhs.cityID == rhs.cityID
+        && lhs.typeID == rhs.typeID
+        && lhs.sizeID == rhs.sizeID
     }
 }

@@ -7,7 +7,7 @@ struct EventsListView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
-    @State private var isCreatingEvent = false
+    @State private var showEventCreationSheet = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
@@ -110,23 +110,28 @@ private extension EventsListView {
 
     func emptyViewAction() {
         if showAddEventButton {
-            isCreatingEvent.toggle()
+            showEventCreationSheet.toggle()
         } else {
             tabViewModel.selectTab(.map)
         }
     }
 
     var addEventLink: some View {
-        NavigationLink(isActive: $isCreatingEvent) {
-            EventFormView(
-                for: .regularCreate,
-                refreshClbk: refreshAction
-            )
+        Button {
+            showEventCreationSheet.toggle()
         } label: {
             Image(systemName: "plus")
         }
         .opacity(showAddEventButton ? 1 : .zero)
         .disabled(!network.isConnected)
+        .sheet(isPresented: $showEventCreationSheet) {
+            ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
+                EventFormView(
+                    for: .regularCreate,
+                    refreshClbk: refreshAction
+                )
+            }
+        }
     }
 
     var showAddEventButton: Bool {

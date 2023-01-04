@@ -9,10 +9,11 @@ final class SportsGroundFormViewModel: ObservableObject {
     @Published private(set) var isSuccess = false
     @Published var newImages = [UIImage]()
     private var groundID: Int?
+    private let oldGroundForm: SportsGroundForm
     var isFormReady: Bool {
         groundID == nil
         ? groundForm.isReadyToCreate && !newImages.isEmpty
-        : groundForm.isReadyToSend
+        : groundForm.isReadyToUpdate(old: oldGroundForm)
     }
     var imagesLimit: Int {
         groundID == nil
@@ -34,6 +35,7 @@ final class SportsGroundFormViewModel: ObservableObject {
     init(with ground: SportsGround) {
         groundForm = .init(ground)
         groundID = ground.id
+        oldGroundForm = .init(ground)
     }
 
     /// Инициализирует viewModel для создания новой площадки
@@ -49,6 +51,12 @@ final class SportsGroundFormViewModel: ObservableObject {
         _ cityID: Int
     ) {
         groundForm = .init(
+            address: address,
+            latitude: latitude,
+            longitude: longitude,
+            cityID: cityID
+        )
+        oldGroundForm = .init(
             address: address,
             latitude: latitude,
             longitude: longitude,

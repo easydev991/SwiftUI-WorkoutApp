@@ -35,14 +35,29 @@ extension EventForm {
         sportsGround.cityID.valueOrZero
     }
 
-    /// Готовность формы к отправке
-    var isReadyToSend: Bool {
+    /// Готовность формы к созданию нового мероприятия
+    var isReadyToCreate: Bool {
         !title.isEmpty
         && !description.isEmpty
         && sportsGround.id != .zero
     }
 
+    /// Готовность формы к отправке обновлений по мероприятию
+    func isReadyToUpdate(old: EventForm) -> Bool {
+        isReadyToCreate
+        && (self != old) || !newImagesData.isEmpty
+    }
+
     static var emptyValue: Self {
         .init(nil)
+    }
+}
+
+extension EventForm: Equatable {
+    static func == (lhs: EventForm, rhs: EventForm) -> Bool {
+        lhs.title == rhs.title
+        && lhs.description == rhs.description
+        && lhs.sportsGround.id == rhs.sportsGround.id
+        && lhs.date == rhs.date
     }
 }
