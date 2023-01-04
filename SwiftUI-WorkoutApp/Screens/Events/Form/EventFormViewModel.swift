@@ -31,6 +31,12 @@ final class EventFormViewModel: ObservableObject {
         eventInfo.sportsGround = sportsGround
     }
 
+    func deleteExtraImagesIfNeeded() {
+        while imagesLimit < 0 {
+            newImages.removeLast()
+        }
+    }
+
     func saveEvent(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()
