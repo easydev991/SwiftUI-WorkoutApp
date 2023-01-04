@@ -13,7 +13,7 @@ struct CacheAsyncImage<Content: View>: View {
     ) {
         self.dummySize = dummySize
         self.content = content
-        _loader = StateObject(wrappedValue: ImageLoader(url: url, cache: Environment(\.imageCache).wrappedValue))
+        _loader = StateObject(wrappedValue: .init(url: url, cache: Environment(\.imageCache).wrappedValue))
     }
 
     var body: some View {

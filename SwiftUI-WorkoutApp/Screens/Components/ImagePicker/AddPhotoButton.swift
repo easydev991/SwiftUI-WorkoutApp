@@ -9,7 +9,7 @@ struct AddPhotoButton: View {
             focusClbk()
             isAddingPhotos.toggle()
         } label: {
-            Label("Добавить фотографию", systemImage: "plus.circle.fill")
+            Label("Добавить фото", systemImage: "plus.circle.fill")
                 .foregroundColor(.blue)
         }
     }
