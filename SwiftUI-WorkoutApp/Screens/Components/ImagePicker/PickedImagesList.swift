@@ -5,7 +5,7 @@ struct PickedImagesList: View {
 
     var body: some View {
         List {
-            ForEach(images, id: \.self) { image in
+            ForEach(Array(zip(images.indices, images)), id: \.0) { index, image in
                 HStack {
                     Image(uiImage: image)
                         .resizable()
@@ -13,9 +13,12 @@ struct PickedImagesList: View {
                         .frame(maxWidth: 100)
                         .cornerRadius(8)
                     Spacer()
-                    Text("Для удаления потяни справа налево")
-                        .font(.callout)
-                        .foregroundColor(.secondary)
+                    VStack(alignment: .leading) {
+                        Text("Фото № \(index + 1)")
+                        Text("Свайпни для удаления")
+                            .font(.callout)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
             .onDelete(perform: deletePhoto)

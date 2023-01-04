@@ -56,6 +56,12 @@ final class SportsGroundFormViewModel: ObservableObject {
         )
     }
 
+    func deleteExtraImagesIfNeeded() {
+        while imagesLimit < 0 {
+            newImages.removeLast()
+        }
+    }
+
     func saveGround(with defaults: DefaultsService) async {
         if isLoading { return }
         isLoading.toggle()

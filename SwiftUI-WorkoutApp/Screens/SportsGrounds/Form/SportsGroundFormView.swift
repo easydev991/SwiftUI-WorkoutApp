@@ -40,7 +40,9 @@ struct SportsGroundFormView: View {
             if !viewModel.newImages.isEmpty {
                 pickedImagesList
             }
-            pickImagesButton
+            if viewModel.imagesLimit > 0 {
+                pickImagesButton
+            }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
@@ -50,9 +52,10 @@ struct SportsGroundFormView: View {
         .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(isPresented: $isShowingPicker) {
+            viewModel.deleteExtraImagesIfNeeded()
+        } content: {
             ImagePicker(
                 pickedImages: $viewModel.newImages,
-                isPresented: $isShowingPicker,
                 selectionLimit: viewModel.imagesLimit,
                 compressionQuality: .zero
             )
@@ -108,8 +111,12 @@ private extension SportsGroundFormView {
     }
 
     var pickedImagesList: some View {
-        Section("Фотографии") {
+        Section {
             PickedImagesList(images: $viewModel.newImages)
+        } header: {
+            Text("Фотографии, \(viewModel.newImages.count) шт.")
+        } footer: {
+            Text(viewModel.imagesLimit <= 0 ? "Больше добавить фото нельзя" : "Можно добавить еще \(viewModel.imagesLimit) фото")
         }
     }
 
