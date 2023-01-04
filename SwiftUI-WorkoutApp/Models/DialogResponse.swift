@@ -42,16 +42,4 @@ extension DialogResponse {
     static var emptyValue: DialogResponse {
         .init(id: .zero, anotherUserImageStringURL: nil, anotherUserName: nil, lastMessageText: nil, lastMessageDate: nil, anotherUserID: nil, createdDate: nil)
     }
-    static var mock: DialogResponse {
-        .init(
-            id: 88777,
-            anotherUserImageStringURL: "https://workout.su/uploads/avatars/2019/03/2019-03-21-23-03-49-rjk.jpg",
-            anotherUserName: "WasD",
-            lastMessageText: "Ошибка 500 это про пустые ответы? Я написал серверным.",
-            lastMessageDate: "2022-05-14T17:35:45+00:00",
-            anotherUserID: 30,
-            unreadCountOptional: 5,
-            createdDate: "2022-04-25T18:47:46+00:00"
-        )
-    }
 }

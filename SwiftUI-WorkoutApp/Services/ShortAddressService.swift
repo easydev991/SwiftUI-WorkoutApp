@@ -1,36 +1,30 @@
 import Foundation
 
-struct ShortAddressService {
+protocol ShortAddressProtocol {
+    func addressFor(_ countryID: Int, _ cityID: Int) -> String
+    func coordinates(_ countryID: Int, _ cityID: Int) -> (Double, Double)
+}
+
+struct ShortAddressService: ShortAddressProtocol {
     func addressFor(_ countryID: Int, _ cityID: Int) -> String {
-        if countryID == .zero || cityID == .zero {
-            return ""
-        }
-        do {
-            let country = try countries().first(where: { $0.id == String(countryID) })
-            let city = country?.cities.first(where: { $0.id == String(cityID) })
-            let countryName = (country?.name).valueOrEmpty
-            if let cityName = city?.name {
-                return countryName + ", " + cityName
-            } else {
-                return countryName
-            }
-        } catch {
-            return ""
+        guard countryID != .zero, cityID != .zero,
+              let country = try? countries().first(where: { $0.id == String(countryID) })
+        else { return "" }
+        let countryName = country.name
+        if let cityName = country.cities.first(where: { $0.id == String(cityID) })?.name {
+            return countryName + ", " + cityName
+        } else {
+            return countryName
         }
     }
 
     func coordinates(_ countryID: Int, _ cityID: Int) -> (Double, Double) {
-        if countryID == .zero || cityID == .zero {
-            return (.zero, .zero)
-        }
-        do {
-            let city = try city(with: cityID, in: countryID)
-            let lat = Double((city?.lat).valueOrEmpty) ?? .zero
-            let lon = Double((city?.lon).valueOrEmpty) ?? .zero
-            return (lat, lon)
-        } catch {
-            return (.zero, .zero)
-        }
+        guard countryID != .zero, cityID != .zero,
+              let city = try? city(with: cityID, in: countryID)
+        else { return (.zero, .zero) }
+        let lat = Double(city.lat) ?? .zero
+        let lon = Double(city.lon) ?? .zero
+        return (lat, lon)
     }
 }
 

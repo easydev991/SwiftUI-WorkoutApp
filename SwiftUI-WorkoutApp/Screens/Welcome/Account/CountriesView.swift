@@ -6,11 +6,6 @@ struct CountriesView: View {
     @Binding var allCountries: [Country]
     let selectedCountry: Country
     let countryClbk: (Country) -> Void
-    private var filteredCountries: [Country] {
-        searchQuery.isEmpty
-        ? allCountries
-        : allCountries.filter { $0.name.contains(searchQuery) }
-    }
 
     var body: some View {
         List {
@@ -35,12 +30,20 @@ struct CountriesView: View {
     }
 }
 
+private extension CountriesView {
+    var filteredCountries: [Country] {
+        searchQuery.isEmpty
+        ? allCountries
+        : allCountries.filter { $0.name.contains(searchQuery) }
+    }
+}
+
 struct CountriesView_Previews: PreviewProvider {
     static var previews: some View {
         CountriesView(
             allCountries: .constant([.defaultCountry]),
             selectedCountry: .defaultCountry,
-            countryClbk: {_ in}
+            countryClbk: { _ in }
         )
     }
 }

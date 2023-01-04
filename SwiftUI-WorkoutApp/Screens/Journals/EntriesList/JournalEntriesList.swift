@@ -147,7 +147,7 @@ private extension JournalEntriesList {
 
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntriesList(for: DefaultsService().mainUserID, in: .constant(.mock))
+        JournalEntriesList(for: DefaultsService().mainUserID, in: .constant(.preview))
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

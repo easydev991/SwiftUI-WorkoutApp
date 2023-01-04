@@ -13,9 +13,9 @@ final class ProfileSettingsViewModel: ObservableObject {
 
     func feedbackAction() {
         feedbackSender.sendFeedback(
-            subject: Constants.Feedback.subject,
-            messageBody: "\(Constants.Feedback.sysVersion)\n\(Constants.Feedback.appVersion)\n\n\(Constants.Feedback.question)\n",
-            recipients: [Constants.Feedback.toEmail]
+            subject: Feedback.subject,
+            messageBody: "\(Feedback.sysVersion)\n\(Feedback.appVersion)\n\n\(Feedback.question)\n",
+            recipients: [Feedback.toEmail]
         )
     }
 
@@ -31,4 +31,14 @@ final class ProfileSettingsViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+private extension ProfileSettingsViewModel {
+    enum Feedback {
+        static let subject = "Обратная связь"
+        static let toEmail = "info@workout.su"
+        static let question = "Над чем нам стоит поработать?"
+        static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
+        static let appVersion = "App version: \(Constants.appVersion)"
+    }
 }

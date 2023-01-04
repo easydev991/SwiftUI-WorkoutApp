@@ -6,11 +6,6 @@ struct CitiesView: View {
     @Binding var allCities: [City]
     let selectedCity: City
     let cityClbk: (City) -> Void
-    private var filteredCities: [City] {
-        searchQuery.isEmpty
-        ? allCities
-        : allCities.filter { $0.name.contains(searchQuery) }
-    }
 
     var body: some View {
         List(filteredCities) { city in
@@ -33,12 +28,20 @@ struct CitiesView: View {
     }
 }
 
+private extension CitiesView {
+    var filteredCities: [City] {
+        searchQuery.isEmpty
+        ? allCities
+        : allCities.filter { $0.name.contains(searchQuery) }
+    }
+}
+
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
         CitiesView(
             allCities: .constant([.defaultCity]),
             selectedCity: .defaultCity,
-            cityClbk: {_ in}
+            cityClbk: { _ in }
         )
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct FormatterService {
+enum FormatterService {
     static func readableDate(from string: String?) -> String {
         let isoFormatter = ISO8601DateFormatter()
         if let dateString = string, !dateString.isEmpty,
@@ -28,7 +28,7 @@ struct FormatterService {
         return string
     }
 
-    static func halfMinuteAgoDateString() -> String {
+    static var halfMinuteAgoDateString: String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = DateFormat.serverDateTimeSec.rawValue

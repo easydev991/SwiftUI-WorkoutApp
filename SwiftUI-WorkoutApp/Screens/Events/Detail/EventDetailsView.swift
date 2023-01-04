@@ -299,7 +299,7 @@ private extension EventDetailsView {
 
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(with: .mock, deleteClbk: {})
+        EventDetailsView(with: .preview, deleteClbk: {})
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

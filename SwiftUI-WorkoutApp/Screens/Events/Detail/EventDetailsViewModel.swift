@@ -12,9 +12,7 @@ final class EventDetailsViewModel: ObservableObject {
     }
 
     func askForEvent(refresh: Bool, with defaults: DefaultsService) async {
-        if (isLoading || event.isFull) && !refresh {
-            return
-        }
+        if (isLoading || event.isFull) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService(with: defaults).getEvent(by: event.id)

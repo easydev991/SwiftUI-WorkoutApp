@@ -3,15 +3,15 @@ import SwiftUI
 /// Картинка с возможностью кэширования
 struct CacheAsyncImage<Content: View>: View {
     @StateObject private var loader: ImageLoader
-    private let dummySize: CGSize
+    private let placeholderSize: CGSize
     private let content: (UIImage) -> Content
 
     init(
         url: URL?,
-        dummySize: CGSize = .init(width: 100, height: 100),
+        placeholderSize: CGSize = .init(width: 100, height: 100),
         @ViewBuilder content: @escaping (UIImage) -> Content
     ) {
-        self.dummySize = dummySize
+        self.placeholderSize = placeholderSize
         self.content = content
         _loader = StateObject(wrappedValue: .init(url: url, cache: Environment(\.imageCache).wrappedValue))
     }
@@ -22,7 +22,7 @@ struct CacheAsyncImage<Content: View>: View {
                 content(result)
                     .transition(.opacity.combined(with: .scale).combined(with: .move(edge: .bottom)))
             } else {
-                RoundedDefaultImage(size: dummySize)
+                RoundedDefaultImage(size: placeholderSize)
             }
         }
         .animation(.easeInOut, value: loader.image)

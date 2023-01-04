@@ -121,7 +121,7 @@ private extension GenericListCell {
 
 struct GenericListCell_Previews: PreviewProvider {
     static var previews: some View {
-        GenericListCell(for: .dialog(.mock))
+        GenericListCell(for: .dialog(.preview))
             .environmentObject(CheckNetworkService())
             .previewLayout(.sizeThatFits)
     }

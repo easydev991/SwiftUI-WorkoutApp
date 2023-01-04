@@ -30,7 +30,7 @@ struct SportsGroundLocationInfo_Previews: PreviewProvider {
     static var previews: some View {
         Form {
             SportsGroundLocationInfo(
-                ground: .constant(.mock),
+                ground: .constant(.preview),
                 address: "Яблочная 15",
                 appleMapsURL: .init(string: "maps://?saddr=&daddr=55.72681766162947,37.50063106774381")
             )

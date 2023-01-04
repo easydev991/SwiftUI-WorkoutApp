@@ -54,9 +54,6 @@ extension UserResponse {
     var regForm: MainUserForm {
         .init(self)
     }
-    static var mock: UserResponse {
-        .init(userName: "TestUserName", fullName: "TestFullName", email: "test@mail.ru", imageStringURL: "avatar_default", birthDateIsoString: "1990-11-25", createdIsoDateTimeSec: nil, userID: .zero, cityID: 1, countryID: 17, genderCode: 1, friendsCount: 5, journalsCount: 2, friendRequestsCountString: "3", sportsGroundsCountString: "4", addedSportsGrounds: nil)
-    }
     static var emptyValue: UserResponse {
         .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil)
     }

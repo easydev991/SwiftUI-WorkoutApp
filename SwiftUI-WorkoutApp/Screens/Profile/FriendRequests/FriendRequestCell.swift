@@ -41,8 +41,8 @@ struct FriendRequestCell_Previews: PreviewProvider {
     static var previews: some View {
         FriendRequestCell(
             model: .emptyValue,
-            acceptClbk: {_ in},
-            declineClbk: {_ in}
+            acceptClbk: { _ in },
+            declineClbk: { _ in }
         )
         .previewLayout(.sizeThatFits)
     }

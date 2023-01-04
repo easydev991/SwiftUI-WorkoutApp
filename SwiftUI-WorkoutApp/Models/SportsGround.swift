@@ -112,10 +112,6 @@ struct Photo: Codable, Identifiable, Equatable {
         case id
         case stringURL = "photo"
     }
-
-    static var mock: Photo {
-        .init(id: .zero, stringURL: "avatar_default")
-    }
 }
 
 struct Comment: Codable, Identifiable, Hashable {
@@ -134,10 +130,6 @@ struct Comment: Codable, Identifiable, Hashable {
 
     var formattedDateString: String {
         FormatterService.readableDate(from: date)
-    }
-
-    static var mock: Comment {
-        .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .mock)
     }
 }
 
@@ -163,11 +155,5 @@ extension SportsGround {
     }
     static var emptyValue: SportsGround {
         .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
-    }
-    static var mock: SportsGround {
-        try! Bundle.main.decodeJson(
-            [SportsGround].self,
-            fileName: "oldSportsGrounds.json"
-        ).first!
     }
 }

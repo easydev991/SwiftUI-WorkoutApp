@@ -71,10 +71,10 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
                 id: .zero,
                 body: "Test comment",
                 date: "2013-01-16T03:35:54+04:00",
-                user: .mock
+                user: .preview
             ),
-            deleteClbk: {_ in},
-            editClbk: {_ in}
+            deleteClbk: { _ in },
+            editClbk: { _ in }
         )
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
