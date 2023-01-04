@@ -4,17 +4,20 @@ struct DeletablePhotoCell: View {
     @EnvironmentObject private var network: CheckNetworkService
     let photo: Photo
     let canDelete: Bool
+    var onTapClbk: (UIImage) -> Void
     var deleteClbk: (Photo) -> Void
 
     var body: some View {
-        CacheAsyncImage(url: photo.imageURL) {
-            Image(uiImage: $0).resizable()
+        CacheAsyncImage(url: photo.imageURL) { uiImage in
+            Image(uiImage: uiImage)
+                .resizable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onTapGesture { onTapClbk(uiImage) }
         }
-        .scaledToFill()
+        .scaledToFit()
         .cornerRadius(8)
         .overlay(alignment: .topTrailing) {
             menuButton
-                .opacity(showMenuButton ? 1 : .zero)
         }
     }
 }
@@ -29,10 +32,12 @@ private extension DeletablePhotoCell {
             }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
-                .font(.title)
+                .font(.title2)
+                .foregroundColor(.gray)
         }
-        .padding()
+        .padding(8)
         .onTapGesture { hapticFeedback(.rigid) }
+        .opacity(showMenuButton ? 1 : .zero)
     }
 
     var showMenuButton: Bool {
@@ -45,6 +50,7 @@ struct DeletablePhotoCell_Previews: PreviewProvider {
         DeletablePhotoCell(
             photo: .mock,
             canDelete: true,
+            onTapClbk: {_ in},
             deleteClbk: {_ in}
         )
         .environmentObject(CheckNetworkService())

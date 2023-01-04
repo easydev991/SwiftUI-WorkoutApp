@@ -2,10 +2,11 @@ import SwiftUI
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {
-    @State private var showAllPhotos = false
     private let items: [Photo]
     private let canDelete: Bool
     private let deletePhotoClbk: (Photo) -> Void
+    @State private var fullscreenImage: UIImage?
+    @State private var columns: Int
 
     init(
         with photos: [Photo],
@@ -13,60 +14,47 @@ struct PhotoSectionView: View {
         deleteClbk: @escaping (Photo) -> Void
     ) {
         items = photos
+        self.columns = photos.count == 1 ? 1 : 2
         self.canDelete = canDelete
         deletePhotoClbk = deleteClbk
     }
 
     var body: some View {
         Section("Фотографии") {
-            previewImage
-            if items.count > 1 {
-                showAllButton
+            ScrollView {
+                LazyVGrid(
+                    columns: .init(
+                        repeating: .init(
+                            .flexible(minimum: 150, maximum: .infinity),
+                            spacing: 12,
+                            alignment: .top
+                        ),
+                        count: columns
+                    ),
+                    spacing: 12
+                ) {
+                    ForEach(items) { photo in
+                        DeletablePhotoCell(
+                            photo: photo,
+                            canDelete: canDelete,
+                            onTapClbk: openImage,
+                            deleteClbk: deletePhotoClbk
+                        )
+                    }
+                }
+                .fullScreenCover(item: $fullscreenImage) {
+                    fullscreenImage = nil
+                } content: {
+                    FullScreenImageSheet(image: $0)
+                }
             }
         }
     }
 }
 
 private extension PhotoSectionView {
-    var previewImage: some View {
-        HStack {
-            Spacer()
-            CacheImageView(url: items.first?.imageURL, mode: .eventPhoto)
-            Spacer()
-        }
-    }
-
-    var showAllButton: some View {
-        Button {
-            showAllPhotos.toggle()
-        } label: {
-            ButtonInFormLabel(title: "Показать все")
-        }
-        .sheet(isPresented: $showAllPhotos) {
-            photosSheet
-        }
-    }
-
-    var photosSheet: some View {
-        VStack(spacing: .zero) {
-            HeaderForSheet(title: "Фотографии")
-            ScrollView {
-                LazyVStack {
-                    ForEach(items) { photo in
-                        DeletablePhotoCell(
-                            photo: photo,
-                            canDelete: canDelete,
-                            deleteClbk: deleteAction
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    func deleteAction(photo: Photo) {
-        showAllPhotos.toggle()
-        deletePhotoClbk(photo)
+    func openImage(_ image: UIImage) {
+        fullscreenImage = image
     }
 }
 
