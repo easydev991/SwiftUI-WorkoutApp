@@ -326,13 +326,11 @@ struct APIService {
 
     /// Изменить статус "пойду на мероприятие" для мероприятия
     /// - Parameters:
-    ///   - groundID: `id` мероприятия
-    ///   - trainHere: `true` - иду на мероприятие, `false` - не иду
+    ///   - go: `true` - иду на мероприятие, `false` - не иду
+    ///   - eventID: `id` мероприятия
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func changeIsGoingToEvent(for eventID: Int, isGoing: Bool) async throws -> Bool {
-        let endpoint: Endpoint = isGoing
-        ? .postIsGoingToEvent(id: eventID)
-        : .deleteIsGoingToEvent(id: eventID)
+    func changeIsGoingToEvent(_ go: Bool, for eventID: Int) async throws -> Bool {
+        let endpoint: Endpoint = go ? .postGoToEvent(eventID) : .deleteGoToEvent(eventID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -340,14 +338,14 @@ struct APIService {
     /// - Parameter eventID: `id` мероприятия
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(eventID: Int) async throws -> Bool {
-        try await makeStatus(for: Endpoint.deleteEvent(id: eventID).urlRequest)
+        try await makeStatus(for: Endpoint.deleteEvent(eventID).urlRequest)
     }
 
     /// Удалить площадку
     /// - Parameter groundID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func delete(groundID: Int) async throws -> Bool {
-        try await makeStatus(for: Endpoint.deleteSportsGround(id: groundID).urlRequest)
+        try await makeStatus(for: Endpoint.deleteSportsGround(groundID).urlRequest)
     }
 
     /// Запрашивает список диалогов для текущего пользователя
@@ -679,7 +677,7 @@ private extension APIService {
 
         // MARK: Удалить площадку
         /// **DELETE** ${API}/areas/<id>
-        case deleteSportsGround(id: Int)
+        case deleteSportsGround(_ groundID: Int)
 
         // MARK: Добавить комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments
@@ -727,11 +725,11 @@ private extension APIService {
 
         // MARK: Сообщить, что пользователь пойдет на мероприятие
         /// **POST** ${API}/trainings/<event_id>/go
-        case postIsGoingToEvent(id: Int)
+        case postGoToEvent(_ eventID: Int)
 
         // MARK: Сообщить, что пользователь не пойдет на мероприятие
         /// **DELETE** ${API}/trainings/<event_id>/go
-        case deleteIsGoingToEvent(id: Int)
+        case deleteGoToEvent(_ eventID: Int)
 
         // MARK: Добавить комментарий для мероприятия
         /// **POST** ${API}/trainings/<event_id>/comments
@@ -747,7 +745,7 @@ private extension APIService {
 
         // MARK: Удалить мероприятие
         /// **DELETE** ${API}/trainings/<event_id>
-        case deleteEvent(id: Int)
+        case deleteEvent(_ eventID: Int)
 
         // MARK: Получить список диалогов
         /// **GET** ${API}/dialogs
@@ -882,7 +880,7 @@ private extension APIService.Endpoint {
             return "\(baseUrl)/trainings/\(id)"
         case .createEvent:
             return "\(baseUrl)/trainings"
-        case let .postIsGoingToEvent(id), let .deleteIsGoingToEvent(id):
+        case let .postGoToEvent(id), let .deleteGoToEvent(id):
             return "\(baseUrl)/trainings/\(id)/go"
         case let .addCommentToEvent(id, _):
             return "\(baseUrl)/trainings/\(id)/comments"
@@ -934,7 +932,7 @@ private extension APIService.Endpoint {
         case .registration, .login, .editUser, .resetPassword,
                 .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                .createEvent, .editEvent, .postIsGoingToEvent,
+                .createEvent, .editEvent, .postGoToEvent,
                 .addCommentToEvent, .editEventComment, .sendMessageTo,
                 .createJournal, .markAsRead, .saveJournalEntry,
                 .createSportsGround, .editSportsGround:
@@ -949,7 +947,7 @@ private extension APIService.Endpoint {
             return .get
         case .declineFriendRequest, .deleteFriend,
                 .deleteGroundComment, .deleteTrainHere,
-                .deleteUser, .deleteIsGoingToEvent,
+                .deleteUser, .deleteGoToEvent,
                 .deleteEventComment, .deleteEvent,
                 .deleteDialog, .deleteJournal,
                 .deleteEntry, .deleteSportsGround,
@@ -1039,7 +1037,7 @@ private extension APIService.Endpoint {
                 .deleteGroundComment, .getSportsGroundsForUser,
                 .postTrainHere, .deleteTrainHere, .deleteUser,
                 .getFutureEvents, .getPastEvents, .getEvent,
-                .postIsGoingToEvent, .deleteIsGoingToEvent,
+                .postGoToEvent, .deleteGoToEvent,
                 .deleteEventComment, .deleteEvent, .getDialogs,
                 .getMessages, .deleteDialog, .getJournals,
                 .getJournal, .getJournalEntries, .deleteEntry,

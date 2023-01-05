@@ -157,10 +157,12 @@ private extension UserDetailsView {
             SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
                 .navigationTitle("Добавленные")
         } label: {
-            Label("Добавил площадки", systemImage: "mappin.and.ellipse")
-            Spacer()
-            Text(viewModel.user.addedSportsGrounds.count.description)
-                .foregroundColor(.secondary)
+            HStack {
+                Label("Добавил площадки", systemImage: "mappin.and.ellipse")
+                Spacer()
+                Text(viewModel.user.addedSportsGrounds.count.description)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 

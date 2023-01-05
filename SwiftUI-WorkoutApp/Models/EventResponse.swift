@@ -23,6 +23,9 @@ struct EventResponse: Codable, Identifiable {
     /// Логин автора мероприятия
     let authorName: String?
     let author: UserResponse?
+    /// Участвует ли пользователь в мероприятии
+    ///
+    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteIsGoingToEvent`, поэтому при итоговом определении статуса `trainHere` смотрим на список участников
     var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {
@@ -95,11 +98,12 @@ extension EventResponse {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
+    /// Список участников мероприятия
     var participants: [UserResponse] {
         get { participantsOptional ?? [] }
         set { participantsOptional = newValue }
     }
-    /// Пользователь тренируется на этой площадке
+    /// Пользователь участвует в этом мероприятии
     var trainHere: Bool {
         get { trainHereOptional.isTrue }
         set { trainHereOptional = newValue }
