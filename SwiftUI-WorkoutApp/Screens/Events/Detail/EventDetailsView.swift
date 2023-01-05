@@ -10,6 +10,7 @@ struct EventDetailsView: View {
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
     @State private var showDeleteDialog = false
+    @State private var trainHere = false
     @State private var editComment: Comment?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
@@ -82,6 +83,8 @@ struct EventDetailsView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
+        .onReceive(viewModel.$event, perform: onReceiveOfEventSetupTrainHere)
+        .onChange(of: viewModel.event.trainHere, perform: onChangeOfTrainHere)
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
@@ -148,12 +151,13 @@ private extension EventDetailsView {
 
     var participantsSection: some View {
         Section("Участники") {
-            if let participants = viewModel.event.participantsOptional,
-               !participants.isEmpty {
+            if viewModel.hasParticipants {
                 linkToParticipants
             }
-            if (viewModel.event.isCurrent).isTrue {
-                isGoingToggle
+            if viewModel.isEventCurrent {
+                Toggle("Пойду на мероприятие", isOn: $trainHere)
+                    .disabled(viewModel.isLoading || !network.isConnected)
+                    .onChange(of: trainHere, perform: changeTrainHereStatus)
             }
         }
     }
@@ -172,13 +176,28 @@ private extension EventDetailsView {
         }
     }
 
-    var isGoingToggle: some View {
-        CustomToggle(
-            isOn: $viewModel.event.trainHere,
-            title: "Пойду на мероприятие",
-            action: changeIsGoingToEvent
-        )
-        .disabled(viewModel.isLoading || !network.isConnected)
+    func changeTrainHereStatus(newValue: Bool) {
+        let oldValue = viewModel.event.trainHere
+        switch (oldValue, newValue) {
+        case (true, true), (false, false):
+            break // Пользователь не трогал тоггл
+        case (true, false), (false, true):
+            goingToEventTask = Task {
+                await viewModel.changeIsGoingToEvent(newValue, with: defaults)
+            }
+        }
+    }
+
+    /// Настраиваем начальное состояние `trainHere` при появлении экрана
+    func onReceiveOfEventSetupTrainHere(event: EventResponse) {
+        trainHere = event.trainHere
+    }
+
+    /// Обновляем состояние `trainHere` при получении изменений от `viewModel`
+    ///
+    /// Например, если сервер вернул ошибку при попытке сменить статус
+    func onChangeOfTrainHere(value: Bool) {
+        trainHere = value
     }
 
     var authorSection: some View {
@@ -218,12 +237,6 @@ private extension EventDetailsView {
 
     func askForInfo(refresh: Bool = false) async {
         await viewModel.askForEvent(refresh: refresh, with: defaults)
-    }
-
-    func changeIsGoingToEvent() {
-        goingToEventTask = Task {
-            await viewModel.changeIsGoingToEvent(with: defaults)
-        }
     }
 
     func refreshAction() {

@@ -6,6 +6,8 @@ final class EventDetailsViewModel: ObservableObject {
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    var isEventCurrent: Bool { event.isCurrent.isTrue }
+    var hasParticipants: Bool { !event.participants.isEmpty }
 
     init(with event: EventResponse) {
         self.event = event
@@ -24,24 +26,28 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func changeIsGoingToEvent(with defaults: DefaultsService) async {
+    /// Меняем статус `trainHere`. При неудаче откатываем статус обратно.
+    /// - Parameters:
+    ///   - newValue: новое значение `trainHere`
+    ///   - defaults: `UserDefaults` с необходимыми данными для операции
+    func changeIsGoingToEvent(_ newValue: Bool, with defaults: DefaultsService) async {
         if isLoading || !defaults.isAuthorized { return }
+        let oldValue = event.trainHere
+        event.trainHere = newValue
         isLoading.toggle()
         do {
-            let trainHere = !event.trainHere
-            if try await APIService(with: defaults).changeIsGoingToEvent(
-                for: event.id,
-                isGoing: trainHere
-            ) {
-                event.trainHere = trainHere
-                if trainHere, let userInfo = defaults.mainUserInfo {
+            if try await APIService(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
+                if newValue, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
                 } else {
                     event.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
+            } else {
+                event.trainHere = oldValue
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
+            event.trainHere = oldValue
         }
         isLoading.toggle()
     }
