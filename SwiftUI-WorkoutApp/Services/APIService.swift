@@ -280,13 +280,11 @@ struct APIService {
 
     /// Изменить статус "тренируюсь здесь" для площадки
     /// - Parameters:
-    ///   - groundID: `id` площадки
     ///   - trainHere: `true` - тренируюсь здесь, `false` - не тренируюсь здесь
+    ///   - groundID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func changeTrainHereStatus(for groundID: Int, trainHere: Bool) async throws -> Bool {
-        let endpoint: Endpoint = trainHere
-        ? .postTrainHere(groundID)
-        : .deleteTrainHere(groundID)
+    func changeTrainHereStatus(_ trainHere: Bool, for groundID: Int) async throws -> Bool {
+        let endpoint: Endpoint = trainHere ? .postTrainHere(groundID) : .deleteTrainHere(groundID)
         let isOk = try await makeStatus(for: endpoint.urlRequest)
         await defaults.setHasSportsGrounds(trainHere)
         return isOk
