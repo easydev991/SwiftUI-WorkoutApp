@@ -162,8 +162,7 @@ private extension SportsGroundDetailView {
 
     var linkToParticipantsView: some View {
         NavigationLink {
-            UsersListView(mode: .participants(list: viewModel.ground.participants))
-                .navigationTitle("Здесь тренируются")
+            UsersListView(mode: .groundParticipants(list: viewModel.ground.participants))
         } label: {
             HStack {
                 Text("Здесь тренируются")

@@ -169,7 +169,6 @@ private extension UserDetailsView {
     var friendsLink: some View {
         NavigationLink {
             UsersListView(mode: .friends(userID: viewModel.user.id))
-                .navigationTitle("Друзья")
         } label: {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")

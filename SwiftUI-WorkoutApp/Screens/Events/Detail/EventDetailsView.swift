@@ -164,8 +164,7 @@ private extension EventDetailsView {
 
     var linkToParticipants: some View {
         NavigationLink {
-            UsersListView(mode: .participants(list: viewModel.event.participants))
-                .navigationTitle("Пойдут на мероприятие")
+            UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
         } label: {
             HStack {
                 Text("Идут")
