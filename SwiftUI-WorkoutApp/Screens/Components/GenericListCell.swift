@@ -114,7 +114,7 @@ private extension GenericListCell {
         case .dialog:
             return false
         case let .journal(info, _, _):
-            return (info.ownerID == defaults.mainUserID) && network.isConnected
+            return (info.ownerID == defaults.mainUserInfo?.userID) && network.isConnected
         }
     }
 }

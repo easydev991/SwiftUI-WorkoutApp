@@ -7,17 +7,17 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
 
-    func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsService) async {
+    func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if (!users.isEmpty || isLoading) && !refresh { return }
         switch mode {
         case let .friends(userID):
             await makeFriendsList(for: userID, refresh: refresh, with: defaults)
-        case let .participants(list):
+        case let .eventParticipants(list), let .groundParticipants(list):
             users = list.map(UserModel.init)
         }
     }
 
-    func respondToFriendRequest(from userID: Int, accept: Bool, with defaults: DefaultsService) async {
+    func respondToFriendRequest(from userID: Int, accept: Bool, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -34,8 +34,8 @@ final class UsersListViewModel: ObservableObject {
 }
 
 private extension UsersListViewModel {
-    func makeFriendsList(for id: Int, refresh: Bool, with defaults: DefaultsService) async {
-        let isMainUser = id == defaults.mainUserID
+    func makeFriendsList(for id: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
+        let isMainUser = id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         do {
             if isMainUser {
@@ -49,7 +49,7 @@ private extension UsersListViewModel {
         if !refresh { isLoading.toggle() }
     }
 
-    func checkFriendRequests(refresh: Bool, with defaults: DefaultsService) async {
+    func checkFriendRequests(refresh: Bool, with defaults: DefaultsProtocol) async {
         if defaults.friendRequestsList.isEmpty || refresh {
             try? await APIService(with: defaults).getFriendRequests()
         }

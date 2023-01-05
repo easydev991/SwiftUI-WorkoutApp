@@ -22,8 +22,7 @@ private extension IncognitoProfileView {
 
     var registerButton: some View {
         NavigationLink {
-            AccountInfoView()
-                .navigationTitle("Регистрация")
+            AccountInfoView(mode: .create)
         } label: {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
                 .roundedRectangleStyle()

@@ -8,7 +8,7 @@ final class DialogViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func makeItems(for dialogID: Int, refresh: Bool, with defaults: DefaultsService) async {
+    func makeItems(for dialogID: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
         if isLoading && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
@@ -19,7 +19,7 @@ final class DialogViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func markAsRead(from userID: Int, with defaults: DefaultsService) async {
+    func markAsRead(from userID: Int, with defaults: DefaultsProtocol) async {
         do {
             if try await APIService(with: defaults).markAsRead(from: userID) {
                 markedAsRead = true
@@ -29,7 +29,7 @@ final class DialogViewModel: ObservableObject {
         }
     }
 
-    func sendMessage(in dialog: Int, to userID: Int, with defaults: DefaultsService) async {
+    func sendMessage(in dialog: Int, to userID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

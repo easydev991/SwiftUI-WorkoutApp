@@ -13,8 +13,8 @@ struct APIService {
     func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest, needAuth: false)
-        await defaults.saveAuthData(.init(login: model.userName, password: model.password))
-        await defaults.saveUserInfo(result)
+        try await defaults.saveAuthData(.init(login: model.userName, password: model.password))
+        try await defaults.saveUserInfo(result)
     }
 
     /// Запрашивает `id` пользователя для входа в учетную запись
@@ -23,21 +23,23 @@ struct APIService {
     ///   - password: пароль от учетной записи
     func logInWith(_ login: String, _ password: String) async throws {
         let authData = AuthData(login: login, password: password)
-        await defaults.saveAuthData(authData)
+        try await defaults.saveAuthData(authData)
         let result = try await makeResult(LoginResponse.self, for: Endpoint.login.urlRequest)
         try await getUserByID(result.userID, loginFlow: true)
     }
 
     /// Запрашивает данные пользователя по `id`, сохраняет данные главного пользователя в `defaults` и авторизует, если еще не авторизован
-    /// - Parameter userID: `id` пользователя
-    /// - Returns: Вся информация о пользователе
+    /// - Parameters:
+    ///   - userID: `id` пользователя
+    ///   - loginFlow: `true` - флоу авторизации пользователя, `false` - флоу получения данных другого пользователя
+    /// - Returns: вся информация о пользователе
     @discardableResult
     func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
-        let mainUserID = await defaults.mainUserID
+        let mainUserID = await defaults.mainUserInfo?.userID
         if loginFlow || userID == mainUserID {
-            await defaults.saveUserInfo(result)
+            try await defaults.saveUserInfo(result)
         }
         return result
     }
@@ -60,8 +62,8 @@ struct APIService {
         let authData = try await defaults.basicAuthInfo()
         let endpoint = Endpoint.editUser(id: id, form: model)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest)
-        await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
-        await defaults.saveUserInfo(result)
+        try await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
+        try await defaults.saveUserInfo(result)
         return result.userName == model.userName
     }
 
@@ -90,8 +92,8 @@ struct APIService {
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id)
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
-        if await id == defaults.mainUserID {
-            await defaults.saveFriendsIds(result.compactMap(\.userID))
+        if await id == defaults.mainUserInfo?.userID {
+            try await defaults.saveFriendsIds(result.compactMap(\.userID))
         }
         return result
     }
@@ -100,7 +102,7 @@ struct APIService {
     func getFriendRequests() async throws {
         let endpoint = Endpoint.getFriendRequests
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
-        await defaults.saveFriendRequests(result)
+        try await defaults.saveFriendRequests(result)
     }
 
     /// Отвечает на заявку для добавления в друзья, и в случае успеха запрашивает список заявок повторно, а если запрос одобрен - дополнительно запрашивает список друзей
@@ -114,8 +116,8 @@ struct APIService {
         : .declineFriendRequest(from: userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest)
         if isSuccess {
-            if accept {
-                try await getFriendsForUser(id: defaults.mainUserID)
+            if let mainUserID = await defaults.mainUserInfo?.userID, accept {
+                try await getFriendsForUser(id: mainUserID)
             }
             try await getFriendRequests()
         }
@@ -132,8 +134,9 @@ struct APIService {
         ? .sendFriendRequest(to: userID)
         : .deleteFriend(userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest)
-        if isSuccess && option == .removeFriend {
-            try await getFriendsForUser(id: defaults.mainUserID)
+        if let mainUserID = await defaults.mainUserInfo?.userID,
+           isSuccess && option == .removeFriend {
+            try await getFriendsForUser(id: mainUserID)
         }
         return isSuccess
     }
@@ -207,11 +210,10 @@ struct APIService {
         case let .event(id):
             endpoint = .addCommentToEvent(eventID: id, comment: entryText)
         case let .journal(id):
-            endpoint = await .saveJournalEntry(
-                userID: defaults.mainUserID,
-                journalID: id,
-                message: entryText
-            )
+            guard let mainUserID = await defaults.mainUserInfo?.userID else {
+                throw APIError.invalidUserID
+            }
+            endpoint = .saveJournalEntry(userID: mainUserID, journalID: id, message: entryText)
         }
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -238,8 +240,11 @@ struct APIService {
                 newComment: newEntryText
             )
         case let .journal(id):
-            endpoint = await .editEntry(
-                userID: defaults.mainUserID,
+            guard let mainUserID = await defaults.mainUserInfo?.userID else {
+                throw APIError.invalidUserID
+            }
+            endpoint = .editEntry(
+                userID: mainUserID,
                 journalID: id,
                 entryID: entryID,
                 newEntryText: newEntryText
@@ -261,11 +266,10 @@ struct APIService {
         case let .event(id):
             endpoint = .deleteEventComment(id, commentID: entryID)
         case let .journal(id):
-            endpoint = await .deleteEntry(
-                userID: defaults.mainUserID,
-                journalID: id,
-                entryID: entryID
-            )
+            guard let mainUserID = await defaults.mainUserInfo?.userID else {
+                throw APIError.invalidUserID
+            }
+            endpoint = .deleteEntry(userID: mainUserID, journalID: id, entryID: entryID)
         }
         return try await makeStatus(for: endpoint.urlRequest)
     }
@@ -391,7 +395,7 @@ struct APIService {
     func getJournals(for userID: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userID: userID)
         let result = try await makeResult([JournalResponse].self, for: endpoint.urlRequest)
-        if await userID == defaults.mainUserID {
+        if await userID == defaults.mainUserInfo?.userID {
             await defaults.setHasJournals(!result.isEmpty)
         }
         return result
@@ -418,8 +422,11 @@ struct APIService {
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editJournalSettings(for journalID: Int, title: String, viewAccess: JournalAccess, commentAccess: JournalAccess) async throws -> Bool {
-        let endpoint = await Endpoint.editJournalSettings(
-            userID: defaults.mainUserID,
+        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+            throw APIError.invalidUserID
+        }
+        let endpoint = Endpoint.editJournalSettings(
+            userID: mainUserID,
             journalID: journalID,
             title: title,
             viewAccess: viewAccess.rawValue,
@@ -432,10 +439,10 @@ struct APIService {
     /// - Parameter title: название дневника
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func createJournal(with title: String) async throws -> Bool {
-        let endpoint = await Endpoint.createJournal(
-            userID: defaults.mainUserID,
-            title: title
-        )
+        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+            throw APIError.invalidUserID
+        }
+        let endpoint = Endpoint.createJournal(userID: mainUserID, title: title)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -458,10 +465,10 @@ struct APIService {
     ///   - journalID: `id` дневника для удаления
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func deleteJournal(journalID: Int) async throws -> Bool {
-        let endpoint = await Endpoint.deleteJournal(
-            userID: defaults.mainUserID,
-            journalID: journalID
-        )
+        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+            throw APIError.invalidUserID
+        }
+        let endpoint = Endpoint.deleteJournal(userID: mainUserID, journalID: journalID)
         return try await makeStatus(for: endpoint.urlRequest)
     }
 
@@ -1133,6 +1140,7 @@ private extension APIService {
         case notFound
         case payloadTooLarge
         case serverError
+        case invalidUserID
         case customError(String)
 
         init(_ error: ErrorResponse) {
@@ -1173,6 +1181,8 @@ private extension APIService {
                 return "Объем данных для загрузки на сервер превышает лимит"
             case .serverError:
                 return "Внутренняя ошибка сервера"
+            case .invalidUserID:
+                return "Некорректный идентификатор пользователя"
             case let .customError(error):
                 return error
             }

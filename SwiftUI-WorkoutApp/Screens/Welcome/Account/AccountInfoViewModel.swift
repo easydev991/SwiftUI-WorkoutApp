@@ -13,7 +13,7 @@ final class AccountInfoViewModel: ObservableObject {
     private var savedUserForm = MainUserForm.emptyValue
 
     /// Доступность кнопки для регистрации или сохранения изменений
-    func isButtonAvailable(with defaults: DefaultsService) -> Bool {
+    func isButtonAvailable(with defaults: DefaultsProtocol) -> Bool {
         if defaults.isAuthorized {
             return userForm != savedUserForm && userForm.isReadyToSave
         } else {
@@ -25,7 +25,7 @@ final class AccountInfoViewModel: ObservableObject {
         makeCountryAndCityData()
     }
 
-    func updateFormIfNeeded(with defaults: DefaultsService) async {
+    func updateFormIfNeeded(with defaults: DefaultsProtocol) async {
         if defaults.isAuthorized, userForm.userName.isEmpty,
            let userInfo = defaults.mainUserInfo {
             userForm = .init(userInfo)
@@ -44,7 +44,7 @@ final class AccountInfoViewModel: ObservableObject {
         userForm.city = city
     }
 
-    func registerAction(with defaults: DefaultsService) async {
+    func registerAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -55,11 +55,12 @@ final class AccountInfoViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func saveChangesAction(with defaults: DefaultsService) async {
+    func saveChangesAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isProfileSaved = try await APIService(with: defaults).editUser(defaults.mainUserID, model: userForm)
+            let userID = (defaults.mainUserInfo?.userID).valueOrZero
+            isProfileSaved = try await APIService(with: defaults).editUser(userID, model: userForm)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

@@ -6,7 +6,7 @@ final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func searchFor(user: String, with defaults: DefaultsService) async {
+    func searchFor(user: String, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

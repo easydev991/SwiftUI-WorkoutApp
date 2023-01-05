@@ -7,8 +7,8 @@ struct JournalsScreen: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if defaults.isAuthorized {
-                    JournalsListView(for: defaults.mainUserID)
+                if defaults.isAuthorized, let mainUserID = defaults.mainUserInfo?.userID {
+                    JournalsListView(for: mainUserID)
                 } else {
                     IncognitoProfileView()
                 }

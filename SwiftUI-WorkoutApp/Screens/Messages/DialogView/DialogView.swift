@@ -159,7 +159,7 @@ private extension DialogView {
     }
 
     func messageType(for message: MessageResponse) -> MessageType {
-        message.userID == defaults.mainUserID
+        message.userID == defaults.mainUserInfo?.userID
         ? .sent
         : .incoming
     }

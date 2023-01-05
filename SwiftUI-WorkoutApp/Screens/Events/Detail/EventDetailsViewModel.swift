@@ -13,12 +13,12 @@ final class EventDetailsViewModel: ObservableObject {
         self.event = event
     }
 
-    func askForEvent(refresh: Bool, with defaults: DefaultsService) async {
+    func askForEvent(refresh: Bool, with defaults: DefaultsProtocol) async {
         if (isLoading || event.isFull) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService(with: defaults).getEvent(by: event.id)
-            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserID })
+            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserInfo?.userID })
             event.trainHere = isUserGoing
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -30,7 +30,7 @@ final class EventDetailsViewModel: ObservableObject {
     /// - Parameters:
     ///   - newValue: новое значение `trainHere`
     ///   - defaults: `UserDefaults` с необходимыми данными для операции
-    func changeIsGoingToEvent(_ newValue: Bool, with defaults: DefaultsService) async {
+    func changeIsGoingToEvent(_ newValue: Bool, with defaults: DefaultsProtocol) async {
         if isLoading || !defaults.isAuthorized { return }
         let oldValue = event.trainHere
         event.trainHere = newValue
@@ -40,7 +40,7 @@ final class EventDetailsViewModel: ObservableObject {
                 if newValue, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
                 } else {
-                    event.participants.removeAll(where: { $0.userID == defaults.mainUserID })
+                    event.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
                 }
             } else {
                 event.trainHere = oldValue
@@ -52,7 +52,7 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(_ photo: Photo, with defaults: DefaultsService) async {
+    func delete(_ photo: Photo, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -67,7 +67,7 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(commentID: Int, with defaults: DefaultsService) async {
+    func delete(commentID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -80,7 +80,7 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func deleteEvent(with defaults: DefaultsService) async {
+    func deleteEvent(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

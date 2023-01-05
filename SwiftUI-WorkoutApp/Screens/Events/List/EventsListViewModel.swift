@@ -7,7 +7,7 @@ final class EventsListViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func askForEvents(type: EventType, refresh: Bool, with defaults: DefaultsService) async {
+    func askForEvents(type: EventType, refresh: Bool, with defaults: DefaultsProtocol) async {
         if isLoading && !refresh
             || (type == .future && !futureEvents.isEmpty && !refresh)
             || (type == .past && !pastEvents.isEmpty && !refresh)

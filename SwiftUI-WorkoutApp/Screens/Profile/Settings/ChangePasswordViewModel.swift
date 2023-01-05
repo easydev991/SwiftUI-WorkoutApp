@@ -15,7 +15,7 @@ final class ChangePasswordViewModel: ObservableObject {
         || newPasswordText != newPasswordAgainText
     }
 
-    func changePasswordAction(with defaults: DefaultsService) async {
+    func changePasswordAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

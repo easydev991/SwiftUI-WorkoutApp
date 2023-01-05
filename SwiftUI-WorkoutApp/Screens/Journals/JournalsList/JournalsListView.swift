@@ -118,7 +118,7 @@ private extension JournalsListView {
     }
 
     var isMainUser: Bool {
-        userID == defaults.mainUserID
+        userID == defaults.mainUserInfo?.userID
     }
 
     var showAddJournalButton: Bool {
@@ -202,7 +202,7 @@ private extension JournalsListView {
 
 struct JournalsListView_Previews: PreviewProvider {
     static var previews: some View {
-        JournalsListView(for: DefaultsService().mainUserID)
+        JournalsListView(for: .previewUserID)
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

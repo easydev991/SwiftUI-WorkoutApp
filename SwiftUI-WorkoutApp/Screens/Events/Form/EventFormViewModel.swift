@@ -50,7 +50,7 @@ final class EventFormViewModel: ObservableObject {
         }
     }
 
-    func saveEvent(with defaults: DefaultsService) async {
+    func saveEvent(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         eventForm.newImagesData = newImages.enumerated().map {
@@ -62,6 +62,11 @@ final class EventFormViewModel: ObservableObject {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
+    }
+
+    /// Не показываем пикер площадок, если `userID` отсутствует
+    func canShowGroundPicker(with defaults: DefaultsProtocol) -> Bool {
+        defaults.mainUserInfo?.userID != nil
     }
 
     func clearErrorMessage() { errorMessage = "" }

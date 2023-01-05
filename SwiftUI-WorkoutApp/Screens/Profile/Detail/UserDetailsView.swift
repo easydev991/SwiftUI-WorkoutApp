@@ -169,7 +169,6 @@ private extension UserDetailsView {
     var friendsLink: some View {
         NavigationLink {
             UsersListView(mode: .friends(userID: viewModel.user.id))
-                .navigationTitle("Друзья")
         } label: {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
@@ -259,7 +258,7 @@ private extension UserDetailsView {
     }
 
     var isMainUser: Bool {
-        viewModel.user.id == defaults.mainUserID
+        viewModel.user.id == defaults.mainUserInfo?.userID
     }
 
     func cancelTasks() {

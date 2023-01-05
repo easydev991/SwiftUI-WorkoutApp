@@ -21,8 +21,8 @@ final class UserDetailsViewModel: ObservableObject {
         user = .init(from: dialog)
     }
 
-    func makeUserInfo(refresh: Bool, with defaults: DefaultsService) async {
-        let isMainUser = user.id == defaults.mainUserID
+    func makeUserInfo(refresh: Bool, with defaults: DefaultsProtocol) async {
+        let isMainUser = user.id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         if isMainUser {
             if !refresh && !defaults.needUpdateUser,
@@ -44,11 +44,11 @@ final class UserDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func checkFriendRequests(with defaults: DefaultsService) async {
+    func checkFriendRequests(with defaults: DefaultsProtocol) async {
         try? await APIService(with: defaults).getFriendRequests()
     }
 
-    func friendAction(with defaults: DefaultsService) async {
+    func friendAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -66,7 +66,7 @@ final class UserDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func send(_ message: String, with defaults: DefaultsService) async {
+    func send(_ message: String, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -83,7 +83,7 @@ final class UserDetailsViewModel: ObservableObject {
 }
 
 private extension UserDetailsViewModel {
-    func makeUserInfo(for userID: Int, with defaults: DefaultsService) async {
+    func makeUserInfo(for userID: Int, with defaults: DefaultsProtocol) async {
         do {
             let info = try await APIService(with: defaults).getUserByID(user.id)
             user = .init(info)

@@ -6,7 +6,7 @@ final class JournalSettingsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func editJournalSettings(for journal: JournalResponse, with defaults: DefaultsService) async {
+    func editJournalSettings(for journal: JournalResponse, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

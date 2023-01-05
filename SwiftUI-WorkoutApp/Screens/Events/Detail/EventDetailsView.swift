@@ -164,8 +164,7 @@ private extension EventDetailsView {
 
     var linkToParticipants: some View {
         NavigationLink {
-            UsersListView(mode: .participants(list: viewModel.event.participants))
-                .navigationTitle("Пойдут на мероприятие")
+            UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
         } label: {
             HStack {
                 Text("Идут")
@@ -213,7 +212,7 @@ private extension EventDetailsView {
             }
             .disabled(
                 !defaults.isAuthorized
-                || viewModel.event.authorID == defaults.mainUserID
+                || viewModel.event.authorID == defaults.mainUserInfo?.userID
                 || !network.isConnected
             )
         }
@@ -288,7 +287,7 @@ private extension EventDetailsView {
 
     var isAuthor: Bool {
         defaults.isAuthorized
-        ? viewModel.event.authorID == defaults.mainUserID
+        ? viewModel.event.authorID == defaults.mainUserInfo?.userID
         : false
     }
 

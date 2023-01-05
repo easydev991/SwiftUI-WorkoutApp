@@ -19,7 +19,7 @@ final class JournalEntriesListViewModel: ObservableObject {
         currentJournal = journal
     }
 
-    func makeItems(with defaults: DefaultsService, refresh: Bool) async {
+    func makeItems(with defaults: DefaultsProtocol, refresh: Bool) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
@@ -30,7 +30,7 @@ final class JournalEntriesListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func delete(_ entryID: Int?, with defaults: DefaultsService) async {
+    func delete(_ entryID: Int?, with defaults: DefaultsProtocol) async {
         guard let entryID = entryID, !isLoading else { return }
         isLoading.toggle()
         do {

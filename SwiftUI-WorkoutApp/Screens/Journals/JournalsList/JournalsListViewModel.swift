@@ -11,7 +11,7 @@ final class JournalsListViewModel: ObservableObject {
         !isLoading && !newJournalTitle.isEmpty
     }
 
-    func makeItems(for userID: Int, refresh: Bool, with defaults: DefaultsService) async {
+    func makeItems(for userID: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
         if (isLoading || !list.isEmpty) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
@@ -22,14 +22,15 @@ final class JournalsListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func createJournal(with defaults: DefaultsService) async {
+    func createJournal(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).createJournal(with: newJournalTitle) {
                 newJournalTitle = ""
                 isJournalCreated.toggle()
-                await makeItems(for: defaults.mainUserID, refresh: true, with: defaults)
+                let userID = (defaults.mainUserInfo?.userID).valueOrZero
+                await makeItems(for: userID, refresh: true, with: defaults)
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -37,11 +38,12 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func update(journalID: Int, with defaults: DefaultsService) async {
+    func update(journalID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let result = try await APIService(with: defaults).getJournal(for: defaults.mainUserID, journalID: journalID)
+            let userID = (defaults.mainUserInfo?.userID).valueOrZero
+            let result = try await APIService(with: defaults).getJournal(for: userID, journalID: journalID)
             if let index = list.firstIndex(where: { $0.id == journalID }) {
                 list[index] = result
             }
@@ -51,7 +53,7 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(journalID: Int?, with defaults: DefaultsService) async {
+    func delete(journalID: Int?, with defaults: DefaultsProtocol) async {
         guard let journalID = journalID, !isLoading else { return }
         isLoading.toggle()
         do {

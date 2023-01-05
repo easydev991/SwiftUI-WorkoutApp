@@ -57,7 +57,7 @@ private extension JournalEntryCell {
     }
 
     var isMenuAvailable: Bool {
-        model.authorID == defaults.mainUserID
+        model.authorID == defaults.mainUserInfo?.userID
     }
 }
 

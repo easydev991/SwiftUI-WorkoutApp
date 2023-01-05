@@ -21,7 +21,7 @@ struct UsersListView: View {
                 } label: {
                     UserViewCell(model: model)
                 }
-                .disabled(model.id == defaults.mainUserID)
+                .disabled(model.id == defaults.mainUserInfo?.userID)
             }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
@@ -37,6 +37,7 @@ struct UsersListView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -44,7 +45,21 @@ struct UsersListView: View {
 extension UsersListView {
     enum Mode {
         case friends(userID: Int)
-        case participants(list: [UserResponse])
+        case eventParticipants(list: [UserResponse])
+        case groundParticipants(list: [UserResponse])
+    }
+}
+
+private extension UsersListView.Mode {
+    var title: String {
+        switch self {
+        case .friends:
+            return "Друзья"
+        case .eventParticipants:
+            return "Пойдут на мероприятие"
+        case .groundParticipants:
+            return "Здесь тренируются"
+        }
     }
 }
 
@@ -80,7 +95,7 @@ private extension UsersListView {
 
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
-        UsersListView(mode: .friends(userID: DefaultsService().mainUserID))
+        UsersListView(mode: .friends(userID: .previewUserID))
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

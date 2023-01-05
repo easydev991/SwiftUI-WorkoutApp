@@ -11,13 +11,14 @@ struct AccountInfoView: View {
     @State private var registrationTask: Task<Void, Never>?
     @State private var editUserTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
+    let mode: Mode
 
     var body: some View {
         Form {
             Section {
                 loginField
                 emailField
-                if !defaults.isAuthorized {
+                if mode == .create {
                     passwordField
                 }
                 nameField
@@ -26,7 +27,7 @@ struct AccountInfoView: View {
                 countryPicker
                 cityPicker
             }
-            if !defaults.isAuthorized {
+            if mode == .create {
                 rulesOfServiceSection
                 registerButtonSection
             } else {
@@ -49,7 +50,23 @@ struct AccountInfoView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isProfileSaved, perform: close)
         .onDisappear(perform: cancelTasks)
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension AccountInfoView {
+    enum Mode: CaseIterable {
+        /// Создание аккаунта
+        case create
+        /// Изменение личных данных
+        case edit
+    }
+}
+
+private extension AccountInfoView.Mode {
+    var title: String {
+        self == .create ? "Регистрация" : "Изменить профиль"
     }
 }
 
@@ -223,8 +240,12 @@ private extension AccountInfoView {
 
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountInfoView()
-            .environmentObject(CheckNetworkService())
-            .environmentObject(DefaultsService())
+        ForEach(AccountInfoView.Mode.allCases, id: \.title) { mode in
+            NavigationView {
+                AccountInfoView(mode: mode)
+                    .environmentObject(CheckNetworkService())
+                    .environmentObject(DefaultsService())
+            }
+        }
     }
 }

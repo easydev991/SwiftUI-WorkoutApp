@@ -12,7 +12,8 @@ struct RootView: View {
                 tabView
             }
         }
-        .animation(.easeInOut, value: defaults.showWelcome)
+        .onChange(of: defaults.showWelcome, perform: swithToFirstTab)
+        .animation(.spring(), value: defaults.showWelcome)
         .ignoresSafeArea()
     }
 }
@@ -46,8 +47,12 @@ private extension RootView {
                 }
                 .tag(Tab.profile)
         }
-        .transition(.move(edge: .trailing).combined(with: .scale))
         .navigationViewStyle(.stack)
+        .opacity(defaults.showWelcome ? 0 : 1)
+    }
+
+    func swithToFirstTab(_ newValue: Bool) {
+        if !newValue { viewModel.selectTab(.map) }
     }
 }
 
