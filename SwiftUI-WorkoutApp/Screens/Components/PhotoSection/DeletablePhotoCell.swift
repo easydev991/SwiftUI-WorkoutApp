@@ -37,7 +37,7 @@ private extension DeletablePhotoCell {
         }
         .padding(8)
         .onTapGesture { hapticFeedback(.rigid) }
-        .opacity(showMenuButton ? 1 : .zero)
+        .opacity(showMenuButton ? 1 : 0)
     }
 
     var showMenuButton: Bool {

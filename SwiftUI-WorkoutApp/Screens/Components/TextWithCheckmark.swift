@@ -10,7 +10,7 @@ struct TextWithCheckmark: View {
             Text(title)
             Spacer()
             Image(systemName: "checkmark")
-                .opacity(showMark ? 1 : .zero)
+                .opacity(showMark ? 1 : 0)
         }
     }
 }

@@ -24,7 +24,7 @@ struct DialogListView: View {
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
             ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
+                .opacity(viewModel.isLoading ? 1 : 0)
         }
         .animation(.default, value: viewModel.isLoading)
         .confirmationDialog(
@@ -59,7 +59,7 @@ private extension DialogListView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -68,12 +68,12 @@ private extension DialogListView {
             if hasFriends, let mainUserID = defaults.mainUserInfo?.userID {
                 UsersListView(mode: .friendsForChat(userID: mainUserID))
             } else {
-                SearchUsersView()
+                SearchUsersView(mode: .chat)
             }
         } label: {
             Image(systemName: "plus")
         }
-        .opacity(hasFriends ? 1 : .zero)
+        .opacity(hasFriends || !viewModel.list.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)
     }
 
@@ -83,7 +83,7 @@ private extension DialogListView {
             buttonTitle: emptyViewButtonTitle,
             action: emptyViewAction
         )
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 

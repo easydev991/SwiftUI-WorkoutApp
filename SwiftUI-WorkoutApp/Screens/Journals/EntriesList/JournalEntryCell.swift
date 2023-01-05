@@ -52,7 +52,7 @@ private extension JournalEntryCell {
                 .font(.title2)
                 .foregroundColor(.secondary)
         }
-        .opacity(network.isConnected ? 1 : .zero)
+        .opacity(network.isConnected ? 1 : 0)
         .onTapGesture { hapticFeedback(.rigid) }
     }
 

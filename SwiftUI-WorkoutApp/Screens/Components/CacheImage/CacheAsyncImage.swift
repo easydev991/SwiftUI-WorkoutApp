@@ -26,7 +26,7 @@ struct CacheAsyncImage<Content: View>: View {
             }
         }
         .animation(.easeInOut, value: loader.image)
-        .opacity(loader.isLoading ? .zero : 1)
+        .opacity(loader.isLoading ? 0 : 1)
         .onAppear(perform: loader.load)
     }
 }

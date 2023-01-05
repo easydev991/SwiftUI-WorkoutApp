@@ -25,7 +25,7 @@ struct ProfileSettingsView: View {
         }
         .overlay {
             ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
+                .opacity(viewModel.isLoading ? 1 : 0)
         }
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
