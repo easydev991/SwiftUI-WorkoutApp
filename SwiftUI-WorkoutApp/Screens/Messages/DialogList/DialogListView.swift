@@ -66,7 +66,7 @@ private extension DialogListView {
     var linkToFriends: some View {
         NavigationLink(isActive: $openFriendList) {
             if hasFriends, let mainUserID = defaults.mainUserInfo?.userID {
-                UsersListView(mode: .friends(userID: mainUserID))
+                UsersListView(mode: .friendsForChat(userID: mainUserID))
             } else {
                 SearchUsersView()
             }

@@ -6,11 +6,12 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var friendRequests = [UserModel]()
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
+    @Published private(set) var isMessageSent = false
 
     func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if (!users.isEmpty || isLoading) && !refresh { return }
         switch mode {
-        case let .friends(userID):
+        case let .friends(userID), let .friendsForChat(userID):
             await makeFriendsList(for: userID, refresh: refresh, with: defaults)
         case let .eventParticipants(list), let .groundParticipants(list):
             users = list.map(UserModel.init)
@@ -23,6 +24,19 @@ final class UsersListViewModel: ObservableObject {
         do {
             if try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
                 friendRequests = defaults.friendRequestsList.map(UserModel.init)
+            }
+        } catch {
+            errorMessage = ErrorFilterService.message(from: error)
+        }
+        isLoading.toggle()
+    }
+
+    func send(_ message: String, to userID: Int, with defaults: DefaultsProtocol) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService(with: defaults).sendMessage(message, to: userID) {
+                isMessageSent.toggle()
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)

@@ -5,8 +5,11 @@ struct UsersListView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
+    @State private var messageRecipient: UserModel?
+    @State private var messageText = ""
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
+    @State private var sendMessageTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
@@ -15,15 +18,15 @@ struct UsersListView: View {
                 friendRequestsSection
             }
             List(viewModel.users, id: \.self) { model in
-                NavigationLink {
-                    UserDetailsView(from: model)
-                        .navigationBarTitleDisplayMode(.inline)
-                } label: {
-                    UserViewCell(model: model)
-                }
-                .disabled(model.id == defaults.mainUserInfo?.userID)
+                listItem(for: model)
+                    .disabled(model.id == defaults.mainUserInfo?.userID)
             }
         }
+        .sheet(
+            item: $messageRecipient,
+            onDismiss: { endMessaging() },
+            content: messageSheet
+        )
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
             ProgressView()
@@ -35,8 +38,10 @@ struct UsersListView: View {
             Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.isMessageSent, perform: endMessaging)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
+        .onDisappear(perform: cancelTask)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -45,6 +50,7 @@ struct UsersListView: View {
 extension UsersListView {
     enum Mode {
         case friends(userID: Int)
+        case friendsForChat(userID: Int)
         case eventParticipants(list: [UserResponse])
         case groundParticipants(list: [UserResponse])
     }
@@ -53,7 +59,7 @@ extension UsersListView {
 private extension UsersListView.Mode {
     var title: String {
         switch self {
-        case .friends:
+        case .friends, .friendsForChat:
             return "Друзья"
         case .eventParticipants:
             return "Пойдут на мероприятие"
@@ -79,6 +85,51 @@ private extension UsersListView {
         }
     }
 
+    @ViewBuilder
+    func listItem(for model: UserModel) -> some View {
+        switch mode {
+        case .friendsForChat:
+            Button {
+                messageRecipient = model
+            } label: {
+                UserViewCell(model: model)
+            }
+        case .friends, .eventParticipants, .groundParticipants:
+            NavigationLink {
+                UserDetailsView(from: model)
+                    .navigationBarTitleDisplayMode(.inline)
+            } label: {
+                UserViewCell(model: model)
+            }
+        }
+    }
+
+    func messageSheet(for recipient: UserModel) -> some View {
+        SendMessageView(
+            header: "Сообщение для \(recipient.name)",
+            text: $messageText,
+            isLoading: viewModel.isLoading,
+            isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
+            sendAction: { sendMessage(to: recipient.id) },
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: closeAlert
+        )
+    }
+
+    func sendMessage(to userID: Int) {
+        sendMessageTask = Task {
+            await viewModel.send(messageText, to: userID, with: defaults)
+        }
+    }
+
+    func endMessaging(isSuccess: Bool = true) {
+        if isSuccess {
+            messageText = ""
+            messageRecipient = nil
+        }
+    }
+
     func askForUsers(refresh: Bool = false) async {
         await viewModel.makeInfo(for: mode, refresh: refresh, with: defaults)
     }
@@ -90,6 +141,10 @@ private extension UsersListView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+    }
+
+    func cancelTask() {
+        sendMessageTask?.cancel()
     }
 }
 
