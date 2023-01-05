@@ -105,7 +105,7 @@ private extension JournalEntriesList {
     }
 
     var isMainUser: Bool {
-        viewModel.userID == defaults.mainUserID
+        viewModel.userID == defaults.mainUserInfo?.userID
     }
 
     func askForEntries(refresh: Bool = false) async {
@@ -147,7 +147,7 @@ private extension JournalEntriesList {
 
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
-        JournalEntriesList(for: DefaultsService().mainUserID, in: .constant(.preview))
+        JournalEntriesList(for: 30, in: .constant(.preview))
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

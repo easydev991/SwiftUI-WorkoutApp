@@ -1,13 +1,20 @@
 import SwiftUI
 
 @MainActor
-protocol DefaultsProtocol {
-    var mainUserID: Int { get }
-    func saveAuthData(_ info: AuthData)
+protocol DefaultsProtocol: AnyObject {
+    var mainUserInfo: UserResponse? { get }
+    var mainUserCountryID: Int { get }
+    var mainUserCityID: Int { get }
+    var needUpdateUser: Bool { get }
+    var isAuthorized: Bool { get }
+    var friendRequestsList: [UserResponse] { get }
+    var friendsIdsList: [Int] { get }
+    func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
-    func saveUserInfo(_ info: UserResponse)
-    func saveFriendsIds(_ ids: [Int])
-    func saveFriendRequests(_ array: [UserResponse])
+    func setUserNeedUpdate(_ newValue: Bool)
+    func saveUserInfo(_ info: UserResponse) throws
+    func saveFriendsIds(_ ids: [Int]) throws
+    func saveFriendRequests(_ array: [UserResponse]) throws
     func setHasJournals(_ hasJournals: Bool)
     func setHasSportsGrounds(_ hasGrounds: Bool)
     func triggerLogout()
@@ -17,15 +24,6 @@ protocol DefaultsProtocol {
 final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
-
-    @AppStorage(Key.mainUserID.rawValue)
-    private(set) var mainUserID = Int.zero
-
-    @AppStorage(Key.mainUserCountry.rawValue)
-    private(set) var mainUserCountry = Int.zero
-
-    @AppStorage(Key.mainUserCity.rawValue)
-    private(set) var mainUserCity = Int.zero
 
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
@@ -54,70 +52,16 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.hasFriends.rawValue)
     private(set) var hasFriends = false
 
-    func setWelcomeShown() {
-        showWelcome = false
-    }
-
-    func triggerLogout() {
-        authData = .init()
-        userInfo = .init()
-        friendsIds = .init()
-        friendRequests = .init()
-        mainUserID = .zero
-        mainUserCountry = .zero
-        mainUserCity = .zero
-        isAuthorized = false
-        showWelcome = true
-        hasFriends = false
-        hasJournals = false
-        hasSportsGrounds = false
-        needUpdateUser = true
-    }
-
-    func saveAuthData(_ info: AuthData) {
-        if let data = try? JSONEncoder().encode(info) {
-            authData = data
-        }
-    }
-
-    func basicAuthInfo() throws -> AuthData {
-        try JSONDecoder().decode(AuthData.self, from: authData)
-    }
-
-    func setUserNeedUpdate(_ newValue: Bool) {
-        needUpdateUser = newValue
-    }
-
-    func saveUserInfo(_ info: UserResponse) {
-        mainUserID = info.userID.valueOrZero
-        mainUserCountry = info.countryID.valueOrZero
-        mainUserCity = info.cityID.valueOrZero
-        hasFriends = info.friendsCount.valueOrZero != .zero
-        setHasSportsGrounds(info.usedSportsGroundsCount != .zero)
-        setHasJournals(info.journalsCount.valueOrZero != .zero)
-        if !isAuthorized {
-            showWelcome = false
-            isAuthorized = true
-        }
-        if let data = try? JSONEncoder().encode(info) {
-            userInfo = data
-            setUserNeedUpdate(false)
-        }
-    }
-
     var mainUserInfo: UserResponse? {
-        if let info = try? JSONDecoder().decode(UserResponse.self, from: userInfo) {
-            return info
-        } else {
-            return nil
-        }
+        try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
 
-    func saveFriendsIds(_ ids: [Int]) {
-        hasFriends = !ids.isEmpty
-        if let data = try? JSONEncoder().encode(ids) {
-            friendsIds = data
-        }
+    var mainUserCountryID: Int {
+        (mainUserInfo?.countryID).valueOrZero
+    }
+
+    var mainUserCityID: Int {
+        (mainUserInfo?.cityID).valueOrZero
     }
 
     var friendsIdsList: [Int] {
@@ -128,18 +72,47 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         }
     }
 
-    func saveFriendRequests(_ array: [UserResponse]) {
-        if let data = try? JSONEncoder().encode(array) {
-            friendRequests = data
-        }
-    }
-
     var friendRequestsList: [UserResponse] {
-        if let array = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
-            return array
+        if let list = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
+            return list
         } else {
             return []
         }
+    }
+
+    func setWelcomeShown() { showWelcome = false }
+
+    func saveAuthData(_ info: AuthData) throws {
+        authData = try JSONEncoder().encode(info)
+    }
+
+    func basicAuthInfo() throws -> AuthData {
+        try JSONDecoder().decode(AuthData.self, from: authData)
+    }
+
+    func setUserNeedUpdate(_ newValue: Bool) {
+        needUpdateUser = newValue
+    }
+
+    func saveUserInfo(_ info: UserResponse) throws {
+        hasFriends = info.friendsCount.valueOrZero != .zero
+        setHasSportsGrounds(info.usedSportsGroundsCount != .zero)
+        setHasJournals(info.journalsCount.valueOrZero != .zero)
+        if !isAuthorized {
+            showWelcome = false
+            isAuthorized = true
+        }
+        userInfo = try JSONEncoder().encode(info)
+        setUserNeedUpdate(false)
+    }
+    
+    func saveFriendsIds(_ ids: [Int]) throws {
+        hasFriends = !ids.isEmpty
+        friendsIds = try JSONEncoder().encode(ids)
+    }
+
+    func saveFriendRequests(_ array: [UserResponse]) throws {
+        friendRequests = try JSONEncoder().encode(array)
     }
 
     func setHasJournals(_ hasJournals: Bool) {
@@ -149,13 +122,25 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     func setHasSportsGrounds(_ hasGrounds: Bool) {
         self.hasSportsGrounds = hasGrounds
     }
+
+    func triggerLogout() {
+        authData = .init()
+        userInfo = .init()
+        friendsIds = .init()
+        friendRequests = .init()
+        isAuthorized = false
+        showWelcome = true
+        hasFriends = false
+        hasJournals = false
+        hasSportsGrounds = false
+        needUpdateUser = true
+    }
 }
 
 private extension DefaultsService {
     enum Key: String {
-        case mainUserID, isUserAuthorized, showWelcome,
+        case isUserAuthorized, showWelcome, hasSportsGrounds,
              authData, userInfo, friends, friendRequests,
-             hasJournals, mainUserCountry, mainUserCity,
-             needUpdateUser, hasSportsGrounds, hasFriends
+             hasJournals, needUpdateUser, hasFriends
     }
 }

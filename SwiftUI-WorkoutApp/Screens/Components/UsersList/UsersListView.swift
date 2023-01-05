@@ -21,7 +21,7 @@ struct UsersListView: View {
                 } label: {
                     UserViewCell(model: model)
                 }
-                .disabled(model.id == defaults.mainUserID)
+                .disabled(model.id == defaults.mainUserInfo?.userID)
             }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
@@ -80,7 +80,7 @@ private extension UsersListView {
 
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
-        UsersListView(mode: .friends(userID: DefaultsService().mainUserID))
+        UsersListView(mode: .friends(userID: .previewUserID))
             .environmentObject(CheckNetworkService())
             .environmentObject(DefaultsService())
     }

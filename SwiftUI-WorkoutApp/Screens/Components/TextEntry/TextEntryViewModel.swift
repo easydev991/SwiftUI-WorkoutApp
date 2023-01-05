@@ -6,7 +6,7 @@ final class TextEntryViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func addNewEntry(_ mode: TextEntryView.Mode, entryText: String, defaults: DefaultsService) async {
+    func addNewEntry(_ mode: TextEntryView.Mode, entryText: String, defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -31,7 +31,7 @@ final class TextEntryViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func editEntry(for mode: TextEntryView.Mode, entryText: String, with defaults: DefaultsService) async {
+    func editEntry(for mode: TextEntryView.Mode, entryText: String, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

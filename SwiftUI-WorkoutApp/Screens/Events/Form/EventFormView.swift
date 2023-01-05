@@ -109,18 +109,14 @@ private extension EventFormView {
         Section("Площадка") {
             switch mode {
             case .regularCreate:
-                Button {
-                    showGroundPicker.toggle()
-                } label: {
+                Button(action: showGroundPickerIfAvailable) {
                     Text(viewModel.eventForm.sportsGround.name ?? "Выбрать")
                         .blueMediumWeight()
                 }
             case let .createForSelected(ground):
                 Text(ground.name.valueOrEmpty)
             case let .editExisting(event):
-                Button {
-                    showGroundPicker.toggle()
-                } label: {
+                Button(action: showGroundPickerIfAvailable) {
                     Text(event.sportsGround.shortTitle)
                 }
             }
@@ -128,7 +124,7 @@ private extension EventFormView {
         .sheet(isPresented: $showGroundPicker) {
             ContentInSheet(title: "Выбери площадку", spacing: .zero) {
                 SportsGroundsListView(
-                    for: .event(userID: defaults.mainUserID),
+                    for: .event(userID: defaults.mainUserInfo!.userID!),
                     ground: $viewModel.eventForm.sportsGround
                 )
             }
@@ -171,6 +167,12 @@ private extension EventFormView {
                 || viewModel.isLoading
                 || !network.isConnected
             )
+        }
+    }
+
+    func showGroundPickerIfAvailable() {
+        if viewModel.canShowGroundPicker(with: defaults) {
+            showGroundPicker.toggle()
         }
     }
 

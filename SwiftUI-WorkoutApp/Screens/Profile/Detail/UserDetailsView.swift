@@ -259,7 +259,7 @@ private extension UserDetailsView {
     }
 
     var isMainUser: Bool {
-        viewModel.user.id == defaults.mainUserID
+        viewModel.user.id == defaults.mainUserInfo?.userID
     }
 
     func cancelTasks() {

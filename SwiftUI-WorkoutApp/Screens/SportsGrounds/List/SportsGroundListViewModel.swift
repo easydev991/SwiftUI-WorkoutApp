@@ -6,11 +6,11 @@ final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool, with defaults: DefaultsService) async {
+    func makeSportsGroundsFor(_ mode: SportsGroundsListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         switch mode {
         case let .usedBy(userID), let .event(userID):
-            let isMainUser = userID == defaults.mainUserID
+            let isMainUser = userID == defaults.mainUserInfo?.userID
             let needUpdate = list.isEmpty || refresh
             if isMainUser {
                 if !needUpdate && !defaults.needUpdateUser { return }
@@ -35,9 +35,9 @@ final class SportsGroundListViewModel: ObservableObject {
 }
 
 private extension SportsGroundListViewModel {
-    func makeList(for userID: Int, with defaults: DefaultsService) async {
+    func makeList(for userID: Int, with defaults: DefaultsProtocol) async {
         do {
-            if userID == defaults.mainUserID {
+            if userID == defaults.mainUserInfo?.userID {
                 defaults.setUserNeedUpdate(false)
             }
             list = try await APIService(with: defaults).getSportsGroundsForUser(userID)

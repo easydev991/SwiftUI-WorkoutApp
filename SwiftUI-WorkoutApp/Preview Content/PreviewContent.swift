@@ -81,3 +81,7 @@ extension JournalEntryResponse {
         .init(id: .zero, journalID: .zero, authorID: 10367, authorName: "ninenineone", message: "Test text", createDate: "2011-03-16T12:55:29+03:00", modifyDate: "2022-05-21T10:48:17+03:00", authorImage: "avatar_default")
     }
 }
+
+extension Int {
+    static var previewUserID: Self { 30 }
+}

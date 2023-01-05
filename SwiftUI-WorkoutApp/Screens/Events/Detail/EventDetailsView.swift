@@ -213,7 +213,7 @@ private extension EventDetailsView {
             }
             .disabled(
                 !defaults.isAuthorized
-                || viewModel.event.authorID == defaults.mainUserID
+                || viewModel.event.authorID == defaults.mainUserInfo?.userID
                 || !network.isConnected
             )
         }
@@ -288,7 +288,7 @@ private extension EventDetailsView {
 
     var isAuthor: Bool {
         defaults.isAuthorized
-        ? viewModel.event.authorID == defaults.mainUserID
+        ? viewModel.event.authorID == defaults.mainUserInfo?.userID
         : false
     }
 

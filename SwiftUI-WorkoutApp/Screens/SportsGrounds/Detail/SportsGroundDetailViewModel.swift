@@ -11,7 +11,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         self.ground = ground
     }
 
-    func askForSportsGround(refresh: Bool, with defaults: DefaultsService) async {
+    func askForSportsGround(refresh: Bool, with defaults: DefaultsProtocol) async {
         if (isLoading || ground.isFull) && !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
@@ -26,7 +26,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
     /// - Parameters:
     ///   - newValue: новое значение `trainHere`
     ///   - defaults: `UserDefaults` с необходимыми данными для операции
-    func changeTrainHereStatus(_ newValue: Bool, with defaults: DefaultsService) async {
+    func changeTrainHereStatus(_ newValue: Bool, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         let oldValue = ground.trainHere
         ground.trainHere = newValue
@@ -36,7 +36,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 if newValue, let userInfo = defaults.mainUserInfo {
                     ground.participants.append(userInfo)
                 } else {
-                    ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
+                    ground.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
                 }
                 defaults.setUserNeedUpdate(true)
             } else {
@@ -49,7 +49,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(_ photo: Photo, with defaults: DefaultsService) async {
+    func delete(_ photo: Photo, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -64,7 +64,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(commentID: Int, with defaults: DefaultsService) async {
+    func delete(commentID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
@@ -77,7 +77,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func deleteGround(with defaults: DefaultsService) async {
+    func deleteGround(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {

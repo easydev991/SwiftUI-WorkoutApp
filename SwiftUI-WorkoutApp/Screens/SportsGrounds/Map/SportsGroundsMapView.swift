@@ -39,14 +39,14 @@ struct SportsGroundsMapView: View {
                 locationSettingsReminder
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: defaults.mainUserCountry, perform: updateFilterCountry)
+            .onChange(of: defaults.mainUserCountryID, perform: updateFilterCountry)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }
             .task { await askForGrounds() }
             .onAppear {
                 viewModel.onAppearAction()
-                updateFilterCountry(countryID: defaults.mainUserCountry)
+                updateFilterCountry(countryID: defaults.mainUserCountryID)
             }
             .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
@@ -156,7 +156,7 @@ private extension SportsGroundsMapView {
                     .createNew(
                         address: $viewModel.addressString,
                         coordinate: $viewModel.region.center,
-                        cityID: (defaults.mainUserInfo?.cityID).valueOrZero
+                        cityID: defaults.mainUserCityID
                     ),
                     refreshClbk: updateRecent
                 )

@@ -17,7 +17,7 @@ final class DialogListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func deleteDialog(at index: Int?, with defaults: DefaultsService) async {
+    func deleteDialog(at index: Int?, with defaults: DefaultsProtocol) async {
         guard let index = index, !isLoading else { return }
         isLoading.toggle()
         do {

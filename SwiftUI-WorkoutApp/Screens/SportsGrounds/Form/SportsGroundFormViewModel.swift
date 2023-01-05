@@ -70,7 +70,7 @@ final class SportsGroundFormViewModel: ObservableObject {
         }
     }
 
-    func saveGround(with defaults: DefaultsService) async {
+    func saveGround(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         groundForm.newImagesData = newImages.enumerated().map {

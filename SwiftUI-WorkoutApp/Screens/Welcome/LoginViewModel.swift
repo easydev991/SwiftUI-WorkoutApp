@@ -25,28 +25,28 @@ final class LoginViewModel: ObservableObject {
         showResetSuccessfulAlert = false
     }
 
-    func loginAction(with userDefaults: DefaultsService) async {
+    func loginAction(with defaults: DefaultsProtocol) async {
         if !canLogIn { return }
         isLoading.toggle()
         do {
-            try await APIService(with: userDefaults).logInWith(login, password)
+            try await APIService(with: defaults).logInWith(login, password)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
 
-    func forgotPasswordTapped(with defaults: DefaultsService) async {
-        if canRestorePassword {
-            isLoading.toggle()
-            do {
-                showResetSuccessfulAlert = try await APIService(with: defaults).resetPassword(for: login)
-            } catch {
-                errorMessage = ErrorFilterService.message(from: error)
-            }
-            isLoading.toggle()
-        } else {
+    func forgotPasswordTapped(with defaults: DefaultsProtocol) async {
+        guard canRestorePassword else {
             showForgotPasswordAlert = true
+            return
         }
+        isLoading.toggle()
+        do {
+            showResetSuccessfulAlert = try await APIService(with: defaults).resetPassword(for: login)
+        } catch {
+            errorMessage = ErrorFilterService.message(from: error)
+        }
+        isLoading.toggle()
     }
 }

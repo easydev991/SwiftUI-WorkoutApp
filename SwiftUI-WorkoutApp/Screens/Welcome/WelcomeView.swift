@@ -14,11 +14,8 @@ struct WelcomeView: View {
             .ignoresSafeArea()
         }
         .navigationViewStyle(.stack)
-        .transition(
-            .move(edge: .leading)
-            .combined(with: .scale)
-            .combined(with: .opacity)
-        )
+        .opacity(defaults.showWelcome ? 1 : 0)
+        .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)).combined(with: .scale))
     }
 }
 
@@ -34,18 +31,15 @@ private extension WelcomeView {
     }
 
     var registerButton: some View {
-        NavigationLink {
-            AccountInfoView()
-                .navigationTitle("Регистрация")
-        } label: {
-            Label("Создать аккаунт", systemImage: "person.badge.plus")
+        NavigationLink(destination: AccountInfoView(mode: .create)) {
+            Label("Регистрация", systemImage: "person.badge.plus")
                 .welcomeButtonTitle()
         }
     }
 
     var loginButton: some View {
         NavigationLink(destination: LoginView()) {
-            Label("Войти через email", systemImage: "envelope")
+            Label("Авторизация", systemImage: "arrow.forward.circle")
                 .welcomeButtonTitle()
         }
     }
