@@ -41,7 +41,7 @@ struct UsersListView: View {
         .onChange(of: viewModel.isMessageSent, perform: endMessaging)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
-        .onDisappear(perform: cancelTask)
+        .onDisappear(perform: cancelTasks)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
