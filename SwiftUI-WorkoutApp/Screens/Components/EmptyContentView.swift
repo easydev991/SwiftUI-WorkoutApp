@@ -20,7 +20,7 @@ struct EmptyContentView: View {
                     Text(buttonTitle)
                         .roundedRectangleStyle()
                 }
-                .opacity(defaults.isAuthorized ? 1 : .zero)
+                .opacity(defaults.isAuthorized ? 1 : 0)
             } else {
                 Image(systemName: "wifi.exclamationmark")
                     .font(.system(size: 60))

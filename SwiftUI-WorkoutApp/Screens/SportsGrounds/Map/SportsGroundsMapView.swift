@@ -27,7 +27,7 @@ struct SportsGroundsMapView: View {
                 .opacity(mapOpacity)
                 .animation(.easeInOut, value: viewModel.isLoading)
                 ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : .zero)
+                    .opacity(viewModel.isLoading ? 1 : 0)
             }
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
@@ -130,7 +130,7 @@ private extension SportsGroundsMapView {
         }
         .padding(.horizontal)
         .padding(.bottom, 32)
-        .opacity(viewModel.ignoreUserLocation ? 1 : .zero)
+        .opacity(viewModel.ignoreUserLocation ? 1 : 0)
         .animation(.easeInOut, value: viewModel.ignoreUserLocation)
     }
 
@@ -148,7 +148,7 @@ private extension SportsGroundsMapView {
         } label: {
             Image(systemName: "plus")
         }
-        .opacity(viewModel.isLoading ? .zero : 1)
+        .opacity(viewModel.isLoading ? 0 : 1)
         .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
         .sheet(isPresented: $showGroundCreationSheet) {
             ContentInSheet(title: "Новая площадка", spacing: .zero) {

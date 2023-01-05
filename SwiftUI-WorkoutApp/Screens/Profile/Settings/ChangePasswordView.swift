@@ -27,7 +27,7 @@ struct ChangePasswordView: View {
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
             ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
+                .opacity(viewModel.isLoading ? 1 : 0)
         }
         .animation(.easeOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)

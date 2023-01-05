@@ -25,7 +25,7 @@ struct EventsListView: View {
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .overlay {
                 ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : .zero)
+                    .opacity(viewModel.isLoading ? 1 : 0)
             }
             .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -60,7 +60,7 @@ private extension EventsListView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -79,7 +79,7 @@ private extension EventsListView {
             action: emptyViewAction,
             hintText: emptyViewHintText
         )
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -105,7 +105,7 @@ private extension EventsListView {
                 EventViewCell(for: $event)
             }
         }
-        .opacity(viewModel.isLoading ? .zero : 1)
+        .opacity(viewModel.isLoading ? 0 : 1)
     }
 
     func emptyViewAction() {
@@ -122,7 +122,7 @@ private extension EventsListView {
         } label: {
             Image(systemName: "plus")
         }
-        .opacity(showAddEventButton ? 1 : .zero)
+        .opacity(showAddEventButton ? 1 : 0)
         .disabled(!network.isConnected)
         .sheet(isPresented: $showEventCreationSheet) {
             ContentInSheet(title: "Новое мероприятие", spacing: .zero) {

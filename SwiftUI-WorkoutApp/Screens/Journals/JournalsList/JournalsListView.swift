@@ -31,7 +31,7 @@ struct JournalsListView: View {
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
             ProgressView()
-                .opacity(viewModel.isLoading ? 1 : .zero)
+                .opacity(viewModel.isLoading ? 1 : 0)
         }
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
@@ -69,7 +69,7 @@ private extension JournalsListView {
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -77,7 +77,7 @@ private extension JournalsListView {
         Button(action: showNewJournalSheet) {
             Image(systemName: "plus")
         }
-        .opacity(showAddJournalButton ? 1 : .zero)
+        .opacity(showAddJournalButton ? 1 : 0)
         .disabled(!network.isConnected)
     }
 
@@ -87,7 +87,7 @@ private extension JournalsListView {
             buttonTitle: "Создать дневник",
             action: showNewJournalSheet
         )
-        .opacity(showEmptyView ? 1 : .zero)
+        .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 

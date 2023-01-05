@@ -47,7 +47,7 @@ struct SendMessageView: View {
         }
         .overlay {
             ProgressView()
-                .opacity(isLoading ? 1 : .zero)
+                .opacity(isLoading ? 1 : 0)
         }
         .disabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {

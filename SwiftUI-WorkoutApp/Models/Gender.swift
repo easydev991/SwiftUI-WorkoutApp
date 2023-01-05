@@ -8,7 +8,7 @@ enum Gender: String, CaseIterable, CustomStringConvertible, Codable {
         self = code == .zero ? .male : .female
     }
 
-    var code: Int { self == .male ? .zero : 1 }
+    var code: Int { self == .male ? 0 : 1 }
 
     var description: String {
         self == .male ? "Мужчина" : "Женщина"
