@@ -10,6 +10,7 @@ struct SportsGroundDetailView: View {
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
     @State private var showDeleteDialog = false
+    @State private var trainHere = false
     @State private var editComment: Comment?
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
@@ -79,6 +80,8 @@ struct SportsGroundDetailView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
+        .onReceive(viewModel.$ground, perform: onReceiveOfGroundSetupTrainHere)
+        .onChange(of: viewModel.ground.trainHere, perform: onChangeOfTrainHere)
         .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
@@ -126,20 +129,35 @@ private extension SportsGroundDetailView {
                !participants.isEmpty {
                 linkToParticipantsView
             }
-            CustomToggle(
-                isOn: $viewModel.ground.trainHere,
-                title: "Тренируюсь здесь",
-                action: changeTrainHereStatus
-            )
-            .disabled(viewModel.isLoading || !network.isConnected)
+            Toggle("Тренируюсь здесь", isOn: $trainHere)
+                .disabled(viewModel.isLoading || !network.isConnected)
+                .onChange(of: trainHere, perform: changeTrainHereStatus)
             createEventLink
         }
     }
 
-    func changeTrainHereStatus() {
-        changeTrainHereTask = Task {
-            await viewModel.changeTrainHereStatus(with: defaults)
+    func changeTrainHereStatus(newValue: Bool) {
+        let oldValue = viewModel.ground.trainHere
+        switch (oldValue, newValue) {
+        case (true, true), (false, false):
+            break // Пользователь не трогал тоггл
+        case (true, false), (false, true):
+            changeTrainHereTask = Task {
+                await viewModel.changeTrainHereStatus(newValue, with: defaults)
+            }
         }
+    }
+
+    /// Настраиваем начальное состояние `trainHere` при появлении экрана
+    func onReceiveOfGroundSetupTrainHere(ground: SportsGround) {
+        trainHere = ground.trainHere
+    }
+
+    /// Обновляем состояние `trainHere` при получении изменений от `viewModel`
+    ///
+    /// Например, если сервер вернул ошибку при попытке сменить статус
+    func onChangeOfTrainHere(value: Bool) {
+        trainHere = value
     }
 
     var linkToParticipantsView: some View {

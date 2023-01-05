@@ -22,25 +22,29 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
-    func changeTrainHereStatus(with defaults: DefaultsService) async {
+    /// Меняем статус `trainHere`. При неудаче откатываем статус обратно.
+    /// - Parameters:
+    ///   - newValue: новое значение `trainHere`
+    ///   - defaults: `UserDefaults` с необходимыми данными для операции
+    func changeTrainHereStatus(_ newValue: Bool, with defaults: DefaultsService) async {
         if isLoading { return }
+        let oldValue = ground.trainHere
+        ground.trainHere = newValue
         isLoading.toggle()
         do {
-            let trainHere = !ground.trainHere
-            if try await APIService(with: defaults).changeTrainHereStatus(
-                for: ground.id,
-                trainHere: trainHere
-            ) {
-                ground.trainHere = trainHere
-                if trainHere, let userInfo = defaults.mainUserInfo {
+            if try await APIService(with: defaults).changeTrainHereStatus(newValue, for: ground.id) {
+                if newValue, let userInfo = defaults.mainUserInfo {
                     ground.participants.append(userInfo)
                 } else {
                     ground.participants.removeAll(where: { $0.userID == defaults.mainUserID })
                 }
                 defaults.setUserNeedUpdate(true)
+            } else {
+                ground.trainHere = oldValue
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
+            ground.trainHere = oldValue
         }
         isLoading.toggle()
     }
