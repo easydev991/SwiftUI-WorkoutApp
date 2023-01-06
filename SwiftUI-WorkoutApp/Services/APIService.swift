@@ -189,7 +189,7 @@ struct APIService {
     /// - Returns: Обновленная информация о площадке
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
         let endpoint: Endpoint
-        if let id {
+        if let id = id {
             endpoint = Endpoint.editSportsGround(id: id, form: form)
         } else {
             endpoint = Endpoint.createSportsGround(form: form)
@@ -320,7 +320,7 @@ struct APIService {
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому временно обрабатываем `EventResult`
     func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
         let endpoint: Endpoint
-        if let id {
+        if let id = id {
             endpoint = .editEvent(id: id, form: form)
         } else {
             endpoint = .createEvent(form: form)

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/FeedbackSender",
       "state" : {
-        "revision" : "7e1a70b3df04d1d79d1a3fe1512572f916a22b7a",
-        "version" : "1.0.0"
+        "revision" : "f1344cbd04a9baef7cc135947efb7c68c256b225",
+        "version" : "1.0.1"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/ImagePicker",
       "state" : {
-        "revision" : "576294b2a2d5bf653fdbae3f369a9951d4d347b5",
-        "version" : "1.0.3"
+        "revision" : "eaf456d407421ec6ef8cf7c83d6a3cacefc14e88",
+        "version" : "1.0.4"
       }
     }
   ],
