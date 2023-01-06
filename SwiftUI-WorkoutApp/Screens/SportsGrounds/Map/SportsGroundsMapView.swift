@@ -118,13 +118,9 @@ private extension SportsGroundsMapView {
                 .padding(.horizontal)
                 .background(Color("ButtonBackground").cornerRadius(8))
             Button {
-                if let settingsURL = URL(string: UIApplication.openSettingsURLString),
-                   UIApplication.shared.canOpenURL(settingsURL) {
-                    UIApplication.shared.open(settingsURL)
-                }
+                viewModel.openAppSettings()
             } label: {
-                Text("Открыть настройки")
-                    .roundedRectangleStyle()
+                RoundedButtonLabel(title: "Открыть настройки")
             }
             .disabled(viewModel.isLoading)
         }

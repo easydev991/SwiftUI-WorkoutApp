@@ -25,14 +25,14 @@ private extension IncognitoProfileView {
             AccountInfoView(mode: .create)
         } label: {
             Label("Создать аккаунт", systemImage: "person.badge.plus")
-                .roundedRectangleStyle()
+                .roundedStyle()
         }
     }
 
     var loginButton: some View {
         NavigationLink(destination: LoginView()) {
             Label("Войти через email", systemImage: "envelope")
-                .roundedRectangleStyle()
+                .roundedStyle()
         }
     }
 }

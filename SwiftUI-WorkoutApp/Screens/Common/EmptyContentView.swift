@@ -15,8 +15,7 @@ struct EmptyContentView: View {
                 .multilineTextAlignment(.center)
             if network.isConnected {
                 Button(action: action) {
-                    Text(actionButtonTitle)
-                        .roundedRectangleStyle()
+                    RoundedButtonLabel(title: actionButtonTitle)
                 }
                 .opacity(defaults.isAuthorized ? 1 : 0)
             } else {
