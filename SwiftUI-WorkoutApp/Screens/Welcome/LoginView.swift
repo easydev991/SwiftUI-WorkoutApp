@@ -15,8 +15,18 @@ struct LoginView: View {
 
     var body: some View {
         Form {
-            loginPasswordSection
-            buttonsSection
+            Section {
+                loginField
+                passwordField
+            }
+            Section {
+                ButtonInForm("Войти", action: loginAction)
+                    .disabled(!viewModel.canLogIn)
+                ButtonInForm("Забыли пароль?", mode: .secondary, action: forgotPasswordAction)
+                    .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
+                        Button("Ok") { viewModel.warningAlertClosed() }
+                    }
+            }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
@@ -31,8 +41,8 @@ struct LoginView: View {
         .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
             Button("Ok") { viewModel.resetSuccessfulAlertClosed() }
         }
-        .onChange(of: viewModel.showResetSuccessfulAlert, perform: toggleResetSuccessfulAlert)
-        .onChange(of: viewModel.showForgotPasswordAlert, perform: toggleResetInfoAlert)
+        .onChange(of: viewModel.showResetSuccessfulAlert, perform: showResetSuccessfulAlert)
+        .onChange(of: viewModel.showForgotPasswordAlert, perform: showResetInfoAlert)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Авторизация")
@@ -45,20 +55,13 @@ private extension LoginView {
         case username, password
     }
 
-    var loginPasswordSection: some View {
-        Section {
-            loginField
-            passwordField
-        }
-    }
-
     var loginField: some View {
-        HStack {
-            Image(systemName: "person")
-                .foregroundColor(.secondary)
-            TextField("Логин или email", text: $viewModel.login)
-                .focused($focus, equals: .username)
-        }
+        TextFieldInForm(
+            mode: .regular(systemImageName: "person"),
+            placeholder: "Логин или email",
+            text: $viewModel.login
+        )
+        .focused($focus, equals: .username)
         .onAppear(perform: showKeyboard)
     }
 
@@ -69,27 +72,13 @@ private extension LoginView {
     }
 
     var passwordField: some View {
-        HStack {
-            Image(systemName: "lock")
-                .foregroundColor(.secondary)
-            SecureField("Пароль", text: $viewModel.password)
-                .focused($focus, equals: .password)
-                .onSubmit(loginAction)
-        }
-    }
-
-    var buttonsSection: some View {
-        Section {
-            loginButton
-            forgotPasswordButton
-        }
-    }
-
-    var loginButton: some View {
-        Button(action: loginAction) {
-            ButtonInFormLabel(title: "Войти")
-        }
-        .disabled(!viewModel.canLogIn)
+        TextFieldInForm(
+            mode: .secure,
+            placeholder: "Пароль",
+            text: $viewModel.password
+        )
+        .focused($focus, equals: .password)
+        .onSubmit(loginAction)
     }
 
     func loginAction() {
@@ -97,32 +86,16 @@ private extension LoginView {
         loginTask = Task { await viewModel.loginAction(with: defaults) }
     }
 
-    var forgotPasswordButton: some View {
-        Button(action: forgotPasswordAction) { forgotPasswordLabel }
-            .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
-                Button("Ok") { viewModel.warningAlertClosed() }
-            }
-    }
-
     func forgotPasswordAction() {
         resetPasswordTask = Task { await viewModel.forgotPasswordTapped(with: defaults) }
         focus = viewModel.canRestorePassword ? nil : .username
     }
 
-    var forgotPasswordLabel: some View {
-        HStack {
-            Spacer()
-            Text("Забыли пароль?")
-                .tint(.blue)
-            Spacer()
-        }
-    }
-
-    func toggleResetInfoAlert(showAlert: Bool) {
+    func showResetInfoAlert(showAlert: Bool) {
         showResetInfoAlert = showAlert
     }
 
-    func toggleResetSuccessfulAlert(showAlert: Bool) {
+    func showResetSuccessfulAlert(showAlert: Bool) {
         showResetSuccessfulAlert = showAlert
     }
 

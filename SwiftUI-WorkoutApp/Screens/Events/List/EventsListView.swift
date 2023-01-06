@@ -76,7 +76,7 @@ private extension EventsListView {
         EmptyContentView(
             message: "Нет запланированных мероприятий",
             buttonTitle: emptyViewButtonTitle,
-            action: emptyViewAction,
+            action: createEventIfAvailable,
             hintText: emptyViewHintText
         )
         .opacity(showEmptyView ? 1 : 0)
@@ -108,7 +108,7 @@ private extension EventsListView {
         .opacity(viewModel.isLoading ? 0 : 1)
     }
 
-    func emptyViewAction() {
+    func createEventIfAvailable() {
         if showAddEventButton {
             showEventCreationSheet.toggle()
         } else {
@@ -117,9 +117,7 @@ private extension EventsListView {
     }
 
     var addEventLink: some View {
-        Button {
-            showEventCreationSheet.toggle()
-        } label: {
+        Button(action: createEventIfAvailable) {
             Image(systemName: "plus")
         }
         .opacity(showAddEventButton ? 1 : 0)

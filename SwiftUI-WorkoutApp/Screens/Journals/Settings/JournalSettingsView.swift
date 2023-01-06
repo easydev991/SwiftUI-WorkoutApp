@@ -78,10 +78,8 @@ private extension JournalSettingsView {
     }
 
     var saveButton: some View {
-        Button(action: saveChanges) {
-            ButtonInFormLabel(title: "Сохранить")
-        }
-        .disabled(isSaveButtonDisabled)
+        ButtonInForm("Сохранить", action: saveChanges)
+            .disabled(isSaveButtonDisabled)
     }
 
     func saveChanges() {

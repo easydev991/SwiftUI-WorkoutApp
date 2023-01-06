@@ -48,12 +48,12 @@ private extension ChangePasswordView {
     }
 
     var passwordField: some View {
-        HStack {
-            Image(systemName: "lock")
-                .foregroundColor(.secondary)
-            SecureField("Текущий пароль", text: $viewModel.currentPasswordText)
-                .focused($focus, equals: .currentPassword)
-        }
+        TextFieldInForm(
+            mode: .secure,
+            placeholder: "Текущий пароль",
+            text: $viewModel.currentPasswordText
+        )
+        .focused($focus, equals: .currentPassword)
         .onAppear(perform: showKeyboard)
     }
 
@@ -64,31 +64,29 @@ private extension ChangePasswordView {
     }
 
     var newPasswordField: some View {
-        HStack {
-            Image(systemName: "lock")
-                .foregroundColor(.secondary)
-            SecureField("Новый пароль", text: $viewModel.newPasswordText)
-                .focused($focus, equals: .newPassword)
-        }
+        TextFieldInForm(
+            mode: .secure,
+            placeholder: "Новый пароль",
+            text: $viewModel.newPasswordText
+        )
+        .focused($focus, equals: .newPassword)
     }
 
     var newPasswordAgainField: some View {
-        HStack {
-            Image(systemName: "lock")
-                .foregroundColor(.secondary)
-            SecureField("Новый пароль ещё раз", text: $viewModel.newPasswordAgainText)
-                .focused($focus, equals: .newPasswordAgain)
-        }
+        TextFieldInForm(
+            mode: .secure,
+            placeholder: "Новый пароль ещё раз",
+            text: $viewModel.newPasswordTextAgain
+        )
+        .focused($focus, equals: .newPasswordAgain)
     }
 
     var changePasswordButton: some View {
-        Button(action: changePasswordTapped) {
-            ButtonInFormLabel(title: "Сохранить изменения")
-        }
-        .disabled(
-            viewModel.isChangeButtonDisabled
-            || !network.isConnected
-        )
+        ButtonInForm("Сохранить изменения", action: changePasswordTapped)
+            .disabled(
+                viewModel.isChangeButtonDisabled
+                || !network.isConnected
+            )
     }
 
     func changePasswordTapped() {

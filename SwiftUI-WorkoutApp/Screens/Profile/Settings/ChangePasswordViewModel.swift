@@ -4,7 +4,7 @@ import Foundation
 final class ChangePasswordViewModel: ObservableObject {
     @Published var currentPasswordText = ""
     @Published var newPasswordText = ""
-    @Published var newPasswordAgainText = ""
+    @Published var newPasswordTextAgain = ""
     @Published private(set) var isChangeSuccessful = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
@@ -12,7 +12,7 @@ final class ChangePasswordViewModel: ObservableObject {
         isLoading
         || currentPasswordText.count < Constants.minPasswordSize
         || newPasswordText.count < Constants.minPasswordSize
-        || newPasswordText != newPasswordAgainText
+        || newPasswordText != newPasswordTextAgain
     }
 
     func changePasswordAction(with defaults: DefaultsProtocol) async {

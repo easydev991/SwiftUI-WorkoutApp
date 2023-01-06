@@ -135,14 +135,12 @@ private extension SportsGroundFormView {
 
     var saveButton: some View {
         Section {
-            Button(action: saveAction) {
-                ButtonInFormLabel(title: "Сохранить")
-            }
-            .disabled(
-                !viewModel.isFormReady
-                || viewModel.isLoading
-                || !network.isConnected
-            )
+            ButtonInForm("Сохранить", action: saveAction)
+                .disabled(
+                    !viewModel.isFormReady
+                    || viewModel.isLoading
+                    || !network.isConnected
+                )
         }
     }
 
