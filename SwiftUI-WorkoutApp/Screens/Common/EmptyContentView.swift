@@ -4,20 +4,18 @@ import SwiftUI
 struct EmptyContentView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
-    let message: String
-    let buttonTitle: String
+    let mode: Mode
     let action: () -> Void
-    var hintText = ""
 
     var body: some View {
         VStack(spacing: 16) {
             Spacer()
-            Text(message)
+            Text(mode.message)
                 .font(.title2)
                 .multilineTextAlignment(.center)
             if network.isConnected {
                 Button(action: action) {
-                    Text(buttonTitle)
+                    Text(actionButtonTitle)
                         .roundedRectangleStyle()
                 }
                 .opacity(defaults.isAuthorized ? 1 : 0)
@@ -25,8 +23,8 @@ struct EmptyContentView: View {
                 Image(systemName: "wifi.exclamationmark")
                     .font(.system(size: 60))
             }
-            if !hintText.isEmpty {
-                Text(hintText)
+            if isHintAvailable {
+                Text(Constants.Alert.eventCreationRule)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
             }
@@ -36,14 +34,48 @@ struct EmptyContentView: View {
     }
 }
 
+private extension EmptyContentView {
+    var actionButtonTitle: String {
+        switch mode {
+        case .events:
+            return defaults.hasSportsGrounds && defaults.isAuthorized
+            ? "Создать мероприятие"
+            : "Выбрать площадку"
+        case .dialogs:
+            return defaults.hasFriends ? "Открыть список друзей" : "Найти пользователя"
+        case .journals: return "Создать дневник"
+        }
+    }
+
+    var isHintAvailable: Bool {
+        mode == .events && defaults.isAuthorized && !defaults.hasSportsGrounds
+    }
+}
+
+extension EmptyContentView {
+    enum Mode: CaseIterable {
+        case events, dialogs, journals
+    }
+}
+
+private extension EmptyContentView.Mode {
+    var message: String {
+        switch self {
+        case .events:
+            return "Нет запланированных мероприятий"
+        case .dialogs:
+            return "Чатов пока нет"
+        case .journals:
+            return "Дневников пока нет"
+        }
+    }
+}
+
 struct EmptyContentView_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyContentView(
-            message: "Чатов пока нет",
-            buttonTitle: "Открыть список друзей",
-            action: {},
-            hintText: "Подсказка"
-        )
+        ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
+            EmptyContentView(mode: mode, action: {})
+        }
         .environmentObject(CheckNetworkService())
         .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)

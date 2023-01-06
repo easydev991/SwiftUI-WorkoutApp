@@ -78,13 +78,9 @@ private extension DialogListView {
     }
 
     var emptyContentView: some View {
-        EmptyContentView(
-            message: "Чатов пока нет",
-            buttonTitle: emptyViewButtonTitle,
-            action: emptyViewAction
-        )
-        .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
+        EmptyContentView(mode: .dialogs, action: emptyViewAction)
+            .opacity(showEmptyView ? 1 : 0)
+            .disabled(viewModel.isLoading)
     }
 
     var showEmptyView: Bool {

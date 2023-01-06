@@ -23,11 +23,11 @@ struct EventsListView: View {
                     eventsList
                 }
             }
-            .alert(Texts.needGroundAlertTitle, isPresented: $showEventCreationRule) {
+            .alert("Необходимо выбрать площадку", isPresented: $showEventCreationRule) {
                 Button(action: createEventIfAvailable) { Text("Перейти на карту") }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
-                Text(Texts.needGroundsToCreateEvent)
+                Text(Constants.Alert.eventCreationRule)
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .overlay {
@@ -78,26 +78,9 @@ private extension EventsListView {
     }
 
     var emptyView: some View {
-        EmptyContentView(
-            message: "Нет запланированных мероприятий",
-            buttonTitle: emptyViewButtonTitle,
-            action: createEventIfAvailable,
-            hintText: emptyViewHintText
-        )
-        .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
-    }
-
-    var emptyViewButtonTitle: String {
-        canAddEvent ? "Создать мероприятие" : "Выбрать площадку"
-    }
-
-    var emptyViewHintText: String {
-        if !defaults.isAuthorized {
-            return ""
-        } else {
-            return canAddEvent ? "" : Texts.needGroundsToCreateEvent
-        }
+        EmptyContentView(mode: .events, action: createEventIfAvailable)
+            .opacity(showEmptyView ? 1 : 0)
+            .disabled(viewModel.isLoading)
     }
 
     var eventsList: some View {
@@ -170,13 +153,6 @@ private extension EventsListView {
     func closeAlert() { viewModel.clearErrorMessage() }
 
     func cancelTask() { eventsTask?.cancel() }
-}
-
-private extension EventsListView {
-    enum Texts {
-        static let needGroundAlertTitle = "Необходимо выбрать площадку"
-        static let needGroundsToCreateEvent = "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
-    }
 }
 
 struct EventsListView_Previews: PreviewProvider {

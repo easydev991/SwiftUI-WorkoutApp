@@ -82,13 +82,9 @@ private extension JournalsListView {
     }
 
     var emptyContentView: some View {
-        EmptyContentView(
-            message: "Дневников пока нет",
-            buttonTitle: "Создать дневник",
-            action: showNewJournalSheet
-        )
-        .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
+        EmptyContentView(mode: .journals, action: showNewJournalSheet)
+            .opacity(showEmptyView ? 1 : 0)
+            .disabled(viewModel.isLoading)
     }
 
     var journalsList: some View {
