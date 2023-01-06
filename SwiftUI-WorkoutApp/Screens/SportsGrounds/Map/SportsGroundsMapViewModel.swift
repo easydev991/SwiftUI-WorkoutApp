@@ -172,8 +172,8 @@ private extension SportsGroundsMapViewModel {
             filter.size.map { $0.code }.contains(ground.sizeID)
             && filter.type.map { $0.code }.contains(ground.typeID)
         }
-        guard let countryID, countryID != .zero,
-              let cityID, cityID != .zero,
+        guard let countryID = countryID, countryID != .zero,
+              let cityID = cityID, cityID != .zero,
               filter.onlyMyCity
         else {
             sportsGrounds = result
