@@ -2,9 +2,22 @@ import SwiftUI
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {
-    @Binding var ground: SportsGround
-    let address: String
-    let appleMapsURL: URL?
+    private let urlOpener: URLOpener
+    private let address: String
+    private let appleMapsURL: URL?
+    @Binding private var ground: SportsGround
+
+    init(
+        urlOpener: URLOpener = URLOpenerImp(),
+        ground: Binding<SportsGround>,
+        address: String,
+        appleMapsURL: URL?
+    ) {
+        self.urlOpener = urlOpener
+        self._ground = ground
+        self.address = address
+        self.appleMapsURL = appleMapsURL
+    }
 
     var body: some View {
         Section {
@@ -14,9 +27,7 @@ struct SportsGroundLocationInfo: View {
             Text(address)
             if let url = appleMapsURL {
                 Button {
-                    if UIApplication.shared.canOpenURL(url) {
-                        UIApplication.shared.open(url)
-                    }
+                    urlOpener.open(url)
                 } label: {
                     Text("Построить маршрут")
                         .blueMediumWeight()

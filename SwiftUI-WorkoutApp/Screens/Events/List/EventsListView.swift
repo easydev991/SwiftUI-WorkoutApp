@@ -8,6 +8,7 @@ struct EventsListView: View {
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
     @State private var showEventCreationSheet = false
+    @State private var showEventCreationRule = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
@@ -21,6 +22,12 @@ struct EventsListView: View {
                 } else {
                     eventsList
                 }
+            }
+            .alert("Необходимо выбрать площадку", isPresented: $showEventCreationRule) {
+                Button(action: createEventIfAvailable) { Text("Перейти на карту") }
+                Button(role: .cancel, action: {}, label: { Text("Понятно") })
+            } message: {
+                Text(Constants.Alert.eventCreationRule)
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .overlay {
@@ -54,9 +61,7 @@ struct EventsListView: View {
 private extension EventsListView {
     var refreshButton: some View {
         Button {
-            eventsTask = Task {
-                await askForEvents()
-            }
+            eventsTask = Task { await askForEvents() }
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
@@ -73,28 +78,9 @@ private extension EventsListView {
     }
 
     var emptyView: some View {
-        EmptyContentView(
-            message: "Нет запланированных мероприятий",
-            buttonTitle: emptyViewButtonTitle,
-            action: emptyViewAction,
-            hintText: emptyViewHintText
-        )
-        .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
-    }
-
-    var emptyViewButtonTitle: String {
-        showAddEventButton ? "Создать мероприятие" : "Выбрать площадку"
-    }
-
-    var emptyViewHintText: String {
-        if !defaults.isAuthorized {
-            return ""
-        } else {
-            return showAddEventButton
-            ? ""
-            : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
-        }
+        EmptyContentView(mode: .events, action: createEventIfAvailable)
+            .opacity(showEmptyView ? 1 : 0)
+            .disabled(viewModel.isLoading)
     }
 
     var eventsList: some View {
@@ -108,8 +94,8 @@ private extension EventsListView {
         .opacity(viewModel.isLoading ? 0 : 1)
     }
 
-    func emptyViewAction() {
-        if showAddEventButton {
+    func createEventIfAvailable() {
+        if canAddEvent {
             showEventCreationSheet.toggle()
         } else {
             tabViewModel.selectTab(.map)
@@ -118,36 +104,34 @@ private extension EventsListView {
 
     var addEventLink: some View {
         Button {
-            showEventCreationSheet.toggle()
+            if !defaults.hasSportsGrounds {
+                showEventCreationRule.toggle()
+            } else {
+                createEventIfAvailable()
+            }
         } label: {
             Image(systemName: "plus")
         }
-        .opacity(showAddEventButton ? 1 : 0)
+        .opacity(defaults.isAuthorized ? 1 : 0)
         .disabled(!network.isConnected)
         .sheet(isPresented: $showEventCreationSheet) {
             ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
-                EventFormView(
-                    for: .regularCreate,
-                    refreshClbk: refreshAction
-                )
+                EventFormView(for: .regularCreate, refreshClbk: refreshAction)
             }
         }
     }
 
-    var showAddEventButton: Bool {
-        defaults.hasSportsGrounds
-        && defaults.isAuthorized
+    /// Необходимо быть авторизованным и иметь сохраненные площадки, чтобы была возможность создавать мероприятия
+    var canAddEvent: Bool {
+        defaults.hasSportsGrounds && defaults.isAuthorized
     }
 
     var showEmptyView: Bool {
-        selectedEventType == .future
-        && viewModel.futureEvents.isEmpty
+        selectedEventType == .future && viewModel.futureEvents.isEmpty
     }
 
     func selectedEventAction(_ type: EventType) {
-        eventsTask = Task {
-            await askForEvents()
-        }
+        eventsTask = Task { await askForEvents() }
     }
 
     func askForEvents(refresh: Bool = false) async {
@@ -155,9 +139,7 @@ private extension EventsListView {
     }
 
     func refreshAction() {
-        eventsTask = Task {
-            await askForEvents(refresh: true)
-        }
+        eventsTask = Task { await askForEvents(refresh: true) }
     }
 
     func setupErrorAlert(with message: String) {
@@ -165,16 +147,12 @@ private extension EventsListView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
-    func cancelTask() {
-        eventsTask?.cancel()
-    }
+    func cancelTask() { eventsTask?.cancel() }
 }
 
-struct EventsView_Previews: PreviewProvider {
+struct EventsListView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
             .environmentObject(TabViewModel())

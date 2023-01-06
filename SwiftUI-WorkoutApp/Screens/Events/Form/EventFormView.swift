@@ -89,7 +89,7 @@ private extension EventFormView {
 
     var eventNameSection: some View {
         Section {
-            TextField("Название", text: $viewModel.eventForm.title)
+            TextField("Название мероприятия", text: $viewModel.eventForm.title)
                 .focused($focus, equals: .eventName)
         }
     }
@@ -159,14 +159,12 @@ private extension EventFormView {
 
     var saveButton: some View {
         Section {
-            Button(action: saveAction) {
-                ButtonInFormLabel(title: "Сохранить")
-            }
-            .disabled(
-                !viewModel.isFormReady
-                || viewModel.isLoading
-                || !network.isConnected
-            )
+            ButtonInForm("Сохранить", action: saveAction)
+                .disabled(
+                    !viewModel.isFormReady
+                    || viewModel.isLoading
+                    || !network.isConnected
+                )
         }
     }
 

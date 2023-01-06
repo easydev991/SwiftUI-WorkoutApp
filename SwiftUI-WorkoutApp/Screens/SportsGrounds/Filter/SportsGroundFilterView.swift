@@ -72,10 +72,8 @@ private extension SportsGroundFilterView {
     }
 
     var resetFilterButton: some View {
-        Button {
+        ButtonInForm("Сбросить фильтры") {
             filter = defaultFilter
-        } label: {
-            ButtonInFormLabel(title: "Сбросить фильтры")
         }
         .disabled(!canResetFilter)
     }

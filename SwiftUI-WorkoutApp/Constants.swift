@@ -24,5 +24,6 @@ enum Constants {
         static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         static let locationPermissionDenied = "Запрещен доступ к геолокации"
         static let needLocationPermission = "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках"
+        static let eventCreationRule = "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
     }
 }

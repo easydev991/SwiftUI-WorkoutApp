@@ -72,42 +72,43 @@ private extension AccountInfoView.Mode {
 
 private extension AccountInfoView {
     enum FocusableField: Hashable {
-        case login, email, password
+        case login, email, password, fullName
     }
 
     var loginField: some View {
-        HStack {
-            Image(systemName: "person")
-                .foregroundColor(.secondary)
-            TextField(viewModel.userForm.placeholder(.userName), text: $viewModel.userForm.userName)
-                .focused($focus, equals: .login)
-        }
+        TextFieldInForm(
+            mode: .regular(systemImageName: "person"),
+            placeholder: viewModel.userForm.placeholder(.userName),
+            text: $viewModel.userForm.userName
+        )
+        .focused($focus, equals: .login)
     }
 
     var emailField: some View {
-        HStack {
-            Image(systemName: "envelope")
-                .foregroundColor(.secondary)
-            TextField(viewModel.userForm.placeholder(.email), text: $viewModel.userForm.email)
-                .focused($focus, equals: .email)
-        }
+        TextFieldInForm(
+            mode: .regular(systemImageName: "envelope"),
+            placeholder: viewModel.userForm.placeholder(.email),
+            text: $viewModel.userForm.email
+        )
+        .focused($focus, equals: .email)
     }
 
     var passwordField: some View {
-        HStack {
-            Image(systemName: "lock")
-                .foregroundColor(.secondary)
-            SecureField(viewModel.userForm.placeholder(.password), text: $viewModel.userForm.password)
-                .focused($focus, equals: .password)
-        }
+        TextFieldInForm(
+            mode: .secure,
+            placeholder: viewModel.userForm.placeholder(.password),
+            text: $viewModel.userForm.password
+        )
+        .focused($focus, equals: .password)
     }
 
     var nameField: some View {
-        HStack {
-            Image(systemName: "person")
-                .foregroundColor(.secondary)
-            TextField(viewModel.userForm.placeholder(.fullname), text: $viewModel.userForm.fullName)
-        }
+        TextFieldInForm(
+            mode: .regular(systemImageName: "person"),
+            placeholder: viewModel.userForm.placeholder(.fullname),
+            text: $viewModel.userForm.fullName
+        )
+        .focused($focus, equals: .fullName)
     }
 
     var countryPicker: some View {
@@ -183,23 +184,18 @@ private extension AccountInfoView {
     var rulesOfServiceSection: some View {
         Section {
             Link(destination: Constants.rulesOfService) {
-                HStack {
-                    Spacer()
-                    Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.blue)
-                    Spacer()
-                }
+                Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.blue)
+                    .frame(maxWidth: .infinity)
             }
         }
     }
 
     var registerButtonSection: some View {
         Section {
-            Button(action: registerAction) {
-                ButtonInFormLabel(title: "Зарегистрироваться")
-            }
-            .disabled(!viewModel.isButtonAvailable(with: defaults))
+            ButtonInForm("Зарегистрироваться", action: registerAction)
+                .disabled(!viewModel.isButtonAvailable(with: defaults))
         }
     }
 
@@ -210,13 +206,11 @@ private extension AccountInfoView {
 
     var saveChangesButtonSection: some View {
         Section {
-            Button(action: saveChangesAction) {
-                ButtonInFormLabel(title: "Сохранить")
-            }
-            .disabled(
-                !viewModel.isButtonAvailable(with: defaults)
-                || !network.isConnected
-            )
+            ButtonInForm("Сохранить", action: saveChangesAction)
+                .disabled(
+                    !viewModel.isButtonAvailable(with: defaults)
+                    || !network.isConnected
+                )
         }
     }
 

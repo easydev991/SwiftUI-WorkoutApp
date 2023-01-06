@@ -3,6 +3,7 @@ import MapKit.MKGeometry
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
+    private let urlOpener: URLOpener = URLOpenerImp()
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
     private var defaultList = [SportsGround]()
@@ -83,6 +84,12 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
         if !locationErrorMessage.isEmpty {
             setupDefaultLocation()
+        }
+    }
+
+    func openAppSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            urlOpener.open(url)
         }
     }
 
