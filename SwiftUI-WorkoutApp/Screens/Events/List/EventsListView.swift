@@ -8,6 +8,7 @@ struct EventsListView: View {
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
     @State private var showEventCreationSheet = false
+    @State private var showEventCreationRule = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
@@ -21,6 +22,12 @@ struct EventsListView: View {
                 } else {
                     eventsList
                 }
+            }
+            .alert(Texts.needGroundAlertTitle, isPresented: $showEventCreationRule) {
+                Button(action: createEventIfAvailable) { Text("Перейти на карту") }
+                Button(role: .cancel, action: {}, label: { Text("Понятно") })
+            } message: {
+                Text(Texts.needGroundsToCreateEvent)
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
             .overlay {
@@ -84,16 +91,14 @@ private extension EventsListView {
     }
 
     var emptyViewButtonTitle: String {
-        showAddEventButton ? "Создать мероприятие" : "Выбрать площадку"
+        canAddEvent ? "Создать мероприятие" : "Выбрать площадку"
     }
 
     var emptyViewHintText: String {
         if !defaults.isAuthorized {
             return ""
         } else {
-            return showAddEventButton
-            ? ""
-            : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
+            return canAddEvent ? "" : Texts.needGroundsToCreateEvent
         }
     }
 
@@ -109,7 +114,7 @@ private extension EventsListView {
     }
 
     func createEventIfAvailable() {
-        if showAddEventButton {
+        if canAddEvent {
             showEventCreationSheet.toggle()
         } else {
             tabViewModel.selectTab(.map)
@@ -117,10 +122,16 @@ private extension EventsListView {
     }
 
     var addEventLink: some View {
-        Button(action: createEventIfAvailable) {
+        Button {
+            if !defaults.hasSportsGrounds {
+                showEventCreationRule.toggle()
+            } else {
+                createEventIfAvailable()
+            }
+        } label: {
             Image(systemName: "plus")
         }
-        .opacity(showAddEventButton ? 1 : 0)
+        .opacity(defaults.isAuthorized ? 1 : 0)
         .disabled(!network.isConnected)
         .sheet(isPresented: $showEventCreationSheet) {
             ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
@@ -132,9 +143,9 @@ private extension EventsListView {
         }
     }
 
-    var showAddEventButton: Bool {
-        defaults.hasSportsGrounds
-        && defaults.isAuthorized
+    /// Необходимо быть авторизованным и иметь сохраненные площадки, чтобы была возможность создавать мероприятия
+    var canAddEvent: Bool {
+        defaults.hasSportsGrounds && defaults.isAuthorized
     }
 
     var showEmptyView: Bool {
@@ -169,10 +180,14 @@ private extension EventsListView {
 
     func cancelTask() {
         eventsTask?.cancel()
+private extension EventsListView {
+    enum Texts {
+        static let needGroundAlertTitle = "Необходимо выбрать площадку"
+        static let needGroundsToCreateEvent = "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
     }
 }
 
-struct EventsView_Previews: PreviewProvider {
+struct EventsListView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
             .environmentObject(TabViewModel())
