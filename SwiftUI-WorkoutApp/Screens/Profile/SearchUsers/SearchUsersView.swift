@@ -17,7 +17,7 @@ struct SearchUsersView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Найти пользователя", text: $query)
+                TextField("Имя пользователя на английском", text: $query)
                     .onSubmit(search)
                     .submitLabel(.search)
                     .focused($isFocused)
