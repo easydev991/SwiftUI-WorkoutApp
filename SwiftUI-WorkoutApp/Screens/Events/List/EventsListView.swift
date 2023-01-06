@@ -61,9 +61,7 @@ struct EventsListView: View {
 private extension EventsListView {
     var refreshButton: some View {
         Button {
-            eventsTask = Task {
-                await askForEvents()
-            }
+            eventsTask = Task { await askForEvents() }
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
@@ -149,14 +147,11 @@ private extension EventsListView {
     }
 
     var showEmptyView: Bool {
-        selectedEventType == .future
-        && viewModel.futureEvents.isEmpty
+        selectedEventType == .future && viewModel.futureEvents.isEmpty
     }
 
     func selectedEventAction(_ type: EventType) {
-        eventsTask = Task {
-            await askForEvents()
-        }
+        eventsTask = Task { await askForEvents() }
     }
 
     func askForEvents(refresh: Bool = false) async {
@@ -164,9 +159,7 @@ private extension EventsListView {
     }
 
     func refreshAction() {
-        eventsTask = Task {
-            await askForEvents(refresh: true)
-        }
+        eventsTask = Task { await askForEvents(refresh: true) }
     }
 
     func setupErrorAlert(with message: String) {
@@ -174,12 +167,11 @@ private extension EventsListView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 
-    func cancelTask() {
-        eventsTask?.cancel()
+    func cancelTask() { eventsTask?.cancel() }
+}
+
 private extension EventsListView {
     enum Texts {
         static let needGroundAlertTitle = "Необходимо выбрать площадку"
