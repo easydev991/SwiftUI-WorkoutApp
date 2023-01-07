@@ -54,9 +54,11 @@ private extension WelcomeView {
     }
 }
 
+#if DEBUG
 struct WelcomeAuthView_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeView()
             .environmentObject(DefaultsService())
     }
 }
+#endif

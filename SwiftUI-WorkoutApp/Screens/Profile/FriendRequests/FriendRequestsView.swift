@@ -47,9 +47,11 @@ private extension FriendRequestsView {
     }
 }
 
+#if DEBUG
 struct FriendRequestsView_Previews: PreviewProvider {
     static var previews: some View {
         FriendRequestsView(viewModel: .init())
             .environmentObject(DefaultsService())
     }
 }
+#endif

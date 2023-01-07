@@ -36,6 +36,7 @@ private extension CitiesView {
     }
 }
 
+#if DEBUG
 struct CitiesView_Previews: PreviewProvider {
     static var previews: some View {
         CitiesView(
@@ -45,3 +46,4 @@ struct CitiesView_Previews: PreviewProvider {
         )
     }
 }
+#endif

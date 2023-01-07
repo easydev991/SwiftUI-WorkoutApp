@@ -109,9 +109,11 @@ private extension LoginView {
     }
 }
 
+#if DEBUG
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
             .environmentObject(DefaultsService())
     }
 }
+#endif

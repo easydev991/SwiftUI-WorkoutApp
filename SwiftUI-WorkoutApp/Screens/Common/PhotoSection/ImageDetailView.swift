@@ -16,8 +16,10 @@ struct ImageDetailView: UIViewRepresentable {
     func updateUIView(_ uiView: PDFView, context: Context) {}
 }
 
+#if DEBUG
 struct ImageDetailView_Previews: PreviewProvider {
     static var previews: some View {
         ImageDetailView(image: .init(named: "defaultWorkoutImage")!)
     }
 }
+#endif

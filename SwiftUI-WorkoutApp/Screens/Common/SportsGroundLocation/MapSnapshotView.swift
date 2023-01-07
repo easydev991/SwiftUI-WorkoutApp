@@ -79,6 +79,7 @@ private extension MapSnapshotView {
     }
 }
 
+#if DEBUG
 struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
         MapSnapshotView(model: .constant(.emptyValue))
@@ -86,3 +87,4 @@ struct MapSnapshotView_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

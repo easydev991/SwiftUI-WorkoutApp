@@ -200,6 +200,7 @@ private extension EventFormView {
     }
 }
 
+#if DEBUG
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
         EventFormView(for: .regularCreate, refreshClbk: {})
@@ -207,3 +208,4 @@ struct CreateEventView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

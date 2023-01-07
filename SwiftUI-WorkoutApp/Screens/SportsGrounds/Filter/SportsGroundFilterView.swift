@@ -85,9 +85,11 @@ private extension SportsGroundFilterView {
     }
 }
 
+#if DEBUG
 struct SportsGroundFilterView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundFilterView(filter: .constant(.init()))
             .environmentObject(DefaultsService())
     }
 }
+#endif

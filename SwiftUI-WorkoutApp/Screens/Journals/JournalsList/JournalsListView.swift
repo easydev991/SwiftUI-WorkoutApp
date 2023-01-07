@@ -196,6 +196,7 @@ private extension JournalsListView {
     }
 }
 
+#if DEBUG
 struct JournalsListView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsListView(for: .previewUserID)
@@ -203,3 +204,4 @@ struct JournalsListView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

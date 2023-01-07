@@ -37,9 +37,11 @@ private extension IncognitoProfileView {
     }
 }
 
+#if DEBUG
 struct IncognitoProfileView_Previews: PreviewProvider {
     static var previews: some View {
         IncognitoProfileView()
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

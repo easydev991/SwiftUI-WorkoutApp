@@ -232,6 +232,7 @@ private extension AccountInfoView {
     }
 }
 
+#if DEBUG
 struct EditAccountView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(AccountInfoView.Mode.allCases, id: \.title) { mode in
@@ -243,3 +244,4 @@ struct EditAccountView_Previews: PreviewProvider {
         }
     }
 }
+#endif

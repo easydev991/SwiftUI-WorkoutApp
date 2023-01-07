@@ -12,8 +12,10 @@ struct FullScreenImageSheet: View {
     }
 }
 
+#if DEBUG
 struct FullScreenImageSheet_Previews: PreviewProvider {
     static var previews: some View {
         FullScreenImageSheet(image: .init(named: "defaultWorkoutImage")!)
     }
 }
+#endif

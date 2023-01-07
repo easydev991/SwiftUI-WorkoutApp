@@ -64,6 +64,7 @@ private extension CommentViewCell {
     }
 }
 
+#if DEBUG
 struct SportsGroundCommentView_Previews: PreviewProvider {
     static var previews: some View {
         CommentViewCell(
@@ -81,3 +82,4 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

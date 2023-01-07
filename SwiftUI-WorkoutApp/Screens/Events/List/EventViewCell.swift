@@ -28,9 +28,11 @@ struct EventViewCell: View {
     }
 }
 
+#if DEBUG
 struct EventViewCell_Previews: PreviewProvider {
     static var previews: some View {
         EventViewCell(for: .constant(.preview))
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

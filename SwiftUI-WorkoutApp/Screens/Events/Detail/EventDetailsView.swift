@@ -306,6 +306,7 @@ private extension EventDetailsView {
     }
 }
 
+#if DEBUG
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         EventDetailsView(with: .preview, deleteClbk: {})
@@ -313,3 +314,4 @@ struct EventDetailsView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

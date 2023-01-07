@@ -294,6 +294,7 @@ private extension SportsGroundDetailView {
     }
 }
 
+#if DEBUG
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -303,3 +304,4 @@ struct SportsGroundView_Previews: PreviewProvider {
         }
     }
 }
+#endif

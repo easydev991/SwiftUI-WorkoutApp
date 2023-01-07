@@ -108,9 +108,11 @@ private extension ChangePasswordView {
     }
 }
 
+#if DEBUG
 struct ChangePasswordView_Previews: PreviewProvider {
     static var previews: some View {
         ChangePasswordView()
             .environmentObject(CheckNetworkService())
     }
 }
+#endif

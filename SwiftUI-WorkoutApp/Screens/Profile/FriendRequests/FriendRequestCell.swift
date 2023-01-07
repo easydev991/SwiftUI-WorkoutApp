@@ -37,6 +37,7 @@ private extension FriendRequestCell {
     func decline() { declineClbk(model.id) }
 }
 
+#if DEBUG
 struct FriendRequestCell_Previews: PreviewProvider {
     static var previews: some View {
         FriendRequestCell(
@@ -47,3 +48,4 @@ struct FriendRequestCell_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

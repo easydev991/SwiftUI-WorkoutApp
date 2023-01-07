@@ -126,9 +126,11 @@ private extension ProfileSettingsView {
     }
 }
 
+#if DEBUG
 struct ProfileSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileSettingsView()
             .environmentObject(DefaultsService())
     }
 }
+#endif

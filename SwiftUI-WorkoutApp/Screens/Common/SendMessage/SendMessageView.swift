@@ -95,6 +95,7 @@ private extension SendMessageView {
     }
 }
 
+#if DEBUG
 struct SendMessageView_Previews: PreviewProvider {
     static var previews: some View {
         SendMessageView(
@@ -110,3 +111,4 @@ struct SendMessageView_Previews: PreviewProvider {
         .environmentObject(CheckNetworkService())
     }
 }
+#endif

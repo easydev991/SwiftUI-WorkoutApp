@@ -8,6 +8,7 @@ extension Text {
     }
 }
 
+#if DEBUG
 struct BlueMediumWeightText_Previews: PreviewProvider {
     static var previews: some View {
         Text("Hello, World!")
@@ -15,3 +16,4 @@ struct BlueMediumWeightText_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

@@ -266,6 +266,7 @@ private extension UserDetailsView {
     }
 }
 
+#if DEBUG
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
         UserDetailsView(for: .preview)
@@ -273,3 +274,4 @@ struct UserProfileView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

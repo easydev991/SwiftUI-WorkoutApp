@@ -45,6 +45,7 @@ private extension DeletablePhotoCell {
     }
 }
 
+#if DEBUG
 struct DeletablePhotoCell_Previews: PreviewProvider {
     static var previews: some View {
         DeletablePhotoCell(
@@ -57,3 +58,4 @@ struct DeletablePhotoCell_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

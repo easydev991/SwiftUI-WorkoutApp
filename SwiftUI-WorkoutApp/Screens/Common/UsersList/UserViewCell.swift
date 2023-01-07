@@ -17,9 +17,11 @@ struct UserViewCell: View {
     }
 }
 
+#if DEBUG
 struct UserViewCell_Previews: PreviewProvider {
     static var previews: some View {
         UserViewCell(model: .preview)
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

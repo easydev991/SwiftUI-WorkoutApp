@@ -34,6 +34,7 @@ private extension PickedImagesList {
     }
 }
 
+#if DEBUG
 struct PickedImagesList_Previews: PreviewProvider {
     static var previews: some View {
         PickedImagesList(
@@ -44,3 +45,4 @@ struct PickedImagesList_Previews: PreviewProvider {
         )
     }
 }
+#endif

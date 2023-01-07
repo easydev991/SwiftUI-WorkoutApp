@@ -56,9 +56,11 @@ private extension RootView {
     }
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         RootView()
             .environmentObject(DefaultsService())
     }
 }
+#endif

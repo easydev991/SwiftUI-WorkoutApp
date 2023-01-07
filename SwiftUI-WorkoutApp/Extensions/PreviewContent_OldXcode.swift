@@ -1,3 +1,4 @@
+#if DEBUG
 import Foundation
 
 extension Photo {
@@ -104,4 +105,4 @@ extension TextFieldInForm.Mode: CaseIterable, Hashable {
         [.regular(systemImageName: "person"), .secure]
     }
 }
-
+#endif

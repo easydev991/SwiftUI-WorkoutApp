@@ -37,6 +37,7 @@ struct SportsGroundLocationInfo: View {
     }
 }
 
+#if DEBUG
 struct SportsGroundLocationInfo_Previews: PreviewProvider {
     static var previews: some View {
         Form {
@@ -48,3 +49,4 @@ struct SportsGroundLocationInfo_Previews: PreviewProvider {
         }
     }
 }
+#endif

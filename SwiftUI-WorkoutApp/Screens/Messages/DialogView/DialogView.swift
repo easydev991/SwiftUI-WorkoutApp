@@ -178,6 +178,7 @@ private extension DialogView {
     }
 }
 
+#if DEBUG
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
         DialogView(dialog: .constant(.preview))
@@ -185,3 +186,4 @@ struct DialogView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

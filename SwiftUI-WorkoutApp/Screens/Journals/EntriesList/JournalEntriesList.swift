@@ -145,6 +145,7 @@ private extension JournalEntriesList {
     }
 }
 
+#if DEBUG
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntriesList(for: 30, in: .constant(.preview))
@@ -152,3 +153,4 @@ struct JournalEntriesList_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif
