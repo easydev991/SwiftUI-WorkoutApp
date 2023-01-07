@@ -46,7 +46,7 @@ struct EventsListView: View {
                     refreshButton
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    addEventLink
+                    addEventButton
                 }
             }
             .navigationTitle("Мероприятия")
@@ -102,7 +102,7 @@ private extension EventsListView {
         }
     }
 
-    var addEventLink: some View {
+    var addEventButton: some View {
         Button {
             if !defaults.hasSportsGrounds {
                 showEventCreationRule.toggle()

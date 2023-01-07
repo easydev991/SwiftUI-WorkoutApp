@@ -15,12 +15,14 @@ struct AccountInfoView: View {
 
     var body: some View {
         Form {
-            Section {
+            Section(mode.baseInfoSectionTitle) {
                 loginField
                 emailField
                 if mode == .create {
                     passwordField
                 }
+            }
+            Section(mode.extraInfoSectionTitle) {
                 nameField
                 genderPicker
                 birthdayPicker
@@ -67,6 +69,14 @@ extension AccountInfoView {
 private extension AccountInfoView.Mode {
     var title: String {
         self == .create ? "Регистрация" : "Изменить профиль"
+    }
+
+    var baseInfoSectionTitle: String {
+        self == .create ? "Обязательные поля" : "Основная информация"
+    }
+
+    var extraInfoSectionTitle: String {
+        self == .create ? "Необязательные поля" : "Дополнительная информация"
     }
 }
 

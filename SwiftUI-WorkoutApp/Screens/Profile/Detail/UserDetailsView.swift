@@ -51,8 +51,8 @@ struct UserDetailsView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
                     Group {
-                        searchUsersLink
-                        settingsLink
+                        searchUsersButton
+                        settingsButton
                     }
                     .disabled(viewModel.isLoading)
                 }
@@ -90,12 +90,12 @@ private extension UserDetailsView {
 
     var communicationSection: some View {
         Section {
-            sendMessageLink
+            sendMessageButton
             friendActionButton
         }
     }
 
-    var sendMessageLink: some View {
+    var sendMessageButton: some View {
         Button {
             isMessaging.toggle()
         } label: {
@@ -124,24 +124,23 @@ private extension UserDetailsView {
     var socialInfoSection: some View {
         Section {
             if viewModel.user.usesSportsGrounds > .zero {
-                usesSportsGroundsLink
+                usesSportsGroundsButton
             }
             if !viewModel.user.addedSportsGrounds.isEmpty {
-                addedSportsGroundsLink
+                addedSportsGroundsButton
             }
             if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
-                friendsLink
+                friendsButton
             }
             if viewModel.user.journalsCount > .zero && !isMainUser {
-                journalsLink
+                journalsButton
             }
         }
     }
 
-    var usesSportsGroundsLink: some View {
+    var usesSportsGroundsButton: some View {
         NavigationLink {
             SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
-                .navigationTitle("Где тренируется")
         } label: {
             HStack {
                 Label("Где тренируется", systemImage: "mappin.and.ellipse")
@@ -152,10 +151,9 @@ private extension UserDetailsView {
         }
     }
 
-    var addedSportsGroundsLink: some View {
+    var addedSportsGroundsButton: some View {
         NavigationLink {
             SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
-                .navigationTitle("Добавленные")
         } label: {
             HStack {
                 Label("Добавил площадки", systemImage: "mappin.and.ellipse")
@@ -166,10 +164,8 @@ private extension UserDetailsView {
         }
     }
 
-    var friendsLink: some View {
-        NavigationLink {
-            UsersListView(mode: .friends(userID: viewModel.user.id))
-        } label: {
+    var friendsButton: some View {
+        NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
@@ -183,7 +179,7 @@ private extension UserDetailsView {
         }
     }
 
-    var journalsLink: some View {
+    var journalsButton: some View {
         NavigationLink {
             JournalsListView(for: viewModel.user.id)
                 .navigationTitle("Дневники")
@@ -198,15 +194,15 @@ private extension UserDetailsView {
         }
     }
 
-    var searchUsersLink: some View {
+    var searchUsersButton: some View {
         NavigationLink(destination: SearchUsersView()) {
             Image(systemName: "magnifyingglass")
         }
         .disabled(!network.isConnected)
     }
 
-    var settingsLink: some View {
-        NavigationLink(destination: ProfileSettingsView()) {
+    var settingsButton: some View {
+        NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
             Image(systemName: "gearshape.fill")
         }
     }

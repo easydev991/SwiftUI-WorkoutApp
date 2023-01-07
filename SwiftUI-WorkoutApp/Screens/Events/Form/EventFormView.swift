@@ -145,7 +145,11 @@ private extension EventFormView {
         } header: {
             Text("Фотографии, \(viewModel.newImages.count) шт.")
         } footer: {
-            Text(viewModel.imagesLimit <= 0 ? "Больше добавить фото нельзя" : "Можно добавить еще \(viewModel.imagesLimit) фото")
+            Text(
+                viewModel.imagesLimit <= 0
+                ? "Больше добавить фото нельзя"
+                : "Можно добавить еще \(viewModel.imagesLimit) фото"
+            )
         }
     }
 

@@ -43,7 +43,7 @@ struct DialogListView: View {
                 refreshButton
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                linkToFriends
+                friendListButton
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -63,7 +63,7 @@ private extension DialogListView {
         .disabled(viewModel.isLoading)
     }
 
-    var linkToFriends: some View {
+    var friendListButton: some View {
         NavigationLink(isActive: $openFriendList) {
             if hasFriends, let mainUserID = defaults.mainUserInfo?.userID {
                 UsersListView(mode: .friendsForChat(userID: mainUserID))

@@ -9,15 +9,18 @@ struct ProfileSettingsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var deleteProfileTask: Task<Void, Never>?
+    let mode: Mode
 
     var body: some View {
         Form {
-            Section("Профиль") {
-                editAccountLink
-                changePasswordLink
-                logoutButton
+            if mode == .authorized {
+                Section("Профиль") {
+                    editAccountButton
+                    changePasswordButton
+                    logoutButton
+                }
             }
-            Section("Информация о приложении") {
+            Section(mode.appInfoSectionTitle) {
                 appVersionView
                 feedbackButton
                 rateAppButton
@@ -35,21 +38,35 @@ struct ProfileSettingsView: View {
         }
         .toolbar { deleteProfileButton }
         .onDisappear(perform: cancelTask)
-        .navigationTitle("Настройки")
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
+extension ProfileSettingsView {
+    enum Mode: CaseIterable {
+        case authorized, incognito
+    }
+}
+
+private extension ProfileSettingsView.Mode {
+    var title: String {
+        self == .authorized ? "Настройки" : "Информация"
+    }
+
+    var appInfoSectionTitle: String {
+        self == .authorized ? "Информация о приложении" : ""
+    }
+}
+
 private extension ProfileSettingsView {
-    var editAccountLink: some View {
-        NavigationLink {
-            AccountInfoView(mode: .edit)
-        } label: {
+    var editAccountButton: some View {
+        NavigationLink(destination: AccountInfoView(mode: .edit)) {
             Text("Редактировать данные")
         }
     }
 
-    var changePasswordLink: some View {
+    var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
             Text("Изменить пароль")
         }
@@ -80,6 +97,7 @@ private extension ProfileSettingsView {
             Image(systemName: "trash")
                 .tint(.secondary)
         }
+        .opacity(mode == .authorized ? 1 : 0)
         .confirmationDialog(
             Constants.Alert.deleteProfile,
             isPresented: $showDeleteProfileDialog,
@@ -129,8 +147,13 @@ private extension ProfileSettingsView {
 #if DEBUG
 struct ProfileSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileSettingsView()
-            .environmentObject(DefaultsService())
+        ForEach(ProfileSettingsView.Mode.allCases, id: \.self) { mode in
+            NavigationView {
+                ProfileSettingsView(mode: mode)
+            }
+            .previewDisplayName(mode == .authorized ? "Авторизованный" : "Инкогнито")
+        }
+        .environmentObject(DefaultsService())
     }
 }
 #endif
