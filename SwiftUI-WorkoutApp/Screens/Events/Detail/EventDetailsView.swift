@@ -152,7 +152,7 @@ private extension EventDetailsView {
     var participantsSection: some View {
         Section("Участники") {
             if viewModel.hasParticipants {
-                linkToParticipants
+                participantsButton
             }
             if viewModel.isEventCurrent {
                 Toggle("Пойду на мероприятие", isOn: $trainHere)
@@ -162,7 +162,7 @@ private extension EventDetailsView {
         }
     }
 
-    var linkToParticipants: some View {
+    var participantsButton: some View {
         NavigationLink {
             UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
         } label: {
@@ -306,6 +306,7 @@ private extension EventDetailsView {
     }
 }
 
+#if DEBUG
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         EventDetailsView(with: .preview, deleteClbk: {})
@@ -313,3 +314,4 @@ struct EventDetailsView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

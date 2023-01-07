@@ -119,6 +119,7 @@ private extension GenericListCell {
     }
 }
 
+#if DEBUG
 struct GenericListCell_Previews: PreviewProvider {
     static var previews: some View {
         GenericListCell(for: .dialog(.preview))
@@ -126,3 +127,4 @@ struct GenericListCell_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

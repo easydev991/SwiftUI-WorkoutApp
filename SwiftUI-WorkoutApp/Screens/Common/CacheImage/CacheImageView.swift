@@ -32,6 +32,7 @@ extension CacheImageView {
     }
 }
 
+#if DEBUG
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -45,3 +46,4 @@ struct SmallProfileCacheImageView_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

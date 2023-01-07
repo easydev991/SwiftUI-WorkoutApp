@@ -48,6 +48,7 @@ private extension TextFieldInForm.Mode {
     }
 }
 
+#if DEBUG
 struct TextFieldInForm_Previews: PreviewProvider {
     static var previews: some View {
         Form {
@@ -61,3 +62,4 @@ struct TextFieldInForm_Previews: PreviewProvider {
         }
     }
 }
+#endif

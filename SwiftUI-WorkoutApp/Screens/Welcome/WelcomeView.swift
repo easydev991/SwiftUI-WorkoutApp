@@ -31,17 +31,11 @@ private extension WelcomeView {
     }
 
     var registerButton: some View {
-        NavigationLink(destination: AccountInfoView(mode: .create)) {
-            Label("Регистрация", systemImage: "person.badge.plus")
-                .welcomeButtonTitle()
-        }
+        IncognitoUserButton(mode: .register(source: .welcomeView))
     }
 
     var loginButton: some View {
-        NavigationLink(destination: LoginView()) {
-            Label("Авторизация", systemImage: "arrow.forward.circle")
-                .welcomeButtonTitle()
-        }
+        IncognitoUserButton(mode: .authorize(source: .welcomeView))
     }
 
     var skipLoginButton: some View {
@@ -54,9 +48,11 @@ private extension WelcomeView {
     }
 }
 
+#if DEBUG
 struct WelcomeAuthView_Previews: PreviewProvider {
     static var previews: some View {
         WelcomeView()
             .environmentObject(DefaultsService())
     }
 }
+#endif

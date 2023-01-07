@@ -23,9 +23,11 @@ struct SportsGroundViewCell: View {
     }
 }
 
+#if DEBUG
 struct SportsGroundsForUserView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundViewCell(model: .preview)
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

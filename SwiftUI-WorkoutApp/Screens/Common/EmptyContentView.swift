@@ -70,6 +70,7 @@ private extension EmptyContentView.Mode {
     }
 }
 
+#if DEBUG
 struct EmptyContentView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
@@ -80,3 +81,4 @@ struct EmptyContentView_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

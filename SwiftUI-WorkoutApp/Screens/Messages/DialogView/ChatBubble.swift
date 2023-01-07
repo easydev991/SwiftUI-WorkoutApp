@@ -128,6 +128,7 @@ struct ChatBubbleShape: Shape {
     }
 }
 
+#if DEBUG
 struct ChatBubble_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
@@ -162,3 +163,4 @@ struct ChatBubble_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

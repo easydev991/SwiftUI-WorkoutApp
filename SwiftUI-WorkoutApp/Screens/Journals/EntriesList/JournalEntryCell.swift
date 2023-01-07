@@ -61,6 +61,7 @@ private extension JournalEntryCell {
     }
 }
 
+#if DEBUG
 struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntryCell(
@@ -73,3 +74,4 @@ struct JournalEntryCell_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif

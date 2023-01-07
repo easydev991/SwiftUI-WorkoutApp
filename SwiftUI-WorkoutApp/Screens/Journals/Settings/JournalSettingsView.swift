@@ -114,9 +114,11 @@ private extension JournalSettingsView {
     }
 }
 
+#if DEBUG
 struct JournalSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalSettingsView(with: .preview, updatedClbk: { _ in })
             .environmentObject(CheckNetworkService())
     }
 }
+#endif

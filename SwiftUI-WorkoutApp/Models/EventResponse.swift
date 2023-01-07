@@ -25,7 +25,7 @@ struct EventResponse: Codable, Identifiable {
     let author: UserResponse?
     /// Участвует ли пользователь в мероприятии
     ///
-    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteIsGoingToEvent`, поэтому при итоговом определении статуса `trainHere` смотрим на список участников
+    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteGoToEvent`, поэтому при итоговом определении статуса `trainHere` смотрим на список участников
     var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {

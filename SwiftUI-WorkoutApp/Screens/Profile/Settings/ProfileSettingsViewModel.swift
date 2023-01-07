@@ -35,7 +35,7 @@ final class ProfileSettingsViewModel: ObservableObject {
 
 private extension ProfileSettingsViewModel {
     enum Feedback {
-        static let subject = "Обратная связь"
+        static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
         static let toEmail = "info@workout.su"
         static let question = "Над чем нам стоит поработать?"
         static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"

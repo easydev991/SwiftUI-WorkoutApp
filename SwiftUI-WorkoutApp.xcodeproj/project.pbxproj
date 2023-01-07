@@ -98,7 +98,7 @@
 		6798AA64280B1F0900DB76F1 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA63280B1F0900DB76F1 /* WelcomeView.swift */; };
 		6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */; };
 		6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA67280B23B700DB76F1 /* UserDetailsView.swift */; };
-		6798AA70280B42BC00DB76F1 /* WelcomeButtonTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA6F280B42BC00DB76F1 /* WelcomeButtonTitle.swift */; };
+		6798AA70280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */; };
 		6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA72280B43FE00DB76F1 /* LoginView.swift */; };
 		6798AA79280BE8E200DB76F1 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA75280BE8E200DB76F1 /* countries.json */; };
 		6798AA7B280BE8E200DB76F1 /* oldSportsGrounds.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */; };
@@ -112,6 +112,7 @@
 		679F3B012968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */; };
 		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		679F3B0529689E4400BB3590 /* PreviewContent_OldXcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B0429689E4400BB3590 /* PreviewContent_OldXcode.swift */; };
+		679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */; };
 		67A9C90528427D06005D6A36 /* SportsGroundFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90428427D06005D6A36 /* SportsGroundFilter.swift */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
 		67A9C90A2842833F005D6A36 /* HeaderForSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C9092842833F005D6A36 /* HeaderForSheet.swift */; };
@@ -244,7 +245,7 @@
 		6798AA63280B1F0900DB76F1 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoProfileView.swift; sourceTree = "<group>"; };
 		6798AA67280B23B700DB76F1 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
-		6798AA6F280B42BC00DB76F1 /* WelcomeButtonTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeButtonTitle.swift; sourceTree = "<group>"; };
+		6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoButtonLabelModifier.swift; sourceTree = "<group>"; };
 		6798AA72280B43FE00DB76F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6798AA75280BE8E200DB76F1 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldSportsGrounds.json; sourceTree = "<group>"; };
@@ -259,6 +260,7 @@
 		679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRoundedRectangleModifier.swift; sourceTree = "<group>"; };
 		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		679F3B0429689E4400BB3590 /* PreviewContent_OldXcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent_OldXcode.swift; sourceTree = "<group>"; };
+		679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoUserButton.swift; sourceTree = "<group>"; };
 		67A9C90428427D06005D6A36 /* SportsGroundFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilter.swift; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
 		67A9C9092842833F005D6A36 /* HeaderForSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderForSheet.swift; sourceTree = "<group>"; };
@@ -676,6 +678,7 @@
 		6798AA6A280B277600DB76F1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				679F3B0A2969DF3E00BB3590 /* IncognitoUserButton */,
 				679F3AF92968104900BB3590 /* InForm */,
 				679F3AF8296802BA00BB3590 /* SendMessage */,
 				679F3AF72968029900BB3590 /* SportsGroundLocation */,
@@ -701,7 +704,6 @@
 			children = (
 				6770A8352834D7B50006B672 /* Account */,
 				6798AA63280B1F0900DB76F1 /* WelcomeView.swift */,
-				6798AA6F280B42BC00DB76F1 /* WelcomeButtonTitle.swift */,
 				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
 				67B7870F281D6110008B104F /* LoginViewModel.swift */,
 			);
@@ -732,6 +734,15 @@
 				679F3AFA2968105A00BB3590 /* TextFieldInForm.swift */,
 			);
 			path = InForm;
+			sourceTree = "<group>";
+		};
+		679F3B0A2969DF3E00BB3590 /* IncognitoUserButton */ = {
+			isa = PBXGroup;
+			children = (
+				6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */,
+				679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */,
+			);
+			path = IncognitoUserButton;
 			sourceTree = "<group>";
 		};
 		67A9C90628427DDD005D6A36 /* Filter */ = {
@@ -914,7 +925,7 @@
 				6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */,
 				67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */,
 				672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */,
-				6798AA70280B42BC00DB76F1 /* WelcomeButtonTitle.swift in Sources */,
+				6798AA70280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift in Sources */,
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* Comments.swift in Sources */,
@@ -936,6 +947,7 @@
 				675EC649281289FB00C2E229 /* SportsGroundSize.swift in Sources */,
 				679F3AFF29683EB300BB3590 /* RoundedButtonLabel.swift in Sources */,
 				6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */,
+				679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */,
 				67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */,
 				675EC653281445E500C2E229 /* MapViewUI.swift in Sources */,
 				67A9C90528427D06005D6A36 /* SportsGroundFilter.swift in Sources */,
@@ -1186,7 +1198,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1222,7 +1234,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

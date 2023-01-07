@@ -19,6 +19,7 @@ struct Comments: View {
     }
 }
 
+#if DEBUG
 struct Comments_Previews: PreviewProvider {
     static var previews: some View {
         Form {
@@ -28,3 +29,4 @@ struct Comments_Previews: PreviewProvider {
         .environmentObject(CheckNetworkService())
     }
 }
+#endif

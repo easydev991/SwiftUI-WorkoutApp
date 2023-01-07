@@ -145,7 +145,11 @@ private extension EventFormView {
         } header: {
             Text("Фотографии, \(viewModel.newImages.count) шт.")
         } footer: {
-            Text(viewModel.imagesLimit <= 0 ? "Больше добавить фото нельзя" : "Можно добавить еще \(viewModel.imagesLimit) фото")
+            Text(
+                viewModel.imagesLimit <= 0
+                ? "Больше добавить фото нельзя"
+                : "Можно добавить еще \(viewModel.imagesLimit) фото"
+            )
         }
     }
 
@@ -200,6 +204,7 @@ private extension EventFormView {
     }
 }
 
+#if DEBUG
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
         EventFormView(for: .regularCreate, refreshClbk: {})
@@ -207,3 +212,4 @@ struct CreateEventView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

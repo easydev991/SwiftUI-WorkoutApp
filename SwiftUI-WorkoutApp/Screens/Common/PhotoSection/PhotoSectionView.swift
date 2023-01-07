@@ -58,6 +58,7 @@ private extension PhotoSectionView {
     }
 }
 
+#if DEBUG
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
         Form {
@@ -65,3 +66,4 @@ struct PhotoSectionView_Previews: PreviewProvider {
         }
     }
 }
+#endif

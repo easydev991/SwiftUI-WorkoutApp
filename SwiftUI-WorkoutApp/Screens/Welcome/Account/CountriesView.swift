@@ -38,6 +38,7 @@ private extension CountriesView {
     }
 }
 
+#if DEBUG
 struct CountriesView_Previews: PreviewProvider {
     static var previews: some View {
         CountriesView(
@@ -47,3 +48,4 @@ struct CountriesView_Previews: PreviewProvider {
         )
     }
 }
+#endif

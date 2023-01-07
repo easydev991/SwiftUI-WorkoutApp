@@ -13,6 +13,7 @@ struct ContentInSheet<Content: View>: View {
     }
 }
 
+#if DEBUG
 struct ContentInSheet_Previews: PreviewProvider {
     static var previews: some View {
         ContentInSheet(title: "Header") {
@@ -20,3 +21,4 @@ struct ContentInSheet_Previews: PreviewProvider {
         }
     }
 }
+#endif

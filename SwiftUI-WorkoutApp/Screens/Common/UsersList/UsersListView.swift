@@ -148,6 +148,7 @@ private extension UsersListView {
     }
 }
 
+#if DEBUG
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
         UsersListView(mode: .friends(userID: .previewUserID))
@@ -155,3 +156,4 @@ struct UsersListView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

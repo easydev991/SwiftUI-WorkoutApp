@@ -663,7 +663,9 @@ private extension APIService {
         case findUsers(with: String)
 
         // MARK: Получить список всех площадок
-        /// **GET** ${API}/areas
+        /// **GET** ${API}/areas?fields=short
+        ///
+        /// Возвращает список с кратким набором полей, т.к. при запросе всех данных сервер не справляется с нагрузкой
         case getAllSportsGrounds
 
         // MARK: Получить список площадок, обновленных после указанной даты

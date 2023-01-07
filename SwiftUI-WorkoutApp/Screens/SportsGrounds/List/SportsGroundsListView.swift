@@ -54,6 +54,7 @@ struct SportsGroundsListView: View {
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -63,6 +64,16 @@ extension SportsGroundsListView {
         case usedBy(userID: Int)
         case event(userID: Int)
         case added(list: [SportsGround])
+    }
+}
+
+private extension SportsGroundsListView.Mode {
+    var title: String {
+        switch self {
+        case .usedBy: return "Где тренируется"
+        case .event: return "Твои площадки"
+        case .added: return "Добавленные"
+        }
     }
 }
 
@@ -92,9 +103,11 @@ private extension SportsGroundsListView {
     }
 }
 
+#if DEBUG
 struct SportsGroundListView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsListView(for: .usedBy(userID: .previewUserID))
             .environmentObject(DefaultsService())
     }
 }
+#endif

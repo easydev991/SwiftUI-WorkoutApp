@@ -8,38 +8,43 @@ struct IncognitoProfileView: View {
             registerButton
             loginButton
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                infoButton
+            }
+        }
         .padding()
     }
 }
 
 private extension IncognitoProfileView {
     var incognitoInformer: some View {
-        Text("Зарегистрируйтесь или выполните вход, чтобы иметь доступ ко всем возможностям")
+        Text("Зарегистрируйтесь или авторизуйтесь, чтобы иметь доступ к функционалу")
             .font(.title3)
             .multilineTextAlignment(.center)
             .padding()
     }
 
     var registerButton: some View {
-        NavigationLink {
-            AccountInfoView(mode: .create)
-        } label: {
-            Label("Создать аккаунт", systemImage: "person.badge.plus")
-                .roundedStyle()
-        }
+        IncognitoUserButton(mode: .register(source: .incognitoView))
     }
 
     var loginButton: some View {
-        NavigationLink(destination: LoginView()) {
-            Label("Войти через email", systemImage: "envelope")
-                .roundedStyle()
+        IncognitoUserButton(mode: .authorize(source: .incognitoView))
+    }
+
+    var infoButton: some View {
+        NavigationLink(destination: ProfileSettingsView(mode: .incognito)) {
+            Image(systemName: "info.circle.fill")
         }
     }
 }
 
+#if DEBUG
 struct IncognitoProfileView_Previews: PreviewProvider {
     static var previews: some View {
         IncognitoProfileView()
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

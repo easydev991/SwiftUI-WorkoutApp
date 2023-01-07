@@ -15,9 +15,11 @@ struct AddPhotoButton: View {
     }
 }
 
+#if DEBUG
 struct AddPhotoButton_Previews: PreviewProvider {
     static var previews: some View {
         AddPhotoButton(isAddingPhotos: .constant(false), focusClbk: {})
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

@@ -31,6 +31,7 @@ private extension ButtonInForm.Mode {
     var font: Font { self == .primary ? .headline : .body }
 }
 
+#if DEBUG
 struct ButtonInForm_Previews: PreviewProvider {
     static var previews: some View {
         Form {
@@ -40,3 +41,4 @@ struct ButtonInForm_Previews: PreviewProvider {
         }
     }
 }
+#endif

@@ -46,7 +46,7 @@ struct EventsListView: View {
                     refreshButton
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    addEventLink
+                    addEventButton
                 }
             }
             .navigationTitle("Мероприятия")
@@ -102,7 +102,7 @@ private extension EventsListView {
         }
     }
 
-    var addEventLink: some View {
+    var addEventButton: some View {
         Button {
             if !defaults.hasSportsGrounds {
                 showEventCreationRule.toggle()
@@ -152,6 +152,7 @@ private extension EventsListView {
     func cancelTask() { eventsTask?.cancel() }
 }
 
+#if DEBUG
 struct EventsListView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
@@ -160,3 +161,4 @@ struct EventsListView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

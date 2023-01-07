@@ -52,7 +52,7 @@ struct DialogView: View {
                 refreshButton
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                linkToAnotherUser
+                anotherUserProfileButton
             }
         }
         .navigationTitle(dialog.anotherUserName.valueOrEmpty)
@@ -72,10 +72,8 @@ private extension DialogView {
         .disabled(isToolbarItemDisabled)
     }
 
-    var linkToAnotherUser: some View {
-        NavigationLink {
-            UserDetailsView(from: dialog)
-        } label: {
+    var anotherUserProfileButton: some View {
+        NavigationLink(destination: UserDetailsView(from: dialog)) {
             CacheImageView(
                 url: dialog.anotherUserImageURL,
                 mode: .userListItem
@@ -178,6 +176,7 @@ private extension DialogView {
     }
 }
 
+#if DEBUG
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
         DialogView(dialog: .constant(.preview))
@@ -185,3 +184,4 @@ struct DialogView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

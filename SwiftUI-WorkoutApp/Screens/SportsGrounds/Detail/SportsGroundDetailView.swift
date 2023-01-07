@@ -127,12 +127,12 @@ private extension SportsGroundDetailView {
         Section {
             if let participants = viewModel.ground.usersTrainHere,
                !participants.isEmpty {
-                linkToParticipantsView
+                participantsButton
             }
             Toggle("Тренируюсь здесь", isOn: $trainHere)
                 .disabled(viewModel.isLoading || !network.isConnected)
                 .onChange(of: trainHere, perform: changeTrainHereStatus)
-            createEventLink
+            createEventButton
         }
     }
 
@@ -160,7 +160,7 @@ private extension SportsGroundDetailView {
         trainHere = value
     }
 
-    var linkToParticipantsView: some View {
+    var participantsButton: some View {
         NavigationLink {
             UsersListView(mode: .groundParticipants(list: viewModel.ground.participants))
         } label: {
@@ -173,7 +173,7 @@ private extension SportsGroundDetailView {
         }
     }
 
-    var createEventLink: some View {
+    var createEventButton: some View {
         NavigationLink {
             EventFormView(for: .createForSelected(viewModel.ground))
         } label: {
@@ -294,6 +294,7 @@ private extension SportsGroundDetailView {
     }
 }
 
+#if DEBUG
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -303,3 +304,4 @@ struct SportsGroundView_Previews: PreviewProvider {
         }
     }
 }
+#endif

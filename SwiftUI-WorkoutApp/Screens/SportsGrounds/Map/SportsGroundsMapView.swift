@@ -187,6 +187,7 @@ private extension SportsGroundsMapView {
     }
 }
 
+#if DEBUG
 struct SportsGroundsMapView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsMapView()
@@ -194,3 +195,4 @@ struct SportsGroundsMapView_Previews: PreviewProvider {
             .environmentObject(DefaultsService())
     }
 }
+#endif

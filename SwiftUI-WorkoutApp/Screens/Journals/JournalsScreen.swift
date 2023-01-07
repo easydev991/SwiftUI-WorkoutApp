@@ -32,9 +32,11 @@ private extension JournalsScreen {
     }
 }
 
+#if DEBUG
 struct JournalsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsScreen()
             .environmentObject(DefaultsService())
     }
 }
+#endif

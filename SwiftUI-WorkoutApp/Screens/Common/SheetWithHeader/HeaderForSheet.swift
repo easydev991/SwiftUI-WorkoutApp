@@ -28,9 +28,11 @@ struct HeaderForSheet: View {
     }
 }
 
+#if DEBUG
 struct HeaderForSheet_Previews: PreviewProvider {
     static var previews: some View {
         HeaderForSheet(title: "Настройки дневника")
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

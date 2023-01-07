@@ -12,6 +12,7 @@ struct RoundedDefaultImage: View {
     }
 }
 
+#if DEBUG
 struct RoundedRectDefaultImage_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -21,3 +22,4 @@ struct RoundedRectDefaultImage_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+#endif
