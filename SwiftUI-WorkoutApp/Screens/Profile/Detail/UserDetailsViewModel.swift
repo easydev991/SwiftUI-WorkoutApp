@@ -5,8 +5,9 @@ final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var requestedFriendship = false
     @Published private(set) var friendActionOption = FriendAction.sendFriendRequest
+    @Published private(set) var blacklistActionOption = BlacklistOption.add
     @Published private(set) var user: UserModel
-    @Published private(set) var errorMessage = ""
+    @Published private(set) var responseMessage = ""
     @Published private(set) var isMessageSent = false
 
     init(with userInfo: UserResponse?) {
@@ -40,12 +41,42 @@ final class UserDetailsViewModel: ObservableObject {
             friendActionOption = defaults.friendsIdsList.contains(user.id)
             ? .removeFriend
             : .sendFriendRequest
+            blacklistActionOption = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
+            ? .remove
+            : .add
         }
         if !refresh { isLoading.toggle() }
     }
 
     func checkFriendRequests(with defaults: DefaultsProtocol) async {
         try? await APIService(with: defaults).getFriendRequests()
+    }
+
+    func checkBlacklist(with defaults: DefaultsProtocol) async {
+        try? await APIService(with: defaults).getBlacklist()
+    }
+
+    func blacklistUser(with defaults: DefaultsProtocol) async {
+        guard user.id != defaults.mainUserInfo?.userID else { return }
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            if try await APIService(with: defaults).blacklistAction(
+                userID: user.id, option: blacklistActionOption
+            ) {
+                switch blacklistActionOption {
+                case .add:
+                    responseMessage = "Пользователь добавлен в черный список"
+                    blacklistActionOption = .remove
+                case .remove:
+                    responseMessage = "Пользователь удален из черного списка"
+                    blacklistActionOption = .add
+                }
+            }
+        } catch {
+            responseMessage = ErrorFilterService.message(from: error)
+        }
+        isLoading.toggle()
     }
 
     func friendAction(with defaults: DefaultsProtocol) async {
@@ -61,7 +92,7 @@ final class UserDetailsViewModel: ObservableObject {
                 }
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
@@ -74,12 +105,12 @@ final class UserDetailsViewModel: ObservableObject {
                 isMessageSent.toggle()
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
     }
 
-    func clearErrorMessage() { errorMessage = "" }
+    func clearErrorMessage() { responseMessage = "" }
 }
 
 private extension UserDetailsViewModel {
@@ -88,7 +119,7 @@ private extension UserDetailsViewModel {
             let info = try await APIService(with: defaults).getUserByID(user.id)
             user = .init(info)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilterService.message(from: error)
         }
     }
 }

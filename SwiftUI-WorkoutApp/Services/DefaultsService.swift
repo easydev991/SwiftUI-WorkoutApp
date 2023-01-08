@@ -9,12 +9,14 @@ protocol DefaultsProtocol: AnyObject {
     var isAuthorized: Bool { get }
     var friendRequestsList: [UserResponse] { get }
     var friendsIdsList: [Int] { get }
+    var blacklistedUsers: [UserResponse] { get }
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
     func saveUserInfo(_ info: UserResponse) throws
     func saveFriendsIds(_ ids: [Int]) throws
     func saveFriendRequests(_ array: [UserResponse]) throws
+    func saveBlacklist(_ array: [UserResponse]) throws
     func setHasJournals(_ hasJournals: Bool)
     func setHasSportsGrounds(_ hasGrounds: Bool)
     func triggerLogout()
@@ -43,6 +45,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.friendRequests.rawValue)
     private var friendRequests = Data()
 
+    @AppStorage(Key.blacklist.rawValue)
+    private var blacklist = Data()
+
     @AppStorage(Key.hasSportsGrounds.rawValue)
     private(set) var hasSportsGrounds = false
 
@@ -62,6 +67,14 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var mainUserCityID: Int {
         (mainUserInfo?.cityID).valueOrZero
+    }
+
+    var blacklistedUsers: [UserResponse] {
+        if let array = try? JSONDecoder().decode([UserResponse].self, from: blacklist) {
+            return array
+        } else {
+            return []
+        }
     }
 
     var friendsIdsList: [Int] {
@@ -115,6 +128,10 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         friendRequests = try JSONEncoder().encode(array)
     }
 
+    func saveBlacklist(_ array: [UserResponse]) throws {
+        blacklist = try JSONEncoder().encode(array)
+    }
+
     func setHasJournals(_ hasJournals: Bool) {
         self.hasJournals = hasJournals
     }
@@ -140,7 +157,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 private extension DefaultsService {
     enum Key: String {
         case isUserAuthorized, showWelcome, hasSportsGrounds,
-             authData, userInfo, friends, friendRequests,
+             authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends
     }
 }
