@@ -113,6 +113,7 @@
 		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		679F3B0529689E4400BB3590 /* PreviewContent_OldXcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B0429689E4400BB3590 /* PreviewContent_OldXcode.swift */; };
 		679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */; };
+		679F3B0C296B0A3500BB3590 /* BlacklistOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B0B296B0A3500BB3590 /* BlacklistOption.swift */; };
 		67A9C90528427D06005D6A36 /* SportsGroundFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90428427D06005D6A36 /* SportsGroundFilter.swift */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
 		67A9C90A2842833F005D6A36 /* HeaderForSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C9092842833F005D6A36 /* HeaderForSheet.swift */; };
@@ -261,6 +262,7 @@
 		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		679F3B0429689E4400BB3590 /* PreviewContent_OldXcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent_OldXcode.swift; sourceTree = "<group>"; };
 		679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoUserButton.swift; sourceTree = "<group>"; };
+		679F3B0B296B0A3500BB3590 /* BlacklistOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlacklistOption.swift; sourceTree = "<group>"; };
 		67A9C90428427D06005D6A36 /* SportsGroundFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilter.swift; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
 		67A9C9092842833F005D6A36 /* HeaderForSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderForSheet.swift; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 				6766A037284604B40033F1E8 /* Tab.swift */,
 				675A37102854B04400DAE071 /* TextEntryOption.swift */,
 				6773111B296607AA003CD13A /* FriendAction.swift */,
+				679F3B0B296B0A3500BB3590 /* BlacklistOption.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1002,6 +1005,7 @@
 				675A370F2854B00B00DAE071 /* JournalAccess.swift in Sources */,
 				674B37B0282B9BE2001A5B66 /* CommentViewCell.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
+				679F3B0C296B0A3500BB3590 /* BlacklistOption.swift in Sources */,
 				67627757283A4CBB009C203F /* JournalEntriesListViewModel.swift in Sources */,
 				670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */,
 				674D0625282AB832007E75C6 /* SearchUsersViewModel.swift in Sources */,
@@ -1198,7 +1202,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1234,7 +1238,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

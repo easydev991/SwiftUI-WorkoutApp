@@ -98,11 +98,18 @@ struct APIService {
         return result
     }
 
-    /// Загружает список заявок на добавление в друзья, в случае успеха - сохраняет в `defaults`
+    /// Загружает список заявок на добавление в друзья, в случае успеха сохраняет в `defaults`
     func getFriendRequests() async throws {
         let endpoint = Endpoint.getFriendRequests
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         try await defaults.saveFriendRequests(result)
+    }
+
+    /// Загружает черный список пользователей, в случае успеха сохраняет в `defaults`
+    func getBlacklist() async throws {
+        let endpoint = Endpoint.getBlacklist
+        let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
+        try await defaults.saveBlacklist(result)
     }
 
     /// Отвечает на заявку для добавления в друзья, и в случае успеха запрашивает список заявок повторно, а если запрос одобрен - дополнительно запрашивает список друзей
@@ -139,6 +146,19 @@ struct APIService {
             try await getFriendsForUser(id: mainUserID)
         }
         return isSuccess
+    }
+
+
+    /// Добавляет или убирает пользователя из черного списка
+    /// - Parameters:
+    ///   - userID: `id` пользователя, к которому применяется действие
+    ///   - option: вид действия - добавить/убрать из черного списка
+    /// - Returns: `true` в случае успеха, `false` при ошибках
+    func blacklistAction(userID: Int, option: BlacklistOption) async throws -> Bool {
+        let endpoint: Endpoint = option == .add
+        ? .addToBlacklist(userID)
+        : .deleteFromBlacklist(userID)
+        return try await makeStatus(for: endpoint.urlRequest)
     }
 
     /// Ищет пользователей, чей логин содержит указанный текст
@@ -658,6 +678,18 @@ private extension APIService {
         /// **DELETE**  ${API}/friends/<user_id>
         case deleteFriend(_ friendID: Int)
 
+        // MARK: Получить черный список пользователей
+        /// **GET** ${API}/blacklist
+        case getBlacklist
+
+        // MARK: Добавить пользователя в черный список
+        /// **POST** ${API}/blacklist/<user_id>
+        case addToBlacklist(_ userID: Int)
+
+        // MARK: Удалить пользователя из черного списка
+        /// **DELETE** ${API}/blacklist/<user_id>
+        case deleteFromBlacklist(_ userID: Int)
+
         // MARK: Найти пользователей по логину
         /// **GET** ${API}/users/search?name=<user>
         case findUsers(with: String)
@@ -859,6 +891,11 @@ private extension APIService.Endpoint {
         case let .sendFriendRequest(userID),
             let .deleteFriend(userID):
             return "\(baseUrl)/friends/\(userID)"
+        case .getBlacklist:
+            return "\(baseUrl)/blacklist"
+        case let .addToBlacklist(userID),
+            let .deleteFromBlacklist(userID):
+            return "\(baseUrl)/blacklist/\(userID)"
         case let .findUsers(name):
             return "\(baseUrl)/users/search?name=\(name)"
         case .getAllSportsGrounds:
@@ -941,20 +978,20 @@ private extension APIService.Endpoint {
         case .registration, .login, .editUser, .resetPassword,
                 .changePassword, .acceptFriendRequest, .sendFriendRequest,
                 .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                .createEvent, .editEvent, .postGoToEvent,
+                .createEvent, .editEvent, .postGoToEvent, .addToBlacklist,
                 .addCommentToEvent, .editEventComment, .sendMessageTo,
                 .createJournal, .markAsRead, .saveJournalEntry,
                 .createSportsGround, .editSportsGround:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
                 .getAllSportsGrounds, .getSportsGround,
-                .findUsers, .getSportsGroundsForUser,
+                .findUsers, .getSportsGroundsForUser, .getBlacklist,
                 .getFutureEvents, .getPastEvents, .getEvent,
                 .getDialogs, .getMessages, .getJournals,
                 .getJournal, .getJournalEntries,
                 .getUpdatedSportsGrounds:
             return .get
-        case .declineFriendRequest, .deleteFriend,
+        case .declineFriendRequest, .deleteFriend, .deleteFromBlacklist,
                 .deleteGroundComment, .deleteTrainHere,
                 .deleteUser, .deleteGoToEvent,
                 .deleteEventComment, .deleteEvent,
@@ -1042,8 +1079,9 @@ private extension APIService.Endpoint {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
                 .acceptFriendRequest, .declineFriendRequest, .findUsers,
-                .sendFriendRequest, .deleteFriend, .getSportsGround,
-                .deleteGroundComment, .getSportsGroundsForUser,
+                .sendFriendRequest, .deleteFriend, .getBlacklist,
+                .addToBlacklist, .deleteFromBlacklist,
+                .getSportsGround, .deleteGroundComment, .getSportsGroundsForUser,
                 .postTrainHere, .deleteTrainHere, .deleteUser,
                 .getFutureEvents, .getPastEvents, .getEvent,
                 .postGoToEvent, .deleteGoToEvent,

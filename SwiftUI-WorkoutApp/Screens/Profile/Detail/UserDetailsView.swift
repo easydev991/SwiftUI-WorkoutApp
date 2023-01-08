@@ -8,10 +8,12 @@ struct UserDetailsView: View {
     @State private var isMessaging = false
     @State private var messageText = ""
     @State private var isFriendRequestSent = false
-    @State private var showErrorAlert = false
-    @State private var errorTitle = ""
+    @State private var showResponseAlert = false
+    @State private var showBlacklistConfirmation = false
+    @State private var responseMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
+    @State private var blacklistUserTask: Task<Void, Never>?
 
     init(for user: UserResponse?) {
         _viewModel = StateObject(wrappedValue: .init(with: user))
@@ -40,12 +42,12 @@ struct UserDetailsView: View {
         }
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
+        .alert(responseMessage, isPresented: $showResponseAlert) {
             Button("Ok", action: closeAlert)
         }
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: viewModel.responseMessage, perform: setupResponseAlert)
         .onChange(of: viewModel.isMessageSent, perform: endMessaging)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -92,6 +94,7 @@ private extension UserDetailsView {
         Section {
             sendMessageButton
             friendActionButton
+            blockUserButton
         }
     }
 
@@ -99,8 +102,7 @@ private extension UserDetailsView {
         Button {
             isMessaging.toggle()
         } label: {
-            Text("Отправить сообщение")
-                .fontWeight(.medium)
+            Label("Отправить сообщение", systemImage: "plus.message")
         }
         .sheet(isPresented: $isMessaging) { messageSheet }
     }
@@ -109,11 +111,37 @@ private extension UserDetailsView {
         Button {
             friendActionTask = Task { await viewModel.friendAction(with: defaults) }
         } label: {
-            Text(viewModel.friendActionOption.rawValue)
-                .fontWeight(.medium)
+            Label(
+                viewModel.friendActionOption.rawValue,
+                systemImage: viewModel.friendActionOption.imageName
+            )
         }
         .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
             Button("Ok") {}
+        }
+    }
+
+    var blockUserButton: some View {
+        Button {
+            showBlacklistConfirmation.toggle()
+        } label: {
+            Label(
+                viewModel.blacklistActionOption.rawValue,
+                systemImage: "exclamationmark.triangle"
+            )
+        }
+        .confirmationDialog(
+            viewModel.blacklistActionOption.dialogTitle,
+            isPresented: $showBlacklistConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(viewModel.blacklistActionOption.rawValue, role: .destructive) {
+                blacklistUserTask = Task {
+                    await viewModel.blacklistUser(with: defaults)
+                }
+            }
+        } message: {
+            Text(viewModel.blacklistActionOption.dialogMessage)
         }
     }
 
@@ -135,6 +163,7 @@ private extension UserDetailsView {
             if viewModel.user.journalsCount > .zero && !isMainUser {
                 journalsButton
             }
+
         }
     }
 
@@ -211,6 +240,7 @@ private extension UserDetailsView {
         await viewModel.makeUserInfo(refresh: refresh, with: defaults)
         if isMainUser {
             await viewModel.checkFriendRequests(with: defaults)
+            await viewModel.checkBlacklist(with: defaults)
         }
     }
 
@@ -221,8 +251,8 @@ private extension UserDetailsView {
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
             sendAction: sendMessage,
-            showErrorAlert: $showErrorAlert,
-            errorTitle: $errorTitle,
+            showErrorAlert: $showResponseAlert,
+            errorTitle: $responseMessage,
             dismissError: closeAlert
         )
     }
@@ -240,9 +270,9 @@ private extension UserDetailsView {
         }
     }
 
-    func setupErrorAlert(with message: String) {
-        showErrorAlert = !message.isEmpty
-        errorTitle = message
+    func setupResponseAlert(with message: String) {
+        showResponseAlert = !message.isEmpty
+        responseMessage = message
     }
 
     func closeAlert() {
@@ -258,7 +288,7 @@ private extension UserDetailsView {
     }
 
     func cancelTasks() {
-        [friendActionTask, sendMessageTask].forEach { $0?.cancel() }
+        [friendActionTask, sendMessageTask, blacklistUserTask].forEach { $0?.cancel() }
     }
 }
 
