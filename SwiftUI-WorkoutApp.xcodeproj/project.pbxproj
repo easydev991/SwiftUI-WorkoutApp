@@ -18,6 +18,7 @@
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		671D7DEF282112140068E728 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEE282112140068E728 /* Text+.swift */; };
 		671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* UserViewCell.swift */; };
+		67277C51296DC2DD009FC536 /* Complaint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67277C50296DC2DD009FC536 /* Complaint.swift */; };
 		672BE762281FD4E300579183 /* AuthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE761281FD4E300579183 /* AuthData.swift */; };
 		672BE768281FD60F00579183 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672BE767281FD60F00579183 /* City.swift */; };
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
@@ -164,6 +165,7 @@
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		671D7DEE282112140068E728 /* Text+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
 		671D7DF0282117FF0068E728 /* UserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewCell.swift; sourceTree = "<group>"; };
+		67277C50296DC2DD009FC536 /* Complaint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complaint.swift; sourceTree = "<group>"; };
 		672BE761281FD4E300579183 /* AuthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthData.swift; sourceTree = "<group>"; };
 		672BE767281FD60F00579183 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 				675A37102854B04400DAE071 /* TextEntryOption.swift */,
 				6773111B296607AA003CD13A /* FriendAction.swift */,
 				679F3B0B296B0A3500BB3590 /* BlacklistOption.swift */,
+				67277C50296DC2DD009FC536 /* Complaint.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -922,6 +925,7 @@
 				67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */,
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */,
+				67277C51296DC2DD009FC536 /* Complaint.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */,
 				67D9168A2838F79D0098D3CB /* MessageResponse.swift in Sources */,
@@ -1202,7 +1206,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1238,7 +1242,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

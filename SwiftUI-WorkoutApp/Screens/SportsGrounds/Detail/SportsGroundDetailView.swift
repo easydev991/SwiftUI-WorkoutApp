@@ -36,6 +36,7 @@ struct SportsGroundDetailView: View {
                 PhotoSectionView(
                     with: photos,
                     canDelete: isGroundAuthor,
+                    reportClbk: { viewModel.reportPhoto($0) },
                     deleteClbk: deletePhoto
                 )
             }
@@ -202,6 +203,7 @@ private extension SportsGroundDetailView {
     var commentsSection: some View {
         Comments(
             items: viewModel.ground.comments,
+            reportClbk: { viewModel.reportComment($0) },
             deleteClbk: { id in
                 deleteCommentTask = Task {
                     await viewModel.delete(

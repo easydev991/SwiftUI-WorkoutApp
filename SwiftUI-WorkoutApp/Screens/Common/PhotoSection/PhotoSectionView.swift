@@ -4,6 +4,7 @@ import SwiftUI
 struct PhotoSectionView: View {
     private let items: [Photo]
     private let canDelete: Bool
+    private let reportPhotoClbk: (Photo) -> Void
     private let deletePhotoClbk: (Photo) -> Void
     @State private var fullscreenImage: UIImage?
     @State private var columns: Int
@@ -11,11 +12,13 @@ struct PhotoSectionView: View {
     init(
         with photos: [Photo],
         canDelete: Bool,
+        reportClbk: @escaping (Photo) -> Void,
         deleteClbk: @escaping (Photo) -> Void
     ) {
         items = photos
         self.columns = photos.count == 1 ? 1 : 2
         self.canDelete = canDelete
+        reportPhotoClbk = reportClbk
         deletePhotoClbk = deleteClbk
     }
 
@@ -37,6 +40,7 @@ struct PhotoSectionView: View {
                         DeletablePhotoCell(
                             photo: photo,
                             canDelete: canDelete,
+                            reportClbk: reportPhotoClbk,
                             onTapClbk: openImage,
                             deleteClbk: deletePhotoClbk
                         )
@@ -62,7 +66,12 @@ private extension PhotoSectionView {
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
         Form {
-            PhotoSectionView(with: [.preview, .preview, .preview], canDelete: true, deleteClbk: { _ in })
+            PhotoSectionView(
+                with: [.preview, .preview, .preview],
+                canDelete: true,
+                reportClbk: { _ in },
+                deleteClbk: { _ in }
+            )
         }
     }
 }

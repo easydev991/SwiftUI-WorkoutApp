@@ -1,7 +1,9 @@
 import Foundation
+import FeedbackSender
 
 @MainActor
 final class JournalEntriesListViewModel: ObservableObject {
+    private let feedbackSender: FeedbackSender
     let userID: Int
     @Published var currentJournal: JournalResponse
     @Published var list = [JournalEntryResponse]()
@@ -17,6 +19,7 @@ final class JournalEntriesListViewModel: ObservableObject {
     init(for userID: Int, with journal: JournalResponse) {
         self.userID = userID
         currentJournal = journal
+        feedbackSender = FeedbackSenderImp()
     }
 
     func makeItems(with defaults: DefaultsProtocol, refresh: Bool) async {
@@ -41,6 +44,18 @@ final class JournalEntriesListViewModel: ObservableObject {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
+    }
+
+    func reportEntry(_ entry: JournalEntryResponse) {
+        let complaint = Complaint.journalEntry(
+            author: entry.authorName ?? "неизвестен",
+            entryText: entry.formattedMessage
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 
     func clearErrorMessage() { errorMessage = "" }
