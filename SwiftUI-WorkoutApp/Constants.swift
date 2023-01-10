@@ -10,7 +10,8 @@ enum Constants {
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
     static let rulesOfService = URL(string: "https://workout.su/pravila")!
-
+    static let feedbackRecipient = ["info@workout.su"]
+    
     enum Alert {
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let friendRequestSent = "Запрос отправлен!"

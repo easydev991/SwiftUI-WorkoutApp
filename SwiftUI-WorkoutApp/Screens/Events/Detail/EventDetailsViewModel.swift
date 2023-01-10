@@ -1,7 +1,9 @@
 import Foundation
+import FeedbackSender
 
 @MainActor
 final class EventDetailsViewModel: ObservableObject {
+    private let feedbackSender: FeedbackSender
     @Published var event: EventResponse
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
@@ -11,6 +13,7 @@ final class EventDetailsViewModel: ObservableObject {
 
     init(with event: EventResponse) {
         self.event = event
+        feedbackSender = FeedbackSenderImp()
     }
 
     func askForEvent(refresh: Bool, with defaults: DefaultsProtocol) async {
@@ -78,6 +81,28 @@ final class EventDetailsViewModel: ObservableObject {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
+    }
+
+    func reportPhoto(_ photo: Photo) {
+        let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
+
+    func reportComment(_ comment: Comment) {
+        let complaint = Complaint.eventComment(
+            eventTitle: event.formattedTitle,
+            author: comment.user?.userName ?? "неизвестен",
+            commentText: comment.formattedBody
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 
     func deleteEvent(with defaults: DefaultsProtocol) async {

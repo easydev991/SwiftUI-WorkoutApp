@@ -29,6 +29,7 @@ struct JournalEntriesList: View {
             ForEach(viewModel.list) {
                 JournalEntryCell(
                     model: $0,
+                    reportClbk: { viewModel.reportEntry($0) },
                     deleteClbk: initiateDeletion,
                     editClbk: setupEntryToEdit
                 )

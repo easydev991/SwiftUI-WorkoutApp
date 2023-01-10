@@ -4,6 +4,7 @@ struct CommentViewCell: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     let model: Comment
+    let reportClbk: (Comment) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (Comment) -> Void
 
@@ -13,7 +14,7 @@ struct CommentViewCell: View {
                 CacheImageView(url: model.user?.avatarURL)
                 nameDate
                 Spacer()
-                if isMenuAvailable {
+                if network.isConnected {
                     menuButton
                 }
             }
@@ -40,15 +41,23 @@ private extension CommentViewCell {
 
     var menuButton: some View {
         Menu {
-            Button {
-                editClbk(model)
-            } label: {
-                Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
-            }
-            Button(role: .destructive) {
-                deleteClbk(model.id)
-            } label: {
-                Label("Удалить", systemImage: "trash")
+            if isCommentByMainUser {
+                Button {
+                    editClbk(model)
+                } label: {
+                    Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
+                }
+                Button(role: .destructive) {
+                    deleteClbk(model.id)
+                } label: {
+                    Label("Удалить", systemImage: "trash")
+                }
+            } else {
+                Button(role: .destructive) {
+                    reportClbk(model)
+                } label: {
+                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
+                }
             }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
@@ -58,9 +67,8 @@ private extension CommentViewCell {
         .onTapGesture { hapticFeedback(.rigid) }
     }
 
-    var isMenuAvailable: Bool {
+    var isCommentByMainUser: Bool {
         model.user?.userID == defaults.mainUserInfo?.userID
-        && network.isConnected
     }
 }
 
@@ -74,6 +82,7 @@ struct SportsGroundCommentView_Previews: PreviewProvider {
                 date: "2013-01-16T03:35:54+04:00",
                 user: .preview
             ),
+            reportClbk: { _ in },
             deleteClbk: { _ in },
             editClbk: { _ in }
         )

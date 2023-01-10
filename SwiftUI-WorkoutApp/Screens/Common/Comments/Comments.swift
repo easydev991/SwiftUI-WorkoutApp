@@ -3,6 +3,7 @@ import SwiftUI
 /// Список комментариев
 struct Comments: View {
     let items: [Comment]
+    let reportClbk: (Comment) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (Comment) -> Void
 
@@ -11,6 +12,7 @@ struct Comments: View {
             List(items) { comment in
                 CommentViewCell(
                     model: comment,
+                    reportClbk: reportClbk,
                     deleteClbk: deleteClbk,
                     editClbk: editClbk
                 )
@@ -23,7 +25,12 @@ struct Comments: View {
 struct Comments_Previews: PreviewProvider {
     static var previews: some View {
         Form {
-            Comments(items: [.preview, .preview], deleteClbk: { _ in }, editClbk: { _ in })
+            Comments(
+                items: [.preview, .preview],
+                reportClbk: { _ in },
+                deleteClbk: { _ in },
+                editClbk: { _ in }
+            )
         }
         .environmentObject(DefaultsService())
         .environmentObject(CheckNetworkService())

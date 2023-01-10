@@ -1,7 +1,9 @@
 import Foundation
+import FeedbackSender
 
 @MainActor
 final class SportsGroundDetailViewModel: ObservableObject {
+    private let feedbackSender: FeedbackSender
     @Published var ground: SportsGround
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
@@ -9,6 +11,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
 
     init(with ground: SportsGround) {
         self.ground = ground
+        feedbackSender = FeedbackSenderImp()
     }
 
     func askForSportsGround(refresh: Bool, with defaults: DefaultsProtocol) async {
@@ -75,6 +78,28 @@ final class SportsGroundDetailViewModel: ObservableObject {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
+    }
+
+    func reportPhoto(_ photo: Photo) {
+        let complaint = Complaint.groundPhoto(groundTitle: ground.shortTitle)
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
+
+    func reportComment(_ comment: Comment) {
+        let complaint = Complaint.groundComment(
+            groundTitle: ground.shortTitle,
+            author: comment.user?.userName ?? "неизвестен",
+            commentText: comment.formattedBody
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 
     func deleteGround(with defaults: DefaultsProtocol) async {

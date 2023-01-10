@@ -4,6 +4,7 @@ struct JournalEntryCell: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     let model: JournalEntryResponse
+    let reportClbk: (JournalEntryResponse) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (JournalEntryResponse) -> Void
 
@@ -23,7 +24,7 @@ struct JournalEntryCell: View {
                     Text(model.messageDateString)
                         .font(.callout)
                         .foregroundColor(.secondary)
-                    if isMenuAvailable {
+                    if network.isConnected {
                         menuButton
                     }
                 }
@@ -37,15 +38,23 @@ struct JournalEntryCell: View {
 private extension JournalEntryCell {
     var menuButton: some View {
         Menu {
-            Button {
-                editClbk(model)
-            } label: {
-                Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
-            }
-            Button(role: .destructive) {
-                deleteClbk(model.id)
-            } label: {
-                Label("Удалить", systemImage: "trash")
+            if isEntryByMainUser {
+                Button {
+                    editClbk(model)
+                } label: {
+                    Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
+                }
+                Button(role: .destructive) {
+                    deleteClbk(model.id)
+                } label: {
+                    Label("Удалить", systemImage: "trash")
+                }
+            } else {
+                Button(role: .destructive) {
+                    reportClbk(model)
+                } label: {
+                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
+                }
             }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
@@ -56,7 +65,7 @@ private extension JournalEntryCell {
         .onTapGesture { hapticFeedback(.rigid) }
     }
 
-    var isMenuAvailable: Bool {
+    var isEntryByMainUser: Bool {
         model.authorID == defaults.mainUserInfo?.userID
     }
 }
@@ -66,6 +75,7 @@ struct JournalEntryCell_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntryCell(
             model: .preview,
+            reportClbk: { _ in },
             deleteClbk: { _ in },
             editClbk: { _ in }
         )

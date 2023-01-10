@@ -4,6 +4,7 @@ struct DeletablePhotoCell: View {
     @EnvironmentObject private var network: CheckNetworkService
     let photo: Photo
     let canDelete: Bool
+    let reportClbk: (Photo) -> Void
     var onTapClbk: (UIImage) -> Void
     var deleteClbk: (Photo) -> Void
 
@@ -25,10 +26,18 @@ struct DeletablePhotoCell: View {
 private extension DeletablePhotoCell {
     var menuButton: some View {
         Menu {
-            Button(role: .destructive) {
-                deleteClbk(photo)
-            } label: {
-                Label("Удалить", systemImage: "trash")
+            if canDelete {
+                Button(role: .destructive) {
+                    deleteClbk(photo)
+                } label: {
+                    Label("Удалить", systemImage: "trash")
+                }
+            } else {
+                Button(role: .destructive) {
+                    reportClbk(photo)
+                } label: {
+                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
+                }
             }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
@@ -37,11 +46,7 @@ private extension DeletablePhotoCell {
         }
         .padding(8)
         .onTapGesture { hapticFeedback(.rigid) }
-        .opacity(showMenuButton ? 1 : 0)
-    }
-
-    var showMenuButton: Bool {
-        canDelete && network.isConnected
+        .opacity(network.isConnected ? 1 : 0)
     }
 }
 
@@ -51,6 +56,7 @@ struct DeletablePhotoCell_Previews: PreviewProvider {
         DeletablePhotoCell(
             photo: .preview,
             canDelete: true,
+            reportClbk: { _ in },
             onTapClbk: { _ in },
             deleteClbk: { _ in }
         )
