@@ -15,20 +15,16 @@ struct AccountInfoView: View {
 
     var body: some View {
         Form {
-            Section(mode.baseInfoSectionTitle) {
-                loginField
-                emailField
-                if mode == .create {
-                    passwordField
-                }
+            loginField
+            emailField
+            if mode == .create {
+                passwordField
             }
-            Section(mode.extraInfoSectionTitle) {
-                nameField
-                genderPicker
-                birthdayPicker
-                countryPicker
-                cityPicker
-            }
+            nameField
+            genderPicker
+            birthdayPicker
+            countryPicker
+            cityPicker
             if mode == .create {
                 rulesOfServiceSection
                 registerButtonSection
@@ -43,14 +39,12 @@ struct AccountInfoView: View {
         }
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
-        .task {
-            await viewModel.updateFormIfNeeded(with: defaults)
-        }
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok") { viewModel.clearErrorMessage() }
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isProfileSaved, perform: close)
+        .onAppear { viewModel.updateFormIfNeeded(with: defaults) }
         .onDisappear(perform: cancelTasks)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -71,12 +65,8 @@ private extension AccountInfoView.Mode {
         self == .create ? "Регистрация" : "Изменить профиль"
     }
 
-    var baseInfoSectionTitle: String {
-        self == .create ? "Обязательные поля" : "Основная информация"
-    }
-
-    var extraInfoSectionTitle: String {
-        self == .create ? "Необязательные поля" : "Дополнительная информация"
+    var allGenders: [Gender] {
+        self == .create ? Gender.allCases : Gender.possibleGenders
     }
 }
 
@@ -162,8 +152,8 @@ private extension AccountInfoView {
     var genderPicker: some View {
         Menu {
             Picker("", selection: $viewModel.userForm.genderCode) {
-                ForEach(Gender.allCases.map(\.code), id: \.self) {
-                    Text(Gender($0).rawValue)
+                ForEach(mode.allGenders, id: \.code) {
+                    Text($0.rawValue)
                 }
             }
         } label: {
@@ -172,7 +162,7 @@ private extension AccountInfoView {
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.gender))
                 Spacer()
-                Text(Gender(viewModel.userForm.genderCode).rawValue)
+                Text(viewModel.currentGender.rawValue)
                     .foregroundColor(.secondary)
             }
         }
@@ -180,8 +170,9 @@ private extension AccountInfoView {
 
     var birthdayPicker: some View {
         HStack {
-            Image(systemName: "face.smiling")
+            Image(systemName: "birthday.cake")
                 .foregroundColor(.secondary)
+            Spacer()
             DatePicker(
                 viewModel.userForm.placeholder(.birthDate),
                 selection: $viewModel.userForm.birthDate,
@@ -193,11 +184,9 @@ private extension AccountInfoView {
 
     var rulesOfServiceSection: some View {
         Section {
-            Link(destination: Constants.rulesOfService) {
-                Text("Регистрируясь, вы соглашаетесь с нашим пользовательским соглашением")
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.blue)
-                    .frame(maxWidth: .infinity)
+            Toggle(isOn: $viewModel.isPolicyAccepted) {
+                Text(.init(Constants.RulesOfService.registrationForm))
+                    .accentColor(.blue)
             }
         }
     }

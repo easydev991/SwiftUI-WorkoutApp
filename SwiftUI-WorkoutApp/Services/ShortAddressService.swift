@@ -28,6 +28,12 @@ struct ShortAddressService: ShortAddressProtocol {
     }
 }
 
+extension ShortAddressService {
+    func cityName(with id: Int, in countryID: Int) throws -> String? {
+        try city(with: id, in: countryID)?.name
+    }
+}
+
 private extension ShortAddressService {
     func countries() throws -> [Country] {
         try Bundle.main.decodeJson(

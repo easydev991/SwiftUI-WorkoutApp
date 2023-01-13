@@ -5,8 +5,8 @@ struct UsersListView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
+    @StateObject private var messagingViewModel = MessagingViewModel()
     @State private var messageRecipient: UserModel?
-    @State private var messageText = ""
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
@@ -38,7 +38,8 @@ struct UsersListView: View {
             Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.isMessageSent, perform: endMessaging)
+        .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
         .onDisappear(perform: cancelTask)
@@ -49,10 +50,20 @@ struct UsersListView: View {
 
 extension UsersListView {
     enum Mode {
+        /// Друзья пользователя с указанным `id`
+        ///
+        /// При нажатии на друга откроется его профиль
         case friends(userID: Int)
+        /// Друзья пользователя с указанным `id` для чата
+        ///
+        /// При нажатии на друга откроется окно отправки сообщения
         case friendsForChat(userID: Int)
+        /// Участники мероприятия
         case eventParticipants(list: [UserResponse])
+        /// Тренирующиеся на площадке
         case groundParticipants(list: [UserResponse])
+        /// Черный список основного пользователя
+        case blacklist
     }
 }
 
@@ -65,6 +76,8 @@ private extension UsersListView.Mode {
             return "Пойдут на мероприятие"
         case .groundParticipants:
             return "Здесь тренируются"
+        case .blacklist:
+            return "Черный список"
         }
     }
 }
@@ -94,7 +107,7 @@ private extension UsersListView {
             } label: {
                 UserViewCell(model: model)
             }
-        case .friends, .eventParticipants, .groundParticipants:
+        case .friends, .eventParticipants, .groundParticipants, .blacklist:
             NavigationLink {
                 UserDetailsView(from: model)
                     .navigationBarTitleDisplayMode(.inline)
@@ -107,9 +120,9 @@ private extension UsersListView {
     func messageSheet(for recipient: UserModel) -> some View {
         SendMessageView(
             header: "Сообщение для \(recipient.name)",
-            text: $messageText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
+            text: $messagingViewModel.messageText,
+            isLoading: messagingViewModel.isLoading,
+            isSendButtonDisabled: !messagingViewModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
@@ -119,13 +132,13 @@ private extension UsersListView {
 
     func sendMessage(to userID: Int) {
         sendMessageTask = Task {
-            await viewModel.send(messageText, to: userID, with: defaults)
+            await messagingViewModel.sendMessage(to: userID, with: defaults)
         }
     }
 
     func endMessaging(isSuccess: Bool = true) {
         if isSuccess {
-            messageText = ""
+            messagingViewModel.messageText = ""
             messageRecipient = nil
         }
     }
@@ -141,6 +154,7 @@ private extension UsersListView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+        messagingViewModel.clearErrorMessage()
     }
 
     func cancelTask() {
