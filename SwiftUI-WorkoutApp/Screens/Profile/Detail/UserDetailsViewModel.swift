@@ -8,7 +8,6 @@ final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var blacklistActionOption = BlacklistOption.add
     @Published private(set) var user: UserModel
     @Published private(set) var responseMessage = ""
-    @Published private(set) var isMessageSent = false
 
     init(with userInfo: UserResponse?) {
         user = .init(userInfo)
@@ -90,19 +89,6 @@ final class UserDetailsViewModel: ObservableObject {
                 case .removeFriend:
                     friendActionOption = .sendFriendRequest
                 }
-            }
-        } catch {
-            responseMessage = ErrorFilterService.message(from: error)
-        }
-        isLoading.toggle()
-    }
-
-    func send(_ message: String, with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            if try await APIService(with: defaults).sendMessage(message, to: user.id) {
-                isMessageSent.toggle()
             }
         } catch {
             responseMessage = ErrorFilterService.message(from: error)

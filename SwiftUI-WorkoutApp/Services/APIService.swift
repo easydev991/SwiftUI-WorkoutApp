@@ -106,10 +106,12 @@ struct APIService {
     }
 
     /// Загружает черный список пользователей, в случае успеха сохраняет в `defaults`
-    func getBlacklist() async throws {
+    @discardableResult
+    func getBlacklist() async throws -> [UserResponse] {
         let endpoint = Endpoint.getBlacklist
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest)
         try await defaults.saveBlacklist(result)
+        return result
     }
 
     /// Отвечает на заявку для добавления в друзья, и в случае успеха запрашивает список заявок повторно, а если запрос одобрен - дополнительно запрашивает список друзей
@@ -184,11 +186,7 @@ struct APIService {
     /// - Returns: Список обновленных площадок
     func getUpdatedSportsGrounds(from stringDate: String) async throws -> [SportsGround] {
         let endpoint = Endpoint.getUpdatedSportsGrounds(from: stringDate)
-        return try await makeResult(
-            [SportsGround].self,
-            for: endpoint.urlRequest,
-            needAuth: false
-        )
+        return try await makeResult([SportsGround].self, for: endpoint.urlRequest, needAuth: false)
     }
 
     /// Загружает данные по отдельной площадке
@@ -427,10 +425,7 @@ struct APIService {
     ///   - journalID: `id` выбранного дневника
     /// - Returns: Общая информация о дневнике
     func getJournal(for userID: Int, journalID: Int) async throws -> JournalResponse {
-        let endpoint = Endpoint.getJournal(
-            userID: userID,
-            journalID: journalID
-        )
+        let endpoint = Endpoint.getJournal(userID: userID, journalID: journalID)
         return try await makeResult(JournalResponse.self, for: endpoint.urlRequest)
     }
 
@@ -441,7 +436,12 @@ struct APIService {
     ///   - viewAccess: доступ на просмотр
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    func editJournalSettings(for journalID: Int, title: String, viewAccess: JournalAccess, commentAccess: JournalAccess) async throws -> Bool {
+    func editJournalSettings(
+        for journalID: Int,
+        title: String,
+        viewAccess: JournalAccess,
+        commentAccess: JournalAccess
+    ) async throws -> Bool {
         guard let mainUserID = await defaults.mainUserInfo?.userID else {
             throw APIError.invalidUserID
         }
@@ -472,10 +472,7 @@ struct APIService {
     ///   - journalID: `id` выбранного дневника
     /// - Returns: Все записи из выбранного дневника
     func getJournalEntries(for userID: Int, journalID: Int) async throws -> [JournalEntryResponse] {
-        let endpoint = Endpoint.getJournalEntries(
-            userID: userID,
-            journalID: journalID
-        )
+        let endpoint = Endpoint.getJournalEntries(userID: userID, journalID: journalID)
         return try await makeResult([JournalEntryResponse].self, for: endpoint.urlRequest)
     }
 
@@ -574,12 +571,11 @@ private extension APIService {
         guard let data = data, !data.isEmpty else {
             throw APIError.noData
         }
-        let responseCode = (response as? HTTPURLResponse)?.statusCode
-        if responseCode != codeOK {
-            throw handleError(from: data, with: responseCode)
+        guard (response as? HTTPURLResponse)?.statusCode == codeOK else {
+            throw handleError(from: data, response: response)
         }
 #if DEBUG
-        print("--- Получили JSON по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print("--- Получили JSON по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(data.prettyJson)
         do {
             _ = try JSONDecoder().decode(type, from: data)
@@ -587,40 +583,40 @@ private extension APIService {
             print("--- error: \(error)")
         }
 #endif
-        let decodedInfo = try JSONDecoder().decode(type, from: data)
-        return decodedInfo
+        return try JSONDecoder().decode(type, from: data)
     }
 
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
 #if DEBUG
-        print("--- Получили статус по запросу:", (response?.url?.absoluteString).valueOrEmpty)
+        print("--- Получили статус по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(responseCode.valueOrZero)
 #endif
-        if responseCode != codeOK {
+        guard responseCode == codeOK else {
             throw APIError(with: responseCode)
         }
-        return responseCode == codeOK
+        return true
     }
 
     /// Обрабатывает ошибки
     /// - Parameters:
-    ///   - data: данные для обработки
-    ///   - code: код ответа
+    ///   - data: данные об ошибке
+    ///   - response: ответ сервера
     /// - Returns: Готовая к выводу ошибка `APIError`
-    func handleError(from data: Data, with code: Int?) -> APIError {
+    func handleError(from data: Data, response: URLResponse?) -> APIError {
 #if DEBUG
-        print("--- JSON с ошибкой:")
+        print("--- JSON с ошибкой по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(data.prettyJson)
 #endif
         if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
             return APIError(errorInfo)
         } else {
-            return APIError(with: code)
+            return APIError(with: (response as? HTTPURLResponse)?.statusCode)
         }
     }
 }
+
 // MARK: - Endpoint
 private extension APIService {
     enum Endpoint {
@@ -1008,14 +1004,13 @@ private extension APIService.Endpoint {
         static let boundary = "FFF"
         enum Key: String { case contentType = "Content-Type" }
         static var withMultipartFormData: [String: String] {
-            [Key.contentType.rawValue : "multipart/form-data; boundary=\(boundary)"]
+            [Key.contentType.rawValue: "multipart/form-data; boundary=\(boundary)"]
         }
     }
 
     var headers: [String: String] {
         switch self {
-        case .createSportsGround, .editSportsGround,
-                .createEvent, .editEvent:
+        case .createSportsGround, .editSportsGround, .createEvent, .editEvent:
             return HTTPHeader.withMultipartFormData
         default: return [:]
         }
@@ -1024,8 +1019,8 @@ private extension APIService.Endpoint {
     enum Parameter {
         enum Key: String {
             case name, fullname, email, password,
-                 comment, message, title, description, date,
-                 address, latitude, longitude
+                 comment, message, title, description,
+                 date, address, latitude, longitude
             case areaID = "area_id"
             case viewAccess = "view_access"
             case commentAccess = "comment_access"
@@ -1040,24 +1035,17 @@ private extension APIService.Endpoint {
             case classID = "class_id"
         }
 
-        static func makeBody(
-            from dict: [Key: String],
-            with media: [MediaFile] = []
-        ) -> Data? {
+        static func makeBody(from dict: [Key: String], with media: [MediaFile] = []) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")
                 .data(using: .utf8)
         }
 
-        static func makeBodyWithMultipartForm(
-            from dict: [Key: String],
-            with media: [MediaFile]?
-        ) -> Data {
+        static func makeBodyWithMultipartForm(from dict: [Key: String], with media: [MediaFile]?) -> Data {
             let boundary = HTTPHeader.boundary
             let lineBreak = "\r\n"
             var body = Data()
-
             dict.forEach { key, value in
                 body.append("--\(boundary + lineBreak)")
                 body.append("Content-Disposition: form-data; name=\"\(key.rawValue)\"\(lineBreak + lineBreak)")

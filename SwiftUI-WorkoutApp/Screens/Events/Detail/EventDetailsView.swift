@@ -86,7 +86,7 @@ struct EventDetailsView: View {
         }
         .onReceive(viewModel.$event, perform: onReceiveOfEventSetupTrainHere)
         .onChange(of: viewModel.event.trainHere, perform: onChangeOfTrainHere)
-        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
+        .onChange(of: viewModel.isEventDeleted, perform: dismissDeleted)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
         .onDisappear(perform: cancelTasks)

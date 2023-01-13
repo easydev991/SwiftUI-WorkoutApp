@@ -10,23 +10,18 @@ struct EmptyContentView: View {
     var body: some View {
         VStack(spacing: 16) {
             Spacer()
-            Text(mode.message)
-                .font(.title2)
-                .multilineTextAlignment(.center)
             if network.isConnected {
+                titleText(mode.message)
                 Button(action: action) {
                     RoundedButtonLabel(title: actionButtonTitle)
                 }
                 .opacity(defaults.isAuthorized ? 1 : 0)
             } else {
+                titleText("Нет соединения с сетью")
                 Image(systemName: "wifi.exclamationmark")
                     .font(.system(size: 60))
             }
-            if isHintAvailable {
-                Text(Constants.Alert.eventCreationRule)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.secondary)
-            }
+            hintTextIfAvailable
             Spacer()
         }
         .padding()
@@ -34,6 +29,21 @@ struct EmptyContentView: View {
 }
 
 private extension EmptyContentView {
+    func titleText(_ text: String) -> some View {
+        Text(text)
+            .font(.title2)
+            .multilineTextAlignment(.center)
+    }
+
+    @ViewBuilder
+    var hintTextIfAvailable: some View {
+        if isHintAvailable {
+            Text(Constants.Alert.eventCreationRule)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.secondary)
+        }
+    }
+
     var actionButtonTitle: String {
         switch mode {
         case .events:

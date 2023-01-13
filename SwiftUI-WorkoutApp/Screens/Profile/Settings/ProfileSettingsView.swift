@@ -21,9 +21,14 @@ struct ProfileSettingsView: View {
                 }
             }
             Section(mode.appInfoSectionTitle) {
-                appVersionView
                 feedbackButton
                 rateAppButton
+                userAgreementButton
+                officialSiteButton
+                appVersionView
+            }
+            Section(mode.supportProjectSectionTitle) {
+                workoutShopButton
             }
         }
         .overlay {
@@ -57,18 +62,20 @@ private extension ProfileSettingsView.Mode {
     var appInfoSectionTitle: String {
         self == .authorized ? "Информация о приложении" : ""
     }
+
+    var supportProjectSectionTitle: String { "Поддержать проект" }
 }
 
 private extension ProfileSettingsView {
     var editAccountButton: some View {
         NavigationLink(destination: AccountInfoView(mode: .edit)) {
-            Text("Редактировать данные")
+            Label("Редактировать данные", systemImage: "doc.badge.gearshape.fill")
         }
     }
 
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
-            Text("Изменить пароль")
+            Label("Изменить пароль", systemImage: "lock.fill")
         }
     }
 
@@ -76,7 +83,7 @@ private extension ProfileSettingsView {
         Button {
             showLogoutDialog.toggle()
         } label: {
-            Text("Выйти")
+            Label("Выйти", systemImage: "door.left.hand.open")
                 .foregroundColor(.pink)
         }
         .confirmationDialog(
@@ -111,25 +118,45 @@ private extension ProfileSettingsView {
         deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
     }
 
+    var feedbackButton: some View {
+        Button { viewModel.feedbackAction() } label: {
+            Label("Отправить обратную связь", systemImage: "envelope.fill")
+        }
+    }
+
+    var rateAppButton: some View {
+        Link(destination: Constants.appReviewURL) {
+            Label("Оценить приложение", systemImage: "star.bubble.fill")
+        }
+    }
+
+    var userAgreementButton: some View {
+        Link(destination: Constants.RulesOfService.aboutApp) {
+            Label("Пользовательское соглашение", systemImage: "doc.text.fill")
+        }
+    }
+
+    var officialSiteButton: some View {
+        Link(destination: Constants.officialSiteURL) {
+            Label("Официальный сайт", systemImage: "w.circle.fill")
+        }
+    }
+
     var appVersionView: some View {
         HStack {
-            Text("Версия")
+            Label("Версия", systemImage: "info.circle.fill")
             Spacer()
             Text(Constants.appVersion)
                 .foregroundColor(.secondary)
         }
     }
 
-    var feedbackButton: some View {
-        Button { viewModel.feedbackAction() } label: {
-            Text("Отправить обратную связь")
+    var workoutShopButton: some View {
+        Link(destination: Constants.workoutShopURL) {
+            Label("Магазин WORKOUT", systemImage: "bag.fill")
         }
     }
-
-    var rateAppButton: some View {
-        Link("Оценить приложение", destination: Constants.appReviewURL)
-    }
-
+    
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message

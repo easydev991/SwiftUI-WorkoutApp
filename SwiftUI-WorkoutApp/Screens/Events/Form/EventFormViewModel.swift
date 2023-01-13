@@ -6,13 +6,13 @@ final class EventFormViewModel: ObservableObject {
     @Published var eventForm: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    @Published private(set) var isSuccess = false
+    @Published private(set) var isEventSaved = false
     @Published var newImages = [UIImage]()
     private var eventID: Int?
     private let oldEventForm: EventForm
     var isFormReady: Bool {
         eventID == nil
-        ? eventForm.isReadyToCreate && !newImages.isEmpty
+        ? eventForm.isReadyToCreate
         : eventForm.isReadyToUpdate(old: oldEventForm)
     }
     var imagesLimit: Int {
@@ -57,7 +57,7 @@ final class EventFormViewModel: ObservableObject {
             .init(withImage: $0.element, forKey: ($0.offset + 1).description)
         }
         do {
-            isSuccess = try await APIService(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
+            isEventSaved = try await APIService(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

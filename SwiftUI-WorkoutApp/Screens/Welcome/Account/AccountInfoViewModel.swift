@@ -3,6 +3,7 @@ import CoreLocation
 
 @MainActor
 final class AccountInfoViewModel: ObservableObject {
+    @Published var isPolicyAccepted = false
     @Published var userForm = MainUserForm.emptyValue
     @Published var countries = [Country]()
     @Published var cities = [City]()
@@ -11,21 +12,22 @@ final class AccountInfoViewModel: ObservableObject {
     @Published private(set) var isProfileSaved = false
     /// Ранее сохраненная форма с данными пользователя
     private var savedUserForm = MainUserForm.emptyValue
+    var currentGender: Gender {
+        .init(userForm.genderCode) ?? .unspecified
+    }
 
     /// Доступность кнопки для регистрации или сохранения изменений
     func isButtonAvailable(with defaults: DefaultsProtocol) -> Bool {
         if defaults.isAuthorized {
             return userForm != savedUserForm && userForm.isReadyToSave
         } else {
-            return userForm.isReadyToRegister
+            return userForm.isReadyToRegister && isPolicyAccepted
         }
     }
 
-    init() {
-        makeCountryAndCityData()
-    }
+    init() { makeCountryAndCityData() }
 
-    func updateFormIfNeeded(with defaults: DefaultsProtocol) async {
+    func updateFormIfNeeded(with defaults: DefaultsProtocol) {
         if defaults.isAuthorized, userForm.userName.isEmpty,
            let userInfo = defaults.mainUserInfo {
             userForm = .init(userInfo)
@@ -40,9 +42,7 @@ final class AccountInfoViewModel: ObservableObject {
         updateCityIfNeeded(for: country)
     }
 
-    func selectCity(_ city: City) {
-        userForm.city = city
-    }
+    func selectCity(_ city: City) { userForm.city = city }
 
     func registerAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }

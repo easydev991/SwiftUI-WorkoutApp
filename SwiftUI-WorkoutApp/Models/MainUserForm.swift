@@ -8,7 +8,16 @@ struct MainUserForm: Codable, Equatable {
     var country: Country
     var city: City
 
-    init(userName: String, fullName: String, email: String, password: String, birthDate: Date, gender: Int, country: Country, city: City) {
+    init(
+        userName: String,
+        fullName: String,
+        email: String,
+        password: String,
+        birthDate: Date,
+        gender: Int,
+        country: Country,
+        city: City
+    ) {
         self.userName = userName
         self.fullName = fullName
         self.email = email
@@ -57,6 +66,8 @@ extension MainUserForm {
         !userName.isEmpty
         && !email.isEmpty
         && password.count >= Constants.minPasswordSize
+        && genderCode != Gender.unspecified.code
+        && birthDate <= Constants.minUserAge
     }
 
     /// Готовность формы к сохранению обновленных данных
@@ -64,9 +75,20 @@ extension MainUserForm {
         !userName.isEmpty
         && !email.isEmpty
         && !fullName.isEmpty
+        && genderCode != Gender.unspecified.code
+        && birthDate <= Constants.minUserAge
     }
 
     static var emptyValue: Self {
-        .init(userName: "", fullName: "", email: "", password: "", birthDate: Constants.defaultUserAge, gender: .zero, country: .defaultCountry, city: .defaultCity)
+        .init(
+            userName: "",
+            fullName: "",
+            email: "",
+            password: "",
+            birthDate: .now,
+            gender: Gender.unspecified.code,
+            country: .defaultCountry,
+            city: .defaultCity
+        )
     }
 }

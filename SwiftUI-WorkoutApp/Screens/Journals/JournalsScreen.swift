@@ -22,9 +22,7 @@ struct JournalsScreen: View {
 
 private extension JournalsScreen {
     var navigationTitle: String {
-        defaults.isAuthorized
-        ? "Дневники тренировок"
-        : "Дневники"
+        defaults.isAuthorized ? "Дневники тренировок" : "Дневники"
     }
 
     var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
