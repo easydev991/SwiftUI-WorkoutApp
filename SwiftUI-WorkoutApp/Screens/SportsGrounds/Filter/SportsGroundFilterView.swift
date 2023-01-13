@@ -18,9 +18,13 @@ struct SportsGroundFilterView: View {
                         buttonFor(type)
                     }
                 }
-                if defaults.isAuthorized {
-                    Section("Расположение") {
+                if defaults.isAuthorized, let cityName = cityName {
+                    Section {
                         buttonForMyCity
+                    } header: {
+                        Text("Расположение")
+                    } footer: {
+                        Text("Твой город в профиле: \(cityName)")
                     }
                 }
                 resetFilterButton
@@ -78,10 +82,18 @@ private extension SportsGroundFilterView {
         .disabled(!canResetFilter)
     }
 
+    var cityName: String? {
+        try? ShortAddressService().cityName(with: defaults.mainUserCityID, in: defaults.mainUserCountryID)
+    }
+
     var canResetFilter: Bool {
-        filter.size.count < 3
-        || filter.type.count < 3
-        || filter.onlyMyCity != defaultFilter.onlyMyCity
+        let isGroundFilterDifferent =
+        filter.size != defaultFilter.size
+        || filter.type != defaultFilter.type
+        let isCityFilterDifferent = defaults.isAuthorized
+        ? filter.onlyMyCity != defaultFilter.onlyMyCity
+        : false
+        return isGroundFilterDifferent || isCityFilterDifferent
     }
 }
 

@@ -43,7 +43,7 @@ extension UserResponse {
         .init(string: imageStringURL.valueOrEmpty)
     }
     var gender: String {
-        Gender(genderCode.valueOrZero).description
+        (Gender(genderCode.valueOrZero)?.description).valueOrEmpty
     }
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero

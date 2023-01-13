@@ -5,7 +5,7 @@ import FeedbackSender
 final class EventDetailsViewModel: ObservableObject {
     private let feedbackSender: FeedbackSender
     @Published var event: EventResponse
-    @Published private(set) var isDeleted = false
+    @Published private(set) var isEventDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     var isEventCurrent: Bool { event.isCurrent.isTrue }
@@ -21,8 +21,7 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService(with: defaults).getEvent(by: event.id)
-            let isUserGoing = event.participants.contains(where: { $0.userID == defaults.mainUserInfo?.userID })
-            event.trainHere = isUserGoing
+            event.trainHere = event.participants.contains(where: { $0.userID == defaults.mainUserInfo?.userID })
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
@@ -109,7 +108,7 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isDeleted = try await APIService(with: defaults).delete(eventID: event.id)
+            isEventDeleted = try await APIService(with: defaults).delete(eventID: event.id)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

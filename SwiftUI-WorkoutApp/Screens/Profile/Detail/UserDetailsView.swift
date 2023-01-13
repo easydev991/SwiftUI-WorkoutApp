@@ -5,12 +5,12 @@ struct UserDetailsView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: UserDetailsViewModel
-    @State private var isMessaging = false
-    @State private var messageText = ""
+    @StateObject private var messagingViewModel = MessagingViewModel()
+    @State private var showMessageSheet = false
     @State private var isFriendRequestSent = false
-    @State private var showResponseAlert = false
+    @State private var showAlertMessage = false
     @State private var showBlacklistConfirmation = false
-    @State private var responseMessage = ""
+    @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var blacklistUserTask: Task<Void, Never>?
@@ -42,13 +42,14 @@ struct UserDetailsView: View {
         }
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
-        .alert(responseMessage, isPresented: $showResponseAlert) {
+        .alert(alertMessage, isPresented: $showAlertMessage) {
             Button("Ok", action: closeAlert)
         }
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.responseMessage, perform: setupResponseAlert)
-        .onChange(of: viewModel.isMessageSent, perform: endMessaging)
+        .onChange(of: messagingViewModel.errorMessage, perform: setupResponseAlert)
+        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isMainUser {
@@ -100,11 +101,11 @@ private extension UserDetailsView {
 
     var sendMessageButton: some View {
         Button {
-            isMessaging.toggle()
+            showMessageSheet.toggle()
         } label: {
             Label("Отправить сообщение", systemImage: "plus.message")
         }
-        .sheet(isPresented: $isMessaging) { messageSheet }
+        .sheet(isPresented: $showMessageSheet) { messageSheet }
     }
 
     var friendActionButton: some View {
@@ -160,10 +161,12 @@ private extension UserDetailsView {
             if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
                 friendsButton
             }
+            if blacklistedUsersCount > .zero && isMainUser {
+                blacklistButton
+            }
             if viewModel.user.journalsCount > .zero && !isMainUser {
                 journalsButton
             }
-
         }
     }
 
@@ -208,6 +211,17 @@ private extension UserDetailsView {
         }
     }
 
+    var blacklistButton: some View {
+        NavigationLink(destination: UsersListView(mode: .blacklist)) {
+            HStack {
+                Label("Черный список", systemImage: "text.badge.xmark")
+                Spacer()
+                Text(blacklistedUsersCount.description)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+
     var journalsButton: some View {
         NavigationLink {
             JournalsListView(for: viewModel.user.id)
@@ -215,7 +229,7 @@ private extension UserDetailsView {
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
             HStack {
-                Label("Дневники", systemImage: "list.bullet")
+                Label("Дневники", systemImage: "text.book.closed.fill")
                 Spacer()
                 Text(viewModel.user.journalsCount.description)
                     .foregroundColor(.secondary)
@@ -247,40 +261,45 @@ private extension UserDetailsView {
     var messageSheet: some View {
         SendMessageView(
             header: "Новое сообщение",
-            text: $messageText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
+            text: $messagingViewModel.messageText,
+            isLoading: messagingViewModel.isLoading,
+            isSendButtonDisabled: !messagingViewModel.canSendMessage,
             sendAction: sendMessage,
-            showErrorAlert: $showResponseAlert,
-            errorTitle: $responseMessage,
+            showErrorAlert: $showAlertMessage,
+            errorTitle: $alertMessage,
             dismissError: closeAlert
         )
     }
 
     func sendMessage() {
         sendMessageTask = Task {
-            await viewModel.send(messageText, with: defaults)
+            await messagingViewModel.sendMessage(to: viewModel.user.id, with: defaults)
         }
     }
 
     func endMessaging(isSuccess: Bool) {
         if isSuccess {
-            messageText = ""
-            isMessaging.toggle()
+            messagingViewModel.messageText = ""
+            showMessageSheet.toggle()
         }
     }
 
     func setupResponseAlert(with message: String) {
-        showResponseAlert = !message.isEmpty
-        responseMessage = message
+        showAlertMessage = !message.isEmpty
+        alertMessage = message
     }
 
     func closeAlert() {
         viewModel.clearErrorMessage()
+        messagingViewModel.clearErrorMessage()
     }
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
+    }
+
+    var blacklistedUsersCount: Int {
+        defaults.blacklistedUsers.count
     }
 
     var isMainUser: Bool {

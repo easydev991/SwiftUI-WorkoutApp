@@ -15,6 +15,7 @@
 		670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */; };
 		670CA1A0280E8F9B003914A3 /* ButtonInFormLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19F280E8F9B003914A3 /* ButtonInFormLabel.swift */; };
 		670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670F16C72826D1090069D80A /* UsersListViewModel.swift */; };
+		67138D792971CA7A00BBF450 /* MessagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D782971CA7A00BBF450 /* MessagingViewModel.swift */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		671D7DEF282112140068E728 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEE282112140068E728 /* Text+.swift */; };
 		671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* UserViewCell.swift */; };
@@ -162,6 +163,7 @@
 		670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
 		670CA19F280E8F9B003914A3 /* ButtonInFormLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonInFormLabel.swift; sourceTree = "<group>"; };
 		670F16C72826D1090069D80A /* UsersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListViewModel.swift; sourceTree = "<group>"; };
+		67138D782971CA7A00BBF450 /* MessagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingViewModel.swift; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		671D7DEE282112140068E728 /* Text+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
 		671D7DF0282117FF0068E728 /* UserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewCell.swift; sourceTree = "<group>"; };
@@ -729,6 +731,7 @@
 			isa = PBXGroup;
 			children = (
 				67D9169528396C1E0098D3CB /* SendMessageView.swift */,
+				67138D782971CA7A00BBF450 /* MessagingViewModel.swift */,
 			);
 			path = SendMessage;
 			sourceTree = "<group>";
@@ -925,6 +928,7 @@
 				67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */,
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */,
+				67138D792971CA7A00BBF450 /* MessagingViewModel.swift in Sources */,
 				67277C51296DC2DD009FC536 /* Complaint.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */,
@@ -1206,7 +1210,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1242,7 +1246,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI-WorkoutApp/Preview Content\"";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

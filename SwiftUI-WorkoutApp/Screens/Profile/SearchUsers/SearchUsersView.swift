@@ -4,8 +4,8 @@ import SwiftUI
 struct SearchUsersView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SearchUsersViewModel()
+    @StateObject private var messagingViewModel = MessagingViewModel()
     @State private var messageRecipient: UserModel?
-    @State private var messageText = ""
     @State private var query = ""
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -42,10 +42,11 @@ struct SearchUsersView: View {
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok") { viewModel.clearErrorMessage() }
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.isMessageSent, perform: endMessaging)
+        .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .onAppear(perform: showKeyboard)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
@@ -84,25 +85,25 @@ private extension SearchUsersView {
     func messageSheet(for recipient: UserModel) -> some View {
         SendMessageView(
             header: "Сообщение для \(recipient.name)",
-            text: $messageText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: messageText.isEmpty || viewModel.isLoading,
+            text: $messagingViewModel.messageText,
+            isLoading: messagingViewModel.isLoading,
+            isSendButtonDisabled: !messagingViewModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
-            dismissError: { viewModel.clearErrorMessage() }
+            dismissError: closeAlert
         )
     }
 
     func sendMessage(to userID: Int) {
         sendMessageTask = Task {
-            await viewModel.send(messageText, to: userID, with: defaults)
+            await messagingViewModel.sendMessage(to: userID, with: defaults)
         }
     }
 
     func endMessaging(isSuccess: Bool = true) {
         if isSuccess {
-            messageText = ""
+            messagingViewModel.messageText = ""
             messageRecipient = nil
         }
     }
@@ -114,6 +115,11 @@ private extension SearchUsersView {
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
+    }
+
+    func closeAlert() {
+        viewModel.clearErrorMessage()
+        messagingViewModel.clearErrorMessage()
     }
 
     func showKeyboard() {

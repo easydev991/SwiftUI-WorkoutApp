@@ -63,7 +63,7 @@ struct EventFormView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
-        .onChange(of: viewModel.isSuccess, perform: dismiss)
+        .onChange(of: viewModel.isEventSaved, perform: dismiss)
         .onDisappear(perform: cancelTask)
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)

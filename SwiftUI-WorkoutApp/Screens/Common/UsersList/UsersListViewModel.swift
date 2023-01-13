@@ -6,7 +6,6 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var friendRequests = [UserModel]()
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
-    @Published private(set) var isMessageSent = false
 
     func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if (!users.isEmpty || isLoading) && !refresh { return }
@@ -15,6 +14,8 @@ final class UsersListViewModel: ObservableObject {
             await makeFriendsList(for: userID, refresh: refresh, with: defaults)
         case let .eventParticipants(list), let .groundParticipants(list):
             users = list.map(UserModel.init)
+        case .blacklist:
+            await makeBlacklist(refresh: refresh, with: defaults)
         }
     }
 
@@ -24,19 +25,6 @@ final class UsersListViewModel: ObservableObject {
         do {
             if try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
                 friendRequests = defaults.friendRequestsList.map(UserModel.init)
-            }
-        } catch {
-            errorMessage = ErrorFilterService.message(from: error)
-        }
-        isLoading.toggle()
-    }
-
-    func send(_ message: String, to userID: Int, with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            if try await APIService(with: defaults).sendMessage(message, to: userID) {
-                isMessageSent.toggle()
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -68,5 +56,16 @@ private extension UsersListViewModel {
             try? await APIService(with: defaults).getFriendRequests()
         }
         friendRequests = defaults.friendRequestsList.map(UserModel.init)
+    }
+
+    func makeBlacklist(refresh: Bool, with defaults: DefaultsProtocol) async {
+        if !refresh { isLoading.toggle() }
+        do {
+            let blacklist = try await APIService(with: defaults).getBlacklist()
+            users = blacklist.map(UserModel.init)
+        } catch {
+            errorMessage = ErrorFilterService.message(from: error)
+        }
+        if !refresh { isLoading.toggle() }
     }
 }
