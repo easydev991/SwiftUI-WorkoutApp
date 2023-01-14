@@ -58,9 +58,7 @@ struct SportsGroundsMapView: View {
                     .disabled(isLeftToolbarPartDisabled)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if defaults.isAuthorized {
-                        createGroundButton
-                    }
+                    if defaults.isAuthorized { createGroundButton }
                 }
             }
             .navigationTitle("Площадки")
