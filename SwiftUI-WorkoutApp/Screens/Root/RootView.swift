@@ -5,16 +5,8 @@ struct RootView: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
-        ZStack {
-            if defaults.showWelcome {
-                WelcomeView()
-            } else {
-                tabView
-            }
-        }
-        .onChange(of: defaults.showWelcome, perform: swithToFirstTab)
-        .animation(.spring(), value: defaults.showWelcome)
-        .ignoresSafeArea()
+        tabView
+            .animation(.spring(), value: defaults.isAuthorized)
     }
 }
 
@@ -48,11 +40,6 @@ private extension RootView {
                 .tag(Tab.profile)
         }
         .navigationViewStyle(.stack)
-        .opacity(defaults.showWelcome ? 0 : 1)
-    }
-
-    func swithToFirstTab(_ newValue: Bool) {
-        if !newValue { viewModel.selectTab(.map) }
     }
 }
 

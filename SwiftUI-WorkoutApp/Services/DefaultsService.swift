@@ -30,9 +30,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
 
-    @AppStorage(Key.showWelcome.rawValue)
-    private(set) var showWelcome = true
-
     @AppStorage(Key.authData.rawValue)
     private var authData = Data()
 
@@ -93,8 +90,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         }
     }
 
-    func setWelcomeShown() { showWelcome = false }
-
     func saveAuthData(_ info: AuthData) throws {
         authData = try JSONEncoder().encode(info)
     }
@@ -111,10 +106,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         hasFriends = info.friendsCount.valueOrZero != .zero
         setHasSportsGrounds(info.usedSportsGroundsCount != .zero)
         setHasJournals(info.journalsCount.valueOrZero != .zero)
-        if !isAuthorized {
-            showWelcome = false
-            isAuthorized = true
-        }
+        if !isAuthorized { isAuthorized = true }
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)
     }
@@ -146,7 +138,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         friendsIds = .init()
         friendRequests = .init()
         isAuthorized = false
-        showWelcome = true
         hasFriends = false
         hasJournals = false
         hasSportsGrounds = false
@@ -156,7 +147,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, showWelcome, hasSportsGrounds,
+        case isUserAuthorized, hasSportsGrounds,
              authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends
     }
