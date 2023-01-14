@@ -6,15 +6,13 @@ struct IncognitoUserButton: View {
     var body: some View {
         NavigationLink(destination: mode.destination) {
             mode.label
+                .roundedStyle()
         }
     }
 }
 
 extension IncognitoUserButton {
-    enum Mode {
-        case register(source: IncognitoButtonLabelModifier.Source)
-        case authorize(source: IncognitoButtonLabelModifier.Source)
-    }
+    enum Mode { case register, authorize }
 }
 
 private extension IncognitoUserButton.Mode {
@@ -29,12 +27,10 @@ private extension IncognitoUserButton.Mode {
     @ViewBuilder
     var label: some View {
         switch self {
-        case let .register(source):
+        case .register:
             Label("Регистрация", systemImage: "person.badge.plus")
-                .incognitoButtonStyle(source: source)
-        case let .authorize(source):
+        case .authorize:
             Label("Авторизация", systemImage: "arrow.forward.circle")
-                .incognitoButtonStyle(source: source)
         }
     }
 }
@@ -42,20 +38,12 @@ private extension IncognitoUserButton.Mode {
 #if DEBUG
 struct IncognitoUserButton_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            VStack(spacing: 16) {
-                IncognitoUserButton(mode: .authorize(source: .welcomeView))
-                IncognitoUserButton(mode: .register(source: .welcomeView))
-            }
-            .preferredColorScheme(.dark)
-            .previewDisplayName("Приветственный экран")
-            VStack(spacing: 16) {
-                IncognitoUserButton(mode: .authorize(source: .incognitoView))
-                IncognitoUserButton(mode: .register(source: .incognitoView))
-            }
-            .previewDisplayName("Инкогнито экран")
+        VStack(spacing: 16) {
+            IncognitoUserButton(mode: .authorize)
+            IncognitoUserButton(mode: .register)
         }
         .padding()
+        .previewDisplayName("Инкогнито экран")
     }
 }
 #endif

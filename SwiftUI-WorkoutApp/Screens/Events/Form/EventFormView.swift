@@ -83,8 +83,7 @@ extension EventFormView {
 
 private extension EventFormView {
     enum FocusableField: Hashable {
-        case eventName
-        case eventDescription
+        case eventName, eventDescription
     }
 
     var eventNameSection: some View {
