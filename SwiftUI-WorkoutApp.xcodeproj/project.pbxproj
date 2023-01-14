@@ -98,10 +98,8 @@
 		6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */; };
 		6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */; };
 		6798AA5D280AF5E500DB76F1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5C280AF5E500DB76F1 /* Constants.swift */; };
-		6798AA64280B1F0900DB76F1 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA63280B1F0900DB76F1 /* WelcomeView.swift */; };
 		6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */; };
 		6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA67280B23B700DB76F1 /* UserDetailsView.swift */; };
-		6798AA70280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */; };
 		6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA72280B43FE00DB76F1 /* LoginView.swift */; };
 		6798AA79280BE8E200DB76F1 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA75280BE8E200DB76F1 /* countries.json */; };
 		6798AA7B280BE8E200DB76F1 /* oldSportsGrounds.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */; };
@@ -248,10 +246,8 @@
 		6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapView.swift; sourceTree = "<group>"; };
 		6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		6798AA5C280AF5E500DB76F1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		6798AA63280B1F0900DB76F1 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoProfileView.swift; sourceTree = "<group>"; };
 		6798AA67280B23B700DB76F1 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
-		6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoButtonLabelModifier.swift; sourceTree = "<group>"; };
 		6798AA72280B43FE00DB76F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6798AA75280BE8E200DB76F1 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldSportsGrounds.json; sourceTree = "<group>"; };
@@ -328,6 +324,24 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		67138D7E2972EF6F00BBF450 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
+				67B7870F281D6110008B104F /* LoginViewModel.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		67138D7F2972EF7F00BBF450 /* ChangePassword */ = {
+			isa = PBXGroup;
+			children = (
+				6747575528113419002F0A24 /* ChangePasswordView.swift */,
+				67B78717281D8792008B104F /* ChangePasswordViewModel.swift */,
+			);
+			path = ChangePassword;
+			sourceTree = "<group>";
+		};
 		671D7DED28210D820068E728 /* Events */ = {
 			isa = PBXGroup;
 			children = (
@@ -380,10 +394,11 @@
 		67419AD8282E8E9E004F5339 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				67138D7F2972EF7F00BBF450 /* ChangePassword */,
+				6770A8352834D7B50006B672 /* AccountInfo */,
+				67138D7E2972EF6F00BBF450 /* Login */,
 				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
 				67B78719281D88CB008B104F /* ProfileSettingsViewModel.swift */,
-				6747575528113419002F0A24 /* ChangePasswordView.swift */,
-				67B78717281D8792008B104F /* ChangePasswordViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -524,15 +539,15 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
-		6770A8352834D7B50006B672 /* Account */ = {
+		6770A8352834D7B50006B672 /* AccountInfo */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA83280C0F7D00DB76F1 /* AccountInfoView.swift */,
-				67B78713281D74F3008B104F /* AccountInfoViewModel.swift */,
 				6798AA8B280C390F00DB76F1 /* CountriesView.swift */,
 				6798AA8D280C3CCB00DB76F1 /* CitiesView.swift */,
+				6798AA83280C0F7D00DB76F1 /* AccountInfoView.swift */,
+				67B78713281D74F3008B104F /* AccountInfoViewModel.swift */,
 			);
-			path = Account;
+			path = AccountInfo;
 			sourceTree = "<group>";
 		};
 		67891E34283E93ED00B10802 /* Form */ = {
@@ -590,7 +605,6 @@
 			isa = PBXGroup;
 			children = (
 				67419AD6282E8E84004F5339 /* Root */,
-				6798AA82280BF52600DB76F1 /* Welcome */,
 				67475757281285E5002F0A24 /* SportsGrounds */,
 				671D7DED28210D820068E728 /* Events */,
 				67419AD5282E8E7C004F5339 /* Messages */,
@@ -706,17 +720,6 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		6798AA82280BF52600DB76F1 /* Welcome */ = {
-			isa = PBXGroup;
-			children = (
-				6770A8352834D7B50006B672 /* Account */,
-				6798AA63280B1F0900DB76F1 /* WelcomeView.swift */,
-				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
-				67B7870F281D6110008B104F /* LoginViewModel.swift */,
-			);
-			path = Welcome;
-			sourceTree = "<group>";
-		};
 		679F3AF72968029900BB3590 /* SportsGroundLocation */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,7 +750,6 @@
 		679F3B0A2969DF3E00BB3590 /* IncognitoButtons */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA6F280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift */,
 				679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */,
 				67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */,
 			);
@@ -936,7 +938,6 @@
 				6798AA4E280AF32A00DB76F1 /* SportsGround.swift in Sources */,
 				67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */,
 				672F2BE72832CD2A0000A193 /* EventViewCell.swift in Sources */,
-				6798AA70280B42BC00DB76F1 /* IncognitoButtonLabelModifier.swift in Sources */,
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* Comments.swift in Sources */,
@@ -994,7 +995,6 @@
 				6758B92C281D9283001D83D8 /* EventFormViewModel.swift in Sources */,
 				6705E7F2283B880A00DABCC8 /* JournalSettingsViewModel.swift in Sources */,
 				675A37152854B11300DAE071 /* Gender.swift in Sources */,
-				6798AA64280B1F0900DB76F1 /* WelcomeView.swift in Sources */,
 				67891E36283E945100B10802 /* SportsGroundFormViewModel.swift in Sources */,
 				67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */,
 				67891E3A283EB15300B10802 /* SportsGroundResult.swift in Sources */,
