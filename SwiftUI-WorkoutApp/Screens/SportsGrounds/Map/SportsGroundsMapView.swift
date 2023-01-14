@@ -58,7 +58,7 @@ struct SportsGroundsMapView: View {
                     .disabled(isLeftToolbarPartDisabled)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if defaults.isAuthorized { createGroundButton }
+                    rightBarButton
                 }
             }
             .navigationTitle("Площадки")
@@ -136,25 +136,30 @@ private extension SportsGroundsMapView {
         Task { await askForGrounds(refresh: true) }
     }
 
-    var createGroundButton: some View {
-        Button {
-            showGroundCreationSheet.toggle()
-        } label: {
-            Image(systemName: "plus")
-        }
-        .opacity(viewModel.isLoading ? 0 : 1)
-        .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
-        .sheet(isPresented: $showGroundCreationSheet) {
-            ContentInSheet(title: "Новая площадка", spacing: .zero) {
-                SportsGroundFormView(
-                    .createNew(
-                        address: $viewModel.addressString,
-                        coordinate: $viewModel.region.center,
-                        cityID: defaults.mainUserCityID
-                    ),
-                    refreshClbk: updateRecent
-                )
+    @ViewBuilder
+    var rightBarButton: some View {
+        if defaults.isAuthorized {
+            Button {
+                showGroundCreationSheet.toggle()
+            } label: {
+                Image(systemName: "plus")
             }
+            .opacity(viewModel.isLoading ? 0 : 1)
+            .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
+            .sheet(isPresented: $showGroundCreationSheet) {
+                ContentInSheet(title: "Новая площадка", spacing: .zero) {
+                    SportsGroundFormView(
+                        .createNew(
+                            address: $viewModel.addressString,
+                            coordinate: $viewModel.region.center,
+                            cityID: defaults.mainUserCityID
+                        ),
+                        refreshClbk: updateRecent
+                    )
+                }
+            }
+        } else {
+            IncognitoNavbarInfoButton()
         }
     }
 

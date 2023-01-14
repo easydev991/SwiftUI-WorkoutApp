@@ -10,7 +10,7 @@ struct IncognitoProfileView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                infoButton
+                IncognitoNavbarInfoButton()
             }
         }
         .padding()
@@ -19,7 +19,7 @@ struct IncognitoProfileView: View {
 
 private extension IncognitoProfileView {
     var incognitoInformer: some View {
-        Text("Зарегистрируйтесь или авторизуйтесь, чтобы иметь доступ к функционалу")
+        Text(Constants.incognitoInfoText)
             .font(.title3)
             .multilineTextAlignment(.center)
             .padding()
@@ -31,12 +31,6 @@ private extension IncognitoProfileView {
 
     var loginButton: some View {
         IncognitoUserButton(mode: .authorize(source: .incognitoView))
-    }
-
-    var infoButton: some View {
-        NavigationLink(destination: ProfileSettingsView(mode: .incognito)) {
-            Image(systemName: "info.circle.fill")
-        }
     }
 }
 

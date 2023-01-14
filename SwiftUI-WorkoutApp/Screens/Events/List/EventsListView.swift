@@ -46,7 +46,7 @@ struct EventsListView: View {
                     refreshButton
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    addEventButton
+                    rightBarButton
                 }
             }
             .navigationTitle("Мероприятия")
@@ -102,22 +102,26 @@ private extension EventsListView {
         }
     }
 
-    var addEventButton: some View {
-        Button {
-            if !defaults.hasSportsGrounds {
-                showEventCreationRule.toggle()
-            } else {
-                createEventIfAvailable()
+    @ViewBuilder
+    var rightBarButton: some View {
+        if defaults.isAuthorized {
+            Button {
+                if !defaults.hasSportsGrounds {
+                    showEventCreationRule.toggle()
+                } else {
+                    createEventIfAvailable()
+                }
+            } label: {
+                Image(systemName: "plus")
             }
-        } label: {
-            Image(systemName: "plus")
-        }
-        .opacity(defaults.isAuthorized ? 1 : 0)
-        .disabled(!network.isConnected)
-        .sheet(isPresented: $showEventCreationSheet) {
-            ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
-                EventFormView(for: .regularCreate, refreshClbk: refreshAction)
+            .disabled(!network.isConnected)
+            .sheet(isPresented: $showEventCreationSheet) {
+                ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
+                    EventFormView(for: .regularCreate, refreshClbk: refreshAction)
+                }
             }
+        } else {
+            IncognitoNavbarInfoButton()
         }
     }
 
