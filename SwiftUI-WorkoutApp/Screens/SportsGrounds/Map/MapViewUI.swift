@@ -58,11 +58,7 @@ struct MapViewUI: UIViewRepresentable {
             mapView.setRegion(region, animated: false)
             needUpdateRegion.toggle()
         }
-        if ignoreUserLocation {
-            setTrackingButtonHidden(true, on: mapView)
-        } else {
-            setTrackingButtonHidden(false, on: mapView)
-        }
+        setTrackingButtonHidden(ignoreUserLocation, on: mapView)
     }
 
     func makeCoordinator() -> MapCoordinator { .init(self) }
@@ -98,9 +94,7 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
     private let clusterIdentifier = "Cluster"
     private let parent: MapViewUI
 
-    init(_ parent: MapViewUI) {
-        self.parent = parent
-    }
+    init(_ parent: MapViewUI) { self.parent = parent }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if view.annotation is SportsGround {
@@ -110,9 +104,7 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if let place = view.annotation as? SportsGround {
-            parent.openSelected(place)
-        }
+        if let place = view.annotation as? SportsGround { parent.openSelected(place) }
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

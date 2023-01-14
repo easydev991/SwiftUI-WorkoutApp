@@ -7,9 +7,7 @@ final class ProfileSettingsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    init() {
-        feedbackSender = FeedbackSenderImp()
-    }
+    init() { feedbackSender = FeedbackSenderImp() }
 
     func feedbackAction() {
         feedbackSender.sendFeedback(
