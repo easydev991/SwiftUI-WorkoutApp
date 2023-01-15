@@ -73,7 +73,7 @@ private extension UsersListView.Mode {
         case .friends, .friendsForChat:
             return "Друзья"
         case .eventParticipants:
-            return "Пойдут на мероприятие"
+            return "Участники мероприятия"
         case .groundParticipants:
             return "Здесь тренируются"
         case .blacklist:

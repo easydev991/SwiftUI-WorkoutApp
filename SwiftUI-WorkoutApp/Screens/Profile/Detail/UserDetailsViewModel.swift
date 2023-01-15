@@ -52,7 +52,7 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     func checkBlacklist(with defaults: DefaultsProtocol) async {
-        try? await APIService(with: defaults).getBlacklist()
+        _ = try? await APIService(with: defaults).getBlacklist()
     }
 
     func blacklistUser(with defaults: DefaultsProtocol) async {

@@ -122,6 +122,7 @@ private extension TextEntryView {
     }
 
     func showKeyboard() {
+        guard !isFocused else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             isFocused.toggle()
         }

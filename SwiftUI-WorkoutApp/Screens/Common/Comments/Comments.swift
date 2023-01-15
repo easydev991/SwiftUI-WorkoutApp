@@ -9,7 +9,7 @@ struct Comments: View {
 
     var body: some View {
         Section("Комментарии") {
-            List(items) { comment in
+            ForEach(items) { comment in
                 CommentViewCell(
                     model: comment,
                     reportClbk: reportClbk,
@@ -24,7 +24,7 @@ struct Comments: View {
 #if DEBUG
 struct Comments_Previews: PreviewProvider {
     static var previews: some View {
-        Form {
+        List {
             Comments(
                 items: [.preview, .preview],
                 reportClbk: { _ in },

@@ -58,7 +58,8 @@ private extension ChangePasswordView {
     }
 
     func showKeyboard() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        guard focus == nil else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             focus = .currentPassword
         }
     }

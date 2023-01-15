@@ -28,7 +28,7 @@ struct SportsGroundDetailView: View {
     }
 
     var body: some View {
-        Form {
+        List {
             titleSubtitleSection
             locationInfo
             if let photos = viewModel.ground.photos,
@@ -165,12 +165,8 @@ private extension SportsGroundDetailView {
         NavigationLink {
             UsersListView(mode: .groundParticipants(list: viewModel.ground.participants))
         } label: {
-            HStack {
-                Text("Здесь тренируются")
-                Spacer()
-                Text("peopleTrainHere \(viewModel.ground.participants.count)")
-                .foregroundColor(.secondary)
-            }
+            Text("Здесь тренируются")
+                .badge("peopleTrainHere \(viewModel.ground.participants.count)")
         }
     }
 
@@ -206,10 +202,7 @@ private extension SportsGroundDetailView {
             reportClbk: { viewModel.reportComment($0) },
             deleteClbk: { id in
                 deleteCommentTask = Task {
-                    await viewModel.delete(
-                        commentID: id,
-                        with: defaults
-                    )
+                    await viewModel.delete(commentID: id, with: defaults)
                 }
             },
             editClbk: setupCommentToEdit

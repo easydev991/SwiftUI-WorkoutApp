@@ -28,13 +28,13 @@ struct EventDetailsView: View {
     }
 
     var body: some View {
-        Form {
+        List {
             mainInfo
             locationInfo
             if viewModel.event.hasDescription {
                 descriptionSection
             }
-            if defaults.isAuthorized {
+            if showParticipantSection {
                 participantsSection
             }
             if let photos = viewModel.event.photos,
@@ -151,7 +151,7 @@ private extension EventDetailsView {
     }
 
     var participantsSection: some View {
-        Section("Участники") {
+        Section {
             if viewModel.hasParticipants {
                 participantsButton
             }
@@ -167,12 +167,8 @@ private extension EventDetailsView {
         NavigationLink {
             UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
         } label: {
-            HStack {
-                Text("Идут")
-                Spacer()
-                Text("peopleTrainHere \(viewModel.event.participants.count)")
-                .foregroundColor(.secondary)
-            }
+            Text("Участники")
+                .badge("peopleTrainHere \(viewModel.event.participants.count)")
         }
     }
 
@@ -196,9 +192,7 @@ private extension EventDetailsView {
     /// Обновляем состояние `trainHere` при получении изменений от `viewModel`
     ///
     /// Например, если сервер вернул ошибку при попытке сменить статус
-    func onChangeOfTrainHere(value: Bool) {
-        trainHere = value
-    }
+    func onChangeOfTrainHere(value: Bool) { trainHere = value }
 
     var authorSection: some View {
         Section("Организатор") {
@@ -288,6 +282,14 @@ private extension EventDetailsView {
         defaults.isAuthorized
         ? viewModel.event.authorID == defaults.mainUserInfo?.userID
         : false
+    }
+
+    var showParticipantSection: Bool {
+        if defaults.isAuthorized {
+            return viewModel.hasParticipants || viewModel.isEventCurrent
+        } else {
+            return false
+        }
     }
 
     func closeAlert() {

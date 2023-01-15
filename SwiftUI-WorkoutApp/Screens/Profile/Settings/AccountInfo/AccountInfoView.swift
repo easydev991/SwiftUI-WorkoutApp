@@ -82,6 +82,7 @@ private extension AccountInfoView {
             text: $viewModel.userForm.userName
         )
         .focused($focus, equals: .login)
+        .onAppear(perform: showKeyboardIfNeeded)
     }
 
     var emailField: some View {
@@ -170,7 +171,7 @@ private extension AccountInfoView {
 
     var birthdayPicker: some View {
         HStack {
-            Image(systemName: "birthday.cake")
+            Image(systemName: "calendar")
                 .foregroundColor(.secondary)
             Spacer()
             DatePicker(
@@ -210,6 +211,13 @@ private extension AccountInfoView {
                     !viewModel.isButtonAvailable(with: defaults)
                     || !network.isConnected
                 )
+        }
+    }
+
+    func showKeyboardIfNeeded() {
+        guard mode == .create, focus == nil else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            focus = .login
         }
     }
 

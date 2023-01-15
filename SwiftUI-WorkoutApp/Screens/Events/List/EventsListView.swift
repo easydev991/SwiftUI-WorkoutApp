@@ -85,9 +85,7 @@ private extension EventsListView {
 
     var eventsList: some View {
         List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
-            NavigationLink {
-                EventDetailsView(with: event, deleteClbk: refreshAction)
-            } label: {
+            NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
                 EventViewCell(for: $event)
             }
         }
