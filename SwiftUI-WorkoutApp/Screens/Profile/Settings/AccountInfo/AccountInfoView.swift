@@ -170,7 +170,7 @@ private extension AccountInfoView {
 
     var birthdayPicker: some View {
         HStack {
-            Image(systemName: "birthday.cake")
+            Image(systemName: "calendar")
                 .foregroundColor(.secondary)
             Spacer()
             DatePicker(

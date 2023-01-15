@@ -100,7 +100,7 @@ private extension ProfileSettingsView {
         Button {
             showLogoutDialog.toggle()
         } label: {
-            Label("Выйти", systemImage: "door.left.hand.open")
+            Label("Выйти", systemImage: "arrow.down.backward.circle.fill")
                 .foregroundColor(.pink)
         }
         .confirmationDialog(

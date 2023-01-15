@@ -28,7 +28,7 @@ struct UserDetailsView: View {
     }
 
     var body: some View {
-        Form {
+        List {
             userInfoSection
             if !isMainUser {
                 communicationSection
