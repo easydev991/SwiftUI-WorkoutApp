@@ -29,6 +29,7 @@ struct SportsGroundsListView: View {
                 } label: {
                     SportsGroundViewCell(model: ground)
                 }
+                .accessibilityIdentifier("SportsGroundViewCell")
             default:
                 NavigationLink {
                     SportsGroundDetailView(
@@ -38,6 +39,7 @@ struct SportsGroundsListView: View {
                 } label: {
                     SportsGroundViewCell(model: ground)
                 }
+                .accessibilityIdentifier("SportsGroundViewCell")
             }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)

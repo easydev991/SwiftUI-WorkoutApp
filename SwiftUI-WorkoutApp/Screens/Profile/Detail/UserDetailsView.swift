@@ -177,6 +177,7 @@ private extension UserDetailsView {
             Label("Где тренируется", systemImage: "mappin.and.ellipse")
                 .badge(viewModel.user.usesSportsGrounds.description)
         }
+        .accessibilityIdentifier("usesSportsGroundsButton")
     }
 
     var addedSportsGroundsButton: some View {
@@ -226,6 +227,7 @@ private extension UserDetailsView {
             Image(systemName: "magnifyingglass")
         }
         .disabled(!network.isConnected)
+        .accessibilityIdentifier("searchUsersButton")
     }
 
     var settingsButton: some View {

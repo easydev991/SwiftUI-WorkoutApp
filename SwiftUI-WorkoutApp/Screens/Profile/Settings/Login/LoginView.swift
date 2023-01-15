@@ -20,12 +20,8 @@ struct LoginView: View {
                 passwordField
             }
             Section {
-                ButtonInForm("Войти", action: loginAction)
-                    .disabled(!viewModel.canLogIn)
-                ButtonInForm("Забыли пароль?", mode: .secondary, action: forgotPasswordAction)
-                    .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
-                        Button("Ok") { viewModel.warningAlertClosed() }
-                    }
+                loginButton
+                forgotPasswordButton
             }
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
@@ -63,6 +59,7 @@ private extension LoginView {
         )
         .focused($focus, equals: .username)
         .onAppear(perform: showKeyboard)
+        .accessibilityIdentifier("loginField")
     }
 
     func showKeyboard() {
@@ -80,6 +77,20 @@ private extension LoginView {
         )
         .focused($focus, equals: .password)
         .onSubmit(loginAction)
+        .accessibilityIdentifier("passwordField")
+    }
+
+    var loginButton: some View {
+        ButtonInForm("Войти", action: loginAction)
+            .disabled(!viewModel.canLogIn)
+            .accessibilityIdentifier("loginButton")
+    }
+
+    var forgotPasswordButton: some View {
+        ButtonInForm("Забыли пароль?", mode: .secondary, action: forgotPasswordAction)
+            .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
+                Button("Ok") { viewModel.warningAlertClosed() }
+            }
     }
 
     func loginAction() {

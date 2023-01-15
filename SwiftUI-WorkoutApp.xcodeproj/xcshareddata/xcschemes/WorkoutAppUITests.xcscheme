@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1330"
+   LastUpgradeVersion = "1420"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -9,14 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6798AA39280AEDC900DB76F1"
-               BuildableName = "WorkoutApp.app"
-               BlueprintName = "SwiftUI-WorkoutApp"
+               BlueprintIdentifier = "67138D83297311BD00BBF450"
+               BuildableName = "WorkoutAppUITests.xctest"
+               BlueprintName = "WorkoutAppUITests"
                ReferencedContainer = "container:SwiftUI-WorkoutApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,29 +51,14 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      language = "ru"
+      region = "RU"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "NO">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6798AA39280AEDC900DB76F1"
-            BuildableName = "WorkoutApp.app"
-            BlueprintName = "SwiftUI-WorkoutApp"
-            ReferencedContainer = "container:SwiftUI-WorkoutApp.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "$(DEBUG_ACTIVITY_MODE)"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      allowLocationSimulation = "YES">
       <LocationScenarioReference
          identifier = "Moscow, Russia"
          referenceType = "1">
@@ -85,16 +70,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6798AA39280AEDC900DB76F1"
-            BuildableName = "WorkoutApp.app"
-            BlueprintName = "SwiftUI-WorkoutApp"
+            BlueprintIdentifier = "67138D83297311BD00BBF450"
+            BuildableName = "WorkoutAppUITests.xctest"
+            BlueprintName = "WorkoutAppUITests"
             ReferencedContainer = "container:SwiftUI-WorkoutApp.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

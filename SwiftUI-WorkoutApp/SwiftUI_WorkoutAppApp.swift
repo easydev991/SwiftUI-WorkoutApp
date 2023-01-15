@@ -8,10 +8,8 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var network = CheckNetworkService()
 
     init() {
-        UITextField.appearance().clearButtonMode = .whileEditing
-        let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.configureWithOpaqueBackground()
-        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        setupAppearance()
+        prepareForUITestIfNeeded()
     }
 
     var body: some Scene {
@@ -28,6 +26,22 @@ struct SwiftUI_WorkoutAppApp: App {
 #if DEBUG
             print("--- scenePhase = \($0)")
 #endif
+        }
+    }
+}
+
+private extension SwiftUI_WorkoutAppApp {
+    func setupAppearance() {
+        UITextField.appearance().clearButtonMode = .whileEditing
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+    }
+
+    func prepareForUITestIfNeeded() {
+        if ProcessInfo.processInfo.arguments.contains("UITest") {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            UIView.setAnimationsEnabled(false)
         }
     }
 }
