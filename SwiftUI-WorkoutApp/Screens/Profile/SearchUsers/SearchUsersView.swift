@@ -68,9 +68,7 @@ private extension SearchUsersView {
     func listItem(for model: UserModel) -> some View {
         switch mode {
         case .regular:
-            NavigationLink {
-                UserDetailsView(from: model)
-            } label: {
+            NavigationLink(destination: UserDetailsView(from: model)) {
                 UserViewCell(model: model)
             }
         case .chat:
@@ -123,6 +121,7 @@ private extension SearchUsersView {
     }
 
     func showKeyboard() {
+        guard !isFocused else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             isFocused.toggle()
         }

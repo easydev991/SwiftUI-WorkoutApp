@@ -10,6 +10,7 @@ protocol DefaultsProtocol: AnyObject {
     var friendRequestsList: [UserResponse] { get }
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
+    var unreadMessagesCount: Int { get set }
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
@@ -53,6 +54,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.hasFriends.rawValue)
     private(set) var hasFriends = false
+
+    @AppStorage(Key.unreadMessagesCount.rawValue)
+    var unreadMessagesCount = 0
 
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
@@ -149,6 +153,6 @@ private extension DefaultsService {
     enum Key: String {
         case isUserAuthorized, hasSportsGrounds,
              authData, userInfo, friends, friendRequests, blacklist,
-             hasJournals, needUpdateUser, hasFriends
+             hasJournals, needUpdateUser, hasFriends, unreadMessagesCount
     }
 }

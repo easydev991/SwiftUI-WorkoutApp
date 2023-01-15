@@ -11,6 +11,7 @@ final class DialogListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
         do {
             list = try await APIService(with: defaults).getDialogs()
+            defaults.unreadMessagesCount = list.map(\.unreadMessagesCount).reduce(0, +)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
@@ -29,6 +30,22 @@ final class DialogListViewModel: ObservableObject {
             errorMessage = ErrorFilterService.message(from: error)
         }
         isLoading.toggle()
+    }
+
+    func markAsRead(_ dialog: DialogResponse, with defaults: DefaultsProtocol) {
+        list = list.map { item in
+            if item.id == dialog.id {
+                var updatedDialog = dialog
+                updatedDialog.unreadMessagesCount = 0
+                return updatedDialog
+            } else {
+                return item
+            }
+        }
+        guard dialog.unreadMessagesCount > 0,
+              defaults.unreadMessagesCount >= dialog.unreadMessagesCount
+        else { return }
+        defaults.unreadMessagesCount -= dialog.unreadMessagesCount
     }
 
     func clearErrorMessage() { errorMessage = "" }

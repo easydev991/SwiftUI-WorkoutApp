@@ -22,13 +22,13 @@ extension SportsGround {
 extension UserResponse {
     static var preview: UserResponse {
         .init(
-            userName: "TestUserName",
-            fullName: "TestFullName",
+            userName: "Kahar",
+            fullName: "",
             email: "test@mail.ru",
-            imageStringURL: "avatar_default",
+            imageStringURL: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg",
             birthDateIsoString: "1990-11-25",
             createdIsoDateTimeSec: nil,
-            userID: .zero,
+            userID: 24798,
             cityID: 1,
             countryID: 17,
             genderCode: 1,
@@ -47,7 +47,33 @@ extension UserModel {
 
 extension EventResponse {
     static var preview: EventResponse {
-        try! Bundle.main.decodeJson([EventResponse].self, fileName: "oldEvents.json").first!
+        .init(
+            id: 4414,
+            title: "Открытая тренировка участников SOTKA и воркаутеров #2 в 2022 году",
+            eventDescription: "!!! ВРЕМЯ ТРЕНИРОВКИ - 12:00",
+            fullAddress: nil,
+            createDate: "2022-10-16T09:00:00+00:00",
+            modifyDate: "2022-10-16T09:00:00+00:00",
+            beginDate: "2022-10-16T09:00:00+00:00",
+            countryID: 17,
+            cityID: 1,
+            commentsCount: 2,
+            previewImageStringURL: "https://workout.su/thumbs/6_100x100_FFFFFF//uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg",
+            sportsGroundID: 5464,
+            latitude: "55.72681766162947",
+            longitude: "37.50063106774381",
+            participantsCount: 3,
+            isCurrent: false,
+            photos: [
+                .init(
+                    id: 1,
+                    stringURL: "https://workout.su/uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg"
+                )
+            ],
+            authorName: "Kahar",
+            author: .preview,
+            trainHereOptional: false
+        )
     }
 }
 

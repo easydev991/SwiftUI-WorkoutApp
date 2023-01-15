@@ -95,9 +95,14 @@ private extension DialogListView {
 
     var dialogList: some View {
         List {
-            ForEach($viewModel.list) { $dialog in
+            ForEach(viewModel.list) { dialog in
                 NavigationLink {
-                    DialogView(dialog: $dialog)
+                    DialogView(
+                        dialog: dialog,
+                        markedAsReadClbk: {
+                            viewModel.markAsRead(dialog, with: defaults)
+                        }
+                    )
                 } label: {
                     GenericListCell(for: .dialog(dialog))
                 }

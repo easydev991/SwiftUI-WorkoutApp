@@ -174,12 +174,8 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
         } label: {
-            HStack {
-                Label("Где тренируется", systemImage: "mappin.and.ellipse")
-                Spacer()
-                Text(viewModel.user.usesSportsGrounds.description)
-                    .foregroundColor(.secondary)
-            }
+            Label("Где тренируется", systemImage: "mappin.and.ellipse")
+                .badge(viewModel.user.usesSportsGrounds.description)
         }
     }
 
@@ -187,12 +183,8 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
         } label: {
-            HStack {
-                Label("Добавил площадки", systemImage: "mappin.and.ellipse")
-                Spacer()
-                Text(viewModel.user.addedSportsGrounds.count.description)
-                    .foregroundColor(.secondary)
-            }
+            Label("Добавил площадки", systemImage: "mappin.and.ellipse")
+                .badge(viewModel.user.addedSportsGrounds.count.description)
         }
     }
 
@@ -204,21 +196,17 @@ private extension UserDetailsView {
                 if friendRequestsCount > .zero && isMainUser {
                     Image(systemName: "\(friendRequestsCount).circle.fill")
                         .foregroundColor(.red)
+                        .padding(.trailing, 8)
                 }
-                Text(viewModel.user.friendsCount.description)
-                    .foregroundColor(.secondary)
             }
+            .badge(viewModel.user.friendsCount.description)
         }
     }
 
     var blacklistButton: some View {
         NavigationLink(destination: UsersListView(mode: .blacklist)) {
-            HStack {
-                Label("Черный список", systemImage: "text.badge.xmark")
-                Spacer()
-                Text(blacklistedUsersCount.description)
-                    .foregroundColor(.secondary)
-            }
+            Label("Черный список", systemImage: "text.badge.xmark")
+                .badge(blacklistedUsersCount.description)
         }
     }
 
@@ -228,12 +216,8 @@ private extension UserDetailsView {
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
-            HStack {
-                Label("Дневники", systemImage: "text.book.closed.fill")
-                Spacer()
-                Text(viewModel.user.journalsCount.description)
-                    .foregroundColor(.secondary)
-            }
+            Label("Дневники", systemImage: "text.book.closed.fill")
+                .badge(viewModel.user.journalsCount.description)
         }
     }
 

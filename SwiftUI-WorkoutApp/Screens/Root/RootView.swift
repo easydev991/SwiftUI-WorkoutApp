@@ -28,6 +28,7 @@ private extension RootView {
                     Label("Сообщения", systemImage: "message.fill")
                 }
                 .tag(Tab.messages)
+                .badge(defaults.unreadMessagesCount)
             JournalsScreen()
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
