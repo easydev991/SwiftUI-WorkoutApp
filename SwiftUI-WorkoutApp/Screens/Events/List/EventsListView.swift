@@ -71,7 +71,10 @@ private extension EventsListView {
 
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
-            ForEach(EventType.allCases, id: \.self) { Text($0.rawValue) }
+            ForEach(EventType.allCases, id: \.self) {
+                Text($0.rawValue)
+                    .accessibilityIdentifier($0.rawValue)
+            }
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
@@ -88,6 +91,7 @@ private extension EventsListView {
             NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
                 EventViewCell(for: $event)
             }
+            .accessibilityIdentifier("EventViewCell")
         }
         .opacity(viewModel.isLoading ? 0 : 1)
     }

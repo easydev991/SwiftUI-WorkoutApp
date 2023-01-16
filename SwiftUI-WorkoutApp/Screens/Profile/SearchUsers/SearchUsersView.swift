@@ -21,11 +21,13 @@ struct SearchUsersView: View {
                     .onSubmit(search)
                     .submitLabel(.search)
                     .focused($isFocused)
+                    .accessibilityIdentifier("SearchUserNameField")
             }
             Section("Результаты поиска") {
                 List(viewModel.users) { model in
                     listItem(for: model)
                         .disabled(model.id == defaults.mainUserInfo?.userID)
+                        .accessibilityIdentifier("UserViewCell")
                 }
             }
             .opacity(viewModel.users.isEmpty ? 0 : 1)
