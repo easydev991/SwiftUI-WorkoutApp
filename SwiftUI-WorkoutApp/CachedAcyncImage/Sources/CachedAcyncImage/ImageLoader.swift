@@ -17,10 +17,7 @@ final class ImageLoader: ObservableObject {
     deinit { cancel() }
 
     func load() {
-        guard let url = url, !isLoading else {
-            image = .init(named: "defaultWorkoutImage")
-            return
-        }
+        guard let url = url, !isLoading else { return }
 
         if let image = cache?[url] {
             self.image = image
