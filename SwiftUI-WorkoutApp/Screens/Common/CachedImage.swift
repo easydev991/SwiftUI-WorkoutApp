@@ -1,18 +1,23 @@
 import SwiftUI
+import CachedAcyncImage
 
-struct CacheImageView: View {
+struct CachedImage: View {
     let url: URL?
     var mode = Mode.userListItem
 
     var body: some View {
-        CacheAsyncImage(url: url, placeholderSize: mode.size) {
-            Image(uiImage: $0).resizable()
+        CachedAsyncImage(url: url) { uiImage in
+            Image(uiImage: uiImage).resizable()
+        } placeholder: {
+            RoundedDefaultImage(size: mode.size)
         }
-        .applySpecificSize(mode.size)
+        .scaledToFit()
+        .cornerRadius(8)
+        .frame(width: mode.size.width, height: mode.size.height)
     }
 }
 
-extension CacheImageView {
+extension CachedImage {
     enum Mode {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,
@@ -36,8 +41,8 @@ extension CacheImageView {
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            CacheImageView(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
-            CacheImageView(
+            CachedImage(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
+            CachedImage(
                 url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
                 mode: .profileAvatar
             )

@@ -9,7 +9,7 @@ struct FriendRequestCell: View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 16) {
-                    CacheImageView(url: model.imageURL)
+                    CachedImage(url: model.imageURL)
                     VStack(alignment: .leading) {
                         Text(model.name)
                         Text(model.shortAddress)

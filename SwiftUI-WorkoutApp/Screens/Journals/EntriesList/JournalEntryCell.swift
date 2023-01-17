@@ -10,7 +10,7 @@ struct JournalEntryCell: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            CacheImageView(
+            CachedImage(
                 url: model.imageURL,
                 mode: .journalEntry
             )

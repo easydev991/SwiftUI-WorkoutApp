@@ -36,7 +36,7 @@ struct PhotoSectionView: View {
                 spacing: 12
             ) {
                 ForEach(items) { photo in
-                    DeletablePhotoCell(
+                    PhotoSectionCell(
                         photo: photo,
                         canDelete: canDelete,
                         reportClbk: reportPhotoClbk,

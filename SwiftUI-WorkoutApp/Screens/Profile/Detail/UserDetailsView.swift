@@ -88,7 +88,7 @@ private extension UserDetailsView {
     }
 
     var avatarImageView: some View {
-        CacheImageView(url: viewModel.user.imageURL, mode: .profileAvatar)
+        CachedImage(url: viewModel.user.imageURL, mode: .profileAvatar)
     }
 
     var communicationSection: some View {

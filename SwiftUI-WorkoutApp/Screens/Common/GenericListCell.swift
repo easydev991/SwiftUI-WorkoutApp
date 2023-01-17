@@ -12,7 +12,7 @@ struct GenericListCell: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            CacheImageView(
+            CachedImage(
                 url: mode.content.imageURL,
                 mode: .genericListItem
             )

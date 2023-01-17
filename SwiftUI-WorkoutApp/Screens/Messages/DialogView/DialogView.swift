@@ -75,7 +75,7 @@ private extension DialogView {
 
     var anotherUserProfileButton: some View {
         NavigationLink(destination: UserDetailsView(from: dialog)) {
-            CacheImageView(
+            CachedImage(
                 url: dialog.anotherUserImageURL,
                 mode: .userListItem
             )
