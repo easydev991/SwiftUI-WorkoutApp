@@ -20,9 +20,9 @@ struct SportsGroundFormView: View {
         case let .createNew(address, coordinate, cityID):
             _viewModel = StateObject(
                 wrappedValue: .init(
-                    address.wrappedValue,
-                    coordinate.wrappedValue.latitude,
-                    coordinate.wrappedValue.longitude,
+                    address,
+                    coordinate.latitude,
+                    coordinate.longitude,
                     cityID
                 )
             )
@@ -75,8 +75,8 @@ struct SportsGroundFormView: View {
 extension SportsGroundFormView {
     enum Mode {
         case createNew(
-            address: Binding<String>,
-            coordinate: Binding<CLLocationCoordinate2D>,
+            address: String,
+            coordinate: CLLocationCoordinate2D,
             cityID: Int
         )
         case editExisting(SportsGround)

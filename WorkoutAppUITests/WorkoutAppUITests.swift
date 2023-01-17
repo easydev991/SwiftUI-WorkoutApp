@@ -20,28 +20,31 @@ final class WorkoutAppUITests: XCTestCase {
     }
 
     func testMakeScreenshots() {
-        waitAndTap(timeout: 4, element: grantLocationAccessButton)
-        waitAndTapOrFail(timeout: 4, element: profileTabButton)
+        waitAndTap(timeout: 5, element: grantLocationAccessButton)
+        waitAndTapOrFail(element: sportsGroundListPickerButton)
+        app.swipeUp(velocity: .slow)
+        snapshot("1-sportsGroundsList", timeWaitingForIdle: 5)
+        waitAndTapOrFail(timeout: 5, element: profileTabButton)
         waitAndTapOrFail(element: authorizeButton)
         waitAndTapOrFail(element: loginField)
         loginField.typeText(Constants.login)
         waitAndTapOrFail(element: passwordField)
         passwordField.typeText(Constants.password)
         waitAndTapOrFail(element: loginButton)
-        waitAndTapOrFail(timeout: 4, element: searchUsersButton)
+        waitAndTapOrFail(timeout: 5, element: searchUsersButton)
         waitAndTapOrFail(element: searchUserField)
         searchUserField.typeText(Constants.usernameForSearch)
         searchUserField.typeText("\n") // жмем "return", чтобы начать поиск
-        waitAndTapOrFail(timeout: 4, element: firstFoundUserCell)
-        snapshot("1-profile", timeWaitingForIdle: 3)
+        waitAndTapOrFail(timeout: 5, element: firstFoundUserCell)
+        snapshot("5-profile", timeWaitingForIdle: 5)
         swipeToFind(element: usesSportsGroundsButton, in: app)
-        waitAndTapOrFail(timeout: 4, element: firstSportsGroundCell)
-        snapshot("2-sportsGroundDetails", timeWaitingForIdle: 3)
+        waitAndTapOrFail(timeout: 5, element: firstSportsGroundCell)
+        snapshot("2-sportsGroundDetails", timeWaitingForIdle: 5)
         waitAndTapOrFail(element: eventsTabButton)
         waitAndTapOrFail(element: pastEventsPickerButton)
-        snapshot("3-pastEvents", timeWaitingForIdle: 3)
+        snapshot("3-pastEvents", timeWaitingForIdle: 5)
         waitAndTapOrFail(element: firstEventViewCell)
-        snapshot("4-eventDetails", timeWaitingForIdle: 3)
+        snapshot("4-eventDetails", timeWaitingForIdle: 5)
     }
 }
 
@@ -55,6 +58,7 @@ private extension WorkoutAppUITests {
     var grantLocationAccessButton: XCUIElement { springBoard.alerts.firstMatch.buttons["При использовании"] }
     var pasteButton: XCUIElement { app.menuItems["Вставить"] }
     var tabbar: XCUIElement { app.tabBars["Панель вкладок"] }
+    var sportsGroundListPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Список"] }
     var profileTabButton: XCUIElement { tabbar.buttons["Профиль"] }
     var eventsTabButton: XCUIElement { tabbar.buttons["Мероприятия"] }
     var authorizeButton: XCUIElement { app.buttons["Авторизация"] }

@@ -5,6 +5,7 @@ struct SportsGroundsMapView: View {
     @EnvironmentObject private var network: CheckNetworkService
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
+    @State private var presentation = Presentation.map
     @State private var needUpdateRecent = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -14,39 +15,25 @@ struct SportsGroundsMapView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                MapViewUI(
-                    "SportsGroundsMapView",
-                    viewModel.region,
-                    viewModel.sportsGrounds,
-                    $viewModel.needUpdateAnnotations,
-                    $viewModel.needUpdateRegion,
-                    $viewModel.ignoreUserLocation,
-                    openDetailsClbk: openDetailsView
-                )
-                .opacity(mapOpacity)
-                .animation(.easeInOut, value: viewModel.isLoading)
-                ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : 0)
-            }
-            .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
-                NavigationLink(isActive: $showDetailsView) {
-                    SportsGroundDetailView(
-                        for: viewModel.selectedGround,
-                        onDeletion: updateDeleted
-                    )
-                } label: { EmptyView() }
-                locationSettingsReminder
+            VStack {
+                segmentedControl
+                groundsContent
+                    .disabled(viewModel.isLoading)
+                    .animation(.easeInOut, value: viewModel.isLoading)
+                    .overlay {
+                        ProgressView()
+                            .opacity(viewModel.isLoading ? 1 : 0)
+                    }
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: defaults.mainUserCountryID, perform: updateFilterCountry)
+            .onChange(of: defaults.mainUserInfo, perform: updateFilterForUser)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }
             .task { await askForGrounds() }
             .onAppear {
                 viewModel.onAppearAction()
-                updateFilterCountry(countryID: defaults.mainUserCountryID)
+                updateFilterForUser(info: defaults.mainUserInfo)
             }
             .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
@@ -61,14 +48,20 @@ struct SportsGroundsMapView: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки")
-            .navigationBarTitleDisplayMode(needToHideMap ? .large : .inline)
+            .navigationTitle("Площадки (\(viewModel.sportsGrounds.count))")
+            .navigationBarTitleDisplayMode(navigationTitleDisplayMode)
         }
         .navigationViewStyle(.stack)
     }
 }
 
 private extension SportsGroundsMapView {
+    /// Вариант отображения площадок на экране
+    enum Presentation: String, CaseIterable, Equatable {
+        case map = "Карта"
+        case list = "Список"
+    }
+
     var filterButton: some View {
         Button {
             showFilters.toggle()
@@ -86,19 +79,70 @@ private extension SportsGroundsMapView {
         }
     }
 
+    var segmentedControl: some View {
+        Picker("Способ отображения", selection: $presentation) {
+            ForEach(Presentation.allCases, id: \.self) {
+                Text($0.rawValue)
+                    .accessibilityIdentifier($0.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    var groundsContent: some View {
+        switch presentation {
+        case .list:
+            List(viewModel.sportsGrounds) { ground in
+                NavigationLink {
+                    SportsGroundDetailView(
+                        for: ground,
+                        onDeletion: updateDeleted
+                    )
+                } label: {
+                    SportsGroundViewCell(model: ground)
+                }
+                .accessibilityIdentifier("SportsGroundViewCell")
+            }
+            .opacity(viewModel.isLoading ? 0.5 : 1)
+        case .map:
+            MapViewUI(
+                "SportsGroundsMapView",
+                viewModel.region,
+                viewModel.ignoreUserLocation,
+                viewModel.sportsGrounds,
+                $viewModel.needUpdateAnnotations,
+                $viewModel.needUpdateRegion,
+                openDetailsClbk: openDetailsView
+            )
+            .opacity(mapOpacity)
+            .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
+                NavigationLink(isActive: $showDetailsView) {
+                    SportsGroundDetailView(
+                        for: viewModel.selectedGround,
+                        onDeletion: updateDeleted
+                    )
+                } label: { EmptyView() }
+                locationSettingsReminder
+            }
+        }
+    }
+
+    var navigationTitleDisplayMode: NavigationBarItem.TitleDisplayMode {
+        switch presentation {
+        case .list: return .inline
+        case .map: return needToHideMap ? .large : .inline
+        }
+    }
+
     var needToHideMap: Bool {
         !viewModel.isRegionSet && viewModel.ignoreUserLocation
     }
 
     var mapOpacity: Double {
-        if needToHideMap {
-            return .zero
-        }
-        if viewModel.isLoading {
-            return 0.5
-        } else {
-            return 1
-        }
+        guard !needToHideMap else { return .zero }
+        return viewModel.isLoading ? 0.5 : 1
     }
 
     var isLeftToolbarPartDisabled: Bool {
@@ -150,8 +194,8 @@ private extension SportsGroundsMapView {
                 ContentInSheet(title: "Новая площадка", spacing: .zero) {
                     SportsGroundFormView(
                         .createNew(
-                            address: $viewModel.addressString,
-                            coordinate: $viewModel.region.center,
+                            address: viewModel.addressString,
+                            coordinate: viewModel.region.center,
                             cityID: defaults.mainUserCityID
                         ),
                         refreshClbk: updateRecent
@@ -173,10 +217,13 @@ private extension SportsGroundsMapView {
     }
 
     func updateDeleted(groundID: Int) {
-        viewModel.deleteSportsGroundFromList()
+        viewModel.deleteSportsGroundFromList(with: groundID)
     }
 
-    func updateFilterCountry(countryID: Int) {
+    /// Обновляем фильтр
+    ///
+    /// Параметр не используем, т.к. передаем `defaults` во вьюмодель
+    func updateFilterForUser(info: UserResponse?) {
         viewModel.updateFilter(with: defaults)
     }
 

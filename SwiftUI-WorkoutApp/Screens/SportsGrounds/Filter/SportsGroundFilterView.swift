@@ -9,22 +9,22 @@ struct SportsGroundFilterView: View {
         ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
             Form {
                 Section("Размер") {
-                    ForEach(defaultFilter.size, id: \.self) { size in
-                        buttonFor(size)
+                    ForEach(defaultFilter.size, id: \.self) { groundSize in
+                        buttonFor(groundSize)
                     }
                 }
                 Section("Тип") {
-                    ForEach(defaultFilter.type, id: \.self) { type in
-                        buttonFor(type)
+                    ForEach(defaultFilter.grade, id: \.self) { groundGrade in
+                        buttonFor(groundGrade)
                     }
                 }
-                if defaults.isAuthorized, let cityName = cityName {
+                if defaults.isAuthorized {
                     Section {
                         buttonForMyCity
                     } header: {
                         Text("Расположение")
                     } footer: {
-                        Text("Твой город в профиле: \(cityName)")
+                        Text(footerCityText)
                     }
                 }
                 resetFilterButton
@@ -37,6 +37,7 @@ private extension SportsGroundFilterView {
     func buttonFor(_ size: SportsGroundSize) -> some View {
         Button {
             if filter.size.contains(size) {
+                guard filter.size.count > 1 else { return }
                 filter.size = filter.size.filter { $0 != size }
             } else {
                 filter.size.append(size)
@@ -49,17 +50,18 @@ private extension SportsGroundFilterView {
         }
     }
 
-    func buttonFor(_ type: SportsGroundGrade) -> some View {
+    func buttonFor(_ grade: SportsGroundGrade) -> some View {
         Button {
-            if filter.type.contains(type) {
-                filter.type = filter.type.filter { $0 != type }
+            if filter.grade.contains(grade) {
+                guard filter.grade.count > 1 else { return }
+                filter.grade = filter.grade.filter { $0 != grade }
             } else {
-                filter.type.append(type)
+                filter.grade.append(grade)
             }
         } label: {
             TextWithCheckmark(
-                title: SportsGroundGrade(id: type.code).rawValue,
-                showMark: filter.type.contains(type)
+                title: SportsGroundGrade(id: grade.code).rawValue,
+                showMark: filter.grade.contains(grade)
             )
         }
     }
@@ -82,14 +84,23 @@ private extension SportsGroundFilterView {
         .disabled(!canResetFilter)
     }
 
-    var cityName: String? {
-        try? ShortAddressService().cityName(with: defaults.mainUserCityID, in: defaults.mainUserCountryID)
+    var footerCityText: String {
+        var resultString = ""
+        let currentCity = filter.currentCity
+        let userProfileCity = try? ShortAddressService().cityName(with: defaults.mainUserCityID, in: defaults.mainUserCountryID)
+        if let userProfileCity {
+            resultString += "Твой город в профиле: \(userProfileCity)"
+        }
+        if let currentCity, currentCity != userProfileCity {
+            resultString += "\nТекущий город: \(currentCity)"
+        }
+        return resultString
     }
 
     var canResetFilter: Bool {
         let isGroundFilterDifferent =
-        filter.size != defaultFilter.size
-        || filter.type != defaultFilter.type
+        filter.size.count != defaultFilter.size.count
+        || filter.grade.count != defaultFilter.grade.count
         let isCityFilterDifferent = defaults.isAuthorized
         ? filter.onlyMyCity != defaultFilter.onlyMyCity
         : false
