@@ -2,6 +2,7 @@ import SwiftUI
 import PDFKit
 
 struct ImageDetailView: UIViewRepresentable {
+    @Environment(\.colorScheme) private var colorScheme
     let image: UIImage
 
     func makeUIView(context: Context) -> PDFView {
@@ -13,7 +14,9 @@ struct ImageDetailView: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: PDFView, context: Context) {}
+    func updateUIView(_ view: PDFView, context: Context) {
+        view.backgroundColor = colorScheme == .dark ? .black : .white
+    }
 }
 
 #if DEBUG
