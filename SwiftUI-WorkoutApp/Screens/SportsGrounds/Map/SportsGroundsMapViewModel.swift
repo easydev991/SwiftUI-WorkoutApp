@@ -1,9 +1,12 @@
 import MapKit.MKGeometry
+import Combine
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let manager = CLLocationManager()
     private let urlOpener: URLOpener = URLOpenerImp()
+    private var filterCancellable: AnyCancellable?
+    private var locationErrorCancellable: AnyCancellable?
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
     private var defaultList = [SportsGround]()
@@ -14,22 +17,32 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
-    @Published var filter = SportsGroundFilter() {
-        didSet { applyFilter(userCountryID, userCityID) }
-    }
-    @Published var sportsGrounds = [SportsGround]()
-    @Published var selectedGround = SportsGround.emptyValue
-    @Published var addressString = ""
-    @Published var region = MKCoordinateRegion()
+    @Published private(set) var addressString = ""
+    @Published private(set) var region = MKCoordinateRegion()
+    @Published private(set) var ignoreUserLocation = false
     @Published var needUpdateAnnotations = false
     @Published var needUpdateRegion = false
-    @Published var ignoreUserLocation = false
+    @Published var sportsGrounds = [SportsGround]()
+    @Published var selectedGround = SportsGround.emptyValue
+    @Published var filter = SportsGroundFilter()
 
     override init() {
         super.init()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        filterCancellable = $filter
+            .removeDuplicates()
+            .sink { [weak self] newValue in
+                guard let self else { return }
+                self.applyFilter(self.userCountryID, self.userCityID)
+            }
+        locationErrorCancellable = $locationErrorMessage
+            .removeDuplicates()
+            .filter { !$0.isEmpty }
+            .sink { [weak self] _ in
+                self?.setupDefaultLocation()
+            }
     }
 
     func makeGrounds(refresh: Bool, with defaults: DefaultsProtocol) async {
@@ -71,20 +84,15 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
     }
 
-    func deleteSportsGroundFromList() {
-        sportsGrounds.removeAll(where: { $0.id == selectedGround.id })
+    func deleteSportsGroundFromList(with groundID: Int) {
+        sportsGrounds.removeAll(where: { $0.id == groundID })
         needUpdateAnnotations.toggle()
     }
 
     func updateFilter(with defaults: DefaultsProtocol) {
         userCountryID = defaults.mainUserCountryID
         userCityID = defaults.mainUserCityID
-        if !defaults.isAuthorized {
-            filter.onlyMyCity = false
-        }
-        if !locationErrorMessage.isEmpty {
-            setupDefaultLocation()
-        }
+        filter.onlyMyCity = defaults.isAuthorized
     }
 
     func openAppSettings() {
@@ -93,13 +101,9 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
     }
 
-    func onAppearAction() {
-        manager.startUpdatingLocation()
-    }
+    func onAppearAction() { manager.startUpdatingLocation() }
 
-    func onDisappearAction() {
-        manager.stopUpdatingLocation()
-    }
+    func onDisappearAction() { manager.stopUpdatingLocation() }
 
     func clearErrorMessage() { errorMessage = "" }
 }
@@ -110,20 +114,19 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         didUpdateLocations locations: [CLLocation]
     ) {
         if let location = locations.last {
+            CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+                if let target = places?.first {
+                    self?.filter.currentCity = target.locality
+                    self?.addressString = target.thoroughfare.valueOrEmpty
+                    + " " + target.subThoroughfare.valueOrEmpty
+                }
+            }
             let needUpdateMap = !isRegionSet
             region = .init(
                 center: location.coordinate,
                 span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
-            if needUpdateMap {
-                needUpdateRegion.toggle()
-            }
-            CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
-                if let target = places?.first {
-                    self?.addressString = target.thoroughfare.valueOrEmpty
-                    + " " + target.subThoroughfare.valueOrEmpty
-                }
-            }
+            if needUpdateMap { needUpdateRegion.toggle() }
         }
     }
 
@@ -167,24 +170,31 @@ private extension SportsGroundsMapViewModel {
     }
 
     func applyFilter(_ countryID: Int?, _ cityID: Int?) {
-        var result = [SportsGround]()
-        result = defaultList.filter { ground in
-            filter.size.map { $0.code }.contains(ground.sizeID)
-            && filter.type.map { $0.code }.contains(ground.typeID)
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else { return }
+            var result = [SportsGround]()
+            result = self.defaultList.filter { ground in
+                self.filter.size.map { $0.code }.contains(ground.sizeID)
+                && self.filter.grade.map { $0.code }.contains(ground.typeID)
+            }
+            guard let countryID = countryID, countryID != .zero,
+                  let cityID = cityID, cityID != .zero,
+                  self.filter.onlyMyCity
+            else {
+                DispatchQueue.main.async {
+                    self.sportsGrounds = result
+                    self.needUpdateAnnotations.toggle()
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                self.sportsGrounds = result.filter {
+                    $0.countryID == countryID
+                    && $0.cityID == cityID
+                }
+                self.needUpdateAnnotations.toggle()
+            }
         }
-        guard let countryID = countryID, countryID != .zero,
-              let cityID = cityID, cityID != .zero,
-              filter.onlyMyCity
-        else {
-            sportsGrounds = result
-            needUpdateAnnotations.toggle()
-            return
-        }
-        sportsGrounds = result.filter {
-            $0.countryID == countryID
-            && $0.cityID == cityID
-        }
-        needUpdateAnnotations.toggle()
     }
 
     func fillDefaultList() {

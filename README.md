@@ -43,9 +43,9 @@
 2. Настройки для генерации скриншотов находятся в файле [Snapfile](Snapfile) ([документация](https://docs.fastlane.tools/actions/snapshot/))
 3. Готовые скриншоты сохраняются в папке [screenshots/ru](./screenshots/ru)
 
-| Профиль | Площадка | Прошедшие мероприятия | Мероприятие |
-| --- | --- | --- | --- |
-| <img src="./screenshots/ru/iPhone 13 Pro Max-1-profile.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-2-sportsGroundDetails.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-3-pastEvents.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-4-eventDetails.png"> |
+| Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
+| --- | --- | --- | --- | --- |
+| <img src="./screenshots/ru/iPhone 13 Pro Max-1-sportsGroundsList.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-2-sportsGroundDetails.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-3-pastEvents.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-4-eventDetails.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-5-profile.png"> |
 
 #### Модели девайсов, используемые для скриншотов
 - 6.5 дюйма: iPhone 13 Pro Max

@@ -5,28 +5,28 @@ struct MapViewUI: UIViewRepresentable {
     /// Уникальный идентификатор карты, чтобы не плодить дубли
     private let viewKey: String
     private let region: MKCoordinateRegion
+    private let ignoreUserLocation: Bool
     private let annotations: [SportsGround]
     @Binding private var needUpdateAnnotations: Bool
     @Binding private var needUpdateRegion: Bool
-    @Binding private var ignoreUserLocation: Bool
     private static var mapViewStore = [String: MKMapView]()
     let openSelected: (SportsGround) -> Void
 
     init(
         _ key: String,
         _ region: MKCoordinateRegion,
+        _ ignoreUserLocation: Bool,
         _ pins: [SportsGround],
         _ needUpdatePins: Binding<Bool>,
         _ needUpdateRegion: Binding<Bool>,
-        _ ignoreUserLocation: Binding<Bool>,
         openDetailsClbk: @escaping (SportsGround) -> Void
     ) {
         self.viewKey = key
         self.region = region
+        self.ignoreUserLocation = ignoreUserLocation
         self.annotations = pins
         self._needUpdateAnnotations = needUpdatePins
         self._needUpdateRegion = needUpdateRegion
-        self._ignoreUserLocation = ignoreUserLocation
         self.openSelected = openDetailsClbk
     }
 
