@@ -5,7 +5,7 @@ struct UserViewCell: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            CacheImageView(url: model.imageURL)
+            CachedImage(url: model.imageURL)
             VStack(alignment: .leading) {
                 Text(model.name)
                     .fontWeight(.medium)

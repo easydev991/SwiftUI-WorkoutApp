@@ -6,7 +6,7 @@ struct SportsGroundViewCell: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            CacheImageView(
+            CachedImage(
                 url: model.previewImageURL,
                 mode: .groundListItem
             )

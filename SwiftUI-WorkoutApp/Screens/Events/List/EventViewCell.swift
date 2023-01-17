@@ -9,7 +9,7 @@ struct EventViewCell: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            CacheImageView(
+            CachedImage(
                 url: event.previewImageURL,
                 mode: .eventListItem
             )

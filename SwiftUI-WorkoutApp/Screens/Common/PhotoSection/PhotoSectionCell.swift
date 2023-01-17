@@ -1,6 +1,7 @@
 import SwiftUI
+import CachedAcyncImage
 
-struct DeletablePhotoCell: View {
+struct PhotoSectionCell: View {
     @EnvironmentObject private var network: CheckNetworkService
     let photo: Photo
     let canDelete: Bool
@@ -9,21 +10,21 @@ struct DeletablePhotoCell: View {
     var deleteClbk: (Photo) -> Void
 
     var body: some View {
-        CacheAsyncImage(url: photo.imageURL) { uiImage in
+        CachedAsyncImage(url: photo.imageURL) { uiImage in
             Image(uiImage: uiImage)
                 .resizable()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onTapGesture { onTapClbk(uiImage) }
+        } placeholder: {
+            RoundedDefaultImage(size: CachedImage.Mode.groundListItem.size)
         }
         .scaledToFit()
         .cornerRadius(8)
-        .overlay(alignment: .topTrailing) {
-            menuButton
-        }
+        .overlay(alignment: .topTrailing) { menuButton }
     }
 }
 
-private extension DeletablePhotoCell {
+private extension PhotoSectionCell {
     var menuButton: some View {
         Menu {
             if canDelete {
@@ -51,9 +52,9 @@ private extension DeletablePhotoCell {
 }
 
 #if DEBUG
-struct DeletablePhotoCell_Previews: PreviewProvider {
+struct PhotoSectionCell_Previews: PreviewProvider {
     static var previews: some View {
-        DeletablePhotoCell(
+        PhotoSectionCell(
             photo: .preview,
             canDelete: true,
             reportClbk: { _ in },

@@ -200,7 +200,7 @@ private extension EventDetailsView {
                 UserDetailsView(for: viewModel.event.author)
             } label: {
                 HStack(spacing: 16) {
-                    CacheImageView(url: viewModel.event.author?.avatarURL)
+                    CachedImage(url: viewModel.event.author?.avatarURL)
                     Text(viewModel.event.authorName.valueOrEmpty)
                         .fontWeight(.medium)
                 }

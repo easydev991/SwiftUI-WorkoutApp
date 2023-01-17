@@ -183,7 +183,7 @@ private extension SportsGroundDetailView {
         Section("Добавил") {
             NavigationLink(destination: UserDetailsView(for: viewModel.ground.author)) {
                 HStack(spacing: 16) {
-                    CacheImageView(url: viewModel.ground.author?.avatarURL)
+                    CachedImage(url: viewModel.ground.author?.avatarURL)
                     Text(viewModel.ground.authorName)
                         .fontWeight(.medium)
                 }

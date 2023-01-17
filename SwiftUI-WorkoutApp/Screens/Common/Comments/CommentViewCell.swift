@@ -11,7 +11,7 @@ struct CommentViewCell: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top, spacing: 16) {
-                CacheImageView(url: model.user?.avatarURL)
+                CachedImage(url: model.user?.avatarURL)
                 nameDate
                 Spacer()
                 if network.isConnected {
