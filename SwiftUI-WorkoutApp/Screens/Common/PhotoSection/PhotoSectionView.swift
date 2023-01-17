@@ -24,32 +24,32 @@ struct PhotoSectionView: View {
 
     var body: some View {
         Section("Фотографии") {
-            ScrollView {
-                LazyVGrid(
-                    columns: .init(
-                        repeating: .init(
-                            .flexible(minimum: 150, maximum: .infinity),
-                            spacing: 12,
-                            alignment: .top
-                        ),
-                        count: columns
+            LazyVGrid(
+                columns: .init(
+                    repeating: .init(
+                        .flexible(minimum: 150, maximum: .infinity),
+                        spacing: 12,
+                        alignment: .top
                     ),
-                    spacing: 12
-                ) {
-                    ForEach(items) { photo in
-                        DeletablePhotoCell(
-                            photo: photo,
-                            canDelete: canDelete,
-                            reportClbk: reportPhotoClbk,
-                            onTapClbk: openImage,
-                            deleteClbk: deletePhotoClbk
-                        )
-                    }
+                    count: columns
+                ),
+                spacing: 12
+            ) {
+                ForEach(items) { photo in
+                    DeletablePhotoCell(
+                        photo: photo,
+                        canDelete: canDelete,
+                        reportClbk: reportPhotoClbk,
+                        onTapClbk: openImage,
+                        deleteClbk: deletePhotoClbk
+                    )
                 }
-                .fullScreenCover(item: $fullscreenImage) {
-                    fullscreenImage = nil
-                } content: {
-                    FullScreenImageSheet(image: $0)
+            }
+            .fullScreenCover(item: $fullscreenImage) {
+                fullscreenImage = nil
+            } content: { image in
+                ContentInSheet(title: "Фото") {
+                    ImageDetailView(image: image)
                 }
             }
         }
@@ -65,7 +65,7 @@ private extension PhotoSectionView {
 #if DEBUG
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
-        Form {
+        List {
             PhotoSectionView(
                 with: [.preview, .preview, .preview],
                 canDelete: true,
