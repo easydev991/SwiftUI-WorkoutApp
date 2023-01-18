@@ -155,10 +155,10 @@ private extension SportsGroundsMapView {
         VStack {
             Text(viewModel.locationErrorMessage)
                 .frame(maxWidth: .infinity)
-                .foregroundColor(Color("ButtonTitle"))
+                .adaptiveColor(.foreground())
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .background(Color("ButtonBackground").cornerRadius(8))
+                .padding(8)
+                .adaptiveColor(.background)
             Button {
                 viewModel.openAppSettings()
             } label: {
