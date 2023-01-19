@@ -5,8 +5,8 @@ struct IncognitoProfileView: View {
     var body: some View {
         VStack(spacing: 16) {
             incognitoInformer
-            IncognitoUserButton(mode: .register)
-            IncognitoUserButton(mode: .authorize)
+            createAccountButton
+            IncognitoUserButton(mode: .authorize(inForm: false))
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -23,6 +23,12 @@ private extension IncognitoProfileView {
             .font(.title3)
             .multilineTextAlignment(.center)
             .padding()
+    }
+
+    var createAccountButton: some View {
+        Link(destination: Constants.accountCreationURL) {
+            IncognitoUserButton.Mode.register(inForm: false).label
+        }
     }
 }
 

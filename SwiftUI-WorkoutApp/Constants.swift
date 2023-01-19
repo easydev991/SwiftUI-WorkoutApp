@@ -11,6 +11,7 @@ enum Constants {
     static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
     static let workoutShopURL = URL(string: "https://workoutshop.ru")!
     static let officialSiteURL = URL(string: "https://workout.su")!
+    static let accountCreationURL = URL(string: "https://m.workout.su/users/register")!
     static let feedbackRecipient = ["info@workout.su"]
 
     enum RulesOfService {

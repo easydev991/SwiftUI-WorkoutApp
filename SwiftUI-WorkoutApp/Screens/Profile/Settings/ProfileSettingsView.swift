@@ -136,8 +136,8 @@ private extension ProfileSettingsView {
     }
 
     var registerButton: some View {
-        NavigationLink(destination: AccountInfoView(mode: .create)) {
-            Label("Регистрация", systemImage: "person.badge.plus.fill")
+        Link(destination: Constants.accountCreationURL) {
+            IncognitoUserButton.Mode.register(inForm: true).label
                 .font(.system(.body).bold())
         }
     }

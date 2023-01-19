@@ -54,6 +54,8 @@ struct AccountInfoView: View {
 extension AccountInfoView {
     enum Mode: CaseIterable {
         /// Создание аккаунта
+        ///
+        /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными
         case create
         /// Изменение личных данных
         case edit
