@@ -143,7 +143,7 @@ struct ChatBubble_Previews: PreviewProvider {
                         .opacity(0.75)
                 }
                 .foregroundColor(.white)
-                .background(.blue)
+                .background(Color(uiColor: MessageType.incoming.color))
             }
             ChatBubble(.sent) {
                 VStack(alignment: .trailing, spacing: 8) {
@@ -156,7 +156,7 @@ struct ChatBubble_Previews: PreviewProvider {
                         .opacity(0.75)
                 }
                 .foregroundColor(.white)
-                .background(.green)
+                .background(Color(uiColor: MessageType.sent.color))
             }
         }
         .textSelection(.enabled)
