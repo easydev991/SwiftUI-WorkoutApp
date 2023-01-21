@@ -1,7 +1,8 @@
 import SwiftUI
+import NetworkStatus
 
 struct JournalEntryCell: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     let model: JournalEntryResponse
     let reportClbk: (JournalEntryResponse) -> Void
@@ -79,7 +80,7 @@ struct JournalEntryCell_Previews: PreviewProvider {
             deleteClbk: { _ in },
             editClbk: { _ in }
         )
-        .environmentObject(CheckNetworkService())
+        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)
     }

@@ -1,9 +1,10 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: EventDetailsViewModel
     @State private var showErrorAlert = false
@@ -314,7 +315,7 @@ private extension EventDetailsView {
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         EventDetailsView(with: .preview, deleteClbk: {})
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

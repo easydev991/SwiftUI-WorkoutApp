@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode
     let action: () -> Void
@@ -86,7 +87,7 @@ struct EmptyContentView_Previews: PreviewProvider {
         ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
             EmptyContentView(mode: mode, action: {})
         }
-        .environmentObject(CheckNetworkService())
+        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)
     }

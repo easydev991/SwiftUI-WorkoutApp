@@ -1,8 +1,9 @@
 import SwiftUI
 import CachedAcyncImage
+import NetworkStatus
 
 struct PhotoSectionCell: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     let photo: Photo
     let canDelete: Bool
     let reportClbk: (Photo) -> Void
@@ -61,7 +62,7 @@ struct PhotoSectionCell_Previews: PreviewProvider {
             onTapClbk: { _ in },
             deleteClbk: { _ in }
         )
-        .environmentObject(CheckNetworkService())
+        .environmentObject(NetworkStatus())
         .previewLayout(.sizeThatFits)
     }
 }

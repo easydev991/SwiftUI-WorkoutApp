@@ -1,9 +1,10 @@
 import SwiftUI
+import NetworkStatus
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @StateObject private var viewModel = JournalSettingsViewModel()
     @State private var journal: JournalResponse
     @State private var showErrorAlert = false
@@ -118,7 +119,7 @@ private extension JournalSettingsView {
 struct JournalSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         JournalSettingsView(with: .preview, updatedClbk: { _ in })
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
     }
 }
 #endif

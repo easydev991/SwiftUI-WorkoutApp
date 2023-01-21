@@ -1,10 +1,11 @@
 import SwiftUI
 import ImagePicker
+import NetworkStatus
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: EventFormViewModel
     @State private var showErrorAlert = false
@@ -207,7 +208,7 @@ private extension EventFormView {
 struct CreateEventView_Previews: PreviewProvider {
     static var previews: some View {
         EventFormView(for: .regularCreate, refreshClbk: {})
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

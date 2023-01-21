@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран со списком пользователей
 struct UsersListView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
     @StateObject private var messagingViewModel = MessagingViewModel()
@@ -166,7 +167,7 @@ private extension UsersListView {
 struct UsersListView_Previews: PreviewProvider {
     static var previews: some View {
         UsersListView(mode: .friends(userID: .previewUserID))
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

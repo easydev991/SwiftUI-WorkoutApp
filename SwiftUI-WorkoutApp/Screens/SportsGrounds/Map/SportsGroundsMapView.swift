@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var presentation = Presentation.map
@@ -241,7 +242,7 @@ private extension SportsGroundsMapView {
 struct SportsGroundsMapView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundsMapView()
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

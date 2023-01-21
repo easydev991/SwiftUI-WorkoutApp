@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Список дневников
 struct JournalsListView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = JournalsListViewModel()
     @State private var isCreatingJournal = false
@@ -200,7 +201,7 @@ private extension JournalsListView {
 struct JournalsListView_Previews: PreviewProvider {
     static var previews: some View {
         JournalsListView(for: .previewUserID)
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

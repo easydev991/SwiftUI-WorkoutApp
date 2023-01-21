@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
     @Binding var showErrorAlert: Bool
@@ -109,7 +110,7 @@ struct SendMessageView_Previews: PreviewProvider {
             errorTitle: .constant(""),
             dismissError: {}
         )
-        .environmentObject(CheckNetworkService())
+        .environmentObject(NetworkStatus())
     }
 }
 #endif
