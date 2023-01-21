@@ -1,4 +1,5 @@
 import SwiftUI
+import NetworkStatus
 
 /// Список комментариев
 struct Comments: View {
@@ -33,7 +34,7 @@ struct Comments_Previews: PreviewProvider {
             )
         }
         .environmentObject(DefaultsService())
-        .environmentObject(CheckNetworkService())
+        .environmentObject(NetworkStatus())
     }
 }
 #endif

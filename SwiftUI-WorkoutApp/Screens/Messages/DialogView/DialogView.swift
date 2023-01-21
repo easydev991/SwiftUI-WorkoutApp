@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран с диалогом
 struct DialogView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogViewModel()
     @State private var showErrorAlert = false
@@ -181,7 +182,7 @@ private extension DialogView {
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
         DialogView(dialog: .preview, markedAsReadClbk: {})
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

@@ -1,9 +1,10 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран для регистрации пользователя или изменения его личных данных
 struct AccountInfoView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = AccountInfoViewModel()
     @State private var showErrorAlert = false
@@ -247,7 +248,7 @@ struct EditAccountView_Previews: PreviewProvider {
         ForEach(AccountInfoView.Mode.allCases, id: \.title) { mode in
             NavigationView {
                 AccountInfoView(mode: mode)
-                    .environmentObject(CheckNetworkService())
+                    .environmentObject(NetworkStatus())
                     .environmentObject(DefaultsService())
             }
         }

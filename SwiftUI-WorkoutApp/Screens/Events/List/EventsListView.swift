@@ -1,9 +1,10 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран со списком мероприятий
 struct EventsListView: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = EventsListViewModel()
     @State private var selectedEventType = EventType.future
@@ -163,7 +164,7 @@ struct EventsListView_Previews: PreviewProvider {
     static var previews: some View {
         EventsListView()
             .environmentObject(TabViewModel())
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

@@ -1,9 +1,10 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: SportsGroundDetailViewModel
     @State private var showErrorAlert = false
@@ -294,7 +295,7 @@ struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SportsGroundDetailView(for: .preview, onDeletion: { _ in })
-                .environmentObject(CheckNetworkService())
+                .environmentObject(NetworkStatus())
                 .environmentObject(DefaultsService())
         }
     }

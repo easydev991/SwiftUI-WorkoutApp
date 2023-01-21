@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     private let mode: Mode
 
@@ -123,7 +124,7 @@ private extension GenericListCell {
 struct GenericListCell_Previews: PreviewProvider {
     static var previews: some View {
         GenericListCell(for: .dialog(.preview))
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .previewLayout(.sizeThatFits)
     }
 }

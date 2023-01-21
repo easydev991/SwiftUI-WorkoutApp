@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: JournalEntriesListViewModel
     @State private var showErrorAlert = false
@@ -150,7 +151,7 @@ private extension JournalEntriesList {
 struct JournalEntriesList_Previews: PreviewProvider {
     static var previews: some View {
         JournalEntriesList(for: 30, in: .constant(.preview))
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

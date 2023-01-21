@@ -1,11 +1,12 @@
 import SwiftUI
 import CoreLocation.CLLocation
 import ImagePicker
+import NetworkStatus
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: SportsGroundFormViewModel
     @State private var showErrorAlert = false
@@ -172,7 +173,7 @@ private extension SportsGroundFormView {
 struct CreateOrEditGroundView_Previews: PreviewProvider {
     static var previews: some View {
         SportsGroundFormView(.editExisting(.preview), refreshClbk: {})
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

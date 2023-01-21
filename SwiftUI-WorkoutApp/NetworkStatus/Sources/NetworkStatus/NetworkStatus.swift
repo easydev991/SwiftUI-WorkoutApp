@@ -1,13 +1,13 @@
 import Foundation
 import Network
 
-final class CheckNetworkService: ObservableObject {
+public final class NetworkStatus: ObservableObject {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue.global(qos: .background)
 
-    @Published var isConnected = false
+    @Published public private(set) var isConnected = false
 
-    init() {
+    public init() {
         monitor.pathUpdateHandler = { [weak self] path in
             OperationQueue.main.addOperation {
                 self?.isConnected = path.status == .satisfied ? true : false

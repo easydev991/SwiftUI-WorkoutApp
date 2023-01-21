@@ -1,8 +1,9 @@
 import SwiftUI
+import NetworkStatus
 
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {
-    @EnvironmentObject private var network: CheckNetworkService
+    @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: UserDetailsViewModel
     @StateObject private var messagingViewModel = MessagingViewModel()
@@ -301,7 +302,7 @@ private extension UserDetailsView {
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
         UserDetailsView(for: .preview)
-            .environmentObject(CheckNetworkService())
+            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }
