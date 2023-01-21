@@ -17,7 +17,7 @@ struct PhotoSectionCell: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onTapGesture { onTapClbk(uiImage) }
         } placeholder: {
-            RoundedDefaultImage(size: CachedImage.Mode.groundListItem.size)
+            RoundedDefaultImage(size: CachedImage.Mode.gridPhoto.size)
         }
         .scaledToFit()
         .cornerRadius(8)

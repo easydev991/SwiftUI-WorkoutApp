@@ -4,10 +4,11 @@ public extension Bundle {
     func decodeJson<T: Decodable>(
         _ type: T.Type,
         fileName: String,
+        extension ext: String,
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
     ) throws -> T {
-        guard let url = url(forResource: fileName, withExtension: nil) else {
+        guard let url = url(forResource: fileName, withExtension: ext) else {
             throw BundleError.cannotLoad(fileName)
         }
         do {

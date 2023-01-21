@@ -13,7 +13,7 @@ final class EventFormViewModel: ObservableObject {
     var isFormReady: Bool {
         eventID == nil
         ? eventForm.isReadyToCreate
-        : eventForm.isReadyToUpdate(old: oldEventForm)
+        : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
     }
     var imagesLimit: Int {
         eventID == nil

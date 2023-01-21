@@ -4,26 +4,27 @@
 import PackageDescription
 
 let package = Package(
-    name: "NetworkStatus",
+    name: "DateFormatterService",
     platforms: [.iOS(.v15)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "NetworkStatus",
-            targets: ["NetworkStatus"]),
+            name: "DateFormatterService",
+            targets: ["DateFormatterService"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(path: "../Utils")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "NetworkStatus",
-            dependencies: []),
+            name: "DateFormatterService",
+            dependencies: ["Utils"]),
         .testTarget(
-            name: "NetworkStatusTests",
-            dependencies: ["NetworkStatus"]),
+            name: "DateFormatterServiceTests",
+            dependencies: ["DateFormatterService"]),
     ]
 )

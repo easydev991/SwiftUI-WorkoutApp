@@ -12,7 +12,7 @@ struct ProfileSettingsView: View {
     let mode: Mode
 
     var body: some View {
-        Form {
+        List {
             Section {
                 if mode == .authorized {
                     editAccountButton
@@ -174,12 +174,8 @@ private extension ProfileSettingsView {
     }
 
     var appVersionView: some View {
-        HStack {
-            Label("Версия", systemImage: "info.circle.fill")
-            Spacer()
-            Text(Constants.appVersion)
-                .foregroundColor(.secondary)
-        }
+        Label("Версия", systemImage: "info.circle.fill")
+            .badge(Constants.appVersion)
     }
 
     var workoutShopButton: some View {

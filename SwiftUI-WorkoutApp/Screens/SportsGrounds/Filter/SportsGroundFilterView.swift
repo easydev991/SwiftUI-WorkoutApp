@@ -1,4 +1,5 @@
 import SwiftUI
+import ShortAddressService
 
 struct SportsGroundFilterView: View {
     @EnvironmentObject private var defaults: DefaultsService
@@ -87,7 +88,7 @@ private extension SportsGroundFilterView {
     var footerCityText: String {
         var resultString = ""
         let currentCity = filter.currentCity
-        let userProfileCity = try? ShortAddressService().cityName(with: defaults.mainUserCityID, in: defaults.mainUserCountryID)
+        let userProfileCity = ShortAddressService(defaults.mainUserCountryID, defaults.mainUserCityID).cityName
         if let userProfileCity {
             resultString += "Твой город в профиле: \(userProfileCity)"
         }

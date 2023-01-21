@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Модель с информацией о диалоге
 struct DialogResponse: Codable, Identifiable {
@@ -33,7 +34,7 @@ extension DialogResponse {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     var lastMessageDateString: String {
-        FormatterService.readableDate(from: lastMessageDate)
+        DateFormatterService.readableDate(from: lastMessageDate)
     }
     var unreadMessagesCount: Int {
         get { unreadCountOptional.valueOrZero }

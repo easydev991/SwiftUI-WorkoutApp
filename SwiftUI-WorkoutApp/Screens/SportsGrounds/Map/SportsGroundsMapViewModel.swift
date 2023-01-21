@@ -1,5 +1,7 @@
-import MapKit.MKGeometry
 import Combine
+import MapKit.MKGeometry
+import DateFormatterService
+import ShortAddressService
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
@@ -68,7 +70,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
         do {
             let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(
-                from: FormatterService.halfMinuteAgoDateString
+                from: DateFormatterService.halfMinuteAgoDateString
             )
             updatedGrounds.forEach { ground in
                 if !defaultList.contains(ground) {
@@ -201,7 +203,8 @@ private extension SportsGroundsMapViewModel {
         do {
             let oldGrounds = try Bundle.main.decodeJson(
                 [SportsGround].self,
-                fileName: "oldSportsGrounds.json"
+                fileName: "oldSportsGrounds",
+                extension: "json"
             )
             defaultList = oldGrounds
         } catch {
@@ -214,7 +217,7 @@ private extension SportsGroundsMapViewModel {
         locationErrorMessage = permissionDenied
         ? Constants.Alert.locationPermissionDenied
         : Constants.Alert.needLocationPermission
-        let coordinates = ShortAddressService().coordinates(userCountryID, userCityID)
+        let coordinates = ShortAddressService(userCountryID, userCityID).coordinates
         guard coordinates != (.zero, .zero) else { return }
         region = .init(
             center: .init(latitude: coordinates.0, longitude: coordinates.1),

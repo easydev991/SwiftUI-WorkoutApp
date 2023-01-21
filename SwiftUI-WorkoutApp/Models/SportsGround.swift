@@ -1,5 +1,6 @@
 import Foundation
 import MapKit.MKGeometry
+import DateFormatterService
 
 /// Модель данных спортивной площадки
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
@@ -16,7 +17,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     var usersTrainHereText: String {
         "Тренируется \(usersTrainHereCount.valueOrZero) чел."
     }
-    var commentsOptional: [Comment]?
+    var commentsOptional: [CommentResponse]?
     var usersTrainHere: [UserResponse]?
     var trainHereOptional: Bool?
     var title: String? { "Площадка № \(id)" }
@@ -73,7 +74,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [Comment]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [CommentResponse]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
         self.sizeID = sizeID
@@ -114,7 +115,7 @@ struct Photo: Codable, Identifiable, Equatable {
     }
 }
 
-struct Comment: Codable, Identifiable, Hashable {
+struct CommentResponse: Codable, Identifiable, Hashable {
     let id: Int
     let body, date: String?
     let user: UserResponse?
@@ -129,12 +130,12 @@ struct Comment: Codable, Identifiable, Hashable {
     }
 
     var formattedDateString: String {
-        FormatterService.readableDate(from: date)
+        DateFormatterService.readableDate(from: date)
     }
 }
 
 extension SportsGround {
-    var comments: [Comment] {
+    var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }

@@ -21,7 +21,7 @@ struct SportsGroundLocationInfo: View {
 
     var body: some View {
         Section {
-            MapSnapshotView(model: $ground)
+            MapSnapshotView(ground: $ground)
                 .cornerRadius(8)
                 .frame(height: 150)
             Text(address)

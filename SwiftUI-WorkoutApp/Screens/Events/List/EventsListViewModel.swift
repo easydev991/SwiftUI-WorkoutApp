@@ -36,7 +36,8 @@ private extension EventsListViewModel {
         do {
             let oldEvents = try Bundle.main.decodeJson(
                 [EventResponse].self,
-                fileName: "oldEvents.json"
+                fileName: "oldEvents",
+                extension: "json"
             )
             pastEvents = oldEvents
         } catch {

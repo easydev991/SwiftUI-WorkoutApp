@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "cachedacyncimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/CachedAcyncImage",
+      "state" : {
+        "revision" : "4a88b4a525c302a502d688f45d6b440404c91298",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "feedbacksender",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/FeedbackSender",
@@ -16,6 +25,15 @@
       "state" : {
         "revision" : "eaf456d407421ec6ef8cf7c83d6a3cacefc14e88",
         "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "networkstatus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/NetworkStatus",
+      "state" : {
+        "revision" : "984f816f89b23d77cc90f16162370df666c8ed4d",
+        "version" : "1.0.0"
       }
     }
   ],

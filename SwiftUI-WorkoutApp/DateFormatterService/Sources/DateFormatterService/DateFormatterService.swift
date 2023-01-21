@@ -1,12 +1,13 @@
 import Foundation
+import Utils
 
-enum FormatterService {
-    static func readableDate(from string: String?) -> String {
+public enum DateFormatterService {
+    public static func readableDate(from string: String?, locale: Locale = .autoupdatingCurrent) -> String {
         let isoFormatter = ISO8601DateFormatter()
         if let dateString = string, !dateString.isEmpty,
            let fullDate = isoFormatter.date(from: dateString) {
             let formatter = DateFormatter()
-            formatter.locale = Locale.autoupdatingCurrent
+            formatter.locale = locale
             let (prefix, dateFormat) = DateFormat.makeFormat(for: fullDate)
             formatter.dateFormat = dateFormat
             return prefix + formatter.string(from: fullDate)
@@ -15,11 +16,7 @@ enum FormatterService {
         }
     }
 
-    static func stringFromFullDate(
-        _ date: Date,
-        format: DateFormat = .isoDateTimeSec,
-        iso: Bool = true
-    ) -> String {
+    public static func stringFromFullDate(_ date: Date, format: DateFormat = .isoDateTimeSec, iso: Bool = true) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format.rawValue
@@ -28,19 +25,19 @@ enum FormatterService {
         return string
     }
 
-    static var halfMinuteAgoDateString: String {
+    public static var halfMinuteAgoDateString: String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = DateFormat.serverDateTimeSec.rawValue
-        return dateFormatter.string(from: Constants.halfMinuteAgo)
+        let halfMinuteAgo = Calendar.current.date(byAdding: .second, value: -30, to: .now) ?? .now
+        return dateFormatter.string(from: halfMinuteAgo)
     }
 
-    static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
-        let isoFormatter = ISO8601DateFormatter()
-        return isoFormatter.date(from: string.valueOrEmpty) ?? .now
+    public static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
+        ISO8601DateFormatter().date(from: string.valueOrEmpty) ?? .now
     }
 
-    static func dateFromString(_ string: String?, format: DateFormat) -> Date {
+    public static func dateFromString(_ string: String?, format: DateFormat) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -48,8 +45,8 @@ enum FormatterService {
     }
 }
 
-extension FormatterService {
-    enum DateFormat: String {
+extension DateFormatterService {
+    public enum DateFormat: String {
         case isoShortDate = "yyyy-MM-dd"
         case serverDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -60,13 +57,13 @@ extension FormatterService {
 
         static func makeFormat(for date: Date) -> (prefix: String, date: String) {
             if date.isToday {
-                return ("", self.mediumTime.rawValue)
+                return ("", mediumTime.rawValue)
             } else if date.isYesterday {
-                return ("Вчера, ", self.mediumTime.rawValue)
+                return ("Вчера, ", mediumTime.rawValue)
             } else if date.isThisYear {
-                return ("", self.dayMonthMediumTime.rawValue)
+                return ("", dayMonthMediumTime.rawValue)
             } else {
-                return ("", self.dayMonthYear.rawValue)
+                return ("", dayMonthYear.rawValue)
             }
         }
     }

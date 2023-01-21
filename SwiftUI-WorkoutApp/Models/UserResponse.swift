@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Модель данных пользователя со всеми доступными свойствами
 struct UserResponse: Codable, Hashable {
@@ -30,14 +31,10 @@ struct UserResponse: Codable, Hashable {
 
 extension UserResponse {
     var age: Int {
-        let components = Calendar.current.dateComponents([.year], from: birthDate, to: .now)
-        return components.year.valueOrZero
+        Calendar.current.dateComponents([.year], from: birthDate, to: .now).year.valueOrZero
     }
     var birthDate: Date {
-        FormatterService.dateFromString(
-            birthDateIsoString,
-            format: .isoShortDate
-        )
+        DateFormatterService.dateFromString(birthDateIsoString, format: .isoShortDate)
     }
     var avatarURL: URL? {
         .init(string: imageStringURL.valueOrEmpty)

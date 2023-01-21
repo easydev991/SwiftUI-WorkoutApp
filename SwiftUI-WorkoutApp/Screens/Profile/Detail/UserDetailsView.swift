@@ -159,7 +159,7 @@ private extension UserDetailsView {
             if !viewModel.user.addedSportsGrounds.isEmpty {
                 addedSportsGroundsButton
             }
-            if viewModel.user.friendsCount > .zero || friendRequestsCount > .zero {
+            if viewModel.user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
                 friendsButton
             }
             if blacklistedUsersCount > .zero && isMainUser {
