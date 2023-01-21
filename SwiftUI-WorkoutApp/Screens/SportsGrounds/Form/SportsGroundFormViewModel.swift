@@ -13,7 +13,7 @@ final class SportsGroundFormViewModel: ObservableObject {
     var isFormReady: Bool {
         groundID == nil
         ? groundForm.isReadyToCreate && !newImages.isEmpty
-        : groundForm.isReadyToUpdate(old: oldGroundForm)
+        : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
     }
     var imagesLimit: Int {
         groundID == nil

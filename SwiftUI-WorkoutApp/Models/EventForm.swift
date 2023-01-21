@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Форма для отправки создании/изменении мероприятия
 struct EventForm: Codable {
@@ -11,7 +12,7 @@ struct EventForm: Codable {
     init(_ event: EventResponse?) {
         self.title = (event?.formattedTitle).valueOrEmpty
         self.description = (event?.formattedDescription).valueOrEmpty
-        self.date = FormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
+        self.date = DateFormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
         self.sportsGround = event?.sportsGround ?? .emptyValue
         self.photosCount = (event?.photos?.count).valueOrZero
     }
@@ -20,7 +21,7 @@ struct EventForm: Codable {
 extension EventForm {
     /// Пример: "2022-05-30T19:32:00"
     var dateIsoString: String {
-        FormatterService.stringFromFullDate(
+        DateFormatterService.stringFromFullDate(
             date,
             format: .serverDateTimeSec,
             iso: false
@@ -44,13 +45,10 @@ extension EventForm {
 
     /// Готовность формы к отправке обновлений по мероприятию
     func isReadyToUpdate(old: EventForm) -> Bool {
-        isReadyToCreate
-        && (self != old) || !newImagesData.isEmpty
+        isReadyToCreate && self != old
     }
 
-    static var emptyValue: Self {
-        .init(nil)
-    }
+    static var emptyValue: Self { .init(nil) }
 }
 
 extension EventForm: Equatable {

@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Форма для отправки при регистрации или изменении данных профиля
 struct MainUserForm: Codable, Equatable {
@@ -58,7 +59,7 @@ extension MainUserForm {
 
     /// Пример: "1990-08-12T00:00:00.000Z"
     var birthDateIsoString: String {
-        FormatterService.stringFromFullDate(birthDate)
+        DateFormatterService.stringFromFullDate(birthDate)
     }
 
     /// Готовность формы к регистрации нового пользователя

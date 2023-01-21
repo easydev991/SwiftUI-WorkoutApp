@@ -3,19 +3,44 @@ import Foundation
 
 extension Photo {
     static var preview: Photo {
-        .init(id: .zero, stringURL: "avatar_default")
+        .init(id: 1, stringURL: "avatar_default")
     }
 }
 
-extension Comment {
-    static var preview: Comment {
-        .init(id: .zero, body: "Test comment", date: "2013-01-16T03:35:54+04:00", user: .preview)
+extension CommentResponse {
+    static var preview: CommentResponse {
+        .init(
+            id: 2569,
+            body: "+ В центре парка, чистый воздух\r\n+ Кольца\r\n+ Тренажёры\r\n\r\n- Относительно далеко от метро",
+            date: "2011-03-07T15:55:15+00:00",
+            user: .preview
+        )
     }
 }
 
 extension SportsGround {
     static var preview: SportsGround {
-        try! Bundle.main.decodeJson([SportsGround].self, fileName: "oldSportsGrounds.json").first!
+        .init(
+            id: 3,
+            typeID: 6,
+            sizeID: 2,
+            address: "м. Партизанская, улица 2-я Советская",
+            author: .preview,
+            cityID: 1,
+            commentsCount: 1,
+            countryID: 17,
+            createDate: "2011-03-07T22:55:15+03:00",
+            modifyDate: "2023-01-21T15:24:25+03:00",
+            latitude: "55.795396",
+            longitude: "37.762597",
+            name: "№3 Средняя Легендарная",
+            photos: [.preview],
+            preview: "https://workout.su/uploads/userfiles/измайлово.jpg",
+            usersTrainHereCount: nil,
+            commentsOptional: [.preview],
+            usersTrainHere: [.preview, .preview],
+            trainHere: false
+        )
     }
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Модель с информацией о дневнике
 struct JournalResponse: Codable, Identifiable, Equatable {
@@ -37,7 +38,7 @@ extension JournalResponse {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     var lastMessageDateString: String {
-        FormatterService.readableDate(from: lastMessageDate)
+        DateFormatterService.readableDate(from: lastMessageDate)
     }
     var viewAccessType: JournalAccess {
         get { .init(viewAccess.valueOrZero) }

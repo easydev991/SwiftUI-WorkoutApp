@@ -91,7 +91,7 @@ final class EventDetailsViewModel: ObservableObject {
         )
     }
 
-    func reportComment(_ comment: Comment) {
+    func reportComment(_ comment: CommentResponse) {
         let complaint = Complaint.eventComment(
             eventTitle: event.formattedTitle,
             author: comment.user?.userName ?? "неизвестен",

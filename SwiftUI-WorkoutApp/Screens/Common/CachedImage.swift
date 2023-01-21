@@ -21,7 +21,7 @@ extension CachedImage {
     enum Mode {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,
-             profileAvatar, eventPhoto, groundPhoto
+             profileAvatar, eventPhoto, groundPhoto, gridPhoto
         var size: CGSize {
             switch self {
             case .userListItem:
@@ -32,6 +32,8 @@ extension CachedImage {
                 return .init(width: 24, height: 24)
             case .profileAvatar, .eventPhoto, .groundPhoto:
                 return .init(width: 300, height: 250)
+            case .gridPhoto:
+                return .init(width: 150, height: 150)
             }
         }
     }

@@ -75,7 +75,8 @@ private extension AccountInfoViewModel {
         do {
             let allCountries = try Bundle.main.decodeJson(
                 [Country].self,
-                fileName: "countries.json"
+                fileName: "countries",
+                extension: "json"
             )
             if let russia = allCountries.first(where: { $0.name == "Россия" }),
                let moscow = russia.cities.first(where: { $0.name == "Москва" }) {

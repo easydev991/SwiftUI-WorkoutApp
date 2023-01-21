@@ -89,7 +89,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         )
     }
 
-    func reportComment(_ comment: Comment) {
+    func reportComment(_ comment: CommentResponse) {
         let complaint = Complaint.groundComment(
             groundTitle: ground.shortTitle,
             author: comment.user?.userName ?? "неизвестен",

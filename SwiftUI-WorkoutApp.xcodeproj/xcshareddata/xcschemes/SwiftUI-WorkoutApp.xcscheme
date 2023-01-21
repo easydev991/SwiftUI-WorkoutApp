@@ -45,6 +45,17 @@
                referenceType = "1">
             </LocationScenarioReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "675083A9297C0A60008D8C52"
+               BuildableName = "WorkoutAppTests.xctest"
+               BlueprintName = "WorkoutAppTests"
+               ReferencedContainer = "container:SwiftUI-WorkoutApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -1,4 +1,6 @@
 import Foundation
+import DateFormatterService
+import ShortAddressService
 
 /// Модель со всей информацией о мероприятии
 struct EventResponse: Codable, Identifiable {
@@ -10,7 +12,7 @@ struct EventResponse: Codable, Identifiable {
     var beginDate: String?
     var countryID, cityID: Int?
     let commentsCount: Int?
-    var commentsOptional: [Comment]?
+    var commentsOptional: [CommentResponse]?
     let previewImageStringURL: String?
     var sportsGroundID: Int?
     let latitude, longitude: String?
@@ -66,7 +68,7 @@ extension EventResponse {
     }
     var shortAddress: String {
         if let countryID = countryID, let cityID = cityID {
-            return ShortAddressService().addressFor(countryID, cityID)
+            return ShortAddressService(countryID, cityID).address
         } else {
             return "Не указан"
         }
@@ -92,9 +94,9 @@ extension EventResponse {
         .init(string: previewImageStringURL.valueOrEmpty)
     }
     var eventDateString: String {
-        FormatterService.readableDate(from: beginDate)
+        DateFormatterService.readableDate(from: beginDate)
     }
-    var comments: [Comment] {
+    var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }

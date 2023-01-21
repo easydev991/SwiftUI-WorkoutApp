@@ -58,8 +58,7 @@ extension SportsGroundForm {
 
     /// Готовность формы к отправке обновлений по площадке
     func isReadyToUpdate(old: SportsGroundForm) -> Bool {
-        isReadyToCreate
-        && (self != old) || !newImagesData.isEmpty
+        isReadyToCreate && (self != old)
     }
 }
 

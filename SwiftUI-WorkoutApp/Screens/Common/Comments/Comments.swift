@@ -3,10 +3,10 @@ import NetworkStatus
 
 /// Список комментариев
 struct Comments: View {
-    let items: [Comment]
-    let reportClbk: (Comment) -> Void
+    let items: [CommentResponse]
+    let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
-    let editClbk: (Comment) -> Void
+    let editClbk: (CommentResponse) -> Void
 
     var body: some View {
         Section("Комментарии") {

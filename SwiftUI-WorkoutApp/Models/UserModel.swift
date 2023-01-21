@@ -1,4 +1,5 @@
 import Foundation
+import ShortAddressService
 
 /// Упрощенная модель данных пользователя
 struct UserModel: Identifiable, Hashable {
@@ -64,7 +65,7 @@ struct UserModel: Identifiable, Hashable {
 
 extension UserModel {
     var shortAddress: String {
-        ShortAddressService().addressFor(countryID, cityID)
+        ShortAddressService(countryID, cityID).address
     }
     var isFull: Bool {
         id != .zero

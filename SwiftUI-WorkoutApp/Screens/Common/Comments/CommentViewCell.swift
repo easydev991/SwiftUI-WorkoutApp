@@ -4,10 +4,10 @@ import NetworkStatus
 struct CommentViewCell: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    let model: Comment
-    let reportClbk: (Comment) -> Void
+    let model: CommentResponse
+    let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
-    let editClbk: (Comment) -> Void
+    let editClbk: (CommentResponse) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {

@@ -2,12 +2,16 @@ import SwiftUI
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {
-    private let items: [Photo]
+    private let photos: [Photo]
+    /// `true` - есть доступ на удаление фото, `false` - нет доступа
+    ///
+    /// Если пользователь авторизован и является автором фотографии, у него есть права на ее удаление
     private let canDelete: Bool
     private let reportPhotoClbk: (Photo) -> Void
     private let deletePhotoClbk: (Photo) -> Void
+    /// Количество столбцов в сетке с фотографиями
+    private var columns: Int { photos.count > 1 ? 2 : 1 }
     @State private var fullscreenImage: UIImage?
-    @State private var columns: Int
 
     init(
         with photos: [Photo],
@@ -15,8 +19,7 @@ struct PhotoSectionView: View {
         reportClbk: @escaping (Photo) -> Void,
         deleteClbk: @escaping (Photo) -> Void
     ) {
-        items = photos
-        self.columns = photos.count == 1 ? 1 : 2
+        self.photos = photos
         self.canDelete = canDelete
         reportPhotoClbk = reportClbk
         deletePhotoClbk = deleteClbk
@@ -35,7 +38,7 @@ struct PhotoSectionView: View {
                 ),
                 spacing: 12
             ) {
-                ForEach(items) { photo in
+                ForEach(photos) { photo in
                     PhotoSectionCell(
                         photo: photo,
                         canDelete: canDelete,

@@ -1,4 +1,5 @@
 import Foundation
+import DateFormatterService
 
 /// Модель сообщения в диалоге
 struct MessageResponse: Codable, Identifiable, Hashable {
@@ -23,6 +24,6 @@ extension MessageResponse {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
     var messageDateString: String {
-        FormatterService.readableDate(from: created)
+        DateFormatterService.readableDate(from: created)
     }
 }

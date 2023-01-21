@@ -3,40 +3,43 @@ import MapKit
 
 /// Снапшот карты
 struct MapSnapshotView: View {
-    @Binding var model: SportsGround
+    @Binding var ground: SportsGround
     @State private var snapshotImage: UIImage? = nil
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                if let image = snapshotImage {
-                    Image(uiImage: image)
-                } else {
-                    RoundedDefaultImage(size: geometry.size)
+            contentView(placeholderSize: geometry.size)
+                .animation(.easeInOut, value: snapshotImage)
+                .onAppear {
+                    generateSnapshot(for: geometry.size)
                 }
-            }
-            .animation(.easeInOut, value: snapshotImage)
-            .onAppear {
-                generateSnapshot(for: geometry.size)
-            }
-            .onChange(of: model) { _ in
-                generateSnapshot(for: geometry.size)
-            }
+                .onChange(of: ground) { _ in
+                    generateSnapshot(for: geometry.size)
+                }
         }
     }
 }
 
 private extension MapSnapshotView {
+    @ViewBuilder
+    func contentView(placeholderSize: CGSize) -> some View {
+        if let image = snapshotImage {
+            Image(uiImage: image)
+        } else {
+            RoundedDefaultImage(size: placeholderSize)
+        }
+    }
+
     func generateSnapshot(for size: CGSize) {
         if snapshotImage != nil
-            || model.coordinate.latitude == .zero
-            || model.coordinate.longitude == .zero {
+            || ground.coordinate.latitude == .zero
+            || ground.coordinate.longitude == .zero {
             return
         }
         snapshotImage = nil
         let spanDelta: CLLocationDegrees = 0.002
         let region = MKCoordinateRegion(
-            center: model.coordinate,
+            center: ground.coordinate,
             span: .init(
                 latitudeDelta: spanDelta,
                 longitudeDelta: spanDelta
@@ -52,9 +55,9 @@ private extension MapSnapshotView {
             if let snapshot = snapshot {
                 let image = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
-                    let point = snapshot.point(for: model.coordinate)
+                    let point = snapshot.point(for: ground.coordinate)
                     let annotationView = MKMarkerAnnotationView(
-                        annotation: model, reuseIdentifier: nil
+                        annotation: ground, reuseIdentifier: nil
                     )
                     annotationView.contentMode = .scaleAspectFit
                     annotationView.bounds = .init(x: .zero, y: .zero, width: 40, height: 40)
@@ -82,7 +85,7 @@ private extension MapSnapshotView {
 #if DEBUG
 struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
-        MapSnapshotView(model: .constant(.emptyValue))
+        MapSnapshotView(ground: .constant(.emptyValue))
             .frame(width: .infinity, height: 150)
             .previewLayout(.sizeThatFits)
     }

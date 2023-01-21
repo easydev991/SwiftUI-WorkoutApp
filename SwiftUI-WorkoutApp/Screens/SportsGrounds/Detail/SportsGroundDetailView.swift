@@ -12,7 +12,7 @@ struct SportsGroundDetailView: View {
     @State private var isCreatingComment = false
     @State private var showDeleteDialog = false
     @State private var trainHere = false
-    @State private var editComment: Comment?
+    @State private var editComment: CommentResponse?
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteGroundTask: Task<Void, Never>?
@@ -210,7 +210,7 @@ private extension SportsGroundDetailView {
         )
     }
 
-    func setupCommentToEdit(_ comment: Comment) {
+    func setupCommentToEdit(_ comment: CommentResponse) {
         editComment = comment
     }
 

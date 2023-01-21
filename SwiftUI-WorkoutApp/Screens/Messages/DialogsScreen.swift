@@ -6,15 +6,9 @@ struct DialogsScreen: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                if defaults.isAuthorized {
-                    DialogListView()
-                } else {
-                    IncognitoProfileView()
-                }
-            }
-            .navigationTitle("Сообщения")
-            .navigationBarTitleDisplayMode(titleDisplayMode)
+            contentView
+                .navigationTitle("Сообщения")
+                .navigationBarTitleDisplayMode(titleDisplayMode)
         }
         .navigationViewStyle(.stack)
     }
@@ -23,6 +17,15 @@ struct DialogsScreen: View {
 private extension DialogsScreen {
     var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
         defaults.isAuthorized ? .inline : .large
+    }
+
+    @ViewBuilder
+    var contentView: some View {
+        if defaults.isAuthorized {
+            DialogListView()
+        } else {
+            IncognitoProfileView()
+        }
     }
 }
 

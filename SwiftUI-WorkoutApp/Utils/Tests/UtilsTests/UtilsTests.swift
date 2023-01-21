@@ -5,7 +5,6 @@ final class UtilsTests: XCTestCase {
     func testStringValueOrEmpty() throws {
         let string: String? = "Test string"
         let stringNil: String? = nil
-
         XCTAssertNil(stringNil)
         XCTAssertEqual(stringNil.valueOrEmpty, "")
         XCTAssertNotNil(string)
@@ -15,7 +14,6 @@ final class UtilsTests: XCTestCase {
     func testIntValueOrZero() throws {
         let one: Int? = 1
         let intNil: Int? = nil
-
         XCTAssertNil(intNil)
         XCTAssertEqual(intNil.valueOrZero, .zero)
         XCTAssertNotNil(one)
@@ -25,7 +23,6 @@ final class UtilsTests: XCTestCase {
     func testBoolIsTrue() throws {
         let bool: Bool? = true
         let boolNil: Bool? = nil
-
         XCTAssertNil(boolNil)
         XCTAssertEqual(boolNil.isTrue, false)
         XCTAssertNotNil(bool)
