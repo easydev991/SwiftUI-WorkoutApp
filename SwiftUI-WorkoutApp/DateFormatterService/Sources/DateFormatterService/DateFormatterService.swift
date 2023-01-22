@@ -33,7 +33,7 @@ public enum DateFormatterService {
         return dateFormatter.string(from: halfMinuteAgo)
     }
 
-    public static func dateFromIsoString(_ string: String?, format: DateFormat) -> Date {
+    public static func dateFromIsoString(_ string: String?) -> Date {
         ISO8601DateFormatter().date(from: string.valueOrEmpty) ?? .now
     }
 

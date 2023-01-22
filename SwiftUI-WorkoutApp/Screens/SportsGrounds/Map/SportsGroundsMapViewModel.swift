@@ -176,8 +176,8 @@ private extension SportsGroundsMapViewModel {
             guard let self = self else { return }
             var result = [SportsGround]()
             result = self.defaultList.filter { ground in
-                self.filter.size.map { $0.code }.contains(ground.sizeID)
-                && self.filter.grade.map { $0.code }.contains(ground.typeID)
+                self.filter.size.map(\.code).contains(ground.sizeID)
+                && self.filter.grade.map(\.code).contains(ground.typeID)
             }
             guard let countryID = countryID, countryID != .zero,
                   let cityID = cityID, cityID != .zero,
