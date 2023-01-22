@@ -10,6 +10,7 @@ final class EventDetailsViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
     var isEventCurrent: Bool { event.isCurrent.isTrue }
     var hasParticipants: Bool { !event.participants.isEmpty }
+    var hasPhotos: Bool { !event.photos.isEmpty }
 
     init(with event: EventResponse) {
         self.event = event
@@ -54,14 +55,14 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(_ photo: Photo, with defaults: DefaultsProtocol) async {
+    func delete(photoID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deletePhoto(
-                from: .event(.init(containerID: event.id, photoID: photo.id))
+                from: .event(.init(containerID: event.id, photoID: photoID))
             ) {
-                await askForEvent(refresh: true, with: defaults)
+                event.photos.removeAll(where: { $0.id == photoID })
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -82,7 +83,7 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func reportPhoto(_ photo: Photo) {
+    func reportPhoto() {
         let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
         feedbackSender.sendFeedback(
             subject: complaint.subject,

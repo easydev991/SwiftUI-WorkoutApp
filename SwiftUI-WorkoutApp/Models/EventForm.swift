@@ -7,14 +7,14 @@ struct EventForm: Codable {
     var date: Date
     var sportsGround: SportsGround
     let photosCount: Int
-    var newImagesData = [MediaFile]()
+    var newMediaFiles = [MediaFile]()
 
     init(_ event: EventResponse?) {
         self.title = (event?.formattedTitle).valueOrEmpty
         self.description = (event?.formattedDescription).valueOrEmpty
         self.date = DateFormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
         self.sportsGround = event?.sportsGround ?? .emptyValue
-        self.photosCount = (event?.photos?.count).valueOrZero
+        self.photosCount = (event?.photos.count).valueOrZero
     }
 }
 

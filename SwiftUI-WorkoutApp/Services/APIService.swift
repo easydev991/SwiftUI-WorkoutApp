@@ -1139,7 +1139,7 @@ private extension APIService.Endpoint {
                     .date: form.dateIsoString,
                     .areaID: form.sportsGround.id.description
                 ],
-                with: form.newImagesData
+                with: form.newMediaFiles
             )
             return params
         case let .createSportsGround(form), let .editSportsGround(_, form):
@@ -1152,7 +1152,7 @@ private extension APIService.Endpoint {
                     .typeID: form.typeID.description,
                     .classID: form.sizeID.description
                 ],
-                with: form.newImagesData
+                with: form.newMediaFiles
             )
         }
     }

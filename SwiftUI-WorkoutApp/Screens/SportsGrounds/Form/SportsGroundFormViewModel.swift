@@ -73,9 +73,7 @@ final class SportsGroundFormViewModel: ObservableObject {
     func saveGround(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
-        groundForm.newImagesData = newImages.enumerated().map {
-            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
-        }
+        groundForm.newMediaFiles = newImages.toMediaFiles
         do {
             isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {

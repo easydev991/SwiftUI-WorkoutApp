@@ -11,7 +11,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     let createDate, modifyDate: String?
     let latitude, longitude: String
     let name: String?
-    let photos: [Photo]?
+    var photosOptional: [Photo]?
     let preview: String?
     let usersTrainHereCount: Int?
     var usersTrainHereText: String {
@@ -65,16 +65,17 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case commentsCount = "comments_count"
         case countryID = "country_id"
         case createDate = "create_date"
-        case id, latitude, longitude, name, photos, preview
+        case id, latitude, longitude, name, preview
         case usersTrainHereCount = "trainings"
         case commentsOptional = "comments"
+        case photosOptional = "photos"
         case modifyDate = "modify_date"
         case typeID = "type_id"
         case trainHereOptional = "train_here"
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photos: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [CommentResponse]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photosOptional: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [CommentResponse]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
         self.id = id
         self.typeID = typeID
         self.sizeID = sizeID
@@ -88,7 +89,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         self.latitude = latitude
         self.longitude = longitude
         self.name = name
-        self.photos = photos
+        self.photosOptional = photosOptional
         self.preview = preview
         self.usersTrainHereCount = usersTrainHereCount
         self.commentsOptional = commentsOptional
@@ -97,7 +98,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     convenience init(id: Int) {
-        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photosOptional: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
     }
 }
 
@@ -135,6 +136,10 @@ struct CommentResponse: Codable, Identifiable, Hashable {
 }
 
 extension SportsGround {
+    var photos: [Photo] {
+        get { photosOptional ?? [] }
+        set { photosOptional = newValue }
+    }
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
@@ -155,6 +160,6 @@ extension SportsGround {
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: SportsGround {
-        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photos: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
+        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photosOptional: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
     }
 }

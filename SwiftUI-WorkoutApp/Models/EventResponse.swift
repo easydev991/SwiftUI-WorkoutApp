@@ -21,7 +21,7 @@ struct EventResponse: Codable, Identifiable {
     var participantsOptional: [UserResponse]?
     /// `true` - предстоящее мероприятие, `false` - прошедшее
     let isCurrent: Bool?
-    let photos: [Photo]?
+    var photosOptional: [Photo]?
     /// Логин автора мероприятия
     let authorName: String?
     let author: UserResponse?
@@ -31,7 +31,7 @@ struct EventResponse: Codable, Identifiable {
     var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {
-        case id, title, latitude, longitude, photos, author
+        case id, title, latitude, longitude, author
         case authorName = "name"
         case fullAddress = "address"
         case previewImageStringURL = "preview"
@@ -45,6 +45,7 @@ struct EventResponse: Codable, Identifiable {
         case sportsGroundID = "area_id"
         case participantsCount = "user_count"
         case isCurrent = "is_current"
+        case photosOptional = "photos"
         case participantsOptional = "training_users"
         case trainHereOptional = "train_here"
         case commentsOptional = "comments"
@@ -86,7 +87,7 @@ extension EventResponse {
     }
     var sportsGround: SportsGround {
         get {
-            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photos: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photosOptional: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
         }
         set {}
     }
@@ -99,6 +100,10 @@ extension EventResponse {
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
+    }
+    var photos: [Photo] {
+        get { photosOptional ?? [] }
+        set { photosOptional = newValue }
     }
     /// Список участников мероприятия
     var participants: [UserResponse] {
@@ -119,6 +124,6 @@ extension EventResponse {
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, photos: nil, authorName: nil, author: nil, trainHereOptional: nil)
+        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, photosOptional: nil, authorName: nil, author: nil, trainHereOptional: nil)
     }
 }

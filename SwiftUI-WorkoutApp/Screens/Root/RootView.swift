@@ -17,28 +17,28 @@ private extension RootView {
                 .tabItem {
                     Label("Площадки", systemImage: "map.circle")
                 }
-                .tag(Tab.map)
+                .tag(TabViewModel.Tab.map)
             EventsListView()
                 .tabItem {
                     Label("Мероприятия", systemImage: "person.3")
                 }
-                .tag(Tab.events)
+                .tag(TabViewModel.Tab.events)
             DialogsScreen()
                 .tabItem {
                     Label("Сообщения", systemImage: "message.fill")
                 }
-                .tag(Tab.messages)
+                .tag(TabViewModel.Tab.messages)
                 .badge(defaults.unreadMessagesCount)
             JournalsScreen()
                 .tabItem {
                     Label("Дневники", systemImage: "list.bullet.circle")
                 }
-                .tag(Tab.journal)
+                .tag(TabViewModel.Tab.journal)
             ProfileScreen()
                 .tabItem {
                     Label("Профиль", systemImage: "person")
                 }
-                .tag(Tab.profile)
+                .tag(TabViewModel.Tab.profile)
         }
         .navigationViewStyle(.stack)
     }

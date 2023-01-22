@@ -53,9 +53,7 @@ final class EventFormViewModel: ObservableObject {
     func saveEvent(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
-        eventForm.newImagesData = newImages.enumerated().map {
-            .init(withImage: $0.element, forKey: ($0.offset + 1).description)
-        }
+        eventForm.newMediaFiles = newImages.toMediaFiles
         do {
             isEventSaved = try await APIService(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
         } catch {
