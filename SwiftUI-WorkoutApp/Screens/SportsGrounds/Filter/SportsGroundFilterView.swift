@@ -3,8 +3,8 @@ import ShortAddressService
 
 struct SportsGroundFilterView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @Binding var filter: SportsGroundFilter
-    private let defaultFilter = SportsGroundFilter()
+    @Binding var filter: Model
+    private let defaultFilter = Model()
 
     var body: some View {
         ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
@@ -31,6 +31,15 @@ struct SportsGroundFilterView: View {
                 resetFilterButton
             }
         }
+    }
+}
+
+extension SportsGroundFilterView {
+    struct Model: Equatable {
+        var size = SportsGroundSize.allCases
+        var grade = SportsGroundGrade.allCases
+        var onlyMyCity = true
+        var currentCity: String?
     }
 }
 
