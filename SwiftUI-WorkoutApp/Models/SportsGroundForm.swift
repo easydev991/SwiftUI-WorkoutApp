@@ -9,7 +9,7 @@ struct SportsGroundForm: Codable {
     var typeID: Int
     var sizeID: Int
     let photosCount: Int
-    var newImagesData = [MediaFile]()
+    var newMediaFiles = [MediaFile]()
 
     init(_ sportsGround: SportsGround) {
         address = sportsGround.address.valueOrEmpty
@@ -18,7 +18,7 @@ struct SportsGroundForm: Codable {
         cityID = sportsGround.cityID.valueOrZero
         typeID = sportsGround.typeID
         sizeID = sportsGround.sizeID
-        photosCount = (sportsGround.photos?.count).valueOrZero
+        photosCount = sportsGround.photos.count
     }
 
     init(

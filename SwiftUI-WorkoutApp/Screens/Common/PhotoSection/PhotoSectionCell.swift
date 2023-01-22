@@ -6,20 +6,19 @@ struct PhotoSectionCell: View {
     @EnvironmentObject private var network: NetworkStatus
     let photo: Photo
     let canDelete: Bool
-    let reportClbk: (Photo) -> Void
+    let reportClbk: () -> Void
     var onTapClbk: (UIImage) -> Void
-    var deleteClbk: (Photo) -> Void
+    var deleteClbk: (Int) -> Void
 
     var body: some View {
         CachedAsyncImage(url: photo.imageURL) { uiImage in
             Image(uiImage: uiImage)
                 .resizable()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .scaledToFit()
                 .onTapGesture { onTapClbk(uiImage) }
         } placeholder: {
             RoundedDefaultImage(size: CachedImage.Mode.gridPhoto.size)
         }
-        .scaledToFit()
         .cornerRadius(8)
         .overlay(alignment: .topTrailing) { menuButton }
     }
@@ -30,14 +29,12 @@ private extension PhotoSectionCell {
         Menu {
             if canDelete {
                 Button(role: .destructive) {
-                    deleteClbk(photo)
+                    deleteClbk(photo.id)
                 } label: {
                     Label("Удалить", systemImage: "trash")
                 }
             } else {
-                Button(role: .destructive) {
-                    reportClbk(photo)
-                } label: {
+                Button(role: .destructive, action: reportClbk) {
                     Label("Пожаловаться", systemImage: "exclamationmark.triangle")
                 }
             }
@@ -58,7 +55,7 @@ struct PhotoSectionCell_Previews: PreviewProvider {
         PhotoSectionCell(
             photo: .preview,
             canDelete: true,
-            reportClbk: { _ in },
+            reportClbk: {},
             onTapClbk: { _ in },
             deleteClbk: { _ in }
         )

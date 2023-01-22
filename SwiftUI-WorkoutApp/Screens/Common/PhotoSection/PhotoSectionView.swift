@@ -7,8 +7,8 @@ struct PhotoSectionView: View {
     ///
     /// Если пользователь авторизован и является автором фотографии, у него есть права на ее удаление
     private let canDelete: Bool
-    private let reportPhotoClbk: (Photo) -> Void
-    private let deletePhotoClbk: (Photo) -> Void
+    private let reportPhotoClbk: () -> Void
+    private let deletePhotoClbk: (Int) -> Void
     /// Количество столбцов в сетке с фотографиями
     private var columns: Int { photos.count > 1 ? 2 : 1 }
     @State private var fullscreenImage: UIImage?
@@ -16,8 +16,8 @@ struct PhotoSectionView: View {
     init(
         with photos: [Photo],
         canDelete: Bool,
-        reportClbk: @escaping (Photo) -> Void,
-        deleteClbk: @escaping (Photo) -> Void
+        reportClbk: @escaping () -> Void,
+        deleteClbk: @escaping (Int) -> Void
     ) {
         self.photos = photos
         self.canDelete = canDelete
@@ -72,7 +72,7 @@ struct PhotoSectionView_Previews: PreviewProvider {
             PhotoSectionView(
                 with: [.preview, .preview, .preview],
                 canDelete: true,
-                reportClbk: { _ in },
+                reportClbk: {},
                 deleteClbk: { _ in }
             )
         }

@@ -34,7 +34,7 @@ extension SportsGround {
             latitude: "55.795396",
             longitude: "37.762597",
             name: "№3 Средняя Легендарная",
-            photos: [.preview],
+            photosOptional: [.preview],
             preview: "https://workout.su/uploads/userfiles/измайлово.jpg",
             usersTrainHereCount: nil,
             commentsOptional: [.preview],
@@ -89,7 +89,7 @@ extension EventResponse {
             longitude: "37.50063106774381",
             participantsCount: 3,
             isCurrent: false,
-            photos: [
+            photosOptional: [
                 .init(
                     id: 1,
                     stringURL: "https://workout.su/uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg"

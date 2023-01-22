@@ -38,12 +38,11 @@ struct EventDetailsView: View {
             if showParticipantSection {
                 participantsSection
             }
-            if let photos = viewModel.event.photos,
-               !photos.isEmpty {
+            if viewModel.hasPhotos {
                 PhotoSectionView(
-                    with: photos,
+                    with: viewModel.event.photos,
                     canDelete: isAuthor,
-                    reportClbk: { viewModel.reportPhoto($0) },
+                    reportClbk: { viewModel.reportPhoto() },
                     deleteClbk: deletePhoto
                 )
             }
@@ -268,9 +267,9 @@ private extension EventDetailsView {
         showDeleteDialog.toggle()
     }
 
-    func deletePhoto(photo: Photo) {
+    func deletePhoto(with id: Int) {
         deletePhotoTask = Task {
-            await viewModel.delete(photo, with: defaults)
+            await viewModel.delete(photoID: id, with: defaults)
         }
     }
 

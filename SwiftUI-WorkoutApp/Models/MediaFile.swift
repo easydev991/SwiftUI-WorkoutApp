@@ -1,5 +1,4 @@
 import Foundation
-import UIKit.UIImage
 
 struct MediaFile: Codable {
     let key: String
@@ -7,10 +6,10 @@ struct MediaFile: Codable {
     let data: Data
     let mimeType: String
 
-    init(withImage image: UIImage, forKey key: String) {
+    init(imageData: Data, forKey key: String) {
         self.key = "photo\(key)"
         self.mimeType = "image/jpeg"
         self.filename = "photo\(key).jpg"
-        self.data = image.jpegData(compressionQuality: 1) ?? .init()
+        self.data = imageData
     }
 }

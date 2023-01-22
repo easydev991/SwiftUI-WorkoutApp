@@ -8,6 +8,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
     @Published private(set) var isDeleted = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
+    var hasPhotos: Bool { !ground.photos.isEmpty }
 
     init(with ground: SportsGround) {
         self.ground = ground
@@ -52,14 +53,14 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func delete(_ photo: Photo, with defaults: DefaultsProtocol) async {
+    func delete(photoID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deletePhoto(
-                from: .sportsGround(.init(containerID: ground.id, photoID: photo.id))
+                from: .sportsGround(.init(containerID: ground.id, photoID: photoID))
             ) {
-                await askForSportsGround(refresh: true, with: defaults)
+                ground.photos.removeAll(where: { $0.id == photoID })
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -80,7 +81,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func reportPhoto(_ photo: Photo) {
+    func reportPhoto() {
         let complaint = Complaint.groundPhoto(groundTitle: ground.shortTitle)
         feedbackSender.sendFeedback(
             subject: complaint.subject,

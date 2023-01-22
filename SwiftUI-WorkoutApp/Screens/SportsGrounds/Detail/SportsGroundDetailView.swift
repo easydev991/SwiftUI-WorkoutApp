@@ -32,12 +32,11 @@ struct SportsGroundDetailView: View {
         List {
             titleSubtitleSection
             locationInfo
-            if let photos = viewModel.ground.photos,
-               !photos.isEmpty {
+            if viewModel.hasPhotos {
                 PhotoSectionView(
-                    with: photos,
+                    with: viewModel.ground.photos,
                     canDelete: isGroundAuthor,
-                    reportClbk: { viewModel.reportPhoto($0) },
+                    reportClbk: { viewModel.reportPhoto() },
                     deleteClbk: deletePhoto
                 )
             }
@@ -254,9 +253,9 @@ private extension SportsGroundDetailView {
         await viewModel.askForSportsGround(refresh: refresh, with: defaults)
     }
 
-    func deletePhoto(photo: Photo) {
+    func deletePhoto(with id: Int) {
         deletePhotoTask = Task {
-            await viewModel.delete(photo, with: defaults)
+            await viewModel.delete(photoID: id, with: defaults)
         }
     }
 
