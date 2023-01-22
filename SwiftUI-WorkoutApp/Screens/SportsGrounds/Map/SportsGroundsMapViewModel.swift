@@ -26,7 +26,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published var needUpdateRegion = false
     @Published var sportsGrounds = [SportsGround]()
     @Published var selectedGround = SportsGround.emptyValue
-    @Published var filter = SportsGroundFilter()
+    @Published var filter = SportsGroundFilterView.Model()
 
     override init() {
         super.init()
