@@ -333,8 +333,7 @@ struct APIService {
     func getEvent(by id: Int) async throws -> EventResponse {
         try await makeResult(
             EventResponse.self,
-            for: Endpoint.getEvent(id: id).urlRequest(with: baseUrlString),
-            needAuth: false
+            for: Endpoint.getEvent(id: id).urlRequest(with: baseUrlString)
         )
     }
 

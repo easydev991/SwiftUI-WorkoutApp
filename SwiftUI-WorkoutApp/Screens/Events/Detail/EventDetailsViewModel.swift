@@ -22,7 +22,6 @@ final class EventDetailsViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService(with: defaults).getEvent(by: event.id)
-            event.trainHere = event.participants.contains(where: { $0.userID == defaults.mainUserInfo?.userID })
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
