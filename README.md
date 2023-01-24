@@ -52,3 +52,8 @@
 - 5.8 дюйма: iPhone 13 Pro
 - 5.5 дюйма: iPhone 8 Plus
 - 4.7 дюйма: iPhone SE (3rd generation)
+
+### Форматирование кода
+- Используем `swiftformat` для форматирования кода ([инструкция по установке](https://github.com/nicklockwood/SwiftFormat#how-do-i-install-it))
+- Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
+- Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
