@@ -23,7 +23,7 @@ struct TextEntryView: View {
         case let .editGround(info),
             let .editEvent(info),
             let .editJournalEntry(info):
-            oldEntryText = info.oldEntry
+            self.oldEntryText = info.oldEntry
         default: break
         }
     }
@@ -107,7 +107,7 @@ private extension TextEntryView {
         isFocused.toggle()
     }
 
-    func dismissOnSuccess(isSuccess: Bool) {
+    func dismissOnSuccess(isSuccess _: Bool) {
         refreshClbk()
         dismiss()
     }

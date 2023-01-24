@@ -48,7 +48,7 @@ struct MapViewUI: UIViewRepresentable {
         return mapView
     }
 
-    func updateUIView(_ mapView: MKMapView, context: Context) {
+    func updateUIView(_ mapView: MKMapView, context _: Context) {
         if needUpdateAnnotations {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(annotations)
@@ -96,14 +96,14 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
 
     init(_ parent: MapViewUI) { self.parent = parent }
 
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+    func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
         if view.annotation is SportsGround {
             let button = UIButton(type: .detailDisclosure)
             view.rightCalloutAccessoryView = button
         }
     }
 
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
         if let place = view.annotation as? SportsGround { parent.openSelected(place) }
     }
 

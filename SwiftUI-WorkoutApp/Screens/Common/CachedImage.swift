@@ -1,5 +1,5 @@
-import SwiftUI
 import CachedAcyncImage
+import SwiftUI
 
 struct CachedImage: View {
     let url: URL?

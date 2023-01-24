@@ -3,44 +3,28 @@ import UIKit.UIImage
 
 @MainActor
 final class EventFormViewModel: ObservableObject {
+    private var eventID: Int?
+    private let oldEventForm: EventForm
     @Published var eventForm: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var isEventSaved = false
     @Published var newImages = [UIImage]()
-    private var eventID: Int?
-    private let oldEventForm: EventForm
-    var isFormReady: Bool {
-        eventID == nil
-        ? eventForm.isReadyToCreate
-        : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
-    }
-    var imagesLimit: Int {
-        eventID == nil
-        ? Constants.photosLimit - newImages.count
-        : Constants.photosLimit - newImages.count - eventForm.photosCount
-    }
-    var canAddImages: Bool {
-        guard !isLoading else { return false }
-        return eventID == nil
-        ? newImages.count < Constants.photosLimit
-        : (newImages.count + eventForm.photosCount) < Constants.photosLimit
-    }
 
     /// Инициализирует viewModel для создания/изменения существующего мероприятия
     /// - Parameter event: вся информация о мероприятии
     init(with event: EventResponse? = nil) {
-        eventID = event?.id
-        eventForm = .init(event)
-        oldEventForm = .init(event)
+        self.eventID = event?.id
+        self.eventForm = .init(event)
+        self.oldEventForm = .init(event)
     }
 
     /// Инициализирует viewModel для создания нового мероприятия на выбранной площадке
     /// - Parameters:
     ///   - sportsGround: площадка для мероприятия
     init(with sportsGround: SportsGround) {
-        oldEventForm = .emptyValue
-        eventForm = .emptyValue
+        self.oldEventForm = .emptyValue
+        self.eventForm = .emptyValue
         eventForm.sportsGround = sportsGround
     }
 
@@ -68,4 +52,25 @@ final class EventFormViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+extension EventFormViewModel {
+    var isFormReady: Bool {
+        eventID == nil
+        ? eventForm.isReadyToCreate
+        : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
+    }
+
+    var imagesLimit: Int {
+        eventID == nil
+        ? Constants.photosLimit - newImages.count
+        : Constants.photosLimit - newImages.count - eventForm.photosCount
+    }
+
+    var canAddImages: Bool {
+        guard !isLoading else { return false }
+        return eventID == nil
+        ? newImages.count < Constants.photosLimit
+        : (newImages.count + eventForm.photosCount) < Constants.photosLimit
+    }
 }

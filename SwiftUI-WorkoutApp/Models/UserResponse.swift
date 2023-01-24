@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Модель данных пользователя со всеми доступными свойствами
 struct UserResponse: Codable, Hashable {
@@ -33,25 +33,48 @@ extension UserResponse {
     var age: Int {
         Calendar.current.dateComponents([.year], from: birthDate, to: .now).year.valueOrZero
     }
+
     var birthDate: Date {
         DateFormatterService.dateFromString(birthDateIsoString, format: .isoShortDate)
     }
+
     var avatarURL: URL? {
         .init(string: imageStringURL.valueOrEmpty)
     }
+
     var gender: String {
         (Gender(genderCode.valueOrZero)?.description).valueOrEmpty
     }
+
     var friendRequestsCount: Int {
         Int(friendRequestsCountString.valueOrEmpty).valueOrZero
     }
+
     var usedSportsGroundsCount: Int {
         Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
     }
+
     var regForm: MainUserForm {
         .init(self)
     }
+
     static var emptyValue: UserResponse {
-        .init(userName: nil, fullName: nil, email: nil, imageStringURL: nil, birthDateIsoString: nil, createdIsoDateTimeSec: nil, userID: nil, cityID: nil, countryID: nil, genderCode: nil, friendsCount: nil, journalsCount: nil, friendRequestsCountString: nil, sportsGroundsCountString: nil, addedSportsGrounds: nil)
+        .init(
+            userName: nil,
+            fullName: nil,
+            email: nil,
+            imageStringURL: nil,
+            birthDateIsoString: nil,
+            createdIsoDateTimeSec: nil,
+            userID: nil,
+            cityID: nil,
+            countryID: nil,
+            genderCode: nil,
+            friendsCount: nil,
+            journalsCount: nil,
+            friendRequestsCountString: nil,
+            sportsGroundsCountString: nil,
+            addedSportsGrounds: nil
+        )
     }
 }

@@ -13,7 +13,7 @@ final class SportsGroundListViewModel: ObservableObject {
             let isMainUser = userID == defaults.mainUserInfo?.userID
             let needUpdate = list.isEmpty || refresh
             if isMainUser {
-                if !needUpdate && !defaults.needUpdateUser { return }
+                if !needUpdate, !defaults.needUpdateUser { return }
                 isLoading.toggle()
                 await makeList(for: userID, with: defaults)
             } else {

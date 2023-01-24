@@ -19,7 +19,7 @@ final class DialogListViewModel: ObservableObject {
     }
 
     func deleteDialog(at index: Int?, with defaults: DefaultsProtocol) async {
-        guard let index = index, !isLoading else { return }
+        guard let index, !isLoading else { return }
         isLoading.toggle()
         do {
             let dialogID = list[index].id

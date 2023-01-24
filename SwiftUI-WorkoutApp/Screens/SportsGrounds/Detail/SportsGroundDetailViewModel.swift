@@ -1,5 +1,5 @@
-import Foundation
 import FeedbackSender
+import Foundation
 
 @MainActor
 final class SportsGroundDetailViewModel: ObservableObject {
@@ -12,11 +12,11 @@ final class SportsGroundDetailViewModel: ObservableObject {
 
     init(with ground: SportsGround) {
         self.ground = ground
-        feedbackSender = FeedbackSenderImp()
+        self.feedbackSender = FeedbackSenderImp()
     }
 
     func askForSportsGround(refresh: Bool, with defaults: DefaultsProtocol) async {
-        if (isLoading || ground.isFull) && !refresh { return }
+        if isLoading || ground.isFull, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
@@ -73,7 +73,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
-                ground.comments.removeAll(where: { $0.id == commentID} )
+                ground.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)

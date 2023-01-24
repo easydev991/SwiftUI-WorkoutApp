@@ -45,8 +45,8 @@ public enum DateFormatterService {
     }
 }
 
-extension DateFormatterService {
-    public enum DateFormat: String {
+public extension DateFormatterService {
+    enum DateFormat: String {
         case isoShortDate = "yyyy-MM-dd"
         case serverDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"

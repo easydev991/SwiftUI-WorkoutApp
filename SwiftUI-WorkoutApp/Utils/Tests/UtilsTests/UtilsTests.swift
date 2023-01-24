@@ -1,5 +1,5 @@
-import XCTest
 @testable import Utils
+import XCTest
 
 final class UtilsTests: XCTestCase {
     func testStringValueOrEmpty() throws {

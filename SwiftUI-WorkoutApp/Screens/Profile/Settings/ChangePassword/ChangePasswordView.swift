@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран для смены пароля
 struct ChangePasswordView: View {
@@ -96,7 +96,7 @@ private extension ChangePasswordView {
         changePasswordTask = Task { await viewModel.changePasswordAction(with: defaults) }
     }
 
-    func performLogout(needRelogin: Bool) {
+    func performLogout(needRelogin _: Bool) {
         defaults.triggerLogout()
     }
 

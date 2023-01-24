@@ -1,7 +1,7 @@
-import SwiftUI
 import CoreLocation.CLLocation
 import ImagePicker
 import NetworkStatus
+import SwiftUI
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
@@ -156,7 +156,7 @@ private extension SportsGroundFormView {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isSuccess: Bool) {
+    func dismiss(isSuccess _: Bool) {
         dismiss()
         refreshClbk()
         if viewModel.isNewSportsGround {

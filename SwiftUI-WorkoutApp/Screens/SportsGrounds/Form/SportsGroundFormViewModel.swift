@@ -10,32 +10,13 @@ final class SportsGroundFormViewModel: ObservableObject {
     @Published var newImages = [UIImage]()
     private var groundID: Int?
     private let oldGroundForm: SportsGroundForm
-    var isFormReady: Bool {
-        groundID == nil
-        ? groundForm.isReadyToCreate && !newImages.isEmpty
-        : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
-    }
-    var imagesLimit: Int {
-        groundID == nil
-        ? Constants.photosLimit - newImages.count
-        : Constants.photosLimit - newImages.count - groundForm.photosCount
-    }
-    var canAddImages: Bool {
-        guard !isLoading else { return false }
-        return groundID == nil
-        ? newImages.count < Constants.photosLimit
-        : (newImages.count + groundForm.photosCount) < Constants.photosLimit
-    }
-    var isNewSportsGround: Bool {
-        groundID == nil
-    }
 
     /// Инициализирует viewModel для изменения существующей площадки
     /// - Parameter ground: вся информация о площадке
     init(with ground: SportsGround) {
-        groundForm = .init(ground)
-        groundID = ground.id
-        oldGroundForm = .init(ground)
+        self.groundForm = .init(ground)
+        self.groundID = ground.id
+        self.oldGroundForm = .init(ground)
     }
 
     /// Инициализирует viewModel для создания новой площадки
@@ -50,13 +31,13 @@ final class SportsGroundFormViewModel: ObservableObject {
         _ longitude: Double,
         _ cityID: Int
     ) {
-        groundForm = .init(
+        self.groundForm = .init(
             address: address,
             latitude: latitude,
             longitude: longitude,
             cityID: cityID
         )
-        oldGroundForm = .init(
+        self.oldGroundForm = .init(
             address: address,
             latitude: latitude,
             longitude: longitude,
@@ -83,4 +64,29 @@ final class SportsGroundFormViewModel: ObservableObject {
     }
 
     func clearErrorMessage() { errorMessage = "" }
+}
+
+extension SportsGroundFormViewModel {
+    var isFormReady: Bool {
+        groundID == nil
+        ? groundForm.isReadyToCreate && !newImages.isEmpty
+        : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
+    }
+
+    var imagesLimit: Int {
+        groundID == nil
+        ? Constants.photosLimit - newImages.count
+        : Constants.photosLimit - newImages.count - groundForm.photosCount
+    }
+
+    var canAddImages: Bool {
+        guard !isLoading else { return false }
+        return groundID == nil
+        ? newImages.count < Constants.photosLimit
+        : (newImages.count + groundForm.photosCount) < Constants.photosLimit
+    }
+
+    var isNewSportsGround: Bool {
+        groundID == nil
+    }
 }

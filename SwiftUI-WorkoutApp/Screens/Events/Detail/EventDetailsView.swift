@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
@@ -25,7 +25,7 @@ struct EventDetailsView: View {
         deleteClbk: @escaping () -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: event))
-        onDeletion = deleteClbk
+        self.onDeletion = deleteClbk
     }
 
     var body: some View {
@@ -92,7 +92,7 @@ struct EventDetailsView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isAuthor && network.isConnected {
+                if isAuthor, network.isConnected {
                     Group {
                         deleteButton
                         editEventButton
@@ -300,7 +300,7 @@ private extension EventDetailsView {
         if !isAuth { dismiss() }
     }
 
-    func dismissDeleted(isDeleted: Bool) {
+    func dismissDeleted(isDeleted _: Bool) {
         dismiss()
         onDeletion()
     }

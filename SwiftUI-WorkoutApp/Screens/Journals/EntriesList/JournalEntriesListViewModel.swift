@@ -1,5 +1,5 @@
-import Foundation
 import FeedbackSender
+import Foundation
 
 @MainActor
 final class JournalEntriesListViewModel: ObservableObject {
@@ -12,18 +12,16 @@ final class JournalEntriesListViewModel: ObservableObject {
     @Published private(set) var isSettingsUpdated = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    var canSaveNewEntry: Bool {
-        !isLoading && !newEntryText.isEmpty
-    }
+    var canSaveNewEntry: Bool { !isLoading && !newEntryText.isEmpty }
 
     init(for userID: Int, with journal: JournalResponse) {
         self.userID = userID
-        currentJournal = journal
-        feedbackSender = FeedbackSenderImp()
+        self.currentJournal = journal
+        self.feedbackSender = FeedbackSenderImp()
     }
 
     func makeItems(with defaults: DefaultsProtocol, refresh: Bool) async {
-        if (isLoading || !list.isEmpty) && !refresh { return }
+        if isLoading || !list.isEmpty, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             list = try await APIService(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
@@ -34,7 +32,7 @@ final class JournalEntriesListViewModel: ObservableObject {
     }
 
     func delete(_ entryID: Int?, with defaults: DefaultsProtocol) async {
-        guard let entryID = entryID, !isLoading else { return }
+        guard let entryID, !isLoading else { return }
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deleteEntry(from: .journal(id: currentJournal.id), entryID: entryID) {

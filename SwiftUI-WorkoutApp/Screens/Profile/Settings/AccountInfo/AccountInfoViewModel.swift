@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 
 @MainActor
 final class AccountInfoViewModel: ObservableObject {
@@ -12,9 +12,7 @@ final class AccountInfoViewModel: ObservableObject {
     @Published private(set) var isProfileSaved = false
     /// Ранее сохраненная форма с данными пользователя
     private var savedUserForm = MainUserForm.emptyValue
-    var currentGender: Gender {
-        .init(userForm.genderCode) ?? .unspecified
-    }
+    var currentGender: Gender { .init(userForm.genderCode) ?? .unspecified }
 
     /// Доступность кнопки для регистрации или сохранения изменений
     func isButtonAvailable(with defaults: DefaultsProtocol) -> Bool {

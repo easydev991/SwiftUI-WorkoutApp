@@ -183,7 +183,7 @@ private extension ProfileSettingsView {
             Label("Магазин WORKOUT", systemImage: "bag.fill")
         }
     }
-    
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message

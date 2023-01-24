@@ -8,12 +8,6 @@ final class ChangePasswordViewModel: ObservableObject {
     @Published private(set) var isChangeSuccessful = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    var isChangeButtonDisabled: Bool {
-        isLoading
-        || currentPasswordText.count < Constants.minPasswordSize
-        || newPasswordText.count < Constants.minPasswordSize
-        || newPasswordText != newPasswordTextAgain
-    }
 
     func changePasswordAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
@@ -29,4 +23,13 @@ final class ChangePasswordViewModel: ObservableObject {
     }
 
     func errorAlertClosed() { errorMessage = "" }
+}
+
+extension ChangePasswordViewModel {
+    var isChangeButtonDisabled: Bool {
+        isLoading
+        || currentPasswordText.count < Constants.minPasswordSize
+        || newPasswordText.count < Constants.minPasswordSize
+        || newPasswordText != newPasswordTextAgain
+    }
 }

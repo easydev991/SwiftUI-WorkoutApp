@@ -1,6 +1,6 @@
+import DateFormatterService
 import Foundation
 import MapKit.MKGeometry
-import DateFormatterService
 
 /// Модель данных спортивной площадки
 final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
@@ -17,6 +17,7 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     var usersTrainHereText: String {
         "Тренируется \(usersTrainHereCount.valueOrZero) чел."
     }
+
     var commentsOptional: [CommentResponse]?
     var usersTrainHere: [UserResponse]?
     var trainHereOptional: Bool?
@@ -26,23 +27,28 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         let size = SportsGroundSize(id: sizeID).rawValue
         return grade + " / " + size
     }
+
     var shortTitle: String { "№ \(id)" }
     /// shortTitle + subtitle
     var longTitle: String {
         shortTitle + " " + subtitle.valueOrEmpty
     }
+
     var authorID: Int {
         (author?.userID).valueOrZero
     }
+
     var authorName: String {
         (author?.userName).valueOrEmpty
     }
+
     var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? .zero),
             longitude: .init(Double(longitude) ?? .zero)
         )
     }
+
     private let regionRadius: CLLocationDistance = 1000
     var region: MKCoordinateRegion {
         .init(
@@ -51,9 +57,11 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
             longitudinalMeters: regionRadius
         )
     }
+
     var appleMapsURL: URL? {
         .init(string: "maps://?saddr=&daddr=\(coordinate.latitude),\(coordinate.longitude)")
     }
+
     var previewImageURL: URL? {
         .init(string: preview.valueOrEmpty)
     }
@@ -75,7 +83,27 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
         case usersTrainHere = "users_train_here"
     }
 
-    init(id: Int, typeID: Int, sizeID: Int, address: String?, author: UserResponse?, cityID: Int?, commentsCount: Int?, countryID: Int?, createDate: String?, modifyDate: String?, latitude: String, longitude: String, name: String?, photosOptional: [Photo]?, preview: String?, usersTrainHereCount: Int?, commentsOptional: [CommentResponse]?, usersTrainHere: [UserResponse]?, trainHere: Bool?) {
+    init(
+        id: Int,
+        typeID: Int,
+        sizeID: Int,
+        address: String?,
+        author: UserResponse?,
+        cityID: Int?,
+        commentsCount: Int?,
+        countryID: Int?,
+        createDate: String?,
+        modifyDate: String?,
+        latitude: String,
+        longitude: String,
+        name: String?,
+        photosOptional: [Photo]?,
+        preview: String?,
+        usersTrainHereCount: Int?,
+        commentsOptional: [CommentResponse]?,
+        usersTrainHere: [UserResponse]?,
+        trainHere: Bool?
+    ) {
         self.id = id
         self.typeID = typeID
         self.sizeID = sizeID
@@ -98,7 +126,27 @@ final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     convenience init(id: Int) {
-        self.init(id: id, typeID: .zero, sizeID: .zero, address: nil, author: nil, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photosOptional: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+        self.init(
+            id: id,
+            typeID: .zero,
+            sizeID: .zero,
+            address: nil,
+            author: nil,
+            cityID: nil,
+            commentsCount: nil,
+            countryID: nil,
+            createDate: nil,
+            modifyDate: nil,
+            latitude: "",
+            longitude: "",
+            name: nil,
+            photosOptional: nil,
+            preview: nil,
+            usersTrainHereCount: nil,
+            commentsOptional: nil,
+            usersTrainHere: nil,
+            trainHere: nil
+        )
     }
 }
 
@@ -140,26 +188,51 @@ extension SportsGround {
         get { photosOptional ?? [] }
         set { photosOptional = newValue }
     }
+
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
+
     /// Пользователи, которые тренируются на этой площадке
     var participants: [UserResponse] {
         get { usersTrainHere ?? [] }
         set { usersTrainHere = newValue }
     }
+
     /// Пользователь тренируется на этой площадке
     var trainHere: Bool {
         get { trainHereOptional.isTrue }
         set { trainHereOptional = newValue }
     }
+
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         usersTrainHereCount.valueOrZero > .zero && !participants.isEmpty
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
+
     static var emptyValue: SportsGround {
-        .init(id: .zero, typeID: .zero, sizeID: .zero, address: nil, author: .emptyValue, cityID: nil, commentsCount: nil, countryID: nil, createDate: nil, modifyDate: nil, latitude: "", longitude: "", name: nil, photosOptional: [], preview: nil, usersTrainHereCount: .zero, commentsOptional: nil, usersTrainHere: [], trainHere: nil)
+        .init(
+            id: .zero,
+            typeID: .zero,
+            sizeID: .zero,
+            address: nil,
+            author: .emptyValue,
+            cityID: nil,
+            commentsCount: nil,
+            countryID: nil,
+            createDate: nil,
+            modifyDate: nil,
+            latitude: "",
+            longitude: "",
+            name: nil,
+            photosOptional: [],
+            preview: nil,
+            usersTrainHereCount: .zero,
+            commentsOptional: nil,
+            usersTrainHere: [],
+            trainHere: nil
+        )
     }
 }

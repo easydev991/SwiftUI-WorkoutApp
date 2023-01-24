@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Форма для отправки создании/изменении мероприятия
 struct EventForm: Codable {

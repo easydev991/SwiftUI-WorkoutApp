@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Форма для отправки при регистрации или изменении данных профиля
 struct MainUserForm: Codable, Equatable {

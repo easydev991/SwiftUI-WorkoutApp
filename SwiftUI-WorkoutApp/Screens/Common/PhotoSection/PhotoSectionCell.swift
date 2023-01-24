@@ -1,6 +1,6 @@
-import SwiftUI
 import CachedAcyncImage
 import NetworkStatus
+import SwiftUI
 
 struct PhotoSectionCell: View {
     @EnvironmentObject private var network: NetworkStatus

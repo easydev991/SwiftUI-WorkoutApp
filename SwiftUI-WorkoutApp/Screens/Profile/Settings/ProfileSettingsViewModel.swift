@@ -1,5 +1,5 @@
-import Foundation
 import FeedbackSender
+import Foundation
 
 @MainActor
 final class ProfileSettingsViewModel: ObservableObject {
@@ -7,7 +7,7 @@ final class ProfileSettingsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 
-    init() { feedbackSender = FeedbackSenderImp() }
+    init() { self.feedbackSender = FeedbackSenderImp() }
 
     func feedbackAction() {
         feedbackSender.sendFeedback(

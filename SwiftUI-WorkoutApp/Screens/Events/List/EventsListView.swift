@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран со списком мероприятий
 struct EventsListView: View {
@@ -137,7 +137,7 @@ private extension EventsListView {
         selectedEventType == .future && viewModel.futureEvents.isEmpty
     }
 
-    func selectedEventAction(_ type: EventType) {
+    func selectedEventAction(_: EventType) {
         eventsTask = Task { await askForEvents() }
     }
 

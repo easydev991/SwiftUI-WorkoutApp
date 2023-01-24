@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Модель сообщения в диалоге
 struct MessageResponse: Codable, Identifiable, Hashable {
@@ -18,11 +18,13 @@ extension MessageResponse {
     var imageURL: URL? {
         .init(string: imageStringURL.valueOrEmpty)
     }
+
     var formattedMessage: String {
         message.valueOrEmpty
             .withoutHTML
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
     var messageDateString: String {
         DateFormatterService.readableDate(from: created)
     }

@@ -18,7 +18,7 @@ extension IncognitoUserButton {
         case register(inForm: Bool)
         /// Авторизация
         case authorize(inForm: Bool)
-        
+
         @ViewBuilder
         var label: some View {
             switch self {

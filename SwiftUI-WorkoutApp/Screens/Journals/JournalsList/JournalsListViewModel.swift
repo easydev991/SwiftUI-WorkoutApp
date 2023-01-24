@@ -7,12 +7,10 @@ final class JournalsListViewModel: ObservableObject {
     @Published private(set) var isJournalCreated = false
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
-    var canSaveNewJournal: Bool {
-        !isLoading && !newJournalTitle.isEmpty
-    }
+    var canSaveNewJournal: Bool { !isLoading && !newJournalTitle.isEmpty }
 
     func makeItems(for userID: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
-        if (isLoading || !list.isEmpty) && !refresh { return }
+        if isLoading || !list.isEmpty, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             list = try await APIService(with: defaults).getJournals(for: userID)
@@ -54,7 +52,7 @@ final class JournalsListViewModel: ObservableObject {
     }
 
     func delete(journalID: Int?, with defaults: DefaultsProtocol) async {
-        guard let journalID = journalID, !isLoading else { return }
+        guard let journalID, !isLoading else { return }
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deleteJournal(journalID: journalID) {

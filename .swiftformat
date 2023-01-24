@@ -1,0 +1,99 @@
+--commas inline
+--groupedextension "MARK: %c"
+--header strip
+--markextensions if-not-empty
+--redundanttype inferred
+--self init-only
+--semicolons never
+--typeattributes prev-line
+--lineaftermarks false
+--linebreaks lf
+--ifdef no-indent
+--xcodeindentation enabled
+
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes preserve
+
+--maxwidth 140
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--wrapternary before-operators
+
+--enable anyObjectProtocol, \
+assertionFailures, \
+blankLinesAroundMark, \
+blankLinesAtStartOfScope, \
+blankLinesAtEndOfScope, \
+blankLinesBetweenScopes, \
+blankLinesBetweenImports, \
+blankLineAfterImports, \
+duplicateImports, \
+elseOnSameLine, \
+enumNamespaces, \
+initCoderUnavailable, \
+leadingDelimiters, \
+modifierOrder, \
+redundantBackticks, \
+redundantBreak, \
+redundantGet, \
+redundantLet, \
+redundantObjc, \
+redundantOptionalBinding, \
+sortedImports, \
+spaceAroundBraces, \
+spaceInsideGenerics, \
+strongifiedSelf, \
+todos, \
+typeSugar, \
+consecutiveBlankLines, \
+andOperator, \
+blockComments, \
+consecutiveSpaces, \
+emptyBraces, \
+genericExtensions, \
+hoistPatternLet, \
+redundantClosure, \
+redundantExtensionACL, \
+redundantFileprivate, \
+redundantInit, \
+redundantLetError, \
+redundantNilInit, \
+redundantParens, \
+redundantPattern, \
+redundantVoidReturnType, \
+spaceAroundBrackets, \
+spaceAroundComments, \
+spaceAroundGenerics, \
+spaceAroundOperators, \
+spaceAroundParens, \
+spaceInsideBraces, \
+spaceInsideBrackets, \
+spaceInsideComments, \
+spaceInsideParens, \
+unusedArguments, \
+preferKeyPath
+
+--disable isEmpty, \
+indent, \
+markTypes, \
+organizeDeclarations, \
+wrapMultilineStatementBraces, \
+wrap, \
+linebreakAtEndOfFile, \
+numberFormatting, \
+opaqueGenericParameters, \
+redundantRawValues, \
+sortDeclarations, \
+sortedSwitchCases, \
+trailingClosures, \
+wrapSwitchCases, \
+wrapEnumCases, \
+wrapConditionalBodies, \
+yodaConditions
+
+# Exclude
+--exclude \
+# someFolder, \
+SnapshotHelper.swift

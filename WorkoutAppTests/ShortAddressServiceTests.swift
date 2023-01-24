@@ -1,5 +1,5 @@
-import XCTest
 @testable import ShortAddressService
+import XCTest
 
 final class ShortAddressServiceTests: XCTestCase {
     func testAddress() {

@@ -15,7 +15,7 @@ struct UserModel: Identifiable, Hashable {
     let friendsCount, journalsCount: Int
 
     init(_ user: UserResponse?) {
-        if let user = user {
+        if let user {
             self.id = user.userID.valueOrZero
             self.imageURL = user.avatarURL
             self.name = user.userName.valueOrEmpty
@@ -48,7 +48,19 @@ struct UserModel: Identifiable, Hashable {
         )
     }
 
-    init(id: Int, imageURL: URL?, name: String, gender: String, age: Int, countryID: Int, cityID: Int, usesSportsGrounds: Int, addedSportsGrounds: [SportsGround], friendsCount: Int, journalsCount: Int) {
+    init(
+        id: Int,
+        imageURL: URL?,
+        name: String,
+        gender: String,
+        age: Int,
+        countryID: Int,
+        cityID: Int,
+        usesSportsGrounds: Int,
+        addedSportsGrounds: [SportsGround],
+        friendsCount: Int,
+        journalsCount: Int
+    ) {
         self.id = id
         self.imageURL = imageURL
         self.name = name
@@ -67,6 +79,7 @@ extension UserModel {
     var shortAddress: String {
         ShortAddressService(countryID, cityID).address
     }
+
     var isFull: Bool {
         id != .zero
         && imageURL != nil
@@ -74,7 +87,20 @@ extension UserModel {
         && age != .zero
         && countryID != .zero
     }
+
     static var emptyValue: UserModel {
-        .init(id: .zero, imageURL: nil, name: "", gender: "", age: .zero, countryID: .zero, cityID: .zero, usesSportsGrounds: .zero, addedSportsGrounds: [], friendsCount: .zero, journalsCount: .zero)
+        .init(
+            id: .zero,
+            imageURL: nil,
+            name: "",
+            gender: "",
+            age: .zero,
+            countryID: .zero,
+            cityID: .zero,
+            usesSportsGrounds: .zero,
+            addedSportsGrounds: [],
+            friendsCount: .zero,
+            journalsCount: .zero
+        )
     }
 }

@@ -37,11 +37,23 @@ final class TextEntryViewModel: ObservableObject {
         do {
             switch mode {
             case let .editGround(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .ground(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService(with: defaults).editEntry(
+                    for: .ground(id: info.parentObjectID),
+                    entryID: info.entryID,
+                    newEntryText: entryText
+                )
             case let .editEvent(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .event(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService(with: defaults).editEntry(
+                    for: .event(id: info.parentObjectID),
+                    entryID: info.entryID,
+                    newEntryText: entryText
+                )
             case let .editJournalEntry(info):
-                isSuccess = try await APIService(with: defaults).editEntry(for: .journal(id: info.parentObjectID), entryID: info.entryID, newEntryText: entryText)
+                isSuccess = try await APIService(with: defaults).editEntry(
+                    for: .journal(id: info.parentObjectID),
+                    entryID: info.entryID,
+                    newEntryText: entryText
+                )
             default: break
             }
         } catch {

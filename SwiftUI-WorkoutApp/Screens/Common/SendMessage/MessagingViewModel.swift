@@ -6,9 +6,7 @@ final class MessagingViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var isMessageSent = false
     @Published private(set) var errorMessage = ""
-    var canSendMessage: Bool {
-        !messageText.isEmpty && !isLoading
-    }
+    var canSendMessage: Bool { !messageText.isEmpty && !isLoading }
 
     func sendMessage(to userID: Int, with defaults: DefaultsProtocol) async {
         if isLoading { return }

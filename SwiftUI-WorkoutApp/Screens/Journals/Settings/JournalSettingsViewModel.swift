@@ -11,7 +11,8 @@ final class JournalSettingsViewModel: ObservableObject {
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).editJournalSettings(
-                for: journal.id, title: journal.title, viewAccess: journal.viewAccessType, commentAccess: journal.commentAccessType) {
+                for: journal.id, title: journal.title, viewAccess: journal.viewAccessType, commentAccess: journal.commentAccessType
+            ) {
                 isSettingsUpdated.toggle()
             }
         } catch {

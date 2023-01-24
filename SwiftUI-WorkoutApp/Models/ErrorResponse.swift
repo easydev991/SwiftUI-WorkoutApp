@@ -7,7 +7,7 @@ struct ErrorResponse: Codable {
     let type: String?
 
     var realCode: Int {
-        if let code = code, code != .zero {
+        if let code, code != .zero {
             return code
         } else {
             return status.valueOrZero

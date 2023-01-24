@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран для регистрации пользователя или изменения его личных данных
 struct AccountInfoView: View {

@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {
@@ -162,10 +162,10 @@ private extension UserDetailsView {
             if viewModel.user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
                 friendsButton
             }
-            if blacklistedUsersCount > .zero && isMainUser {
+            if blacklistedUsersCount > .zero, isMainUser {
                 blacklistButton
             }
-            if viewModel.user.journalsCount > .zero && !isMainUser {
+            if viewModel.user.journalsCount > .zero, !isMainUser {
                 journalsButton
             }
         }
@@ -195,7 +195,7 @@ private extension UserDetailsView {
             HStack {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
-                if friendRequestsCount > .zero && isMainUser {
+                if friendRequestsCount > .zero, isMainUser {
                     Image(systemName: "\(friendRequestsCount).circle.fill")
                         .foregroundColor(.red)
                         .padding(.trailing, 8)
