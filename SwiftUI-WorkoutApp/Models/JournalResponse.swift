@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Модель с информацией о дневнике
 struct JournalResponse: Codable, Identifiable, Equatable {
@@ -28,22 +28,27 @@ extension JournalResponse {
     var imageURL: URL? {
         .init(string: lastMessageImage.valueOrEmpty)
     }
+
     var title: String {
         get { titleOptional.valueOrEmpty }
         set { titleOptional = newValue }
     }
+
     var formattedLastMessage: String {
         lastMessageText.valueOrEmpty
             .withoutHTML
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
     var lastMessageDateString: String {
         DateFormatterService.readableDate(from: lastMessageDate)
     }
+
     var viewAccessType: JournalAccess {
         get { .init(viewAccess.valueOrZero) }
         set { viewAccess = newValue.rawValue }
     }
+
     var commentAccessType: JournalAccess {
         get { .init(commentAccess.valueOrZero) }
         set { commentAccess = newValue.rawValue }

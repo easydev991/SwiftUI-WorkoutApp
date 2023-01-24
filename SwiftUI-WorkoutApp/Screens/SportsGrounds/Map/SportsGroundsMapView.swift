@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
@@ -224,7 +224,7 @@ private extension SportsGroundsMapView {
     /// Обновляем фильтр
     ///
     /// Параметр не используем, т.к. передаем `defaults` во вьюмодель
-    func updateFilterForUser(info: UserResponse?) {
+    func updateFilterForUser(info _: UserResponse?) {
         viewModel.updateFilter(with: defaults)
     }
 

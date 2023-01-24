@@ -10,29 +10,29 @@ final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var responseMessage = ""
 
     init(with userInfo: UserResponse?) {
-        user = .init(userInfo)
+        self.user = .init(userInfo)
     }
 
     init(from model: UserModel) {
-        user = model
+        self.user = model
     }
 
     init(from dialog: DialogResponse) {
-        user = .init(from: dialog)
+        self.user = .init(from: dialog)
     }
 
     func makeUserInfo(refresh: Bool, with defaults: DefaultsProtocol) async {
         let isMainUser = user.id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         if isMainUser {
-            if !refresh && !defaults.needUpdateUser,
+            if !refresh, !defaults.needUpdateUser,
                let mainUserInfo = defaults.mainUserInfo {
                 user = .init(mainUserInfo)
             } else {
                 await makeUserInfo(for: user.id, with: defaults)
             }
         } else {
-            if user.isFull && !refresh {
+            if user.isFull, !refresh {
                 isLoading.toggle()
                 return
             }
@@ -100,7 +100,7 @@ final class UserDetailsViewModel: ObservableObject {
 }
 
 private extension UserDetailsViewModel {
-    func makeUserInfo(for userID: Int, with defaults: DefaultsProtocol) async {
+    func makeUserInfo(for _: Int, with defaults: DefaultsProtocol) async {
         do {
             let info = try await APIService(with: defaults).getUserByID(user.id)
             user = .init(info)

@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {

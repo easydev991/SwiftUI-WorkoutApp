@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 @main
 struct SwiftUI_WorkoutAppApp: App {

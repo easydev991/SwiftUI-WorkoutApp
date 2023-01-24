@@ -88,7 +88,7 @@ struct ChatBubbleShape: Shape {
         let height = rect.height
         let path = Path { p in
             p.move(to: .init(x: 25, y: height))
-            p.addLine(to: .init(x:  20, y: height))
+            p.addLine(to: .init(x: 20, y: height))
             p.addCurve(
                 to: .init(x: .zero, y: height - 20),
                 control1: .init(x: 8, y: height),

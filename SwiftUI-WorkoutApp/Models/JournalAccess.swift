@@ -13,6 +13,7 @@ enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
         default: self = .all
         }
     }
+
     var description: String {
         switch self {
         case .all: return "Все"

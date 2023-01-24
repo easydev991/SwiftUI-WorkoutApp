@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentInSheet<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
     let title: String
-    var spacing: CGFloat? = nil
+    var spacing: CGFloat?
     let content: () -> Content
 
     var body: some View {

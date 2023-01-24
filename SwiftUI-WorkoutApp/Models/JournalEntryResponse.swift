@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Модель с информацией о записи в дневнике
 struct JournalEntryResponse: Codable, Identifiable {
@@ -22,11 +22,13 @@ extension JournalEntryResponse {
     var imageURL: URL? {
         .init(string: authorImage.valueOrEmpty)
     }
+
     var formattedMessage: String {
         message.valueOrEmpty
             .withoutHTML
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
     var messageDateString: String {
         DateFormatterService.readableDate(from: createDate)
     }

@@ -1,6 +1,6 @@
-import SwiftUI
 import ImagePicker
 import NetworkStatus
+import SwiftUI
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
@@ -99,7 +99,7 @@ private extension EventFormView {
             DatePicker(
                 "Дата и время",
                 selection: $viewModel.eventForm.date,
-                in: .now...Constants.maxEventFutureDate
+                in: .now ... Constants.maxEventFutureDate
             )
             .labelsHidden()
         }
@@ -194,7 +194,7 @@ private extension EventFormView {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isSuccess: Bool) {
+    func dismiss(isSuccess _: Bool) {
         refreshClbk?()
         dismiss()
     }

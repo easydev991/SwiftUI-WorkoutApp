@@ -5,9 +5,9 @@ struct City: Codable, Identifiable, Hashable {
 
     init(id: String) {
         self.id = id
-        name = ""
-        lat = ""
-        lon = ""
+        self.name = ""
+        self.lat = ""
+        self.lon = ""
     }
 
     init(id: String, name: String, lat: String, lon: String) {

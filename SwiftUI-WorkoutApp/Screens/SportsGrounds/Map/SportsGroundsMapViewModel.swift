@@ -1,6 +1,6 @@
 import Combine
-import MapKit.MKGeometry
 import DateFormatterService
+import MapKit.MKGeometry
 import ShortAddressService
 
 @MainActor
@@ -12,10 +12,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var userCountryID = Int.zero
     private var userCityID = Int.zero
     private var defaultList = [SportsGround]()
-    var isRegionSet: Bool {
-        region.center.latitude != .zero
-        && region.center.longitude != .zero
-    }
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
@@ -33,13 +29,13 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
-        filterCancellable = $filter
+        self.filterCancellable = $filter
             .removeDuplicates()
-            .sink { [weak self] newValue in
+            .sink { [weak self] _ in
                 guard let self else { return }
                 self.applyFilter(self.userCountryID, self.userCityID)
             }
-        locationErrorCancellable = $locationErrorMessage
+        self.locationErrorCancellable = $locationErrorMessage
             .removeDuplicates()
             .filter { !$0.isEmpty }
             .sink { [weak self] _ in
@@ -48,7 +44,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     func makeGrounds(refresh: Bool, with defaults: DefaultsProtocol) async {
-        if (isLoading || !defaultList.isEmpty) && !refresh { return }
+        if isLoading || !defaultList.isEmpty, !refresh { return }
         if defaultList.isEmpty {
             fillDefaultList()
             applyFilter(with: defaults.mainUserInfo)
@@ -110,9 +106,16 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     func clearErrorMessage() { errorMessage = "" }
 }
 
+extension SportsGroundsMapViewModel {
+    var isRegionSet: Bool {
+        region.center.latitude != .zero
+        && region.center.longitude != .zero
+    }
+}
+
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     func locationManager(
-        _ manager: CLLocationManager,
+        _: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
         if let location = locations.last {
@@ -154,10 +157,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     }
 
     func locationManager(
-        _ manager: CLLocationManager,
+        _: CLLocationManager,
         didFailWithError error: Error
     ) {
-        if !ignoreUserLocation && !isRegionSet {
+        if !ignoreUserLocation, !isRegionSet {
             setupDefaultLocation()
         }
 #if DEBUG
@@ -173,14 +176,14 @@ private extension SportsGroundsMapViewModel {
 
     func applyFilter(_ countryID: Int?, _ cityID: Int?) {
         DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             var result = [SportsGround]()
             result = self.defaultList.filter { ground in
-                self.filter.size.map { $0.code }.contains(ground.sizeID)
-                && self.filter.grade.map { $0.code }.contains(ground.typeID)
+                self.filter.size.map(\.code).contains(ground.sizeID)
+                && self.filter.grade.map(\.code).contains(ground.typeID)
             }
-            guard let countryID = countryID, countryID != .zero,
-                  let cityID = cityID, cityID != .zero,
+            guard let countryID, countryID != .zero,
+                  let cityID, cityID != .zero,
                   self.filter.onlyMyCity
             else {
                 DispatchQueue.main.async {

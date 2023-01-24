@@ -9,7 +9,7 @@ final class DialogViewModel: ObservableObject {
     @Published private(set) var errorMessage = ""
 
     func makeItems(for dialogID: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
-        if isLoading && !refresh { return }
+        if isLoading, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             list = try await APIService(with: defaults).getMessages(for: dialogID).reversed()

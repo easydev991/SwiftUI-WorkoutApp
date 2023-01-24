@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Модель с информацией о диалоге
 struct DialogResponse: Codable, Identifiable {
@@ -28,19 +28,31 @@ extension DialogResponse {
     var anotherUserImageURL: URL? {
         .init(string: anotherUserImageStringURL.valueOrEmpty)
     }
+
     var lastMessageFormatted: String {
         lastMessageText.valueOrEmpty
             .withoutHTML
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
     var lastMessageDateString: String {
         DateFormatterService.readableDate(from: lastMessageDate)
     }
+
     var unreadMessagesCount: Int {
         get { unreadCountOptional.valueOrZero }
         set { unreadCountOptional = newValue }
     }
+
     static var emptyValue: DialogResponse {
-        .init(id: .zero, anotherUserImageStringURL: nil, anotherUserName: nil, lastMessageText: nil, lastMessageDate: nil, anotherUserID: nil, createdDate: nil)
+        .init(
+            id: .zero,
+            anotherUserImageStringURL: nil,
+            anotherUserName: nil,
+            lastMessageText: nil,
+            lastMessageDate: nil,
+            anotherUserID: nil,
+            createdDate: nil
+        )
     }
 }

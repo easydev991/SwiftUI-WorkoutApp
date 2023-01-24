@@ -1,5 +1,5 @@
-import Foundation
 import FeedbackSender
+import Foundation
 
 @MainActor
 final class EventDetailsViewModel: ObservableObject {
@@ -14,11 +14,11 @@ final class EventDetailsViewModel: ObservableObject {
 
     init(with event: EventResponse) {
         self.event = event
-        feedbackSender = FeedbackSenderImp()
+        self.feedbackSender = FeedbackSenderImp()
     }
 
     func askForEvent(refresh: Bool, with defaults: DefaultsProtocol) async {
-        if (isLoading || event.isFull) && !refresh { return }
+        if isLoading || event.isFull, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
             event = try await APIService(with: defaults).getEvent(by: event.id)
@@ -75,7 +75,7 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
         do {
             if try await APIService(with: defaults).deleteEntry(from: .event(id: event.id), entryID: commentID) {
-                event.comments.removeAll(where: { $0.id == commentID} )
+                event.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)

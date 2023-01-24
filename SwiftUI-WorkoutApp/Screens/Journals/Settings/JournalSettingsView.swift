@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
@@ -18,9 +18,9 @@ struct JournalSettingsView: View {
         with journalToEdit: JournalResponse,
         updatedClbk: @escaping (Int) -> Void
     ) {
-        initialJournal = journalToEdit
+        self.initialJournal = journalToEdit
         _journal = .init(initialValue: journalToEdit)
-        updateOnSuccess = updatedClbk
+        self.updateOnSuccess = updatedClbk
     }
 
     var body: some View {
@@ -105,7 +105,7 @@ private extension JournalSettingsView {
         viewModel.clearErrorMessage()
     }
 
-    func finishSettings(isSuccess: Bool) {
+    func finishSettings(isSuccess _: Bool) {
         updateOnSuccess(journal.id)
         dismiss()
     }

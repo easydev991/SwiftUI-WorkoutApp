@@ -1,5 +1,5 @@
-import SwiftUI
 import MapKit
+import SwiftUI
 
 /// Снапшот карты
 struct MapSnapshotView: View {
@@ -52,7 +52,7 @@ private extension MapSnapshotView {
 
         let snapshotter = MKMapSnapshotter(options: options)
         snapshotter.start { snapshot, error in
-            if let snapshot = snapshot {
+            if let snapshot {
                 let image = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
                     let point = snapshot.point(for: ground.coordinate)

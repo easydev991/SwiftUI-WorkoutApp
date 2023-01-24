@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Список дневников
 struct JournalsListView: View {
@@ -178,7 +178,7 @@ private extension JournalsListView {
         showDeleteDialog.toggle()
     }
 
-    func closeSheet(isSuccess: Bool) {
+    func closeSheet(isSuccess _: Bool) {
         isCreatingJournal.toggle()
         defaults.setUserNeedUpdate(true)
     }

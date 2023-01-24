@@ -114,7 +114,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)
     }
-    
+
     func saveFriendsIds(_ ids: [Int]) throws {
         hasFriends = !ids.isEmpty
         friendsIds = try JSONEncoder().encode(ids)
@@ -133,7 +133,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func setHasSportsGrounds(_ hasGrounds: Bool) {
-        self.hasSportsGrounds = hasGrounds
+        hasSportsGrounds = hasGrounds
     }
 
     func triggerLogout() {

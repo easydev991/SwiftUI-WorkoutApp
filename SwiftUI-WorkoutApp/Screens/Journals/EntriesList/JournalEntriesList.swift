@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
@@ -134,7 +134,7 @@ private extension JournalEntriesList {
         errorTitle = message
     }
 
-    func closeNewEntrySheet(isSuccess: Bool) {
+    func closeNewEntrySheet(isSuccess _: Bool) {
         showEntrySheet.toggle()
     }
 

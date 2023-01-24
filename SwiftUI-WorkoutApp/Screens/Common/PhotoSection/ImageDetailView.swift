@@ -1,11 +1,11 @@
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 struct ImageDetailView: UIViewRepresentable {
     @Environment(\.colorScheme) private var colorScheme
     let image: UIImage
 
-    func makeUIView(context: Context) -> PDFView {
+    func makeUIView(context _: Context) -> PDFView {
         let view = PDFView()
         view.document = PDFDocument()
         guard let page = PDFPage(image: image) else { return view }
@@ -14,7 +14,7 @@ struct ImageDetailView: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ view: PDFView, context: Context) {
+    func updateUIView(_ view: PDFView, context _: Context) {
         view.backgroundColor = colorScheme == .dark ? .black : .white
     }
 }

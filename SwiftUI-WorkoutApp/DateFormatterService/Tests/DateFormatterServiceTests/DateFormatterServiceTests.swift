@@ -1,5 +1,5 @@
-import XCTest
 @testable import DateFormatterService
+import XCTest
 
 final class DateFormatterServiceTests: XCTestCase {
     func testReadableDate() {

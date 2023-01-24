@@ -9,22 +9,6 @@ final class LoginViewModel: ObservableObject {
     @Published private(set) var showResetSuccessfulAlert = false
     @Published private(set) var errorMessage = ""
 
-    var canLogIn: Bool {
-        !login.isEmpty && password.count >= Constants.minPasswordSize
-    }
-
-    var canRestorePassword: Bool { !login.isEmpty }
-
-    func clearErrorMessage() { errorMessage = "" }
-
-    func warningAlertClosed() {
-        showForgotPasswordAlert = false
-    }
-
-    func resetSuccessfulAlertClosed() {
-        showResetSuccessfulAlert = false
-    }
-
     func loginAction(with defaults: DefaultsProtocol) async {
         if !canLogIn { return }
         isLoading.toggle()
@@ -49,4 +33,23 @@ final class LoginViewModel: ObservableObject {
         }
         isLoading.toggle()
     }
+
+    func warningAlertClosed() {
+        showForgotPasswordAlert = false
+    }
+
+    func resetSuccessfulAlertClosed() {
+        showResetSuccessfulAlert = false
+    }
+
+    func clearErrorMessage() { errorMessage = "" }
+}
+
+extension LoginViewModel {
+    var canLogIn: Bool {
+        !login.isEmpty
+        && password.count >= Constants.minPasswordSize
+    }
+
+    var canRestorePassword: Bool { !login.isEmpty }
 }

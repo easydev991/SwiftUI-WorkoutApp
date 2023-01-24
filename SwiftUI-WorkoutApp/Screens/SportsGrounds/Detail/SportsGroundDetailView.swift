@@ -1,5 +1,5 @@
-import SwiftUI
 import NetworkStatus
+import SwiftUI
 
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {
@@ -25,7 +25,7 @@ struct SportsGroundDetailView: View {
         onDeletion: @escaping (Int) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: ground))
-        onDeletionClbk = onDeletion
+        self.onDeletionClbk = onDeletion
     }
 
     var body: some View {
@@ -278,7 +278,7 @@ private extension SportsGroundDetailView {
         if !isAuth { dismiss() }
     }
 
-    func dismissDeleted(isDeleted: Bool) {
+    func dismissDeleted(isDeleted _: Bool) {
         dismiss()
         onDeletionClbk(viewModel.ground.id)
         defaults.setUserNeedUpdate(true)

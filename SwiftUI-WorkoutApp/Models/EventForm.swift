@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 
 /// Форма для отправки создании/изменении мероприятия
 struct EventForm: Codable {
@@ -12,7 +12,7 @@ struct EventForm: Codable {
     init(_ event: EventResponse?) {
         self.title = (event?.formattedTitle).valueOrEmpty
         self.description = (event?.formattedDescription).valueOrEmpty
-        self.date = DateFormatterService.dateFromIsoString(event?.beginDate, format: .isoDateTimeSec)
+        self.date = DateFormatterService.dateFromIsoString(event?.beginDate)
         self.sportsGround = event?.sportsGround ?? .emptyValue
         self.photosCount = (event?.photos.count).valueOrZero
     }

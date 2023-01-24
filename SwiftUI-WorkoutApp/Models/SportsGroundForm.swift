@@ -12,13 +12,13 @@ struct SportsGroundForm: Codable {
     var newMediaFiles = [MediaFile]()
 
     init(_ sportsGround: SportsGround) {
-        address = sportsGround.address.valueOrEmpty
-        latitude = sportsGround.latitude
-        longitude = sportsGround.longitude
-        cityID = sportsGround.cityID.valueOrZero
-        typeID = sportsGround.typeID
-        sizeID = sportsGround.sizeID
-        photosCount = sportsGround.photos.count
+        self.address = sportsGround.address.valueOrEmpty
+        self.latitude = sportsGround.latitude
+        self.longitude = sportsGround.longitude
+        self.cityID = sportsGround.cityID.valueOrZero
+        self.typeID = sportsGround.typeID
+        self.sizeID = sportsGround.sizeID
+        self.photosCount = sportsGround.photos.count
     }
 
     init(
@@ -31,9 +31,9 @@ struct SportsGroundForm: Codable {
         self.latitude = latitude.description
         self.longitude = longitude.description
         self.cityID = cityID
-        typeID = SportsGroundGrade.soviet.code
-        sizeID = SportsGroundSize.small.code
-        photosCount = .zero
+        self.typeID = SportsGroundGrade.soviet.code
+        self.sizeID = SportsGroundSize.small.code
+        self.photosCount = .zero
     }
 }
 

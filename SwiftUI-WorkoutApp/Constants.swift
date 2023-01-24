@@ -17,7 +17,7 @@ enum Constants {
         static let registrationForm = "Принимаю условия **[пользовательского соглашения](https://workout.su/pravila)**"
         static let aboutApp = URL(string: "https://workout.su/pravila")!
     }
-    
+
     enum Alert {
         static let forgotPassword = "Для восстановления пароля введите логин или email"
         static let friendRequestSent = "Запрос отправлен!"

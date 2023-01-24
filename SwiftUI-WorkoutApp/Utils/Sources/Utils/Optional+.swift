@@ -1,6 +1,6 @@
 import Foundation
 
-public extension Optional where Wrapped == String {
+public extension String? {
     var valueOrEmpty: String {
         if let unwrapped = self {
             return unwrapped
@@ -10,7 +10,7 @@ public extension Optional where Wrapped == String {
     }
 }
 
-public extension Optional where Wrapped == Int {
+public extension Int? {
     var valueOrZero: Int {
         if let unwrapped = self {
             return unwrapped
@@ -20,7 +20,7 @@ public extension Optional where Wrapped == Int {
     }
 }
 
-public extension Optional where Wrapped == Bool {
+public extension Bool? {
     var isTrue: Bool {
         switch self {
         case let .some(value): return value

@@ -158,12 +158,11 @@ struct APIService {
         : .deleteFriend(userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
         if let mainUserID = await defaults.mainUserInfo?.userID,
-           isSuccess && option == .removeFriend {
+           isSuccess, option == .removeFriend {
             try await getFriendsForUser(id: mainUserID)
         }
         return isSuccess
     }
-
 
     /// Добавляет или убирает пользователя из черного списка
     /// - Parameters:
@@ -217,7 +216,7 @@ struct APIService {
     /// - Returns: Обновленная информация о площадке `SportsGround`, но с ошибками, поэтому обрабатываем `SportsGroundResult`
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
         let endpoint: Endpoint
-        if let id = id {
+        if let id {
             endpoint = Endpoint.editSportsGround(id: id, form: form)
         } else {
             endpoint = Endpoint.createSportsGround(form: form)
@@ -346,7 +345,7 @@ struct APIService {
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому обрабатываем `EventResult`
     func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
         let endpoint: Endpoint
-        if let id = id {
+        if let id {
             endpoint = .editEvent(id: id, form: form)
         } else {
             endpoint = .createEvent(form: form)
@@ -568,7 +567,7 @@ private extension APIService {
 
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
     func handle<T: Decodable>(_ type: T.Type, _ data: Data?, _ response: URLResponse?) throws -> T {
-        guard let data = data, !data.isEmpty else {
+        guard let data, !data.isEmpty else {
             throw APIError.noData
         }
         guard (response as? HTTPURLResponse)?.statusCode == codeOK else {
@@ -1035,7 +1034,7 @@ private extension APIService.Endpoint {
             case classID = "class_id"
         }
 
-        static func makeBody(from dict: [Key: String], with media: [MediaFile] = []) -> Data? {
+        static func makeBody(from dict: [Key: String], with _: [MediaFile] = []) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")
@@ -1121,7 +1120,7 @@ private extension APIService.Endpoint {
         case let .createJournal(_, title):
             return Parameter.makeBody(from: [.title: title])
         case let .saveJournalEntry(_, _, message),
-            let .editEntry(_,_,_, message):
+            let .editEntry(_, _, _, message):
             return Parameter.makeBody(from: [.message: message])
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
             return Parameter.makeBody(

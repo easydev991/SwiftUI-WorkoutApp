@@ -1,5 +1,5 @@
-import Foundation
 import DateFormatterService
+import Foundation
 import ShortAddressService
 
 /// Модель со всей информацией о мероприятии
@@ -27,7 +27,8 @@ struct EventResponse: Codable, Identifiable {
     let author: UserResponse?
     /// Участвует ли пользователь в мероприятии
     ///
-    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteGoToEvent`, поэтому при итоговом определении статуса `trainHere` смотрим на список участников
+    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteGoToEvent`,
+    /// поэтому при итоговом определении статуса `trainHere` смотрим на список участников
     var trainHereOptional: Bool?
 
     enum CodingKeys: String, CodingKey {
@@ -67,16 +68,19 @@ extension EventResponse {
         }
         set { title = newValue }
     }
+
     var shortAddress: String {
-        if let countryID = countryID, let cityID = cityID {
+        if let countryID, let cityID {
             return ShortAddressService(countryID, cityID).address
         } else {
             return "Не указан"
         }
     }
+
     var hasDescription: Bool {
         !formattedDescription.isEmpty
     }
+
     var formattedDescription: String {
         get {
             eventDescription.valueOrEmpty
@@ -85,45 +89,98 @@ extension EventResponse {
         }
         set { eventDescription = newValue }
     }
+
     var sportsGround: SportsGround {
         get {
-            .init(id: sportsGroundID.valueOrZero, typeID: .zero, sizeID: .zero, address: fullAddress, author: author, cityID: cityID, commentsCount: nil, countryID: countryID, createDate: nil, modifyDate: nil, latitude: latitude.valueOrEmpty, longitude: longitude.valueOrEmpty, name: nil, photosOptional: nil, preview: nil, usersTrainHereCount: nil, commentsOptional: nil, usersTrainHere: nil, trainHere: nil)
+            .init(
+                id: sportsGroundID.valueOrZero,
+                typeID: .zero,
+                sizeID: .zero,
+                address: fullAddress,
+                author: author,
+                cityID: cityID,
+                commentsCount: nil,
+                countryID: countryID,
+                createDate: nil,
+                modifyDate: nil,
+                latitude: latitude.valueOrEmpty,
+                longitude: longitude.valueOrEmpty,
+                name: nil,
+                photosOptional: nil,
+                preview: nil,
+                usersTrainHereCount: nil,
+                commentsOptional: nil,
+                usersTrainHere: nil,
+                trainHere: nil
+            )
         }
         set {}
     }
+
     var previewImageURL: URL? {
         .init(string: previewImageStringURL.valueOrEmpty)
     }
+
     var eventDateString: String {
         DateFormatterService.readableDate(from: beginDate)
     }
+
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
+
     var photos: [Photo] {
         get { photosOptional ?? [] }
         set { photosOptional = newValue }
     }
+
     /// Список участников мероприятия
     var participants: [UserResponse] {
         get { participantsOptional ?? [] }
         set { participantsOptional = newValue }
     }
+
     /// Пользователь участвует в этом мероприятии
     var trainHere: Bool {
         get { trainHereOptional.isTrue }
         set { trainHereOptional = newValue }
     }
+
     var authorID: Int {
         (author?.userID).valueOrZero
     }
+
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         participantsCount.valueOrZero > .zero && !participants.isEmpty
         || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
+
     static var emptyValue: EventResponse {
-        .init(id: .zero, title: nil, eventDescription: nil, fullAddress: nil, createDate: nil, modifyDate: nil, beginDate: nil, countryID: nil, cityID: nil, commentsCount: nil, commentsOptional: nil, previewImageStringURL: nil, sportsGroundID: nil, latitude: nil, longitude: nil, participantsCount: nil, participantsOptional: nil, isCurrent: nil, photosOptional: nil, authorName: nil, author: nil, trainHereOptional: nil)
+        .init(
+            id: .zero,
+            title: nil,
+            eventDescription: nil,
+            fullAddress: nil,
+            createDate: nil,
+            modifyDate: nil,
+            beginDate: nil,
+            countryID: nil,
+            cityID: nil,
+            commentsCount: nil,
+            commentsOptional: nil,
+            previewImageStringURL: nil,
+            sportsGroundID: nil,
+            latitude: nil,
+            longitude: nil,
+            participantsCount: nil,
+            participantsOptional: nil,
+            isCurrent: nil,
+            photosOptional: nil,
+            authorName: nil,
+            author: nil,
+            trainHereOptional: nil
+        )
     }
 }

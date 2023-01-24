@@ -2,8 +2,7 @@ import SwiftUI
 
 extension Text {
     func blueMediumWeight() -> Text {
-        self
-            .fontWeight(.medium)
+        fontWeight(.medium)
             .foregroundColor(.blue)
     }
 }

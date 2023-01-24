@@ -21,8 +21,8 @@ struct PhotoSectionView: View {
     ) {
         self.photos = photos
         self.canDelete = canDelete
-        reportPhotoClbk = reportClbk
-        deletePhotoClbk = deleteClbk
+        self.reportPhotoClbk = reportClbk
+        self.deletePhotoClbk = deleteClbk
     }
 
     var body: some View {

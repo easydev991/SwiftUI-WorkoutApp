@@ -26,7 +26,7 @@ public struct ShortAddressService {
     }
 }
 
-extension ShortAddressService: ShortAddressProtocol {    
+extension ShortAddressService: ShortAddressProtocol {
     public var address: String {
         guard countryID != .zero, cityID != .zero,
               let country = try? countries().first(where: { $0.id == String(countryID) })
