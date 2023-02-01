@@ -18,7 +18,7 @@ final class DateFormatterServiceTests: XCTestCase {
 
     func testDateFromIsoString_isoDateTimeSec() {
         let stringDate = "2023-01-21T10:05:35+00:00"
-        let formattedResult = DateFormatterService.dateFromIsoString(stringDate, format: .isoDateTimeSec)
+        let formattedResult = DateFormatterService.dateFromIsoString(stringDate)
         let expectedDate = Date(timeIntervalSinceReferenceDate: 695988335.0)
         XCTAssertEqual(formattedResult, expectedDate)
     }
