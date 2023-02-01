@@ -123,8 +123,9 @@ private extension TextEntryView {
 
     func showKeyboard() {
         guard !isFocused else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            isFocused.toggle()
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 750_000_000)
+            isFocused = true
         }
     }
 

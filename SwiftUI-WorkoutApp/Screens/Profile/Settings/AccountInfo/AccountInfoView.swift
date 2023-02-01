@@ -219,7 +219,8 @@ private extension AccountInfoView {
 
     func showKeyboardIfNeeded() {
         guard mode == .create, focus == nil else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 750_000_000)
             focus = .login
         }
     }
