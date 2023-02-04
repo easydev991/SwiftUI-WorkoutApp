@@ -52,7 +52,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
         isLoading.toggle()
         do {
-            defaultList = try await APIService(with: defaults).getAllSportsGrounds()
+            defaultList = try await APIService(with: defaults, needAuth: false).getAllSportsGrounds()
         } catch {
             fillDefaultList()
             errorMessage = ErrorFilterService.message(from: error)
@@ -65,7 +65,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let updatedGrounds = try await APIService(with: defaults).getUpdatedSportsGrounds(
+            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.halfMinuteAgoDateString
             )
             updatedGrounds.forEach { ground in

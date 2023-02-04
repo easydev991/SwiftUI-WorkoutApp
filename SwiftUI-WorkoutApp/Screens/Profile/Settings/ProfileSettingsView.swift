@@ -34,8 +34,11 @@ struct ProfileSettingsView: View {
                 officialSiteButton
                 appVersionView
             }
-            Section(mode.supportProjectSectionTitle) {
+            Section("Поддержать проект") {
                 workoutShopButton
+            }
+            Section("Поддержать разработчика") {
+                developerProfileButton
             }
         }
         .overlay {
@@ -79,8 +82,6 @@ private extension ProfileSettingsView.Mode {
     var appInfoSectionTitle: String {
         self == .authorized ? "Информация о приложении" : "О приложении"
     }
-
-    var supportProjectSectionTitle: String { "Поддержать проект" }
 }
 
 private extension ProfileSettingsView {
@@ -181,6 +182,12 @@ private extension ProfileSettingsView {
     var workoutShopButton: some View {
         Link(destination: Constants.workoutShopURL) {
             Label("Магазин WORKOUT", systemImage: "bag.fill")
+        }
+    }
+
+    var developerProfileButton: some View {
+        Link(destination: Constants.developerProfileButton) {
+            Label("Oleg991 на boosty", systemImage: "figure.wave")
         }
     }
 

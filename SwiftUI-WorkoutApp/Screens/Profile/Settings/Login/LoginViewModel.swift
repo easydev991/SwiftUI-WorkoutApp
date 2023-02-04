@@ -13,7 +13,7 @@ final class LoginViewModel: ObservableObject {
         if !canLogIn { return }
         isLoading.toggle()
         do {
-            try await APIService(with: defaults).logInWith(login, password)
+            try await APIService(with: defaults, canForceLogout: false).logInWith(login, password)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
@@ -27,7 +27,7 @@ final class LoginViewModel: ObservableObject {
         }
         isLoading.toggle()
         do {
-            showResetSuccessfulAlert = try await APIService(with: defaults).resetPassword(for: login)
+            showResetSuccessfulAlert = try await APIService(with: defaults, needAuth: false).resetPassword(for: login)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

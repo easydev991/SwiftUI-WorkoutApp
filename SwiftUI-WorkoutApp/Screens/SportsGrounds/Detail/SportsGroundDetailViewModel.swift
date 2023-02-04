@@ -19,7 +19,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading || ground.isFull, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            ground = try await APIService(with: defaults).getSportsGround(id: ground.id)
+            ground = try await APIService(with: defaults, needAuth: false).getSportsGround(id: ground.id)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

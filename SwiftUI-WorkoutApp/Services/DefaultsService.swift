@@ -10,13 +10,14 @@ protocol DefaultsProtocol: AnyObject {
     var friendRequestsList: [UserResponse] { get }
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
-    var unreadMessagesCount: Int { get set }
+    var unreadMessagesCount: Int { get }
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
     func saveUserInfo(_ info: UserResponse) throws
     func saveFriendsIds(_ ids: [Int]) throws
     func saveFriendRequests(_ array: [UserResponse]) throws
+    func saveUnreadMessagesCount(_ count: Int)
     func saveBlacklist(_ array: [UserResponse]) throws
     func setHasJournals(_ hasJournals: Bool)
     func setHasSportsGrounds(_ hasGrounds: Bool)
@@ -56,7 +57,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     private(set) var hasFriends = false
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
-    var unreadMessagesCount = 0
+    private (set) var unreadMessagesCount = 0
 
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
@@ -136,11 +137,17 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         hasSportsGrounds = hasGrounds
     }
 
+    func saveUnreadMessagesCount(_ count: Int) {
+        unreadMessagesCount = count
+    }
+
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
         friendsIds = .init()
         friendRequests = .init()
+        blacklist = .init()
+        unreadMessagesCount = 0
         isAuthorized = false
         hasFriends = false
         hasJournals = false
