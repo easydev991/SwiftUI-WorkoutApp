@@ -1,18 +1,39 @@
 import Foundation
 
+/// Сервис для обращений к серверу
 struct APIService {
+    /// Сервис, отвечающий за обновление `UserDefaults`
     private let defaults: DefaultsProtocol
+    /// Базовый `url` сервера
     private let baseUrlString: String
+    /// Время таймаута для `URLSession`
     private let timeoutInterval: TimeInterval
+    /// `true` - нужна базовая аутентификация, `false` - не нужна
+    private let needAuth: Bool
+    /// `true` - можно принудительно деавторизовать пользователя, `false` - не можем
+    ///
+    /// Если значение `true`, деавторизуем пользователя при получении кода `401` от сервера
+    private let canForceLogout: Bool
 
+    /// Инициализирует `APIService` с заданными параметрами
+    /// - Parameters:
+    ///   - defaults: Сервис, отвечающий за обновление `UserDefaults`
+    ///   - baseUrlString: Базовый `url` сервера. По умолчанию `https://workout.su/api/v3`
+    ///   - timeoutInterval: Время таймаута для `URLSession`. По умолчанию `15`
+    ///   - needAuth: Необходимость базовой аутентификации. По умолчанию `true`
+    ///   - canForceLogout: Доступность принудительной деавторизации. По умолчанию `true`
     init(
         with defaults: DefaultsProtocol,
         baseUrlString: String = "https://workout.su/api/v3",
-        timeoutInterval: TimeInterval = 15
+        timeoutInterval: TimeInterval = 15,
+        needAuth: Bool = true,
+        canForceLogout: Bool = true
     ) {
         self.defaults = defaults
         self.baseUrlString = baseUrlString
         self.timeoutInterval = timeoutInterval
+        self.needAuth = needAuth
+        self.canForceLogout = canForceLogout
     }
 
     /// Выполняет регистрацию пользователя
@@ -20,7 +41,7 @@ struct APIService {
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
-        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest(with: baseUrlString), needAuth: false)
+        let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest(with: baseUrlString))
         try await defaults.saveAuthData(.init(login: model.userName, password: model.password))
         try await defaults.saveUserInfo(result)
     }
@@ -59,7 +80,7 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func resetPassword(for login: String) async throws -> Bool {
         let endpoint = Endpoint.resetPassword(login: login)
-        let response = try await makeResult(LoginResponse.self, for: endpoint.urlRequest(with: baseUrlString), needAuth: false)
+        let response = try await makeResult(LoginResponse.self, for: endpoint.urlRequest(with: baseUrlString))
         return response.userID != .zero
     }
 
@@ -187,7 +208,7 @@ struct APIService {
     /// Загружает список всех площадок
     /// - Returns: Список всех площадок
     func getAllSportsGrounds() async throws -> [SportsGround] {
-        try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest(with: baseUrlString), needAuth: false)
+        try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest(with: baseUrlString))
     }
 
     /// Загружает список всех площадок, обновленных после указанной даты
@@ -195,7 +216,7 @@ struct APIService {
     /// - Returns: Список обновленных площадок
     func getUpdatedSportsGrounds(from stringDate: String) async throws -> [SportsGround] {
         let endpoint = Endpoint.getUpdatedSportsGrounds(from: stringDate)
-        return try await makeResult([SportsGround].self, for: endpoint.urlRequest(with: baseUrlString), needAuth: false)
+        return try await makeResult([SportsGround].self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
     /// Загружает данные по отдельной площадке
@@ -204,8 +225,7 @@ struct APIService {
     func getSportsGround(id: Int) async throws -> SportsGround {
         try await makeResult(
             SportsGround.self,
-            for: Endpoint.getSportsGround(id: id).urlRequest(with: baseUrlString),
-            needAuth: false
+            for: Endpoint.getSportsGround(id: id).urlRequest(with: baseUrlString)
         )
     }
 
@@ -324,7 +344,7 @@ struct APIService {
     /// - Returns: Список мероприятий
     func getEvents(of type: EventType) async throws -> [EventResponse] {
         let endpoint: Endpoint = type == .future ? .getFutureEvents : .getPastEvents
-        return try await makeResult([EventResponse].self, for: endpoint.urlRequest(with: baseUrlString), needAuth: false)
+        return try await makeResult([EventResponse].self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
     /// Запрашивает конкретное мероприятие
@@ -514,7 +534,8 @@ struct APIService {
 }
 
 private extension APIService {
-    var codeOK: Int { 200 }
+    var successCode: Int { 200 }
+    var forceLogoutCode: Int { 401 }
 
     var urlSession: URLSession {
         let config = URLSessionConfiguration.default
@@ -528,10 +549,10 @@ private extension APIService {
     ///   - type: тип, который нужно загрузить
     ///   - request: запрос, по которому нужно обратиться
     /// - Returns: Вся информация по запрошенному типу
-    func makeResult<T: Decodable>(_ type: T.Type, for request: URLRequest?, needAuth: Bool = true) async throws -> T {
-        guard let request = await finalRequest(request, needAuth: needAuth) else { throw APIError.badRequest }
+    func makeResult<T: Decodable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
+        guard let request = await finalRequest(request) else { throw APIError.badRequest }
         let (data, response) = try await urlSession.data(for: request)
-        return try handle(type, data, response)
+        return try await handle(type, data, response)
     }
 
     /// Выполняет действие, не требующее указания типа
@@ -542,15 +563,13 @@ private extension APIService {
             throw APIError.badRequest
         }
         let response = try await urlSession.data(for: request).1
-        return try handle(response)
+        return try await handle(response)
     }
 
     /// Формирует итоговый запрос к серверу
-    /// - Parameters:
-    ///   - request: первоначальный запрос
-    ///   - needAuth: `true` - нужна базовая аутентификация, `false` - не нужна
+    /// - Parameter request: первоначальный запрос
     /// - Returns: Итоговый запрос к серверу
-    func finalRequest(_ request: URLRequest?, needAuth: Bool = true) async -> URLRequest? {
+    func finalRequest(_ request: URLRequest?) async -> URLRequest? {
         if needAuth,
            let encodedString = try? await defaults.basicAuthInfo().base64Encoded {
             var requestWithBasicAuth = request
@@ -565,11 +584,15 @@ private extension APIService {
     }
 
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
-    func handle<T: Decodable>(_ type: T.Type, _ data: Data?, _ response: URLResponse?) throws -> T {
+    func handle<T: Decodable>(_ type: T.Type, _ data: Data?, _ response: URLResponse?) async throws -> T {
         guard let data, !data.isEmpty else {
             throw APIError.noData
         }
-        guard (response as? HTTPURLResponse)?.statusCode == codeOK else {
+        let responseCode = (response as? HTTPURLResponse)?.statusCode
+        guard responseCode == successCode else {
+            if canForceLogout, responseCode == forceLogoutCode {
+                await defaults.triggerLogout()
+            }
             throw handleError(from: data, response: response)
         }
 #if DEBUG
@@ -585,13 +608,16 @@ private extension APIService {
     }
 
     /// Обрабатывает ответ сервера, в котором важен только статус
-    func handle(_ response: URLResponse?) throws -> Bool {
+    func handle(_ response: URLResponse?) async throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
 #if DEBUG
         print("--- Получили статус по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(responseCode.valueOrZero)
 #endif
-        guard responseCode == codeOK else {
+        guard responseCode == successCode else {
+            if canForceLogout, responseCode == forceLogoutCode {
+                await defaults.triggerLogout()
+            }
             throw APIError(with: responseCode)
         }
         return true

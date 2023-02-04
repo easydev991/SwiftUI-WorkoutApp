@@ -46,7 +46,7 @@ final class AccountInfoViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            try await APIService(with: defaults).registration(with: userForm)
+            try await APIService(with: defaults, needAuth: false).registration(with: userForm)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
