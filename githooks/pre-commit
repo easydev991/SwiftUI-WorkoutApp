@@ -8,11 +8,15 @@ if [ "$branch" = "main" ]; then
   exit 1
 fi
 
-if ! swiftformat . --lint; then
+SCRIPTDIR=$(dirname "$0")
+SWIFTFORMATDIR="$(dirname "$SCRIPTDIR")"
+
+if ! $SWIFTFORMATDIR/swiftformat . --lint; then
   # Need to run swiftformat .
   echo ""
   echo "Похоже есть код, который нужно отформатировать."
-  echo "Запусти в терминале команду swiftformat . в папке с проектом (точка тоже нужна)"
+  echo "Запусти в терминале из папки с проектом файл swiftformat с точкой после пробела:"
+  echo "$SWIFTFORMATDIR/swiftformat ."
   exit 1
 else
   # Format is OK
