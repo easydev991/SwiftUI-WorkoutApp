@@ -57,7 +57,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     private(set) var hasFriends = false
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
-    private (set) var unreadMessagesCount = 0
+    private(set) var unreadMessagesCount = 0
 
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)

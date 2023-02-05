@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage: ./githooks/pre-commit
+
+if ! swiftformat . --lint; then
+  # Need to run swiftformat .
+  echo ""
+  echo "Похоже есть код, который нужно отформатировать."
+  echo "Запусти в терминале команду swiftformat . в папке с проектом (точка тоже нужна)"
+  exit 1
+else
+  # Format is OK
+  exit 0
+fi
