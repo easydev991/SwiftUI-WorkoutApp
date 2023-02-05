@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Usage: ./githooks/pre-commit
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+if [ "$branch" = "main" ]; then
+  echo "Для изменения этой ветки нужно создать pull request"
+  exit 1
+fi
+
+SCRIPTDIR=$(dirname "$0")
+SWIFTFORMATDIR="$(dirname "$SCRIPTDIR")"
+
+if ! $SWIFTFORMATDIR/swiftformat . --lint; then
+  # Need to run swiftformat .
+  echo ""
+  echo "Похоже есть код, который нужно отформатировать."
+  echo "Запусти в терминале из папки с проектом файл swiftformat с точкой после пробела:"
+  echo "$SWIFTFORMATDIR/swiftformat ."
+  exit 1
+else
+  # Format is OK
+  exit 0
+fi

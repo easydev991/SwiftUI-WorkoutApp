@@ -1,5 +1,22 @@
 # SW Площадки
-[Ссылка на приложение в AppStore](https://itunes.apple.com/us/app/jobsy/id1035159361)
+[Ссылка на приложение в AppStore](https://workout.su/ios)
+
+## Установка и настройка проекта
+1. Клонировать репозиторий
+2. В терминале перейти в папку с проектом 
+```shell
+cd SwiftUI-WorkoutApp
+```
+3. Настроить адрес папки с хуками `SwiftUI-WorkoutApp/githooks`
+```shell
+git config core.hooksPath .githooks
+```
+4. Дать разрешение на запуск хука `pre-commit`
+```shell
+chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
+```
+5. Открыть проект в `Xcode` и дождаться загрузки зависимостей
+6. Проект готов к работе!
 
 ## Помощь проекту
 1. Для доработок создаем **issue** с описанием задачи
@@ -54,6 +71,16 @@
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем `swiftformat` для форматирования кода ([инструкция по установке](https://github.com/nicklockwood/SwiftFormat#how-do-i-install-it))
+- Используем [swiftformat (0.50.8)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
+
+#### Как это работает
+1. Перед каждым коммитом должен выполняться хук, проверяющий необходимость форматирования кода
+2. При нарушении правил форматирования кода, гит выдаст ошибку и напишет команду, которую нужно выполнить для запуска swiftformat
+
+#### Как обновить `swiftformat`
+1. Переходим на [страницу с релизами](https://github.com/nicklockwood/SwiftFormat/releases)
+2. Скачиваем `swiftformat.zip`
+3. Заменяем в папке с проектом старый файл `swiftformat` на новый
+4. При необходимости даем системе разрешение на запуск нового файла в `системных настройках -> конфиденциальность и безопасность`
