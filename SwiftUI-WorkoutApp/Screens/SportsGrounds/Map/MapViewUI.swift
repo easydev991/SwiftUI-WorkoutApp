@@ -52,11 +52,11 @@ struct MapViewUI: UIViewRepresentable {
         if needUpdateAnnotations {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(annotations)
-            needUpdateAnnotations.toggle()
+            Task { @MainActor in needUpdateAnnotations.toggle() }
         }
         if needUpdateRegion {
             mapView.setRegion(region, animated: false)
-            needUpdateRegion.toggle()
+            Task { @MainActor in needUpdateRegion.toggle() }
         }
         setTrackingButtonHidden(ignoreUserLocation, on: mapView)
     }
