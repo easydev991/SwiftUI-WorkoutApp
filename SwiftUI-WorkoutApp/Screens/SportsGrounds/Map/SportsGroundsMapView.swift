@@ -27,14 +27,14 @@ struct SportsGroundsMapView: View {
                     }
             }
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: defaults.mainUserInfo, perform: updateFilterForUser)
+            .onChange(of: defaults.mainUserInfo, perform: updateUserCountryAndCity)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }
             .task { await askForGrounds() }
             .onAppear {
                 viewModel.onAppearAction()
-                updateFilterForUser(info: defaults.mainUserInfo)
+                updateUserCountryAndCity(with: defaults.mainUserInfo)
             }
             .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
@@ -43,7 +43,7 @@ struct SportsGroundsMapView: View {
                         filterButton
                         refreshButton
                     }
-                    .disabled(isLeftToolbarPartDisabled)
+                    .disabled(viewModel.isLoading)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     rightBarButton
@@ -133,23 +133,13 @@ private extension SportsGroundsMapView {
     var navigationTitleDisplayMode: NavigationBarItem.TitleDisplayMode {
         switch presentation {
         case .list: return .inline
-        case .map: return needToHideMap ? .large : .inline
+        case .map: return viewModel.shouldHideMap ? .large : .inline
         }
     }
 
-    var needToHideMap: Bool {
-        !viewModel.isRegionSet && viewModel.ignoreUserLocation
-    }
-
     var mapOpacity: Double {
-        guard !needToHideMap else { return .zero }
+        guard !viewModel.shouldHideMap else { return .zero }
         return viewModel.isLoading ? 0.5 : 1
-    }
-
-    var isLeftToolbarPartDisabled: Bool {
-        viewModel.isRegionSet
-        ? viewModel.isLoading
-        : viewModel.isLoading || viewModel.ignoreUserLocation
     }
 
     var locationSettingsReminder: some View {
@@ -221,11 +211,8 @@ private extension SportsGroundsMapView {
         viewModel.deleteSportsGroundFromList(with: groundID)
     }
 
-    /// Обновляем фильтр
-    ///
-    /// Параметр не используем, т.к. передаем `defaults` во вьюмодель
-    func updateFilterForUser(info _: UserResponse?) {
-        viewModel.updateFilter(with: defaults)
+    func updateUserCountryAndCity(with info: UserResponse?) {
+        viewModel.updateUserCountryAndCity(with: info)
     }
 
     func setupErrorAlert(with message: String) {

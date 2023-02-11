@@ -87,10 +87,13 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         needUpdateAnnotations.toggle()
     }
 
-    func updateFilter(with defaults: DefaultsProtocol) {
-        userCountryID = defaults.mainUserCountryID
-        userCityID = defaults.mainUserCityID
-        filter.onlyMyCity = defaults.isAuthorized
+    func updateUserCountryAndCity(with info: UserResponse?) {
+        guard let countryID = info?.countryID, let cityID = info?.cityID else {
+            filter.onlyMyCity = false
+            return
+        }
+        userCountryID = countryID
+        userCityID = cityID
     }
 
     func openAppSettings() {
@@ -108,22 +111,24 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
 extension SportsGroundsMapViewModel {
     var isRegionSet: Bool {
-        region.center.latitude != .zero
-        && region.center.longitude != .zero
+        region.center.latitude != .zero && region.center.longitude != .zero
+    }
+
+    var shouldHideMap: Bool {
+        !isRegionSet && ignoreUserLocation
     }
 }
 
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
-    func locationManager(
-        _: CLLocationManager,
-        didUpdateLocations locations: [CLLocation]
-    ) {
+    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+                guard let self else { return }
                 if let target = places?.first {
-                    self?.filter.currentCity = target.locality
-                    self?.addressString = target.thoroughfare.valueOrEmpty
-                    + " " + target.subThoroughfare.valueOrEmpty
+                    self.filter.currentCity = target.locality
+                    self.addressString = target.thoroughfare.valueOrEmpty
+                    + " "
+                    + target.subThoroughfare.valueOrEmpty
                 }
             }
             let needUpdateMap = !isRegionSet
