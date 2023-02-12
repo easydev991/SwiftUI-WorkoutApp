@@ -7,7 +7,6 @@ struct SportsGroundsMapView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var presentation = Presentation.map
-    @State private var needUpdateRecent = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showFilters = false
@@ -189,7 +188,7 @@ private extension SportsGroundsMapView {
                             coordinate: viewModel.region.center,
                             cityID: defaults.mainUserCityID
                         ),
-                        refreshClbk: updateRecent
+                        refreshClbk: getNewSportsGround
                     )
                 }
             }
@@ -203,7 +202,7 @@ private extension SportsGroundsMapView {
         showDetailsView.toggle()
     }
 
-    func updateRecent() {
+    func getNewSportsGround() {
         Task { await viewModel.checkForRecentUpdates(with: defaults) }
     }
 

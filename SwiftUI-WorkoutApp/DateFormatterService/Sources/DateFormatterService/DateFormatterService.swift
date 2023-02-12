@@ -25,12 +25,12 @@ public enum DateFormatterService {
         return string
     }
 
-    public static var halfMinuteAgoDateString: String {
+    public static var fiveMinutesAgoDateString: String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = DateFormat.serverDateTimeSec.rawValue
-        let halfMinuteAgo = Calendar.current.date(byAdding: .second, value: -30, to: .now) ?? .now
-        return dateFormatter.string(from: halfMinuteAgo)
+        let fiveMinutesAgo = Calendar.current.date(byAdding: .minute, value: -5, to: .now) ?? .now
+        return dateFormatter.string(from: fiveMinutesAgo)
     }
 
     public static func dateFromIsoString(_ string: String?) -> Date {

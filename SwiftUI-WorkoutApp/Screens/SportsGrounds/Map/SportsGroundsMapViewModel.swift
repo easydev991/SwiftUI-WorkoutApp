@@ -5,12 +5,23 @@ import ShortAddressService
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
+    /// Дата предыдущего ручного обновления справочника площадок
+    ///
+    /// - При обновлении справочника вручную необходимо обновить тут дату
+    /// - Неудобно, зато спасаемся от постоянных ошибок 500 на сервере
+    private let previousManualUpdateDateString = "2023-01-12T00:00:00"
+    /// Менеджер локации
     private let manager = CLLocationManager()
     private let urlOpener: URLOpener = URLOpenerImp()
+    /// Держит обновление фильтра площадок
     private var filterCancellable: AnyCancellable?
+    /// Держит обновление ошибки определения геолокации
     private var locationErrorCancellable: AnyCancellable?
+    /// Идентификатор страны пользователя
     private var userCountryID = Int.zero
+    /// Идентификатор города пользователя
     private var userCityID = Int.zero
+    /// Дефолтный список площадок, загруженный из `json`-файла
     private var defaultList = [SportsGround]()
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
@@ -43,6 +54,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             }
     }
 
+    /// Заполняем/обновляем дефолтный список площадок
     func makeGrounds(refresh: Bool, with defaults: DefaultsProtocol) async {
         if isLoading || !defaultList.isEmpty, !refresh { return }
         if defaultList.isEmpty {
@@ -52,29 +64,10 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
         isLoading.toggle()
         do {
-            defaultList = try await APIService(with: defaults, needAuth: false).getAllSportsGrounds()
-        } catch {
-            fillDefaultList()
-            errorMessage = ErrorFilterService.message(from: error)
-        }
-        applyFilter(with: defaults.mainUserInfo)
-        isLoading.toggle()
-    }
-
-    func checkForRecentUpdates(with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
             let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: DateFormatterService.halfMinuteAgoDateString
+                from: previousManualUpdateDateString
             )
-            updatedGrounds.forEach { ground in
-                if !defaultList.contains(ground) {
-                    defaultList.append(ground)
-                } else if let index = sportsGrounds.firstIndex(where: { $0.id == ground.id }) {
-                    defaultList[index] = ground
-                }
-            }
+            updateDefaultList(with: updatedGrounds)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -82,6 +75,27 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
     }
 
+    /// Проверяем недавние обновления списка площадок
+    ///
+    /// Запрашиваем обновление за прошедшие 5 минут
+    func checkForRecentUpdates(with defaults: DefaultsProtocol) async {
+        if isLoading { return }
+        isLoading.toggle()
+        do {
+            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+                from: DateFormatterService.fiveMinutesAgoDateString
+            )
+            updateDefaultList(with: updatedGrounds)
+            applyFilter(with: defaults.mainUserInfo)
+        } catch {
+            errorMessage = ErrorFilterService.message(from: error)
+        }
+        isLoading.toggle()
+    }
+
+    /// Удаляет площадку с указанным идентификатором из списка
+    ///
+    /// Используется при ручном удалении площадки с детального экрана площадки
     func deleteSportsGroundFromList(with groundID: Int) {
         sportsGrounds.removeAll(where: { $0.id == groundID })
         needUpdateAnnotations.toggle()
@@ -102,18 +116,22 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
     }
 
+    /// Запускаем обновление локации пользователя
     func onAppearAction() { manager.startUpdatingLocation() }
 
+    /// Отключаем обновление локации пользователя
     func onDisappearAction() { manager.stopUpdatingLocation() }
 
     func clearErrorMessage() { errorMessage = "" }
 }
 
 extension SportsGroundsMapViewModel {
+    /// `true` - регион пользователя установлен, `false` - не установлен
     var isRegionSet: Bool {
         region.center.latitude != .zero && region.center.longitude != .zero
     }
 
+    /// `true` - прячем карту, `false` - не прячем
     var shouldHideMap: Bool {
         !isRegionSet && ignoreUserLocation
     }
@@ -179,6 +197,7 @@ private extension SportsGroundsMapViewModel {
         applyFilter(userInfo?.countryID, userInfo?.cityID)
     }
 
+    /// Применяем фильтры к `defaultList` и выводим итоговый список в `sportsGrounds`
     func applyFilter(_ countryID: Int?, _ cityID: Int?) {
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self else { return }
@@ -207,6 +226,7 @@ private extension SportsGroundsMapViewModel {
         }
     }
 
+    /// Заполняем дефолтный список площадок контентом из `json`-файла
     func fillDefaultList() {
         do {
             let oldGrounds = try Bundle.main.decodeJson(
@@ -217,6 +237,17 @@ private extension SportsGroundsMapViewModel {
             defaultList = oldGrounds
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
+        }
+    }
+
+    /// Обновляем дефолтный список площадок
+    func updateDefaultList(with updatedList: [SportsGround]) {
+        updatedList.forEach { ground in
+            if let index = defaultList.firstIndex(where: { $0.id == ground.id }) {
+                defaultList[index] = ground
+            } else {
+                defaultList.append(ground)
+            }
         }
     }
 
