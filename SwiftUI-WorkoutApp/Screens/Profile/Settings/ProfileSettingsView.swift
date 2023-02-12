@@ -4,6 +4,7 @@ import SwiftUI
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
+    @State private var openRegistrationPage = false
     @State private var showLogoutDialog = false
     @State private var showDeleteProfileDialog = false
     @State private var showErrorAlert = false
@@ -137,9 +138,14 @@ private extension ProfileSettingsView {
     }
 
     var registerButton: some View {
-        Link(destination: Constants.accountCreationURL) {
+        Button {
+            openRegistrationPage.toggle()
+        } label: {
             IncognitoUserButton.Mode.register(inForm: true).label
                 .font(.system(.body).bold())
+        }
+        .sheet(isPresented: $openRegistrationPage) {
+            SafariVCRepresentable(url: Constants.accountCreationURL)
         }
     }
 
