@@ -206,6 +206,10 @@ struct APIService {
     }
 
     /// Загружает список всех площадок
+    ///
+    /// Пока не используется, потому что:
+    /// - сервер очень часто возвращает ошибку `500` при запросе всех площадок
+    /// - справочник площадок хранится в `json`-файле и обновляется вручную
     /// - Returns: Список всех площадок
     func getAllSportsGrounds() async throws -> [SportsGround] {
         try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest(with: baseUrlString))
