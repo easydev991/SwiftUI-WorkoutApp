@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/CachedAcyncImage",
       "state" : {
-        "revision" : "df44fcc4ce5c6302badab95eda011e2f1904a094",
-        "version" : "1.0.2"
+        "revision" : "9d50e75e608ff03f06ef91a232080b05079014a5",
+        "version" : "1.0.3"
       }
     },
     {

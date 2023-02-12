@@ -7,8 +7,8 @@ struct PhotoSectionCell: View {
     let photo: Photo
     let canDelete: Bool
     let reportClbk: () -> Void
-    var onTapClbk: (UIImage) -> Void
-    var deleteClbk: (Int) -> Void
+    let onTapClbk: (UIImage) -> Void
+    let deleteClbk: (Int) -> Void
 
     var body: some View {
         CachedAsyncImage(url: photo.imageURL) { uiImage in
