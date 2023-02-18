@@ -37,6 +37,8 @@ struct APIService {
     }
 
     /// Выполняет регистрацию пользователя
+    ///
+    /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными
     /// - Parameter model: необходимые для регистрации данные
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
