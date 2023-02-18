@@ -5,7 +5,8 @@ enum Constants {
     static let photosLimit = 15
     static let minUserAge = Calendar.current.date(byAdding: .year, value: -13, to: .now) ?? .now
     static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
-    static let incognitoInfoText = "Зарегистрируйтесь или авторизуйтесь, чтобы иметь доступ ко всем возможностям"
+    static let authInvitationText = "Авторизуйтесь, чтобы иметь доступ ко всем возможностям"
+    static let registrationInfoText = "Регистрация доступна на сайте workout.su"
     static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
     static let workoutShopURL = URL(string: "https://workoutshop.ru")!

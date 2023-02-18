@@ -2,13 +2,11 @@ import SwiftUI
 
 /// Заглушка для неавторизованного пользователя
 struct IncognitoProfileView: View {
-    @State private var openRegistrationPage = false
-
     var body: some View {
         VStack(spacing: 16) {
-            incognitoInformer
-            createAccountButton
+            authInvitation
             IncognitoUserButton(mode: .authorize(inForm: false))
+            registrationInfo
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -20,22 +18,17 @@ struct IncognitoProfileView: View {
 }
 
 private extension IncognitoProfileView {
-    var incognitoInformer: some View {
-        Text(Constants.incognitoInfoText)
+    var authInvitation: some View {
+        Text(Constants.authInvitationText)
             .font(.title3)
             .multilineTextAlignment(.center)
-            .padding()
+            .padding(.horizontal)
     }
 
-    var createAccountButton: some View {
-        Button {
-            openRegistrationPage.toggle()
-        } label: {
-            IncognitoUserButton.Mode.register(inForm: false).label
-        }
-        .sheet(isPresented: $openRegistrationPage) {
-            SafariVCRepresentable(url: Constants.accountCreationURL)
-        }
+    var registrationInfo: some View {
+        Text(Constants.registrationInfoText)
+            .font(.subheadline)
+            .multilineTextAlignment(.center)
     }
 }
 

@@ -4,7 +4,6 @@ import SwiftUI
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
-    @State private var openRegistrationPage = false
     @State private var showLogoutDialog = false
     @State private var showDeleteProfileDialog = false
     @State private var showErrorAlert = false
@@ -20,7 +19,6 @@ struct ProfileSettingsView: View {
                     changePasswordButton
                     logoutButton
                 } else {
-                    registerButton
                     authorizeButton
                 }
             } header: {
@@ -76,7 +74,7 @@ private extension ProfileSettingsView.Mode {
         case .authorized:
             EmptyView()
         case .incognito:
-            Text(Constants.incognitoInfoText)
+            Text(Constants.registrationInfoText)
         }
     }
 
@@ -135,18 +133,6 @@ private extension ProfileSettingsView {
 
     func deleteProfile() {
         deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
-    }
-
-    var registerButton: some View {
-        Button {
-            openRegistrationPage.toggle()
-        } label: {
-            IncognitoUserButton.Mode.register(inForm: true).label
-                .font(.system(.body).bold())
-        }
-        .sheet(isPresented: $openRegistrationPage) {
-            SafariVCRepresentable(url: Constants.accountCreationURL)
-        }
     }
 
     var authorizeButton: some View {
