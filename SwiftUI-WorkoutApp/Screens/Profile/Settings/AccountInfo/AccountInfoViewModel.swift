@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import SWModels
 
 @MainActor
 final class AccountInfoViewModel: ObservableObject {
@@ -83,9 +84,9 @@ private extension AccountInfoViewModel {
                 cities = russia.cities.sorted { $0.name < $1.name }
                 userForm.city = moscow
             } else {
-#if DEBUG
+                #if DEBUG
                 print("--- Россия и Москва должны быть в файле countries.json")
-#endif
+                #endif
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)

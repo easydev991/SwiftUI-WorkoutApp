@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 struct CommentViewCell: View {
     @EnvironmentObject private var network: NetworkStatus

@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 public enum DateFormatterService {
     public static func readableDate(from string: String?, locale: Locale = .autoupdatingCurrent) -> String {
@@ -34,14 +33,14 @@ public enum DateFormatterService {
     }
 
     public static func dateFromIsoString(_ string: String?) -> Date {
-        ISO8601DateFormatter().date(from: string.valueOrEmpty) ?? .now
+        ISO8601DateFormatter().date(from: string ?? "") ?? .now
     }
 
     public static func dateFromString(_ string: String?, format: DateFormat) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.date(from: string.valueOrEmpty) ?? .now
+        return formatter.date(from: string ?? "") ?? .now
     }
 }
 

@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {

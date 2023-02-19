@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
@@ -207,8 +208,8 @@ private extension EventDetailsView {
             }
             .disabled(
                 !defaults.isAuthorized
-                || viewModel.event.authorID == defaults.mainUserInfo?.userID
-                || !network.isConnected
+                    || viewModel.event.authorID == defaults.mainUserInfo?.userID
+                    || !network.isConnected
             )
         }
     }
@@ -280,8 +281,8 @@ private extension EventDetailsView {
 
     var isAuthor: Bool {
         defaults.isAuthorized
-        ? viewModel.event.authorID == defaults.mainUserInfo?.userID
-        : false
+            ? viewModel.event.authorID == defaults.mainUserInfo?.userID
+            : false
     }
 
     var showParticipantSection: Bool {

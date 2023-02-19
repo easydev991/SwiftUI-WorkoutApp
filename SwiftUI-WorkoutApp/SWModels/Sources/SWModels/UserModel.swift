@@ -1,0 +1,106 @@
+import Foundation
+import ShortAddressService
+
+/// Упрощенная модель данных пользователя
+public struct UserModel: Identifiable, Hashable {
+    public let id: Int
+    public let imageURL: URL?
+    public let name: String
+    public let gender: String
+    public let age: Int
+    public let countryID: Int
+    public let cityID: Int
+    public let usesSportsGrounds: Int
+    public let addedSportsGrounds: [SportsGround]
+    public let friendsCount, journalsCount: Int
+
+    public init(_ user: UserResponse?) {
+        if let user {
+            self.id = user.userID.valueOrZero
+            self.imageURL = user.avatarURL
+            self.name = user.userName.valueOrEmpty
+            self.gender = "\(user.gender), "
+            self.age = user.age
+            self.countryID = user.countryID.valueOrZero
+            self.cityID = user.cityID.valueOrZero
+            self.usesSportsGrounds = user.usedSportsGroundsCount
+            self.addedSportsGrounds = user.addedSportsGrounds ?? []
+            self.friendsCount = user.friendsCount.valueOrZero
+            self.journalsCount = user.journalsCount.valueOrZero
+        } else {
+            self = .emptyValue
+        }
+    }
+
+    public init(from dialog: DialogResponse) {
+        self.init(
+            id: dialog.anotherUserID.valueOrZero,
+            imageURL: dialog.anotherUserImageURL,
+            name: dialog.anotherUserName.valueOrEmpty,
+            gender: "",
+            age: .zero,
+            countryID: .zero,
+            cityID: .zero,
+            usesSportsGrounds: .zero,
+            addedSportsGrounds: [],
+            friendsCount: .zero,
+            journalsCount: .zero
+        )
+    }
+
+    public init(
+        id: Int,
+        imageURL: URL?,
+        name: String,
+        gender: String,
+        age: Int,
+        countryID: Int,
+        cityID: Int,
+        usesSportsGrounds: Int,
+        addedSportsGrounds: [SportsGround],
+        friendsCount: Int,
+        journalsCount: Int
+    ) {
+        self.id = id
+        self.imageURL = imageURL
+        self.name = name
+        self.gender = gender
+        self.age = age
+        self.countryID = countryID
+        self.cityID = cityID
+        self.usesSportsGrounds = usesSportsGrounds
+        self.addedSportsGrounds = addedSportsGrounds
+        self.friendsCount = friendsCount
+        self.journalsCount = journalsCount
+    }
+}
+
+public extension UserModel {
+    var shortAddress: String {
+        ShortAddressService(countryID, cityID).address
+    }
+
+    var isFull: Bool {
+        id != .zero
+            && imageURL != nil
+            && name != ""
+            && age != .zero
+            && countryID != .zero
+    }
+
+    static var emptyValue: UserModel {
+        .init(
+            id: .zero,
+            imageURL: nil,
+            name: "",
+            gender: "",
+            age: .zero,
+            countryID: .zero,
+            cityID: .zero,
+            usesSportsGrounds: .zero,
+            addedSportsGrounds: [],
+            friendsCount: .zero,
+            journalsCount: .zero
+        )
+    }
+}

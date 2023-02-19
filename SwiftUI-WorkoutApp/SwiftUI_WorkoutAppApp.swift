@@ -24,9 +24,9 @@ struct SwiftUI_WorkoutAppApp: App {
             if case .background = $0 {
                 defaults.setUserNeedUpdate(true)
             }
-#if DEBUG
+            #if DEBUG
             print("--- scenePhase = \($0)")
-#endif
+            #endif
         }
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {

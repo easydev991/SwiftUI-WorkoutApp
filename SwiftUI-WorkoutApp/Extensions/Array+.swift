@@ -1,7 +1,7 @@
-import Foundation
+import SWModels
 import UIKit.UIImage
 
-extension Array where Element: UIImage {
+extension [UIImage] {
     /// Создает список медиафайлов из картинок для отправки на сервер
     var toMediaFiles: [MediaFile] {
         enumerated().compactMap { index, image in

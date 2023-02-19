@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран для регистрации пользователя или изменения его личных данных
 struct AccountInfoView: View {
@@ -212,7 +213,7 @@ private extension AccountInfoView {
             ButtonInForm("Сохранить", action: saveChangesAction)
                 .disabled(
                     !viewModel.isButtonAvailable(with: defaults)
-                    || !network.isConnected
+                        || !network.isConnected
                 )
         }
     }

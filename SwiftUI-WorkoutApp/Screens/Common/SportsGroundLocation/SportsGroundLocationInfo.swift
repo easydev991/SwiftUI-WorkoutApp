@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {

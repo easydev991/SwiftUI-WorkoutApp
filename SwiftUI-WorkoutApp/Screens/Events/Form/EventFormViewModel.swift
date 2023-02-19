@@ -1,4 +1,5 @@
 import Foundation
+import SWModels
 import UIKit.UIImage
 
 @MainActor
@@ -57,20 +58,20 @@ final class EventFormViewModel: ObservableObject {
 extension EventFormViewModel {
     var isFormReady: Bool {
         eventID == nil
-        ? eventForm.isReadyToCreate
-        : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
+            ? eventForm.isReadyToCreate
+            : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
     }
 
     var imagesLimit: Int {
         eventID == nil
-        ? Constants.photosLimit - newImages.count
-        : Constants.photosLimit - newImages.count - eventForm.photosCount
+            ? Constants.photosLimit - newImages.count
+            : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
 
     var canAddImages: Bool {
         guard !isLoading else { return false }
         return eventID == nil
-        ? newImages.count < Constants.photosLimit
-        : (newImages.count + eventForm.photosCount) < Constants.photosLimit
+            ? newImages.count < Constants.photosLimit
+            : (newImages.count + eventForm.photosCount) < Constants.photosLimit
     }
 }

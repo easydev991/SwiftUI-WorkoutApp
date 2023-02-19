@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Экран со списком площадок
 struct SportsGroundsListView: View {

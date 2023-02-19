@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct FriendRequestCell: View {
     let model: UserModel

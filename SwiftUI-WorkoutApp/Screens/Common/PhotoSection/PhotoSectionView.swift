@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {

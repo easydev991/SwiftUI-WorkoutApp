@@ -2,6 +2,7 @@ import CoreLocation.CLLocation
 import ImagePicker
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
@@ -139,8 +140,8 @@ private extension SportsGroundFormView {
             ButtonInForm("Сохранить", action: saveAction)
                 .disabled(
                     !viewModel.isFormReady
-                    || viewModel.isLoading
-                    || !network.isConnected
+                        || viewModel.isLoading
+                        || !network.isConnected
                 )
         }
     }

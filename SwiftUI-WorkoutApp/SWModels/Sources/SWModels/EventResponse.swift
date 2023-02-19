@@ -1,0 +1,234 @@
+import DateFormatterService
+import Foundation
+import ShortAddressService
+
+/// Модель со всей информацией о мероприятии
+public struct EventResponse: Codable, Identifiable {
+    public let id: Int
+    /// Название мероприятия
+    public var title: String?
+    public var eventDescription: String?
+    public let fullAddress, createDate, modifyDate: String?
+    public var beginDate: String?
+    public var countryID, cityID: Int?
+    public let commentsCount: Int?
+    public var commentsOptional: [CommentResponse]?
+    public let previewImageStringURL: String?
+    public var sportsGroundID: Int?
+    public let latitude, longitude: String?
+    /// Количество участников
+    public let participantsCount: Int?
+    public var participantsOptional: [UserResponse]?
+    /// `true` - предстоящее мероприятие, `false` - прошедшее
+    public let isCurrent: Bool?
+    public var photosOptional: [Photo]?
+    /// Логин автора мероприятия
+    public let authorName: String?
+    public let author: UserResponse?
+    /// Участвует ли пользователь в мероприятии
+    ///
+    /// Сервер присылает `false`, если хотя бы раз успешно вызвать `deleteGoToEvent`,
+    /// поэтому при итоговом определении статуса `trainHere` смотрим на список участников
+    public var trainHereOptional: Bool?
+
+    public enum CodingKeys: String, CodingKey {
+        case id, title, latitude, longitude, author
+        case authorName = "name"
+        case fullAddress = "address"
+        case previewImageStringURL = "preview"
+        case eventDescription = "description"
+        case createDate = "create_date"
+        case modifyDate = "modify_date"
+        case beginDate = "begin_date"
+        case countryID = "country_id"
+        case cityID = "city_id"
+        case commentsCount = "comment_count"
+        case sportsGroundID = "area_id"
+        case participantsCount = "user_count"
+        case isCurrent = "is_current"
+        case photosOptional = "photos"
+        case participantsOptional = "training_users"
+        case trainHereOptional = "train_here"
+        case commentsOptional = "comments"
+    }
+
+    public init(
+        id: Int,
+        title: String? = nil,
+        eventDescription: String? = nil,
+        fullAddress: String? = nil,
+        createDate: String? = nil,
+        modifyDate: String? = nil,
+        beginDate: String? = nil,
+        countryID: Int? = nil,
+        cityID: Int? = nil,
+        commentsCount: Int? = nil,
+        commentsOptional: [CommentResponse]? = nil,
+        previewImageStringURL: String? = nil,
+        sportsGroundID: Int? = nil,
+        latitude: String? = nil,
+        longitude: String? = nil,
+        participantsCount: Int? = nil,
+        participantsOptional: [UserResponse]? = nil,
+        isCurrent: Bool? = nil,
+        photosOptional: [Photo]? = nil,
+        authorName: String? = nil,
+        author: UserResponse? = nil,
+        trainHereOptional: Bool? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.eventDescription = eventDescription
+        self.fullAddress = fullAddress
+        self.createDate = createDate
+        self.modifyDate = modifyDate
+        self.beginDate = beginDate
+        self.countryID = countryID
+        self.cityID = cityID
+        self.commentsCount = commentsCount
+        self.commentsOptional = commentsOptional
+        self.previewImageStringURL = previewImageStringURL
+        self.sportsGroundID = sportsGroundID
+        self.latitude = latitude
+        self.longitude = longitude
+        self.participantsCount = participantsCount
+        self.participantsOptional = participantsOptional
+        self.isCurrent = isCurrent
+        self.photosOptional = photosOptional
+        self.authorName = authorName
+        self.author = author
+        self.trainHereOptional = trainHereOptional
+    }
+}
+
+extension EventResponse: Equatable {
+    public static func == (lhs: EventResponse, rhs: EventResponse) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+public extension EventResponse {
+    var formattedTitle: String {
+        get {
+            title.valueOrEmpty
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .capitalizingFirstLetter
+        }
+        set { title = newValue }
+    }
+
+    var shortAddress: String {
+        if let countryID, let cityID {
+            return ShortAddressService(countryID, cityID).address
+        } else {
+            return "Не указан"
+        }
+    }
+
+    var hasDescription: Bool {
+        !formattedDescription.isEmpty
+    }
+
+    var formattedDescription: String {
+        get {
+            eventDescription.valueOrEmpty
+                .withoutHTML
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        set { eventDescription = newValue }
+    }
+
+    var sportsGround: SportsGround {
+        get {
+            .init(
+                id: sportsGroundID.valueOrZero,
+                typeID: .zero,
+                sizeID: .zero,
+                address: fullAddress,
+                author: author,
+                cityID: cityID,
+                commentsCount: nil,
+                countryID: countryID,
+                createDate: nil,
+                modifyDate: nil,
+                latitude: latitude.valueOrEmpty,
+                longitude: longitude.valueOrEmpty,
+                name: nil,
+                photosOptional: nil,
+                preview: nil,
+                usersTrainHereCount: nil,
+                commentsOptional: nil,
+                usersTrainHere: nil,
+                trainHere: nil
+            )
+        }
+        set {}
+    }
+
+    var previewImageURL: URL? {
+        .init(string: previewImageStringURL.valueOrEmpty)
+    }
+
+    var eventDateString: String {
+        DateFormatterService.readableDate(from: beginDate)
+    }
+
+    var comments: [CommentResponse] {
+        get { commentsOptional ?? [] }
+        set { commentsOptional = newValue }
+    }
+
+    var photos: [Photo] {
+        get { photosOptional ?? [] }
+        set { photosOptional = newValue }
+    }
+
+    /// Список участников мероприятия
+    var participants: [UserResponse] {
+        get { participantsOptional ?? [] }
+        set { participantsOptional = newValue }
+    }
+
+    /// Пользователь участвует в этом мероприятии
+    var trainHere: Bool {
+        get { trainHereOptional.isTrue }
+        set { trainHereOptional = newValue }
+    }
+
+    var authorID: Int {
+        (author?.userID).valueOrZero
+    }
+
+    /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
+    var isFull: Bool {
+        participantsCount.valueOrZero > .zero && !participants.isEmpty
+            || commentsCount.valueOrZero > .zero && !comments.isEmpty
+    }
+
+    static var emptyValue: EventResponse {
+        .init(
+            id: .zero,
+            title: nil,
+            eventDescription: nil,
+            fullAddress: nil,
+            createDate: nil,
+            modifyDate: nil,
+            beginDate: nil,
+            countryID: nil,
+            cityID: nil,
+            commentsCount: nil,
+            commentsOptional: nil,
+            previewImageStringURL: nil,
+            sportsGroundID: nil,
+            latitude: nil,
+            longitude: nil,
+            participantsCount: nil,
+            participantsOptional: nil,
+            isCurrent: nil,
+            photosOptional: nil,
+            authorName: nil,
+            author: nil,
+            trainHereOptional: nil
+        )
+    }
+}

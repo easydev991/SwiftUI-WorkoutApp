@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Заглушка для неавторизованного пользователя
 struct IncognitoProfileView: View {

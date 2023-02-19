@@ -1,4 +1,5 @@
 import Foundation
+import SWModels
 
 /// Сервис для обращений к серверу
 struct APIService {
@@ -158,8 +159,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func respondToFriendRequest(from userID: Int, accept: Bool) async throws -> Bool {
         let endpoint: Endpoint = accept
-        ? .acceptFriendRequest(from: userID)
-        : .declineFriendRequest(from: userID)
+            ? .acceptFriendRequest(from: userID)
+            : .declineFriendRequest(from: userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
         if isSuccess {
             if let mainUserID = await defaults.mainUserInfo?.userID, accept {
@@ -177,8 +178,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func friendAction(userID: Int, option: FriendAction) async throws -> Bool {
         let endpoint: Endpoint = option == .sendFriendRequest
-        ? .sendFriendRequest(to: userID)
-        : .deleteFriend(userID)
+            ? .sendFriendRequest(to: userID)
+            : .deleteFriend(userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
         if let mainUserID = await defaults.mainUserInfo?.userID,
            isSuccess, option == .removeFriend {
@@ -194,8 +195,8 @@ struct APIService {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func blacklistAction(userID: Int, option: BlacklistOption) async throws -> Bool {
         let endpoint: Endpoint = option == .add
-        ? .addToBlacklist(userID)
-        : .deleteFromBlacklist(userID)
+            ? .addToBlacklist(userID)
+            : .deleteFromBlacklist(userID)
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
 
@@ -601,7 +602,7 @@ private extension APIService {
             }
             throw handleError(from: data, response: response)
         }
-#if DEBUG
+        #if DEBUG
         print("--- Получили JSON по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(data.prettyJson)
         do {
@@ -609,17 +610,17 @@ private extension APIService {
         } catch {
             print("--- error: \(error)")
         }
-#endif
+        #endif
         return try JSONDecoder().decode(type, from: data)
     }
 
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) async throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-#if DEBUG
+        #if DEBUG
         print("--- Получили статус по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(responseCode.valueOrZero)
-#endif
+        #endif
         guard responseCode == successCode else {
             if canForceLogout, responseCode == forceLogoutCode {
                 await defaults.triggerLogout()
@@ -635,10 +636,10 @@ private extension APIService {
     ///   - response: ответ сервера
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, response: URLResponse?) -> APIError {
-#if DEBUG
+        #if DEBUG
         print("--- JSON с ошибкой по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
         print(data.prettyJson)
-#endif
+        #endif
         if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
             return APIError(errorInfo)
         } else {
@@ -912,15 +913,15 @@ private extension APIService.Endpoint {
         case .getFriendRequests:
             return "/friends/requests"
         case let .acceptFriendRequest(userID),
-            let .declineFriendRequest(userID):
+             let .declineFriendRequest(userID):
             return "/friends/\(userID)/accept"
         case let .sendFriendRequest(userID),
-            let .deleteFriend(userID):
+             let .deleteFriend(userID):
             return "/friends/\(userID)"
         case .getBlacklist:
             return "/blacklist"
         case let .addToBlacklist(userID),
-            let .deleteFromBlacklist(userID):
+             let .deleteFromBlacklist(userID):
             return "/blacklist/\(userID)"
         case let .findUsers(name):
             return "/users/search?name=\(name)"
@@ -931,8 +932,8 @@ private extension APIService.Endpoint {
         case .createSportsGround:
             return "/areas"
         case let .getSportsGround(id),
-            let .editSportsGround(id, _),
-            let .deleteSportsGround(id):
+             let .editSportsGround(id, _),
+             let .deleteSportsGround(id):
             return "/areas/\(id)"
         case let .addCommentToSportsGround(groundID, _):
             return "/areas/\(groundID)/comments"
@@ -973,17 +974,17 @@ private extension APIService.Endpoint {
         case let .deleteDialog(dialogID):
             return "/dialogs/\(dialogID)"
         case let .getJournals(userID),
-            let .createJournal(userID, _):
+             let .createJournal(userID, _):
             return "/users/\(userID)/journals"
         case let .getJournal(userID, journalID),
-            let .deleteJournal(userID, journalID),
-            let .editJournalSettings(userID, journalID, _, _, _):
+             let .deleteJournal(userID, journalID),
+             let .editJournalSettings(userID, journalID, _, _, _):
             return "/users/\(userID)/journals/\(journalID)"
         case let .getJournalEntries(userID, journalID),
-            let .saveJournalEntry(userID, journalID, _):
+             let .saveJournalEntry(userID, journalID, _):
             return "/users/\(userID)/journals/\(journalID)/messages"
         case let .editEntry(userID, journalID, entryID, _),
-            let .deleteEntry(userID, journalID, entryID):
+             let .deleteEntry(userID, journalID, entryID):
             return "/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
         case let .deleteEventPhoto(eventID, photoID):
             return "/trainings/\(eventID)/photos/\(photoID)"
@@ -1002,28 +1003,28 @@ private extension APIService.Endpoint {
     var method: HTTPMethod {
         switch self {
         case .registration, .login, .editUser, .resetPassword,
-                .changePassword, .acceptFriendRequest, .sendFriendRequest,
-                .addCommentToSportsGround, .editGroundComment, .postTrainHere,
-                .createEvent, .editEvent, .postGoToEvent, .addToBlacklist,
-                .addCommentToEvent, .editEventComment, .sendMessageTo,
-                .createJournal, .markAsRead, .saveJournalEntry,
-                .createSportsGround, .editSportsGround:
+             .changePassword, .acceptFriendRequest, .sendFriendRequest,
+             .addCommentToSportsGround, .editGroundComment, .postTrainHere,
+             .createEvent, .editEvent, .postGoToEvent, .addToBlacklist,
+             .addCommentToEvent, .editEventComment, .sendMessageTo,
+             .createJournal, .markAsRead, .saveJournalEntry,
+             .createSportsGround, .editSportsGround:
             return .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
-                .getAllSportsGrounds, .getSportsGround,
-                .findUsers, .getSportsGroundsForUser, .getBlacklist,
-                .getFutureEvents, .getPastEvents, .getEvent,
-                .getDialogs, .getMessages, .getJournals,
-                .getJournal, .getJournalEntries,
-                .getUpdatedSportsGrounds:
+             .getAllSportsGrounds, .getSportsGround,
+             .findUsers, .getSportsGroundsForUser, .getBlacklist,
+             .getFutureEvents, .getPastEvents, .getEvent,
+             .getDialogs, .getMessages, .getJournals,
+             .getJournal, .getJournalEntries,
+             .getUpdatedSportsGrounds:
             return .get
         case .declineFriendRequest, .deleteFriend, .deleteFromBlacklist,
-                .deleteGroundComment, .deleteTrainHere,
-                .deleteUser, .deleteGoToEvent,
-                .deleteEventComment, .deleteEvent,
-                .deleteDialog, .deleteJournal,
-                .deleteEntry, .deleteSportsGround,
-                .deleteEventPhoto, .deleteGroundPhoto:
+             .deleteGroundComment, .deleteTrainHere,
+             .deleteUser, .deleteGoToEvent,
+             .deleteEventComment, .deleteEvent,
+             .deleteDialog, .deleteJournal,
+             .deleteEntry, .deleteSportsGround,
+             .deleteEventPhoto, .deleteGroundPhoto:
             return .delete
         case .editJournalSettings, .editEntry:
             return .put
@@ -1096,19 +1097,19 @@ private extension APIService.Endpoint {
     var httpBody: Data? {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
-                .acceptFriendRequest, .declineFriendRequest, .findUsers,
-                .sendFriendRequest, .deleteFriend, .getBlacklist,
-                .addToBlacklist, .deleteFromBlacklist,
-                .getSportsGround, .deleteGroundComment, .getSportsGroundsForUser,
-                .postTrainHere, .deleteTrainHere, .deleteUser,
-                .getFutureEvents, .getPastEvents, .getEvent,
-                .postGoToEvent, .deleteGoToEvent,
-                .deleteEventComment, .deleteEvent, .getDialogs,
-                .getMessages, .deleteDialog, .getJournals,
-                .getJournal, .getJournalEntries, .deleteEntry,
-                .deleteJournal, .getAllSportsGrounds,
-                .getUpdatedSportsGrounds, .deleteSportsGround,
-                .deleteEventPhoto, .deleteGroundPhoto:
+             .acceptFriendRequest, .declineFriendRequest, .findUsers,
+             .sendFriendRequest, .deleteFriend, .getBlacklist,
+             .addToBlacklist, .deleteFromBlacklist,
+             .getSportsGround, .deleteGroundComment, .getSportsGroundsForUser,
+             .postTrainHere, .deleteTrainHere, .deleteUser,
+             .getFutureEvents, .getPastEvents, .getEvent,
+             .postGoToEvent, .deleteGoToEvent,
+             .deleteEventComment, .deleteEvent, .getDialogs,
+             .getMessages, .deleteDialog, .getJournals,
+             .getJournal, .getJournalEntries, .deleteEntry,
+             .deleteJournal, .getAllSportsGrounds,
+             .getUpdatedSportsGrounds, .deleteSportsGround,
+             .deleteEventPhoto, .deleteGroundPhoto:
             return nil
         case let .registration(form):
             return Parameter.makeBody(
@@ -1140,9 +1141,9 @@ private extension APIService.Endpoint {
         case let .changePassword(current, new):
             return Parameter.makeBody(from: [.password: current, .newPassword: new])
         case let .addCommentToSportsGround(_, comment),
-            let .addCommentToEvent(_, comment),
-            let .editGroundComment(_, _, comment),
-            let .editEventComment(_, _, comment):
+             let .addCommentToEvent(_, comment),
+             let .editGroundComment(_, _, comment),
+             let .editEventComment(_, _, comment):
             return Parameter.makeBody(from: [.comment: comment])
         case let .sendMessageTo(message, _):
             return Parameter.makeBody(from: [.message: message])
@@ -1151,7 +1152,7 @@ private extension APIService.Endpoint {
         case let .createJournal(_, title):
             return Parameter.makeBody(from: [.title: title])
         case let .saveJournalEntry(_, _, message),
-            let .editEntry(_, _, _, message):
+             let .editEntry(_, _, _, message):
             return Parameter.makeBody(from: [.message: message])
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
             return Parameter.makeBody(

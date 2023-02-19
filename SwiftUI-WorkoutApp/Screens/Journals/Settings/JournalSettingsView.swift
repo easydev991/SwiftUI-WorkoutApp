@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
@@ -91,9 +92,9 @@ private extension JournalSettingsView {
 
     var isSaveButtonDisabled: Bool {
         viewModel.isLoading
-        || !network.isConnected
-        || journal.title.isEmpty
-        || initialJournal == journal
+            || !network.isConnected
+            || journal.title.isEmpty
+            || initialJournal == journal
     }
 
     func setupErrorAlert(with message: String) {

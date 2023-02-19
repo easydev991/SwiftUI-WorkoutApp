@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 @MainActor
 protocol DefaultsProtocol: AnyObject {

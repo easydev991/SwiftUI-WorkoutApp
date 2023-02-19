@@ -1,5 +1,6 @@
 import MapKit
 import SwiftUI
+import SWModels
 
 /// Снапшот карты
 struct MapSnapshotView: View {
@@ -74,9 +75,9 @@ private extension MapSnapshotView {
                 }
                 snapshotImage = image
             } else {
-#if DEBUG
+                #if DEBUG
                 print("--- Error with snapshot: ", (error?.localizedDescription).valueOrEmpty)
-#endif
+                #endif
             }
         }
     }

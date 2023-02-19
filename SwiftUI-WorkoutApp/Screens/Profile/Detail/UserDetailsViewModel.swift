@@ -1,4 +1,5 @@
 import Foundation
+import SWModels
 
 @MainActor
 final class UserDetailsViewModel: ObservableObject {
@@ -38,11 +39,11 @@ final class UserDetailsViewModel: ObservableObject {
             }
             await makeUserInfo(for: user.id, with: defaults)
             friendActionOption = defaults.friendsIdsList.contains(user.id)
-            ? .removeFriend
-            : .sendFriendRequest
+                ? .removeFriend
+                : .sendFriendRequest
             blacklistActionOption = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
-            ? .remove
-            : .add
+                ? .remove
+                : .add
         }
         if !refresh { isLoading.toggle() }
     }

@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Экран для авторизации/восстановления пароля
 struct LoginView: View {

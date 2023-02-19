@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Экран с настройками профиля основного пользователя
 struct ProfileSettingsView: View {

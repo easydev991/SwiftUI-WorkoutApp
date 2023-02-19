@@ -1,5 +1,6 @@
 import MapKit
 import SwiftUI
+import SWModels
 
 struct MapViewUI: UIViewRepresentable {
     /// Уникальный идентификатор карты, чтобы не плодить дубли
@@ -111,14 +112,14 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
         switch annotation {
         case is MKClusterAnnotation:
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterIdentifier) as? MKMarkerAnnotationView
-            ?? .init(annotation: annotation, reuseIdentifier: clusterIdentifier)
+                ?? .init(annotation: annotation, reuseIdentifier: clusterIdentifier)
             view.canShowCallout = true
             view.markerTintColor = .orange
             view.titleVisibility = .visible
             return view
         case is SportsGround:
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKMarkerAnnotationView
-            ?? .init(annotation: annotation, reuseIdentifier: annotationIdentifier)
+                ?? .init(annotation: annotation, reuseIdentifier: annotationIdentifier)
             view.canShowCallout = true
             view.glyphImage = .init(systemName: "mappin")
             view.clusteringIdentifier = clusterIdentifier

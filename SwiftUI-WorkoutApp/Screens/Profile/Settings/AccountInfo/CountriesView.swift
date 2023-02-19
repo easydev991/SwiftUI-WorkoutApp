@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct CountriesView: View {
     @Environment(\.dismiss) private var dismiss
@@ -33,8 +34,8 @@ struct CountriesView: View {
 private extension CountriesView {
     var filteredCountries: [Country] {
         searchQuery.isEmpty
-        ? allCountries
-        : allCountries.filter { $0.name.contains(searchQuery) }
+            ? allCountries
+            : allCountries.filter { $0.name.contains(searchQuery) }
     }
 }
 

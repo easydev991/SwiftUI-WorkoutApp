@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Список диалогов
 struct DialogListView: View {
@@ -90,8 +91,8 @@ private extension DialogListView {
 
     var emptyViewButtonTitle: String {
         hasFriends
-        ? "Открыть список друзей"
-        : "Найти пользователя"
+            ? "Открыть список друзей"
+            : "Найти пользователя"
     }
 
     var dialogList: some View {
