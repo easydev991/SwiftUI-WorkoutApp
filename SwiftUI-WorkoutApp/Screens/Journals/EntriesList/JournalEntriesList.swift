@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {

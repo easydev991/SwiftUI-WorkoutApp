@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран со списком мероприятий
 struct EventsListView: View {

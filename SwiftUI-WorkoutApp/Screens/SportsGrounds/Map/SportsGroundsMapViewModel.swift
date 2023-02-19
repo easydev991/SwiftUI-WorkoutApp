@@ -2,6 +2,7 @@ import Combine
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
+import SWModels
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {

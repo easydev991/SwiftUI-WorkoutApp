@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Ячейка для экранов с дневниками и диалогами
 struct GenericListCell: View {

@@ -1,5 +1,3 @@
-import Foundation
-
 public extension String {
     var withoutHTML: String {
         replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)

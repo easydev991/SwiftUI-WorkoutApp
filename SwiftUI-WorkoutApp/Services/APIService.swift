@@ -1,4 +1,5 @@
 import Foundation
+import SWModels
 
 /// Сервис для обращений к серверу
 struct APIService {

@@ -1,4 +1,5 @@
 import Foundation
+import SWModels
 import UIKit.UIImage
 
 @MainActor

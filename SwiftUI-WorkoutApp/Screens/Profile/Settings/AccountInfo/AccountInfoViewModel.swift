@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import SWModels
 
 @MainActor
 final class AccountInfoViewModel: ObservableObject {

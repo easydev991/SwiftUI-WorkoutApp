@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct UserViewCell: View {
     let model: UserModel

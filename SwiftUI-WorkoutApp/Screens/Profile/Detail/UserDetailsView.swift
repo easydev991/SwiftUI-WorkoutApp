@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {

@@ -2,6 +2,7 @@ import CoreLocation.CLLocation
 import ImagePicker
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {

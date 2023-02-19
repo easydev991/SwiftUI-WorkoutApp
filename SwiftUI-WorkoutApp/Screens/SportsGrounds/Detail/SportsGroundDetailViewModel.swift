@@ -1,5 +1,6 @@
 import FeedbackSender
 import Foundation
+import SWModels
 
 @MainActor
 final class SportsGroundDetailViewModel: ObservableObject {

@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 struct JournalEntryCell: View {
     @EnvironmentObject private var network: NetworkStatus

@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct ChatBubble<Content: View>: View {
     private let messageType: MessageType

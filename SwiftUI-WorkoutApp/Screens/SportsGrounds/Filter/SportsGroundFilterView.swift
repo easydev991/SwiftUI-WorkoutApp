@@ -1,5 +1,6 @@
 import ShortAddressService
 import SwiftUI
+import SWModels
 
 struct SportsGroundFilterView: View {
     @EnvironmentObject private var defaults: DefaultsService

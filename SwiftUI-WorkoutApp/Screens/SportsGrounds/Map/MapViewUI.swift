@@ -1,5 +1,6 @@
 import MapKit
 import SwiftUI
+import SWModels
 
 struct MapViewUI: UIViewRepresentable {
     /// Уникальный идентификатор карты, чтобы не плодить дубли

@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct Country: Codable {
     let id, name: String
     let cities: [City]

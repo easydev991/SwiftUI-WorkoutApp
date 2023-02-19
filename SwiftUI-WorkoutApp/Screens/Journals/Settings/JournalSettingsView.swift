@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss

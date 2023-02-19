@@ -1,5 +1,6 @@
 import SafariServices
 import SwiftUI
+import SWModels
 
 struct SafariVCRepresentable: UIViewControllerRepresentable {
     let url: URL

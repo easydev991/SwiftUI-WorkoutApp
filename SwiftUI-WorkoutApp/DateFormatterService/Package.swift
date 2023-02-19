@@ -12,13 +12,11 @@ let package = Package(
             targets: ["DateFormatterService"]
         )
     ],
-    dependencies: [
-        .package(path: "../Utils")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "DateFormatterService",
-            dependencies: ["Utils"]
+            dependencies: []
         ),
         .testTarget(
             name: "DateFormatterServiceTests",

@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 /// Список заявок на добавление в друзья
 struct FriendRequestsView: View {

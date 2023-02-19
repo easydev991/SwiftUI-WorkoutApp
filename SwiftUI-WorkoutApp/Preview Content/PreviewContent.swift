@@ -1,5 +1,5 @@
 #if DEBUG
-import Foundation
+import SWModels
 
 extension Photo {
     static var preview: Photo {

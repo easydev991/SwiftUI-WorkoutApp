@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct CountriesView: View {
     @Environment(\.dismiss) private var dismiss

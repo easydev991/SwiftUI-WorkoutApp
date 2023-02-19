@@ -1,5 +1,6 @@
 import NetworkStatus
 import SwiftUI
+import SWModels
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {

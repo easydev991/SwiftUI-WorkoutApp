@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 
 struct EventViewCell: View {
     @Binding private var event: EventResponse
