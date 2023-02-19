@@ -190,8 +190,8 @@ private extension SportsGroundDetailView {
             }
             .disabled(
                 !defaults.isAuthorized
-                || viewModel.ground.authorID == defaults.mainUserInfo?.userID
-                || !network.isConnected
+                    || viewModel.ground.authorID == defaults.mainUserInfo?.userID
+                    || !network.isConnected
             )
         }
     }
@@ -266,8 +266,8 @@ private extension SportsGroundDetailView {
 
     var isGroundAuthor: Bool {
         defaults.isAuthorized
-        ? viewModel.ground.authorID == defaults.mainUserInfo?.userID
-        : false
+            ? viewModel.ground.authorID == defaults.mainUserInfo?.userID
+            : false
     }
 
     func closeAlert() {

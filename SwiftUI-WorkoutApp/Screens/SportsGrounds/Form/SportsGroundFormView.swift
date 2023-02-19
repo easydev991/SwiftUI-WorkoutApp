@@ -139,8 +139,8 @@ private extension SportsGroundFormView {
             ButtonInForm("Сохранить", action: saveAction)
                 .disabled(
                     !viewModel.isFormReady
-                    || viewModel.isLoading
-                    || !network.isConnected
+                        || viewModel.isLoading
+                        || !network.isConnected
                 )
         }
     }

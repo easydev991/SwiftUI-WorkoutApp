@@ -109,11 +109,11 @@ private extension SportsGroundFilterView {
 
     var canResetFilter: Bool {
         let isGroundFilterDifferent =
-        filter.size.count != defaultFilter.size.count
-        || filter.grade.count != defaultFilter.grade.count
+            filter.size.count != defaultFilter.size.count
+                || filter.grade.count != defaultFilter.grade.count
         let isCityFilterDifferent = defaults.isAuthorized
-        ? filter.onlyMyCity != defaultFilter.onlyMyCity
-        : false
+            ? filter.onlyMyCity != defaultFilter.onlyMyCity
+            : false
         return isGroundFilterDifferent || isCityFilterDifferent
     }
 }

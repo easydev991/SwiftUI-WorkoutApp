@@ -147,8 +147,8 @@ private extension EventFormView {
         } footer: {
             Text(
                 viewModel.imagesLimit <= 0
-                ? "Больше добавить фото нельзя"
-                : "Можно добавить еще \(viewModel.imagesLimit) фото"
+                    ? "Больше добавить фото нельзя"
+                    : "Можно добавить еще \(viewModel.imagesLimit) фото"
             )
         }
     }
@@ -166,8 +166,8 @@ private extension EventFormView {
             ButtonInForm("Сохранить", action: saveAction)
                 .disabled(
                     !viewModel.isFormReady
-                    || viewModel.isLoading
-                    || !network.isConnected
+                        || viewModel.isLoading
+                        || !network.isConnected
                 )
         }
     }

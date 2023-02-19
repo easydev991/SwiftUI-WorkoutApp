@@ -90,8 +90,8 @@ private extension DialogListView {
 
     var emptyViewButtonTitle: String {
         hasFriends
-        ? "Открыть список друзей"
-        : "Найти пользователя"
+            ? "Открыть список друзей"
+            : "Найти пользователя"
     }
 
     var dialogList: some View {

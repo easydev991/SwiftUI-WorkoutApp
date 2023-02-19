@@ -35,8 +35,8 @@ struct ChatBubbleShape: Shape {
 
     func path(in rect: CGRect) -> Path {
         position == .incoming
-        ? getLeftBubblePath(in: rect)
-        : getRightBubblePath(in: rect)
+            ? getLeftBubblePath(in: rect)
+            : getRightBubblePath(in: rect)
     }
 
     private func getLeftBubblePath(in rect: CGRect) -> Path {
@@ -134,8 +134,10 @@ struct ChatBubble_Previews: PreviewProvider {
         VStack {
             ChatBubble(.incoming) {
                 VStack(alignment: .trailing, spacing: 8) {
-                    Text("orem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper.")
-                        .padding([.top, .leading, .trailing], 12)
+                    Text(
+                        "orem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper."
+                    )
+                    .padding([.top, .leading, .trailing], 12)
                     Text("11:22")
                         .font(.caption2)
                         .padding(.trailing, 16)

@@ -88,7 +88,7 @@ private extension ChangePasswordView {
         ButtonInForm("Сохранить изменения", action: changePasswordTapped)
             .disabled(
                 viewModel.isChangeButtonDisabled
-                || !network.isConnected
+                    || !network.isConnected
             )
     }
 

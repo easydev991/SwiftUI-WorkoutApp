@@ -82,10 +82,10 @@ extension UserModel {
 
     var isFull: Bool {
         id != .zero
-        && imageURL != nil
-        && name != ""
-        && age != .zero
-        && countryID != .zero
+            && imageURL != nil
+            && name != ""
+            && age != .zero
+            && countryID != .zero
     }
 
     static var emptyValue: UserModel {

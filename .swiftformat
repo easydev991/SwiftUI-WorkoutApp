@@ -76,22 +76,12 @@ unusedArguments, \
 preferKeyPath
 
 --disable isEmpty, \
-indent, \
 markTypes, \
 organizeDeclarations, \
-wrapMultilineStatementBraces, \
-wrap, \
-linebreakAtEndOfFile, \
 numberFormatting, \
-opaqueGenericParameters, \
-redundantRawValues, \
 sortDeclarations, \
 sortedSwitchCases, \
-trailingClosures, \
-wrapSwitchCases, \
-wrapEnumCases, \
-wrapConditionalBodies, \
-yodaConditions
+wrapMultilineStatementBraces
 
 # Exclude
 --exclude \

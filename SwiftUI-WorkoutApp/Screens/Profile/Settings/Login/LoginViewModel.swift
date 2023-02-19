@@ -48,7 +48,7 @@ final class LoginViewModel: ObservableObject {
 extension LoginViewModel {
     var canLogIn: Bool {
         !login.isEmpty
-        && password.count >= Constants.minPasswordSize
+            && password.count >= Constants.minPasswordSize
     }
 
     var canRestorePassword: Bool { !login.isEmpty }

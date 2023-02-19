@@ -134,8 +134,8 @@ private extension DialogView {
 
     var isSendButtonDisabled: Bool {
         viewModel.newMessage.isEmpty
-        || viewModel.isLoading
-        || !network.isConnected
+            || viewModel.isLoading
+            || !network.isConnected
     }
 
     func updateDialogUnreadCount(isRead: Bool) {
@@ -160,8 +160,8 @@ private extension DialogView {
 
     func messageType(for message: MessageResponse) -> MessageType {
         message.userID == defaults.mainUserInfo?.userID
-        ? .sent
-        : .incoming
+            ? .sent
+            : .incoming
     }
 
     func setupErrorAlert(with message: String) {

@@ -51,9 +51,9 @@ extension SportsGroundForm {
     /// Готовность формы к созданию новой площадки
     var isReadyToCreate: Bool {
         !address.isEmpty
-        && !latitude.isEmpty
-        && !longitude.isEmpty
-        && cityID != .zero
+            && !latitude.isEmpty
+            && !longitude.isEmpty
+            && cityID != .zero
     }
 
     /// Готовность формы к отправке обновлений по площадке
@@ -65,10 +65,10 @@ extension SportsGroundForm {
 extension SportsGroundForm: Equatable {
     static func == (lhs: SportsGroundForm, rhs: SportsGroundForm) -> Bool {
         lhs.address == rhs.address
-        && lhs.latitude == rhs.latitude
-        && lhs.longitude == rhs.longitude
-        && lhs.cityID == rhs.cityID
-        && lhs.typeID == rhs.typeID
-        && lhs.sizeID == rhs.sizeID
+            && lhs.latitude == rhs.latitude
+            && lhs.longitude == rhs.longitude
+            && lhs.cityID == rhs.cityID
+            && lhs.typeID == rhs.typeID
+            && lhs.sizeID == rhs.sizeID
     }
 }

@@ -28,8 +28,8 @@ final class ChangePasswordViewModel: ObservableObject {
 extension ChangePasswordViewModel {
     var isChangeButtonDisabled: Bool {
         isLoading
-        || currentPasswordText.count < Constants.minPasswordSize
-        || newPasswordText.count < Constants.minPasswordSize
-        || newPasswordText != newPasswordTextAgain
+            || currentPasswordText.count < Constants.minPasswordSize
+            || newPasswordText.count < Constants.minPasswordSize
+            || newPasswordText != newPasswordTextAgain
     }
 }

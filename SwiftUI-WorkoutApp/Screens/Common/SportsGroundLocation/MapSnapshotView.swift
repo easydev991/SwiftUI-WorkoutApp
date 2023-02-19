@@ -74,9 +74,9 @@ private extension MapSnapshotView {
                 }
                 snapshotImage = image
             } else {
-#if DEBUG
+                #if DEBUG
                 print("--- Error with snapshot: ", (error?.localizedDescription).valueOrEmpty)
-#endif
+                #endif
             }
         }
     }

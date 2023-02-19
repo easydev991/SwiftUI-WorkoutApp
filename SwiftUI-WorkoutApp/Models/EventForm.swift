@@ -39,8 +39,8 @@ extension EventForm {
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
         !title.isEmpty
-        && !description.isEmpty
-        && sportsGround.id != .zero
+            && !description.isEmpty
+            && sportsGround.id != .zero
     }
 
     /// Готовность формы к отправке обновлений по мероприятию
@@ -54,8 +54,8 @@ extension EventForm {
 extension EventForm: Equatable {
     static func == (lhs: EventForm, rhs: EventForm) -> Bool {
         lhs.title == rhs.title
-        && lhs.description == rhs.description
-        && lhs.sportsGround.id == rhs.sportsGround.id
-        && lhs.date == rhs.date
+            && lhs.description == rhs.description
+            && lhs.sportsGround.id == rhs.sportsGround.id
+            && lhs.date == rhs.date
     }
 }

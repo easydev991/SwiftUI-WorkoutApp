@@ -154,7 +154,7 @@ extension EventResponse {
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         participantsCount.valueOrZero > .zero && !participants.isEmpty
-        || commentsCount.valueOrZero > .zero && !comments.isEmpty
+            || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
 
     static var emptyValue: EventResponse {

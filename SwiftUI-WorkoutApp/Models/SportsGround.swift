@@ -209,7 +209,7 @@ extension SportsGround {
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
         usersTrainHereCount.valueOrZero > .zero && !participants.isEmpty
-        || commentsCount.valueOrZero > .zero && !comments.isEmpty
+            || commentsCount.valueOrZero > .zero && !comments.isEmpty
     }
 
     static var emptyValue: SportsGround {

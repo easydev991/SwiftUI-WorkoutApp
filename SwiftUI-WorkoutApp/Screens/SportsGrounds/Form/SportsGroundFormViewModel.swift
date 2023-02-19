@@ -69,21 +69,21 @@ final class SportsGroundFormViewModel: ObservableObject {
 extension SportsGroundFormViewModel {
     var isFormReady: Bool {
         groundID == nil
-        ? groundForm.isReadyToCreate && !newImages.isEmpty
-        : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
+            ? groundForm.isReadyToCreate && !newImages.isEmpty
+            : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
     }
 
     var imagesLimit: Int {
         groundID == nil
-        ? Constants.photosLimit - newImages.count
-        : Constants.photosLimit - newImages.count - groundForm.photosCount
+            ? Constants.photosLimit - newImages.count
+            : Constants.photosLimit - newImages.count - groundForm.photosCount
     }
 
     var canAddImages: Bool {
         guard !isLoading else { return false }
         return groundID == nil
-        ? newImages.count < Constants.photosLimit
-        : (newImages.count + groundForm.photosCount) < Constants.photosLimit
+            ? newImages.count < Constants.photosLimit
+            : (newImages.count + groundForm.photosCount) < Constants.photosLimit
     }
 
     var isNewSportsGround: Bool {

@@ -145,8 +145,8 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
                 if let target = places?.first {
                     self.filter.currentCity = target.locality
                     self.addressString = target.thoroughfare.valueOrEmpty
-                    + " "
-                    + target.subThoroughfare.valueOrEmpty
+                        + " "
+                        + target.subThoroughfare.valueOrEmpty
                 }
             }
             let needUpdateMap = !isRegionSet
@@ -186,9 +186,9 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         if !ignoreUserLocation, !isRegionSet {
             setupDefaultLocation()
         }
-#if DEBUG
+        #if DEBUG
         print("--- locationManager didFailWithError: \(error.localizedDescription)")
-#endif
+        #endif
     }
 }
 
@@ -204,7 +204,7 @@ private extension SportsGroundsMapViewModel {
             var result = [SportsGround]()
             result = self.defaultList.filter { ground in
                 self.filter.size.map(\.code).contains(ground.sizeID)
-                && self.filter.grade.map(\.code).contains(ground.typeID)
+                    && self.filter.grade.map(\.code).contains(ground.typeID)
             }
             guard let countryID, countryID != .zero,
                   let cityID, cityID != .zero,
@@ -219,7 +219,7 @@ private extension SportsGroundsMapViewModel {
             DispatchQueue.main.async {
                 self.sportsGrounds = result.filter {
                     $0.countryID == countryID
-                    && $0.cityID == cityID
+                        && $0.cityID == cityID
                 }
                 self.needUpdateAnnotations.toggle()
             }
@@ -254,8 +254,8 @@ private extension SportsGroundsMapViewModel {
     func setupDefaultLocation(permissionDenied: Bool = false) {
         ignoreUserLocation = true
         locationErrorMessage = permissionDenied
-        ? Constants.Alert.locationPermissionDenied
-        : Constants.Alert.needLocationPermission
+            ? Constants.Alert.locationPermissionDenied
+            : Constants.Alert.needLocationPermission
         let coordinates = ShortAddressService(userCountryID, userCityID).coordinates
         guard coordinates != (.zero, .zero) else { return }
         region = .init(

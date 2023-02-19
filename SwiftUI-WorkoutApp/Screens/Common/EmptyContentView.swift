@@ -49,8 +49,8 @@ private extension EmptyContentView {
         switch mode {
         case .events:
             return defaults.hasSportsGrounds && defaults.isAuthorized
-            ? "Создать мероприятие"
-            : "Выбрать площадку"
+                ? "Создать мероприятие"
+                : "Выбрать площадку"
         case .dialogs:
             return defaults.hasFriends ? "Открыть список друзей" : "Найти пользователя"
         case .journals: return "Создать дневник"

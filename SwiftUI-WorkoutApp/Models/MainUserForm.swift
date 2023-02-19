@@ -45,7 +45,7 @@ extension MainUserForm {
     enum Placeholder: String {
         case userName = "Логин"
         case fullname = "Имя"
-        case email = "email"
+        case email
         case password = "Пароль (минимум 6 символов)"
         case birthDate = "Дата рождения"
         case country = "Страна"
@@ -65,19 +65,19 @@ extension MainUserForm {
     /// Готовность формы к регистрации нового пользователя
     var isReadyToRegister: Bool {
         !userName.isEmpty
-        && !email.isEmpty
-        && password.count >= Constants.minPasswordSize
-        && genderCode != Gender.unspecified.code
-        && birthDate <= Constants.minUserAge
+            && !email.isEmpty
+            && password.count >= Constants.minPasswordSize
+            && genderCode != Gender.unspecified.code
+            && birthDate <= Constants.minUserAge
     }
 
     /// Готовность формы к сохранению обновленных данных
     var isReadyToSave: Bool {
         !userName.isEmpty
-        && !email.isEmpty
-        && !fullName.isEmpty
-        && genderCode != Gender.unspecified.code
-        && birthDate <= Constants.minUserAge
+            && !email.isEmpty
+            && !fullName.isEmpty
+            && genderCode != Gender.unspecified.code
+            && birthDate <= Constants.minUserAge
     }
 
     static var emptyValue: Self {

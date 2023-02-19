@@ -21,8 +21,8 @@ struct TextEntryView: View {
         self.refreshClbk = refreshClbk
         switch mode {
         case let .editGround(info),
-            let .editEvent(info),
-            let .editJournalEntry(info):
+             let .editEvent(info),
+             let .editJournalEntry(info):
             self.oldEntryText = info.oldEntry
         default: break
         }
@@ -30,13 +30,13 @@ struct TextEntryView: View {
 
     var body: some View {
         content
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
-        }
-        .onChange(of: viewModel.isSuccess, perform: dismissOnSuccess)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onAppear(perform: setupOldEntryIfNeeded)
-        .onDisappear(perform: cancelTasks)
+            .alert(errorTitle, isPresented: $showErrorAlert) {
+                Button("Ok", action: closeAlert)
+            }
+            .onChange(of: viewModel.isSuccess, perform: dismissOnSuccess)
+            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+            .onAppear(perform: setupOldEntryIfNeeded)
+            .onDisappear(perform: cancelTasks)
     }
 }
 
