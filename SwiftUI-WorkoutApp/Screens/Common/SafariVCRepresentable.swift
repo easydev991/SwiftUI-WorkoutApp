@@ -15,7 +15,8 @@ struct SafariVCRepresentable: UIViewControllerRepresentable {
 #if DEBUG
 struct SafariVCRepresentable_Previews: PreviewProvider {
     static var previews: some View {
-        SafariVCRepresentable(url: Constants.accountCreationURL)
+        let accountCreationURL = URL(string: "https://m.workout.su/users/register")!
+        SafariVCRepresentable(url: accountCreationURL)
     }
 }
 #endif

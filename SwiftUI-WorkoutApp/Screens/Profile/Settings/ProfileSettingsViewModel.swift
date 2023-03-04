@@ -5,6 +5,11 @@ import SWModels
 @MainActor
 final class ProfileSettingsViewModel: ObservableObject {
     private let feedbackSender: FeedbackSender
+    let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
+    let workoutShopURL = URL(string: "https://workoutshop.ru")!
+    let developerProfileURL = URL(string: "https://boosty.to/oleg991")!
+    let officialSiteURL = URL(string: "https://workout.su")!
+    let rulesOfServiceURL = URL(string: "https://workout.su/pravila")!
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
 

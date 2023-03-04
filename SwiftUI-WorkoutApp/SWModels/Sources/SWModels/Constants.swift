@@ -4,20 +4,13 @@ public enum Constants {
     public static let minPasswordSize = 6
     public static let photosLimit = 15
     public static let minUserAge = Calendar.current.date(byAdding: .year, value: -13, to: .now) ?? .now
-    public static let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
     public static let authInvitationText = "Авторизуйтесь, чтобы иметь доступ ко всем возможностям"
     public static let registrationInfoText = "Регистрация доступна на сайте workout.su"
     public static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
-    public static let appReviewURL = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
-    public static let workoutShopURL = URL(string: "https://workoutshop.ru")!
-    public static let developerProfileButton = URL(string: "https://boosty.to/oleg991")!
-    public static let officialSiteURL = URL(string: "https://workout.su")!
-    public static let accountCreationURL = URL(string: "https://m.workout.su/users/register")!
     public static let feedbackRecipient = ["info@workout.su"]
 
     public enum RulesOfService {
         public static let registrationForm = "Принимаю условия **[пользовательского соглашения](https://workout.su/pravila)**"
-        public static let aboutApp = URL(string: "https://workout.su/pravila")!
     }
 
     public enum Alert {
