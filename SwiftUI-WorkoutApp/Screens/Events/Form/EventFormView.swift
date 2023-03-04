@@ -100,7 +100,7 @@ private extension EventFormView {
             DatePicker(
                 "Дата и время",
                 selection: $viewModel.eventForm.date,
-                in: .now ... Constants.maxEventFutureDate
+                in: .now ... viewModel.maxEventFutureDate
             )
             .labelsHidden()
         }

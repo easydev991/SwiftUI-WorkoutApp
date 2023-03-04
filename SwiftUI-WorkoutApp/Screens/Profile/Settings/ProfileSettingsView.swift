@@ -150,19 +150,19 @@ private extension ProfileSettingsView {
     }
 
     var rateAppButton: some View {
-        Link(destination: Constants.appReviewURL) {
+        Link(destination: viewModel.appReviewURL) {
             Label("Оценить приложение", systemImage: "star.bubble.fill")
         }
     }
 
     var userAgreementButton: some View {
-        Link(destination: Constants.RulesOfService.aboutApp) {
+        Link(destination: viewModel.rulesOfServiceURL) {
             Label("Пользовательское соглашение", systemImage: "doc.text.fill")
         }
     }
 
     var officialSiteButton: some View {
-        Link(destination: Constants.officialSiteURL) {
+        Link(destination: viewModel.officialSiteURL) {
             Label("Официальный сайт", systemImage: "w.circle.fill")
         }
     }
@@ -173,13 +173,13 @@ private extension ProfileSettingsView {
     }
 
     var workoutShopButton: some View {
-        Link(destination: Constants.workoutShopURL) {
+        Link(destination: viewModel.workoutShopURL) {
             Label("Магазин WORKOUT", systemImage: "bag.fill")
         }
     }
 
     var developerProfileButton: some View {
-        Link(destination: Constants.developerProfileButton) {
+        Link(destination: viewModel.developerProfileURL) {
             Label("Oleg991 на boosty", systemImage: "figure.wave")
         }
     }

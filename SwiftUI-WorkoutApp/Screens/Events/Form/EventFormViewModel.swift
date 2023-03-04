@@ -6,6 +6,7 @@ import UIKit.UIImage
 final class EventFormViewModel: ObservableObject {
     private var eventID: Int?
     private let oldEventForm: EventForm
+    let maxEventFutureDate = Calendar.current.date(byAdding: .year, value: 1, to: .now) ?? .now
     @Published var eventForm: EventForm
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
