@@ -32,28 +32,20 @@ final class UserDetailsViewModel: ObservableObject {
             } else {
                 await makeUserInfo(for: user.id, with: defaults)
             }
+            await checkFriendRequests(with: defaults)
+            await checkBlacklist(with: defaults)
         } else {
             if user.isFull, !refresh {
                 isLoading.toggle()
                 return
             }
             await makeUserInfo(for: user.id, with: defaults)
-            friendActionOption = defaults.friendsIdsList.contains(user.id)
-                ? .removeFriend
-                : .sendFriendRequest
-            blacklistActionOption = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
-                ? .remove
-                : .add
+            let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
+            friendActionOption = isPersonInFriendList ? .removeFriend : .sendFriendRequest
+            let isPersonBlocked = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
+            blacklistActionOption = isPersonBlocked ? .remove : .add
         }
         if !refresh { isLoading.toggle() }
-    }
-
-    func checkFriendRequests(with defaults: DefaultsProtocol) async {
-        try? await APIService(with: defaults).getFriendRequests()
-    }
-
-    func checkBlacklist(with defaults: DefaultsProtocol) async {
-        _ = try? await APIService(with: defaults).getBlacklist()
     }
 
     func blacklistUser(with defaults: DefaultsProtocol) async {
@@ -108,5 +100,13 @@ private extension UserDetailsViewModel {
         } catch {
             responseMessage = ErrorFilterService.message(from: error)
         }
+    }
+
+    func checkFriendRequests(with defaults: DefaultsProtocol) async {
+        try? await APIService(with: defaults).getFriendRequests()
+    }
+
+    func checkBlacklist(with defaults: DefaultsProtocol) async {
+        try? await APIService(with: defaults).getBlacklist()
     }
 }

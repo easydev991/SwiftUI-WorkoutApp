@@ -26,6 +26,7 @@ final class UsersListViewModel: ObservableObject {
         do {
             if try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
                 friendRequests = defaults.friendRequestsList.map(UserModel.init)
+                defaults.setUserNeedUpdate(true)
             }
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
@@ -62,8 +63,10 @@ private extension UsersListViewModel {
     func makeBlacklist(refresh: Bool, with defaults: DefaultsProtocol) async {
         if !refresh { isLoading.toggle() }
         do {
-            let blacklist = try await APIService(with: defaults).getBlacklist()
-            users = blacklist.map(UserModel.init)
+            if defaults.blacklistedUsers.isEmpty {
+                try await APIService(with: defaults).getBlacklist()
+            }
+            users = defaults.blacklistedUsers.map(UserModel.init)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

@@ -193,16 +193,18 @@ private extension UserDetailsView {
 
     var friendsButton: some View {
         NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
-            HStack {
+            HStack(spacing: 8) {
                 Label("Друзья", systemImage: "person.3.sequence.fill")
                 Spacer()
                 if friendRequestsCount > .zero, isMainUser {
                     Image(systemName: "\(friendRequestsCount).circle.fill")
                         .foregroundColor(.red)
-                        .padding(.trailing, 8)
+                }
+                if viewModel.user.friendsCount > .zero {
+                    Text(viewModel.user.friendsCount.description)
+                        .foregroundColor(.secondary)
                 }
             }
-            .badge(viewModel.user.friendsCount.description)
         }
     }
 
@@ -240,10 +242,6 @@ private extension UserDetailsView {
 
     func askForUserInfo(refresh: Bool = false) async {
         await viewModel.makeUserInfo(refresh: refresh, with: defaults)
-        if isMainUser {
-            await viewModel.checkFriendRequests(with: defaults)
-            await viewModel.checkBlacklist(with: defaults)
-        }
     }
 
     var messageSheet: some View {

@@ -142,12 +142,10 @@ struct APIService {
     }
 
     /// Загружает черный список пользователей, в случае успеха сохраняет в `defaults`
-    @discardableResult
-    func getBlacklist() async throws -> [UserResponse] {
+    func getBlacklist() async throws {
         let endpoint = Endpoint.getBlacklist
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest(with: baseUrlString))
         try await defaults.saveBlacklist(result)
-        return result
     }
 
     /// Отвечает на заявку для добавления в друзья
