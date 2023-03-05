@@ -51,6 +51,7 @@ struct SendMessageView: View {
                 .opacity(isLoading ? 1 : 0)
         }
         .disabled(isLoading)
+        .interactiveDismissDisabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: dismissError)
         }
