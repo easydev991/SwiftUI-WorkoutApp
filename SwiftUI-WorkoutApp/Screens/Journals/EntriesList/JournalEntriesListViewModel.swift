@@ -32,6 +32,13 @@ final class JournalEntriesListViewModel: ObservableObject {
         if !refresh { isLoading.toggle() }
     }
 
+    /// Проверяем возможность удаления указанной записи
+    ///
+    /// Сервер не дает удалить самую первую запись в дневнике
+    func checkIfCanDelete(entry: JournalEntryResponse) -> Bool {
+        entry.id != list.map(\.id).min()
+    }
+
     func delete(_ entryID: Int?, with defaults: DefaultsProtocol) async {
         guard let entryID, !isLoading else { return }
         isLoading.toggle()

@@ -7,6 +7,7 @@ struct JournalEntryCell: View {
     @EnvironmentObject private var defaults: DefaultsService
     let model: JournalEntryResponse
     let reportClbk: (JournalEntryResponse) -> Void
+    let canDelete: Bool
     let deleteClbk: (Int) -> Void
     let editClbk: (JournalEntryResponse) -> Void
 
@@ -46,10 +47,12 @@ private extension JournalEntryCell {
                 } label: {
                     Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
                 }
-                Button(role: .destructive) {
-                    deleteClbk(model.id)
-                } label: {
-                    Label("Удалить", systemImage: "trash")
+                if canDelete {
+                    Button(role: .destructive) {
+                        deleteClbk(model.id)
+                    } label: {
+                        Label("Удалить", systemImage: "trash")
+                    }
                 }
             } else {
                 Button(role: .destructive) {
@@ -78,6 +81,7 @@ struct JournalEntryCell_Previews: PreviewProvider {
         JournalEntryCell(
             model: .preview,
             reportClbk: { _ in },
+            canDelete: true,
             deleteClbk: { _ in },
             editClbk: { _ in }
         )
