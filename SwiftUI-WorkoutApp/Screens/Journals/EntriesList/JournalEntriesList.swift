@@ -32,6 +32,7 @@ struct JournalEntriesList: View {
                 JournalEntryCell(
                     model: $0,
                     reportClbk: { viewModel.reportEntry($0) },
+                    canDelete: viewModel.checkIfCanDelete(entry: $0),
                     deleteClbk: initiateDeletion,
                     editClbk: setupEntryToEdit
                 )
