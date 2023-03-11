@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 
@@ -19,6 +20,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
+                .accentColor(Colors.globalAccent)
         }
         .onChange(of: scenePhase) {
             if case .background = $0 {
