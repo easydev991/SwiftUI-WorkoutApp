@@ -2,11 +2,7 @@ import SwiftUI
 import SWModels
 
 struct EventViewCell: View {
-    @Binding private var event: EventResponse
-
-    init(for event: Binding<EventResponse>) {
-        self._event = event
-    }
+    let event: EventResponse
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -32,7 +28,7 @@ struct EventViewCell: View {
 #if DEBUG
 struct EventViewCell_Previews: PreviewProvider {
     static var previews: some View {
-        EventViewCell(for: .constant(.preview))
+        EventViewCell(event: .preview)
             .previewLayout(.sizeThatFits)
     }
 }
