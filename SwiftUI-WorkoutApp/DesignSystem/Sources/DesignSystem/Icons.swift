@@ -27,7 +27,7 @@ public enum Icons {
         case plus = "plus.circle"
         case gearshape
         case refresh = "arrow.triangle.2.circlepath"
-        case exclamation = "exclamationmark.circle"
+        case exclamation = "exclamationmark.triangle"
         case xmark = "xmark.circle"
         case filter = "line.3.horizontal.decrease.circle"
         case magnifyingglass
