@@ -3,6 +3,10 @@ import SwiftUI
 public extension Image {
     /// Картинка для вкладки с площадками в таббаре
     static let sportsGroundIcon = Image("SportsGroundTabbarIcon", bundle: .module)
+    /// Иконка геолокации
+    static let locationIcon = Image("locationIcon", bundle: .module)
+    /// Картинка-заглушка
+    static let defaultWorkoutImage = Image("defaultWorkoutImage", bundle: .module)
 }
 
 public enum Icons {
@@ -31,6 +35,10 @@ public enum Icons {
         case xmark = "xmark.circle"
         case filter = "line.3.horizontal.decrease.circle"
         case magnifyingglass
+    }
+
+    public enum Misc: String {
+        case clock
     }
 }
 

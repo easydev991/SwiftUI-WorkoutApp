@@ -13,7 +13,7 @@ public extension Color {
     /// Разделители
     static let gray3 = Color("Gray3", bundle: .module)
     /// Основной текст
-    static let swWhite = Color("Gray3", bundle: .module)
+    static let swWhite = Color("SWWhite", bundle: .module)
     /// `AccentColor` для приложения
     static let swGreen = Color("SWGreen", bundle: .module)
     /// Нажатые кнопки
