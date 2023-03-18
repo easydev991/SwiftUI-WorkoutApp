@@ -11,22 +11,55 @@ public struct SWButtonStyle: ButtonStyle {
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 10) {
-            leadingIconIfNeeded
-            configuration.label
-                .lineLimit(1)
-                .font(.headline)
+        contentStack(configuration)
+            .foregroundColor(foregroundColor)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity)
+            .background {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .foregroundColor(backgroundColor(configuration.isPressed))
+            }
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeIn(duration: 0.1), value: configuration.isPressed)
+    }
+
+    @ViewBuilder
+    private func contentStack(_ configuration: Configuration) -> some View {
+        switch mode {
+        case let .filled(content):
+            switch content {
+            case let .onlyIcon(icon):
+                Image(systemName: icon.rawValue)
+            case let .iconWithText(icon):
+                HStack(spacing: 10) {
+                    Image(systemName: icon.rawValue)
+                    configuration.label
+                        .lineLimit(1)
+                        .font(.headline)
+                }
+            case .onlyText:
+                configuration.label
+                    .lineLimit(1)
+                    .font(.headline)
+            }
+        case let .tinted(content):
+            switch content {
+            case let .onlyIcon(icon):
+                Image(systemName: icon.rawValue)
+            case let .iconWithText(icon):
+                HStack(spacing: 10) {
+                    Image(systemName: icon.rawValue)
+                    configuration.label
+                        .lineLimit(1)
+                        .font(.headline)
+                }
+            case .onlyText:
+                configuration.label
+                    .lineLimit(1)
+                    .font(.headline)
+            }
         }
-        .foregroundColor(foregroundColor)
-        .padding(.vertical, 12)
-        .padding(.horizontal, 20)
-        .frame(maxWidth: .infinity)
-        .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .foregroundColor(backgroundColor(configuration.isPressed))
-        }
-        .scaleEffect(configuration.isPressed ? 0.98 : 1)
-        .animation(.easeIn(duration: 0.1), value: configuration.isPressed)
     }
 
     @ViewBuilder
