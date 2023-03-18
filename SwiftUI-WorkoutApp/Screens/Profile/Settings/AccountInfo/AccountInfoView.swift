@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -193,6 +194,7 @@ private extension AccountInfoView {
                 Text(.init(Constants.RulesOfService.registrationForm))
                     .accentColor(.blue)
             }
+            .tint(.swGreen)
         }
     }
 

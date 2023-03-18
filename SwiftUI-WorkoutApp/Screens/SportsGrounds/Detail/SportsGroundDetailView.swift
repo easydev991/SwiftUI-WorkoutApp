@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -134,6 +135,7 @@ private extension SportsGroundDetailView {
             Toggle("Тренируюсь здесь", isOn: $trainHere)
                 .disabled(viewModel.isLoading || !network.isConnected)
                 .onChange(of: trainHere, perform: changeTrainHereStatus)
+                .tint(.swGreen)
             createEventButton
         }
     }
