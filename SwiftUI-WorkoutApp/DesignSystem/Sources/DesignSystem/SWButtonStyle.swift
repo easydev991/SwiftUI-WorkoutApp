@@ -1,45 +1,55 @@
 import SwiftUI
 
-struct SWButtonStyle: ButtonStyle {
+public struct SWButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
-    let mode: Mode
+    private let mode: Mode
+    private let icon: Icons.SWButton?
 
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(tintColor)
-            .font(.headline)
-            .padding(.vertical, 12)
-            .padding(.horizontal, 20)
-            .frame(maxWidth: .infinity)
-            .background {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .foregroundColor(backgroundColor(isPressed: configuration.isPressed))
-            }
-            .scaleEffect(configuration.isPressed ? 0.99 : 1)
-            .animation(.easeIn(duration: 0.1), value: configuration.isPressed)
+    public init(mode: SWButtonStyle.Mode, icon: Icons.SWButton? = nil) {
+        self.mode = mode
+        self.icon = icon
     }
-}
 
-extension SWButtonStyle {
-    enum Mode: CaseIterable, Identifiable {
-        var id: Self { self }
+    public func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 10) {
+            leadingIconIfNeeded
+            configuration.label
+                .lineLimit(1)
+                .font(.headline)
+        }
+        .foregroundColor(foregroundColor)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 20)
+        .frame(maxWidth: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .foregroundColor(backgroundColor(configuration.isPressed))
+        }
+        .scaleEffect(configuration.isPressed ? 0.98 : 1)
+        .animation(.easeIn(duration: 0.1), value: configuration.isPressed)
+    }
 
-        case filled, tinted
-
-        var descriptin: String {
-            switch self {
-            case .filled: return "Filled"
-            case .tinted: return "Tinted"
-            }
+    @ViewBuilder
+    private var leadingIconIfNeeded: some View {
+        if let icon {
+            Image(systemName: icon.rawValue)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 19)
         }
     }
 
-    var tintColor: Color {
+    private var foregroundColor: Color {
         guard isEnabled else { return .gray3 }
-        return mode == .filled ? .black2 : .swGreen
+        switch mode {
+        case .filled:
+            return .black2
+        case .tinted:
+            return .swGreen
+        }
     }
 
-    func backgroundColor(isPressed: Bool) -> Color {
+    private func backgroundColor(_ isPressed: Bool) -> Color {
         guard isEnabled else { return .green3 }
         switch mode {
         case .filled:
@@ -51,22 +61,75 @@ extension SWButtonStyle {
     }
 }
 
+public extension SWButtonStyle {
+    enum Mode {
+        case filled(_ label: LabelContent)
+        case tinted(_ label: LabelContent)
+
+        var description: String {
+            switch self {
+            case .filled: return "Filled"
+            case .tinted: return "Tinted"
+            }
+        }
+
+        public enum LabelContent {
+            case onlyIcon(Icons.SWButton)
+            case onlyText
+            case iconWithText(Icons.SWButton)
+        }
+    }
+}
+
 #if DEBUG
 struct SWButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
-            ForEach(SWButtonStyle.Mode.allCases) { mode in
-                Button(mode.descriptin + " (enabled)", action: {})
-                    .buttonStyle(SWButtonStyle(mode: mode))
-                Button(mode.descriptin + " (disabled)", action: {})
-                    .buttonStyle(SWButtonStyle(mode: mode))
+        List {
+            Section("Текст без иконки") {
+                Button("Filled, only text (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.onlyText)))
+                Button("Filled, only text (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.onlyText)))
+                    .disabled(true)
+                Button("Tinted, only text (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.onlyText)))
+                Button("Tinted, only text (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.onlyText)))
                     .disabled(true)
             }
-            .padding(.horizontal)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            Section("Иконка с текстом") {
+                Button("Filled, icon with text (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.iconWithText(.message))))
+                Button("Filled, icon with text (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.iconWithText(.message))))
+                    .disabled(true)
+                Button("Tinted, icon with text (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.iconWithText(.message))))
+                Button("Tinted, icon with text (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.iconWithText(.message))))
+                    .disabled(true)
+            }
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            Section("Иконка без текста") {
+                Button("Filled, only icon (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.onlyIcon(.message))))
+                Button("Filled, only icon (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .filled(.onlyIcon(.message))))
+                    .disabled(true)
+                Button("Tinted, only icon (enabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.onlyIcon(.message))))
+                Button("Tinted, only icon (disabled)") {}
+                    .buttonStyle(SWButtonStyle(mode: .tinted(.onlyIcon(.message))))
+                    .disabled(true)
+            }
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
         }
-        .padding()
+        .listStyle(.grouped)
         .previewDisplayName("SWButtonStyle")
-        .previewLayout(.sizeThatFits)
     }
 }
 #endif
