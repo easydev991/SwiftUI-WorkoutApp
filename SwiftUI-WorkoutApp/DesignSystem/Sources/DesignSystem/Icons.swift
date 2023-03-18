@@ -1,14 +1,27 @@
 import SwiftUI
 
+public extension Image {
+    /// Картинка для вкладки с площадками в таббаре
+    static let sportsGroundIcon = Image("SportsGroundTabbarIcon", bundle: .module)
+}
+
 public enum Icons {
-    /// Иконки, используемые внутри кнопок со стилем `SWButtonStyle`
+    /// Названия системных иконок для таббара
+    public enum Tabbar: String {
+        case events = "person.3"
+        case messages = "message"
+        case journals = "list.bullet.circle"
+        case profile = "person"
+    }
+
+    /// Названия системных иконок, используемых внутри кнопок со стилем `SWButtonStyle`
     public enum SWButton: String, CaseIterable {
         case message
         case addPerson = "person.crop.circle.badge.plus"
         case deletePerson = "person.crop.circle.badge.minus"
     }
 
-    /// Иконки, используемые внутри обычных кнопок
+    /// Названия системных иконок, используемых внутри обычных кнопок
     public enum Button: String, CaseIterable {
         case info = "info.circle"
         case plus = "plus.circle"
