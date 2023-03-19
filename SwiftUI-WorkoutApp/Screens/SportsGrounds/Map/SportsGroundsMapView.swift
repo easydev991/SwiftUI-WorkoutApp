@@ -154,18 +154,22 @@ private extension SportsGroundsMapView {
     }
 
     var locationSettingsReminder: some View {
-        VStack {
+        VStack(spacing: 12) {
             Text(viewModel.locationErrorMessage)
+                .foregroundColor(.swWhite)
                 .frame(maxWidth: .infinity)
-                .adaptiveColor(.foreground())
                 .multilineTextAlignment(.center)
-                .padding(8)
-                .adaptiveColor(.background)
-            Button {
+                .padding(.vertical, 12)
+                .padding(.horizontal, 30)
+                .background {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .foregroundColor(.black2)
+                        .withShadow()
+                }
+            Button("Открыть настройки") {
                 viewModel.openAppSettings()
-            } label: {
-                RoundedButtonLabel(title: "Открыть настройки")
             }
+            .buttonStyle(SWButtonStyle(mode: .filled))
             .disabled(viewModel.isLoading)
         }
         .padding(.horizontal)

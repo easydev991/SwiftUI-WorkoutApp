@@ -26,7 +26,7 @@ public enum Constants {
         public static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         public static let locationPermissionDenied = "Запрещен доступ к геолокации"
         public static let needLocationPermission =
-            "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках"
+            "Для отображения твоего\nместоположения необходимо\nразрешить доступ к геолокации в\nнастройках"
         public static let eventCreationRule = "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
     }
 }

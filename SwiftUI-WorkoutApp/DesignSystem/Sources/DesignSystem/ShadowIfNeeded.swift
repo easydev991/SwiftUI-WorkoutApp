@@ -13,7 +13,7 @@ struct ShadowIfNeededModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func withShadow() -> some View {
         modifier(ShadowIfNeededModifier())
     }
