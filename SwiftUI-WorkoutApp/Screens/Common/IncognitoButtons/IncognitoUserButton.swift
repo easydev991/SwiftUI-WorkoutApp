@@ -1,16 +1,18 @@
+import DesignSystem
 import SwiftUI
 
 struct IncognitoUserButton: View {
+    @State private var isLinkActive = false
     let mode: IncognitoUserButton.Mode
 
     var body: some View {
-        NavigationLink(destination: mode.destination) {
-            mode.label
-        }
+        NavigationLink(mode.title, destination: mode.destination, isActive: $isLinkActive)
+            .buttonStyle(SWButtonStyle(mode: .filled))
     }
 }
 
 extension IncognitoUserButton {
+    #warning("Убрать inForm при редизайне")
     enum Mode {
         /// Регистрация
         ///
@@ -18,19 +20,6 @@ extension IncognitoUserButton {
         case register(inForm: Bool)
         /// Авторизация
         case authorize(inForm: Bool)
-
-        @ViewBuilder
-        var label: some View {
-            switch self {
-            case let .register(inForm), let .authorize(inForm):
-                if inForm {
-                    Label(title, systemImage: systemImageName)
-                } else {
-                    Label(title, systemImage: systemImageName)
-                        .roundedStyle()
-                }
-            }
-        }
     }
 }
 
@@ -41,15 +30,6 @@ private extension IncognitoUserButton.Mode {
             return "Регистрация"
         case .authorize:
             return "Авторизация"
-        }
-    }
-
-    var systemImageName: String {
-        switch self {
-        case .register:
-            return "person.badge.plus"
-        case .authorize:
-            return "arrow.forward.circle"
         }
     }
 
@@ -65,13 +45,13 @@ private extension IncognitoUserButton.Mode {
 #if DEBUG
 struct IncognitoUserButton_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
-            IncognitoUserButton(mode: .authorize(inForm: true))
-            IncognitoUserButton(mode: .register(inForm: true))
-            IncognitoUserButton(mode: .authorize(inForm: false))
-            IncognitoUserButton(mode: .register(inForm: false))
+        NavigationView {
+            VStack(spacing: 16) {
+                IncognitoUserButton(mode: .authorize(inForm: false))
+                IncognitoUserButton(mode: .register(inForm: false))
+            }
+            .padding(.horizontal)
         }
-        .padding()
         .previewDisplayName("Инкогнито экран")
     }
 }

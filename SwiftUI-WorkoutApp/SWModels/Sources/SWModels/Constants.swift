@@ -4,7 +4,7 @@ public enum Constants {
     public static let minPasswordSize = 6
     public static let photosLimit = 15
     public static let minUserAge = Calendar.current.date(byAdding: .year, value: -13, to: .now) ?? .now
-    public static let authInvitationText = "Авторизуйтесь, чтобы иметь доступ ко всем возможностям"
+    public static let authInvitationText = "Авторизуйтесь, чтобы иметь\nдоступ ко всем возможностям"
     public static let registrationInfoText = "Регистрация доступна на сайте workout.su"
     public static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     public static let feedbackRecipient = ["info@workout.su"]

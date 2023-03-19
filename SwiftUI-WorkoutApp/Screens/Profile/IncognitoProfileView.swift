@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -21,15 +22,16 @@ struct IncognitoProfileView: View {
 private extension IncognitoProfileView {
     var authInvitation: some View {
         Text(Constants.authInvitationText)
-            .font(.title3)
             .multilineTextAlignment(.center)
-            .padding(.horizontal)
+            .foregroundColor(.swBlack)
+            .padding(.bottom, 6)
     }
 
     var registrationInfo: some View {
         Text(Constants.registrationInfoText)
-            .font(.subheadline)
+            .font(.footnote.weight(.medium))
             .multilineTextAlignment(.center)
+            .foregroundColor(.swBlack)
     }
 }
 
