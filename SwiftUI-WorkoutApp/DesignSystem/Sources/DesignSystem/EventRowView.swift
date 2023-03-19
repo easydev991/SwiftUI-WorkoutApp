@@ -1,7 +1,6 @@
 import CachedAcyncImage
 import SwiftUI
 
-/// `EventViewCell`
 public struct EventRowView: View {
     private let imageURL: URL?
     private let title: String
@@ -32,9 +31,7 @@ public struct EventRowView: View {
                 }
             }
         }
-        .frame(height: 74)
-        .padding(.vertical, 16)
-        .padding(.horizontal, 12)
+        .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .foregroundColor(.gray1)
@@ -48,19 +45,15 @@ private extension EventRowView {
         CachedAsyncImage(
             url: imageURL,
             content: { image in
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .cornerRadius(12)
-                    .frame(width: 74)
+                Image(uiImage: image).resizable()
             },
             placeholder: {
-                Image.defaultWorkoutImage
-                    .resizable()
-                    .scaledToFit()
-                    .cornerRadius(12)
+                Image.defaultWorkoutImage.resizable()
             }
         )
+        .scaledToFit()
+        .frame(width: 74)
+        .cornerRadius(12)
     }
 
     var eventTitle: some View {
