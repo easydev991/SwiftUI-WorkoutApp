@@ -77,6 +77,7 @@ private extension EventRowView {
                 .font(.caption)
                 .lineLimit(1)
         }
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     @ViewBuilder
