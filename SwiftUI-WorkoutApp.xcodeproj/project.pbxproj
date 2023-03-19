@@ -29,7 +29,6 @@
 		672609542977CCD300042226 /* AdaptiveColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672609532977CCD300042226 /* AdaptiveColorModifier.swift */; };
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
 		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
-		67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACC282E6C4A004F5339 /* SportsGroundViewCell.swift */; };
 		67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */; };
 		67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */; };
 		67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */; };
@@ -163,7 +162,6 @@
 		672609532977CCD300042226 /* AdaptiveColorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveColorModifier.swift; sourceTree = "<group>"; };
 		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
 		6734D39229BC693D0000B5B1 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = "SwiftUI-WorkoutApp/DesignSystem"; sourceTree = "<group>"; };
-		67419ACC282E6C4A004F5339 /* SportsGroundViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundViewCell.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsListView.swift; sourceTree = "<group>"; };
 		67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundListViewModel.swift; sourceTree = "<group>"; };
 		67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedDefaultImage.swift; sourceTree = "<group>"; };
@@ -507,7 +505,6 @@
 		6770A8322834D3810006B672 /* List */ = {
 			isa = PBXGroup;
 			children = (
-				67419ACC282E6C4A004F5339 /* SportsGroundViewCell.swift */,
 				67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */,
 				67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */,
 			);
@@ -964,7 +961,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67419ACD282E6C4A004F5339 /* SportsGroundViewCell.swift in Sources */,
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */,
 				67138D792971CA7A00BBF450 /* MessagingViewModel.swift in Sources */,

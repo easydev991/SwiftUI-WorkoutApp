@@ -31,6 +31,7 @@ public struct EventRowView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -45,14 +46,17 @@ private extension EventRowView {
         CachedAsyncImage(
             url: imageURL,
             content: { image in
-                Image(uiImage: image).resizable()
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
             },
             placeholder: {
-                Image.defaultWorkoutImage.resizable()
+                Image.defaultWorkoutImage
+                    .resizable()
+                    .scaledToFit()
             }
         )
-        .scaledToFit()
-        .frame(width: 74)
+        .frame(width: 74, height: 74)
         .cornerRadius(12)
     }
 

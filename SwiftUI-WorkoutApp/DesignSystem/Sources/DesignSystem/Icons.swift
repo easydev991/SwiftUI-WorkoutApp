@@ -39,6 +39,7 @@ public enum Icons {
 
     public enum Misc: String {
         case clock
+        case personInCircle = "person.circle"
     }
 }
 

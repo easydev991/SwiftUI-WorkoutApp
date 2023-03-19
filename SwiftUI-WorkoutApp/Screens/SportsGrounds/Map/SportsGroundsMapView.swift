@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -95,16 +96,26 @@ private extension SportsGroundsMapView {
     var groundsContent: some View {
         switch presentation {
         case .list:
-            List(viewModel.sportsGrounds) { ground in
-                NavigationLink {
-                    SportsGroundDetailView(
-                        for: ground,
-                        onDeletion: updateDeleted
-                    )
-                } label: {
-                    SportsGroundViewCell(model: ground)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    ForEach(viewModel.sportsGrounds) { ground in
+                        NavigationLink {
+                            SportsGroundDetailView(
+                                for: ground,
+                                onDeletion: updateDeleted
+                            )
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    }
                 }
-                .accessibilityIdentifier("SportsGroundViewCell")
+                .padding(.horizontal)
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
         case .map:

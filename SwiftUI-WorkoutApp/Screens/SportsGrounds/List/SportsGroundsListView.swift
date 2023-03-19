@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -21,27 +22,42 @@ struct SportsGroundsListView: View {
     }
 
     var body: some View {
-        List(viewModel.list) { ground in
-            switch mode {
-            case .event:
-                Button {
-                    groundInfo = ground
-                    dismiss()
-                } label: {
-                    SportsGroundViewCell(model: ground)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 12) {
+                ForEach(viewModel.list) { ground in
+                    switch mode {
+                    case .event:
+                        Button {
+                            groundInfo = ground
+                            dismiss()
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    default:
+                        NavigationLink {
+                            SportsGroundDetailView(
+                                for: ground,
+                                onDeletion: updateDeleted
+                            )
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    }
                 }
-                .accessibilityIdentifier("SportsGroundViewCell")
-            default:
-                NavigationLink {
-                    SportsGroundDetailView(
-                        for: ground,
-                        onDeletion: updateDeleted
-                    )
-                } label: {
-                    SportsGroundViewCell(model: ground)
-                }
-                .accessibilityIdentifier("SportsGroundViewCell")
             }
+            .padding(.horizontal)
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
