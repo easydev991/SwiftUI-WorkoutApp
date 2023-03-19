@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -11,21 +12,20 @@ struct EmptyContentView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Spacer()
             if network.isConnected {
                 titleText(mode.message)
-                Button(action: action) {
-                    RoundedButtonLabel(title: actionButtonTitle)
+                if defaults.isAuthorized {
+                    Button(actionButtonTitle, action: action)
+                        .buttonStyle(SWButtonStyle(mode: .filled))
                 }
-                .opacity(defaults.isAuthorized ? 1 : 0)
             } else {
                 titleText("Нет соединения с сетью")
                 Image(systemName: "wifi.exclamationmark")
                     .font(.system(size: 60))
             }
             hintTextIfAvailable
-            Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
     }
 }
@@ -33,16 +33,18 @@ struct EmptyContentView: View {
 private extension EmptyContentView {
     func titleText(_ text: String) -> some View {
         Text(text)
-            .font(.title2)
+            .foregroundColor(.swBlack)
             .multilineTextAlignment(.center)
+            .padding(.bottom, 6)
     }
 
     @ViewBuilder
     var hintTextIfAvailable: some View {
         if isHintAvailable {
             Text(Constants.Alert.eventCreationRule)
+                .foregroundColor(.swBlack)
+                .font(.footnote.weight(.medium))
                 .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
         }
     }
 
@@ -73,7 +75,7 @@ private extension EmptyContentView.Mode {
     var message: String {
         switch self {
         case .events:
-            return "Нет запланированных мероприятий"
+            return "Нет запланированных\nмероприятий"
         case .dialogs:
             return "Чатов пока нет"
         case .journals:
@@ -87,6 +89,7 @@ struct EmptyContentView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
             EmptyContentView(mode: mode, action: {})
+                .previewDisplayName(mode.message)
         }
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
