@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -89,11 +90,21 @@ private extension EventsListView {
     }
 
     var eventsList: some View {
-        List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
-            NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
-                EventViewCell(event: event)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 12) {
+                ForEach(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
+                    NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
+                        EventRowView(
+                            imageURL: event.previewImageURL,
+                            title: event.formattedTitle,
+                            dateTimeText: event.eventDateString,
+                            locationText: event.cityName
+                        )
+                    }
+                    .accessibilityIdentifier("EventViewCell")
+                }
             }
-            .accessibilityIdentifier("EventViewCell")
+            .padding(.horizontal)
         }
         .opacity(viewModel.isLoading ? 0 : 1)
     }

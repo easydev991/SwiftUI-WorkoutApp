@@ -1,3 +1,4 @@
+import CachedAcyncImage
 import SwiftUI
 
 /// `EventViewCell`
@@ -5,13 +6,13 @@ public struct EventRowView: View {
     private let imageURL: URL?
     private let title: String
     private let dateTimeText: String
-    private let locationText: String
+    private let locationText: String?
 
     public init(
         imageURL: URL?,
         title: String,
         dateTimeText: String,
-        locationText: String
+        locationText: String?
     ) {
         self.imageURL = imageURL
         self.title = title
@@ -20,14 +21,13 @@ public struct EventRowView: View {
     }
 
     public var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             leadingImage
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 eventTitle
-                Spacer()
                 HStack(spacing: 10) {
                     eventDateTimeInfo
-                    locationInfo
+                    locationInfoIfNeeded
                     Spacer()
                 }
             }
@@ -44,12 +44,23 @@ public struct EventRowView: View {
 }
 
 private extension EventRowView {
-    #warning("Заменить на картинку с кэшированием")
     var leadingImage: some View {
-        Image.defaultWorkoutImage
-            .resizable()
-            .scaledToFit()
-            .cornerRadius(12)
+        CachedAsyncImage(
+            url: imageURL,
+            content: { image in
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(12)
+                    .frame(width: 74)
+            },
+            placeholder: {
+                Image.defaultWorkoutImage
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(12)
+            }
+        )
     }
 
     var eventTitle: some View {
@@ -71,17 +82,20 @@ private extension EventRowView {
         }
     }
 
-    var locationInfo: some View {
-        HStack(spacing: 4) {
-            Image.locationIcon
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20)
-                .foregroundColor(.swGreen)
-            Text(locationText)
-                .foregroundColor(.gray2)
-                .font(.caption)
-                .lineLimit(1)
+    @ViewBuilder
+    var locationInfoIfNeeded: some View {
+        if let locationText {
+            HStack(spacing: 4) {
+                Image.locationIcon
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
+                    .foregroundColor(.swGreen)
+                Text(locationText)
+                    .foregroundColor(.gray2)
+                    .font(.caption)
+                    .lineLimit(1)
+            }
         }
     }
 }

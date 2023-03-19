@@ -125,6 +125,13 @@ public extension EventResponse {
         }
     }
 
+    var cityName: String? {
+        if let countryID, let cityID {
+            return ShortAddressService(countryID, cityID).cityName
+        }
+        return nil
+    }
+
     var hasDescription: Bool {
         !formattedDescription.isEmpty
     }

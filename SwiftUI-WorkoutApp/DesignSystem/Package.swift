@@ -12,7 +12,12 @@ let package = Package(
             targets: ["DesignSystem"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(
+            url: "https://github.com/OlegEremenko991/CachedAcyncImage",
+            from: "1.0.3"
+        )
+    ],
     targets: [
         .target(
             name: "DesignSystem",
