@@ -20,7 +20,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
-                .accentColor(.swGreen)
+                .accentColor(.swAccent)
         }
         .onChange(of: scenePhase) {
             if case .background = $0 {

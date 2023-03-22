@@ -35,7 +35,7 @@ public struct EventRowView: View {
         .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .foregroundColor(.gray1)
+                .foregroundColor(.swCardBackground)
                 .withShadow()
         }
     }
@@ -71,9 +71,9 @@ private extension EventRowView {
     var eventDateTimeInfo: some View {
         HStack(spacing: 4) {
             Image(systemName: Icons.Misc.clock.rawValue)
-                .foregroundColor(.swGreen)
+                .foregroundColor(.swAccent)
             Text(dateTimeText)
-                .foregroundColor(.gray2)
+                .foregroundColor(.swSmallElements)
                 .font(.caption)
                 .lineLimit(1)
         }
@@ -88,9 +88,9 @@ private extension EventRowView {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 20)
-                    .foregroundColor(.swGreen)
+                    .foregroundColor(.swAccent)
                 Text(locationText)
-                    .foregroundColor(.gray2)
+                    .foregroundColor(.swSmallElements)
                     .font(.caption)
                     .lineLimit(1)
             }

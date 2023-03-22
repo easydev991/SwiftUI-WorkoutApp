@@ -194,7 +194,7 @@ private extension AccountInfoView {
                 Text(.init(Constants.RulesOfService.registrationForm))
                     .accentColor(.blue)
             }
-            .tint(.swGreen)
+            .tint(.swAccent)
         }
     }
 

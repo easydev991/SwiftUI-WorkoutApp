@@ -59,7 +59,7 @@ struct ButtonIcons_Previews: PreviewProvider {
                 VStack(spacing: 16) {
                     ForEach(Icons.Button.allCases, id: \.rawValue) { icon in
                         Image(systemName: icon.rawValue)
-                            .foregroundColor(.swGreen)
+                            .foregroundColor(.swAccent)
                             .frame(maxWidth: .infinity)
                     }
                 }

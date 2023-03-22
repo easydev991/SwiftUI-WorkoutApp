@@ -161,7 +161,7 @@ private extension EventDetailsView {
                 Toggle("Пойду на мероприятие", isOn: $trainHere)
                     .disabled(viewModel.isLoading || !network.isConnected)
                     .onChange(of: trainHere, perform: changeTrainHereStatus)
-                    .tint(.swGreen)
+                    .tint(.swAccent)
             }
         }
     }

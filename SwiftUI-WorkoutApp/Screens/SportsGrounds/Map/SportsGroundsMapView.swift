@@ -163,7 +163,7 @@ private extension SportsGroundsMapView {
                 .padding(.horizontal, 30)
                 .background {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .foregroundColor(.black2)
+                        .foregroundColor(.swBackground)
                         .withShadow()
                 }
             Button("Открыть настройки") {

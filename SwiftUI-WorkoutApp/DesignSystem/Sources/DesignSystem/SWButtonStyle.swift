@@ -40,23 +40,23 @@ public struct SWButtonStyle: ButtonStyle {
     }
 
     private var foregroundColor: Color {
-        guard isEnabled else { return .gray3 }
+        guard isEnabled else { return .swSeparators }
         switch mode {
         case .filled:
-            return .black2
+            return .swBackground
         case .tinted:
-            return .swGreen
+            return .swAccent
         }
     }
 
     private func backgroundColor(_ isPressed: Bool) -> Color {
-        guard isEnabled else { return .green3 }
+        guard isEnabled else { return .swButtonDisabled }
         switch mode {
         case .filled:
-            return isPressed ? .green2 : .swGreen
+            return isPressed ? .swButtonPressed : .swAccent
         case .tinted:
             #warning("Обновить по фигме")
-            return .green4
+            return isPressed ? .swSecondaryButtonPressed : .swSecondaryButton
         }
     }
 }
@@ -65,7 +65,7 @@ public extension SWButtonStyle {
     enum Mode: CaseIterable {
         case filled, tinted
 
-        var description: String {
+        public var description: String {
             switch self {
             case .filled: return "Filled"
             case .tinted: return "Tinted"

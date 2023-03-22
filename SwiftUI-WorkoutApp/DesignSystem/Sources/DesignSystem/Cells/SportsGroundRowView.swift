@@ -32,7 +32,7 @@ public struct SportsGroundRowView: View {
         .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .foregroundColor(.gray1)
+                .foregroundColor(.swCardBackground)
                 .withShadow()
         }
     }
@@ -73,9 +73,9 @@ private extension SportsGroundRowView {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 20)
-                    .foregroundColor(.swGreen)
+                    .foregroundColor(.swAccent)
                 Text(address)
-                    .foregroundColor(.gray2)
+                    .foregroundColor(.swSmallElements)
                     .font(.caption)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
@@ -86,9 +86,9 @@ private extension SportsGroundRowView {
     var participantsInfo: some View {
         HStack(spacing: 4) {
             Image(systemName: Icons.Misc.personInCircle.rawValue)
-                .foregroundColor(.swGreen)
+                .foregroundColor(.swAccent)
             Text(usersTrainHereText)
-                .foregroundColor(.gray2)
+                .foregroundColor(.swSmallElements)
                 .font(.caption)
                 .lineLimit(1)
         }

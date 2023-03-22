@@ -4,24 +4,26 @@ public extension Color {
     /// Вспомогательный
     static let swBlack = Color("SWBlack", bundle: .module)
     /// Фон
-    static let black2 = Color("Black2", bundle: .module)
+    static let swBackground = Color("swBackground", bundle: .module)
     /// Фон карточек
-    static let gray1 = Color("Gray1", bundle: .module)
+    static let swCardBackground = Color("swCardBackground", bundle: .module)
     /// Подписи/иконки
-    static let gray2 = Color("Gray2", bundle: .module)
+    static let swSmallElements = Color("swSmallElements", bundle: .module)
     #warning("Поправить цвет для светлой темы")
     /// Разделители
-    static let gray3 = Color("Gray3", bundle: .module)
+    static let swSeparators = Color("swSeparators", bundle: .module)
     /// Основной текст
     static let swWhite = Color("SWWhite", bundle: .module)
     /// `AccentColor` для приложения
-    static let swGreen = Color("SWGreen", bundle: .module)
+    static let swAccent = Color("swAccent", bundle: .module)
     /// Нажатые кнопки
-    static let green2 = Color("Green2", bundle: .module)
+    static let swButtonPressed = Color("swButtonPressed", bundle: .module)
     /// Неактивные кнопки
-    static let green3 = Color("Green3", bundle: .module)
+    static let swButtonDisabled = Color("swButtonDisabled", bundle: .module)
     /// Вторичные кнопки
-    static let green4 = Color("Green4", bundle: .module)
+    static let swSecondaryButton = Color("swSecondaryButton", bundle: .module)
+    /// Вторичные кнопки в нажатом состоянии
+    static let swSecondaryButtonPressed = Color("swSecondaryButtonPressed", bundle: .module)
     /// Ошибки
-    static let swRed = Color("SWRed", bundle: .module)
+    static let swError = Color("swError", bundle: .module)
 }
