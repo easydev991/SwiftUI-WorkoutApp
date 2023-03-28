@@ -59,7 +59,7 @@ private extension SportsGroundRowView {
 
     var sportsGroundTitle: some View {
         Text(title)
-            .foregroundColor(.swWhite)
+            .foregroundColor(.swMainText)
             .font(.headline)
             .lineLimit(2)
             .multilineTextAlignment(.leading)

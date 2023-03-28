@@ -33,7 +33,7 @@ struct EmptyContentView: View {
 private extension EmptyContentView {
     func titleText(_ text: String) -> some View {
         Text(text)
-            .foregroundColor(.swWhite)
+            .foregroundColor(.swMainText)
             .multilineTextAlignment(.center)
             .padding(.bottom, 6)
     }
@@ -42,7 +42,7 @@ private extension EmptyContentView {
     var hintTextIfAvailable: some View {
         if isHintAvailable {
             Text(Constants.Alert.eventCreationRule)
-                .foregroundColor(.swWhite)
+                .foregroundColor(.swMainText)
                 .font(.footnote.weight(.medium))
                 .multilineTextAlignment(.center)
         }

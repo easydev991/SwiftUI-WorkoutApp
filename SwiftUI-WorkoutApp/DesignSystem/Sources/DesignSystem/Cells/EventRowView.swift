@@ -62,7 +62,7 @@ private extension EventRowView {
 
     var eventTitle: some View {
         Text(title)
-            .foregroundColor(.swWhite)
+            .foregroundColor(.swMainText)
             .font(.headline)
             .lineLimit(2)
             .multilineTextAlignment(.leading)

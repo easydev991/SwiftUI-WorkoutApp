@@ -46,22 +46,22 @@ public struct SWButtonStyle: ButtonStyle {
     }
 
     private var foregroundColor: Color {
-        guard isEnabled else { return .swSeparators }
+        guard isEnabled else { return .swDisabledButtonText }
         switch mode {
         case .filled:
-            return .swBackground
+            return .swFilledButtonText
         case .tinted:
             return .swAccent
         }
     }
 
     private func backgroundColor(_ isPressed: Bool) -> Color {
-        guard isEnabled else { return .swButtonDisabled }
+        guard isEnabled else { return .swDisabledButton }
         switch mode {
         case .filled:
-            return isPressed ? .swButtonPressed : .swAccent
+            return isPressed ? .swFilledButtonPressed : .swAccent
         case .tinted:
-            return isPressed ? .swSecondaryButtonPressed : .swSecondaryButton
+            return isPressed ? .swTintedButtonPressed : .swTintedButton
         }
     }
 }

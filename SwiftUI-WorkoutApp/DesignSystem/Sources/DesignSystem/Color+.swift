@@ -1,8 +1,6 @@
 import SwiftUI
 
 public extension Color {
-    /// Вспомогательный
-    static let swBlack = Color("SWBlack", bundle: .module)
     /// Фон
     static let swBackground = Color("swBackground", bundle: .module)
     /// Фон карточек
@@ -13,17 +11,21 @@ public extension Color {
     /// Разделители
     static let swSeparators = Color("swSeparators", bundle: .module)
     /// Основной текст
-    static let swWhite = Color("SWWhite", bundle: .module)
+    static let swMainText = Color("swMainText", bundle: .module)
     /// `AccentColor` для приложения
     static let swAccent = Color("swAccent", bundle: .module)
-    /// Нажатые кнопки
-    static let swButtonPressed = Color("swButtonPressed", bundle: .module)
+    /// Цвет текста в `filled`-кнопке
+    static let swFilledButtonText = Color("swFilledButtonText", bundle: .module)
+    /// Нажатые `filled`-кнопки
+    static let swFilledButtonPressed = Color("swFilledButtonPressed", bundle: .module)
     /// Неактивные кнопки
-    static let swButtonDisabled = Color("swButtonDisabled", bundle: .module)
-    /// Вторичные кнопки
-    static let swSecondaryButton = Color("swSecondaryButton", bundle: .module)
-    /// Вторичные кнопки в нажатом состоянии
-    static let swSecondaryButtonPressed = Color("swSecondaryButtonPressed", bundle: .module)
+    static let swDisabledButton = Color("swDisabledButton", bundle: .module)
+    /// Цвет текста неактивных кнопок
+    static let swDisabledButtonText = Color("swDisabledButtonText", bundle: .module)
+    /// `tinted`-кнопки
+    static let swTintedButton = Color("swTintedButton", bundle: .module)
+    /// Нажатые `tinted`-кнопки
+    static let swTintedButtonPressed = Color("swTintedButtonPressed", bundle: .module)
     /// Ошибки
     static let swError = Color("swError", bundle: .module)
 }
