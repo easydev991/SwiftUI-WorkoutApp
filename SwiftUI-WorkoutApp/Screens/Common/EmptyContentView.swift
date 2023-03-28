@@ -16,7 +16,7 @@ struct EmptyContentView: View {
                 titleText(mode.message)
                 if defaults.isAuthorized {
                     Button(actionButtonTitle, action: action)
-                        .buttonStyle(SWButtonStyle(mode: .filled))
+                        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
             } else {
                 titleText("Нет соединения с сетью")

@@ -3,23 +3,29 @@ import SwiftUI
 public struct SWButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     private let icon: Icons.SWButton?
-    private let mode: Mode
+    private let mode: SWButtonStyle.Mode
+    private let size: SWButtonStyle.Size
 
-    public init(icon: Icons.SWButton? = nil, mode: SWButtonStyle.Mode) {
+    public init(
+        icon: Icons.SWButton? = nil,
+        mode: SWButtonStyle.Mode,
+        size: SWButtonStyle.Size
+    ) {
         self.icon = icon
         self.mode = mode
+        self.size = size
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: size.hstackSpacing) {
             leadingIconIfNeeded
             configuration.label
                 .lineLimit(1)
                 .font(.headline)
         }
         .foregroundColor(foregroundColor)
-        .padding(.vertical, 12)
-        .padding(.horizontal, 20)
+        .padding(.vertical, size.verticalPadding)
+        .padding(.horizontal, size.horizontalPadding)
         .frame(maxWidth: .infinity)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -35,7 +41,7 @@ public struct SWButtonStyle: ButtonStyle {
             Image(systemName: icon.rawValue)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 19)
+                .frame(width: size.iconWidth)
         }
     }
 
@@ -55,7 +61,6 @@ public struct SWButtonStyle: ButtonStyle {
         case .filled:
             return isPressed ? .swButtonPressed : .swAccent
         case .tinted:
-            #warning("Обновить по фигме")
             return isPressed ? .swSecondaryButtonPressed : .swSecondaryButton
         }
     }
@@ -65,12 +70,41 @@ public extension SWButtonStyle {
     enum Mode: CaseIterable {
         case filled, tinted
 
-        public var description: String {
+        var description: String {
             switch self {
             case .filled: return "Filled"
             case .tinted: return "Tinted"
             }
         }
+    }
+
+    enum Size: CaseIterable {
+        case large, small
+
+        var description: String {
+            switch self {
+            case .large: return "Large"
+            case .small: return "Small"
+            }
+        }
+    }
+}
+
+extension SWButtonStyle.Size {
+    var hstackSpacing: CGFloat {
+        self == .large ? 10 : 6
+    }
+
+    var verticalPadding: CGFloat {
+        self == .large ? 12 : 8
+    }
+
+    var horizontalPadding: CGFloat {
+        self == .large ? 20 : 16
+    }
+
+    var iconWidth: CGFloat {
+        self == .large ? 19 : 15
     }
 }
 
@@ -78,24 +112,46 @@ public extension SWButtonStyle {
 struct SWButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            Section("Текст без иконки") {
-                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", only text (enabled)") {}
-                        .buttonStyle(SWButtonStyle(mode: mode))
-                    Button(mode.description + ", only text (disabled)") {}
-                        .buttonStyle(SWButtonStyle(mode: mode))
-                        .disabled(true)
+            Section("Large") {
+                Section("Текст без иконки") {
+                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                        Button(mode.description + ", only text (enabled)") {}
+                            .buttonStyle(SWButtonStyle(mode: mode, size: .large))
+                        Button(mode.description + ", only text (disabled)") {}
+                            .buttonStyle(SWButtonStyle(mode: mode, size: .large))
+                            .disabled(true)
+                    }
+                }
+                Section("Иконка с текстом") {
+                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                        Button(mode.description + ", icon with text (enabled)") {}
+                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
+                        Button(mode.description + ", icon with text (disabled)") {}
+                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
+                            .disabled(true)
+                    }
                 }
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
-            Section("Иконка с текстом") {
-                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", icon with text (enabled)") {}
-                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode))
-                    Button(mode.description + ", icon with text (disabled)") {}
-                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode))
-                        .disabled(true)
+            Section("Small") {
+                Section("Текст без иконки") {
+                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                        Button(mode.description + ", only text (enabled)") {}
+                            .buttonStyle(SWButtonStyle(mode: mode, size: .small))
+                        Button(mode.description + ", only text (disabled)") {}
+                            .buttonStyle(SWButtonStyle(mode: mode, size: .small))
+                            .disabled(true)
+                    }
+                }
+                Section("Иконка с текстом") {
+                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                        Button(mode.description + ", icon with text (enabled)") {}
+                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
+                        Button(mode.description + ", icon with text (disabled)") {}
+                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
+                            .disabled(true)
+                    }
                 }
             }
             .listRowSeparator(.hidden)

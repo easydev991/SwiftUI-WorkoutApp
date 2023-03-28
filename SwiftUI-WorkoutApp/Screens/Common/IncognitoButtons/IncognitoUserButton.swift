@@ -7,7 +7,7 @@ struct IncognitoUserButton: View {
 
     var body: some View {
         NavigationLink(mode.title, destination: mode.destination, isActive: $isLinkActive)
-            .buttonStyle(SWButtonStyle(mode: .filled))
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
     }
 }
 
