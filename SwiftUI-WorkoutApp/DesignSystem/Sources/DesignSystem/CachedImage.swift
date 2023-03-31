@@ -1,13 +1,26 @@
 import CachedAcyncImage
 import SwiftUI
 
-struct CachedImage: View {
-    let url: URL?
-    var mode = Mode.userListItem
+public struct CachedImage: View {
+    private let url: URL?
+    private let mode: Mode
+    private let didTapImage: ((UIImage) -> Void)?
 
-    var body: some View {
+    public init(
+        url: URL?,
+        mode: Mode = .userListItem,
+        didTapImage: ((UIImage) -> Void)? = nil
+    ) {
+        self.url = url
+        self.mode = mode
+        self.didTapImage = didTapImage
+    }
+
+    public var body: some View {
         CachedAsyncImage(url: url) { uiImage in
-            Image(uiImage: uiImage).resizable()
+            Image(uiImage: uiImage)
+                .resizable()
+                .onTapGesture { didTapImage?(uiImage) }
         } placeholder: {
             RoundedDefaultImage(size: mode.size)
         }
@@ -17,7 +30,7 @@ struct CachedImage: View {
     }
 }
 
-extension CachedImage {
+public extension CachedImage {
     enum Mode {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,

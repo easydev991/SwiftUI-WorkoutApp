@@ -1,9 +1,14 @@
 import SwiftUI
 
 /// Дефолтная картинка `Workout`
-struct RoundedDefaultImage: View {
-    let size: CGSize
-    var body: some View {
+public struct RoundedDefaultImage: View {
+    private let size: CGSize
+
+    public init(size: CGSize) {
+        self.size = size
+    }
+
+    public var body: some View {
         Image("defaultWorkoutImage")
             .resizable()
             .scaledToFit()

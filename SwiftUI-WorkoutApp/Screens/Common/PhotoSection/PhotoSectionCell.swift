@@ -1,4 +1,4 @@
-import CachedAcyncImage
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -12,14 +12,11 @@ struct PhotoSectionCell: View {
     let deleteClbk: (Int) -> Void
 
     var body: some View {
-        CachedAsyncImage(url: photo.imageURL) { uiImage in
-            Image(uiImage: uiImage)
-                .resizable()
-                .scaledToFit()
-                .onTapGesture { onTapClbk(uiImage) }
-        } placeholder: {
-            RoundedDefaultImage(size: CachedImage.Mode.gridPhoto.size)
-        }
+        CachedImage(
+            url: photo.imageURL,
+            mode: .gridPhoto,
+            didTapImage: onTapClbk
+        )
         .cornerRadius(8)
         .overlay(alignment: .topTrailing) { menuButton }
     }

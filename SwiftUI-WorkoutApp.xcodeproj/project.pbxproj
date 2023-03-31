@@ -31,11 +31,9 @@
 		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
 		67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */; };
 		67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */; };
-		67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordView.swift */; };
 		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
 		674B37B0282B9BE2001A5B66 /* CommentViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37AF282B9BE2001A5B66 /* CommentViewCell.swift */; };
-		674B37B2282B9E51001A5B66 /* CachedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37B1282B9E51001A5B66 /* CachedImage.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
 		674D061F2828153A007E75C6 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061E2828153A007E75C6 /* FriendRequestCell.swift */; };
 		674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0622282A9896007E75C6 /* SearchUsersView.swift */; };
@@ -43,7 +41,6 @@
 		675083AD297C0A60008D8C52 /* ShortAddressServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675083AC297C0A60008D8C52 /* ShortAddressServiceTests.swift */; };
 		67515699283FEC3100501346 /* PickedImagesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515698283FEC3100501346 /* PickedImagesList.swift */; };
 		6751569F28423B6F00501346 /* AddPhotoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751569E28423B6F00501346 /* AddPhotoButton.swift */; };
-		6751DA3D299784C900A13CD5 /* CachedAcyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6751DA3C299784C900A13CD5 /* CachedAcyncImage */; };
 		675462FB282F8CBF005BC86A /* ChatBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675462FA282F8CBF005BC86A /* ChatBubble.swift */; };
 		6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */; };
 		6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */; };
@@ -164,11 +161,9 @@
 		6734D39229BC693D0000B5B1 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = "SwiftUI-WorkoutApp/DesignSystem"; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsListView.swift; sourceTree = "<group>"; };
 		67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundListViewModel.swift; sourceTree = "<group>"; };
-		67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedDefaultImage.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* SportsGroundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailView.swift; sourceTree = "<group>"; };
 		674B37AF282B9BE2001A5B66 /* CommentViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewCell.swift; sourceTree = "<group>"; };
-		674B37B1282B9E51001A5B66 /* CachedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedImage.swift; sourceTree = "<group>"; };
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
 		674D061E2828153A007E75C6 /* FriendRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
 		674D0622282A9896007E75C6 /* SearchUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersView.swift; sourceTree = "<group>"; };
@@ -277,7 +272,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				670431512964544D0090CAC3 /* FeedbackSender in Frameworks */,
-				6751DA3D299784C900A13CD5 /* CachedAcyncImage in Frameworks */,
 				67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */,
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
 				67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */,
@@ -656,9 +650,7 @@
 				6762775C283ABF0C009C203F /* UsersList */,
 				67BAF3F92836275C00DB40D9 /* Comments */,
 				671D7DEB28210D2F0068E728 /* EmptyContentView.swift */,
-				674B37B1282B9E51001A5B66 /* CachedImage.swift */,
 				670CA199280D5583003914A3 /* TextWithCheckmark.swift */,
-				67419AD2282E7F84004F5339 /* RoundedDefaultImage.swift */,
 				67D9167D2838DC3E0098D3CB /* GenericListCell.swift */,
 				679F3AFE29683EB300BB3590 /* RoundedButtonLabel.swift */,
 				679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */,
@@ -847,7 +839,6 @@
 				67CB32D0297BE0F8009380DF /* NetworkStatus */,
 				67CB32D3297BE872009380DF /* DateFormatterService */,
 				67FE5584297BF82000DC52BF /* ShortAddressService */,
-				6751DA3C299784C900A13CD5 /* CachedAcyncImage */,
 				671CD13829A2904200645678 /* SWModels */,
 				6734D39329BC69580000B5B1 /* DesignSystem */,
 			);
@@ -892,7 +883,6 @@
 				6704314F2964544D0090CAC3 /* XCRemoteSwiftPackageReference "FeedbackSender" */,
 				67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */,
 				67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */,
-				6751DA3B299784C900A13CD5 /* XCRemoteSwiftPackageReference "CachedAcyncImage" */,
 			);
 			productRefGroup = 6798AA3B280AEDC900DB76F1 /* Products */;
 			projectDirPath = "";
@@ -967,7 +957,6 @@
 				6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */,
 				672609542977CCD300042226 /* AdaptiveColorModifier.swift in Sources */,
-				67419AD3282E7F84004F5339 /* RoundedDefaultImage.swift in Sources */,
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* Comments.swift in Sources */,
@@ -1044,7 +1033,6 @@
 				671D7DEF282112140068E728 /* Text+.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */,
-				674B37B2282B9E51001A5B66 /* CachedImage.swift in Sources */,
 				67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */,
 				6758B936281E5EA9001D83D8 /* APIService.swift in Sources */,
 				6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */,
@@ -1423,14 +1411,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		6751DA3B299784C900A13CD5 /* XCRemoteSwiftPackageReference "CachedAcyncImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/OlegEremenko991/CachedAcyncImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/OlegEremenko991/NetworkStatus";
@@ -1466,11 +1446,6 @@
 		6734D39329BC69580000B5B1 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DesignSystem;
-		};
-		6751DA3C299784C900A13CD5 /* CachedAcyncImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6751DA3B299784C900A13CD5 /* XCRemoteSwiftPackageReference "CachedAcyncImage" */;
-			productName = CachedAcyncImage;
 		};
 		675A37092854810B00DAE071 /* Utils */ = {
 			isa = XCSwiftPackageProductDependency;
