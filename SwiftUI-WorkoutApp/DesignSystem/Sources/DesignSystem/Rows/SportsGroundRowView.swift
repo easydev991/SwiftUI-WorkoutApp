@@ -23,39 +23,22 @@ public struct SportsGroundRowView: View {
     public var body: some View {
         HStack(alignment: .top, spacing: 12) {
             leadingImage
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 0) {
                 sportsGroundTitle
+                    .padding(.bottom, 8)
                 addressIfNeeded
+                    .padding(.bottom, 6)
                 participantsInfo
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(12)
-        .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .foregroundColor(.swCardBackground)
-                .withShadow()
-        }
+        .insideCardBackground()
     }
 }
 
 private extension SportsGroundRowView {
     var leadingImage: some View {
-        CachedAsyncImage991(
-            url: imageURL,
-            content: { image in
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            },
-            placeholder: {
-                Image.defaultWorkoutImage
-                    .resizable()
-                    .scaledToFit()
-            }
-        )
-        .frame(width: 74, height: 74)
-        .cornerRadius(12)
+        CachedImage(url: imageURL, mode: .groundListItem)
     }
 
     var sportsGroundTitle: some View {
@@ -69,15 +52,15 @@ private extension SportsGroundRowView {
     @ViewBuilder
     var addressIfNeeded: some View {
         if let address {
-            HStack(spacing: 4) {
+            HStack(spacing: 6) {
                 Image.locationIcon
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 20)
+                    .frame(width: 19, height: 18)
                     .foregroundColor(.swAccent)
                 Text(address)
                     .foregroundColor(.swSmallElements)
-                    .font(.caption)
+                    .font(.subheadline)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
             }
@@ -85,12 +68,16 @@ private extension SportsGroundRowView {
     }
 
     var participantsInfo: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 6) {
             Image(systemName: Icons.Misc.personInCircle.rawValue)
+                .resizable()
+                .scaledToFit()
+                .padding(2)
+                .frame(width: 19)
                 .foregroundColor(.swAccent)
             Text(usersTrainHereText)
                 .foregroundColor(.swSmallElements)
-                .font(.caption)
+                .font(.subheadline)
                 .lineLimit(1)
         }
     }
@@ -101,18 +88,21 @@ struct SportsGroundRowView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 12) {
             SportsGroundRowView(
-                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg")!,
+                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
                 title: "N° 3 Легендарная / Средняя",
                 address: "м. Партизанская, улица 2-я Советская",
                 usersTrainHereText: "Тренируется 5 чел."
             )
             SportsGroundRowView(
-                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg")!,
+                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
                 title: "N° 3 Легендарная / Средняя",
                 address: nil,
                 usersTrainHereText: "Тренируется 5 чел."
             )
+            .environment(\.colorScheme, .dark)
         }
+        .padding()
+        .previewLayout(.sizeThatFits)
     }
 }
 #endif

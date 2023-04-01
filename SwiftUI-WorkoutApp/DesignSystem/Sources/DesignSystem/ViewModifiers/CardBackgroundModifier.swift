@@ -4,8 +4,11 @@ import SwiftUI
 ///
 /// Карточка - это вьюшка, используемая в форме, или просто контент в рамке
 struct CardBackgroundModifier: ViewModifier {
+    let padding: CGFloat
+    
     func body(content: Content) -> some View {
         content
+            .padding(padding)
             .background {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .foregroundColor(.swCardBackground)
@@ -16,8 +19,10 @@ struct CardBackgroundModifier: ViewModifier {
 
 public extension View {
     /// Добавляет фон для карточки
-    func insideCardBackground() -> some View {
-        modifier(CardBackgroundModifier())
+    ///
+    /// `padding` - отступы вокруг контента, по умолчанию 12
+    func insideCardBackground(padding: CGFloat = 12) -> some View {
+        modifier(CardBackgroundModifier(padding: padding))
     }
 }
 

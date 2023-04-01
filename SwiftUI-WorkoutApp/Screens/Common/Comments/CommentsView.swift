@@ -26,7 +26,7 @@ struct CommentsView: View {
                     }
                 }
             }
-            .insideCardBackground()
+            .insideCardBackground(padding: 0)
         }
     }
 }

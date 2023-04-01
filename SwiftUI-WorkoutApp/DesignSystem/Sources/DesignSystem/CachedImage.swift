@@ -20,21 +20,24 @@ public struct CachedImage: View {
         CachedAsyncImage991(url: url) { uiImage in
             Image(uiImage: uiImage)
                 .resizable()
+                .scaledToFill()
                 .onTapGesture { didTapImage?(uiImage) }
         } placeholder: {
             RoundedDefaultImage(size: mode.size)
         }
-        .scaledToFit()
-        .cornerRadius(8)
+        .cornerRadius(12)
         .frame(width: mode.size.width, height: mode.size.height)
     }
 }
 
 public extension CachedImage {
     enum Mode: CaseIterable {
-        case userListItem, groundListItem, eventListItem,
-             dialogListItem, genericListItem, journalEntry,
+        case userListItem, dialogListItem, genericListItem, journalEntry,
              profileAvatar, eventPhoto, groundPhoto, gridPhoto
+        /// Фото в списке площадок
+        case groundListItem
+        /// Фото в списке мероприятий
+        case eventListItem
         /// Аватар автора комментария
         case commentAvatar
         
@@ -43,7 +46,7 @@ public extension CachedImage {
             case .userListItem:
                 return .init(width: 36, height: 36)
             case .groundListItem, .eventListItem, .dialogListItem:
-                return .init(width: 60, height: 60)
+                return .init(width: 74, height: 74)
             case .genericListItem, .journalEntry:
                 return .init(width: 24, height: 24)
             case .profileAvatar, .eventPhoto, .groundPhoto:

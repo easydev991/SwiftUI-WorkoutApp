@@ -23,13 +23,10 @@ public struct EventRowView: View {
     public var body: some View {
         HStack(alignment: .top, spacing: 12) {
             leadingImage
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
                 eventTitle
-                HStack(spacing: 10) {
-                    eventDateTimeInfo
-                    locationInfoIfNeeded
-                    Spacer()
-                }
+                eventDateTimeInfo
+                locationInfoIfNeeded
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -39,21 +36,7 @@ public struct EventRowView: View {
 
 private extension EventRowView {
     var leadingImage: some View {
-        CachedAsyncImage991(
-            url: imageURL,
-            content: { image in
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            },
-            placeholder: {
-                Image.defaultWorkoutImage
-                    .resizable()
-                    .scaledToFit()
-            }
-        )
-        .frame(width: 74, height: 74)
-        .cornerRadius(12)
+        CachedImage(url: imageURL, mode: .eventListItem)
     }
 
     var eventTitle: some View {
@@ -65,12 +48,12 @@ private extension EventRowView {
     }
 
     var eventDateTimeInfo: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 6) {
             Image(systemName: Icons.Misc.clock.rawValue)
                 .foregroundColor(.swAccent)
             Text(dateTimeText)
                 .foregroundColor(.swSmallElements)
-                .font(.caption)
+                .font(.subheadline)
                 .lineLimit(1)
         }
         .fixedSize(horizontal: true, vertical: false)
@@ -79,7 +62,7 @@ private extension EventRowView {
     @ViewBuilder
     var locationInfoIfNeeded: some View {
         if let locationText {
-            HStack(spacing: 4) {
+            HStack(spacing: 6) {
                 Image.locationIcon
                     .resizable()
                     .scaledToFit()
@@ -87,7 +70,7 @@ private extension EventRowView {
                     .foregroundColor(.swAccent)
                 Text(locationText)
                     .foregroundColor(.swSmallElements)
-                    .font(.caption)
+                    .font(.subheadline)
                     .lineLimit(1)
             }
         }
