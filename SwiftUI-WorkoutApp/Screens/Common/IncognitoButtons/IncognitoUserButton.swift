@@ -12,14 +12,11 @@ struct IncognitoUserButton: View {
 }
 
 extension IncognitoUserButton {
-    #warning("Убрать inForm при редизайне")
     enum Mode {
         /// Регистрация
-        ///
-        /// `inForm = true` - отображаем кнопку внутри формы (`Form`), иначе - вне формы
-        case register(inForm: Bool)
+        case register
         /// Авторизация
-        case authorize(inForm: Bool)
+        case authorize
     }
 }
 
@@ -47,8 +44,8 @@ struct IncognitoUserButton_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             VStack(spacing: 16) {
-                IncognitoUserButton(mode: .authorize(inForm: false))
-                IncognitoUserButton(mode: .register(inForm: false))
+                IncognitoUserButton(mode: .authorize)
+                IncognitoUserButton(mode: .register)
             }
             .padding(.horizontal)
         }

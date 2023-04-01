@@ -7,7 +7,7 @@ struct IncognitoProfileView: View {
     var body: some View {
         VStack(spacing: 16) {
             authInvitation
-            IncognitoUserButton(mode: .authorize(inForm: false))
+            IncognitoUserButton(mode: .authorize)
             registrationInfo
         }
         .toolbar {
