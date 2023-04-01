@@ -22,7 +22,7 @@ struct ImageDetailView: UIViewRepresentable {
 #if DEBUG
 struct ImageDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        ImageDetailView(image: .init(named: "defaultWorkoutImage")!)
+        ImageDetailView(image: .init(systemName: "book")!)
     }
 }
 #endif

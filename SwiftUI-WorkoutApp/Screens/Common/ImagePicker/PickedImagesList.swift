@@ -39,8 +39,8 @@ struct PickedImagesList_Previews: PreviewProvider {
     static var previews: some View {
         PickedImagesList(
             images: .constant([
-                .init(named: "defaultWorkoutImage")!,
-                .init(named: "defaultWorkoutImage")!
+                .init(systemName: "person")!,
+                .init(systemName: "book")!
             ])
         )
     }

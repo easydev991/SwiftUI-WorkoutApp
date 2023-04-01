@@ -31,7 +31,7 @@ public struct CachedImage: View {
 }
 
 public extension CachedImage {
-    enum Mode {
+    enum Mode: CaseIterable {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,
              profileAvatar, eventPhoto, groundPhoto, gridPhoto
@@ -55,15 +55,18 @@ public extension CachedImage {
 #if DEBUG
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            CachedImage(url: .init(string: "https://workout.su/img/avatar_default.jpg")!)
-            CachedImage(
-                url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
-                mode: .profileAvatar
-            )
+        ScrollView {
+            ForEach(
+                CachedImage.Mode.allCases,
+                id:
+                \.self
+            ) { mode in
+                CachedImage(
+                    url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
+                    mode: mode
+                )
+            }
         }
-        .previewDevice("iPhone 13 mini")
-        .previewLayout(.sizeThatFits)
     }
 }
 #endif

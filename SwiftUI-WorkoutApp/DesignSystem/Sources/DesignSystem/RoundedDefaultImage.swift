@@ -9,7 +9,7 @@ public struct RoundedDefaultImage: View {
     }
 
     public var body: some View {
-        Image("defaultWorkoutImage")
+        Image.defaultWorkoutImage
             .resizable()
             .scaledToFit()
             .cornerRadius(8)
@@ -20,10 +20,11 @@ public struct RoundedDefaultImage: View {
 #if DEBUG
 struct RoundedRectDefaultImage_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
+        VStack(spacing: 16) {
             RoundedDefaultImage(size: .init(width: 45, height: 45))
             RoundedDefaultImage(size: .init(width: 60, height: 60))
         }
+        .padding()
         .previewLayout(.sizeThatFits)
     }
 }
