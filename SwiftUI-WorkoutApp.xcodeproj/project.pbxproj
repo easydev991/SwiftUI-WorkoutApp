@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		670431512964544D0090CAC3 /* FeedbackSender in Frameworks */ = {isa = PBXBuildFile; productRef = 670431502964544D0090CAC3 /* FeedbackSender */; };
-		6705E7EC283B5DCF00DABCC8 /* View+hapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7EB283B5DCF00DABCC8 /* View+hapticFeedback.swift */; };
 		6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */; };
 		6705E7F2283B880A00DABCC8 /* JournalSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7F1283B880A00DABCC8 /* JournalSettingsViewModel.swift */; };
 		670CA19A280D5583003914A3 /* TextWithCheckmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA199280D5583003914A3 /* TextWithCheckmark.swift */; };
@@ -137,7 +136,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6705E7EB283B5DCF00DABCC8 /* View+hapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+hapticFeedback.swift"; sourceTree = "<group>"; };
 		6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalSettingsView.swift; sourceTree = "<group>"; };
 		6705E7F1283B880A00DABCC8 /* JournalSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalSettingsViewModel.swift; sourceTree = "<group>"; };
 		670CA199280D5583003914A3 /* TextWithCheckmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithCheckmark.swift; sourceTree = "<group>"; };
@@ -442,7 +440,6 @@
 			isa = PBXGroup;
 			children = (
 				671D7DEE282112140068E728 /* Text+.swift */,
-				6705E7EB283B5DCF00DABCC8 /* View+hapticFeedback.swift */,
 				6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */,
 				675E5617297D21D400B4981A /* Array+.swift */,
 			);
@@ -1024,7 +1021,6 @@
 				670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */,
 				67B78714281D74F3008B104F /* AccountInfoViewModel.swift in Sources */,
 				6762775B283A87AD009C203F /* JournalEntryCell.swift in Sources */,
-				6705E7EC283B5DCF00DABCC8 /* View+hapticFeedback.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* AccountInfoView.swift in Sources */,
 				674D061F2828153A007E75C6 /* FriendRequestCell.swift in Sources */,
 				671D7DEF282112140068E728 /* Text+.swift in Sources */,

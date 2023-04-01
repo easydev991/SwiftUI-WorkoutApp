@@ -12,64 +12,21 @@ struct CommentViewCell: View {
     let editClbk: (CommentResponse) -> Void
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack(alignment: .top, spacing: 16) {
-                CachedImage(url: model.user?.avatarURL)
-                nameDate
-                Spacer()
-                if network.isConnected {
-                    menuButton
-                }
-            }
-            Text(.init(model.formattedBody))
-                .fixedSize(horizontal: false, vertical: true)
-                .tint(.blue)
-                .textSelection(.enabled)
-        }
+        CommentRowView(
+            avatarURL: model.user?.avatarURL,
+            userName: (model.user?.userName).valueOrEmpty,
+            dateText: model.formattedDateString,
+            bodyText: model.formattedBody,
+            isCommentByMainUser: isCommentByMainUser,
+            isNetworkConnected: network.isConnected,
+            reportAction: { reportClbk(model) },
+            editAction: { editClbk(model) },
+            deleteAction: { deleteClbk(model.id) }
+        )
     }
 }
 
 private extension CommentViewCell {
-    var nameDate: some View {
-        VStack(alignment: .leading) {
-            Text((model.user?.userName).valueOrEmpty)
-                .fontWeight(.medium)
-                .textSelection(.enabled)
-            Text(model.formattedDateString)
-                .foregroundColor(.secondary)
-                .font(.caption)
-                .padding(.bottom, 4)
-        }
-    }
-
-    var menuButton: some View {
-        Menu {
-            if isCommentByMainUser {
-                Button {
-                    editClbk(model)
-                } label: {
-                    Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
-                }
-                Button(role: .destructive) {
-                    deleteClbk(model.id)
-                } label: {
-                    Label("Удалить", systemImage: "trash")
-                }
-            } else {
-                Button(role: .destructive) {
-                    reportClbk(model)
-                } label: {
-                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
-                }
-            }
-        } label: {
-            Image(systemName: "ellipsis.circle.fill")
-                .font(.title2)
-                .foregroundColor(.secondary)
-        }
-        .onTapGesture { hapticFeedback(.rigid) }
-    }
-
     var isCommentByMainUser: Bool {
         model.user?.userID == defaults.mainUserInfo?.userID
     }

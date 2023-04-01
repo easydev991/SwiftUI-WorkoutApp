@@ -32,12 +32,7 @@ public struct EventRowView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(12)
-        .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .foregroundColor(.swCardBackground)
-                .withShadow()
-        }
+        .insideCardBackground()
     }
 }
 

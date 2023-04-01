@@ -35,6 +35,8 @@ public extension CachedImage {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,
              profileAvatar, eventPhoto, groundPhoto, gridPhoto
+        case commentAvatar
+        
         var size: CGSize {
             switch self {
             case .userListItem:
@@ -47,6 +49,8 @@ public extension CachedImage {
                 return .init(width: 300, height: 250)
             case .gridPhoto:
                 return .init(width: 150, height: 150)
+            case .commentAvatar:
+                return .init(width: 40, height: 40)
             }
         }
     }
