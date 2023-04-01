@@ -1,4 +1,4 @@
-import CachedAcyncImage
+import CachedAsyncImage991
 import SwiftUI
 
 public struct EventRowView: View {
@@ -43,7 +43,7 @@ public struct EventRowView: View {
 
 private extension EventRowView {
     var leadingImage: some View {
-        CachedAsyncImage(
+        CachedAsyncImage991(
             url: imageURL,
             content: { image in
                 Image(uiImage: image)

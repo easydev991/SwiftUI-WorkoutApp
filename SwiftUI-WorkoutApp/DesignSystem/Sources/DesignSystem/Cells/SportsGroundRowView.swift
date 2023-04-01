@@ -1,4 +1,4 @@
-import CachedAcyncImage
+import CachedAsyncImage991
 import SwiftUI
 
 public struct SportsGroundRowView: View {
@@ -40,7 +40,7 @@ public struct SportsGroundRowView: View {
 
 private extension SportsGroundRowView {
     var leadingImage: some View {
-        CachedAsyncImage(
+        CachedAsyncImage991(
             url: imageURL,
             content: { image in
                 Image(uiImage: image)

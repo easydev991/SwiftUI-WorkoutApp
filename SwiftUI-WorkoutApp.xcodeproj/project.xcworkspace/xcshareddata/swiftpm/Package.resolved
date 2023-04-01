@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "cachedacyncimage",
+      "identity" : "cachedasyncimage991",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/OlegEremenko991/CachedAcyncImage",
+      "location" : "https://github.com/OlegEremenko991/CachedAsyncImage991",
       "state" : {
-        "revision" : "9d50e75e608ff03f06ef91a232080b05079014a5",
-        "version" : "1.0.3"
+        "revision" : "60fd622c825dcd41d3ef191bd080b199a739218c",
+        "version" : "1.0.4"
       }
     },
     {

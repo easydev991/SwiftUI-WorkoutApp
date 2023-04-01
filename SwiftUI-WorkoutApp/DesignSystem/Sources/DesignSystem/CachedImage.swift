@@ -1,4 +1,4 @@
-import CachedAcyncImage
+import CachedAsyncImage991
 import SwiftUI
 
 public struct CachedImage: View {
@@ -17,7 +17,7 @@ public struct CachedImage: View {
     }
 
     public var body: some View {
-        CachedAsyncImage(url: url) { uiImage in
+        CachedAsyncImage991(url: url) { uiImage in
             Image(uiImage: uiImage)
                 .resizable()
                 .onTapGesture { didTapImage?(uiImage) }

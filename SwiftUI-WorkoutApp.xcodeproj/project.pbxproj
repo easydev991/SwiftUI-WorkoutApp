@@ -25,7 +25,6 @@
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		671D7DEF282112140068E728 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEE282112140068E728 /* Text+.swift */; };
 		671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* UserViewCell.swift */; };
-		672609522977256900042226 /* CachedAcyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 672609512977256900042226 /* CachedAcyncImage */; };
 		672609542977CCD300042226 /* AdaptiveColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672609532977CCD300042226 /* AdaptiveColorModifier.swift */; };
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
 		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
@@ -276,7 +275,6 @@
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
 				67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */,
 				6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */,
-				672609522977256900042226 /* CachedAcyncImage in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
 				675A370A2854810B00DAE071 /* Utils in Frameworks */,
 				67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */,
@@ -835,7 +833,6 @@
 				675A37092854810B00DAE071 /* Utils */,
 				670431502964544D0090CAC3 /* FeedbackSender */,
 				67F9534E2964A5700077DFDC /* ImagePicker */,
-				672609512977256900042226 /* CachedAcyncImage */,
 				67CB32D0297BE0F8009380DF /* NetworkStatus */,
 				67CB32D3297BE872009380DF /* DateFormatterService */,
 				67FE5584297BF82000DC52BF /* ShortAddressService */,
@@ -1438,10 +1435,6 @@
 		671CD13829A2904200645678 /* SWModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWModels;
-		};
-		672609512977256900042226 /* CachedAcyncImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CachedAcyncImage;
 		};
 		6734D39329BC69580000B5B1 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;

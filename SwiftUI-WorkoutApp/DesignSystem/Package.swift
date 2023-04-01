@@ -13,15 +13,14 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(
-            url: "https://github.com/OlegEremenko991/CachedAcyncImage",
-            from: "1.0.3"
-        )
+        .package(url: "https://github.com/OlegEremenko991/CachedAsyncImage991", from: "1.0.4")
     ],
     targets: [
         .target(
             name: "DesignSystem",
-            dependencies: []
+            dependencies: [
+                .product(name: "CachedAsyncImage991", package: "CachedAsyncImage991")
+            ]
         )
     ]
 )
