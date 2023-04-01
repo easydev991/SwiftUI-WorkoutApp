@@ -7,7 +7,6 @@ public extension Color {
     static let swCardBackground = Color("swCardBackground", bundle: .module)
     /// Подписи/иконки
     static let swSmallElements = Color("swSmallElements", bundle: .module)
-    #warning("Поправить цвет для светлой темы")
     /// Разделители
     static let swSeparators = Color("swSeparators", bundle: .module)
     /// Основной текст
