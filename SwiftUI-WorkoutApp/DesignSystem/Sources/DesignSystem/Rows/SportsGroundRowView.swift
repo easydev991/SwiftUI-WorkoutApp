@@ -1,6 +1,7 @@
 import CachedAsyncImage991
 import SwiftUI
 
+/// Вьюшка с площадкой (в списке площадок)
 public struct SportsGroundRowView: View {
     private let imageURL: URL?
     private let title: String

@@ -5,7 +5,12 @@ public struct SWButtonStyle: ButtonStyle {
     private let icon: Icons.SWButton?
     private let mode: SWButtonStyle.Mode
     private let size: SWButtonStyle.Size
-
+    
+    /// Инициализирует `SWButtonStyle`
+    /// - Parameters:
+    ///   - icon: Иконка
+    ///   - mode: Тип кнопки
+    ///   - size: Размер кнопки
     public init(
         icon: Icons.SWButton? = nil,
         mode: SWButtonStyle.Mode,
@@ -17,7 +22,7 @@ public struct SWButtonStyle: ButtonStyle {
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: size.hstackSpacing) {
+        HStack(spacing: size.hStackSpacing) {
             leadingIconIfNeeded
             configuration.label
                 .lineLimit(1)
@@ -45,6 +50,7 @@ public struct SWButtonStyle: ButtonStyle {
         }
     }
 
+    /// Цвет текста и иконки
     private var foregroundColor: Color {
         guard isEnabled else { return .swDisabledButtonText }
         switch mode {
@@ -55,6 +61,7 @@ public struct SWButtonStyle: ButtonStyle {
         }
     }
 
+    /// Цвет фона
     private func backgroundColor(_ isPressed: Bool) -> Color {
         guard isEnabled else { return .swDisabledButton }
         switch mode {
@@ -67,9 +74,14 @@ public struct SWButtonStyle: ButtonStyle {
 }
 
 public extension SWButtonStyle {
+    /// Вид кнопки
     enum Mode: CaseIterable {
-        case filled, tinted
+        /// Непрозрачная
+        case filled
+        /// Прозрачная
+        case tinted
 
+        /// Описание для превью
         var description: String {
             switch self {
             case .filled: return "Filled"
@@ -78,9 +90,11 @@ public extension SWButtonStyle {
         }
     }
 
+    /// Размер кнопки
     enum Size: CaseIterable {
         case large, small
 
+        /// Описание для превью
         var description: String {
             switch self {
             case .large: return "Large"
@@ -91,7 +105,8 @@ public extension SWButtonStyle {
 }
 
 extension SWButtonStyle.Size {
-    var hstackSpacing: CGFloat {
+    /// Спейсинг в главном `HStack`
+    var hStackSpacing: CGFloat {
         self == .large ? 10 : 6
     }
 

@@ -35,6 +35,7 @@ public extension CachedImage {
         case userListItem, groundListItem, eventListItem,
              dialogListItem, genericListItem, journalEntry,
              profileAvatar, eventPhoto, groundPhoto, gridPhoto
+        /// Аватар автора комментария
         case commentAvatar
         
         var size: CGSize {

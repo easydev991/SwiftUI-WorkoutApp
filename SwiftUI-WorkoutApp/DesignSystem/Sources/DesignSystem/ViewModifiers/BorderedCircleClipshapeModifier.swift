@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Модификатор, добавляющий форму круга и бордюр с цветом `swAccent`
 struct BorderedCircleClipshapeModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -12,6 +13,7 @@ struct BorderedCircleClipshapeModifier: ViewModifier {
 }
 
 extension View {
+    /// Придает вьюшке форму круга с бордюром цвета `swAccent`
     func borderedCircleClipshape() -> some View {
         modifier(BorderedCircleClipshapeModifier())
     }

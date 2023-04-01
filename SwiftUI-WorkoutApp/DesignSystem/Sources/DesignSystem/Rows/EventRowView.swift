@@ -1,6 +1,7 @@
 import CachedAsyncImage991
 import SwiftUI
 
+/// Вьюшка с мероприятием (в списке мероприятий)
 public struct EventRowView: View {
     private let imageURL: URL?
     private let title: String

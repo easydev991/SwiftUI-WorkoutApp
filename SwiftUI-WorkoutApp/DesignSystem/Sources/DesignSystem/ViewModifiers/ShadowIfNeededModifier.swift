@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Модификатор, добавляющий тень в светлой теме
 struct ShadowIfNeededModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
 
@@ -14,6 +15,7 @@ struct ShadowIfNeededModifier: ViewModifier {
 }
 
 public extension View {
+    /// Добавляет тень в светлой теме
     func withShadow() -> some View {
         modifier(ShadowIfNeededModifier())
     }

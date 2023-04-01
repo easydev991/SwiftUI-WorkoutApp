@@ -1,6 +1,7 @@
 import CachedAsyncImage991
 import SwiftUI
 
+/// Вьюшка с комментарием (в списке комментариев)
 public struct CommentRowView: View {
     private let avatarURL: URL?
     private let userName: String
@@ -51,7 +52,7 @@ public struct CommentRowView: View {
             bodyTextView
         }
         .frame(maxWidth: .infinity)
-        .insideCardBackground()
+        .padding(12)
     }
 }
 

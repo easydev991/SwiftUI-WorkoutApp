@@ -1,9 +1,11 @@
 import SwiftUI
 
+/// Модификатор, настраивающий фон для карточки
+///
+/// Карточка - это вьюшка, используемая в форме, или просто контент в рамке
 struct CardBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .padding(12)
             .background {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .foregroundColor(.swCardBackground)
@@ -12,7 +14,8 @@ struct CardBackgroundModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
+    /// Добавляет фон для карточки
     func insideCardBackground() -> some View {
         modifier(CardBackgroundModifier())
     }

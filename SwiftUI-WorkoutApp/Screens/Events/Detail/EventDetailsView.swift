@@ -217,7 +217,7 @@ private extension EventDetailsView {
     }
 
     var commentsSection: some View {
-        Comments(
+        CommentsView(
             items: viewModel.event.comments,
             reportClbk: { viewModel.reportComment($0) },
             deleteClbk: { id in

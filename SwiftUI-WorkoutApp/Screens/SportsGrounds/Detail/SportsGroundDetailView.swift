@@ -200,7 +200,7 @@ private extension SportsGroundDetailView {
     }
 
     var commentsSection: some View {
-        Comments(
+        CommentsView(
             items: viewModel.ground.comments,
             reportClbk: { viewModel.reportComment($0) },
             deleteClbk: { id in
