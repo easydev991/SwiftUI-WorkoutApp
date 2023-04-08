@@ -29,13 +29,15 @@ struct JournalEntriesList: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.list) {
-                    JournalEntryCell(
-                        model: $0,
-                        reportClbk: { viewModel.reportEntry($0) },
-                        canDelete: viewModel.checkIfCanDelete(entry: $0),
-                        deleteClbk: initiateDeletion,
-                        editClbk: setupEntryToEdit
+                ForEach(viewModel.list) { item in
+                    JournalCell(
+                        model: .init(journalEntryResponse: item),
+                        mode: .entry(
+                            editClbk: { setupEntryToEdit(item) },
+                            reportClbk: { viewModel.reportEntry(item) },
+                            canDelete: viewModel.checkIfCanDelete(entry: item),
+                            deleteClbk: { initiateDeletion(for: item.id) }
+                        )
                     )
                 }
             }
@@ -73,8 +75,11 @@ struct JournalEntriesList: View {
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .toolbar {
-            if isMainUser {
-                addEntryButton
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButtonIfNeeded
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                addEntryButtonIfNeeded
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -84,6 +89,33 @@ struct JournalEntriesList: View {
 }
 
 private extension JournalEntriesList {
+    @ViewBuilder
+    var refreshButtonIfNeeded: some View {
+        if !DeviceOSVersionChecker.iOS16Available {
+            Button(action: updateEntries) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+            }
+            .disabled(viewModel.isLoading)
+        }
+    }
+    
+    @ViewBuilder
+    var addEntryButtonIfNeeded: some View {
+        let isMainUser = viewModel.userID == defaults.mainUserInfo?.userID
+        if isMainUser {
+            Button(action: showNewEntry) {
+                Image(systemName: "plus")
+            }
+            .disabled(viewModel.isLoading || !network.isConnected)
+            .sheet(isPresented: $showEntrySheet) {
+                TextEntryView(
+                    mode: .newForJournal(id: viewModel.currentJournal.id),
+                    refreshClbk: updateEntries
+                )
+            }
+        }
+    }
+    
     func setupEntryToEdit(_ entry: JournalEntryResponse) {
         editEntry = entry
     }
@@ -94,25 +126,8 @@ private extension JournalEntriesList {
         }
     }
 
-    var addEntryButton: some View {
-        Button(action: showNewEntry) {
-            Image(systemName: "plus")
-        }
-        .disabled(viewModel.isLoading || !network.isConnected)
-        .sheet(isPresented: $showEntrySheet) {
-            TextEntryView(
-                mode: .newForJournal(id: viewModel.currentJournal.id),
-                refreshClbk: updateEntries
-            )
-        }
-    }
-
     func showNewEntry() {
         showEntrySheet.toggle()
-    }
-
-    var isMainUser: Bool {
-        viewModel.userID == defaults.mainUserInfo?.userID
     }
 
     func askForEntries(refresh: Bool = false) async {

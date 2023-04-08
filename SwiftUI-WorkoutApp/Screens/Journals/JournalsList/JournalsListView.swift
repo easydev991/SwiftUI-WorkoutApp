@@ -66,13 +66,17 @@ private extension JournalsListView {
     var refreshButton: some View {
         Button {
             updateListTask = Task {
-                await askForJournals()
+                await askForJournals(refresh: true)
             }
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(showEmptyView ? 1 : 0)
+        .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
+    }
+    
+    var refreshButtonOpacity: CGFloat {
+        showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
     }
 
     var addJournalButton: some View {
@@ -90,20 +94,23 @@ private extension JournalsListView {
     }
 
     var journalsList: some View {
-        List {
-            ForEach($viewModel.list) { $journal in
-                NavigationLink {
-                    JournalEntriesList(for: userID, in: $journal)
-                } label: {
-                    GenericListCell(
-                        for: .journal(
-                            info: journal,
-                            editClbk: setupJournalToEdit,
-                            deleteClbk: initiateDeletion
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach($viewModel.list) { $journal in
+                    NavigationLink {
+                        JournalEntriesList(for: userID, in: $journal)
+                    } label: {
+                        JournalCell(
+                            model: .init(journalResponse: journal),
+                            mode: .root(
+                                setupClbk: { setupJournalToEdit(journal) },
+                                deleteClbk: { initiateDeletion(for: journal.id) }
+                            )
                         )
-                    )
+                    }
                 }
             }
+            .padding([.top, .horizontal])
         }
         .sheet(item: $journalToEdit, content: showSettingsSheet)
         .opacity(viewModel.isLoading ? 0.5 : 1)

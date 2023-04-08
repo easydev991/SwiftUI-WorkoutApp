@@ -7,6 +7,7 @@ struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
+    @State private var updateGroundsTask: Task<Void, Never>?
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     /// Площадка для мероприятия
@@ -73,8 +74,14 @@ struct SportsGroundsListView: View {
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButtonIfNeeded
+            }
+        }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onDisappear(perform: cancelTask)
     }
 }
 
@@ -97,6 +104,20 @@ private extension SportsGroundsListView.Mode {
 }
 
 private extension SportsGroundsListView {
+    @ViewBuilder
+    var refreshButtonIfNeeded: some View {
+        if !DeviceOSVersionChecker.iOS16Available {
+            Button {
+                updateGroundsTask = Task {
+                    await askForGrounds(refresh: true)
+                }
+            } label: {
+                Image(systemName: "arrow.triangle.2.circlepath")
+            }
+            .disabled(viewModel.isLoading)
+        }
+    }
+    
     func askForGrounds(refresh: Bool = false) async {
         await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
@@ -119,6 +140,10 @@ private extension SportsGroundsListView {
             defaults.setUserNeedUpdate(true)
             dismiss()
         }
+    }
+    
+    func cancelTask() {
+        updateGroundsTask?.cancel()
     }
 }
 

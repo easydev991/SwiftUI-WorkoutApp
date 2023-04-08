@@ -139,9 +139,7 @@ private extension JournalRowView {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 18, height: 18, alignment: .top)
+                    .frame(width: 30, height: 30, alignment: .topTrailing)
                     .foregroundColor(.swSmallElements)
             }
             .onTapGesture { hapticFeedback(.rigid) }

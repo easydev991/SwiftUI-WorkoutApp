@@ -64,12 +64,16 @@ struct EventsListView: View {
 private extension EventsListView {
     var refreshButton: some View {
         Button {
-            eventsTask = Task { await askForEvents() }
+            eventsTask = Task { await askForEvents(refresh: true) }
         } label: {
             Image(systemName: "arrow.triangle.2.circlepath")
         }
-        .opacity(showEmptyView ? 1 : 0)
+        .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
+    }
+    
+    var refreshButtonOpacity: CGFloat {
+        showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
     }
 
     var segmentedControl: some View {

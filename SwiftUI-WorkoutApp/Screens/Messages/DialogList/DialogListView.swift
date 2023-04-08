@@ -106,7 +106,7 @@ private extension DialogListView {
                         }
                     )
                 } label: {
-                    GenericListCell(for: .dialog(dialog))
+                    DialogListCell(model: dialog)
                 }
             }
             .onDelete(perform: initiateDeletion)
