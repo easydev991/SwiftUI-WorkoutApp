@@ -63,10 +63,7 @@ private extension EventRowView {
     var locationInfoIfNeeded: some View {
         if let locationText {
             HStack(spacing: 6) {
-                Image.locationIcon
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20)
+                Image(systemName: Icons.Misc.location.rawValue)
                     .foregroundColor(.swAccent)
                 Text(locationText)
                     .foregroundColor(.swSmallElements)

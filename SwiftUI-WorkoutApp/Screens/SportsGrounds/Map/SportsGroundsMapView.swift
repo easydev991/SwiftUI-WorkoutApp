@@ -97,7 +97,7 @@ private extension SportsGroundsMapView {
         switch presentation {
         case .list:
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 12) {
+                LazyVStack(spacing: 12) {
                     ForEach(viewModel.sportsGrounds) { ground in
                         NavigationLink {
                             SportsGroundDetailView(
@@ -115,7 +115,7 @@ private extension SportsGroundsMapView {
                         .accessibilityIdentifier("SportsGroundViewCell")
                     }
                 }
-                .padding(.horizontal)
+                .padding([.top, .horizontal])
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
         case .map:

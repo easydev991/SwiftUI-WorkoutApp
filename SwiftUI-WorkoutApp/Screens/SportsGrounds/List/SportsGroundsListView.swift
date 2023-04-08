@@ -23,7 +23,7 @@ struct SportsGroundsListView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 12) {
+            LazyVStack(spacing: 12) {
                 ForEach(viewModel.list) { ground in
                     switch mode {
                     case .event:
@@ -57,7 +57,7 @@ struct SportsGroundsListView: View {
                     }
                 }
             }
-            .padding(.horizontal)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {

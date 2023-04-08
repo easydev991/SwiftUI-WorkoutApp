@@ -13,66 +13,33 @@ struct JournalEntryCell: View {
     let editClbk: (JournalEntryResponse) -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            CachedImage(
-                url: model.imageURL,
-                mode: .journalEntry
+        JournalRowView(
+            model: .init(
+                avatarURL: model.imageURL,
+                title: model.authorName.valueOrEmpty,
+                dateText: model.messageDateString,
+                bodyText: model.formattedMessage,
+                menuOptions: menuOptions
             )
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(alignment: .top) {
-                    Text(model.authorName.valueOrEmpty)
-                        .font(.headline)
-                        .lineLimit(1)
-                        .textSelection(.enabled)
-                    Spacer()
-                    Text(model.messageDateString)
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                    if network.isConnected {
-                        menuButton
-                    }
-                }
-                Text(model.formattedMessage)
-                    .font(.callout)
-            }
-        }
+        )
     }
 }
 
 private extension JournalEntryCell {
-    var menuButton: some View {
-        Menu {
-            if isEntryByMainUser {
-                Button {
-                    editClbk(model)
-                } label: {
-                    Label("Изменить", systemImage: "rectangle.and.pencil.and.ellipsis")
-                }
-                if canDelete {
-                    Button(role: .destructive) {
-                        deleteClbk(model.id)
-                    } label: {
-                        Label("Удалить", systemImage: "trash")
-                    }
-                }
-            } else {
-                Button(role: .destructive) {
-                    reportClbk(model)
-                } label: {
-                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
-                }
+    typealias OptionButton = JournalRowView.Model.GenericButtonModel
+    var menuOptions: [OptionButton] {
+        guard network.isConnected else { return [] }
+        let isEntryByMainUser = model.authorID == defaults.mainUserInfo?.userID
+        if isEntryByMainUser {
+            var array = [OptionButton]()
+            array.append(OptionButton(.edit, action: { editClbk(model) }))
+            if canDelete {
+                array.append(OptionButton(.delete, action: { deleteClbk(model.id) }))
             }
-        } label: {
-            Image(systemName: "ellipsis.circle.fill")
-                .font(.title2)
-                .foregroundColor(.secondary)
+            return array
+        } else {
+            return [OptionButton(.report, action: { reportClbk(model) })]
         }
-        .opacity(network.isConnected ? 1 : 0)
-        .onTapGesture { hapticFeedback(.rigid) }
-    }
-
-    var isEntryByMainUser: Bool {
-        model.authorID == defaults.mainUserInfo?.userID
     }
 }
 

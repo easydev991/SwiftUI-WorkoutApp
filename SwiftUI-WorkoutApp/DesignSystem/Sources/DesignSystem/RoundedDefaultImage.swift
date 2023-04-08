@@ -14,7 +14,6 @@ public struct RoundedDefaultImage: View {
         Image.defaultWorkoutImage
             .resizable()
             .scaledToFit()
-            .cornerRadius(12)
             .frame(width: size.width, height: size.height)
     }
 }

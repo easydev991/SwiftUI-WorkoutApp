@@ -91,7 +91,7 @@ private extension EventsListView {
 
     var eventsList: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 12) {
+            LazyVStack(spacing: 12) {
                 ForEach(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
                     NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
                         EventRowView(
@@ -104,7 +104,7 @@ private extension EventsListView {
                     .accessibilityIdentifier("EventViewCell")
                 }
             }
-            .padding(.horizontal)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0 : 1)
     }

@@ -25,8 +25,9 @@ public struct CachedImage: View {
         } placeholder: {
             RoundedDefaultImage(size: mode.size)
         }
-        .cornerRadius(12)
         .frame(width: mode.size.width, height: mode.size.height)
+        .clipped()
+        .cornerRadius(12)
     }
 }
 
@@ -40,6 +41,8 @@ public extension CachedImage {
         case eventListItem
         /// Аватар автора комментария
         case commentAvatar
+        /// Аватар автора дневника/записи в дневнике
+        case journalAvatar
         
         var size: CGSize {
             switch self {
@@ -55,6 +58,8 @@ public extension CachedImage {
                 return .init(width: 150, height: 150)
             case .commentAvatar:
                 return .init(width: 40, height: 40)
+            case .journalAvatar:
+                return .init(width: 42, height: 42)
             }
         }
     }

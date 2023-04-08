@@ -29,6 +29,7 @@ private extension MapSnapshotView {
             Image(uiImage: image)
         } else {
             RoundedDefaultImage(size: placeholderSize)
+                .cornerRadius(12)
         }
     }
 

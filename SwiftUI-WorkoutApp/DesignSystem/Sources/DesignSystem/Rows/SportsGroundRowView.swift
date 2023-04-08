@@ -23,11 +23,10 @@ public struct SportsGroundRowView: View {
     public var body: some View {
         HStack(alignment: .top, spacing: 12) {
             leadingImage
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 6) {
                 sportsGroundTitle
-                    .padding(.bottom, 8)
+                    .padding(.bottom, 2)
                 addressIfNeeded
-                    .padding(.bottom, 6)
                 participantsInfo
             }
         }
@@ -53,10 +52,7 @@ private extension SportsGroundRowView {
     var addressIfNeeded: some View {
         if let address {
             HStack(spacing: 6) {
-                Image.locationIcon
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 19, height: 18)
+                Image(systemName: Icons.Misc.location.rawValue)
                     .foregroundColor(.swAccent)
                 Text(address)
                     .foregroundColor(.swSmallElements)
@@ -70,10 +66,6 @@ private extension SportsGroundRowView {
     var participantsInfo: some View {
         HStack(spacing: 6) {
             Image(systemName: Icons.Misc.personInCircle.rawValue)
-                .resizable()
-                .scaledToFit()
-                .padding(2)
-                .frame(width: 19)
                 .foregroundColor(.swAccent)
             Text(usersTrainHereText)
                 .foregroundColor(.swSmallElements)

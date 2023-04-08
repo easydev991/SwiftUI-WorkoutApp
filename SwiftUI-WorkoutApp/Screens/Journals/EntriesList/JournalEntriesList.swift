@@ -27,16 +27,19 @@ struct JournalEntriesList: View {
     }
 
     var body: some View {
-        List {
-            ForEach(viewModel.list) {
-                JournalEntryCell(
-                    model: $0,
-                    reportClbk: { viewModel.reportEntry($0) },
-                    canDelete: viewModel.checkIfCanDelete(entry: $0),
-                    deleteClbk: initiateDeletion,
-                    editClbk: setupEntryToEdit
-                )
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(viewModel.list) {
+                    JournalEntryCell(
+                        model: $0,
+                        reportClbk: { viewModel.reportEntry($0) },
+                        canDelete: viewModel.checkIfCanDelete(entry: $0),
+                        deleteClbk: initiateDeletion,
+                        editClbk: setupEntryToEdit
+                    )
+                }
             }
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
