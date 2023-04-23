@@ -51,7 +51,6 @@ public struct CommentRowView: View {
             }
             bodyTextView
         }
-        .frame(maxWidth: .infinity)
         .padding(12)
     }
 }

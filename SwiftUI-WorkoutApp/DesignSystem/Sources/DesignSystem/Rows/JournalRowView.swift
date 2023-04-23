@@ -23,7 +23,6 @@ public struct JournalRowView: View {
             }
             bodyTextView
         }
-        .frame(maxWidth: .infinity)
         .insideCardBackground()
     }
 }
