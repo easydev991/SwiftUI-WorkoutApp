@@ -98,7 +98,7 @@ private extension JournalEntriesList {
             .disabled(viewModel.isLoading)
         }
     }
-    
+
     @ViewBuilder
     var addEntryButtonIfNeeded: some View {
         let isMainUser = viewModel.userID == defaults.mainUserInfo?.userID
@@ -115,7 +115,7 @@ private extension JournalEntriesList {
             }
         }
     }
-    
+
     func setupEntryToEdit(_ entry: JournalEntryResponse) {
         editEntry = entry
     }

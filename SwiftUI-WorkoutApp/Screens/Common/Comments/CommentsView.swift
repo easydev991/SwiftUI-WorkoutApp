@@ -35,7 +35,7 @@ private extension CommentsView {
     var commentsTuple: [(Int, CommentResponse)] {
         .init(zip(items.indices, items))
     }
-    
+
     @ViewBuilder
     func dividerIfNeeded(at index: Int) -> some View {
         if index != commentsTuple.endIndex - 1 {

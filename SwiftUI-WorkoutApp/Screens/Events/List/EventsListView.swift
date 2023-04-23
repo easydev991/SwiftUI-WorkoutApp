@@ -71,7 +71,7 @@ private extension EventsListView {
         .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
     }
-    
+
     var refreshButtonOpacity: CGFloat {
         showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
     }

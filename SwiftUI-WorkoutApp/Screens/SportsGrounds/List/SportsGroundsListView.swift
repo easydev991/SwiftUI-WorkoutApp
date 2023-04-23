@@ -117,7 +117,7 @@ private extension SportsGroundsListView {
             .disabled(viewModel.isLoading)
         }
     }
-    
+
     func askForGrounds(refresh: Bool = false) async {
         await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
@@ -141,7 +141,7 @@ private extension SportsGroundsListView {
             dismiss()
         }
     }
-    
+
     func cancelTask() {
         updateGroundsTask?.cancel()
     }

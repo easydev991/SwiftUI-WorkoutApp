@@ -4,11 +4,11 @@ import SwiftUI
 /// Вьюшка для записи в дневнике
 public struct JournalRowView: View {
     private let model: Model
-    
+
     public init(model: Model) {
         self.model = model
     }
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top, spacing: 12) {
@@ -36,7 +36,7 @@ public extension JournalRowView {
         let bodyText: String
         let bodyTextLinelimit: Int?
         let menuOptions: [GenericButtonModel]
-        
+
         /// Инициализирует `JournalRowView.Model`
         /// - Parameters:
         ///   - avatarURL: `URL` картинки
@@ -60,17 +60,17 @@ public extension JournalRowView {
             self.bodyTextLinelimit = bodyTextLinelimit
             self.menuOptions = menuOptions
         }
-        
+
         public struct GenericButtonModel: Identifiable {
             public var id: String { option.id }
             let option: Option
             let action: () -> Void
-            
+
             public init(_ option: Option, action: @escaping () -> Void) {
                 self.option = option
                 self.action = action
             }
-            
+
             public enum Option: Identifiable {
                 public var id: String { title + systemImageName }
                 case edit, setup, report, delete
@@ -82,6 +82,7 @@ public extension JournalRowView {
                     case .delete: return "Удалить"
                     }
                 }
+
                 var systemImageName: String {
                     switch self {
                     case .edit: return "rectangle.and.pencil.and.ellipsis"
@@ -90,6 +91,7 @@ public extension JournalRowView {
                     case .delete: return "trash"
                     }
                 }
+
                 var buttonRole: ButtonRole? {
                     switch self {
                     case .report, .delete: return .destructive
@@ -105,19 +107,19 @@ private extension JournalRowView {
     var leadingImage: some View {
         CachedImage(url: model.avatarURL, mode: .journalAvatar)
     }
-    
+
     var titleView: some View {
         Text(model.title)
             .foregroundColor(.swMainText)
             .font(.headline)
     }
-    
+
     var dateTextView: some View {
         Text(model.dateText)
             .foregroundColor(.swSmallElements)
             .font(.footnote.weight(.medium))
     }
-    
+
     var bodyTextView: some View {
         Text(.init(model.bodyText))
             .font(.subheadline)
@@ -127,7 +129,7 @@ private extension JournalRowView {
             .multilineTextAlignment(.leading)
             .lineLimit(model.bodyTextLinelimit)
     }
-    
+
     @ViewBuilder
     var menuButtonIfNeeded: some View {
         if !model.menuOptions.isEmpty {

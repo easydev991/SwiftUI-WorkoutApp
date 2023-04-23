@@ -12,7 +12,7 @@ public struct CommentRowView: View {
     private let reportAction: () -> Void
     private let editAction: () -> Void
     private let deleteAction: () -> Void
-    
+
     public init(
         avatarURL: URL?,
         userName: String,
@@ -34,7 +34,7 @@ public struct CommentRowView: View {
         self.editAction = editAction
         self.deleteAction = deleteAction
     }
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top, spacing: 12) {
@@ -83,19 +83,19 @@ private extension CommentRowView {
         }
         .onTapGesture { hapticFeedback(.rigid) }
     }
-    
+
     var userNameView: some View {
         Text(userName)
             .foregroundColor(.swMainText)
             .font(.headline)
     }
-    
+
     var dateTextView: some View {
         Text(dateText)
             .foregroundColor(.swSmallElements)
             .font(.caption2)
     }
-    
+
     var bodyTextView: some View {
         Text(.init(bodyText))
             .fixedSize(horizontal: false, vertical: true)

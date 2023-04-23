@@ -43,7 +43,7 @@ public extension CachedImage {
         case commentAvatar
         /// Аватар автора дневника/записи в дневнике
         case journalAvatar
-        
+
         var size: CGSize {
             switch self {
             case .userListItem:
@@ -69,11 +69,7 @@ public extension CachedImage {
 struct SmallProfileCacheImageView_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            ForEach(
-                CachedImage.Mode.allCases,
-                id:
-                \.self
-            ) { mode in
+            ForEach(CachedImage.Mode.allCases, id: \.self) { mode in
                 CachedImage(
                     url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
                     mode: mode

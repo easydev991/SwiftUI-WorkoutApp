@@ -3,7 +3,7 @@ import SwiftUI
 /// Дефолтная картинка `Workout`
 public struct RoundedDefaultImage: View {
     private let size: CGSize
-    
+
     /// Инициализирует `RoundedDefaultImage`
     /// - Parameter size: Размер картинки
     public init(size: CGSize) {

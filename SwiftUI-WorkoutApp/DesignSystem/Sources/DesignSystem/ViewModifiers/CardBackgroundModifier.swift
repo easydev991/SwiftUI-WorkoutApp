@@ -5,7 +5,7 @@ import SwiftUI
 /// Карточка - это вьюшка, используемая в форме, или просто контент в рамке
 struct CardBackgroundModifier: ViewModifier {
     let padding: CGFloat
-    
+
     func body(content: Content) -> some View {
         content
             .padding(padding)

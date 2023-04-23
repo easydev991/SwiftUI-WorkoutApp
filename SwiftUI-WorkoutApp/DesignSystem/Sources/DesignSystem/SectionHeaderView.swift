@@ -5,13 +5,13 @@ import SwiftUI
 /// Выглядит аналогично стандартному заголовку секции в списке
 public struct SectionHeaderView: View {
     private let headerText: String
-    
+
     /// Инициализирует `SectionHeaderView`
     /// - Parameter headerText: Текст заголовка секции
     public init(_ headerText: String) {
         self.headerText = headerText.uppercased()
     }
-    
+
     public var body: some View {
         Text(headerText)
             .foregroundColor(.swSmallElements)

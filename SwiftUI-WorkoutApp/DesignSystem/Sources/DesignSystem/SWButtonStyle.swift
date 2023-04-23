@@ -5,7 +5,7 @@ public struct SWButtonStyle: ButtonStyle {
     private let icon: Icons.SWButton?
     private let mode: SWButtonStyle.Mode
     private let size: SWButtonStyle.Size
-    
+
     /// Инициализирует `SWButtonStyle`
     /// - Parameters:
     ///   - icon: Иконка
@@ -13,8 +13,8 @@ public struct SWButtonStyle: ButtonStyle {
     ///   - size: Размер кнопки
     public init(
         icon: Icons.SWButton? = nil,
-        mode: SWButtonStyle.Mode,
-        size: SWButtonStyle.Size
+        mode: Mode,
+        size: Size
     ) {
         self.icon = icon
         self.mode = mode

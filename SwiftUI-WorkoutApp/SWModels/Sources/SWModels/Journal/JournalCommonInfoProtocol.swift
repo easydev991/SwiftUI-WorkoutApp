@@ -11,7 +11,7 @@ public struct JournalCommonInfo {
     public let entryDateString: String
     /// Отформатированное сообщение
     public let formattedMessage: String
-    
+
     public init(journalResponse: JournalResponse) {
         self.id = journalResponse.id
         self.authorID = journalResponse.ownerID
@@ -20,7 +20,7 @@ public struct JournalCommonInfo {
         self.entryDateString = journalResponse.lastMessageDateString
         self.formattedMessage = journalResponse.formattedLastMessage
     }
-    
+
     public init(journalEntryResponse: JournalEntryResponse) {
         self.id = journalEntryResponse.id
         self.authorID = journalEntryResponse.authorID
