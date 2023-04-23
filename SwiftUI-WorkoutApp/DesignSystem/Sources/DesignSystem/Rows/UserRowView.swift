@@ -1,0 +1,139 @@
+import CachedAsyncImage991
+import SwiftUI
+
+/// Вьюшка для краткой информации о пользователе
+/// или для заявки на добавление в друзья
+public struct UserRowView: View {
+    private let baseModel: Mode.BaseModel
+    private let actions: Mode.Actions?
+
+    public init(mode: Mode) {
+        switch mode {
+        case let .regular(baseModel):
+            self.baseModel = baseModel
+            self.actions = nil
+        case let .friendRequest(baseModel, actions):
+            self.baseModel = baseModel
+            self.actions = actions
+        }
+    }
+
+    public var body: some View {
+        if let actions {
+            friendRequestContent(with: actions)
+        } else {
+            regularContent
+        }
+    }
+}
+
+public extension UserRowView {
+    enum Mode {
+        /// Обычный
+        case regular(BaseModel)
+        /// Заявка на добавление в друзья
+        case friendRequest(BaseModel, Actions)
+
+        /// Модель с данными пользователя
+        public struct BaseModel {
+            let imageURL: URL?
+            let name: String
+            let address: String
+
+            public init(
+                imageURL: URL?,
+                name: String,
+                address: String
+            ) {
+                self.imageURL = imageURL
+                self.name = name
+                self.address = address
+            }
+        }
+
+        /// Модель с действиями по заявке
+        public struct Actions {
+            let accept: () -> Void
+            let reject: () -> Void
+        }
+    }
+}
+
+private extension UserRowView {
+    var regularContent: some View {
+        HStack(alignment: .top, spacing: 12) {
+            leadingImage
+            VStack(alignment: .leading, spacing: 4) {
+                userNameView
+                addressView
+            }
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .insideCardBackground()
+    }
+
+    func friendRequestContent(with actions: Mode.Actions) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            leadingImage
+            VStack(alignment: .leading, spacing: 4) {
+                userNameView
+                addressView
+                HStack(spacing: 8) {
+                    Button("Добавить", action: actions.accept)
+                        .buttonStyle(SWButtonStyle(mode: .filled, size: .small))
+                    Button("Отклонить", action: actions.reject)
+                        .buttonStyle(SWButtonStyle(mode: .tinted, size: .small))
+                }
+                .padding(.top, 6)
+            }
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(12)
+    }
+
+    var leadingImage: some View {
+        CachedImage(url: baseModel.imageURL, mode: .userListItem)
+            .borderedCircleClipshape()
+    }
+
+    var userNameView: some View {
+        Text(baseModel.name)
+            .foregroundColor(.swMainText)
+            .font(.headline)
+    }
+
+    var addressView: some View {
+        Text(baseModel.address)
+            .foregroundColor(.swSmallElements)
+            .font(.subheadline)
+    }
+}
+
+#if DEBUG
+struct UserRowView_Previews: PreviewProvider {
+    static let baseModel: UserRowView.Mode.BaseModel = .init(
+        imageURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+        name: "Beautifulbutterfly101",
+        address: "Россия, Краснодар"
+    )
+
+    static var previews: some View {
+        Group {
+            ForEach(ColorScheme.allCases, id: \.self) { scheme in
+                VStack(spacing: 20) {
+                    UserRowView(mode: .regular(baseModel))
+                    UserRowView(
+                        mode: .friendRequest(baseModel, .init(accept: {}, reject: {}))
+                    )
+                    .insideCardBackground(padding: 0)
+                }
+                .environment(\.colorScheme, scheme)
+            }
+        }
+        .padding()
+        .previewLayout(.sizeThatFits)
+    }
+}
+#endif
