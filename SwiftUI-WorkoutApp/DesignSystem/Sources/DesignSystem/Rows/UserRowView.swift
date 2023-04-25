@@ -4,6 +4,7 @@ import SwiftUI
 /// Вьюшка для краткой информации о пользователе
 /// или для заявки на добавление в друзья
 public struct UserRowView: View {
+    @Environment(\.isEnabled) private var isEnabled
     private let baseModel: Mode.BaseModel
     private let actions: Mode.Actions?
 
@@ -23,6 +24,7 @@ public struct UserRowView: View {
             friendRequestContent(with: actions)
         } else {
             regularContent
+                .opacity(isEnabled ? 1 : 0.5)
         }
     }
 }
@@ -130,6 +132,7 @@ struct UserRowView_Previews: PreviewProvider {
                     .insideCardBackground(padding: 0)
                 }
                 .environment(\.colorScheme, scheme)
+                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
             }
         }
         .padding()
