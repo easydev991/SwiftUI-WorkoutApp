@@ -18,6 +18,7 @@ public struct SectionHeaderView: View {
             .font(.footnote)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 12)
+            .padding(.bottom, 6)
     }
 }
 

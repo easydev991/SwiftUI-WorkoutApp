@@ -1,32 +1,50 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
 /// Список заявок на добавление в друзья
 struct FriendRequestsView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @ObservedObject var viewModel: UsersListViewModel
     @State private var acceptRequestTask: Task<Void, Never>?
     @State private var declineRequestTask: Task<Void, Never>?
 
     var body: some View {
-        List(viewModel.friendRequests, id: \.self) { item in
-            FriendRequestCell(
-                model: item,
-                acceptClbk: accept,
-                declineClbk: decline
-            )
+        VStack(spacing: 0) {
+            SectionHeaderView("Заявки")
+            LazyVStack(spacing: 0) {
+                ForEach(itemsTuple, id: \.0) { index, item in
+                    VStack(spacing: 12) {
+                        FriendRequestCell(
+                            model: item,
+                            acceptClbk: accept,
+                            declineClbk: decline
+                        )
+                        dividerIfNeeded(at: index)
+                    }
+                }
+            }
+            .insideCardBackground(padding: 0)
         }
-        .disabled(viewModel.isLoading)
         .animation(.default, value: viewModel.friendRequests)
-        .onChange(of: viewModel.friendRequests, perform: dismissIfNeeded)
         .onDisappear(perform: cancelTasks)
-        .navigationTitle("Заявки")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 private extension FriendRequestsView {
+    var itemsTuple: [(Int, UserModel)] {
+        .init(zip(viewModel.friendRequests.indices, viewModel.friendRequests))
+    }
+
+    #warning("Вынести в дизайн-систему")
+    @ViewBuilder
+    func dividerIfNeeded(at index: Int) -> some View {
+        if index != itemsTuple.endIndex - 1 {
+            Divider()
+                .background(Color.swSeparators)
+        }
+    }
+
     func accept(userID: Int) {
         acceptRequestTask = Task {
             await viewModel.respondToFriendRequest(from: userID, accept: true, with: defaults)
@@ -37,10 +55,6 @@ private extension FriendRequestsView {
         declineRequestTask = Task {
             await viewModel.respondToFriendRequest(from: userID, accept: false, with: defaults)
         }
-    }
-
-    func dismissIfNeeded(items: [UserModel]) {
-        if items.isEmpty { dismiss() }
     }
 
     func cancelTasks() {

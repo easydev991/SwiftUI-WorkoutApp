@@ -6,16 +6,15 @@ struct UserViewCell: View {
     let model: UserModel
 
     var body: some View {
-        HStack(spacing: 16) {
-            CachedImage(url: model.imageURL)
-            VStack(alignment: .leading) {
-                Text(model.name)
-                    .fontWeight(.medium)
-                Text(model.shortAddress)
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-            }
-        }
+        UserRowView(
+            mode: .regular(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                )
+            )
+        )
     }
 }
 

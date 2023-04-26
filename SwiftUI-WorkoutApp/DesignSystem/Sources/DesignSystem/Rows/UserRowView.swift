@@ -57,6 +57,14 @@ public extension UserRowView {
         public struct Actions {
             let accept: () -> Void
             let reject: () -> Void
+
+            public init(
+                accept: @escaping () -> Void,
+                reject: @escaping () -> Void
+            ) {
+                self.accept = accept
+                self.reject = reject
+            }
         }
     }
 }

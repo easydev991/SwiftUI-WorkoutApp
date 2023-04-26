@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -15,14 +16,20 @@ struct UsersListView: View {
     let mode: Mode
 
     var body: some View {
-        Form {
-            if !viewModel.friendRequests.isEmpty {
-                friendRequestsSection
+        ScrollView {
+            friendRequestsSectionIfNeeded
+            VStack(spacing: 0) {
+                if viewModel.hasFriendRequests {
+                    SectionHeaderView("Друзья")
+                }
+                LazyVStack(spacing: 12) {
+                    ForEach(viewModel.users) { item in
+                        listItem(for: item)
+                            .disabled(item.id == defaults.mainUserInfo?.userID)
+                    }
+                }
             }
-            List(viewModel.users, id: \.self) { model in
-                listItem(for: model)
-                    .disabled(model.id == defaults.mainUserInfo?.userID)
-            }
+            .padding([.top, .horizontal])
         }
         .sheet(
             item: $messageRecipient,
@@ -85,18 +92,11 @@ private extension UsersListView.Mode {
 }
 
 private extension UsersListView {
-    var friendRequestsSection: some View {
-        Section {
-            NavigationLink {
-                FriendRequestsView(viewModel: viewModel)
-            } label: {
-                HStack {
-                    Label("Заявки", systemImage: "person.fill.badge.plus")
-                    Spacer()
-                    Text(viewModel.friendRequests.count.description)
-                        .foregroundColor(.secondary)
-                }
-            }
+    @ViewBuilder
+    var friendRequestsSectionIfNeeded: some View {
+        if viewModel.hasFriendRequests {
+            FriendRequestsView(viewModel: viewModel)
+                .padding([.top, .horizontal])
         }
     }
 

@@ -7,6 +7,7 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var friendRequests = [UserModel]()
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
+    var hasFriendRequests: Bool { !friendRequests.isEmpty }
 
     func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if !users.isEmpty || isLoading, !refresh { return }

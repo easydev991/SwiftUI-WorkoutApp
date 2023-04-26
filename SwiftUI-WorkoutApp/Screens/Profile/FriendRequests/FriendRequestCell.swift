@@ -8,35 +8,20 @@ struct FriendRequestCell: View {
     let declineClbk: (Int) -> Void
 
     var body: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 16) {
-                    CachedImage(url: model.imageURL)
-                    VStack(alignment: .leading) {
-                        Text(model.name)
-                        Text(model.shortAddress)
-                    }
-                }
-                HStack(spacing: 16) {
-                    Button(action: accept) {
-                        Text("Принять")
-                    }
-                    .tint(.blue)
-                    Button(role: .destructive, action: decline) {
-                        Text("Отклонить")
-                    }
-                    .tint(.red)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.regular)
-            }
-        }
+        UserRowView(
+            mode: .friendRequest(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                ),
+                .init(
+                    accept: { acceptClbk(model.id) },
+                    reject: { declineClbk(model.id) }
+                )
+            )
+        )
     }
-}
-
-private extension FriendRequestCell {
-    func accept() { acceptClbk(model.id) }
-    func decline() { declineClbk(model.id) }
 }
 
 #if DEBUG

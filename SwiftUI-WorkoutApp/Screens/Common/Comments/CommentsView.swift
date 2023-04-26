@@ -11,9 +11,9 @@ struct CommentsView: View {
     let editClbk: (CommentResponse) -> Void
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 0) {
             SectionHeaderView("Комментарии")
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(commentsTuple, id: \.0) { index, comment in
                     VStack(spacing: 12) {
                         CommentViewCell(
@@ -36,6 +36,7 @@ private extension CommentsView {
         .init(zip(items.indices, items))
     }
 
+    #warning("Вынести в ДС")
     @ViewBuilder
     func dividerIfNeeded(at index: Int) -> some View {
         if index != commentsTuple.endIndex - 1 {
