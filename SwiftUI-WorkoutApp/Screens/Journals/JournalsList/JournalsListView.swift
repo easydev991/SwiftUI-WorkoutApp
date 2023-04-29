@@ -105,7 +105,9 @@ private extension JournalsListView {
                             mode: .root(
                                 setupClbk: { setupJournalToEdit(journal) },
                                 deleteClbk: { initiateDeletion(for: journal.id) }
-                            )
+                            ),
+                            isNetworkConnected: network.isConnected,
+                            mainUserID: defaults.mainUserInfo?.userID
                         )
                     }
                 }

@@ -37,7 +37,9 @@ struct JournalEntriesList: View {
                             reportClbk: { viewModel.reportEntry(item) },
                             canDelete: viewModel.checkIfCanDelete(entry: item),
                             deleteClbk: { initiateDeletion(for: item.id) }
-                        )
+                        ),
+                        isNetworkConnected: network.isConnected,
+                        mainUserID: defaults.mainUserInfo?.userID
                     )
                 }
             }

@@ -5,6 +5,8 @@ import SWModels
 
 /// Список комментариев
 struct CommentsView: View {
+    @EnvironmentObject private var network: NetworkStatus
+    @EnvironmentObject private var defaults: DefaultsService
     let items: [CommentResponse]
     let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
@@ -16,11 +18,16 @@ struct CommentsView: View {
             LazyVStack(spacing: 0) {
                 ForEach(commentsTuple, id: \.0) { index, comment in
                     VStack(spacing: 12) {
-                        CommentViewCell(
-                            model: comment,
-                            reportClbk: reportClbk,
-                            deleteClbk: deleteClbk,
-                            editClbk: editClbk
+                        CommentRowView(
+                            avatarURL: comment.user?.avatarURL,
+                            userName: (comment.user?.userName).valueOrEmpty,
+                            dateText: comment.formattedDateString,
+                            bodyText: comment.formattedBody,
+                            isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
+                            isNetworkConnected: network.isConnected,
+                            reportAction: { reportClbk(comment) },
+                            editAction: { editClbk(comment) },
+                            deleteAction: { deleteClbk(comment.id) }
                         )
                         dividerIfNeeded(at: index)
                     }

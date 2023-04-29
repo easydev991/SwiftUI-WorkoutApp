@@ -4,10 +4,10 @@ import SwiftUI
 import SWModels
 
 struct JournalCell: View {
-    @EnvironmentObject private var network: NetworkStatus
-    @EnvironmentObject private var defaults: DefaultsService
     let model: JournalCommonInfo
     let mode: Mode
+    let isNetworkConnected: Bool
+    let mainUserID: Int?
 
     var body: some View {
         JournalRowView(
@@ -40,8 +40,8 @@ extension JournalCell {
 private extension JournalCell {
     typealias OptionButton = JournalRowView.Model.GenericButtonModel
     var menuOptions: [OptionButton] {
-        guard network.isConnected else { return [] }
-        let isEntryByMainUser = model.authorID == defaults.mainUserInfo?.userID
+        guard isNetworkConnected else { return [] }
+        let isEntryByMainUser = model.authorID == mainUserID
         switch mode {
         case let .root(setupClbk, deleteClbk):
             if isEntryByMainUser {
@@ -72,10 +72,10 @@ struct JournalCell_Previews: PreviewProvider {
     static var previews: some View {
         JournalCell(
             model: .init(journalEntryResponse: .preview),
-            mode: .root(setupClbk: {}, deleteClbk: {})
+            mode: .root(setupClbk: {}, deleteClbk: {}),
+            isNetworkConnected: true,
+            mainUserID: nil
         )
-        .environmentObject(NetworkStatus())
-        .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)
     }
 }
