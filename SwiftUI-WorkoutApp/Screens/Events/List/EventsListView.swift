@@ -88,9 +88,16 @@ private extension EventsListView {
     }
 
     var emptyView: some View {
-        EmptyContentView(mode: .events, action: createEventIfAvailable)
-            .opacity(showEmptyView ? 1 : 0)
-            .disabled(viewModel.isLoading)
+        EmptyContentView(
+            mode: .events,
+            isAuthorized: defaults.isAuthorized,
+            hasFriends: defaults.hasFriends,
+            hasSportsGrounds: defaults.hasSportsGrounds,
+            isNetworkConnected: network.isConnected,
+            action: createEventIfAvailable
+        )
+        .opacity(showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading)
     }
 
     var eventsList: some View {

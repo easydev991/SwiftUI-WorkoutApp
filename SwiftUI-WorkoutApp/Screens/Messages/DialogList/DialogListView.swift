@@ -80,9 +80,16 @@ private extension DialogListView {
     }
 
     var emptyContentView: some View {
-        EmptyContentView(mode: .dialogs, action: emptyViewAction)
-            .opacity(showEmptyView ? 1 : 0)
-            .disabled(viewModel.isLoading)
+        EmptyContentView(
+            mode: .dialogs,
+            isAuthorized: defaults.isAuthorized,
+            hasFriends: defaults.hasFriends,
+            hasSportsGrounds: defaults.hasSportsGrounds,
+            isNetworkConnected: network.isConnected,
+            action: emptyViewAction
+        )
+        .opacity(showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading)
     }
 
     var showEmptyView: Bool {

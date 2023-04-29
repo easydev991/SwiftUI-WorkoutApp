@@ -5,16 +5,18 @@ import SWModels
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
-    @EnvironmentObject private var network: NetworkStatus
-    @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode
+    let isAuthorized: Bool
+    let hasFriends: Bool
+    let hasSportsGrounds: Bool
+    let isNetworkConnected: Bool
     let action: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
-            if network.isConnected {
+            if isNetworkConnected {
                 titleText(mode.message)
-                if defaults.isAuthorized {
+                if isAuthorized {
                     Button(actionButtonTitle, action: action)
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
@@ -51,17 +53,17 @@ private extension EmptyContentView {
     var actionButtonTitle: String {
         switch mode {
         case .events:
-            return defaults.hasSportsGrounds && defaults.isAuthorized
+            return hasSportsGrounds && isAuthorized
                 ? "Создать мероприятие"
                 : "Выбрать площадку"
         case .dialogs:
-            return defaults.hasFriends ? "Открыть список друзей" : "Найти пользователя"
+            return hasFriends ? "Открыть список друзей" : "Найти пользователя"
         case .journals: return "Создать дневник"
         }
     }
 
     var isHintAvailable: Bool {
-        mode == .events && defaults.isAuthorized && !defaults.hasSportsGrounds
+        mode == .events && isAuthorized && !hasSportsGrounds
     }
 }
 
@@ -87,12 +89,27 @@ private extension EmptyContentView.Mode {
 #if DEBUG
 struct EmptyContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
-            EmptyContentView(mode: mode, action: {})
-                .previewDisplayName(mode.message)
+        VStack {
+            ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
+                EmptyContentView(
+                    mode: mode,
+                    isAuthorized: true,
+                    hasFriends: true,
+                    hasSportsGrounds: true,
+                    isNetworkConnected: true,
+                    action: {}
+                )
+                Divider()
+            }
+            EmptyContentView(
+                mode: .dialogs,
+                isAuthorized: true,
+                hasFriends: true,
+                hasSportsGrounds: true,
+                isNetworkConnected: false,
+                action: {}
+            )
         }
-        .environmentObject(NetworkStatus())
-        .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)
     }
 }

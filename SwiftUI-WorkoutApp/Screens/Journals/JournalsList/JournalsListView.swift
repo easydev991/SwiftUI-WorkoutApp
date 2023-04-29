@@ -88,9 +88,16 @@ private extension JournalsListView {
     }
 
     var emptyContentView: some View {
-        EmptyContentView(mode: .journals, action: showNewJournalSheet)
-            .opacity(showEmptyView ? 1 : 0)
-            .disabled(viewModel.isLoading)
+        EmptyContentView(
+            mode: .journals,
+            isAuthorized: defaults.isAuthorized,
+            hasFriends: defaults.hasFriends,
+            hasSportsGrounds: defaults.hasSportsGrounds,
+            isNetworkConnected: network.isConnected,
+            action: showNewJournalSheet
+        )
+        .opacity(showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading)
     }
 
     var journalsList: some View {
