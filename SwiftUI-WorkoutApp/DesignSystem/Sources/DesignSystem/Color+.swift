@@ -25,6 +25,8 @@ public extension Color {
     static let swTintedButton = Color("swTintedButton", bundle: .module)
     /// Нажатые `tinted`-кнопки
     static let swTintedButtonPressed = Color("swTintedButtonPressed", bundle: .module)
+    /// Цвет кнопки удаления фото
+    static let swXmarkButton = Color("swXmarkButton")
     /// Ошибки
     static let swError = Color("swError", bundle: .module)
 }
