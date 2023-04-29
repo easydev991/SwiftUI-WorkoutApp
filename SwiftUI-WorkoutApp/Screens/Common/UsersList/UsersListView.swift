@@ -107,16 +107,28 @@ private extension UsersListView {
             Button {
                 messageRecipient = model
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         case .friends, .eventParticipants, .groundParticipants, .blacklist:
             NavigationLink {
                 UserDetailsView(from: model)
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         }
+    }
+
+    func userRowView(with model: UserModel) -> some View {
+        UserRowView(
+            mode: .regular(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                )
+            )
+        )
     }
 
     func messageSheet(for recipient: UserModel) -> some View {

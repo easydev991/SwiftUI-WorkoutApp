@@ -23,7 +23,6 @@
 		671CD13929A2904200645678 /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 671CD13829A2904200645678 /* SWModels */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		671D7DEF282112140068E728 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEE282112140068E728 /* Text+.swift */; };
-		671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DF0282117FF0068E728 /* UserViewCell.swift */; };
 		672609542977CCD300042226 /* AdaptiveColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672609532977CCD300042226 /* AdaptiveColorModifier.swift */; };
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
 		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
@@ -33,7 +32,6 @@
 		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
 		674B37B0282B9BE2001A5B66 /* CommentViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674B37AF282B9BE2001A5B66 /* CommentViewCell.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
-		674D061F2828153A007E75C6 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061E2828153A007E75C6 /* FriendRequestCell.swift */; };
 		674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0622282A9896007E75C6 /* SearchUsersView.swift */; };
 		674D0625282AB832007E75C6 /* SearchUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */; };
 		675083AD297C0A60008D8C52 /* ShortAddressServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675083AC297C0A60008D8C52 /* ShortAddressServiceTests.swift */; };
@@ -153,7 +151,6 @@
 		671CD13729A28CB800645678 /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWModels; path = "SwiftUI-WorkoutApp/SWModels"; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		671D7DEE282112140068E728 /* Text+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
-		671D7DF0282117FF0068E728 /* UserViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewCell.swift; sourceTree = "<group>"; };
 		672609532977CCD300042226 /* AdaptiveColorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveColorModifier.swift; sourceTree = "<group>"; };
 		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
 		6734D39229BC693D0000B5B1 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = "SwiftUI-WorkoutApp/DesignSystem"; sourceTree = "<group>"; };
@@ -163,7 +160,6 @@
 		6747575828128603002F0A24 /* SportsGroundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailView.swift; sourceTree = "<group>"; };
 		674B37AF282B9BE2001A5B66 /* CommentViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewCell.swift; sourceTree = "<group>"; };
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
-		674D061E2828153A007E75C6 /* FriendRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
 		674D0622282A9896007E75C6 /* SearchUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersView.swift; sourceTree = "<group>"; };
 		674D0624282AB832007E75C6 /* SearchUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersViewModel.swift; sourceTree = "<group>"; };
 		675083AA297C0A60008D8C52 /* WorkoutAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -388,7 +384,6 @@
 			isa = PBXGroup;
 			children = (
 				674D061A28280A63007E75C6 /* FriendRequestsView.swift */,
-				674D061E2828153A007E75C6 /* FriendRequestCell.swift */,
 			);
 			path = FriendRequests;
 			sourceTree = "<group>";
@@ -479,7 +474,6 @@
 			children = (
 				675EC6562815433600C2E229 /* UsersListView.swift */,
 				670F16C72826D1090069D80A /* UsersListViewModel.swift */,
-				671D7DF0282117FF0068E728 /* UserViewCell.swift */,
 			);
 			path = UsersList;
 			sourceTree = "<group>";
@@ -1026,7 +1020,6 @@
 				6762775B283A87AD009C203F /* JournalCell.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* AccountInfoView.swift in Sources */,
 				67A6FEF529E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift in Sources */,
-				674D061F2828153A007E75C6 /* FriendRequestCell.swift in Sources */,
 				671D7DEF282112140068E728 /* Text+.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */,
@@ -1036,7 +1029,6 @@
 				675EC6572815433600C2E229 /* UsersListView.swift in Sources */,
 				67B78710281D6110008B104F /* LoginViewModel.swift in Sources */,
 				675EC65F2815532800C2E229 /* EventFormView.swift in Sources */,
-				671D7DF1282117FF0068E728 /* UserViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

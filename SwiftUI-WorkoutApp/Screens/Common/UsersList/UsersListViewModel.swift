@@ -40,10 +40,9 @@ final class UsersListViewModel: ObservableObject {
 
 private extension UsersListViewModel {
     func makeFriendsList(for id: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
-        let isMainUser = id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         do {
-            if isMainUser {
+            if id == defaults.mainUserInfo?.userID {
                 await checkFriendRequests(refresh: refresh, with: defaults)
             }
             let friends = try await APIService(with: defaults).getFriendsForUser(id: id)

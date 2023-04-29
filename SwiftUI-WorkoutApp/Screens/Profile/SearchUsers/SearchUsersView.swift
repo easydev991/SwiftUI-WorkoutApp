@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -16,20 +17,21 @@ struct SearchUsersView: View {
     var mode = Mode.regular
 
     var body: some View {
-        Form {
-            Section {
-                TextField("Имя пользователя на английском", text: $query)
-                    .onSubmit(search)
-                    .submitLabel(.search)
-                    .focused($isFocused)
-                    .accessibilityIdentifier("SearchUserNameField")
-            }
-            Section("Результаты поиска") {
-                List(viewModel.users) { model in
-                    listItem(for: model)
-                        .disabled(model.id == defaults.mainUserInfo?.userID)
-                        .accessibilityIdentifier("UserViewCell")
+        VStack(spacing: 10) {
+            searchTextField
+            ScrollView {
+                VStack(spacing: 0) {
+                    SectionHeaderView("Результаты поиска")
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.users) { model in
+                            listItem(for: model)
+                                .disabled(model.id == defaults.mainUserInfo?.userID)
+                                .accessibilityIdentifier("UserViewCell")
+                        }
+                    }
                 }
+                .padding(.horizontal)
+                .padding(.top, 22)
             }
             .opacity(viewModel.users.isEmpty ? 0 : 1)
         }
@@ -67,20 +69,42 @@ extension SearchUsersView {
 }
 
 private extension SearchUsersView {
+    var searchTextField: some View {
+        TextField("Имя пользователя на английском", text: $query)
+            .textFieldStyle(.roundedBorder)
+            .onSubmit(search)
+            .submitLabel(.search)
+            .focused($isFocused)
+            .padding(.horizontal)
+            .accessibilityIdentifier("SearchUserNameField")
+    }
+
     @ViewBuilder
     func listItem(for model: UserModel) -> some View {
         switch mode {
         case .regular:
             NavigationLink(destination: UserDetailsView(from: model)) {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         case .chat:
             Button {
                 messageRecipient = model
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         }
+    }
+
+    func userRowView(with model: UserModel) -> some View {
+        UserRowView(
+            mode: .regular(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                )
+            )
+        )
     }
 
     func messageSheet(for recipient: UserModel) -> some View {

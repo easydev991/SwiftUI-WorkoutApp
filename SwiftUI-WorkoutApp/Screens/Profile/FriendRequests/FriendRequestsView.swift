@@ -15,10 +15,18 @@ struct FriendRequestsView: View {
             LazyVStack(spacing: 0) {
                 ForEach(itemsTuple, id: \.0) { index, item in
                     VStack(spacing: 12) {
-                        FriendRequestCell(
-                            model: item,
-                            acceptClbk: accept,
-                            declineClbk: decline
+                        UserRowView(
+                            mode: .friendRequest(
+                                .init(
+                                    imageURL: item.imageURL,
+                                    name: item.name,
+                                    address: item.shortAddress
+                                ),
+                                .init(
+                                    accept: { accept(userID: item.id) },
+                                    reject: { decline(userID: item.id) }
+                                )
+                            )
                         )
                         dividerIfNeeded(at: index)
                     }
