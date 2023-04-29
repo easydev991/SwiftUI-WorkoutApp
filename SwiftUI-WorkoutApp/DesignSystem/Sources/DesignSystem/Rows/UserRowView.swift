@@ -71,11 +71,11 @@ public extension UserRowView {
 
 private extension UserRowView {
     var regularContent: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: verticalAlignment, spacing: 12) {
             leadingImage
             VStack(alignment: .leading, spacing: 4) {
                 userNameView
-                addressView
+                addressViewIfAvailable
             }
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -84,11 +84,11 @@ private extension UserRowView {
     }
 
     func friendRequestContent(with actions: Mode.Actions) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: verticalAlignment, spacing: 12) {
             leadingImage
             VStack(alignment: .leading, spacing: 4) {
                 userNameView
-                addressView
+                addressViewIfAvailable
                 HStack(spacing: 8) {
                     Button("Добавить", action: actions.accept)
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .small))
@@ -114,10 +114,17 @@ private extension UserRowView {
             .font(.headline)
     }
 
-    var addressView: some View {
-        Text(baseModel.address)
-            .foregroundColor(.swSmallElements)
-            .font(.subheadline)
+    var verticalAlignment: VerticalAlignment {
+        baseModel.address.isEmpty ? .center : .top
+    }
+
+    @ViewBuilder
+    var addressViewIfAvailable: some View {
+        if !baseModel.address.isEmpty {
+            Text(baseModel.address)
+                .foregroundColor(.swSmallElements)
+                .font(.subheadline)
+        }
     }
 }
 
