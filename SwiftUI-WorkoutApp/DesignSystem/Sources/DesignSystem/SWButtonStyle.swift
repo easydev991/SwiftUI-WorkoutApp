@@ -38,6 +38,7 @@ public struct SWButtonStyle: ButtonStyle {
         }
         .scaleEffect(configuration.isPressed ? 0.98 : 1)
         .animation(.easeIn(duration: 0.1), value: configuration.isPressed)
+        .animation(.default, value: isEnabled)
     }
 
     @ViewBuilder

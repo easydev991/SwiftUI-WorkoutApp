@@ -71,7 +71,10 @@ private extension SportsGroundsMapView {
             Image(systemName: "line.3.horizontal.decrease.circle")
         }
         .sheet(isPresented: $showFilters) {
-            SportsGroundFilterView(filter: $viewModel.filter)
+            SportsGroundFilterView(
+                filter: $viewModel.filter,
+                currentCity: viewModel.filter.currentCity
+            )
         }
     }
 

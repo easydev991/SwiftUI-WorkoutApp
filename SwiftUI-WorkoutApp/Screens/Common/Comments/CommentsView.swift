@@ -13,42 +13,26 @@ struct CommentsView: View {
     let editClbk: (CommentResponse) -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            SectionHeaderView("Комментарии")
+        SectionView(
+            header: "Комментарии",
+            mode: .card()
+        ) {
             LazyVStack(spacing: 0) {
-                ForEach(commentsTuple, id: \.0) { index, comment in
-                    VStack(spacing: 12) {
-                        CommentRowView(
-                            avatarURL: comment.user?.avatarURL,
-                            userName: (comment.user?.userName).valueOrEmpty,
-                            dateText: comment.formattedDateString,
-                            bodyText: comment.formattedBody,
-                            isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
-                            isNetworkConnected: network.isConnected,
-                            reportAction: { reportClbk(comment) },
-                            editAction: { editClbk(comment) },
-                            deleteAction: { deleteClbk(comment.id) }
-                        )
-                        dividerIfNeeded(at: index)
-                    }
+                ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
+                    CommentRowView(
+                        avatarURL: comment.user?.avatarURL,
+                        userName: (comment.user?.userName).valueOrEmpty,
+                        dateText: comment.formattedDateString,
+                        bodyText: comment.formattedBody,
+                        isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
+                        isNetworkConnected: network.isConnected,
+                        reportAction: { reportClbk(comment) },
+                        editAction: { editClbk(comment) },
+                        deleteAction: { deleteClbk(comment.id) }
+                    )
+                    .withDivider(if: index != items.endIndex - 1)
                 }
             }
-            .insideCardBackground(padding: 0)
-        }
-    }
-}
-
-private extension CommentsView {
-    var commentsTuple: [(Int, CommentResponse)] {
-        .init(zip(items.indices, items))
-    }
-
-    #warning("Вынести в ДС")
-    @ViewBuilder
-    func dividerIfNeeded(at index: Int) -> some View {
-        if index != commentsTuple.endIndex - 1 {
-            Divider()
-                .background(Color.swSeparators)
         }
     }
 }
@@ -64,7 +48,6 @@ struct CommentsView_Previews: PreviewProvider {
                     deleteClbk: { _ in },
                     editClbk: { _ in }
                 )
-                .padding(.horizontal)
             }
             .previewDisplayName("Light, single")
             ScrollView {
@@ -74,7 +57,6 @@ struct CommentsView_Previews: PreviewProvider {
                     deleteClbk: { _ in },
                     editClbk: { _ in }
                 )
-                .padding(.horizontal)
             }
             .previewDisplayName("Light, multiple")
             Group {
@@ -97,7 +79,6 @@ struct CommentsView_Previews: PreviewProvider {
                         editClbk: { _ in }
                     )
                     .environment(\.colorScheme, .dark)
-                    .padding(.horizontal)
                 }
                 .previewDisplayName("Dark, multiple")
             }

@@ -108,31 +108,17 @@ private extension CommentRowView {
 #if DEBUG
 struct CommentRowView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 30) {
-            CommentRowView(
-                avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
-                userName: "Kahar",
-                dateText: "21 мая 2023",
-                bodyText: "Классная площадка, часто тренируюсь здесь с друзьями",
-                isCommentByMainUser: false,
-                isNetworkConnected: true,
-                reportAction: {},
-                editAction: {},
-                deleteAction: {}
-            )
-            CommentRowView(
-                avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
-                userName: "Kahar",
-                dateText: "21 мая 2023",
-                bodyText: "Классная площадка, часто тренируюсь здесь с друзьями",
-                isCommentByMainUser: true,
-                isNetworkConnected: true,
-                reportAction: {},
-                editAction: {},
-                deleteAction: {}
-            )
-            .environment(\.colorScheme, .dark)
-        }
+        CommentRowView(
+            avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+            userName: "Kahar",
+            dateText: "21 мая 2023",
+            bodyText: "Классная площадка, часто тренируюсь здесь с друзьями",
+            isCommentByMainUser: false,
+            isNetworkConnected: true,
+            reportAction: {},
+            editAction: {},
+            deleteAction: {}
+        )
         .padding()
         .previewLayout(.sizeThatFits)
     }

@@ -10,29 +10,30 @@ struct FriendRequestsView: View {
     @State private var declineRequestTask: Task<Void, Never>?
 
     var body: some View {
-        VStack(spacing: 0) {
-            SectionHeaderView("Заявки")
+        SectionView(
+            header: "Заявки",
+            mode: .card()
+        ) {
             LazyVStack(spacing: 0) {
-                ForEach(itemsTuple, id: \.0) { index, item in
-                    VStack(spacing: 12) {
-                        UserRowView(
-                            mode: .friendRequest(
-                                .init(
-                                    imageURL: item.imageURL,
-                                    name: item.name,
-                                    address: item.shortAddress
-                                ),
-                                .init(
-                                    accept: { accept(userID: item.id) },
-                                    reject: { decline(userID: item.id) }
-                                )
+                ForEach(Array(zip(viewModel.friendRequests.indices, viewModel.friendRequests)), id: \.0) { index, item in
+                    UserRowView(
+                        mode: .friendRequest(
+                            .init(
+                                imageURL: item.imageURL,
+                                name: item.name,
+                                address: item.shortAddress
+                            ),
+                            .init(
+                                accept: { accept(userID: item.id) },
+                                reject: { decline(userID: item.id) }
                             )
                         )
-                        dividerIfNeeded(at: index)
-                    }
+                    )
+                    .withDivider(
+                        if: index != viewModel.friendRequests.endIndex - 1
+                    )
                 }
             }
-            .insideCardBackground(padding: 0)
         }
         .animation(.default, value: viewModel.friendRequests)
         .onDisappear(perform: cancelTasks)
@@ -40,19 +41,6 @@ struct FriendRequestsView: View {
 }
 
 private extension FriendRequestsView {
-    var itemsTuple: [(Int, UserModel)] {
-        .init(zip(viewModel.friendRequests.indices, viewModel.friendRequests))
-    }
-
-    #warning("Вынести в дизайн-систему")
-    @ViewBuilder
-    func dividerIfNeeded(at index: Int) -> some View {
-        if index != itemsTuple.endIndex - 1 {
-            Divider()
-                .background(Color.swSeparators)
-        }
-    }
-
     func accept(userID: Int) {
         acceptRequestTask = Task {
             await viewModel.respondToFriendRequest(from: userID, accept: true, with: defaults)

@@ -18,10 +18,10 @@ struct UsersListView: View {
     var body: some View {
         ScrollView {
             friendRequestsSectionIfNeeded
-            VStack(spacing: 0) {
-                if viewModel.hasFriendRequests {
-                    SectionHeaderView("Друзья")
-                }
+            SectionView(
+                header: viewModel.hasFriendRequests ? "Друзья" : nil,
+                mode: .regular
+            ) {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.users) { item in
                         listItem(for: item)
@@ -29,7 +29,7 @@ struct UsersListView: View {
                     }
                 }
             }
-            .padding([.top, .horizontal])
+            .padding(.top)
         }
         .sheet(
             item: $messageRecipient,
@@ -96,7 +96,7 @@ private extension UsersListView {
     var friendRequestsSectionIfNeeded: some View {
         if viewModel.hasFriendRequests {
             FriendRequestsView(viewModel: viewModel)
-                .padding([.top, .horizontal])
+                .padding(.top)
         }
     }
 

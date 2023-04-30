@@ -3,15 +3,23 @@ import SwiftUI
 /// Выглядит аналогично стандартному заголовку/футеру секции в списке/форме
 public struct SectionHeaderView: View {
     private let text: String
-    private let verticalPadding: VerticalPadding
+    private let mode: Mode
     
     /// Инициализирует `SectionHeaderView`
     /// - Parameters:
     ///   - text: Текст
-    ///   - verticalPadding: Отступ сверху/снизу, по умолчанию отступ снизу
-    public init(_ text: String, verticalPadding: VerticalPadding = .bottom) {
-        self.text = text.uppercased()
-        self.verticalPadding = verticalPadding
+    ///   - mode: Режим (заголовок/футер)
+    public init(
+        _ text: String,
+        mode: Mode = .header
+    ) {
+        switch mode {
+        case .header:
+            self.text = text.uppercased()
+        case .footer:
+            self.text = text
+        }
+        self.mode = mode
     }
 
     public var body: some View {
@@ -24,15 +32,15 @@ public struct SectionHeaderView: View {
     }
     
     private var vPadding: (edges: Edge.Set, value: CGFloat) {
-        switch verticalPadding {
-        case .top: return (.top, 12)
-        case .bottom: return (.bottom, 6)
+        switch mode {
+        case .header: return (.bottom, 6)
+        case .footer: return (.top, 12)
         }
     }
 }
 
 public extension SectionHeaderView {
-    enum VerticalPadding { case top, bottom }
+    enum Mode { case header, footer }
 }
 
 #if DEBUG
@@ -42,10 +50,10 @@ struct SectionHeaderView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0) {
             ForEach(headers, id: \.self) { text in
-                SectionHeaderView(text, verticalPadding: .bottom)
+                SectionHeaderView(text, mode: .header)
                 RoundedRectangle(cornerRadius: 12)
                     .foregroundColor(.gray.opacity(0.3))
-                SectionHeaderView(text, verticalPadding: .top)
+                SectionHeaderView(text, mode: .footer)
                 Spacer().frame(height: 50)
             }
         }

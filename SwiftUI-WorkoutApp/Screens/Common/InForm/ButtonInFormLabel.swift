@@ -1,5 +1,6 @@
 import SwiftUI
 
+#warning("Заменить на SWButtonStyle")
 /// Кнопка с центрированным текстом для формы
 struct ButtonInForm: View {
     private let title: String

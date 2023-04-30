@@ -20,8 +20,10 @@ struct SearchUsersView: View {
         VStack(spacing: 10) {
             searchTextField
             ScrollView {
-                VStack(spacing: 0) {
-                    SectionHeaderView("Результаты поиска")
+                SectionView(
+                    header: "Результаты поиска",
+                    mode: .regular
+                ) {
                     LazyVStack(spacing: 12) {
                         ForEach(viewModel.users) { model in
                             listItem(for: model)
@@ -30,7 +32,6 @@ struct SearchUsersView: View {
                         }
                     }
                 }
-                .padding(.horizontal)
                 .padding(.top, 22)
             }
             .opacity(viewModel.users.isEmpty ? 0 : 1)
