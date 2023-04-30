@@ -21,11 +21,11 @@ public struct SectionView<Content: View>: View {
     public var body: some View {
         VStack(spacing: 0) {
             if let header {
-                SectionHeaderView(header, mode: .header)
+                SectionSupplementaryView(header, mode: .header)
             }
             contentView
             if let footer {
-                SectionHeaderView(footer, mode: .footer)
+                SectionSupplementaryView(footer, mode: .footer)
             }
         }
         .padding(.horizontal)

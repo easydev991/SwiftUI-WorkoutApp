@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Выглядит аналогично стандартному заголовку/футеру секции в списке/форме
-public struct SectionHeaderView: View {
+struct SectionSupplementaryView: View {
     private let text: String
     private let mode: Mode
     
@@ -9,7 +9,7 @@ public struct SectionHeaderView: View {
     /// - Parameters:
     ///   - text: Текст
     ///   - mode: Режим (заголовок/футер)
-    public init(
+    init(
         _ text: String,
         mode: Mode = .header
     ) {
@@ -22,7 +22,7 @@ public struct SectionHeaderView: View {
         self.mode = mode
     }
 
-    public var body: some View {
+    var body: some View {
         Text(text)
             .foregroundColor(.swSmallElements)
             .font(.footnote)
@@ -39,21 +39,21 @@ public struct SectionHeaderView: View {
     }
 }
 
-public extension SectionHeaderView {
+extension SectionSupplementaryView {
     enum Mode { case header, footer }
 }
 
 #if DEBUG
-struct SectionHeaderView_Previews: PreviewProvider {
+struct SectionSupplementaryView_Previews: PreviewProvider {
     static let headers = ["Комментарии", "Друзья", "Результаты поиска"]
     
     static var previews: some View {
         VStack(spacing: 0) {
             ForEach(headers, id: \.self) { text in
-                SectionHeaderView(text, mode: .header)
+                SectionSupplementaryView(text, mode: .header)
                 RoundedRectangle(cornerRadius: 12)
                     .foregroundColor(.gray.opacity(0.3))
-                SectionHeaderView(text, mode: .footer)
+                SectionSupplementaryView(text, mode: .footer)
                 Spacer().frame(height: 50)
             }
         }

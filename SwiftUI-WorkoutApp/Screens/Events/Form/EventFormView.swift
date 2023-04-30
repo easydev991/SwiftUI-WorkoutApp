@@ -2,6 +2,7 @@ import ImagePicker
 import NetworkStatus
 import SwiftUI
 import SWModels
+import DesignSystem
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
