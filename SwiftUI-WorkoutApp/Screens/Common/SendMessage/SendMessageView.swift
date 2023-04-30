@@ -68,14 +68,11 @@ private extension SendMessageView {
     }
 
     var sendButton: some View {
-        Button {
+        Button("Отправить") {
             isFocused = false
             sendAction()
-        } label: {
-            Label("Отправить", systemImage: "paperplane.fill")
         }
-        .tint(.blue)
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .small, maxWidth: nil))
         .disabled(isSendButtonDisabled || !network.isConnected)
     }
 

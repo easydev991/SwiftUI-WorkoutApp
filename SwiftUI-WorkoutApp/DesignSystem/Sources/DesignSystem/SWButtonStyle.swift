@@ -5,20 +5,25 @@ public struct SWButtonStyle: ButtonStyle {
     private let icon: Icons.SWButton?
     private let mode: SWButtonStyle.Mode
     private let size: SWButtonStyle.Size
+    private let maxWidth: CGFloat?
 
     /// Инициализирует `SWButtonStyle`
     /// - Parameters:
     ///   - icon: Иконка
     ///   - mode: Тип кнопки
     ///   - size: Размер кнопки
+    ///   - maxWidth: Максимальная ширина, по умолчанию `.infinity`.
+    ///   Если задать `nil`, то ширина кнопки будет равна ширине текста и паддингов
     public init(
         icon: Icons.SWButton? = nil,
         mode: Mode,
-        size: Size
+        size: Size,
+        maxWidth: CGFloat? = .infinity
     ) {
         self.icon = icon
         self.mode = mode
         self.size = size
+        self.maxWidth = maxWidth
     }
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -31,7 +36,7 @@ public struct SWButtonStyle: ButtonStyle {
         .foregroundColor(foregroundColor)
         .padding(.vertical, size.verticalPadding)
         .padding(.horizontal, size.horizontalPadding)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: maxWidth)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .foregroundColor(backgroundColor(configuration.isPressed))
