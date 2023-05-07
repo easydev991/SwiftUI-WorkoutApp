@@ -1064,7 +1064,7 @@ private extension APIService.Endpoint {
             case classID = "class_id"
         }
 
-        static func makeBody(from dict: [Key: String], with _: [MediaFile] = []) -> Data? {
+        static func makeBody(from dict: [Key: String]) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")

@@ -1,6 +1,6 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
-import DesignSystem
 
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {

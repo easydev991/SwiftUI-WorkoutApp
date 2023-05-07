@@ -4,7 +4,7 @@ import SwiftUI
 struct SectionSupplementaryView: View {
     private let text: String
     private let mode: Mode
-    
+
     /// Инициализирует `SectionHeaderView`
     /// - Parameters:
     ///   - text: Текст
@@ -30,7 +30,7 @@ struct SectionSupplementaryView: View {
             .padding(.leading, 12)
             .padding(vPadding.edges, vPadding.value)
     }
-    
+
     private var vPadding: (edges: Edge.Set, value: CGFloat) {
         switch mode {
         case .header: return (.bottom, 6)
@@ -46,7 +46,7 @@ extension SectionSupplementaryView {
 #if DEBUG
 struct SectionSupplementaryView_Previews: PreviewProvider {
     static let headers = ["Комментарии", "Друзья", "Результаты поиска"]
-    
+
     static var previews: some View {
         VStack(spacing: 0) {
             ForEach(headers, id: \.self) { text in

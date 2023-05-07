@@ -108,7 +108,6 @@
 		67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916872838F4C40098D3CB /* DialogViewModel.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageView.swift */; };
 		67DD1120282C3CE400E3917C /* TextEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */; };
-		67EA6A932999342100677664 /* SafariVCRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EA6A922999342100677664 /* SafariVCRepresentable.swift */; };
 		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
 		67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64A283379D9008A7968 /* EventsListViewModel.swift */; };
 		67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64E28338A2E008A7968 /* EventDetailsView.swift */; };
@@ -237,7 +236,6 @@
 		67D916872838F4C40098D3CB /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
 		67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryViewModel.swift; sourceTree = "<group>"; };
-		67EA6A922999342100677664 /* SafariVCRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariVCRepresentable.swift; sourceTree = "<group>"; };
 		67FBF64A283379D9008A7968 /* EventsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListViewModel.swift; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
 		67FE5583297BF78500DC52BF /* ShortAddressService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ShortAddressService; path = "SwiftUI-WorkoutApp/ShortAddressService"; sourceTree = "<group>"; };
@@ -633,7 +631,6 @@
 				679F3AFE29683EB300BB3590 /* RoundedButtonLabel.swift */,
 				679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */,
 				672609532977CCD300042226 /* AdaptiveColorModifier.swift */,
-				67EA6A922999342100677664 /* SafariVCRepresentable.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -993,7 +990,6 @@
 				67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
 				67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */,
-				67EA6A932999342100677664 /* SafariVCRepresentable.swift in Sources */,
 				6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */,
 				670CA1A0280E8F9B003914A3 /* ButtonInFormLabel.swift in Sources */,
 				67D916812838E2460098D3CB /* DialogListView.swift in Sources */,

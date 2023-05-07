@@ -5,7 +5,7 @@ public struct SectionView<Content: View>: View {
     private let footer: String?
     private let mode: Mode
     private let content: Content
-    
+
     public init(
         header: String?,
         footer: String? = nil,
@@ -17,7 +17,7 @@ public struct SectionView<Content: View>: View {
         self.mode = mode
         self.content = content()
     }
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             if let header {
@@ -30,7 +30,7 @@ public struct SectionView<Content: View>: View {
         }
         .padding(.horizontal)
     }
-    
+
     @ViewBuilder
     private var contentView: some View {
         switch mode {
@@ -54,7 +54,7 @@ public extension SectionView {
 #if DEBUG
 struct SectionView_Previews: PreviewProvider {
     static let contentText = "Content Content Content Content Content Content Content Content Content Content Content Content Content"
-    
+
     static var previews: some View {
         VStack(spacing: 20) {
             SectionView(

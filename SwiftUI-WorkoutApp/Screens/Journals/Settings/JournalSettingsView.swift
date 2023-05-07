@@ -1,7 +1,7 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
-import DesignSystem
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss

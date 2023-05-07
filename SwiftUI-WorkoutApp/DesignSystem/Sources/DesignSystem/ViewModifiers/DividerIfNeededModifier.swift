@@ -3,12 +3,12 @@ import SwiftUI
 struct DividerIfNeededModifier: ViewModifier {
     private let showDivider: Bool
     private let spacing: CGFloat?
-    
+
     init(showDivider: Bool, spacing: CGFloat?) {
         self.showDivider = showDivider
         self.spacing = spacing
     }
-    
+
     func body(content: Content) -> some View {
         VStack(spacing: spacing) {
             content

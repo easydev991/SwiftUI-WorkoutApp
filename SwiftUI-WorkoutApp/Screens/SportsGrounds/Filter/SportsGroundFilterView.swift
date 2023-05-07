@@ -1,16 +1,16 @@
+import DesignSystem
 import ShortAddressService
 import SwiftUI
 import SWModels
-import DesignSystem
 
 struct SportsGroundFilterView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @Binding private var filter: Model
     private let defaultFilter: Model
-    
+
     init(filter: Binding<Model>, currentCity: String?) {
         self._filter = filter
-        defaultFilter = .init(currentCity: currentCity)
+        self.defaultFilter = .init(currentCity: currentCity)
     }
 
     var body: some View {

@@ -1,6 +1,6 @@
+import DesignSystem
 import SwiftUI
 import SWModels
-import DesignSystem
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {

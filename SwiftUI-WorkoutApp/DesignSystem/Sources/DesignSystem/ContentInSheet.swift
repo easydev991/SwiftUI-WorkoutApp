@@ -6,7 +6,7 @@ public struct ContentInSheet<Content: View>: View {
     private let title: String
     private var spacing: CGFloat?
     private let content: Content
-    
+
     public init(
         title: String,
         spacing: CGFloat? = nil,
