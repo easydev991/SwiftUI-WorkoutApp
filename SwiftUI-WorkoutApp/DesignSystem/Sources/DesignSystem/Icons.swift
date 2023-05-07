@@ -39,6 +39,7 @@ public enum Icons {
         case clock
         case personInCircle = "person.circle"
         case location = "location.circle"
+        case arrowUp = "arrow.up"
     }
 }
 

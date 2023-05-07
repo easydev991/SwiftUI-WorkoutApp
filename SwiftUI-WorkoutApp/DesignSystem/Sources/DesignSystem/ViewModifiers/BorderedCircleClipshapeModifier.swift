@@ -12,7 +12,7 @@ struct BorderedCircleClipshapeModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Придает вьюшке форму круга с бордюром цвета `swAccent`
     func borderedCircleClipshape() -> some View {
         modifier(BorderedCircleClipshapeModifier())

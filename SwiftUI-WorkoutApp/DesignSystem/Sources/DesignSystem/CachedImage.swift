@@ -45,6 +45,8 @@ public extension CachedImage {
         case journalAvatar
         /// Аватар пользователя в списке людей/заявок в друзья
         case userListItem
+        /// Аватар пользователя в окне чата
+        case avatarInDialogView
 
         var size: CGSize {
             switch self {
@@ -60,6 +62,8 @@ public extension CachedImage {
                 return .init(width: 150, height: 150)
             case .commentAvatar:
                 return .init(width: 40, height: 40)
+            case .avatarInDialogView:
+                return .init(width: 32, height: 32)
             }
         }
     }

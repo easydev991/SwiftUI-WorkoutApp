@@ -8,6 +8,7 @@ struct DialogView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = DialogViewModel()
+    @State private var openAnotherUserProfile = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
@@ -21,13 +22,18 @@ struct DialogView: View {
         ScrollViewReader { scrollView in
             VStack {
                 ScrollView {
-                    LazyVStack {
+                    LazyVStack(spacing: 6) {
                         ForEach(viewModel.list) { message in
-                            ChatBubble(messageType(for: message)) {
-                                chatCell(for: message)
-                            }
+                            ChatBubbleRowView(
+                                messageType: message.userID == defaults.mainUserInfo?.userID
+                                    ? .sent
+                                    : .incoming,
+                                message: message.formattedMessage,
+                                messageTime: message.messageDateString
+                            )
                         }
                     }
+                    .padding(.horizontal)
                     .id(chatScrollView)
                     .onChange(of: viewModel.list) { _ in
                         withAnimation {
@@ -37,6 +43,7 @@ struct DialogView: View {
                 }
                 .simultaneousGesture(
                     DragGesture().onChanged { _ in
+                        #warning("В iOS 16 заменить на .scrollDismissesKeyboard(.interactively)")
                         isMessageBarFocused = false
                     }
                 )
@@ -71,18 +78,28 @@ private extension DialogView {
                 await askForMessages(refresh: true)
             }
         } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Button.refresh.rawValue)
         }
         .disabled(isToolbarItemDisabled)
     }
 
     var anotherUserProfileButton: some View {
-        NavigationLink(destination: UserDetailsView(from: dialog)) {
-            CachedImage(
-                url: dialog.anotherUserImageURL,
-                mode: .userListItem
-            )
-        }
+        NavigationLink(
+            isActive: $openAnotherUserProfile,
+            destination: {
+                UserDetailsView(from: dialog)
+            },
+            label: {
+                CachedImage(
+                    url: dialog.anotherUserImageURL,
+                    mode: .avatarInDialogView,
+                    didTapImage: { _ in
+                        openAnotherUserProfile.toggle()
+                    }
+                )
+                .borderedCircleClipshape()
+            }
+        )
         .disabled(isToolbarItemDisabled)
     }
 
@@ -90,26 +107,11 @@ private extension DialogView {
         viewModel.isLoading || !network.isConnected
     }
 
-    func chatCell(for message: MessageResponse) -> some View {
-        VStack(alignment: .trailing, spacing: 8) {
-            Text(message.formattedMessage)
-                .padding(.top, 12)
-                .padding(.horizontal, 20)
-                .textSelection(.enabled)
-            Text(message.messageDateString)
-                .font(.caption2)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 4)
-                .opacity(0.75)
-        }
-        .foregroundColor(.white)
-        .background(Color(uiColor: messageType(for: message).color))
-    }
-
     var sendMessageBar: some View {
         HStack {
             newMessageTextField
-            sendMessageButton
+            SendChatMessageButton(action: sendMessage)
+                .disabled(isSendButtonDisabled)
         }
         .padding()
     }
@@ -123,15 +125,6 @@ private extension DialogView {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(.gray.opacity(0.5), lineWidth: 1)
             )
-    }
-
-    var sendMessageButton: some View {
-        Button(action: sendMessage) {
-            Image(systemName: "paperplane.fill")
-                .font(.title)
-                .tint(.blue)
-        }
-        .disabled(isSendButtonDisabled)
     }
 
     var isSendButtonDisabled: Bool {
@@ -158,12 +151,6 @@ private extension DialogView {
         sendMessageTask = Task(priority: .userInitiated) {
             await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero, with: defaults)
         }
-    }
-
-    func messageType(for message: MessageResponse) -> MessageType {
-        message.userID == defaults.mainUserInfo?.userID
-            ? .sent
-            : .incoming
     }
 
     func setupErrorAlert(with message: String) {
