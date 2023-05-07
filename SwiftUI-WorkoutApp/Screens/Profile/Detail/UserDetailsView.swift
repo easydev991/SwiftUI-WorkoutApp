@@ -131,7 +131,7 @@ private extension UserDetailsView {
         } label: {
             Label(
                 viewModel.blacklistActionOption.rawValue,
-                systemImage: "exclamationmark.triangle"
+                systemImage: Icons.Button.exclamation.rawValue
             )
         }
         .confirmationDialog(
@@ -229,7 +229,7 @@ private extension UserDetailsView {
 
     var searchUsersButton: some View {
         NavigationLink(destination: SearchUsersView()) {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: Icons.Button.magnifyingglass.rawValue)
         }
         .disabled(!network.isConnected)
         .accessibilityIdentifier("searchUsersButton")
@@ -237,7 +237,7 @@ private extension UserDetailsView {
 
     var settingsButton: some View {
         NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
-            Image(systemName: "gearshape.fill")
+            Image(systemName: Icons.Button.gearshape.rawValue)
         }
     }
 

@@ -68,7 +68,7 @@ private extension SportsGroundsMapView {
         Button {
             showFilters.toggle()
         } label: {
-            Image(systemName: "line.3.horizontal.decrease.circle")
+            Image(systemName: Icons.Button.filter.rawValue)
         }
         .sheet(isPresented: $showFilters) {
             SportsGroundFilterView(
@@ -80,7 +80,7 @@ private extension SportsGroundsMapView {
 
     var refreshButton: some View {
         Button(action: refreshAction) {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Button.refresh.rawValue)
         }
     }
 

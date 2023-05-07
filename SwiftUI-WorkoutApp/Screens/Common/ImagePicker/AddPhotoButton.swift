@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 
 struct AddPhotoButton: View {
@@ -9,7 +10,7 @@ struct AddPhotoButton: View {
             focusClbk()
             isAddingPhotos.toggle()
         } label: {
-            Label("Добавить фото", systemImage: "plus.circle.fill")
+            Label("Добавить фото", systemImage: Icons.Button.plus.rawValue)
                 .foregroundColor(.blue)
         }
     }

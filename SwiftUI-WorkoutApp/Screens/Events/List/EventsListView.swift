@@ -66,7 +66,7 @@ private extension EventsListView {
         Button {
             eventsTask = Task { await askForEvents(refresh: true) }
         } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Button.refresh.rawValue)
         }
         .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)

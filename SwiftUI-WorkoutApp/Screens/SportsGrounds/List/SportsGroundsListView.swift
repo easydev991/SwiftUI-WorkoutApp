@@ -112,7 +112,7 @@ private extension SportsGroundsListView {
                     await askForGrounds(refresh: true)
                 }
             } label: {
-                Image(systemName: "arrow.triangle.2.circlepath")
+                Image(systemName: Icons.Button.refresh.rawValue)
             }
             .disabled(viewModel.isLoading)
         }

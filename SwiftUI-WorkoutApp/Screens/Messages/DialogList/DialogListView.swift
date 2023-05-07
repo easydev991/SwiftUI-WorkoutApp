@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -59,7 +60,7 @@ private extension DialogListView {
                 await askForDialogs()
             }
         } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Button.refresh.rawValue)
         }
         .opacity(showEmptyView ? 1 : 0)
         .disabled(viewModel.isLoading)

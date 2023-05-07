@@ -72,7 +72,7 @@ private extension CommentRowView {
                 }
             } else {
                 Button(role: .destructive, action: reportAction) {
-                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
+                    Label("Пожаловаться", systemImage: Icons.Button.exclamation.rawValue)
                 }
             }
         } label: {

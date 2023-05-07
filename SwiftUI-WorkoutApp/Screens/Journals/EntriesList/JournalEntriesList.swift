@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -95,7 +96,7 @@ private extension JournalEntriesList {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button(action: updateEntries) {
-                Image(systemName: "arrow.triangle.2.circlepath")
+                Image(systemName: Icons.Button.refresh.rawValue)
             }
             .disabled(viewModel.isLoading)
         }
