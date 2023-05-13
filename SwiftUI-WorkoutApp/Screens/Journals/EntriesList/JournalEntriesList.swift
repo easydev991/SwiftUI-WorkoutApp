@@ -107,7 +107,7 @@ private extension JournalEntriesList {
         let isMainUser = viewModel.userID == defaults.mainUserInfo?.userID
         if isMainUser {
             Button(action: showNewEntry) {
-                Image(systemName: "plus")
+                Image(systemName: Icons.Button.plus.rawValue)
             }
             .disabled(viewModel.isLoading || !network.isConnected)
             .sheet(isPresented: $showEntrySheet) {

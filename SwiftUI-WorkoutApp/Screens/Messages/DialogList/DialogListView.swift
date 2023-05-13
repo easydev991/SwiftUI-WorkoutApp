@@ -74,7 +74,7 @@ private extension DialogListView {
                 SearchUsersView(mode: .chat)
             }
         } label: {
-            Image(systemName: "plus")
+            Image(systemName: Icons.Button.plus.rawValue)
         }
         .opacity(hasFriends || !viewModel.list.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)

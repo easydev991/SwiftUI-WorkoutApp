@@ -138,7 +138,7 @@ private extension EventsListView {
                     createEventIfAvailable()
                 }
             } label: {
-                Image(systemName: "plus")
+                Image(systemName: Icons.Button.plus.rawValue)
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {

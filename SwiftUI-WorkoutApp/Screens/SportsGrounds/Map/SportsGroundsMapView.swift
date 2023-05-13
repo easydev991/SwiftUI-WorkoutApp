@@ -195,7 +195,7 @@ private extension SportsGroundsMapView {
             Button {
                 showGroundCreationSheet.toggle()
             } label: {
-                Image(systemName: "plus")
+                Image(systemName: Icons.Button.plus.rawValue)
             }
             .opacity(viewModel.isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)

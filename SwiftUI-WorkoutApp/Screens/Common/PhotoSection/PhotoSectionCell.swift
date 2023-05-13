@@ -33,7 +33,7 @@ private extension PhotoSectionCell {
                 }
             } else {
                 Button(role: .destructive, action: reportClbk) {
-                    Label("Пожаловаться", systemImage: "exclamationmark.triangle")
+                    Label("Пожаловаться", systemImage: Icons.Button.exclamation.rawValue)
                 }
             }
         } label: {

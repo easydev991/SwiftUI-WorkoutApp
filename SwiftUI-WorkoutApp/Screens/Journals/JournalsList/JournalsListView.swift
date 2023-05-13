@@ -82,7 +82,7 @@ private extension JournalsListView {
 
     var addJournalButton: some View {
         Button(action: showNewJournalSheet) {
-            Image(systemName: "plus")
+            Image(systemName: Icons.Button.plus.rawValue)
         }
         .opacity(showAddJournalButton ? 1 : 0)
         .disabled(!network.isConnected)
