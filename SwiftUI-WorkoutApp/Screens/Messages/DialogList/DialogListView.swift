@@ -57,12 +57,12 @@ private extension DialogListView {
     var refreshButton: some View {
         Button {
             refreshTask = Task {
-                await askForDialogs()
+                await askForDialogs(refresh: true)
             }
         } label: {
             Image(systemName: Icons.Button.refresh.rawValue)
         }
-        .opacity(showEmptyView ? 1 : 0)
+        .opacity(showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -104,20 +104,31 @@ private extension DialogListView {
     }
 
     var dialogList: some View {
-        List {
-            ForEach(viewModel.list) { dialog in
-                NavigationLink {
-                    DialogView(
-                        dialog: dialog,
-                        markedAsReadClbk: {
-                            viewModel.markAsRead(dialog, with: defaults)
-                        }
-                    )
-                } label: {
-                    DialogListCell(model: dialog)
+        ScrollView {
+            LazyVStack(spacing: 22) {
+                ForEach(viewModel.list) { model in
+                    NavigationLink {
+                        DialogView(
+                            dialog: model,
+                            markedAsReadClbk: {
+                                viewModel.markAsRead(model, with: defaults)
+                            }
+                        )
+                    } label: {
+                        DialogRowView(
+                            model: .init(
+                                avatarURL: model.anotherUserImageURL,
+                                authorName: model.anotherUserName.valueOrEmpty,
+                                dateText: model.lastMessageDateString,
+                                messageText: model.lastMessageFormatted,
+                                unreadCount: model.unreadMessagesCount
+                            )
+                        )
+                    }
                 }
+                .onDelete(perform: initiateDeletion)
             }
-            .onDelete(perform: initiateDeletion)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .animation(.default, value: viewModel.isLoading)

@@ -100,7 +100,6 @@
 		67C87FD62843892D00D6377D /* PhotoSectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C87FD52843892D00D6377D /* PhotoSectionCell.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D3297BE872009380DF /* DateFormatterService */; };
-		67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9167D2838DC3E0098D3CB /* DialogListCell.swift */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
 		67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916822838E2520098D3CB /* DialogListViewModel.swift */; };
 		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
@@ -227,7 +226,6 @@
 		67BAF3FA28362AD100DB40D9 /* AddCommentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentButton.swift; sourceTree = "<group>"; };
 		67C87FD52843892D00D6377D /* PhotoSectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionCell.swift; sourceTree = "<group>"; };
 		67CB32D2297BE737009380DF /* DateFormatterService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DateFormatterService; path = "SwiftUI-WorkoutApp/DateFormatterService"; sourceTree = "<group>"; };
-		67D9167D2838DC3E0098D3CB /* DialogListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListCell.swift; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916822838E2520098D3CB /* DialogListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListViewModel.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
@@ -717,7 +715,6 @@
 		67D9167F2838E2240098D3CB /* DialogList */ = {
 			isa = PBXGroup;
 			children = (
-				67D9167D2838DC3E0098D3CB /* DialogListCell.swift */,
 				67D916802838E2460098D3CB /* DialogListView.swift */,
 				67D916822838E2520098D3CB /* DialogListViewModel.swift */,
 			);
@@ -985,7 +982,6 @@
 				6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */,
 				67B7871A281D88CB008B104F /* ProfileSettingsViewModel.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
-				67D9167E2838DC3E0098D3CB /* DialogListCell.swift in Sources */,
 				6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */,
 				670CA1A0280E8F9B003914A3 /* ButtonInFormLabel.swift in Sources */,
 				67D916812838E2460098D3CB /* DialogListView.swift in Sources */,

@@ -1,13 +1,20 @@
 import Foundation
 
 public enum DateFormatterService {
-    public static func readableDate(from string: String?, locale: Locale = .autoupdatingCurrent) -> String {
+    public static func readableDate(
+        from string: String?,
+        locale: Locale = .autoupdatingCurrent,
+        showTimeInThisYear: Bool = true
+    ) -> String {
         let isoFormatter = ISO8601DateFormatter()
         if let dateString = string, !dateString.isEmpty,
            let fullDate = isoFormatter.date(from: dateString) {
             let formatter = DateFormatter()
             formatter.locale = locale
-            let (prefix, dateFormat) = DateFormat.makeFormat(for: fullDate)
+            let (prefix, dateFormat) = DateFormat.makeFormat(
+                for: fullDate,
+                showTimeInThisYear: showTimeInThisYear
+            )
             formatter.dateFormat = dateFormat
             return prefix + formatter.string(from: fullDate)
         } else {
@@ -52,15 +59,22 @@ public extension DateFormatterService {
         case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
         case dayMonthMediumTime = "d MMM, HH:mm"
         case dayMonthYear = "d MMM yyyy"
+        case dayMonth = "d MMM"
         case mediumTime = "HH:mm"
 
-        static func makeFormat(for date: Date) -> (prefix: String, date: String) {
+        static func makeFormat(
+            for date: Date,
+            showTimeInThisYear: Bool
+        ) -> (prefix: String, date: String) {
             if date.isToday {
                 return ("", mediumTime.rawValue)
             } else if date.isYesterday {
                 return ("Вчера, ", mediumTime.rawValue)
             } else if date.isThisYear {
-                return ("", dayMonthMediumTime.rawValue)
+                return (
+                    "",
+                    showTimeInThisYear ? dayMonthMediumTime.rawValue : dayMonth.rawValue
+                )
             } else {
                 return ("", dayMonthYear.rawValue)
             }
