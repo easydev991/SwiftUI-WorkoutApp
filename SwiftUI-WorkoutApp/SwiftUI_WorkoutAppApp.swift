@@ -37,8 +37,16 @@ private extension SwiftUI_WorkoutAppApp {
     func setupAppearance() {
         UITextField.appearance().clearButtonMode = .whileEditing
         let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.configureWithOpaqueBackground()
+        let navBarAppearance = UINavigationBarAppearance()
+        [tabBarAppearance, navBarAppearance].forEach {
+            $0.configureWithOpaqueBackground()
+            $0.backgroundColor = .init(Color.swBackground)
+            $0.shadowColor = nil
+        }
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
+        #warning("Убрать при переходе на iOS 16")
+        UITextView.appearance().backgroundColor = .clear
     }
 
     func prepareForUITestIfNeeded() {

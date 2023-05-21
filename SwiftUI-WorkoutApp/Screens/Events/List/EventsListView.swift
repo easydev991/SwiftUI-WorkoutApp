@@ -37,6 +37,7 @@ struct EventsListView: View {
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : 0)
             }
+            .background(Color.swBackground)
             .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)

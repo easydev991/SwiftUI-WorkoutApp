@@ -50,6 +50,7 @@ struct DialogView: View {
                 sendMessageBar
             }
         }
+        .background(Color.swBackground)
         .onChange(of: viewModel.markedAsRead, perform: updateDialogUnreadCount)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
@@ -116,15 +117,30 @@ private extension DialogView {
         .padding()
     }
 
+    @ViewBuilder
     var newMessageTextField: some View {
-        TextEditor(text: $viewModel.newMessage)
-            .focused($isMessageBarFocused)
-            .frame(maxHeight: 40)
-            .padding(.horizontal, 8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-            )
+        if #available(iOS 16.0, *) {
+            TextEditor(text: $viewModel.newMessage)
+                .focused($isMessageBarFocused)
+                .frame(maxHeight: 40)
+                .padding(.horizontal, 8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.gray.opacity(0.5), lineWidth: 1)
+                )
+                .scrollContentBackground(.hidden)
+                .background(Color.swBackground)
+        } else {
+            TextEditor(text: $viewModel.newMessage)
+                .focused($isMessageBarFocused)
+                .frame(maxHeight: 40)
+                .padding(.horizontal, 8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.gray.opacity(0.5), lineWidth: 1)
+                )
+                .background(Color.swBackground)
+        }
     }
 
     var isSendButtonDisabled: Bool {

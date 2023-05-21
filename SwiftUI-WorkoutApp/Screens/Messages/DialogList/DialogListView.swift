@@ -29,6 +29,7 @@ struct DialogListView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : 0)
         }
+        .background(Color.swBackground)
         .animation(.default, value: viewModel.isLoading)
         .confirmationDialog(
             Constants.Alert.deleteDialog,

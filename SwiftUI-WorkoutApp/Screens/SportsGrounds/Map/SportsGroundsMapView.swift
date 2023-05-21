@@ -27,6 +27,7 @@ struct SportsGroundsMapView: View {
                             .opacity(viewModel.isLoading ? 1 : 0)
                     }
             }
+            .background(Color.swBackground)
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserInfo, perform: updateUserCountryAndCity)
             .alert(alertMessage, isPresented: $showErrorAlert) {

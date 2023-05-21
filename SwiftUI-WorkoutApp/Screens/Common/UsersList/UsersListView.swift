@@ -41,6 +41,7 @@ struct UsersListView: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : 0)
         }
+        .background(Color.swBackground)
         .animation(.easeInOut, value: viewModel.isLoading)
         .disabled(viewModel.isLoading || !network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {

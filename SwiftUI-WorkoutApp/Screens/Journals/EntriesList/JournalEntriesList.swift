@@ -51,6 +51,7 @@ struct JournalEntriesList: View {
             ProgressView()
                 .opacity(viewModel.isLoading ? 1 : 0)
         }
+        .background(Color.swBackground)
         .animation(.default, value: viewModel.isLoading)
         .disabled(viewModel.isLoading)
         .sheet(item: $editEntry) {
