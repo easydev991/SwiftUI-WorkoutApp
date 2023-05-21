@@ -111,6 +111,18 @@ private extension DialogView {
     var sendMessageBar: some View {
         HStack {
             newMessageTextField
+                .focused($isMessageBarFocused)
+                .frame(height: 40)
+                .padding(.horizontal, 8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(
+                            isMessageBarFocused ? Color.swAccent : Color.swSeparators,
+                            lineWidth: 0.5
+                        )
+                )
+                .background(Color.swBackground)
+                .animation(.default, value: isMessageBarFocused)
             SendChatMessageButton(action: sendMessage)
                 .disabled(isSendButtonDisabled)
         }
@@ -121,25 +133,11 @@ private extension DialogView {
     var newMessageTextField: some View {
         if #available(iOS 16.0, *) {
             TextEditor(text: $viewModel.newMessage)
-                .focused($isMessageBarFocused)
-                .frame(maxHeight: 40)
-                .padding(.horizontal, 8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray.opacity(0.5), lineWidth: 1)
-                )
+                .tint(.swAccent)
                 .scrollContentBackground(.hidden)
-                .background(Color.swBackground)
         } else {
             TextEditor(text: $viewModel.newMessage)
-                .focused($isMessageBarFocused)
-                .frame(maxHeight: 40)
-                .padding(.horizontal, 8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray.opacity(0.5), lineWidth: 1)
-                )
-                .background(Color.swBackground)
+                .accentColor(.swAccent)
         }
     }
 
