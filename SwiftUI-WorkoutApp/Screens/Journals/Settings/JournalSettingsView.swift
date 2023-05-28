@@ -27,12 +27,16 @@ struct JournalSettingsView: View {
 
     var body: some View {
         ContentInSheet(title: "Настройки дневника", spacing: .zero) {
-            Form {
+            VStack(spacing: 22) {
                 TextField("Название дневника", text: $journal.title)
+                    .textFieldStyle(.roundedBorder)
                 visibilitySettings
                 commentsSettings
+                    .padding(.bottom, 20)
                 saveButton
             }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .overlay {
@@ -53,7 +57,7 @@ struct JournalSettingsView: View {
 
 private extension JournalSettingsView {
     var visibilitySettings: some View {
-        Section("Кто видит записи") {
+        SectionView(header: "Кто видит записи", mode: .regular) {
             Picker(
                 "Доступ на просмотр",
                 selection: $journal.viewAccessType
@@ -67,7 +71,7 @@ private extension JournalSettingsView {
     }
 
     var commentsSettings: some View {
-        Section("Кто может оставлять комментарии") {
+        SectionView(header: "Кто может оставлять комментарии", mode: .regular) {
             Picker(
                 "Доступ на комментирование",
                 selection: $journal.commentAccessType
@@ -81,7 +85,8 @@ private extension JournalSettingsView {
     }
 
     var saveButton: some View {
-        ButtonInForm("Сохранить", action: saveChanges)
+        Button("Сохранить", action: saveChanges)
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(isSaveButtonDisabled)
     }
 
