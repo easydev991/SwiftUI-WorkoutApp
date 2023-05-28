@@ -41,12 +41,7 @@ struct ProfileSettingsView: View {
                 developerProfileButton
             }
         }
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)

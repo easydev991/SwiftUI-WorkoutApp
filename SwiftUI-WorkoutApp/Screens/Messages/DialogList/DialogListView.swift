@@ -24,13 +24,8 @@ struct DialogListView: View {
                 dialogList
             }
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
+        .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .animation(.default, value: viewModel.isLoading)
         .confirmationDialog(
             Constants.Alert.deleteDialog,
             isPresented: $showDeleteConfirmation,

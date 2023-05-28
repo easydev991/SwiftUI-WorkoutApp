@@ -38,18 +38,13 @@ struct SearchUsersView: View {
             prompt: Text("Имя пользователя на английском")
         )
         .onSubmit(of: .search, search)
+        .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
         .sheet(
             item: $messageRecipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }

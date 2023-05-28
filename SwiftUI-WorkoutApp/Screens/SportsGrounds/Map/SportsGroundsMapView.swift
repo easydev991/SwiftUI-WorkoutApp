@@ -20,12 +20,7 @@ struct SportsGroundsMapView: View {
             VStack {
                 segmentedControl
                 groundsContent
-                    .disabled(viewModel.isLoading)
-                    .animation(.easeInOut, value: viewModel.isLoading)
-                    .overlay {
-                        ProgressView()
-                            .opacity(viewModel.isLoading ? 1 : 0)
-                    }
+                    .loadingOverlay(if: viewModel.isLoading)
             }
             .background(Color.swBackground)
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)

@@ -32,13 +32,8 @@ struct EventsListView: View {
             } message: {
                 Text(Constants.Alert.eventCreationRule)
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .overlay {
-                ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : 0)
-            }
+            .loadingOverlay(if: viewModel.isLoading)
             .background(Color.swBackground)
-            .animation(.default, value: viewModel.isLoading)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }

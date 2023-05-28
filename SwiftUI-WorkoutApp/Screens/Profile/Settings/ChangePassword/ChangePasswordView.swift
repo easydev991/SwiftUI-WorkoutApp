@@ -25,13 +25,7 @@ struct ChangePasswordView: View {
                 changePasswordButton
             }
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok") { viewModel.errorAlertClosed() }
         }

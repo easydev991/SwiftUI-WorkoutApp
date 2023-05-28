@@ -60,14 +60,8 @@ struct SportsGroundsListView: View {
             }
             .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
+        .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.list, perform: dismissIfEmpty)
         .alert(errorTitle, isPresented: $showErrorAlert) {

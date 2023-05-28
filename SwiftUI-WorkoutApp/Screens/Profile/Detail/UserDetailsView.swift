@@ -39,12 +39,7 @@ struct UserDetailsView: View {
             socialInfoSection
         }
         .opacity(viewModel.user.isFull ? 1 : 0)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
         .alert(alertMessage, isPresented: $showAlertMessage) {
             Button("Ok", action: closeAlert)
         }

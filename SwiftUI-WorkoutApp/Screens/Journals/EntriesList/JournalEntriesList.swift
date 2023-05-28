@@ -46,14 +46,8 @@ struct JournalEntriesList: View {
             }
             .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
+        .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
         .sheet(item: $editEntry) {
             TextEntryView(
                 mode: .editJournalEntry(

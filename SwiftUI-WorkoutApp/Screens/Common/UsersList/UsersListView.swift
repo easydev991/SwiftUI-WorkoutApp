@@ -39,14 +39,9 @@ struct UsersListView: View {
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
+        .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading || !network.isConnected)
+        .disabled(!network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }

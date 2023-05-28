@@ -38,13 +38,7 @@ struct JournalSettingsView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
         .interactiveDismissDisabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isSettingsUpdated, perform: finishSettings)
