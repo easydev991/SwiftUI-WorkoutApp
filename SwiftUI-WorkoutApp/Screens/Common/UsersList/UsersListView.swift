@@ -17,19 +17,22 @@ struct UsersListView: View {
 
     var body: some View {
         ScrollView {
-            friendRequestsSectionIfNeeded
-            SectionView(
-                header: viewModel.hasFriendRequests ? "Друзья" : nil,
-                mode: .regular
-            ) {
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.users) { item in
-                        listItem(for: item)
-                            .disabled(item.id == defaults.mainUserInfo?.userID)
+            VStack(spacing: 0) {
+                friendRequestsSectionIfNeeded
+                SectionView(
+                    header: viewModel.hasFriendRequests ? "Друзья" : nil,
+                    mode: .regular
+                ) {
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.users) { item in
+                            listItem(for: item)
+                                .disabled(item.id == defaults.mainUserInfo?.userID)
+                        }
                     }
                 }
+                .padding(.top)
             }
-            .padding(.top)
+            .padding(.horizontal)
         }
         .sheet(
             item: $messageRecipient,

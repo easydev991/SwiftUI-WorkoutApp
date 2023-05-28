@@ -28,7 +28,6 @@ public struct SectionView<Content: View>: View {
                 SectionSupplementaryView(footer, mode: .footer)
             }
         }
-        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -75,6 +74,7 @@ struct SectionView_Previews: PreviewProvider {
                     .padding()
             }
         }
+        .padding(.horizontal)
     }
 }
 #endif

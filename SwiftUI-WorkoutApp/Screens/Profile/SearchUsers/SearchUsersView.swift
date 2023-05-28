@@ -13,7 +13,6 @@ struct SearchUsersView: View {
     @State private var errorTitle = ""
     @State private var searchTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
-    @FocusState private var isFocused
     var mode = Mode.regular
 
     var body: some View {
@@ -30,7 +29,7 @@ struct SearchUsersView: View {
                     }
                 }
             }
-            .padding(.top, 22)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.users.isEmpty ? 0 : 1)
         .searchable(
@@ -57,7 +56,6 @@ struct SearchUsersView: View {
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
-        .onAppear(perform: showKeyboard)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
         .navigationBarTitleDisplayMode(.inline)
@@ -140,14 +138,6 @@ private extension SearchUsersView {
     func closeAlert() {
         viewModel.clearErrorMessage()
         messagingViewModel.clearErrorMessage()
-    }
-
-    func showKeyboard() {
-        guard !isFocused else { return }
-        Task { @MainActor in
-            try await Task.sleep(nanoseconds: 750_000_000)
-            isFocused = true
-        }
     }
 
     func cancelTasks() {

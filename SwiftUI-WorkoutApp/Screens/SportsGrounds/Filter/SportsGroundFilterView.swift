@@ -50,7 +50,7 @@ struct SportsGroundFilterView: View {
                     }
                     resetFilterButton
                 }
-                .padding(.top)
+                .padding([.top, .horizontal])
             }
         }
     }
@@ -115,7 +115,6 @@ private extension SportsGroundFilterView {
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(!canResetFilter)
-        .padding(.horizontal)
     }
 
     var footerCityText: String {
