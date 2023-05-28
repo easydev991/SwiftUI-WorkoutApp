@@ -12,6 +12,7 @@ struct JournalSettingsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
+    @FocusState private var isTextFieldFocused: Bool
     private let options = JournalAccess.allCases
     private let updateOnSuccess: (Int) -> Void
     private let initialJournal: JournalResponse
@@ -28,11 +29,9 @@ struct JournalSettingsView: View {
     var body: some View {
         ContentInSheet(title: "Настройки дневника", spacing: .zero) {
             VStack(spacing: 22) {
-                TextField("Название дневника", text: $journal.title)
-                    .textFieldStyle(.roundedBorder)
+                journalTitleTextField
                 visibilitySettings
                 commentsSettings
-                    .padding(.bottom, 20)
                 saveButton
             }
             .frame(maxHeight: .infinity, alignment: .top)
@@ -50,6 +49,15 @@ struct JournalSettingsView: View {
 }
 
 private extension JournalSettingsView {
+    var journalTitleTextField: some View {
+        SWTextField(
+            placeholder: "Название дневника",
+            text: $journal.title,
+            isFocused: isTextFieldFocused
+        )
+        .focused($isTextFieldFocused)
+    }
+
     var visibilitySettings: some View {
         SectionView(header: "Кто видит записи", mode: .regular) {
             Picker(
@@ -76,6 +84,7 @@ private extension JournalSettingsView {
             }
             .pickerStyle(.segmented)
         }
+        .padding(.bottom, 20)
     }
 
     var saveButton: some View {
