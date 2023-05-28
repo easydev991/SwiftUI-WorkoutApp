@@ -17,25 +17,29 @@ struct SearchUsersView: View {
     var mode = Mode.regular
 
     var body: some View {
-        VStack(spacing: 10) {
-            searchTextField
-            ScrollView {
-                SectionView(
-                    header: "Результаты поиска",
-                    mode: .regular
-                ) {
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.users) { model in
-                            listItem(for: model)
-                                .disabled(model.id == defaults.mainUserInfo?.userID)
-                                .accessibilityIdentifier("UserViewCell")
-                        }
+        ScrollView {
+            SectionView(
+                header: "Результаты поиска",
+                mode: .regular
+            ) {
+                LazyVStack(spacing: 12) {
+                    ForEach(viewModel.users) { model in
+                        listItem(for: model)
+                            .disabled(model.id == defaults.mainUserInfo?.userID)
+                            .accessibilityIdentifier("UserViewCell")
                     }
                 }
-                .padding(.top, 22)
             }
-            .opacity(viewModel.users.isEmpty ? 0 : 1)
+            .padding(.top, 22)
         }
+        .opacity(viewModel.users.isEmpty ? 0 : 1)
+        .searchable(
+            text: $query,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: Text("Имя пользователя на английском")
+        )
+        .onSubmit(of: .search, search)
+        .background(Color.swBackground)
         .sheet(
             item: $messageRecipient,
             onDismiss: { endMessaging() },
@@ -70,16 +74,6 @@ extension SearchUsersView {
 }
 
 private extension SearchUsersView {
-    var searchTextField: some View {
-        TextField("Имя пользователя на английском", text: $query)
-            .textFieldStyle(.roundedBorder)
-            .onSubmit(search)
-            .submitLabel(.search)
-            .focused($isFocused)
-            .padding(.horizontal)
-            .accessibilityIdentifier("SearchUserNameField")
-    }
-
     @ViewBuilder
     func listItem(for model: UserModel) -> some View {
         switch mode {
