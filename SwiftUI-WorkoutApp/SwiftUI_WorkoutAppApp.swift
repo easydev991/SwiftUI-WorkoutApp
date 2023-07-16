@@ -21,6 +21,9 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(network)
                 .environmentObject(defaults)
                 .accentColor(.swAccent)
+                .onAppear {
+                    AppThemeService.set(defaults.appTheme)
+                }
         }
         .onChange(of: scenePhase) {
             if case .background = $0 {

@@ -18,10 +18,10 @@ struct ProfileSettingsView: View {
                 if mode == .authorized {
                     editAccountButton
                     changePasswordButton
-                    logoutButton
                 } else {
                     authorizeButton
                 }
+                appThemeButton
             } header: {
                 Text("Профиль")
             } footer: {
@@ -40,6 +40,7 @@ struct ProfileSettingsView: View {
             Section("Поддержать разработчика") {
                 developerProfileButton
             }
+            logoutButton
         }
         .loadingOverlay(if: viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -89,6 +90,13 @@ private extension ProfileSettingsView {
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
             Label("Изменить пароль", systemImage: "lock.fill")
+        }
+    }
+
+    var appThemeButton: some View {
+        NavigationLink(destination: AppThemeScreen()) {
+            Text("Тема приложения")
+                .badge(defaults.appTheme.rawValue)
         }
     }
 

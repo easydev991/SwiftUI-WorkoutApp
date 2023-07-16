@@ -7,7 +7,7 @@ public struct SectionView<Content: View>: View {
     private let content: Content
 
     public init(
-        header: String?,
+        header: String? = nil,
         footer: String? = nil,
         mode: Mode,
         @ViewBuilder content: () -> Content
