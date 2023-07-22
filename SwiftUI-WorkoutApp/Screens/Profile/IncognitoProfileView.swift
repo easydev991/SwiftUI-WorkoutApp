@@ -10,12 +10,14 @@ struct IncognitoProfileView: View {
             IncognitoUserButton(mode: .authorize)
             registrationInfo
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 IncognitoNavbarInfoButton()
             }
         }
         .padding()
+        .background(Color.swBackground)
     }
 }
 
