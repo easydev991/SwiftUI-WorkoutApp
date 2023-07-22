@@ -47,6 +47,7 @@ struct SendMessageView: View {
                 Spacer()
             }
         }
+        .background(Color.swBackground)
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
@@ -99,9 +100,9 @@ struct SendMessageView_Previews: PreviewProvider {
     static var previews: some View {
         SendMessageView(
             header: "Новый комментарий",
-            text: .constant(""),
+            text: .constant("Текст комментария"),
             isLoading: false,
-            isSendButtonDisabled: false,
+            isSendButtonDisabled: true,
             sendAction: {},
             showErrorAlert: .constant(false),
             errorTitle: .constant(""),
