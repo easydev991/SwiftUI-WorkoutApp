@@ -3,25 +3,29 @@ import SwiftUI
 public struct SWTextField: View {
     private let placeholder: String
     @Binding private var text: String
+    private let isSecure: Bool
     private let isFocused: Bool
-    private let errorMessage: String
+    private let errorState: ErrorState?
 
     /// Инициализирует `SWTextField`
     /// - Parameters:
     ///   - placeholder: Плейсхолдер
     ///   - text: Текст
+    ///   - isSecure: `true` - нужно прятать текст, `false` - не нужно, по умолчанию `false`
     ///   - isFocused: `true` - текстфилд сфокусирован, `false` - нет. Влияет на цвет рамки
-    ///   - errorMessage: Сообщение об ошибке. По умолчанию пустое
+    ///   - errorState: Состояние ошибки, по умолчанию отсутствует
     public init(
         placeholder: String,
         text: Binding<String>,
+        isSecure: Bool = false,
         isFocused: Bool,
-        errorMessage: String = ""
+        errorState: ErrorState? = nil
     ) {
         self.placeholder = placeholder
         self._text = text
+        self.isSecure = isSecure
         self.isFocused = isFocused
-        self.errorMessage = errorMessage
+        self.errorState = errorState
     }
 
     public var body: some View {
@@ -36,7 +40,22 @@ public struct SWTextField: View {
                 }
             errorMessageViewIfNeeded
         }
-        .animation(.default, value: errorMessage)
+        .animation(.default, value: errorState)
+    }
+}
+
+public extension SWTextField {
+    enum ErrorState: Equatable {
+        case noMessage
+        case message(String)
+
+        var message: String? {
+            if case let .message(text) = self, !text.isEmpty {
+                return text
+            } else {
+                return nil
+            }
+        }
     }
 }
 
@@ -44,18 +63,25 @@ private extension SWTextField {
     @ViewBuilder
     var textFieldView: some View {
         if #available(iOS 16.0, *) {
-            TextField(placeholder, text: $text)
-                .tint(.swAccent)
+            textField.tint(.swAccent)
+        } else {
+            textField.accentColor(.swAccent)
+        }
+    }
+
+    @ViewBuilder
+    var textField: some View {
+        if isSecure {
+            SecureField(placeholder, text: $text)
         } else {
             TextField(placeholder, text: $text)
-                .accentColor(.swAccent)
         }
     }
 
     @ViewBuilder
     var errorMessageViewIfNeeded: some View {
-        if !errorMessage.isEmpty {
-            Text(errorMessage)
+        if let message = errorState?.message {
+            Text(message)
                 .font(.subheadline)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(.swError)
@@ -63,7 +89,7 @@ private extension SWTextField {
     }
 
     var borderColor: Color {
-        guard errorMessage.isEmpty else {
+        guard errorState == nil else {
             return .swError
         }
         return isFocused ? .swAccent : .swSeparators
@@ -76,7 +102,13 @@ struct SWTextField_Previews: PreviewProvider {
         VStack(spacing: 20) {
             SWTextField(
                 placeholder: "Placeholder",
-                text: .constant("Text"),
+                text: .constant(""),
+                isFocused: false
+            )
+            SWTextField(
+                placeholder: "Placeholder",
+                text: .constant(""),
+                isSecure: true,
                 isFocused: false
             )
             SWTextField(
@@ -88,7 +120,13 @@ struct SWTextField_Previews: PreviewProvider {
                 placeholder: "Placeholder",
                 text: .constant("Text"),
                 isFocused: false,
-                errorMessage: "Error message"
+                errorState: .noMessage
+            )
+            SWTextField(
+                placeholder: "Placeholder",
+                text: .constant("Text"),
+                isFocused: false,
+                errorState: .message("Error message")
             )
         }
         .padding()

@@ -1,5 +1,6 @@
 import SwiftUI
 
+#warning("Заменить на SWTextField")
 /// Текстовое поле с картинкой слева для формы
 struct TextFieldInForm: View {
     private let mode: Mode
