@@ -1,4 +1,5 @@
 import DesignSystem
+import NetworkStatus
 import SwiftUI
 import SWModels
 
@@ -7,6 +8,7 @@ import SWModels
 /// На нем еще можно восстановить пароль
 struct LoginView: View {
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var network: NetworkStatus
     @State private var isLoading = false
     @State private var credentials = Credentials()
     @State private var showResetInfoAlert = false
@@ -32,9 +34,7 @@ struct LoginView: View {
         .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: credentials) { _ in
-            errorMessage = ""
-        }
+        .onChange(of: credentials, perform: clearErrorMessage)
         .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
             Button("Ok") { showResetSuccessfulAlert = false }
         }
@@ -51,9 +51,7 @@ private extension LoginView {
 
         var isReady: Bool {
             !login.isEmpty
-                && password
-                .replacingOccurrences(of: " ", with: "")
-                .count >= Constants.minPasswordSize
+                && password.trueCount >= Constants.minPasswordSize
         }
 
         var canRestorePassword: Bool { !login.isEmpty }
@@ -66,7 +64,7 @@ private extension LoginView {
     var isError: Bool { !errorMessage.isEmpty }
 
     var canLogIn: Bool {
-        credentials.isReady && !isError
+        credentials.isReady && !isError && network.isConnected
     }
 
     var loginField: some View {
@@ -150,6 +148,10 @@ private extension LoginView {
         focus = credentials.canRestorePassword ? nil : .username
     }
 
+    func clearErrorMessage(_: Credentials) {
+        errorMessage = ""
+    }
+
     func cancelTasks() {
         [loginTask, resetPasswordTask].forEach { $0?.cancel() }
     }
@@ -159,7 +161,6 @@ private extension LoginView {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(DefaultsService())
     }
 }
 #endif

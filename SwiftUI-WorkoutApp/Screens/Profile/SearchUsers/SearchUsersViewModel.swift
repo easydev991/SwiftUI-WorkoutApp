@@ -11,8 +11,8 @@ final class SearchUsersViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let name = user.replacingOccurrences(of: " ", with: "")
-            let result = try await APIService(with: defaults).findUsers(with: name)
+            let result = try await APIService(with: defaults)
+                .findUsers(with: user.withoutSpaces)
             users = result.map(UserModel.init)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
