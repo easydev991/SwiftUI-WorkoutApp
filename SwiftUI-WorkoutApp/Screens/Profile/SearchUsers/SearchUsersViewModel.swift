@@ -1,6 +1,7 @@
 import Foundation
 import SWModels
 
+#warning("Можно убрать вьюмодель, чтобы не занимала место в коде")
 @MainActor
 final class SearchUsersViewModel: ObservableObject {
     @Published private(set) var users = [UserModel]()
