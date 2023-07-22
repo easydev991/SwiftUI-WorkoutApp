@@ -84,8 +84,8 @@ public extension JournalRowView {
 
                 var systemImageName: String {
                     switch self {
-                    case .edit: return "rectangle.and.pencil.and.ellipsis"
-                    case .setup: return "gearshape.fill"
+                    case .edit: return "pencil"
+                    case .setup: return "gearshape"
                     case .report: return "exclamationmark.triangle"
                     case .delete: return "trash"
                     }
