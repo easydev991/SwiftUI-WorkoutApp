@@ -59,7 +59,7 @@ private extension JournalSettingsView {
     }
 
     var visibilitySettings: some View {
-        SectionView(header: "Кто видит записи", mode: .regular) {
+        SectionView(headerWithPadding: "Кто видит записи", mode: .regular) {
             Picker(
                 "Доступ на просмотр",
                 selection: $journal.viewAccessType
@@ -73,7 +73,7 @@ private extension JournalSettingsView {
     }
 
     var commentsSettings: some View {
-        SectionView(header: "Кто может оставлять комментарии", mode: .regular) {
+        SectionView(headerWithPadding: "Кто может оставлять комментарии", mode: .regular) {
             Picker(
                 "Доступ на комментирование",
                 selection: $journal.commentAccessType

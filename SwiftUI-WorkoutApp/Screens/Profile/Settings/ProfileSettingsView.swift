@@ -17,18 +17,19 @@ struct ProfileSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 14) {
+            VStack(spacing: 0) {
                 SectionView(header: "Профиль", mode: .regular) {
                     VStack(spacing: 0) {
-                        if mode == .authorized {
+                        switch mode {
+                        case .authorized:
                             changePasswordButton
-                        } else {
+                        case .incognito:
                             authorizeView
                         }
                         appThemeButton
                     }
                 }
-                SWDivider(ignoreDefaultHorizontalPadding: true)
+                dividerView
                 SectionView(header: "О приложении", mode: .regular) {
                     VStack(spacing: 4) {
                         feedbackButton
@@ -38,15 +39,15 @@ struct ProfileSettingsView: View {
                         appVersionView
                     }
                 }
-                SWDivider(ignoreDefaultHorizontalPadding: true)
+                dividerView
                 SectionView(header: "Поддержать проект", mode: .regular) {
                     workoutShopButton
                 }
-                SWDivider(ignoreDefaultHorizontalPadding: true)
+                dividerView
                 SectionView(header: "Поддержать разработчика", mode: .regular) {
                     developerProfileButton
                 }
-                SWDivider(ignoreDefaultHorizontalPadding: true)
+                dividerView
                 logoutButton
             }
             .padding(.top, 14)
@@ -108,6 +109,12 @@ private extension ProfileSettingsView {
 }
 
 private extension ProfileSettingsView {
+    var dividerView: some View {
+        SWDivider(ignoreDefaultHorizontalPadding: true)
+            .padding(.top, 4)
+            .padding(.bottom, 24)
+    }
+    
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
             ListRowView(leadingContent: .text("Изменить пароль"), trailingContent: .chevron)
@@ -162,25 +169,37 @@ private extension ProfileSettingsView {
                 recipients: Constants.feedbackRecipient
             )
         } label: {
-            ListRowView(leadingContent: .text("Отправить обратную связь"))
+            ListRowView(
+                leadingContent: .text("Отправить обратную связь"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var rateAppButton: some View {
         Link(destination: Links.appReview) {
-            ListRowView(leadingContent: .text("Оценить приложение"))
+            ListRowView(
+                leadingContent: .text("Оценить приложение"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var userAgreementButton: some View {
         Link(destination: Links.rulesOfService) {
-            ListRowView(leadingContent: .text("Пользовательское соглашение"))
+            ListRowView(
+                leadingContent: .text("Пользовательское соглашение"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var officialSiteButton: some View {
         Link(destination: Links.officialSite) {
-            ListRowView(leadingContent: .text("Официальный сайт"))
+            ListRowView(
+                leadingContent: .text("Официальный сайт"),
+                trailingContent: .chevron
+            )
         }
     }
 
@@ -193,13 +212,19 @@ private extension ProfileSettingsView {
 
     var workoutShopButton: some View {
         Link(destination: Links.workoutShop) {
-            ListRowView(leadingContent: .text("Магазин WORKOUT"))
+            ListRowView(
+                leadingContent: .text("Магазин WORKOUT"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var developerProfileButton: some View {
         Link(destination: Links.developerProfile) {
-            ListRowView(leadingContent: .text("Oleg991 на boosty"))
+            ListRowView(
+                leadingContent: .text("Oleg991 на boosty"),
+                trailingContent: .chevron
+            )
         }
     }
 }

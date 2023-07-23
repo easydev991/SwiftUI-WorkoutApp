@@ -10,10 +10,7 @@ struct FriendRequestsView: View {
     @State private var declineRequestTask: Task<Void, Never>?
 
     var body: some View {
-        SectionView(
-            header: "Заявки",
-            mode: .card()
-        ) {
+        SectionView(headerWithPadding: "Заявки", mode: .card()) {
             LazyVStack(spacing: 0) {
                 ForEach(Array(zip(viewModel.friendRequests.indices, viewModel.friendRequests)), id: \.0) { index, item in
                     UserRowView(

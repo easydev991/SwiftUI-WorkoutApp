@@ -13,10 +13,7 @@ struct CommentsView: View {
     let editClbk: (CommentResponse) -> Void
 
     var body: some View {
-        SectionView(
-            header: "Комментарии",
-            mode: .card()
-        ) {
+        SectionView(headerWithPadding: "Комментарии", mode: .card()) {
             LazyVStack(spacing: 0) {
                 ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
                     CommentRowView(

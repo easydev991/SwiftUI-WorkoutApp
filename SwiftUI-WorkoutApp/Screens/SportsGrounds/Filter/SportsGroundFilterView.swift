@@ -17,10 +17,7 @@ struct SportsGroundFilterView: View {
         ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
             ScrollView {
                 VStack(spacing: 32) {
-                    SectionView(
-                        header: "Размер",
-                        mode: .card()
-                    ) {
+                    SectionView(header: "Размер", mode: .card()) {
                         VStack(spacing: 0) {
                             ForEach(Array(zip(defaultFilter.size.indices, defaultFilter.size)), id: \.0) { index, groundSize in
                                 buttonFor(groundSize)

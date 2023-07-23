@@ -18,11 +18,10 @@ public struct ListRowView: View {
     }
     
     public var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 16) {
             leadingContent.view
                 .frame(maxWidth: .infinity, alignment: .leading)
             trailingContent.view
-                .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(.vertical, 10)
     }
@@ -44,6 +43,7 @@ public extension ListRowView {
             case let .iconWithText(iconName, text):
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .frame(width: 32, height: 32)
                         .foregroundColor(.swTintedButton)
                         .overlay {
                             Image(systemName: iconName.rawValue)

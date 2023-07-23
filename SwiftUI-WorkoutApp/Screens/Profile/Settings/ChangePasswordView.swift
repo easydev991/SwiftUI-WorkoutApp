@@ -18,13 +18,13 @@ struct ChangePasswordView: View {
 
     var body: some View {
         VStack(spacing: 22) {
-            SectionView(header: "Текущий пароль", mode: .regular) {
+            SectionView(headerWithPadding: "Текущий пароль", mode: .regular) {
                 passwordField
             }
-            SectionView(header: "Новый пароль", mode: .regular) {
+            SectionView(headerWithPadding: "Новый пароль", mode: .regular) {
                 newPasswordField
             }
-            SectionView(header: "Подтверждение пароля", mode: .regular) {
+            SectionView(headerWithPadding: "Подтверждение пароля", mode: .regular) {
                 newRepeatedField
             }
             Spacer()

@@ -9,10 +9,7 @@ struct SectionSupplementaryView: View {
     /// - Parameters:
     ///   - text: Текст
     ///   - mode: Режим (заголовок/футер)
-    init(
-        _ text: String,
-        mode: Mode = .header
-    ) {
+    init(_ text: String, mode: Mode) {
         switch mode {
         case .header:
             self.text = text.uppercased()
@@ -27,7 +24,7 @@ struct SectionSupplementaryView: View {
             .foregroundColor(.swSmallElements)
             .font(.footnote)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 12)
+            .padding(.leading, mode.hasLeftPadding ? 12 : 0)
             .padding(vPadding.edges, vPadding.value)
     }
 
@@ -40,7 +37,19 @@ struct SectionSupplementaryView: View {
 }
 
 extension SectionSupplementaryView {
-    enum Mode { case header, footer }
+    enum Mode {
+        case header(hasLeftPadding: Bool)
+        case footer
+        
+        var hasLeftPadding: Bool {
+            switch self {
+            case let .header(hasLeftPadding):
+                return hasLeftPadding
+            case .footer:
+                return true
+            }
+        }
+    }
 }
 
 #if DEBUG
@@ -50,10 +59,13 @@ struct SectionSupplementaryView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0) {
             ForEach(headers, id: \.self) { text in
-                SectionSupplementaryView(text, mode: .header)
+                SectionSupplementaryView(text, mode: .header(hasLeftPadding: true))
                 RoundedRectangle(cornerRadius: 12)
                     .foregroundColor(.gray.opacity(0.3))
                 SectionSupplementaryView(text, mode: .footer)
+                SectionSupplementaryView(text, mode: .header(hasLeftPadding: false))
+                RoundedRectangle(cornerRadius: 12)
+                    .foregroundColor(.black.opacity(0.3))
                 Spacer().frame(height: 50)
             }
         }
