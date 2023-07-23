@@ -18,6 +18,9 @@ final class ProfileSettingsViewModel: ObservableObject {
         )
     }
 
+    /// Удаление профиля не используется, потому что регистрация отключена
+    ///
+    /// При включении экрана регистрации нужно вернуть этот функционал
     func deleteProfile(with defaults: DefaultsProtocol) async {
         if isLoading { return }
         isLoading.toggle()

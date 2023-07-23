@@ -37,9 +37,10 @@ struct APIService {
         self.canForceLogout = canForceLogout
     }
 
+    #warning("Запрос не используется, т.к. регистрация в приложении отключена")
     /// Выполняет регистрацию пользователя
     ///
-    /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными
+    /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными, поэтому этот запрос не используется
     /// - Parameter model: необходимые для регистрации данные
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
@@ -111,6 +112,7 @@ struct APIService {
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
 
+    #warning("Запрос не используется, т.к. регистрация в приложении тоже отключена")
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
         let endpoint = try await Endpoint.deleteUser(auth: defaults.basicAuthInfo())

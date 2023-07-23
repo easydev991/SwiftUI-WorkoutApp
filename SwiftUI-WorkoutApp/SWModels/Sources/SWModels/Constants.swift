@@ -22,7 +22,6 @@ public enum Constants {
         public static let deleteJournalEntry = "Удалить запись из дневника?"
         public static let deleteDialog = "Удалить диалог?"
         public static let logout = "Выйти из учетной записи?"
-        public static let deleteProfile = "Удалить учетную запись без возможности восстановления?"
         public static let resetSuccessful = "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
         public static let locationPermissionDenied = "Запрещен доступ к геолокации"
         public static let needLocationPermission =

@@ -6,10 +6,8 @@ struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ProfileSettingsViewModel()
     @State private var showLogoutDialog = false
-    @State private var showDeleteProfileDialog = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var deleteProfileTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
@@ -47,8 +45,6 @@ struct ProfileSettingsView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
-        .toolbar { deleteProfileButton }
-        .onDisappear(perform: cancelTask)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -128,27 +124,6 @@ private extension ProfileSettingsView {
         }
     }
 
-    var deleteProfileButton: some View {
-        Button {
-            showDeleteProfileDialog.toggle()
-        } label: {
-            Image(systemName: "trash")
-                .tint(.secondary)
-        }
-        .opacity(mode == .authorized ? 1 : 0)
-        .confirmationDialog(
-            Constants.Alert.deleteProfile,
-            isPresented: $showDeleteProfileDialog,
-            titleVisibility: .visible
-        ) {
-            Button("Удалить учетную запись", role: .destructive, action: deleteProfile)
-        }
-    }
-
-    func deleteProfile() {
-        deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
-    }
-
     var authorizeButton: some View {
         NavigationLink(destination: LoginView()) {
             Label("Авторизация", systemImage: "arrow.forward.circle.fill")
@@ -204,10 +179,6 @@ private extension ProfileSettingsView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
-    }
-
-    func cancelTask() {
-        deleteProfileTask?.cancel()
     }
 }
 
