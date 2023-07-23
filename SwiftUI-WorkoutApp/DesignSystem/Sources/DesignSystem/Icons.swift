@@ -50,6 +50,7 @@ public enum Icons {
         case person = "person.fill"
         case personQuestion = "person.fill.questionmark"
         case calendar
+        case chevron = "chevron.forward"
     }
 }
 
