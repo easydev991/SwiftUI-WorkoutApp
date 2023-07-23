@@ -41,6 +41,16 @@ public enum Icons {
         case location = "location.circle"
         case arrowUp = "arrow.up"
     }
+    
+    /// Иконки для `ListRow`
+    public enum ListRow: String {
+        case signPost = "signpost.right"
+        case envelope
+        case globe = "globe.europe.africa"
+        case person = "person.fill"
+        case personQuestion = "person.fill.questionmark"
+        case calendar
+    }
 }
 
 #if DEBUG

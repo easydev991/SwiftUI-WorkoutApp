@@ -76,7 +76,7 @@ private extension AccountInfoView {
 
     var loginField: some View {
         TextFieldInForm(
-            mode: .regular(systemImageName: "person"),
+            mode: .regular(systemImageName: Icons.ListRow.person.rawValue),
             placeholder: viewModel.userForm.placeholder(.userName),
             text: $viewModel.userForm.userName
         )
@@ -86,7 +86,7 @@ private extension AccountInfoView {
 
     var emailField: some View {
         TextFieldInForm(
-            mode: .regular(systemImageName: "envelope"),
+            mode: .regular(systemImageName: Icons.ListRow.envelope.rawValue),
             placeholder: viewModel.userForm.placeholder(.email),
             text: $viewModel.userForm.email
         )
@@ -104,7 +104,7 @@ private extension AccountInfoView {
 
     var nameField: some View {
         TextFieldInForm(
-            mode: .regular(systemImageName: "person"),
+            mode: .regular(systemImageName: Icons.ListRow.person.rawValue),
             placeholder: viewModel.userForm.placeholder(.fullname),
             text: $viewModel.userForm.fullName
         )
@@ -120,7 +120,7 @@ private extension AccountInfoView {
             )
         } label: {
             HStack {
-                Image(systemName: "globe")
+                Image(systemName: Icons.ListRow.globe.rawValue)
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.country))
                 Spacer()
@@ -139,7 +139,7 @@ private extension AccountInfoView {
             )
         } label: {
             HStack {
-                Image(systemName: "signpost.right")
+                Image(systemName: Icons.ListRow.signPost.rawValue)
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.city))
                 Spacer()
@@ -158,7 +158,7 @@ private extension AccountInfoView {
             }
         } label: {
             HStack {
-                Image(systemName: "person.fill.questionmark")
+                Image(systemName: Icons.ListRow.personQuestion.rawValue)
                     .foregroundColor(.secondary)
                 Text(viewModel.userForm.placeholder(.gender))
                 Spacer()
@@ -170,7 +170,7 @@ private extension AccountInfoView {
 
     var birthdayPicker: some View {
         HStack {
-            Image(systemName: "calendar")
+            Image(systemName: Icons.ListRow.calendar.rawValue)
                 .foregroundColor(.secondary)
             Spacer()
             DatePicker(
