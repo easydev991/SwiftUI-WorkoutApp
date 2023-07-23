@@ -33,6 +33,8 @@ struct UserDetailsView: View {
     var body: some View {
         List {
             userInfoSection
+            #warning("Добавить кнопку редактирования профиля")
+            // NavigationLink(destination: AccountInfoView(mode: .edit))
             if !isMainUser {
                 communicationSection
             }

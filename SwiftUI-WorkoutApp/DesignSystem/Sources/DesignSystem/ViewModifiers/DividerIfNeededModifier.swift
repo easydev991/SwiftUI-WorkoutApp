@@ -12,8 +12,7 @@ struct DividerIfNeededModifier: ViewModifier {
     func body(content: Content) -> some View {
         VStack(spacing: spacing) {
             content
-            Divider()
-                .background(Color.swSeparators)
+            SWDivider()
                 .opacity(showDivider ? 1 : 0)
         }
     }

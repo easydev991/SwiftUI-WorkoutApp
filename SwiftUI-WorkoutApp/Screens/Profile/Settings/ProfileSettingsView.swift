@@ -1,4 +1,5 @@
 import FeedbackSender
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -15,35 +16,43 @@ struct ProfileSettingsView: View {
     }
 
     var body: some View {
-        List {
-            Section {
-                if mode == .authorized {
-                    editAccountButton
-                    changePasswordButton
-                } else {
-                    authorizeButton
+        ScrollView {
+            VStack(spacing: 14) {
+                SectionView(header: "Профиль", mode: .regular) {
+                    VStack(spacing: 0) {
+                        if mode == .authorized {
+                            changePasswordButton
+                        } else {
+                            authorizeView
+                        }
+                        appThemeButton
+                    }
                 }
-                appThemeButton
-            } header: {
-                Text("Профиль")
-            } footer: {
-                mode.profileSectionFooter
+                SWDivider(ignoreDefaultHorizontalPadding: true)
+                SectionView(header: "О приложении", mode: .regular) {
+                    VStack(spacing: 4) {
+                        feedbackButton
+                        rateAppButton
+                        userAgreementButton
+                        officialSiteButton
+                        appVersionView
+                    }
+                }
+                SWDivider(ignoreDefaultHorizontalPadding: true)
+                SectionView(header: "Поддержать проект", mode: .regular) {
+                    workoutShopButton
+                }
+                SWDivider(ignoreDefaultHorizontalPadding: true)
+                SectionView(header: "Поддержать разработчика", mode: .regular) {
+                    developerProfileButton
+                }
+                SWDivider(ignoreDefaultHorizontalPadding: true)
+                logoutButton
             }
-            Section(mode.appInfoSectionTitle) {
-                feedbackButton
-                rateAppButton
-                userAgreementButton
-                officialSiteButton
-                appVersionView
-            }
-            Section("Поддержать проект") {
-                workoutShopButton
-            }
-            Section("Поддержать разработчика") {
-                developerProfileButton
-            }
-            logoutButton
+            .padding(.top, 14)
+            .padding(.horizontal)
         }
+        .background(Color.swBackground)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -67,11 +76,11 @@ private extension ProfileSettingsView.Mode {
             EmptyView()
         case .incognito:
             Text(Constants.registrationInfoText)
+                .font(.subheadline)
+                .foregroundColor(.swSmallElements)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    var appInfoSectionTitle: String {
-        self == .authorized ? "Информация о приложении" : "О приложении"
     }
 }
 
@@ -99,22 +108,19 @@ private extension ProfileSettingsView {
 }
 
 private extension ProfileSettingsView {
-    var editAccountButton: some View {
-        NavigationLink(destination: AccountInfoView(mode: .edit)) {
-            Label("Редактировать данные", systemImage: "doc.badge.gearshape.fill")
-        }
-    }
-
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
-            Label("Изменить пароль", systemImage: "lock.fill")
+            ListRowView(leadingContent: .text("Изменить пароль"), trailingContent: .chevron)
         }
+        .padding(.bottom, 4)
     }
 
     var appThemeButton: some View {
         NavigationLink(destination: AppThemeScreen()) {
-            Text("Тема приложения")
-                .badge(defaults.appTheme.rawValue)
+            ListRowView(
+                leadingContent: .text("Тема приложения"),
+                trailingContent: .textWithChevron(defaults.appTheme.rawValue)
+            )
         }
     }
 
@@ -122,8 +128,7 @@ private extension ProfileSettingsView {
         Button {
             showLogoutDialog.toggle()
         } label: {
-            Label("Выйти", systemImage: "arrow.down.backward.circle.fill")
-                .foregroundColor(.pink)
+            ListRowView(leadingContent: .text("Выйти из профиля"))
         }
         .confirmationDialog(
             Constants.Alert.logout,
@@ -136,11 +141,17 @@ private extension ProfileSettingsView {
         }
     }
 
-    var authorizeButton: some View {
-        NavigationLink(destination: LoginView()) {
-            Label("Авторизация", systemImage: "arrow.forward.circle.fill")
-                .font(.system(.body).bold())
+    var authorizeView: some View {
+        VStack(spacing: 0) {
+            NavigationLink(destination: LoginView()) {
+                ListRowView(
+                    leadingContent: .text("Авторизация"),
+                    trailingContent: .chevron
+                )
+            }
+            mode.profileSectionFooter
         }
+        .padding(.bottom, 14)
     }
 
     var feedbackButton: some View {
@@ -151,42 +162,44 @@ private extension ProfileSettingsView {
                 recipients: Constants.feedbackRecipient
             )
         } label: {
-            Label("Отправить обратную связь", systemImage: "envelope.fill")
+            ListRowView(leadingContent: .text("Отправить обратную связь"))
         }
     }
 
     var rateAppButton: some View {
         Link(destination: Links.appReview) {
-            Label("Оценить приложение", systemImage: "star.bubble.fill")
+            ListRowView(leadingContent: .text("Оценить приложение"))
         }
     }
 
     var userAgreementButton: some View {
         Link(destination: Links.rulesOfService) {
-            Label("Пользовательское соглашение", systemImage: "doc.text.fill")
+            ListRowView(leadingContent: .text("Пользовательское соглашение"))
         }
     }
 
     var officialSiteButton: some View {
         Link(destination: Links.officialSite) {
-            Label("Официальный сайт", systemImage: "w.circle.fill")
+            ListRowView(leadingContent: .text("Официальный сайт"))
         }
     }
 
     var appVersionView: some View {
-        Label("Версия", systemImage: "info.circle.fill")
-            .badge(Constants.appVersion)
+        ListRowView(
+            leadingContent: .text("Версия"),
+            trailingContent: .text(Constants.appVersion)
+        )
     }
 
     var workoutShopButton: some View {
         Link(destination: Links.workoutShop) {
-            Label("Магазин WORKOUT", systemImage: "bag.fill")
+            ListRowView(leadingContent: .text("Магазин WORKOUT"))
         }
     }
 
     var developerProfileButton: some View {
         Link(destination: Links.developerProfile) {
-            Label("Oleg991 на boosty", systemImage: "figure.wave")
+            ListRowView(leadingContent: .text("Oleg991 на boosty"))
         }
     }
 }
