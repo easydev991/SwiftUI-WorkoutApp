@@ -31,17 +31,22 @@ struct UserDetailsView: View {
     }
 
     var body: some View {
-        List {
-            userInfoSection
-            #warning("Добавить кнопку редактирования профиля")
-            // NavigationLink(destination: AccountInfoView(mode: .edit))
-            if !isMainUser {
-                communicationSection
+        ScrollView {
+            VStack(spacing: 0) {
+                userInfoSection
+                if isMainUser {
+                    editProfileButton
+                }
+                if !isMainUser {
+                    communicationSection
+                }
+                socialInfoSection
             }
-            socialInfoSection
         }
+        .frame(maxWidth: .infinity)
         .opacity(viewModel.user.isFull ? 1 : 0)
         .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showAlertMessage) {
             Button("Ok", action: closeAlert)
         }
@@ -69,26 +74,23 @@ struct UserDetailsView: View {
 
 private extension UserDetailsView {
     var userInfoSection: some View {
-        Section {
-            HStack {
-                Spacer()
-                VStack(spacing: 16) {
-                    avatarImageView
-                    VStack(spacing: 4) {
-                        Text(viewModel.user.name)
-                            .fontWeight(.bold)
-                        Text(viewModel.user.gender) + Text("yearsCount \(viewModel.user.age)")
-                        Text(viewModel.user.shortAddress)
-                            .multilineTextAlignment(.center)
-                    }
-                }
-                Spacer()
-            }
-        }
+        ProfileView(
+            imageURL: viewModel.user.imageURL,
+            login: viewModel.user.name,
+            gender: viewModel.user.gender,
+            age: viewModel.user.age,
+            countryAndCity: viewModel.user.shortAddress
+        )
+        .padding(.vertical, 24)
+        .padding(.horizontal, 40)
     }
 
-    var avatarImageView: some View {
-        CachedImage(url: viewModel.user.imageURL, mode: .profileAvatar)
+    var editProfileButton: some View {
+        NavigationLink(destination: EditAccountScreen()) {
+            Text("Изменить профиль")
+        }
+        .buttonStyle(SWButtonStyle(icon: .pencil, mode: .tinted, size: .large))
+        .padding(.horizontal)
     }
 
     var communicationSection: some View {

@@ -59,7 +59,7 @@ public extension DialogRowView {
 private extension DialogRowView {
     var leadingImage: some View {
         CachedImage(url: model.avatarURL, mode: .userListItem)
-            .borderedCircleClipshape()
+            .borderedClipshape()
     }
 
     var authorNameView: some View {

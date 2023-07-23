@@ -98,7 +98,7 @@ private extension DialogView {
                         openAnotherUserProfile.toggle()
                     }
                 )
-                .borderedCircleClipshape()
+                .borderedClipshape()
             }
         )
         .disabled(isToolbarItemDisabled)

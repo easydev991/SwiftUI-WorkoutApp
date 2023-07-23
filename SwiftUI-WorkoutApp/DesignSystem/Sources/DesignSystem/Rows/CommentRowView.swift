@@ -58,7 +58,7 @@ public struct CommentRowView: View {
 private extension CommentRowView {
     var leadingImage: some View {
         CachedImage(url: avatarURL, mode: .commentAvatar)
-            .borderedCircleClipshape()
+            .borderedClipshape()
     }
 
     var menuButton: some View {

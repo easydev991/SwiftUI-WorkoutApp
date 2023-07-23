@@ -33,8 +33,7 @@ public struct CachedImage: View {
 
 public extension CachedImage {
     enum Mode: CaseIterable {
-        case dialogListItem, genericListItem, journalEntry,
-             profileAvatar, eventPhoto, groundPhoto, gridPhoto
+        case dialogListItem, genericListItem, journalEntry, eventPhoto, groundPhoto, gridPhoto
         /// Фото в списке площадок
         case groundListItem
         /// Фото в списке мероприятий
@@ -47,6 +46,8 @@ public extension CachedImage {
         case userListItem
         /// Аватар пользователя в окне чата
         case avatarInDialogView
+        /// Аватар пользователя в профиле
+        case profileAvatar
 
         var size: CGSize {
             switch self {
@@ -56,7 +57,7 @@ public extension CachedImage {
                 return .init(width: 74, height: 74)
             case .genericListItem, .journalEntry:
                 return .init(width: 24, height: 24)
-            case .profileAvatar, .eventPhoto, .groundPhoto:
+            case .eventPhoto, .groundPhoto:
                 return .init(width: 300, height: 250)
             case .gridPhoto:
                 return .init(width: 150, height: 150)
@@ -64,6 +65,8 @@ public extension CachedImage {
                 return .init(width: 40, height: 40)
             case .avatarInDialogView:
                 return .init(width: 32, height: 32)
+            case .profileAvatar:
+                return .init(width: 150, height: 150)
             }
         }
     }
