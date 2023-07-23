@@ -26,7 +26,6 @@ struct EditAccountScreen: View {
                 genderPicker
                 birthdayPicker
                 countryPicker
-                
                 cityPicker
             }
             Spacer()
@@ -112,10 +111,10 @@ private extension EditAccountScreen {
     
     var countryPicker: some View {
         NavigationLink {
-            CountriesView(
-                allCountries: $viewModel.countries,
-                selectedCountry: viewModel.userForm.country,
-                countryClbk: { viewModel.selectCountry($0) }
+            ItemListScreen(
+                allItems: viewModel.countries.map(\.name),
+                selectedItem: viewModel.userForm.country.name,
+                didSelectItem: { viewModel.selectCountry(name: $0) }
             )
         } label: {
             ListRowView(
@@ -131,10 +130,10 @@ private extension EditAccountScreen {
 
     var cityPicker: some View {
         NavigationLink {
-            CitiesView(
-                allCities: $viewModel.cities,
-                selectedCity: viewModel.userForm.city,
-                cityClbk: { viewModel.selectCity($0) }
+            ItemListScreen(
+                allItems: viewModel.cities.map(\.name),
+                selectedItem: viewModel.userForm.city.name,
+                didSelectItem: { viewModel.selectCity(name: $0) }
             )
         } label: {
             ListRowView(

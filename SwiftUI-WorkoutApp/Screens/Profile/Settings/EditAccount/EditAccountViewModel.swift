@@ -30,12 +30,15 @@ final class EditAccountViewModel: ObservableObject {
         }
     }
 
-    func selectCountry(_ country: Country) {
-        userForm.country = country
-        updateCityIfNeeded(for: country)
+    func selectCountry(name countryName: String) {
+        let newCountry = countries.first(where: { $0.name == countryName }) ?? .defaultCountry
+        userForm.country = newCountry
+        updateCityIfNeeded(for: newCountry)
     }
 
-    func selectCity(_ city: City) { userForm.city = city }
+    func selectCity(name cityName: String) {
+        userForm.city = cities.first(where: { $0.name == cityName }) ?? .defaultCity
+    }
 
     func saveChangesAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
