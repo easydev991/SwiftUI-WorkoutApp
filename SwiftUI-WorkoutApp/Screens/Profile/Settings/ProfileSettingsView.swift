@@ -81,6 +81,16 @@ private extension ProfileSettingsView.Mode {
 }
 
 private extension ProfileSettingsView {
+    enum Links {
+        static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
+        static let workoutShop = URL(string: "https://workoutshop.ru")!
+        static let developerProfile = URL(string: "https://boosty.to/oleg991")!
+        static let officialSite = URL(string: "https://workout.su")!
+        static let rulesOfService = URL(string: "https://workout.su/pravila")!
+    }
+}
+
+private extension ProfileSettingsView {
     var editAccountButton: some View {
         NavigationLink(destination: AccountInfoView(mode: .edit)) {
             Label("Редактировать данные", systemImage: "doc.badge.gearshape.fill")
@@ -153,19 +163,19 @@ private extension ProfileSettingsView {
     }
 
     var rateAppButton: some View {
-        Link(destination: viewModel.appReviewURL) {
+        Link(destination: Links.appReview) {
             Label("Оценить приложение", systemImage: "star.bubble.fill")
         }
     }
 
     var userAgreementButton: some View {
-        Link(destination: viewModel.rulesOfServiceURL) {
+        Link(destination: Links.rulesOfService) {
             Label("Пользовательское соглашение", systemImage: "doc.text.fill")
         }
     }
 
     var officialSiteButton: some View {
-        Link(destination: viewModel.officialSiteURL) {
+        Link(destination: Links.officialSite) {
             Label("Официальный сайт", systemImage: "w.circle.fill")
         }
     }
@@ -176,13 +186,13 @@ private extension ProfileSettingsView {
     }
 
     var workoutShopButton: some View {
-        Link(destination: viewModel.workoutShopURL) {
+        Link(destination: Links.workoutShop) {
             Label("Магазин WORKOUT", systemImage: "bag.fill")
         }
     }
 
     var developerProfileButton: some View {
-        Link(destination: viewModel.developerProfileURL) {
+        Link(destination: Links.developerProfile) {
             Label("Oleg991 на boosty", systemImage: "figure.wave")
         }
     }
