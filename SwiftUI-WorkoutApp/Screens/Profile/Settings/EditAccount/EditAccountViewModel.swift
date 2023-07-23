@@ -21,6 +21,7 @@ final class EditAccountViewModel: ObservableObject {
     init() { makeCountryAndCityData() }
 
     func updateForm(with defaults: DefaultsProtocol) {
+        guard userForm.userName.isEmpty else { return }
         if let userInfo = defaults.mainUserInfo {
             userForm = .init(userInfo)
             userForm.country = countries.first(where: { $0.id == userForm.country.id }) ?? .defaultCountry
