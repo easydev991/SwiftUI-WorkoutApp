@@ -9,11 +9,12 @@ struct ProfileScreen: View {
             ZStack {
                 if defaults.isAuthorized {
                     UserDetailsView(for: defaults.mainUserInfo)
+                        .navigationBarTitleDisplayMode(.inline)
                 } else {
                     IncognitoProfileView()
+                        .navigationTitle("Профиль")
                 }
             }
-            .navigationTitle("Профиль")
         }
         .navigationViewStyle(.stack)
         .ignoresSafeArea()

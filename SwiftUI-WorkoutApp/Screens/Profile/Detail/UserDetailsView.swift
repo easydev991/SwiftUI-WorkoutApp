@@ -63,7 +63,7 @@ struct UserDetailsView: View {
         }
         .onDisappear(perform: cancelTasks)
         .task(priority: .userInitiated) { await askForUserInfo() }
-        .navigationTitle("Профиль")
+        .navigationTitle(isMainUser ? "" : "Профиль")
     }
 }
 
