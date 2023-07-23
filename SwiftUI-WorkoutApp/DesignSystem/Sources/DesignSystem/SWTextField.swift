@@ -35,7 +35,7 @@ public struct SWTextField: View {
                 .padding(12)
                 .background {
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(borderColor, lineWidth: 0.5)
+                        .strokeBorder(borderColor, lineWidth: 0.5)
                         .animation(.default, value: isFocused)
                 }
             errorMessageViewIfNeeded
