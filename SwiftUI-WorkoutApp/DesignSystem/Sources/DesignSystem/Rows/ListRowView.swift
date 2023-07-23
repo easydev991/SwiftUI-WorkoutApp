@@ -4,7 +4,7 @@ import SwiftUI
 public struct ListRowView: View {
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
-    
+
     /// Инициализирует `ListRowView`
     /// - Parameters:
     ///   - leadingContent: Контент слева
@@ -16,7 +16,7 @@ public struct ListRowView: View {
         self.leadingContent = leadingContent
         self.trailingContent = trailingContent
     }
-    
+
     public var body: some View {
         HStack(spacing: 16) {
             leadingContent.view
@@ -34,7 +34,7 @@ public extension ListRowView {
         case text(String)
         /// Иконка с текстом
         case iconWithText(Icons.ListRow, String)
-        
+
         @ViewBuilder
         var view: some View {
             switch self {
@@ -47,7 +47,7 @@ public extension ListRowView {
                 }
             }
         }
-        
+
         public static func makeIconView(with name: Icons.ListRow) -> some View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .frame(width: 34, height: 34)
@@ -57,12 +57,12 @@ public extension ListRowView {
                         .foregroundColor(.swAccent)
                 }
         }
-        
+
         private func makeTextView(with text: String) -> some View {
             Text(text).foregroundColor(.swMainText)
         }
     }
-    
+
     /// Контент справа
     enum TrailingContent {
         /// Пусто
@@ -73,7 +73,7 @@ public extension ListRowView {
         case text(String)
         /// Текст с шевроном
         case textWithChevron(String)
-        
+
         @ViewBuilder
         var view: some View {
             switch self {
@@ -90,14 +90,14 @@ public extension ListRowView {
                 }
             }
         }
-        
+
         private var chevronView: some View {
             Image(systemName: Icons.ListRow.chevron.rawValue)
                 .resizable()
                 .frame(width: 7, height: 12)
                 .foregroundColor(.swSmallElements)
         }
-        
+
         private func makeTextView(with text: String) -> some View {
             Text(text).foregroundColor(.swSmallElements)
         }

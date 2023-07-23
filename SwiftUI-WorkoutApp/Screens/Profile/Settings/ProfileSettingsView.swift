@@ -1,5 +1,5 @@
-import FeedbackSender
 import DesignSystem
+import FeedbackSender
 import SwiftUI
 import SWModels
 
@@ -9,7 +9,7 @@ struct ProfileSettingsView: View {
     @State private var showLogoutDialog = false
     private let feedbackSender: FeedbackSender
     private let mode: Mode
-    
+
     init(mode: Mode, feedbackSender: FeedbackSender = FeedbackSenderImp()) {
         self.mode = mode
         self.feedbackSender = feedbackSender
@@ -93,7 +93,7 @@ private extension ProfileSettingsView {
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
     }
-    
+
     enum Feedback {
         static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
         static let body = """
@@ -114,7 +114,7 @@ private extension ProfileSettingsView {
             .padding(.top, 4)
             .padding(.bottom, 24)
     }
-    
+
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
             ListRowView(leadingContent: .text("Изменить пароль"), trailingContent: .chevron)

@@ -9,7 +9,7 @@ public struct ItemListScreen: View {
     private let allItems: [String]
     private let selectedItem: String
     private let didSelectItem: (String) -> Void
-    
+
     /// Инициализирует экран
     /// - Parameters:
     ///   - allItems: Список всех элементов

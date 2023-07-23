@@ -17,7 +17,7 @@ public struct SectionView<Content: View>: View {
             content: content
         )
     }
-    
+
     public init(
         header: String? = nil,
         footer: String? = nil,
@@ -31,7 +31,7 @@ public struct SectionView<Content: View>: View {
             content: content
         )
     }
-    
+
     public init(
         headerWithPadding: String? = nil,
         footer: String? = nil,
@@ -76,19 +76,19 @@ public extension SectionView {
         /// Не добавляет модификаторы контенту
         case regular
     }
-    
+
     /// Модель для хедера/футера
     struct HeaderFooter {
         let title: String
         let mode: SectionSupplementaryView.Mode
-        
+
         init?(title: String?, mode: SectionSupplementaryView.Mode) {
             guard let title else { return nil }
             self.title = title
             self.mode = mode
         }
     }
-    
+
     private init(
         headerModel: HeaderFooter?,
         footerModel: HeaderFooter?,

@@ -40,7 +40,7 @@ extension SectionSupplementaryView {
     enum Mode {
         case header(hasLeftPadding: Bool)
         case footer
-        
+
         var hasLeftPadding: Bool {
             switch self {
             case let .header(hasLeftPadding):

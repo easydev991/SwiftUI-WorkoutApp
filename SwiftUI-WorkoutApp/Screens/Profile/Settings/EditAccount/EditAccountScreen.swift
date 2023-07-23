@@ -108,7 +108,7 @@ private extension EditAccountScreen {
         }
         .padding(.vertical, 16)
     }
-    
+
     var countryPicker: some View {
         NavigationLink {
             ItemListScreen(
@@ -151,7 +151,7 @@ private extension EditAccountScreen {
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(
                 !viewModel.canSaveChanges
-                || !network.isConnected
+                    || !network.isConnected
             )
     }
 

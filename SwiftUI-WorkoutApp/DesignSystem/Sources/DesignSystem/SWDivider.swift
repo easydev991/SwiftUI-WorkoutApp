@@ -2,11 +2,11 @@ import SwiftUI
 
 public struct SWDivider: View {
     private let ignoreDefaultHorizontalPadding: Bool
-    
+
     public init(ignoreDefaultHorizontalPadding: Bool = false) {
         self.ignoreDefaultHorizontalPadding = ignoreDefaultHorizontalPadding
     }
-    
+
     public var body: some View {
         Divider()
             .background(Color.swSeparators)
