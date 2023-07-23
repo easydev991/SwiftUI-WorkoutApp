@@ -42,16 +42,20 @@ public extension ListRowView {
                 makeTextView(with: text)
             case let .iconWithText(iconName, text):
                 HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .frame(width: 32, height: 32)
-                        .foregroundColor(.swTintedButton)
-                        .overlay {
-                            Image(systemName: iconName.rawValue)
-                                .foregroundColor(.swAccent)
-                        }
+                    ListRowView.LeadingContent.makeIconView(with: iconName)
                     makeTextView(with: text)
                 }
             }
+        }
+        
+        public static func makeIconView(with name: Icons.ListRow) -> some View {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .frame(width: 34, height: 34)
+                .foregroundColor(.swTintedButton)
+                .overlay {
+                    Image(systemName: name.rawValue)
+                        .foregroundColor(.swAccent)
+                }
         }
         
         private func makeTextView(with text: String) -> some View {
