@@ -1,14 +1,18 @@
+import FeedbackSender
 import SwiftUI
 import SWModels
 
 /// Экран с настройками профиля основного пользователя
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = ProfileSettingsViewModel()
     @State private var showLogoutDialog = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
-    let mode: Mode
+    private let feedbackSender: FeedbackSender
+    private let mode: Mode
+    
+    init(mode: Mode, feedbackSender: FeedbackSender = FeedbackSenderImp()) {
+        self.mode = mode
+        self.feedbackSender = feedbackSender
+    }
 
     var body: some View {
         List {
@@ -39,11 +43,6 @@ struct ProfileSettingsView: View {
                 developerProfileButton
             }
             logoutButton
-        }
-        .loadingOverlay(if: viewModel.isLoading)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
         }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -83,6 +82,19 @@ private extension ProfileSettingsView {
         static let developerProfile = URL(string: "https://boosty.to/oleg991")!
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
+    }
+    
+    enum Feedback {
+        static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
+        static let body = """
+            \(Feedback.sysVersion)
+            \(Feedback.appVersion)
+            \(Feedback.question)
+            \n
+        """
+        private static let question = "Над чем нам стоит поработать?"
+        private static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
+        private static let appVersion = "App version: \(Constants.appVersion)"
     }
 }
 
@@ -132,7 +144,13 @@ private extension ProfileSettingsView {
     }
 
     var feedbackButton: some View {
-        Button { viewModel.feedbackAction() } label: {
+        Button {
+            feedbackSender.sendFeedback(
+                subject: Feedback.subject,
+                messageBody: Feedback.body,
+                recipients: Constants.feedbackRecipient
+            )
+        } label: {
             Label("Отправить обратную связь", systemImage: "envelope.fill")
         }
     }
@@ -170,15 +188,6 @@ private extension ProfileSettingsView {
         Link(destination: Links.developerProfile) {
             Label("Oleg991 на boosty", systemImage: "figure.wave")
         }
-    }
-
-    func setupErrorAlert(with message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
     }
 }
 
