@@ -1,5 +1,6 @@
 import SwiftUI
 
+#warning("Заменить на TextWithCheckmarkRowView")
 /// Текст с галкой
 struct TextWithCheckmark: View {
     let title: String
