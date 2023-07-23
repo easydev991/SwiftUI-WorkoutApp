@@ -9,10 +9,6 @@ public enum Constants {
     public static let appVersion = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).valueOrEmpty
     public static let feedbackRecipient = ["info@workout.su"]
 
-    public enum RulesOfService {
-        public static let registrationForm = "Принимаю условия **[пользовательского соглашения](https://workout.su/pravila)**"
-    }
-
     public enum Alert {
         public static let forgotPassword = "Для восстановления пароля введите логин или email"
         public static let friendRequestSent = "Запрос отправлен!"

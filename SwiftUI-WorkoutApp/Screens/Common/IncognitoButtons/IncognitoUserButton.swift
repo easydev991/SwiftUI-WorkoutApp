@@ -14,6 +14,8 @@ struct IncognitoUserButton: View {
 extension IncognitoUserButton {
     enum Mode {
         /// Регистрация
+        ///
+        /// Пока недоступна
         case register
         /// Авторизация
         case authorize
@@ -33,7 +35,7 @@ private extension IncognitoUserButton.Mode {
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .register: AccountInfoView(mode: .create)
+        case .register: EmptyView()
         case .authorize: LoginView()
         }
     }

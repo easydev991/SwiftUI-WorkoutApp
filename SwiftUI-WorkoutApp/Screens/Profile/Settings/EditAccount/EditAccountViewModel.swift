@@ -1,10 +1,8 @@
-import CoreLocation
 import Foundation
 import SWModels
 
 @MainActor
-final class AccountInfoViewModel: ObservableObject {
-    @Published var isPolicyAccepted = false
+final class EditAccountViewModel: ObservableObject {
     @Published var userForm = MainUserForm.emptyValue
     @Published var countries = [Country]()
     @Published var cities = [City]()
@@ -15,20 +13,15 @@ final class AccountInfoViewModel: ObservableObject {
     private var savedUserForm = MainUserForm.emptyValue
     var currentGender: Gender { .init(userForm.genderCode) ?? .unspecified }
 
-    /// Доступность кнопки для регистрации или сохранения изменений
-    func isButtonAvailable(with defaults: DefaultsProtocol) -> Bool {
-        if defaults.isAuthorized {
-            return userForm != savedUserForm && userForm.isReadyToSave
-        } else {
-            return userForm.isReadyToRegister && isPolicyAccepted
-        }
+    /// Доступность кнопки для сохранения изменений
+    var canSaveChanges: Bool {
+        userForm != savedUserForm && userForm.isReadyToSave
     }
 
     init() { makeCountryAndCityData() }
 
-    func updateFormIfNeeded(with defaults: DefaultsProtocol) {
-        if defaults.isAuthorized, userForm.userName.isEmpty,
-           let userInfo = defaults.mainUserInfo {
+    func updateForm(with defaults: DefaultsProtocol) {
+        if let userInfo = defaults.mainUserInfo {
             userForm = .init(userInfo)
             userForm.country = countries.first(where: { $0.id == userForm.country.id }) ?? .defaultCountry
             userForm.city = cities.first(where: { $0.id == userForm.city.id }) ?? .defaultCity
@@ -42,17 +35,6 @@ final class AccountInfoViewModel: ObservableObject {
     }
 
     func selectCity(_ city: City) { userForm.city = city }
-
-    func registerAction(with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            try await APIService(with: defaults, needAuth: false).registration(with: userForm)
-        } catch {
-            errorMessage = ErrorFilterService.message(from: error)
-        }
-        isLoading.toggle()
-    }
 
     func saveChangesAction(with defaults: DefaultsProtocol) async {
         if isLoading { return }
@@ -69,7 +51,7 @@ final class AccountInfoViewModel: ObservableObject {
     func clearErrorMessage() { errorMessage = "" }
 }
 
-private extension AccountInfoViewModel {
+private extension EditAccountViewModel {
     func makeCountryAndCityData() {
         do {
             let allCountries = try Bundle.main.decodeJson(

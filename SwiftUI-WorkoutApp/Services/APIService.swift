@@ -10,6 +10,13 @@ struct APIService {
     /// Время таймаута для `URLSession`
     private let timeoutInterval: TimeInterval
     /// `true` - нужна базовая аутентификация, `false` - не нужна
+    ///
+    /// Базовая аутентификация не нужна для запросов:
+    /// - `getUpdatedSportsGrounds`
+    /// - `getSportsGround`
+    /// - `getEvents`
+    /// - `registration`
+    /// - `resetPassword`
     private let needAuth: Bool
     /// `true` - можно принудительно деавторизовать пользователя, `false` - не можем
     ///
