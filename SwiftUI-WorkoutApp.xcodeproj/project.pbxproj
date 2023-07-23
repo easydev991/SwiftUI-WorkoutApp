@@ -344,7 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				6747575528113419002F0A24 /* ChangePasswordView.swift */,
-				67B3716F2A63FF3F000FF143 /* AppTheme */,
+				67B371702A63FF6F000FF143 /* AppThemeScreen.swift */,
 				6770A8352834D7B50006B672 /* AccountInfo */,
 				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
 				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
@@ -657,14 +657,6 @@
 				67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */,
 			);
 			path = Filter;
-			sourceTree = "<group>";
-		};
-		67B3716F2A63FF3F000FF143 /* AppTheme */ = {
-			isa = PBXGroup;
-			children = (
-				67B371702A63FF6F000FF143 /* AppThemeScreen.swift */,
-			);
-			path = AppTheme;
 			sourceTree = "<group>";
 		};
 		67BAF3F92836275C00DB40D9 /* Comments */ = {
