@@ -29,7 +29,7 @@ public struct ListRowView: View {
 
 public extension ListRowView {
     /// Контент слева
-    enum LeadingContent: Hashable {
+    enum LeadingContent {
         /// Текст
         case text(String)
         /// Иконка с текстом
