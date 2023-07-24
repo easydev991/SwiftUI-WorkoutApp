@@ -21,7 +21,7 @@ public enum Icons {
         case message
         case addPerson = "person.crop.circle.badge.plus"
         case deletePerson = "person.crop.circle.badge.minus"
-        case pencil = "pencil"
+        case pencil
     }
 
     /// Названия системных иконок, используемых внутри обычных кнопок

@@ -3,7 +3,7 @@ import SwiftUI
 /// Модификатор, добавляющий бордюр выбранной формы с цветом `swAccent`
 public struct BorderedClipshapeModifier: ViewModifier {
     let clipShape: ClipShape
-    
+
     public func body(content: Content) -> some View {
         switch clipShape {
         case .roundedRectangle:

@@ -9,7 +9,7 @@ public struct ProfileView: View {
     private let gender: String
     private let age: Int
     private let countryAndCity: String
-    
+
     /// Инициализирует `ProfileView`
     /// - Parameters:
     ///   - imageURL: URL` картинки
@@ -30,7 +30,7 @@ public struct ProfileView: View {
         self.age = age
         self.countryAndCity = countryAndCity
     }
-    
+
     public var body: some View {
         VStack(spacing: 12) {
             CachedImage(url: imageURL, mode: .profileAvatar)
