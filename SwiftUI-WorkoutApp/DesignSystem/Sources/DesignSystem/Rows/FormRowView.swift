@@ -2,40 +2,74 @@ import SwiftUI
 
 /// В фигме называется "Ячейка формы"
 public struct FormRowView: View {
+    private let title: String
+    private let trailingContent: TrailingContent
+    
+    /// Инициализирует `FormRowView`
+    /// - Parameters:
+    ///   - title: Заголовок (слева)
+    ///   - trailingContent: Контент справа
+    public init(
+        title: String,
+        trailingContent: TrailingContent
+    ) {
+        self.title = title
+        self.trailingContent = trailingContent
+    }
+    
     public var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack(spacing: 12) {
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.swMainText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            trailingContent.view
+        }
+        .insideCardBackground()
     }
 }
 
 public extension FormRowView {
-    /// Контент слева
-    enum LeadingContent {
-        public struct TitleSubtitle {
-            let title, subtitle: String
-            let subtitleColor: Color
-
-            init(
-                title: String,
-                subtitle: String,
-                subtitleColor: Color = .swSmallElements
-            ) {
-                self.title = title
-                self.subtitle = subtitle
-                self.subtitleColor = subtitleColor
+    enum TrailingContent {
+        /// Тоггл
+        case toggle(Binding<Bool>)
+        /// Текст с шевроном
+        case textWithChevron(String)
+        
+        @ViewBuilder
+        var view: some View {
+            switch self {
+            case let .toggle($bool):
+                Toggle("", isOn: $bool)
+            case let .textWithChevron(text):
+                HStack(spacing: 12) {
+                    Text(text)
+                        .font(.subheadline)
+                        .foregroundColor(.swSmallElements)
+                    Icons.Misc.chevronView
+                }
             }
         }
-
-        /// Текст
-        case text(String)
-        /// Заголовок и подзаголовок
-        case titleSubtitle(TitleSubtitle)
     }
 }
 
 #if DEBUG
-struct SwiftUIView_Previews: PreviewProvider {
+struct FormRowView_Previews: PreviewProvider {
     static var previews: some View {
-        FormRowView()
+        Group {
+            ForEach(ColorScheme.allCases, id: \.self) { scheme in
+                VStack(spacing: 20) {
+                    FormRowView(title: "Друзья", trailingContent: .textWithChevron("56 друзей"))
+                    FormRowView(title: "Где тренируется", trailingContent: .textWithChevron("26 площадок"))
+                    FormRowView(title: "Тренируюсь здесь", trailingContent: .toggle(.constant(true)))
+                }
+                .padding()
+                .background(Color.swBackground)
+                .environment(\.colorScheme, scheme)
+                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
+            }
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
 #endif

@@ -80,22 +80,15 @@ public extension ListRowView {
             case .empty:
                 EmptyView()
             case .chevron:
-                chevronView
+                Icons.Misc.chevronView
             case let .text(text):
                 makeTextView(with: text)
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
                     makeTextView(with: text)
-                    chevronView
+                    Icons.Misc.chevronView
                 }
             }
-        }
-
-        private var chevronView: some View {
-            Image(systemName: Icons.ListRow.chevron.rawValue)
-                .resizable()
-                .frame(width: 7, height: 12)
-                .foregroundColor(.swSmallElements)
         }
 
         private func makeTextView(with text: String) -> some View {

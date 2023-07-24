@@ -41,6 +41,14 @@ public enum Icons {
         case personInCircle = "person.circle"
         case location = "location.circle"
         case arrowUp = "arrow.up"
+        case chevron = "chevron.forward"
+        
+        static var chevronView: some View {
+            Image(systemName: Icons.Misc.chevron.rawValue)
+                .resizable()
+                .frame(width: 7, height: 12)
+                .foregroundColor(.swSmallElements)
+        }
     }
 
     /// Иконки для `ListRow`
@@ -51,7 +59,6 @@ public enum Icons {
         case person = "person.fill"
         case personQuestion = "person.fill.questionmark"
         case calendar
-        case chevron = "chevron.forward"
     }
 }
 
