@@ -226,6 +226,7 @@
 		67D916872838F4C40098D3CB /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
 		67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryViewModel.swift; sourceTree = "<group>"; };
+		67EA685A2A6F0AB900697C88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		67FBF64A283379D9008A7968 /* EventsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListViewModel.swift; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
 		67FE5583297BF78500DC52BF /* ShortAddressService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ShortAddressService; path = "SwiftUI-WorkoutApp/ShortAddressService"; sourceTree = "<group>"; };
@@ -996,6 +997,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				675A370628547ACD00DAE071 /* ru */,
+				67EA685A2A6F0AB900697C88 /* en */,
 			);
 			name = Localizable.stringsdict;
 			sourceTree = "<group>";

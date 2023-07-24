@@ -13,15 +13,15 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>%lld лет</string>
+			<string>%lld years</string>
 			<key>one</key>
-			<string>%lld год</string>
+			<string>%lld year</string>
 			<key>two</key>
-			<string>%lld года</string>
+			<string>%lld years</string>
 			<key>few</key>
-			<string>%lld года</string>
+			<string>%lld years</string>
 			<key>many</key>
-			<string>%lld лет</string>
+			<string>%lld years</string>
 		</dict>
 	</dict>
 	<key>people %lld</key>
@@ -35,15 +35,15 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>%lld человек</string>
+			<string>nobody</string>
 			<key>one</key>
-			<string>%lld человек</string>
+			<string>%lld person</string>
 			<key>two</key>
-			<string>%lld человека</string>
+			<string>%lld persons</string>
 			<key>few</key>
-			<string>%lld человека</string>
+			<string>%lld persons</string>
 			<key>many</key>
-			<string>%lld человек</string>
+			<string>%lld people</string>
 		</dict>
 	</dict>
 </dict>

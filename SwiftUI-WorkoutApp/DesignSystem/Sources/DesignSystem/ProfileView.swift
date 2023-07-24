@@ -44,7 +44,7 @@ public struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         Image(systemName: Icons.Misc.personInCircle.rawValue)
-                        Text(gender) + Text("yearsCount \(age)")
+                        Text(gender) + Text("years \(age)")
                     }
                     HStack(spacing: 8) {
                         Image(systemName: Icons.Misc.location.rawValue)

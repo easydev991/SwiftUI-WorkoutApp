@@ -163,7 +163,7 @@ private extension SportsGroundDetailView {
             UsersListView(mode: .groundParticipants(list: viewModel.ground.participants))
         } label: {
             Text("Здесь тренируются")
-                .badge("peopleTrainHere \(viewModel.ground.participants.count)")
+                .badge("people \(viewModel.ground.participants.count)")
         }
     }
 
