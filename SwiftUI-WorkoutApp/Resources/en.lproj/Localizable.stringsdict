@@ -2,6 +2,30 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>peopleTrainHere</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Nobody trains here yet</string>
+			<key>one</key>
+			<string>1 person trains here</string>
+			<key>two</key>
+			<string>2 persons train here</string>
+			<key>few</key>
+			<string>%d people train here</string>
+			<key>many</key>
+			<string>%d people train here</string>
+			<key>other</key>
+			<string>%d people train here</string>
+		</dict>
+	</dict>
 	<key>groundsCount</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -54,11 +54,7 @@ private extension SportsGroundRowView {
             HStack(spacing: 6) {
                 Image(systemName: Icons.Misc.location.rawValue)
                     .foregroundColor(.swAccent)
-                Text(address)
-                    .foregroundColor(.swSmallElements)
-                    .font(.subheadline)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
+                makeSubtitleView(with: address)
             }
         }
     }
@@ -67,33 +63,50 @@ private extension SportsGroundRowView {
         HStack(spacing: 6) {
             Image(systemName: Icons.Misc.personInCircle.rawValue)
                 .foregroundColor(.swAccent)
-            Text(usersTrainHereText)
-                .foregroundColor(.swSmallElements)
-                .font(.subheadline)
-                .lineLimit(1)
+            makeSubtitleView(with: usersTrainHereText)
         }
+    }
+    
+    func makeSubtitleView(with text: String) -> some View {
+        Text(text)
+            .foregroundColor(.swSmallElements)
+            .font(.subheadline)
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
     }
 }
 
 #if DEBUG
 struct SportsGroundRowView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 12) {
-            SportsGroundRowView(
-                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
-                title: "N° 3 Легендарная / Средняя",
-                address: "м. Партизанская, улица 2-я Советская",
-                usersTrainHereText: "Тренируется 5 чел."
-            )
-            SportsGroundRowView(
-                imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
-                title: "N° 3 Легендарная / Средняя",
-                address: nil,
-                usersTrainHereText: "Тренируется 5 чел."
-            )
-            .environment(\.colorScheme, .dark)
+        Group {
+            ForEach(ColorScheme.allCases, id: \.self) { scheme in
+                VStack(spacing: 12) {
+                    SportsGroundRowView(
+                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                        title: "N° 3 Легендарная / Средняя",
+                        address: "м. Партизанская, улица 2-я Советская",
+                        usersTrainHereText: "Тренируются 5 человек"
+                    )
+                    SportsGroundRowView(
+                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                        title: "N° 3 Легендарная / Средняя",
+                        address: nil,
+                        usersTrainHereText: "Тренируются 5 человек"
+                    )
+                    SportsGroundRowView(
+                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                        title: "N° 3 Легендарная / Средняя",
+                        address: "м. Партизанская, улица 2-я Советская",
+                        usersTrainHereText: "Здесь пока никто не тренируется"
+                    )
+                }
+                .padding()
+                .background(Color.swBackground)
+                .environment(\.colorScheme, scheme)
+                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
+            }
         }
-        .padding()
         .previewLayout(.sizeThatFits)
     }
 }
