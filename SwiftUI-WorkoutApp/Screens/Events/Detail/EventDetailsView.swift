@@ -165,7 +165,7 @@ private extension EventDetailsView {
             UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
         } label: {
             Text("Участники")
-                .badge("people \(viewModel.event.participants.count)")
+                .badge(viewModel.event.participantsCountString)
         }
     }
 

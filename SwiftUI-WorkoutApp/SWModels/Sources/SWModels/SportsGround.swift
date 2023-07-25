@@ -212,6 +212,13 @@ public extension SportsGround {
         set { usersTrainHere = newValue }
     }
 
+    var participantsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("peopleCount", comment: ""),
+            participants.count
+        )
+    }
+
     /// Пользователь тренируется на этой площадке
     var trainHere: Bool {
         get { trainHereOptional.isTrue }

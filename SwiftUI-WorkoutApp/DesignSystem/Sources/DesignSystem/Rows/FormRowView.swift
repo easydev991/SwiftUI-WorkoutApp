@@ -4,7 +4,7 @@ import SwiftUI
 public struct FormRowView: View {
     private let title: String
     private let trailingContent: TrailingContent
-    
+
     /// Инициализирует `FormRowView`
     /// - Parameters:
     ///   - title: Заголовок (слева)
@@ -16,7 +16,7 @@ public struct FormRowView: View {
         self.title = title
         self.trailingContent = trailingContent
     }
-    
+
     public var body: some View {
         HStack(spacing: 12) {
             Text(title)
@@ -35,7 +35,7 @@ public extension FormRowView {
         case toggle(Binding<Bool>)
         /// Текст с шевроном
         case textWithChevron(String)
-        
+
         @ViewBuilder
         var view: some View {
             switch self {

@@ -196,6 +196,13 @@ public extension EventResponse {
         set { participantsOptional = newValue }
     }
 
+    var participantsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("peopleCount", comment: ""),
+            participants.count
+        )
+    }
+
     /// Пользователь участвует в этом мероприятии
     var trainHere: Bool {
         get { trainHereOptional.isTrue }

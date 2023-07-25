@@ -6,28 +6,24 @@ import SwiftUI
 public struct ProfileView: View {
     private let imageURL: URL?
     private let login: String
-    private let gender: String
-    private let age: Int
+    private let genderWithAge: String
     private let countryAndCity: String
 
     /// Инициализирует `ProfileView`
     /// - Parameters:
     ///   - imageURL: URL` картинки
     ///   - login: Имя пользователя (логин)
-    ///   - gender: Пол
-    ///   - age: Возраст
+    ///   - genderWithAge: Пол и возраст
     ///   - countryAndCity: Страна и город
     public init(
         imageURL: URL?,
         login: String,
-        gender: String,
-        age: Int,
+        genderWithAge: String,
         countryAndCity: String
     ) {
         self.imageURL = imageURL
         self.login = login
-        self.gender = gender
-        self.age = age
+        self.genderWithAge = genderWithAge
         self.countryAndCity = countryAndCity
     }
 
@@ -44,7 +40,7 @@ public struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         Image(systemName: Icons.Misc.personInCircle.rawValue)
-                        Text(gender) + Text("years \(age)")
+                        Text(genderWithAge)
                     }
                     HStack(spacing: 8) {
                         Image(systemName: Icons.Misc.location.rawValue)
@@ -64,8 +60,7 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileView(
             imageURL: nil,
             login: "Beautifulbutterfly101",
-            gender: "Женщина",
-            age: 30,
+            genderWithAge: "Женщина, 30 лет",
             countryAndCity: "Россия, Краснодар"
         )
         .padding(.horizontal, 40)

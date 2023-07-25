@@ -77,8 +77,7 @@ private extension UserDetailsView {
         ProfileView(
             imageURL: viewModel.user.imageURL,
             login: viewModel.user.name,
-            gender: viewModel.user.gender,
-            age: viewModel.user.age,
+            genderWithAge: viewModel.user.genderWithAge,
             countryAndCity: viewModel.user.shortAddress
         )
         .padding(.vertical, 24)

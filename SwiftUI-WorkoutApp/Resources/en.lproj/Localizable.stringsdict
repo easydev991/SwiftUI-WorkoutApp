@@ -2,48 +2,52 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>years %lld</key>
+	<key>peopleCount</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@VARIABLE@</string>
-		<key>VARIABLE</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>%lld years</string>
+			<string>nobody yet</string>
 			<key>one</key>
-			<string>%lld year</string>
+			<string>1 person</string>
 			<key>two</key>
-			<string>%lld years</string>
+			<string>2 persons</string>
 			<key>few</key>
-			<string>%lld years</string>
+			<string>%d people</string>
 			<key>many</key>
-			<string>%lld years</string>
+			<string>%d people</string>
+			<key>other</key>
+			<string>%d people</string>
 		</dict>
 	</dict>
-	<key>people %lld</key>
+	<key>ageInYears</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@VARIABLE@</string>
-		<key>VARIABLE</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>zero</key>
-			<string>nobody</string>
+			<string>age not specified</string>
 			<key>one</key>
-			<string>%lld person</string>
+			<string>1 year</string>
 			<key>two</key>
-			<string>%lld persons</string>
+			<string>2 years</string>
 			<key>few</key>
-			<string>%lld persons</string>
+			<string>%d years</string>
 			<key>many</key>
-			<string>%lld people</string>
+			<string>%d years</string>
+			<key>other</key>
+			<string>%d years</string>
 		</dict>
 	</dict>
 </dict>

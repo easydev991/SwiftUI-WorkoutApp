@@ -42,7 +42,7 @@ public enum Icons {
         case location = "location.circle"
         case arrowUp = "arrow.up"
         case chevron = "chevron.forward"
-        
+
         static var chevronView: some View {
             Image(systemName: Icons.Misc.chevron.rawValue)
                 .resizable()

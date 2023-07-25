@@ -76,6 +76,13 @@ public struct UserModel: Identifiable, Hashable {
 }
 
 public extension UserModel {
+    var genderWithAge: String {
+        gender + String.localizedStringWithFormat(
+            NSLocalizedString("ageInYears", comment: ""),
+            age
+        )
+    }
+
     var shortAddress: String {
         ShortAddressService(countryID, cityID).address
     }
