@@ -85,6 +85,13 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         }
     }
 
+    var blacklistedUsersCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("usersCount", comment: ""),
+            blacklistedUsers.count
+        )
+    }
+
     var friendsIdsList: [Int] {
         if let array = try? JSONDecoder().decode([Int].self, from: friendsIds) {
             return array

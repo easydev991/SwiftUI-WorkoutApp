@@ -42,6 +42,7 @@ struct UserDetailsView: View {
                 }
                 socialInfoSection
             }
+            .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
         .opacity(viewModel.user.isFull ? 1 : 0)
@@ -56,14 +57,19 @@ struct UserDetailsView: View {
         .onChange(of: messagingViewModel.errorMessage, perform: setupResponseAlert)
         .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButtonIfNeeded
+            }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isMainUser {
-                    Group {
+                Group {
+                    if isMainUser {
                         searchUsersButton
                         settingsButton
+                    } else {
+                        blockUserButton
                     }
-                    .disabled(viewModel.isLoading)
                 }
+                .disabled(viewModel.isLoading)
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -73,6 +79,18 @@ struct UserDetailsView: View {
 }
 
 private extension UserDetailsView {
+    @ViewBuilder
+    var refreshButtonIfNeeded: some View {
+        if !DeviceOSVersionChecker.iOS16Available {
+            Button {
+                Task { await askForUserInfo() }
+            } label: {
+                Image(systemName: Icons.Button.refresh.rawValue)
+            }
+            .disabled(viewModel.isLoading)
+        }
+    }
+
     var userInfoSection: some View {
         ProfileView(
             imageURL: viewModel.user.imageURL,
@@ -81,7 +99,7 @@ private extension UserDetailsView {
             countryAndCity: viewModel.user.shortAddress
         )
         .padding(.vertical, 24)
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 24)
     }
 
     var editProfileButton: some View {
@@ -89,38 +107,33 @@ private extension UserDetailsView {
             Text("Изменить профиль")
         }
         .buttonStyle(SWButtonStyle(icon: .pencil, mode: .tinted, size: .large))
-        .padding(.horizontal)
+        .padding(.bottom, 24)
     }
 
     var communicationSection: some View {
-        Section {
-            sendMessageButton
-            friendActionButton
-            blockUserButton
-        }
-    }
-
-    var sendMessageButton: some View {
-        Button {
-            showMessageSheet.toggle()
-        } label: {
-            Label("Отправить сообщение", systemImage: "plus.message")
-        }
-        .sheet(isPresented: $showMessageSheet) { messageSheet }
-    }
-
-    var friendActionButton: some View {
-        Button {
-            friendActionTask = Task { await viewModel.friendAction(with: defaults) }
-        } label: {
-            Label(
-                viewModel.friendActionOption.rawValue,
-                systemImage: viewModel.friendActionOption.imageName
+        VStack(spacing: 12) {
+            Button("Сообщение") {
+                showMessageSheet.toggle()
+            }
+            .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
+            .sheet(isPresented: $showMessageSheet) { messageSheet }
+            Button(viewModel.friendActionOption.rawValue) {
+                friendActionTask = Task { await viewModel.friendAction(with: defaults) }
+            }
+            .buttonStyle(
+                SWButtonStyle(
+                    icon: viewModel.friendActionOption == .removeFriend
+                        ? .deletePerson
+                        : .addPerson,
+                    mode: .tinted,
+                    size: .large
+                )
             )
+            .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
+                Button("Ok") {}
+            }
         }
-        .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
-            Button("Ok") {}
-        }
+        .padding(.bottom, 24)
     }
 
     var blockUserButton: some View {
@@ -152,7 +165,7 @@ private extension UserDetailsView {
     }
 
     var socialInfoSection: some View {
-        Section {
+        VStack(spacing: 12) {
             if viewModel.user.usesSportsGrounds > .zero {
                 usesSportsGroundsButton
             }
@@ -162,7 +175,7 @@ private extension UserDetailsView {
             if viewModel.user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
                 friendsButton
             }
-            if blacklistedUsersCount > .zero, isMainUser {
+            if !defaults.blacklistedUsers.isEmpty, isMainUser {
                 blacklistButton
             }
             if viewModel.user.journalsCount > .zero, !isMainUser {
@@ -175,8 +188,10 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
         } label: {
-            Label("Где тренируется", systemImage: "mappin.and.ellipse")
-                .badge(viewModel.user.usesSportsGrounds.description)
+            FormRowView(
+                title: "Где тренируется",
+                trailingContent: .textWithChevron(viewModel.user.usesSportsGroundsCountString)
+            )
         }
         .accessibilityIdentifier("usesSportsGroundsButton")
     }
@@ -185,32 +200,33 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
         } label: {
-            Label("Добавил площадки", systemImage: "mappin.and.ellipse")
-                .badge(viewModel.user.addedSportsGrounds.count.description)
+            FormRowView(
+                title: "Добавил площадки",
+                trailingContent: .textWithChevron(viewModel.user.addedSportsGroundsCountString)
+            )
         }
     }
 
     var friendsButton: some View {
         NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
-            HStack(spacing: 8) {
-                Label("Друзья", systemImage: "person.3.sequence.fill")
-                Spacer()
-                if friendRequestsCount > .zero, isMainUser {
-                    Image(systemName: "\(friendRequestsCount).circle.fill")
-                        .foregroundColor(.red)
-                }
-                if viewModel.user.friendsCount > .zero {
-                    Text(viewModel.user.friendsCount.description)
-                        .foregroundColor(.secondary)
-                }
-            }
+            FormRowView(
+                title: "Друзья",
+                trailingContent: .textWithChevron(viewModel.user.friendsCountString)
+            )
+            #warning("Показать количество заявок")
+//            if friendRequestsCount > .zero, isMainUser {
+//                Image(systemName: "\(friendRequestsCount).circle.fill")
+//                    .foregroundColor(.red)
+//            }
         }
     }
 
     var blacklistButton: some View {
         NavigationLink(destination: UsersListView(mode: .blacklist)) {
-            Label("Черный список", systemImage: "text.badge.xmark")
-                .badge(blacklistedUsersCount.description)
+            FormRowView(
+                title: "Черный список",
+                trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
+            )
         }
     }
 
@@ -220,8 +236,10 @@ private extension UserDetailsView {
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
-            Label("Дневники", systemImage: "text.book.closed.fill")
-                .badge(viewModel.user.journalsCount.description)
+            FormRowView(
+                title: "Дневники",
+                trailingContent: .textWithChevron(viewModel.user.journalsCountString)
+            )
         }
     }
 
@@ -281,10 +299,6 @@ private extension UserDetailsView {
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
-    }
-
-    var blacklistedUsersCount: Int {
-        defaults.blacklistedUsers.count
     }
 
     var isMainUser: Bool {

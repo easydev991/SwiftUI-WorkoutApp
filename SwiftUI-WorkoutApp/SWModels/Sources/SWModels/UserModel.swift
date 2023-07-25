@@ -83,6 +83,34 @@ public extension UserModel {
         )
     }
 
+    var friendsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("friendsCount", comment: ""),
+            friendsCount
+        )
+    }
+
+    var journalsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("journalsCount", comment: ""),
+            journalsCount
+        )
+    }
+
+    var usesSportsGroundsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("groundsCount", comment: ""),
+            usesSportsGrounds
+        )
+    }
+
+    var addedSportsGroundsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("groundsCount", comment: ""),
+            addedSportsGrounds.count
+        )
+    }
+
     var shortAddress: String {
         ShortAddressService(countryID, cityID).address
     }
