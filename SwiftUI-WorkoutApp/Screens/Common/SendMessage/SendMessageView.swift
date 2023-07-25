@@ -39,13 +39,11 @@ struct SendMessageView: View {
     var body: some View {
         ContentInSheet(title: header) {
             VStack {
-                Group {
-                    textView
-                    sendButtonStack
-                }
-                .padding(.horizontal)
+                textView
                 Spacer()
+                sendButton
             }
+            .padding([.horizontal, .bottom])
         }
         .background(Color.swBackground)
         .loadingOverlay(if: isLoading)
@@ -57,19 +55,12 @@ struct SendMessageView: View {
 }
 
 private extension SendMessageView {
-    var sendButtonStack: some View {
-        HStack {
-            Spacer()
-            sendButton
-        }
-    }
-
     var sendButton: some View {
         Button("Отправить") {
             isFocused = false
             sendAction()
         }
-        .buttonStyle(SWButtonStyle(mode: .filled, size: .small, maxWidth: nil))
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(isSendButtonDisabled || !network.isConnected)
     }
 
