@@ -5,6 +5,11 @@ extension Photo {
     static var preview: Photo {
         .init(id: 1, stringURL: "avatar_default")
     }
+    static func makePreviewList(count: Int) -> [Self] {
+        (0..<count).map {
+            .init(id: $0, stringURL: "avatar_default")
+        }
+    }
 }
 
 extension CommentResponse {

@@ -4,7 +4,7 @@ import SwiftUI
 import SWModels
 
 struct PhotoSectionCell: View {
-    @EnvironmentObject private var network: NetworkStatus
+//    @EnvironmentObject private var network: NetworkStatus
     let photo: Photo
     let canDelete: Bool
     let reportClbk: () -> Void
@@ -15,9 +15,9 @@ struct PhotoSectionCell: View {
         CachedImage(
             url: photo.imageURL,
             mode: .gridPhoto,
+            cornerRadius: 4,
             didTapImage: onTapClbk
         )
-        .cornerRadius(8)
         .overlay(alignment: .topTrailing) { menuButton }
     }
 }
@@ -43,7 +43,7 @@ private extension PhotoSectionCell {
         }
         .padding(8)
         .onTapGesture { hapticFeedback(.rigid) }
-        .opacity(network.isConnected ? 1 : 0)
+//        .opacity(network.isConnected ? 1 : 0)
     }
 }
 
@@ -57,7 +57,7 @@ struct PhotoSectionCell_Previews: PreviewProvider {
             onTapClbk: { _ in },
             deleteClbk: { _ in }
         )
-        .environmentObject(NetworkStatus())
+//        .environmentObject(NetworkStatus())
         .previewLayout(.sizeThatFits)
     }
 }

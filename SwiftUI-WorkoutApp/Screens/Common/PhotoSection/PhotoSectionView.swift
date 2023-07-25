@@ -12,7 +12,13 @@ struct PhotoSectionView: View {
     private let reportPhotoClbk: () -> Void
     private let deletePhotoClbk: (Int) -> Void
     /// Количество столбцов в сетке с фотографиями
-    private var columns: Int { photos.count > 1 ? 2 : 1 }
+    private var columns: Int {
+        switch photos.count {
+        case 1: return 1
+        case 2: return 2
+        default: return 3
+        }
+    }
     @State private var fullscreenImage: UIImage?
 
     init(
@@ -28,17 +34,17 @@ struct PhotoSectionView: View {
     }
 
     var body: some View {
-        Section("Фотографии") {
+        SectionView(header: "Фотографии", mode: .regular) {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: 150, maximum: .infinity),
-                        spacing: 12,
+                        .flexible(minimum: 110, maximum: .infinity),
+                        spacing: 2,
                         alignment: .top
                     ),
                     count: columns
                 ),
-                spacing: 12
+                spacing: 2
             ) {
                 ForEach(photos) { photo in
                     PhotoSectionCell(
@@ -50,6 +56,8 @@ struct PhotoSectionView: View {
                     )
                 }
             }
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .insideCardBackground()
             .fullScreenCover(item: $fullscreenImage) {
                 fullscreenImage = nil
             } content: { image in
@@ -70,14 +78,32 @@ private extension PhotoSectionView {
 #if DEBUG
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
-        List {
+        VStack(spacing: 20) {
             PhotoSectionView(
-                with: [.preview, .preview, .preview],
+                with: [.preview],
                 canDelete: true,
                 reportClbk: {},
                 deleteClbk: { _ in }
             )
+            .padding()
+            PhotoSectionView(
+                with: Photo.makePreviewList(count: 2),
+                canDelete: true,
+                reportClbk: {},
+                deleteClbk: { _ in }
+            )
+            .padding()
+            PhotoSectionView(
+                with: Photo.makePreviewList(count: 3),
+                canDelete: true,
+                reportClbk: {},
+                deleteClbk: { _ in }
+            )
+            .padding()
+            .background(Color.swBackground)
+            .environment(\.colorScheme, .dark)
         }
+        .previewLayout(.sizeThatFits)
     }
 }
 #endif

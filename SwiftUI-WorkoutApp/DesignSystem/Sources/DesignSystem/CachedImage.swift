@@ -4,15 +4,18 @@ import SwiftUI
 public struct CachedImage: View {
     private let url: URL?
     private let mode: Mode
+    private let cornerRadius: CGFloat
     private let didTapImage: ((UIImage) -> Void)?
 
     public init(
         url: URL?,
         mode: Mode = .userListItem,
+        cornerRadius: CGFloat = 12,
         didTapImage: ((UIImage) -> Void)? = nil
     ) {
         self.url = url
         self.mode = mode
+        self.cornerRadius = cornerRadius
         self.didTapImage = didTapImage
     }
 
@@ -27,7 +30,7 @@ public struct CachedImage: View {
         }
         .frame(width: mode.size.width, height: mode.size.height)
         .clipped()
-        .cornerRadius(12)
+        .cornerRadius(cornerRadius)
     }
 }
 
