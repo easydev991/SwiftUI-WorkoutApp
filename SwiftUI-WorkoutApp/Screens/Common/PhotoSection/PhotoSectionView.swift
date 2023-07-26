@@ -19,6 +19,7 @@ struct PhotoSectionView: View {
         default: return 3
         }
     }
+
     @State private var fullscreenImage: UIImage?
 
     init(

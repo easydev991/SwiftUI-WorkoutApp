@@ -66,7 +66,7 @@ private extension SportsGroundRowView {
             makeSubtitleView(with: usersTrainHereText)
         }
     }
-    
+
     func makeSubtitleView(with text: String) -> some View {
         Text(text)
             .foregroundColor(.swSmallElements)

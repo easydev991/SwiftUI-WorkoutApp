@@ -58,7 +58,7 @@ struct PhotoSectionCell_Previews: PreviewProvider {
             deleteClbk: { _ in }
         )
 //        .environmentObject(NetworkStatus())
-        .previewLayout(.sizeThatFits)
+            .previewLayout(.sizeThatFits)
     }
 }
 #endif
