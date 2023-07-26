@@ -1,3 +1,4 @@
+import NetworkStatus
 import PDFKit
 import SwiftUI
 
@@ -15,7 +16,8 @@ struct ImageDetailView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: PDFView, context _: Context) {
-        view.backgroundColor = colorScheme == .dark ? .black : .white
+//        view.backgroundColor = colorScheme == .dark ? .black : .white
+        view.backgroundColor = .init(.swBackground)
     }
 }
 

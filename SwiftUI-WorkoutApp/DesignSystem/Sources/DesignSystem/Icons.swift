@@ -34,6 +34,7 @@ public enum Icons {
         case xmark = "xmark.circle"
         case filter = "line.3.horizontal.decrease.circle"
         case magnifyingglass
+        case trash
     }
 
     public enum Misc: String, CaseIterable {

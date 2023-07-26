@@ -39,7 +39,7 @@ struct PhotoSectionView: View {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: 110, maximum: .infinity),
+                        .flexible(minimum: UIScreen.screenWidth*0.28),
                         spacing: 2,
                         alignment: .top
                     ),
@@ -48,13 +48,19 @@ struct PhotoSectionView: View {
                 spacing: 2
             ) {
                 ForEach(photos) { photo in
-                    PhotoSectionCell(
-                        photo: photo,
-                        canDelete: canDelete,
-                        reportClbk: reportPhotoClbk,
-                        onTapClbk: openImage,
-                        deleteClbk: deletePhotoClbk
-                    )
+                    GeometryReader { geo in
+                        PhotoSectionCell(
+                            photo: photo,
+                            canDelete: canDelete,
+                            reportClbk: reportPhotoClbk,
+                            onTapClbk: openImage,
+                            deleteClbk: deletePhotoClbk
+                        )
+                        .frame(height: geo.size.width)
+                    }
+                    .clipped()
+                    .aspectRatio(1, contentMode: .fit)
+                    .cornerRadius(4)
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -62,8 +68,9 @@ struct PhotoSectionView: View {
             .fullScreenCover(item: $fullscreenImage) {
                 fullscreenImage = nil
             } content: { image in
+                #warning("В навбаре слева поставить кнопку для закрытия, а справа - для действия")
                 ContentInSheet(title: "Фото") {
-                    ImageDetailView(image: image)
+                    PhotoDetailScreen(image: image)
                 }
             }
         }
@@ -95,16 +102,22 @@ struct PhotoSectionView_Previews: PreviewProvider {
             )
             .padding()
             PhotoSectionView(
-                with: Photo.makePreviewList(count: 3),
+                with: Photo.makePreviewList(count: 8),
                 canDelete: true,
                 reportClbk: {},
                 deleteClbk: { _ in }
             )
             .padding()
             .background(Color.swBackground)
-            .environment(\.colorScheme, .dark)
         }
         .previewLayout(.sizeThatFits)
     }
 }
 #endif
+
+
+extension UIScreen{
+   static let screenWidth = UIScreen.main.bounds.size.width
+   static let screenHeight = UIScreen.main.bounds.size.height
+   static let screenSize = UIScreen.main.bounds.size
+}

@@ -4,7 +4,6 @@ import SwiftUI
 import SWModels
 
 struct PhotoSectionCell: View {
-//    @EnvironmentObject private var network: NetworkStatus
     let photo: Photo
     let canDelete: Bool
     let reportClbk: () -> Void
@@ -12,13 +11,11 @@ struct PhotoSectionCell: View {
     let deleteClbk: (Int) -> Void
 
     var body: some View {
-        CachedImage(
+        ResizableCachedImage(
             url: photo.imageURL,
-            mode: .gridPhoto,
-            cornerRadius: 4,
             didTapImage: onTapClbk
         )
-        .overlay(alignment: .topTrailing) { menuButton }
+        .scaledToFill()
     }
 }
 

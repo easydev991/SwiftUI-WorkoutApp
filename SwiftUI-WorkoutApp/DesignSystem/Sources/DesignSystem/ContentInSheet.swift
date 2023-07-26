@@ -22,6 +22,7 @@ public struct ContentInSheet<Content: View>: View {
             headerForSheet
             content
         }
+        .background(Color.swBackground)
     }
 }
 
