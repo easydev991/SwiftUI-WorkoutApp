@@ -1,7 +1,7 @@
 import SwiftUI
 
-#warning("Заменить на SWTextField")
 /// Текстовое поле с картинкой слева для формы
+@available(*, deprecated, message: "Use SWTextField instead")
 struct TextFieldInForm: View {
     private let mode: Mode
     private let placeholder: String

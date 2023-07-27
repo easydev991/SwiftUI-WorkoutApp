@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(*, deprecated, message: "Use SWButtonStyle instead")
 struct AddCommentButton: View {
     @Binding var isCreatingComment: Bool
 
