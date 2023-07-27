@@ -11,16 +11,9 @@ struct PhotoSectionView: View {
     private let canDelete: Bool
     private let reportPhotoClbk: () -> Void
     private let deletePhotoClbk: (Int) -> Void
-    /// Количество столбцов в сетке с фотографиями
-    private var columns: Int {
-        switch photos.count {
-        case 1: return 1
-        case 2: return 2
-        default: return 3
-        }
-    }
+    private let screenWidth = UIScreen.main.bounds.size.width
 
-    @State private var fullscreenImage: UIImage?
+    @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
 
     init(
         with photos: [Photo],
@@ -39,7 +32,7 @@ struct PhotoSectionView: View {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: UIScreen.screenWidth * 0.28),
+                        .flexible(minimum: screenWidth * 0.28),
                         spacing: 2,
                         alignment: .top
                     ),
@@ -51,10 +44,9 @@ struct PhotoSectionView: View {
                     GeometryReader { geo in
                         PhotoSectionCell(
                             photo: photo,
-                            canDelete: canDelete,
-                            reportClbk: reportPhotoClbk,
-                            onTapClbk: openImage,
-                            deleteClbk: deletePhotoClbk
+                            onTapClbk: { uiImage, id in
+                                fullscreenImageInfo = .init(uiImage: uiImage, id: id)
+                            }
                         )
                         .frame(height: geo.size.width)
                     }
@@ -65,21 +57,28 @@ struct PhotoSectionView: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .insideCardBackground()
-            .fullScreenCover(item: $fullscreenImage) {
-                fullscreenImage = nil
-            } content: { image in
-                #warning("В навбаре слева поставить кнопку для закрытия, а справа - для действия")
-                ContentInSheet(title: "Фото") {
-                    PhotoDetailScreen(image: image)
-                }
+            .fullScreenCover(item: $fullscreenImageInfo) {
+                fullscreenImageInfo = nil
+            } content: { model in
+                PhotoDetailScreen(
+                    model: model,
+                    canDelete: canDelete,
+                    reportPhotoClbk: reportPhotoClbk,
+                    deletePhotoClbk: deletePhotoClbk
+                )
             }
         }
     }
 }
 
 private extension PhotoSectionView {
-    func openImage(_ image: UIImage) {
-        fullscreenImage = image
+    /// Количество столбцов в сетке с фотографиями
+    var columns: Int {
+        switch photos.count {
+        case 1: return 1
+        case 2: return 2
+        default: return 3
+        }
     }
 }
 
@@ -87,20 +86,6 @@ private extension PhotoSectionView {
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 20) {
-            PhotoSectionView(
-                with: [.preview],
-                canDelete: true,
-                reportClbk: {},
-                deleteClbk: { _ in }
-            )
-            .padding()
-            PhotoSectionView(
-                with: Photo.makePreviewList(count: 2),
-                canDelete: true,
-                reportClbk: {},
-                deleteClbk: { _ in }
-            )
-            .padding()
             PhotoSectionView(
                 with: Photo.makePreviewList(count: 8),
                 canDelete: true,
@@ -114,9 +99,3 @@ struct PhotoSectionView_Previews: PreviewProvider {
     }
 }
 #endif
-
-extension UIScreen {
-    static let screenWidth = UIScreen.main.bounds.size.width
-    static let screenHeight = UIScreen.main.bounds.size.height
-    static let screenSize = UIScreen.main.bounds.size
-}
