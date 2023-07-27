@@ -32,34 +32,38 @@ struct SportsGroundDetailView: View {
 
     var body: some View {
         ScrollView {
-            titleSubtitleSection
-            locationInfo
-            if viewModel.hasPhotos {
-                PhotoSectionView(
-                    with: viewModel.ground.photos,
-                    canDelete: isGroundAuthor,
-                    reportClbk: { viewModel.reportPhoto() },
-                    deleteClbk: deletePhoto
-                )
+            VStack(spacing: 0) {
+                titleSubtitleSection
+                locationInfo
+                if viewModel.hasPhotos {
+                    PhotoSectionView(
+                        with: viewModel.ground.photos,
+                        canDelete: isGroundAuthor,
+                        reportClbk: { viewModel.reportPhoto() },
+                        deleteClbk: deletePhoto
+                    )
+                }
+                if defaults.isAuthorized {
+                    participantsAndEventSection
+                }
+                authorSection
+                if !viewModel.ground.comments.isEmpty {
+                    commentsSection
+                }
+                if defaults.isAuthorized {
+                    AddCommentButton(isCreatingComment: $isCreatingComment)
+                        .sheet(isPresented: $isCreatingComment) {
+                            TextEntryView(
+                                mode: .newForGround(id: viewModel.ground.id),
+                                refreshClbk: refreshAction
+                            )
+                        }
+                }
             }
-            if defaults.isAuthorized {
-                participantsAndEventSection
-            }
-            authorSection
-            if !viewModel.ground.comments.isEmpty {
-                commentsSection
-            }
-            if defaults.isAuthorized {
-                AddCommentButton(isCreatingComment: $isCreatingComment)
-                    .sheet(isPresented: $isCreatingComment) {
-                        TextEntryView(
-                            mode: .newForGround(id: viewModel.ground.id),
-                            refreshClbk: refreshAction
-                        )
-                    }
-            }
+            .padding(.horizontal)
         }
         .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
                 mode: .editGround(
