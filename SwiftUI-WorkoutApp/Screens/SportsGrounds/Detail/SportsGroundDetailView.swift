@@ -31,7 +31,7 @@ struct SportsGroundDetailView: View {
     }
 
     var body: some View {
-        List {
+        ScrollView {
             titleSubtitleSection
             locationInfo
             if viewModel.hasPhotos {
