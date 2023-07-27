@@ -16,7 +16,6 @@ struct ImageDetailView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: PDFView, context _: Context) {
-//        view.backgroundColor = colorScheme == .dark ? .black : .white
         view.backgroundColor = .init(.swBackground)
     }
 }
