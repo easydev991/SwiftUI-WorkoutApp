@@ -28,7 +28,7 @@ struct PhotoSectionView: View {
     }
 
     var body: some View {
-        SectionView(header: "Фотографии", mode: .regular) {
+        SectionView(headerWithPadding: "Фотографии", mode: .regular) {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
@@ -41,18 +41,18 @@ struct PhotoSectionView: View {
                 spacing: 2
             ) {
                 ForEach(photos) { photo in
-                    GeometryReader { geo in
-                        PhotoSectionCell(
-                            photo: photo,
-                            onTapClbk: { uiImage, id in
-                                fullscreenImageInfo = .init(uiImage: uiImage, id: id)
-                            }
-                        )
-                        .frame(height: geo.size.width)
+                    if columns == 1 {
+                        makeCell(with: photo)
+                            .frame(height: 172)
+                    } else {
+                        GeometryReader { geo in
+                            makeCell(with: photo)
+                            .frame(height: geo.size.width)
+                        }
+                        .clipped()
+                        .aspectRatio(1, contentMode: .fit)
+                        .cornerRadius(4)
                     }
-                    .clipped()
-                    .aspectRatio(1, contentMode: .fit)
-                    .cornerRadius(4)
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -79,6 +79,16 @@ private extension PhotoSectionView {
         case 2: return 2
         default: return 3
         }
+    }
+    
+    func makeCell(with photo: Photo) -> some View {
+        ResizableCachedImage(
+            url: photo.imageURL,
+            didTapImage: { uiImage in
+                fullscreenImageInfo = .init(uiImage: uiImage, id: photo.id)
+            }
+        )
+        .scaledToFill()
     }
 }
 
