@@ -39,7 +39,7 @@ struct PhotoSectionView: View {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: UIScreen.screenWidth*0.28),
+                        .flexible(minimum: UIScreen.screenWidth * 0.28),
                         spacing: 2,
                         alignment: .top
                     ),
@@ -115,9 +115,8 @@ struct PhotoSectionView_Previews: PreviewProvider {
 }
 #endif
 
-
-extension UIScreen{
-   static let screenWidth = UIScreen.main.bounds.size.width
-   static let screenHeight = UIScreen.main.bounds.size.height
-   static let screenSize = UIScreen.main.bounds.size
+extension UIScreen {
+    static let screenWidth = UIScreen.main.bounds.size.width
+    static let screenHeight = UIScreen.main.bounds.size.height
+    static let screenSize = UIScreen.main.bounds.size
 }

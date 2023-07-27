@@ -7,7 +7,7 @@ struct PhotoDetailScreen: View {
     @EnvironmentObject private var network: NetworkStatus
     @Environment(\.dismiss) private var dismiss
     let image: UIImage
-    
+
     var body: some View {
         ImageDetailView(image: image)
             .background(Color.swBackground)
@@ -28,7 +28,7 @@ private extension PhotoDetailScreen {
             Image(systemName: Icons.Button.trash.rawValue)
         }
     }
-    
+
     var reportButton: some View {
         Button(role: .destructive, action: {}) {
             Image(systemName: Icons.Button.exclamation.rawValue)

@@ -3,8 +3,8 @@ import SwiftUI
 
 public struct ResizableCachedImage: View {
     private let url: URL?
-    private let didTapImage: ((UIImage) -> Void)
-    
+    private let didTapImage: (UIImage) -> Void
+
     public init(
         url: URL?,
         didTapImage: @escaping ((UIImage) -> Void)
@@ -12,7 +12,7 @@ public struct ResizableCachedImage: View {
         self.url = url
         self.didTapImage = didTapImage
     }
-    
+
     public var body: some View {
         CachedAsyncImage991(url: url) { uiImage in
             Button {
