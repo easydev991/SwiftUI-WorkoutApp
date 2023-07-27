@@ -32,7 +32,7 @@ struct SportsGroundDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 16) {
                 titleSubtitleSection
                 locationInfo
                 if viewModel.hasPhotos {
@@ -50,17 +50,9 @@ struct SportsGroundDetailView: View {
                 if !viewModel.ground.comments.isEmpty {
                     commentsSection
                 }
-                if defaults.isAuthorized {
-                    AddCommentButton(isCreatingComment: $isCreatingComment)
-                        .sheet(isPresented: $isCreatingComment) {
-                            TextEntryView(
-                                mode: .newForGround(id: viewModel.ground.id),
-                                refreshClbk: refreshAction
-                            )
-                        }
-                }
             }
-            .padding(.horizontal)
+            .padding(.top, 8)
+            .padding([.horizontal, .bottom])
         }
         .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
@@ -181,13 +173,18 @@ private extension SportsGroundDetailView {
     }
 
     var authorSection: some View {
-        Section("Добавил") {
+        let userModel = UserModel(viewModel.ground.author)
+        return SectionView(headerWithPadding: "Добавил", mode: .card()) {
             NavigationLink(destination: UserDetailsView(for: viewModel.ground.author)) {
-                HStack(spacing: 16) {
-                    CachedImage(url: viewModel.ground.author?.avatarURL)
-                    Text(viewModel.ground.authorName)
-                        .fontWeight(.medium)
-                }
+                UserRowView(
+                    mode: .regular(
+                        .init(
+                            imageURL: userModel.imageURL,
+                            name: userModel.name,
+                            address: userModel.shortAddress
+                        )
+                    )
+                )
             }
             .disabled(
                 !defaults.isAuthorized
@@ -206,8 +203,15 @@ private extension SportsGroundDetailView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: setupCommentToEdit
+            editClbk: setupCommentToEdit,
+            isCreatingComment: $isCreatingComment
         )
+        .sheet(isPresented: $isCreatingComment) {
+            TextEntryView(
+                mode: .newForGround(id: viewModel.ground.id),
+                refreshClbk: refreshAction
+            )
+        }
     }
 
     func setupCommentToEdit(_ comment: CommentResponse) {

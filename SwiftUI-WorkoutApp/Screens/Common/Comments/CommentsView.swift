@@ -11,24 +11,33 @@ struct CommentsView: View {
     let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (CommentResponse) -> Void
+    @Binding var isCreatingComment: Bool
 
     var body: some View {
-        SectionView(headerWithPadding: "Комментарии", mode: .card()) {
-            LazyVStack(spacing: 0) {
-                ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
-                    CommentRowView(
-                        avatarURL: comment.user?.avatarURL,
-                        userName: (comment.user?.userName).valueOrEmpty,
-                        dateText: comment.formattedDateString,
-                        bodyText: comment.formattedBody,
-                        isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
-                        isNetworkConnected: network.isConnected,
-                        reportAction: { reportClbk(comment) },
-                        editAction: { editClbk(comment) },
-                        deleteAction: { deleteClbk(comment.id) }
-                    )
-                    .withDivider(if: index != items.endIndex - 1)
+        VStack(spacing: 16) {
+            SectionView(headerWithPadding: "Комментарии", mode: .card()) {
+                LazyVStack(spacing: 0) {
+                    ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
+                        CommentRowView(
+                            avatarURL: comment.user?.avatarURL,
+                            userName: (comment.user?.userName).valueOrEmpty,
+                            dateText: comment.formattedDateString,
+                            bodyText: comment.formattedBody,
+                            isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
+                            isNetworkConnected: network.isConnected,
+                            reportAction: { reportClbk(comment) },
+                            editAction: { editClbk(comment) },
+                            deleteAction: { deleteClbk(comment.id) }
+                        )
+                        .withDivider(if: index != items.endIndex - 1)
+                    }
                 }
+            }
+            if defaults.isAuthorized {
+                Button("Добавить комментарий") {
+                    isCreatingComment.toggle()
+                }
+                .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             }
         }
     }
@@ -43,7 +52,8 @@ struct CommentsView_Previews: PreviewProvider {
                     items: [.preview],
                     reportClbk: { _ in },
                     deleteClbk: { _ in },
-                    editClbk: { _ in }
+                    editClbk: { _ in },
+                    isCreatingComment: .constant(false)
                 )
             }
             .previewDisplayName("Light, single")
@@ -52,7 +62,8 @@ struct CommentsView_Previews: PreviewProvider {
                     items: [.preview, .preview, .preview],
                     reportClbk: { _ in },
                     deleteClbk: { _ in },
-                    editClbk: { _ in }
+                    editClbk: { _ in },
+                    isCreatingComment: .constant(false)
                 )
             }
             .previewDisplayName("Light, multiple")
@@ -62,7 +73,8 @@ struct CommentsView_Previews: PreviewProvider {
                         items: [.preview],
                         reportClbk: { _ in },
                         deleteClbk: { _ in },
-                        editClbk: { _ in }
+                        editClbk: { _ in },
+                        isCreatingComment: .constant(false)
                     )
                     .environment(\.colorScheme, .dark)
                     .padding(.horizontal)
@@ -73,7 +85,8 @@ struct CommentsView_Previews: PreviewProvider {
                         items: [.preview, .preview, .preview],
                         reportClbk: { _ in },
                         deleteClbk: { _ in },
-                        editClbk: { _ in }
+                        editClbk: { _ in },
+                        isCreatingComment: .constant(false)
                     )
                     .environment(\.colorScheme, .dark)
                 }

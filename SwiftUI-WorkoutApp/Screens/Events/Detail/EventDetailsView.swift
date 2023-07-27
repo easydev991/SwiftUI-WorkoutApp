@@ -31,38 +31,34 @@ struct EventDetailsView: View {
     }
 
     var body: some View {
-        List {
-            mainInfo
-            locationInfo
-            if viewModel.event.hasDescription {
-                descriptionSection
+        ScrollView {
+            VStack(spacing: 16) {
+                mainInfo
+                locationInfo
+                if viewModel.event.hasDescription {
+                    descriptionSection
+                }
+                if showParticipantSection {
+                    participantsSection
+                }
+                if viewModel.hasPhotos {
+                    PhotoSectionView(
+                        with: viewModel.event.photos,
+                        canDelete: isAuthor,
+                        reportClbk: { viewModel.reportPhoto() },
+                        deleteClbk: deletePhoto
+                    )
+                }
+                authorSection
+                if !viewModel.event.comments.isEmpty {
+                    commentsSection
+                }
             }
-            if showParticipantSection {
-                participantsSection
-            }
-            if viewModel.hasPhotos {
-                PhotoSectionView(
-                    with: viewModel.event.photos,
-                    canDelete: isAuthor,
-                    reportClbk: { viewModel.reportPhoto() },
-                    deleteClbk: deletePhoto
-                )
-            }
-            authorSection
-            if !viewModel.event.comments.isEmpty {
-                commentsSection
-            }
-            if defaults.isAuthorized {
-                AddCommentButton(isCreatingComment: $isCreatingComment)
-                    .sheet(isPresented: $isCreatingComment) {
-                        TextEntryView(
-                            mode: .newForEvent(id: viewModel.event.id),
-                            refreshClbk: refreshAction
-                        )
-                    }
-            }
+            .padding(.top, 8)
+            .padding([.horizontal, .bottom])
         }
         .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
                 mode: .editEvent(
@@ -192,15 +188,18 @@ private extension EventDetailsView {
     func onChangeOfTrainHere(value: Bool) { trainHere = value }
 
     var authorSection: some View {
-        Section("Организатор") {
-            NavigationLink {
-                UserDetailsView(for: viewModel.event.author)
-            } label: {
-                HStack(spacing: 16) {
-                    CachedImage(url: viewModel.event.author?.avatarURL)
-                    Text(viewModel.event.authorName.valueOrEmpty)
-                        .fontWeight(.medium)
-                }
+        let userModel = UserModel(viewModel.event.author)
+        return SectionView(headerWithPadding: "Организатор", mode: .card()) {
+            NavigationLink(destination: UserDetailsView(for: viewModel.event.author)) {
+                UserRowView(
+                    mode: .regular(
+                        .init(
+                            imageURL: userModel.imageURL,
+                            name: userModel.name,
+                            address: userModel.shortAddress
+                        )
+                    )
+                )
             }
             .disabled(
                 !defaults.isAuthorized
@@ -219,8 +218,15 @@ private extension EventDetailsView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: setupCommentToEdit
+            editClbk: setupCommentToEdit,
+            isCreatingComment: $isCreatingComment
         )
+        .sheet(isPresented: $isCreatingComment) {
+            TextEntryView(
+                mode: .newForEvent(id: viewModel.event.id),
+                refreshClbk: refreshAction
+            )
+        }
     }
 
     func setupCommentToEdit(_ comment: CommentResponse) {
