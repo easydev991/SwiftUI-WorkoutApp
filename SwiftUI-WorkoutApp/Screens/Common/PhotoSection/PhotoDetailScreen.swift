@@ -55,8 +55,7 @@ private extension PhotoDetailScreen {
                 .font(.headline)
                 .foregroundColor(.swMainText)
         }
-        .padding(.top, 26)
-        .padding(.bottom, 10)
+        .padding(.vertical)
     }
 
     @ViewBuilder
