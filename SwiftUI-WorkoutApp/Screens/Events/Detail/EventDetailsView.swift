@@ -73,7 +73,7 @@ struct EventDetailsView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok", action: { viewModel.clearErrorMessage() })
         }
         .onReceive(viewModel.$event, perform: onReceiveOfEventSetupTrainHere)
         .onChange(of: viewModel.event.trainHere, perform: onChangeOfTrainHere)
@@ -99,25 +99,32 @@ struct EventDetailsView: View {
 
 private extension EventDetailsView {
     var headerAndMapSection: some View {
-        VStack(spacing: 12) {
-            Text(viewModel.event.formattedTitle)
-                .font(.title.bold())
-                .foregroundColor(.swMainText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            HStack {
-                Text("Когда")
-                    .font(.headline)
-                Spacer()
-                Text(viewModel.event.eventDateString)
-                    .fontWeight(.medium)
+        VStack(spacing: 0) {
+            Group {
+                Text(viewModel.event.formattedTitle)
+                    .font(.title.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                SWDivider()
+                    .padding(.top, 12)
+                    .padding(.horizontal, -12)
+                    .padding(.bottom, 10)
+                HStack {
+                    Text("Когда").font(.headline)
+                    Spacer()
+                    Text(viewModel.event.eventDateString)
+                }
+                SWDivider()
+                    .padding(.top, 10)
+                    .padding(.horizontal, -12)
+                    .padding(.bottom, 12)
+                HStack {
+                    Text("Где").font(.headline)
+                    Spacer()
+                    Text(viewModel.event.shortAddress)
+                }
+                .padding(.bottom, 22)
             }
-            HStack {
-                Text("Где")
-                    .font(.headline)
-                Spacer()
-                Text(viewModel.event.shortAddress)
-                    .fontWeight(.medium)
-            }
+            .foregroundColor(.swMainText)
             SportsGroundLocationInfo(
                 ground: $viewModel.event.sportsGround,
                 address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
@@ -216,7 +223,7 @@ private extension EventDetailsView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: setupCommentToEdit,
+            editClbk: { editComment = $0 },
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
@@ -225,10 +232,6 @@ private extension EventDetailsView {
                 refreshClbk: refreshAction
             )
         }
-    }
-
-    func setupCommentToEdit(_ comment: CommentResponse) {
-        editComment = comment
     }
 
     func askForInfo(refresh: Bool = false) async {
@@ -240,7 +243,7 @@ private extension EventDetailsView {
     }
 
     var deleteButton: some View {
-        Button(action: toggleDeleteConfirmation) {
+        Button(action: { showDeleteDialog.toggle() }) {
             Image(systemName: "trash")
         }
         .confirmationDialog(
@@ -262,10 +265,6 @@ private extension EventDetailsView {
         } label: {
             Image(systemName: "rectangle.and.pencil.and.ellipsis")
         }
-    }
-
-    func toggleDeleteConfirmation() {
-        showDeleteDialog.toggle()
     }
 
     func deletePhoto(with id: Int) {
@@ -293,21 +292,20 @@ private extension EventDetailsView {
         }
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
     func dismissNotAuth(isAuth: Bool) {
         if !isAuth { dismiss() }
     }
 
-    func dismissDeleted(isDeleted _: Bool) {
-        dismiss()
-        onDeletion()
+    func dismissDeleted(isDeleted: Bool) {
+        if isDeleted {
+            dismiss()
+            onDeletion()
+        }
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, goingToEventTask, deletePhotoTask, deleteEventTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, goingToEventTask,
+         deletePhotoTask, deleteEventTask].forEach { $0?.cancel() }
     }
 }
 

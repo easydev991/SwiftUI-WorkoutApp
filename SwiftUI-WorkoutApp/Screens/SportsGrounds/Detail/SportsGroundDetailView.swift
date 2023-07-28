@@ -70,7 +70,7 @@ struct SportsGroundDetailView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok", action: { viewModel.clearErrorMessage() })
         }
         .onReceive(viewModel.$ground, perform: onReceiveOfGroundSetupTrainHere)
         .onChange(of: viewModel.ground.trainHere, perform: onChangeOfTrainHere)
@@ -206,7 +206,7 @@ private extension SportsGroundDetailView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: setupCommentToEdit,
+            editClbk: { editComment = $0 },
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
@@ -217,12 +217,8 @@ private extension SportsGroundDetailView {
         }
     }
 
-    func setupCommentToEdit(_ comment: CommentResponse) {
-        editComment = comment
-    }
-
     var deleteButton: some View {
-        Button(action: toggleDeleteConfirmation) {
+        Button(action: { showDeleteDialog.toggle() }) {
             Image(systemName: "trash")
         }
         .confirmationDialog(
@@ -236,10 +232,6 @@ private extension SportsGroundDetailView {
                 }
             }
         }
-    }
-
-    func toggleDeleteConfirmation() {
-        showDeleteDialog.toggle()
     }
 
     var editGroundButton: some View {
@@ -278,22 +270,21 @@ private extension SportsGroundDetailView {
             : false
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
     func dismissNotAuth(isAuth: Bool) {
         if !isAuth { dismiss() }
     }
 
-    func dismissDeleted(isDeleted _: Bool) {
-        dismiss()
-        onDeletion(viewModel.ground.id)
-        defaults.setUserNeedUpdate(true)
+    func dismissDeleted(isDeleted: Bool) {
+        if isDeleted {
+            dismiss()
+            onDeletion(viewModel.ground.id)
+            defaults.setUserNeedUpdate(true)
+        }
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, changeTrainHereTask, deletePhotoTask, deleteGroundTask].forEach { $0?.cancel() }
+        [refreshButtonTask, deleteCommentTask, changeTrainHereTask,
+         deletePhotoTask, deleteGroundTask].forEach { $0?.cancel() }
     }
 }
 
