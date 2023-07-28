@@ -33,8 +33,7 @@ struct SportsGroundDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                titleSubtitleSection
-                locationInfo
+                headerAndMapSection
                 if defaults.isAuthorized {
                     participantsAndEventSection
                 }
@@ -96,24 +95,32 @@ struct SportsGroundDetailView: View {
 }
 
 private extension SportsGroundDetailView {
-    var titleSubtitleSection: some View {
-        Section {
-            HStack {
+    var headerAndMapSection: some View {
+        VStack(spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
                 Text(viewModel.ground.shortTitle)
-                    .font(.title2.bold())
+                    .font(.title.bold())
+                    .foregroundColor(.swMainText)
                 Spacer()
                 Text(viewModel.ground.subtitle.valueOrEmpty)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.swSmallElements)
+            }
+            SportsGroundLocationInfo(
+                ground: $viewModel.ground,
+                address: viewModel.ground.address.valueOrEmpty,
+                appleMapsURL: viewModel.ground.appleMapsURL
+            )
+            if defaults.isAuthorized {
+                NavigationLink {
+                    EventFormView(for: .createForSelected(viewModel.ground))
+                } label: {
+                    Text("Создать мероприятие")
+                }
+                .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
+                .disabled(!network.isConnected)
             }
         }
-    }
-
-    var locationInfo: some View {
-        SportsGroundLocationInfo(
-            ground: $viewModel.ground,
-            address: viewModel.ground.address.valueOrEmpty,
-            appleMapsURL: viewModel.ground.appleMapsURL
-        )
+        .insideCardBackground()
     }
 
     var participantsAndEventSection: some View {
@@ -141,13 +148,6 @@ private extension SportsGroundDetailView {
             )
             .disabled(viewModel.isLoading || !network.isConnected)
             .onChange(of: trainHere, perform: changeTrainHereStatus)
-            NavigationLink {
-                EventFormView(for: .createForSelected(viewModel.ground))
-            } label: {
-                Text("Создать мероприятие")
-            }
-            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-            .disabled(!network.isConnected)
         }
     }
 

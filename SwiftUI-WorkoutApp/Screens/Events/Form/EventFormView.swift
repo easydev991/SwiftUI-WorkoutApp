@@ -107,7 +107,6 @@ private extension EventFormView {
             case .regularCreate:
                 Button(action: showGroundPickerIfAvailable) {
                     Text(viewModel.eventForm.sportsGround.name ?? "Выбрать")
-                        .blueMediumWeight()
                 }
             case let .createForSelected(ground):
                 Text(ground.name.valueOrEmpty)

@@ -33,8 +33,7 @@ struct EventDetailsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                mainInfo
-                locationInfo
+                headerAndMapSection
                 if showParticipantSection {
                     participantsSection
                 }
@@ -99,39 +98,33 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
-    var mainInfo: some View {
-        Group {
+    var headerAndMapSection: some View {
+        VStack(spacing: 12) {
             Text(viewModel.event.formattedTitle)
-                .font(.title2.bold())
-            dateInfo
-            addressInfo
+                .font(.title.bold())
+                .foregroundColor(.swMainText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Text("Когда")
+                    .font(.headline)
+                Spacer()
+                Text(viewModel.event.eventDateString)
+                    .fontWeight(.medium)
+            }
+            HStack {
+                Text("Где")
+                    .font(.headline)
+                Spacer()
+                Text(viewModel.event.shortAddress)
+                    .fontWeight(.medium)
+            }
+            SportsGroundLocationInfo(
+                ground: $viewModel.event.sportsGround,
+                address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
+                appleMapsURL: viewModel.event.sportsGround.appleMapsURL
+            )
         }
-    }
-
-    var dateInfo: some View {
-        HStack {
-            Text("Когда")
-            Spacer()
-            Text(viewModel.event.eventDateString)
-                .fontWeight(.medium)
-        }
-    }
-
-    var addressInfo: some View {
-        HStack {
-            Text("Где")
-            Spacer()
-            Text(viewModel.event.shortAddress)
-                .fontWeight(.medium)
-        }
-    }
-
-    var locationInfo: some View {
-        SportsGroundLocationInfo(
-            ground: $viewModel.event.sportsGround,
-            address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
-            appleMapsURL: viewModel.event.sportsGround.appleMapsURL
-        )
+        .insideCardBackground()
     }
 
     var descriptionSection: some View {

@@ -110,9 +110,10 @@ private extension ProfileSettingsView {
 
 private extension ProfileSettingsView {
     var dividerView: some View {
-        SWDivider(ignoreDefaultHorizontalPadding: true)
+        SWDivider()
             .padding(.top, 4)
             .padding(.bottom, 24)
+            .padding(.horizontal, -16)
     }
 
     var changePasswordButton: some View {

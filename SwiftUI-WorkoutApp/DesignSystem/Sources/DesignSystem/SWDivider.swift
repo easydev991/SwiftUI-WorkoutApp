@@ -1,16 +1,10 @@
 import SwiftUI
 
 public struct SWDivider: View {
-    private let ignoreDefaultHorizontalPadding: Bool
-
-    public init(ignoreDefaultHorizontalPadding: Bool = false) {
-        self.ignoreDefaultHorizontalPadding = ignoreDefaultHorizontalPadding
-    }
+    public init() {}
 
     public var body: some View {
-        Divider()
-            .background(Color.swSeparators)
-            .padding(.horizontal, ignoreDefaultHorizontalPadding ? -16 : 0)
+        Divider().background(Color.swSeparators)
     }
 }
 
