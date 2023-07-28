@@ -41,6 +41,7 @@ public extension FormRowView {
             switch self {
             case let .toggle($bool):
                 Toggle("", isOn: $bool)
+                    .tint(.swAccent)
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
                     Text(text)

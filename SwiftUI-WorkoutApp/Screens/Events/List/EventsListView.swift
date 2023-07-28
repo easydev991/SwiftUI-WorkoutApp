@@ -100,7 +100,7 @@ private extension EventsListView {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
-                    NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
+                    NavigationLink(destination: EventDetailsView(with: event, onDeletion: refreshAction)) {
                         EventRowView(
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,

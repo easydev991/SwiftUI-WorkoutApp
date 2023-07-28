@@ -24,10 +24,10 @@ struct EventDetailsView: View {
 
     init(
         with event: EventResponse,
-        deleteClbk: @escaping () -> Void
+        onDeletion: @escaping () -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: event))
-        self.onDeletion = deleteClbk
+        self.onDeletion = onDeletion
     }
 
     var body: some View {
@@ -35,9 +35,6 @@ struct EventDetailsView: View {
             VStack(spacing: 16) {
                 mainInfo
                 locationInfo
-                if viewModel.event.hasDescription {
-                    descriptionSection
-                }
                 if showParticipantSection {
                     participantsSection
                 }
@@ -48,6 +45,9 @@ struct EventDetailsView: View {
                         reportClbk: { viewModel.reportPhoto() },
                         deleteClbk: deletePhoto
                     )
+                }
+                if viewModel.event.hasDescription {
+                    descriptionSection
                 }
                 authorSection
                 if !viewModel.event.comments.isEmpty {
@@ -135,33 +135,38 @@ private extension EventDetailsView {
     }
 
     var descriptionSection: some View {
-        Section("Описание") {
+        SectionView(headerWithPadding: "Описание", mode: .card(padding: 12)) {
             Text(.init(viewModel.event.formattedDescription))
+                .foregroundColor(.swMainText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
                 .tint(.blue)
                 .textSelection(.enabled)
         }
     }
 
     var participantsSection: some View {
-        Section {
+        Group {
             if viewModel.hasParticipants {
-                participantsButton
+                NavigationLink {
+                    UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
+                } label: {
+                    FormRowView(
+                        title: "Участники",
+                        trailingContent: .textWithChevron(
+                            viewModel.event.participantsCountString
+                        )
+                    )
+                }
             }
             if viewModel.isEventCurrent {
-                Toggle("Пойду на мероприятие", isOn: $trainHere)
-                    .disabled(viewModel.isLoading || !network.isConnected)
-                    .onChange(of: trainHere, perform: changeTrainHereStatus)
-                    .tint(.swAccent)
+                FormRowView(
+                    title: "Пойду на мероприятие",
+                    trailingContent: .toggle($trainHere)
+                )
+                .disabled(viewModel.isLoading || !network.isConnected)
+                .onChange(of: trainHere, perform: changeTrainHereStatus)
             }
-        }
-    }
-
-    var participantsButton: some View {
-        NavigationLink {
-            UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
-        } label: {
-            Text("Участники")
-                .badge(viewModel.event.participantsCountString)
         }
     }
 
@@ -189,7 +194,7 @@ private extension EventDetailsView {
 
     var authorSection: some View {
         let userModel = UserModel(viewModel.event.author)
-        return SectionView(headerWithPadding: "Организатор", mode: .card()) {
+        return SectionView(headerWithPadding: "Организатор", mode: .regular) {
             NavigationLink(destination: UserDetailsView(for: viewModel.event.author)) {
                 UserRowView(
                     mode: .regular(
@@ -316,7 +321,7 @@ private extension EventDetailsView {
 #if DEBUG
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(with: .preview, deleteClbk: {})
+        EventDetailsView(with: .preview, onDeletion: {})
             .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }

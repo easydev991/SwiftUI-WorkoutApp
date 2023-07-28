@@ -1,5 +1,6 @@
 import SwiftUI
 
+#warning("Удалить")
 extension Text {
     func blueMediumWeight() -> Text {
         fontWeight(.medium)

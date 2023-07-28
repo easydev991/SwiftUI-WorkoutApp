@@ -20,14 +20,14 @@ struct SportsGroundDetailView: View {
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    private let onDeletionClbk: (Int) -> Void
+    private let onDeletion: (Int) -> Void
 
     init(
         for ground: SportsGround,
         onDeletion: @escaping (Int) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: ground))
-        self.onDeletionClbk = onDeletion
+        self.onDeletion = onDeletion
     }
 
     var body: some View {
@@ -35,6 +35,9 @@ struct SportsGroundDetailView: View {
             VStack(spacing: 16) {
                 titleSubtitleSection
                 locationInfo
+                if defaults.isAuthorized {
+                    participantsAndEventSection
+                }
                 if viewModel.hasPhotos {
                     PhotoSectionView(
                         with: viewModel.ground.photos,
@@ -42,9 +45,6 @@ struct SportsGroundDetailView: View {
                         reportClbk: { viewModel.reportPhoto() },
                         deleteClbk: deletePhoto
                     )
-                }
-                if defaults.isAuthorized {
-                    participantsAndEventSection
                 }
                 authorSection
                 if !viewModel.ground.comments.isEmpty {
@@ -117,16 +117,37 @@ private extension SportsGroundDetailView {
     }
 
     var participantsAndEventSection: some View {
-        Section {
+        Group {
             if let participants = viewModel.ground.usersTrainHere,
                !participants.isEmpty {
-                participantsButton
+                NavigationLink {
+                    UsersListView(
+                        mode: .groundParticipants(
+                            list: viewModel.ground.participants
+                        )
+                    )
+                } label: {
+                    FormRowView(
+                        title: "Здесь тренируются",
+                        trailingContent: .textWithChevron(
+                            viewModel.ground.participantsCountString
+                        )
+                    )
+                }
             }
-            Toggle("Тренируюсь здесь", isOn: $trainHere)
-                .disabled(viewModel.isLoading || !network.isConnected)
-                .onChange(of: trainHere, perform: changeTrainHereStatus)
-                .tint(.swAccent)
-            createEventButton
+            FormRowView(
+                title: "Тренируюсь здесь",
+                trailingContent: .toggle($trainHere)
+            )
+            .disabled(viewModel.isLoading || !network.isConnected)
+            .onChange(of: trainHere, perform: changeTrainHereStatus)
+            NavigationLink {
+                EventFormView(for: .createForSelected(viewModel.ground))
+            } label: {
+                Text("Создать мероприятие")
+            }
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+            .disabled(!network.isConnected)
         }
     }
 
@@ -154,27 +175,9 @@ private extension SportsGroundDetailView {
         trainHere = value
     }
 
-    var participantsButton: some View {
-        NavigationLink {
-            UsersListView(mode: .groundParticipants(list: viewModel.ground.participants))
-        } label: {
-            Text("Здесь тренируются")
-                .badge(viewModel.ground.participantsCountString)
-        }
-    }
-
-    var createEventButton: some View {
-        NavigationLink {
-            EventFormView(for: .createForSelected(viewModel.ground))
-        } label: {
-            Text("Создать мероприятие").blueMediumWeight()
-        }
-        .disabled(!network.isConnected)
-    }
-
     var authorSection: some View {
         let userModel = UserModel(viewModel.ground.author)
-        return SectionView(headerWithPadding: "Добавил", mode: .card()) {
+        return SectionView(headerWithPadding: "Добавил", mode: .regular) {
             NavigationLink(destination: UserDetailsView(for: viewModel.ground.author)) {
                 UserRowView(
                     mode: .regular(
@@ -285,7 +288,7 @@ private extension SportsGroundDetailView {
 
     func dismissDeleted(isDeleted _: Bool) {
         dismiss()
-        onDeletionClbk(viewModel.ground.id)
+        onDeletion(viewModel.ground.id)
         defaults.setUserNeedUpdate(true)
     }
 
@@ -297,11 +300,9 @@ private extension SportsGroundDetailView {
 #if DEBUG
 struct SportsGroundView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            SportsGroundDetailView(for: .preview, onDeletion: { _ in })
-                .environmentObject(NetworkStatus())
-                .environmentObject(DefaultsService())
-        }
+        SportsGroundDetailView(for: .preview, onDeletion: { _ in })
+            .environmentObject(NetworkStatus())
+            .environmentObject(DefaultsService())
     }
 }
 #endif
