@@ -18,8 +18,7 @@ public struct DialogRowView: View {
                 HStack(spacing: 12) {
                     messageView
                     if model.hasUnreadMessages {
-                        Image(systemName: "\(model.unreadCount).circle.fill")
-                            .foregroundColor(.swAccent)
+                        BadgeView(value: model.unreadCount)
                     }
                 }
             }

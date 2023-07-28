@@ -35,6 +35,8 @@ public extension FormRowView {
         case toggle(Binding<Bool>)
         /// Текст с шевроном
         case textWithChevron(String)
+        /// Текст с бейджем и шевроном
+        case textWithBadgeAndChevron(String, Int)
 
         @ViewBuilder
         var view: some View {
@@ -44,12 +46,24 @@ public extension FormRowView {
                     .tint(.swAccent)
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
-                    Text(text)
-                        .font(.subheadline)
-                        .foregroundColor(.swSmallElements)
+                    trailingTextView(text)
+                    Icons.Misc.chevronView
+                }
+            case let .textWithBadgeAndChevron(text, badgeValue):
+                HStack(spacing: 12) {
+                    trailingTextView(text)
+                    if badgeValue > 0 {
+                        BadgeView(value: badgeValue)
+                    }
                     Icons.Misc.chevronView
                 }
             }
+        }
+        
+        private func trailingTextView(_ text: String) -> some View {
+            Text(text)
+                .font(.subheadline)
+                .foregroundColor(.swSmallElements)
         }
     }
 }
@@ -61,6 +75,7 @@ struct FormRowView_Previews: PreviewProvider {
             ForEach(ColorScheme.allCases, id: \.self) { scheme in
                 VStack(spacing: 20) {
                     FormRowView(title: "Друзья", trailingContent: .textWithChevron("56 друзей"))
+                    FormRowView(title: "Друзья", trailingContent: .textWithBadgeAndChevron("56 друзей", 5))
                     FormRowView(title: "Где тренируется", trailingContent: .textWithChevron("26 площадок"))
                     FormRowView(title: "Тренируюсь здесь", trailingContent: .toggle(.constant(true)))
                 }

@@ -211,13 +211,11 @@ private extension UserDetailsView {
         NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
             FormRowView(
                 title: "Друзья",
-                trailingContent: .textWithChevron(viewModel.user.friendsCountString)
+                trailingContent: .textWithBadgeAndChevron(
+                    viewModel.user.friendsCountString,
+                    friendRequestsCount
+                )
             )
-            #warning("Показать количество заявок")
-//            if friendRequestsCount > .zero, isMainUser {
-//                Image(systemName: "\(friendRequestsCount).circle.fill")
-//                    .foregroundColor(.red)
-//            }
         }
     }
 
