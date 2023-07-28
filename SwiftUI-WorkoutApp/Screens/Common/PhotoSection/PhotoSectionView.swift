@@ -47,7 +47,7 @@ struct PhotoSectionView: View {
                     } else {
                         GeometryReader { geo in
                             makeCell(with: photo)
-                            .frame(height: geo.size.width)
+                                .frame(height: geo.size.width)
                         }
                         .clipped()
                         .aspectRatio(1, contentMode: .fit)
@@ -80,7 +80,7 @@ private extension PhotoSectionView {
         default: return 3
         }
     }
-    
+
     func makeCell(with photo: Photo) -> some View {
         ResizableCachedImage(
             url: photo.imageURL,
