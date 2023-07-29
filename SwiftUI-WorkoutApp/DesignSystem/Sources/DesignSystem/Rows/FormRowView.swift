@@ -2,6 +2,7 @@ import SwiftUI
 
 /// В фигме называется "Ячейка формы"
 public struct FormRowView: View {
+    @Environment(\.isEnabled) private var isEnabled
     private let title: String
     private let trailingContent: TrailingContent
 
@@ -24,7 +25,8 @@ public struct FormRowView: View {
                 .foregroundColor(.swMainText)
                 .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
-            trailingContent.view
+            trailingContent.makeView(isEnabled: isEnabled)
+                .animation(.default, value: isEnabled)
         }
         .insideCardBackground()
     }
@@ -40,7 +42,7 @@ public extension FormRowView {
         case textWithBadgeAndChevron(String, Int)
 
         @ViewBuilder
-        var view: some View {
+        func makeView(isEnabled: Bool) -> some View {
             switch self {
             case let .toggle($bool):
                 Toggle("", isOn: $bool)
@@ -48,7 +50,7 @@ public extension FormRowView {
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
                     trailingTextView(text)
-                    Icons.Misc.chevronView
+                    if isEnabled { Icons.Misc.chevronView }
                 }
             case let .textWithBadgeAndChevron(text, badgeValue):
                 HStack(spacing: 12) {
@@ -56,7 +58,7 @@ public extension FormRowView {
                     if badgeValue > 0 {
                         BadgeView(value: badgeValue)
                     }
-                    Icons.Misc.chevronView
+                    if isEnabled { Icons.Misc.chevronView }
                 }
             }
         }

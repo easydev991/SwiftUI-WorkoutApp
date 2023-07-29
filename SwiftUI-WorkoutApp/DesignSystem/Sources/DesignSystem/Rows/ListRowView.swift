@@ -2,6 +2,7 @@ import SwiftUI
 
 /// В фигме называется "Элемент списка"
 public struct ListRowView: View {
+    @Environment(\.isEnabled) private var isEnabled
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
 
@@ -21,7 +22,8 @@ public struct ListRowView: View {
         HStack(spacing: 16) {
             leadingContent.view
                 .frame(maxWidth: .infinity, alignment: .leading)
-            trailingContent.view
+            trailingContent.makeView(isEnabled: isEnabled)
+                .animation(.default, value: isEnabled)
         }
         .padding(.vertical, 10)
     }
@@ -75,18 +77,18 @@ public extension ListRowView {
         case textWithChevron(String)
 
         @ViewBuilder
-        var view: some View {
+        func makeView(isEnabled: Bool) -> some View {
             switch self {
             case .empty:
                 EmptyView()
             case .chevron:
-                Icons.Misc.chevronView
+                if isEnabled { Icons.Misc.chevronView }
             case let .text(text):
                 makeTextView(with: text)
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
                     makeTextView(with: text)
-                    Icons.Misc.chevronView
+                    if isEnabled { Icons.Misc.chevronView }
                 }
             }
         }

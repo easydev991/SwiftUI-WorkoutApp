@@ -83,7 +83,7 @@ private extension UserDetailsView {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button {
-                Task { await askForUserInfo() }
+                Task { await askForUserInfo(refresh: true) }
             } label: {
                 Image(systemName: Icons.Button.refresh.rawValue)
             }
