@@ -65,16 +65,13 @@ private extension SendMessageView {
     }
 
     var textView: some View {
-        TextEditor(text: $text)
-            .accentColor(.swAccent)
-            .frame(height: 200)
-            .padding(.horizontal, 8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.swAccent, lineWidth: 0.5)
-            )
-            .focused($isFocused)
-            .onAppear(perform: showKeyboard)
+        SWTextEditor(
+            text: $text,
+            isFocused: isFocused,
+            height: 200
+        )
+        .focused($isFocused)
+        .onAppear(perform: showKeyboard)            
     }
 
     func showKeyboard() {
