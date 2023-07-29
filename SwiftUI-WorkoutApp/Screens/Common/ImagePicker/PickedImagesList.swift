@@ -72,17 +72,17 @@ private extension PickedImagesGrid {
             images.count
         )
     }
-    
+
     var subtitle: String {
         let selectionLimitString = String.localizedStringWithFormat(
             NSLocalizedString("photosCount", comment: ""),
             selectionLimit
         )
         return images.count == 0
-        ? "Добавьте фото площадки, максимум \(selectionLimit)"
-        : "Можно добавить ещё \(selectionLimitString)"
+            ? "Добавьте фото площадки, максимум \(selectionLimit)"
+            : "Можно добавить ещё \(selectionLimitString)"
     }
-    
+
     func deletePhoto(at offsets: IndexSet) {
         if let index = offsets.first {
             images.remove(at: index)
