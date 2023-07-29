@@ -304,8 +304,13 @@ private extension EventDetailsView {
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, goingToEventTask,
-         deletePhotoTask, deleteEventTask].forEach { $0?.cancel() }
+        [
+            refreshButtonTask,
+            deleteCommentTask,
+            goingToEventTask,
+            deletePhotoTask,
+            deleteEventTask
+        ].forEach { $0?.cancel() }
     }
 }
 

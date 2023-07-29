@@ -62,7 +62,7 @@ public extension FormRowView {
                 }
             }
         }
-        
+
         private func trailingTextView(_ text: String) -> some View {
             Text(text)
                 .font(.subheadline)

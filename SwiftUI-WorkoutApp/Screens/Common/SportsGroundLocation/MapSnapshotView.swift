@@ -24,7 +24,7 @@ struct MapSnapshotView: View {
 
 private extension MapSnapshotView {
     @ViewBuilder
-    func contentView(placeholderSize: CGSize) -> some View {
+    func contentView(placeholderSize _: CGSize) -> some View {
         ZStack {
             if let image = snapshotImage {
                 Image(uiImage: image)

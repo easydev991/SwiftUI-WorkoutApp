@@ -5,7 +5,7 @@ public struct SWTextEditor: View {
     private let placeholder: String?
     private let isFocused: Bool
     private let height: CGFloat
-    
+
     /// Инициализирует `SWTextEditor`
     /// - Parameters:
     ///   - text: Текст
@@ -23,7 +23,7 @@ public struct SWTextEditor: View {
         self.isFocused = isFocused
         self.height = height
     }
-    
+
     public var body: some View {
         TextEditor(text: $text)
             .accentColor(.swAccent)
@@ -66,7 +66,9 @@ struct SWTextEditor_Previews: PreviewProvider {
                 height: 100
             )
             SWTextEditor(
-                text: .constant("Мероприятие будет длится около трех часов, так что можно приходить в любое удобное время. Остались вопросы - задавайте в сообщениях."),
+                text: .constant(
+                    "Мероприятие будет длится около трех часов, так что можно приходить в любое удобное время. Остались вопросы - задавайте в сообщениях."
+                ),
                 placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
                 isFocused: true,
                 height: 100
