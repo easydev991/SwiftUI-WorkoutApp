@@ -1,6 +1,7 @@
 import DesignSystem
 import SwiftUI
 
+@available(*, deprecated, message: "Use SWButtonStyle instead")
 struct AddPhotoButton: View {
     @Binding var isAddingPhotos: Bool
     let focusClbk: () -> Void

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(*, deprecated, message: "Сверстать новый компонент")
 struct PickedImagesList: View {
     @Binding var images: [UIImage]
 
