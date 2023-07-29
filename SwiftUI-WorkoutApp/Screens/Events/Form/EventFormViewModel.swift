@@ -68,11 +68,4 @@ extension EventFormViewModel {
             ? Constants.photosLimit - newImages.count
             : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
-
-    var canAddImages: Bool {
-        guard !isLoading else { return false }
-        return eventID == nil
-            ? newImages.count < Constants.photosLimit
-            : (newImages.count + eventForm.photosCount) < Constants.photosLimit
-    }
 }

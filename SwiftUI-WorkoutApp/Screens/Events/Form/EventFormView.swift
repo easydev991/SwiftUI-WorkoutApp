@@ -39,11 +39,8 @@ struct EventFormView: View {
                 sportsGroundSection
                 datePickerSection
                 descriptionSection
-                if !viewModel.newImages.isEmpty {
-                    pickedImagesList
-                }
                 if viewModel.imagesLimit > 0 {
-                    pickImagesButton
+                    pickedImagesGrid
                 }
                 saveButton
             }
@@ -51,15 +48,6 @@ struct EventFormView: View {
         }
         .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .sheet(isPresented: $showImagePicker) {
-            viewModel.deleteExtraImagesIfNeeded()
-        } content: {
-            ImagePicker(
-                pickedImages: $viewModel.newImages,
-                selectionLimit: viewModel.imagesLimit,
-                compressionQuality: .zero
-            )
-        }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
@@ -160,9 +148,14 @@ private extension EventFormView {
         .padding(.bottom, 22)
     }
 
-    var pickedImagesList: some View {
+    var pickedImagesGrid: some View {
         Section {
-            PickedImagesList(images: $viewModel.newImages)
+            PickedImagesGrid(
+                images: $viewModel.newImages,
+                showImagePicker: $showImagePicker,
+                selectionLimit: viewModel.imagesLimit,
+                processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+            )
         } header: {
             Text("Фотографии, \(viewModel.newImages.count) шт.")
         } footer: {
@@ -172,15 +165,6 @@ private extension EventFormView {
                     : "Можно добавить еще \(viewModel.imagesLimit) фото"
             )
         }
-    }
-
-    var pickImagesButton: some View {
-        AddPhotoButton(
-            isAddingPhotos: $showImagePicker,
-            focusClbk: { focus = nil }
-        )
-        .padding()
-        .disabled(!viewModel.canAddImages)
     }
 
     var saveButton: some View {

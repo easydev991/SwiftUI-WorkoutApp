@@ -1,11 +1,24 @@
+import ImagePicker
 import SwiftUI
 
-@available(*, deprecated, message: "Сверстать новый компонент")
-struct PickedImagesList: View {
+struct PickedImagesGrid: View {
     @Binding var images: [UIImage]
+    @Binding var showImagePicker: Bool
+    /// Сколько еще можно выбрать фотографий
+    let selectionLimit: Int
+    /// Обработать добавление лишних фотографий
+    let processExtraImages: () -> Void
 
     var body: some View {
-        List {
+        LazyVGrid(
+            columns: .init(
+                repeating: .init(
+                    .flexible(minimum: 100), spacing: 11
+                ),
+                count: 3
+            ),
+            spacing: 12
+        ) {
             ForEach(Array(zip(images.indices, images)), id: \.0) { index, image in
                 HStack {
                     Image(uiImage: image)
@@ -24,10 +37,19 @@ struct PickedImagesList: View {
             }
             .onDelete(perform: deletePhoto)
         }
+        .sheet(isPresented: $showImagePicker) {
+            processExtraImages()
+        } content: {
+            ImagePicker(
+                pickedImages: $images,
+                selectionLimit: selectionLimit,
+                compressionQuality: .zero
+            )
+        }
     }
 }
 
-private extension PickedImagesList {
+private extension PickedImagesGrid {
     func deletePhoto(at offsets: IndexSet) {
         if let index = offsets.first {
             images.remove(at: index)
@@ -36,13 +58,16 @@ private extension PickedImagesList {
 }
 
 #if DEBUG
-struct PickedImagesList_Previews: PreviewProvider {
+struct PickedImagesGrid_Previews: PreviewProvider {
     static var previews: some View {
-        PickedImagesList(
+        PickedImagesGrid(
             images: .constant([
                 .init(systemName: "person")!,
                 .init(systemName: "book")!
-            ])
+            ]),
+            showImagePicker: .constant(false),
+            selectionLimit: 5,
+            processExtraImages: {}
         )
     }
 }

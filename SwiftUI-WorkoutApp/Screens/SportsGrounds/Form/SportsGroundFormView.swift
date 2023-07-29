@@ -13,7 +13,7 @@ struct SportsGroundFormView: View {
     @StateObject private var viewModel: SportsGroundFormViewModel
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var isShowingPicker = false
+    @State private var showImagePicker = false
     @State private var saveGroundTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
     private let refreshClbk: () -> Void
@@ -43,11 +43,8 @@ struct SportsGroundFormView: View {
                     typePicker
                     sizePicker
                 }
-                if !viewModel.newImages.isEmpty {
-                    pickedImagesList
-                }
                 if viewModel.imagesLimit > 0 {
-                    pickImagesButton
+                    pickedImagesGrid
                 }
                 saveButton
             }
@@ -55,15 +52,6 @@ struct SportsGroundFormView: View {
         }
         .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
-        .sheet(isPresented: $isShowingPicker) {
-            viewModel.deleteExtraImagesIfNeeded()
-        } content: {
-            ImagePicker(
-                pickedImages: $viewModel.newImages,
-                selectionLimit: viewModel.imagesLimit,
-                compressionQuality: .zero
-            )
-        }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
@@ -127,23 +115,19 @@ private extension SportsGroundFormView {
         }
     }
 
-    var pickedImagesList: some View {
+    var pickedImagesGrid: some View {
         Section {
-            PickedImagesList(images: $viewModel.newImages)
+            PickedImagesGrid(
+                images: $viewModel.newImages,
+                showImagePicker: $showImagePicker,
+                selectionLimit: viewModel.imagesLimit,
+                processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+            )
         } header: {
             Text("Фотографии, \(viewModel.newImages.count) шт.")
         } footer: {
             Text(viewModel.imagesLimit <= 0 ? "Больше добавить фото нельзя" : "Можно добавить еще \(viewModel.imagesLimit) фото")
         }
-    }
-
-    var pickImagesButton: some View {
-        AddPhotoButton(
-            isAddingPhotos: $isShowingPicker,
-            focusClbk: { isFocused = false }
-        )
-        .disabled(!viewModel.canAddImages)
-        .padding()
     }
 
     func setupErrorAlert(with message: String) {
