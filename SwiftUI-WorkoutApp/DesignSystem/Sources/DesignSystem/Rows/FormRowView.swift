@@ -22,6 +22,7 @@ public struct FormRowView: View {
             Text(title)
                 .font(.headline)
                 .foregroundColor(.swMainText)
+                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
             trailingContent.view
         }
