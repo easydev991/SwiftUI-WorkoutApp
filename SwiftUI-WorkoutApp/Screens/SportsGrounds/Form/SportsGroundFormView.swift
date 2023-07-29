@@ -1,4 +1,5 @@
 import CoreLocation.CLLocation
+import DesignSystem
 import ImagePicker
 import NetworkStatus
 import SwiftUI
@@ -35,19 +36,25 @@ struct SportsGroundFormView: View {
     }
 
     var body: some View {
-        Form {
-            addressSection
-            typePicker
-            sizePicker
-            if !viewModel.newImages.isEmpty {
-                pickedImagesList
+        ScrollView {
+            VStack(spacing: 0) {
+                VStack(spacing: 12) {
+                    addressSection
+                    typePicker
+                    sizePicker
+                }
+                if !viewModel.newImages.isEmpty {
+                    pickedImagesList
+                }
+                if viewModel.imagesLimit > 0 {
+                    pickImagesButton
+                }
+                saveButton
             }
-            if viewModel.imagesLimit > 0 {
-                pickImagesButton
-            }
-            saveButton
+            .padding([.horizontal, .bottom])
         }
         .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .sheet(isPresented: $isShowingPicker) {
             viewModel.deleteExtraImagesIfNeeded()
         } content: {
@@ -81,28 +88,42 @@ extension SportsGroundFormView {
 
 private extension SportsGroundFormView {
     var addressSection: some View {
-        Section("Адрес площадки") {
-            TextField("Улица, номер дома или локация", text: $viewModel.groundForm.address)
-                .focused($isFocused)
-        }
+        SWTextField(
+            placeholder: "Адрес площадки",
+            text: $viewModel.groundForm.address,
+            isFocused: isFocused
+        )
+        .focused($isFocused)
+        .padding(.top, 22)
     }
 
     var typePicker: some View {
-        Picker("Тип площадки", selection: $viewModel.groundForm.typeID) {
-            ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
-                Text(SportsGroundGrade(id: $0).rawValue)
+        Menu {
+            Picker("", selection: $viewModel.groundForm.typeID) {
+                ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
+                    Text(SportsGroundGrade(id: $0).rawValue)
+                }
             }
+        } label: {
+            ListRowView(
+                leadingContent: .text("Тип площадки"),
+                trailingContent: .text(viewModel.groundForm.gradeString)
+            )
         }
     }
 
     var sizePicker: some View {
-        Section("Размер площадки") {
-            Picker("Размер площадки", selection: $viewModel.groundForm.sizeID) {
+        Menu {
+            Picker("", selection: $viewModel.groundForm.sizeID) {
                 ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
                     Text(SportsGroundSize(id: $0).rawValue)
                 }
             }
-            .pickerStyle(.segmented)
+        } label: {
+            ListRowView(
+                leadingContent: .text("Размер площадки"),
+                trailingContent: .text(viewModel.groundForm.sizeString)
+            )
         }
     }
 
@@ -122,6 +143,7 @@ private extension SportsGroundFormView {
             focusClbk: { isFocused = false }
         )
         .disabled(!viewModel.canAddImages)
+        .padding()
     }
 
     func setupErrorAlert(with message: String) {
@@ -130,32 +152,31 @@ private extension SportsGroundFormView {
     }
 
     var saveButton: some View {
-        Section {
-            ButtonInForm("Сохранить", action: saveAction)
-                .disabled(
-                    !viewModel.isFormReady
-                        || viewModel.isLoading
-                        || !network.isConnected
-                )
+        Button("Сохранить") {
+            isFocused = false
+            saveGroundTask = Task {
+                await viewModel.saveGround(with: defaults)
+            }
         }
-    }
-
-    func saveAction() {
-        isFocused = false
-        saveGroundTask = Task {
-            await viewModel.saveGround(with: defaults)
-        }
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+        .disabled(
+            !viewModel.isFormReady
+                || viewModel.isLoading
+                || !network.isConnected
+        )
     }
 
     func closeAlert() {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isSuccess _: Bool) {
-        dismiss()
-        refreshClbk()
-        if viewModel.isNewSportsGround {
-            defaults.setUserNeedUpdate(true)
+    func dismiss(isSuccess: Bool) {
+        if isSuccess {
+            dismiss()
+            refreshClbk()
+            if viewModel.isNewSportsGround {
+                defaults.setUserNeedUpdate(true)
+            }
         }
     }
 
