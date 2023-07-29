@@ -33,8 +33,7 @@ struct PhotoSectionView: View {
                 columns: .init(
                     repeating: .init(
                         .flexible(minimum: screenWidth * 0.28),
-                        spacing: 2,
-                        alignment: .top
+                        spacing: 2
                     ),
                     count: columns
                 ),
