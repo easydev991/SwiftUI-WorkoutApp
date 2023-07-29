@@ -145,26 +145,17 @@ private extension EventFormView {
             )
             .focused($focus, equals: .eventDescription)
         }
-        .padding(.bottom, 22)
     }
 
     var pickedImagesGrid: some View {
-        Section {
-            PickedImagesGrid(
-                images: $viewModel.newImages,
-                showImagePicker: $showImagePicker,
-                selectionLimit: viewModel.imagesLimit,
-                processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
-            )
-        } header: {
-            Text("Фотографии, \(viewModel.newImages.count) шт.")
-        } footer: {
-            Text(
-                viewModel.imagesLimit <= 0
-                    ? "Больше добавить фото нельзя"
-                    : "Можно добавить еще \(viewModel.imagesLimit) фото"
-            )
-        }
+        PickedImagesGrid(
+            images: $viewModel.newImages,
+            showImagePicker: $showImagePicker,
+            selectionLimit: viewModel.imagesLimit,
+            processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+        )
+        .padding(.top, 22)
+        .padding(.bottom, 42)
     }
 
     var saveButton: some View {
