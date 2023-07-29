@@ -137,7 +137,7 @@ private extension EventFormView {
             }
         }
     }
-    
+
     var datePickerSection: some View {
         DatePicker(
             "Дата и время",

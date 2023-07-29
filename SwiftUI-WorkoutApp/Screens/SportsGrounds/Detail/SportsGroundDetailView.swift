@@ -283,8 +283,13 @@ private extension SportsGroundDetailView {
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, changeTrainHereTask,
-         deletePhotoTask, deleteGroundTask].forEach { $0?.cancel() }
+        [
+            refreshButtonTask,
+            deleteCommentTask,
+            changeTrainHereTask,
+            deletePhotoTask,
+            deleteGroundTask
+        ].forEach { $0?.cancel() }
     }
 }
 

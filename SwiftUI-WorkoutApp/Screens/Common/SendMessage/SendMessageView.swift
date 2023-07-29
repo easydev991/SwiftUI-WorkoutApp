@@ -71,7 +71,7 @@ private extension SendMessageView {
             height: 200
         )
         .focused($isFocused)
-        .onAppear(perform: showKeyboard)            
+        .onAppear(perform: showKeyboard)
     }
 
     func showKeyboard() {
