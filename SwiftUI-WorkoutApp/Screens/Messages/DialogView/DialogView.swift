@@ -109,10 +109,10 @@ private extension DialogView {
     }
 
     var sendMessageBar: some View {
-        HStack {
+        HStack(spacing: 10) {
             newMessageTextField
                 .focused($isMessageBarFocused)
-                .frame(height: 40)
+                .frame(height: 42)
                 .padding(.horizontal, 8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
