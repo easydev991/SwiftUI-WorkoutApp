@@ -26,7 +26,39 @@ public extension Color {
     /// Нажатые `tinted`-кнопки
     static let swTintedButtonPressed = Color("swTintedButtonPressed", bundle: .module)
     /// Цвет кнопки удаления фото
-    static let swXmarkButton = Color("swXmarkButton")
+    static let swXmarkButton = Color("swXmarkButton", bundle: .module)
+    /// Цвет кнопки добавления фото
+    static let swAddPhotoButton = Color("swAddPhotoButton", bundle: .module)
     /// Ошибки
     static let swError = Color("swError", bundle: .module)
 }
+
+#if DEBUG
+struct AllColors_Previews: PreviewProvider {
+    static let colors: [Color] = [
+        .swBackground, .swCardBackground, .swSmallElements, .swSeparators,
+        .swMainText, .swAccent, .swFilledButtonText, .swFilledButtonPressed,
+        .swDisabledButton, .swDisabledButtonText,
+        .swTintedButton, .swTintedButtonPressed,
+        .swXmarkButton, .swAddPhotoButton, .swError
+    ]
+    static var previews: some View {
+        ScrollView {
+            VStack(spacing: 4) {
+                ForEach(colors, id: \.self) { color in
+                    HStack(spacing: 20) {
+                        Group {
+                            Circle()
+                            Circle()
+                                .environment(\.colorScheme, .dark)
+                        }
+                        .foregroundColor(color)
+                        .frame(width: 50, height: 50)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+}
+#endif

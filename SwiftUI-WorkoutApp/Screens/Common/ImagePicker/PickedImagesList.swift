@@ -3,6 +3,16 @@ import ImagePicker
 import SwiftUI
 
 struct PickedImagesGrid: View {
+    private let screenWidth = UIScreen.main.bounds.size.width
+    private var imagesArray: [PickedPhotoView.Model] {
+        var realImages: [PickedPhotoView.Model] = images.map {
+            .image(.init(uiImage: $0))
+        }
+        if selectionLimit > 0 {
+            realImages.append(.addImageButton)
+        }
+        return realImages
+    }
     @Binding var images: [UIImage]
     @Binding var showImagePicker: Bool
     /// Сколько еще можно выбрать фотографий
@@ -12,7 +22,7 @@ struct PickedImagesGrid: View {
 
     var body: some View {
         SectionView(header: header, mode: .regular) {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.swMainText)
@@ -20,29 +30,26 @@ struct PickedImagesGrid: View {
                 LazyVGrid(
                     columns: .init(
                         repeating: .init(
-                            .flexible(minimum: 100), spacing: 11
+                            .flexible(minimum: screenWidth * 0.287), spacing: 11
                         ),
                         count: 3
                     ),
                     spacing: 12
                 ) {
-                    ForEach(Array(zip(images.indices, images)), id: \.0) { index, image in
-                        HStack {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: 100)
-                                .cornerRadius(8)
-                            Spacer()
-                            VStack(alignment: .leading) {
-                                Text("Фото № \(index + 1)")
-                                Text("Свайпни для удаления")
-                                    .font(.callout)
-                                    .foregroundColor(.secondary)
-                            }
+                    ForEach(Array(zip(imagesArray.indices, imagesArray)), id: \.0) { index, model in
+                        GeometryReader { geo in
+                            PickedPhotoView(model: model) // добавить кнопку для удаления фотографии (deletePhoto)
+                                .scaledToFill()
+                                .frame(height: geo.size.width)
+                                .onTapGesture {
+                                    if case .addImageButton = model {
+                                        showImagePicker.toggle()
+                                    }
+                                }
                         }
+                        .aspectRatio(1, contentMode: .fit)
+                        .cornerRadius(8)
                     }
-                    .onDelete(perform: deletePhoto)
                 }
             }
         }

@@ -78,6 +78,7 @@
 		679F3B012968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */; };
 		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */; };
+		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A6FEF529E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
 		67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371702A63FF6F000FF143 /* AppThemeScreen.swift */; };
@@ -199,6 +200,7 @@
 		679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRoundedRectangleModifier.swift; sourceTree = "<group>"; };
 		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoUserButton.swift; sourceTree = "<group>"; };
+		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOSVersionChecker.swift; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
 		67B371702A63FF6F000FF143 /* AppThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeScreen.swift; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 			isa = PBXGroup;
 			children = (
 				67515698283FEC3100501346 /* PickedImagesList.swift */,
+				67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */,
 			);
 			path = ImagePicker;
 			sourceTree = "<group>";
@@ -896,6 +899,7 @@
 				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */,
+				67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */,
 				67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */,

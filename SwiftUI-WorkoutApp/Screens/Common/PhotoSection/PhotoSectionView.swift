@@ -32,7 +32,7 @@ struct PhotoSectionView: View {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: screenWidth * 0.28),
+                        .flexible(minimum: screenWidth * 0.282),
                         spacing: 2
                     ),
                     count: columns

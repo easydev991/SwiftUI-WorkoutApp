@@ -43,9 +43,7 @@ struct SportsGroundFormView: View {
                     typePicker
                     sizePicker
                 }
-                if viewModel.imagesLimit > 0 {
-                    pickedImagesGrid
-                }
+                pickedImagesGrid
                 saveButton
             }
             .padding([.horizontal, .bottom])

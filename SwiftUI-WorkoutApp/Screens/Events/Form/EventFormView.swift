@@ -39,9 +39,7 @@ struct EventFormView: View {
                 sportsGroundSection
                 datePickerSection
                 descriptionSection
-                if viewModel.imagesLimit > 0 {
-                    pickedImagesGrid
-                }
+                pickedImagesGrid
                 saveButton
             }
             .padding([.horizontal, .bottom])
