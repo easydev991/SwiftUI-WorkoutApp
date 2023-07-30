@@ -21,23 +21,17 @@ struct LoadingOverlayModifier: ViewModifier {
                     .frame(width: 50, height: 50)
                     .opacity(isLoading ? 1 : 0)
                     .rotationEffect(.degrees(isAnimating ? angle : 0))
-                    .onDisappear(perform: finishAnimating)
                     .onChange(of: isLoading) { [isLoading] newValue in
                         switch (isLoading, newValue) {
                         case (false, true):
                             isAnimating = true
                             withAnimation(foreverAnimation) { angle += 360 }
-                        case (true, false):
-                            finishAnimating()
-                            withAnimation { angle = 0 }
                         default: break
                         }
                     }
             }
             .animation(.default, value: isLoading)
     }
-
-    private func finishAnimating() { isAnimating = false }
 }
 
 public extension View {
