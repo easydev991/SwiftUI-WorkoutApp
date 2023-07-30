@@ -192,9 +192,11 @@ private extension JournalsListView {
         showDeleteDialog.toggle()
     }
 
-    func closeSheet(isSuccess _: Bool) {
-        isCreatingJournal.toggle()
-        defaults.setUserNeedUpdate(true)
+    func closeSheet(isSuccess: Bool) {
+        if isSuccess {
+            isCreatingJournal.toggle()
+            defaults.setUserNeedUpdate(true)
+        }
     }
 
     func setupErrorAlert(with message: String) {

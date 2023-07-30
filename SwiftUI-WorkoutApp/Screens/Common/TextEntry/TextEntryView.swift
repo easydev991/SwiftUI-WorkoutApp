@@ -117,9 +117,11 @@ private extension TextEntryView {
         isFocused.toggle()
     }
 
-    func dismissOnSuccess(isSuccess _: Bool) {
-        refreshClbk()
-        dismiss()
+    func dismissOnSuccess(isSuccess: Bool) {
+        if isSuccess {
+            refreshClbk()
+            dismiss()
+        }
     }
 
     func closeAlert() {

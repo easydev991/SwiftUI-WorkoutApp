@@ -47,7 +47,7 @@ struct SearchUsersView: View {
             content: messageSheet
         )
         .alert(errorMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok", action: onCloseAlert)
         }
         .onChange(of: errorMessage, perform: setupErrorAlert)
         .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
@@ -105,7 +105,7 @@ private extension SearchUsersView {
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorMessage,
-            dismissError: closeAlert
+            dismissError: onCloseAlert
         )
     }
 
@@ -145,7 +145,7 @@ private extension SearchUsersView {
         errorMessage = message
     }
 
-    func closeAlert() {
+    func onCloseAlert() {
         errorMessage = ""
         messagingViewModel.clearErrorMessage()
     }

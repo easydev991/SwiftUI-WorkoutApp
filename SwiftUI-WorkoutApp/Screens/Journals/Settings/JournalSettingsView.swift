@@ -115,9 +115,11 @@ private extension JournalSettingsView {
         viewModel.clearErrorMessage()
     }
 
-    func finishSettings(isSuccess _: Bool) {
-        updateOnSuccess(journal.id)
-        dismiss()
+    func finishSettings(isSuccess: Bool) {
+        if isSuccess {
+            updateOnSuccess(journal.id)
+            dismiss()
+        }
     }
 
     func cancelTask() {

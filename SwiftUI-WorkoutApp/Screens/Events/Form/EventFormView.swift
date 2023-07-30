@@ -182,9 +182,11 @@ private extension EventFormView {
         viewModel.clearErrorMessage()
     }
 
-    func dismiss(isSuccess _: Bool) {
-        refreshClbk?()
-        dismiss()
+    func dismiss(isSuccess: Bool) {
+        if isSuccess {
+            refreshClbk?()
+            dismiss()
+        }
     }
 
     func cancelTask() {
