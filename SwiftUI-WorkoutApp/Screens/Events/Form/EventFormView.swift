@@ -107,7 +107,7 @@ private extension EventFormView {
                     showGroundPicker.toggle()
                 } label: {
                     ListRowView(
-                        leadingContent: .text(event.sportsGround.shortTitle),
+                        leadingContent: .text(event.sportsGround.longTitle),
                         trailingContent: .chevron
                     )
                 }
