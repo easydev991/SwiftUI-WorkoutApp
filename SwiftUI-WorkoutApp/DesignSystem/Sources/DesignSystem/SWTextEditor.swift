@@ -25,8 +25,7 @@ public struct SWTextEditor: View {
     }
 
     public var body: some View {
-        TextEditor(text: $text)
-            .accentColor(.swAccent)
+        textEditorView
             .frame(height: height)
             .padding(.horizontal, 8)
             .overlay(
@@ -46,6 +45,20 @@ public struct SWTextEditor: View {
                     .padding(.horizontal, 12)
                     .allowsHitTesting(false)
             }
+    }
+}
+
+private extension SWTextEditor {
+    @ViewBuilder
+    var textEditorView: some View {
+        if #available(iOS 16.0, *) {
+            TextEditor(text: $text)
+                .tint(.swAccent)
+                .scrollContentBackground(.hidden)
+        } else {
+            TextEditor(text: $text)
+                .accentColor(.swAccent)
+        }
     }
 }
 

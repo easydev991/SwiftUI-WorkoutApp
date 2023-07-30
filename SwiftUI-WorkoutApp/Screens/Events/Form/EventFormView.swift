@@ -98,7 +98,10 @@ private extension EventFormView {
                         trailingContent: .chevron
                     )
                 }
-                .disabled(!viewModel.canShowGroundPicker(with: defaults))
+                .disabled(
+                    !viewModel.canShowGroundPicker(with: defaults, mode: mode)
+                    || !network.isConnected
+                )
             case let .createForSelected(ground):
                 ListRowView(
                     leadingContent: .text(ground.name.valueOrEmpty),
@@ -113,7 +116,10 @@ private extension EventFormView {
                         trailingContent: .chevron
                     )
                 }
-                .disabled(!viewModel.canShowGroundPicker(with: defaults))
+                .disabled(
+                    !viewModel.canShowGroundPicker(with: defaults, mode: mode)
+                    || !network.isConnected
+                )
             }
         }
         .sheet(isPresented: $showGroundPicker) {
