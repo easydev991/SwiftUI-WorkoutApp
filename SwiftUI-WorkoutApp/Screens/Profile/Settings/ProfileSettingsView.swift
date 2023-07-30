@@ -50,8 +50,7 @@ struct ProfileSettingsView: View {
                 dividerView
                 logoutButton
             }
-            .padding(.top, 14)
-            .padding(.horizontal)
+            .padding()
         }
         .background(Color.swBackground)
         .navigationTitle(mode.title)
