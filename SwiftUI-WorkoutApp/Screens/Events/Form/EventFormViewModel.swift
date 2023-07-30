@@ -50,7 +50,8 @@ final class EventFormViewModel: ObservableObject {
 
     /// Не показываем пикер площадок, если `userID` отсутствует
     func canShowGroundPicker(with defaults: DefaultsProtocol) -> Bool {
-        defaults.mainUserInfo?.userID != nil
+        guard let userInfo = defaults.mainUserInfo else { return false }
+        return userInfo.userID != nil && userInfo.usedSportsGroundsCount > 1
     }
 
     func clearErrorMessage() { errorMessage = "" }
