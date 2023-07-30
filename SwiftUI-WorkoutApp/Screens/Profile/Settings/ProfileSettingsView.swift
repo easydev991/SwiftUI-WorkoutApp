@@ -1,58 +1,59 @@
+import DesignSystem
+import FeedbackSender
 import SwiftUI
 import SWModels
 
 /// Экран с настройками профиля основного пользователя
 struct ProfileSettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = ProfileSettingsViewModel()
     @State private var showLogoutDialog = false
-    @State private var showDeleteProfileDialog = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
-    @State private var deleteProfileTask: Task<Void, Never>?
-    let mode: Mode
+    private let feedbackSender: FeedbackSender
+    private let mode: Mode
+
+    init(mode: Mode, feedbackSender: FeedbackSender = FeedbackSenderImp()) {
+        self.mode = mode
+        self.feedbackSender = feedbackSender
+    }
 
     var body: some View {
-        List {
-            Section {
-                if mode == .authorized {
-                    editAccountButton
-                    changePasswordButton
-                    logoutButton
-                } else {
-                    authorizeButton
+        ScrollView {
+            VStack(spacing: 0) {
+                SectionView(header: "Профиль", mode: .regular) {
+                    VStack(spacing: 0) {
+                        switch mode {
+                        case .authorized:
+                            changePasswordButton
+                        case .incognito:
+                            authorizeView
+                        }
+                        appThemeButton
+                    }
                 }
-            } header: {
-                Text("Профиль")
-            } footer: {
-                mode.profileSectionFooter
+                dividerView
+                SectionView(header: "О приложении", mode: .regular) {
+                    VStack(spacing: 4) {
+                        feedbackButton
+                        rateAppButton
+                        userAgreementButton
+                        officialSiteButton
+                        appVersionView
+                    }
+                }
+                dividerView
+                SectionView(header: "Поддержать проект", mode: .regular) {
+                    workoutShopButton
+                }
+                dividerView
+                SectionView(header: "Поддержать разработчика", mode: .regular) {
+                    developerProfileButton
+                }
+                dividerView
+                logoutButton
             }
-            Section(mode.appInfoSectionTitle) {
-                feedbackButton
-                rateAppButton
-                userAgreementButton
-                officialSiteButton
-                appVersionView
-            }
-            Section("Поддержать проект") {
-                workoutShopButton
-            }
-            Section("Поддержать разработчика") {
-                developerProfileButton
-            }
+            .padding(.top, 14)
+            .padding(.horizontal)
         }
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
-        }
-        .toolbar { deleteProfileButton }
-        .onDisappear(perform: cancelTask)
+        .background(Color.swBackground)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -76,24 +77,58 @@ private extension ProfileSettingsView.Mode {
             EmptyView()
         case .incognito:
             Text(Constants.registrationInfoText)
+                .font(.subheadline)
+                .foregroundColor(.swSmallElements)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    var appInfoSectionTitle: String {
-        self == .authorized ? "Информация о приложении" : "О приложении"
     }
 }
 
 private extension ProfileSettingsView {
-    var editAccountButton: some View {
-        NavigationLink(destination: AccountInfoView(mode: .edit)) {
-            Label("Редактировать данные", systemImage: "doc.badge.gearshape.fill")
-        }
+    enum Links {
+        static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
+        static let workoutShop = URL(string: "https://workoutshop.ru")!
+        static let developerProfile = URL(string: "https://boosty.to/oleg991")!
+        static let officialSite = URL(string: "https://workout.su")!
+        static let rulesOfService = URL(string: "https://workout.su/pravila")!
+    }
+
+    enum Feedback {
+        static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
+        static let body = """
+            \(Feedback.sysVersion)
+            \(Feedback.appVersion)
+            \(Feedback.question)
+            \n
+        """
+        private static let question = "Над чем нам стоит поработать?"
+        private static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
+        private static let appVersion = "App version: \(Constants.appVersion)"
+    }
+}
+
+private extension ProfileSettingsView {
+    var dividerView: some View {
+        SWDivider()
+            .padding(.top, 4)
+            .padding(.bottom, 24)
+            .padding(.horizontal, -16)
     }
 
     var changePasswordButton: some View {
         NavigationLink(destination: ChangePasswordView()) {
-            Label("Изменить пароль", systemImage: "lock.fill")
+            ListRowView(leadingContent: .text("Изменить пароль"), trailingContent: .chevron)
+        }
+        .padding(.bottom, 4)
+    }
+
+    var appThemeButton: some View {
+        NavigationLink(destination: AppThemeScreen()) {
+            ListRowView(
+                leadingContent: .text("Тема приложения"),
+                trailingContent: .textWithChevron(defaults.appTheme.rawValue)
+            )
         }
     }
 
@@ -101,8 +136,7 @@ private extension ProfileSettingsView {
         Button {
             showLogoutDialog.toggle()
         } label: {
-            Label("Выйти", systemImage: "arrow.down.backward.circle.fill")
-                .foregroundColor(.pink)
+            ListRowView(leadingContent: .text("Выйти из профиля"))
         }
         .confirmationDialog(
             Constants.Alert.logout,
@@ -115,86 +149,84 @@ private extension ProfileSettingsView {
         }
     }
 
-    var deleteProfileButton: some View {
-        Button {
-            showDeleteProfileDialog.toggle()
-        } label: {
-            Image(systemName: "trash")
-                .tint(.secondary)
+    var authorizeView: some View {
+        VStack(spacing: 0) {
+            NavigationLink(destination: LoginView()) {
+                ListRowView(
+                    leadingContent: .text("Авторизация"),
+                    trailingContent: .chevron
+                )
+            }
+            mode.profileSectionFooter
         }
-        .opacity(mode == .authorized ? 1 : 0)
-        .confirmationDialog(
-            Constants.Alert.deleteProfile,
-            isPresented: $showDeleteProfileDialog,
-            titleVisibility: .visible
-        ) {
-            Button("Удалить учетную запись", role: .destructive, action: deleteProfile)
-        }
-    }
-
-    func deleteProfile() {
-        deleteProfileTask = Task { await viewModel.deleteProfile(with: defaults) }
-    }
-
-    var authorizeButton: some View {
-        NavigationLink(destination: LoginView()) {
-            Label("Авторизация", systemImage: "arrow.forward.circle.fill")
-                .font(.system(.body).bold())
-        }
+        .padding(.bottom, 14)
     }
 
     var feedbackButton: some View {
-        Button { viewModel.feedbackAction() } label: {
-            Label("Отправить обратную связь", systemImage: "envelope.fill")
+        Button {
+            feedbackSender.sendFeedback(
+                subject: Feedback.subject,
+                messageBody: Feedback.body,
+                recipients: Constants.feedbackRecipient
+            )
+        } label: {
+            ListRowView(
+                leadingContent: .text("Отправить обратную связь"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var rateAppButton: some View {
-        Link(destination: viewModel.appReviewURL) {
-            Label("Оценить приложение", systemImage: "star.bubble.fill")
+        Link(destination: Links.appReview) {
+            ListRowView(
+                leadingContent: .text("Оценить приложение"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var userAgreementButton: some View {
-        Link(destination: viewModel.rulesOfServiceURL) {
-            Label("Пользовательское соглашение", systemImage: "doc.text.fill")
+        Link(destination: Links.rulesOfService) {
+            ListRowView(
+                leadingContent: .text("Пользовательское соглашение"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var officialSiteButton: some View {
-        Link(destination: viewModel.officialSiteURL) {
-            Label("Официальный сайт", systemImage: "w.circle.fill")
+        Link(destination: Links.officialSite) {
+            ListRowView(
+                leadingContent: .text("Официальный сайт"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var appVersionView: some View {
-        Label("Версия", systemImage: "info.circle.fill")
-            .badge(Constants.appVersion)
+        ListRowView(
+            leadingContent: .text("Версия"),
+            trailingContent: .text(Constants.appVersion)
+        )
     }
 
     var workoutShopButton: some View {
-        Link(destination: viewModel.workoutShopURL) {
-            Label("Магазин WORKOUT", systemImage: "bag.fill")
+        Link(destination: Links.workoutShop) {
+            ListRowView(
+                leadingContent: .text("Магазин WORKOUT"),
+                trailingContent: .chevron
+            )
         }
     }
 
     var developerProfileButton: some View {
-        Link(destination: viewModel.developerProfileURL) {
-            Label("Oleg991 на boosty", systemImage: "figure.wave")
+        Link(destination: Links.developerProfile) {
+            ListRowView(
+                leadingContent: .text("Oleg991 на boosty"),
+                trailingContent: .chevron
+            )
         }
-    }
-
-    func setupErrorAlert(with message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func cancelTask() {
-        deleteProfileTask?.cancel()
     }
 }
 

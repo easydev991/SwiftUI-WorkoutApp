@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -19,13 +20,9 @@ struct SportsGroundsMapView: View {
             VStack {
                 segmentedControl
                 groundsContent
-                    .disabled(viewModel.isLoading)
-                    .animation(.easeInOut, value: viewModel.isLoading)
-                    .overlay {
-                        ProgressView()
-                            .opacity(viewModel.isLoading ? 1 : 0)
-                    }
+                    .loadingOverlay(if: viewModel.isLoading)
             }
+            .background(Color.swBackground)
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserInfo, perform: updateUserCountryAndCity)
             .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -67,16 +64,19 @@ private extension SportsGroundsMapView {
         Button {
             showFilters.toggle()
         } label: {
-            Image(systemName: "line.3.horizontal.decrease.circle")
+            Image(systemName: Icons.Regular.filter.rawValue)
         }
         .sheet(isPresented: $showFilters) {
-            SportsGroundFilterView(filter: $viewModel.filter)
+            SportsGroundFilterView(
+                filter: $viewModel.filter,
+                currentCity: viewModel.filter.currentCity
+            )
         }
     }
 
     var refreshButton: some View {
         Button(action: refreshAction) {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
     }
 
@@ -95,16 +95,26 @@ private extension SportsGroundsMapView {
     var groundsContent: some View {
         switch presentation {
         case .list:
-            List(viewModel.sportsGrounds) { ground in
-                NavigationLink {
-                    SportsGroundDetailView(
-                        for: ground,
-                        onDeletion: updateDeleted
-                    )
-                } label: {
-                    SportsGroundViewCell(model: ground)
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach(viewModel.sportsGrounds) { ground in
+                        NavigationLink {
+                            SportsGroundDetailView(
+                                for: ground,
+                                onDeletion: updateDeleted
+                            )
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    }
                 }
-                .accessibilityIdentifier("SportsGroundViewCell")
+                .padding([.top, .horizontal])
             }
             .opacity(viewModel.isLoading ? 0.5 : 1)
         case .map:
@@ -143,18 +153,22 @@ private extension SportsGroundsMapView {
     }
 
     var locationSettingsReminder: some View {
-        VStack {
+        VStack(spacing: 12) {
             Text(viewModel.locationErrorMessage)
+                .foregroundColor(.swMainText)
                 .frame(maxWidth: .infinity)
-                .adaptiveColor(.foreground())
                 .multilineTextAlignment(.center)
-                .padding(8)
-                .adaptiveColor(.background)
-            Button {
+                .padding(.vertical, 12)
+                .padding(.horizontal, 30)
+                .background {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .foregroundColor(.swBackground)
+                        .withShadow()
+                }
+            Button("Открыть настройки") {
                 viewModel.openAppSettings()
-            } label: {
-                RoundedButtonLabel(title: "Открыть настройки")
             }
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(viewModel.isLoading)
         }
         .padding(.horizontal)
@@ -177,7 +191,7 @@ private extension SportsGroundsMapView {
             Button {
                 showGroundCreationSheet.toggle()
             } label: {
-                Image(systemName: "plus")
+                Image(systemName: Icons.Regular.plus.rawValue)
             }
             .opacity(viewModel.isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)

@@ -23,6 +23,7 @@ final class UserDetailsViewModel: ObservableObject {
     }
 
     func makeUserInfo(refresh: Bool, with defaults: DefaultsProtocol) async {
+        guard !isLoading else { return }
         let isMainUser = user.id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         if isMainUser {
@@ -31,9 +32,8 @@ final class UserDetailsViewModel: ObservableObject {
                 user = .init(mainUserInfo)
             } else {
                 await makeUserInfo(for: user.id, with: defaults)
+                await makeBlacklistAndFriedRequests(with: defaults)
             }
-            await checkFriendRequests(with: defaults)
-            await checkBlacklist(with: defaults)
         } else {
             if user.isFull, !refresh {
                 isLoading.toggle()
@@ -93,20 +93,18 @@ final class UserDetailsViewModel: ObservableObject {
 }
 
 private extension UserDetailsViewModel {
-    func makeUserInfo(for _: Int, with defaults: DefaultsProtocol) async {
+    func makeUserInfo(for userID: Int, with defaults: DefaultsProtocol) async {
         do {
-            let info = try await APIService(with: defaults).getUserByID(user.id)
+            let info = try await APIService(with: defaults).getUserByID(userID)
             user = .init(info)
         } catch {
             responseMessage = ErrorFilterService.message(from: error)
         }
     }
 
-    func checkFriendRequests(with defaults: DefaultsProtocol) async {
-        try? await APIService(with: defaults).getFriendRequests()
-    }
-
-    func checkBlacklist(with defaults: DefaultsProtocol) async {
-        try? await APIService(with: defaults).getBlacklist()
+    func makeBlacklistAndFriedRequests(with defaults: DefaultsProtocol) async {
+        let apiService = APIService(with: defaults)
+        try? await apiService.getFriendRequests()
+        try? await apiService.getBlacklist()
     }
 }

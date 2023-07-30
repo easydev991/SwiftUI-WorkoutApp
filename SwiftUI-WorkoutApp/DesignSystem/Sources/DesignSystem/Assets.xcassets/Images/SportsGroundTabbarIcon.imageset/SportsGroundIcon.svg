@@ -1,0 +1,14 @@
+<svg width="25" height="21" viewBox="0 0 25 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.68691 1.63043C1.68691 1.06134 2.14826 0.6 2.71735 0.6C3.28644 0.6 3.74778 1.06134 3.74778 1.63043V20.0522H1.68691V1.63043Z" stroke="#B5BCBC" stroke-width="1.2"/>
+<path d="M11.4696 1.63043C11.4696 1.06134 11.931 0.6 12.5001 0.6C13.0692 0.6 13.5305 1.06134 13.5305 1.63043V20.0522H11.4696V1.63043Z" stroke="#B5BCBC" stroke-width="1.2"/>
+<path d="M21.2523 4.8913C21.2523 4.32221 21.7137 3.86086 22.2828 3.86086C22.8519 3.86086 23.3132 4.32221 23.3132 4.8913V20.0522H21.2523V4.8913Z" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="4.34766" y1="2.66086" x2="10.8694" y2="2.66086" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="4.34766" y1="5.92173" x2="10.8694" y2="5.92173" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="4.34766" y1="9.18259" x2="10.8694" y2="9.18259" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="4.34766" y1="12.4435" x2="10.8694" y2="12.4435" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="4.34766" y1="15.7043" x2="10.8694" y2="15.7043" stroke="#B5BCBC" stroke-width="1.2"/>
+<line x1="0.6" y1="20.0522" x2="4.83478" y2="20.0522" stroke="#B5BCBC" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="10.3827" y1="20.0522" x2="14.6175" y2="20.0522" stroke="#B5BCBC" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="20.1654" y1="20.0522" x2="24.4002" y2="20.0522" stroke="#B5BCBC" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="15.8173" y1="5.92173" x2="21.139" y2="5.92173" stroke="#B5BCBC" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

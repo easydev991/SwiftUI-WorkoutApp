@@ -50,7 +50,8 @@ final class EventFormViewModel: ObservableObject {
 
     /// Не показываем пикер площадок, если `userID` отсутствует
     func canShowGroundPicker(with defaults: DefaultsProtocol) -> Bool {
-        defaults.mainUserInfo?.userID != nil
+        guard let userInfo = defaults.mainUserInfo else { return false }
+        return userInfo.userID != nil && userInfo.usedSportsGroundsCount > 1
     }
 
     func clearErrorMessage() { errorMessage = "" }
@@ -67,12 +68,5 @@ extension EventFormViewModel {
         eventID == nil
             ? Constants.photosLimit - newImages.count
             : Constants.photosLimit - newImages.count - eventForm.photosCount
-    }
-
-    var canAddImages: Bool {
-        guard !isLoading else { return false }
-        return eventID == nil
-            ? newImages.count < Constants.photosLimit
-            : (newImages.count + eventForm.photosCount) < Constants.photosLimit
     }
 }

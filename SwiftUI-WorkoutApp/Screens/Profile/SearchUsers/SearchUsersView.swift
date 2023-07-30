@@ -1,56 +1,57 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = SearchUsersViewModel()
     @StateObject private var messagingViewModel = MessagingViewModel()
+    @State private var users = [UserModel]()
+    @State private var isLoading = false
     @State private var messageRecipient: UserModel?
     @State private var query = ""
     @State private var showErrorAlert = false
-    @State private var errorTitle = ""
+    @State private var errorMessage = ""
     @State private var searchTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
-    @FocusState private var isFocused
     var mode = Mode.regular
 
     var body: some View {
-        Form {
-            Section {
-                TextField("Имя пользователя на английском", text: $query)
-                    .onSubmit(search)
-                    .submitLabel(.search)
-                    .focused($isFocused)
-                    .accessibilityIdentifier("SearchUserNameField")
-            }
-            Section("Результаты поиска") {
-                List(viewModel.users) { model in
-                    listItem(for: model)
-                        .disabled(model.id == defaults.mainUserInfo?.userID)
-                        .accessibilityIdentifier("UserViewCell")
+        ScrollView {
+            SectionView(
+                header: "Результаты поиска",
+                mode: .regular
+            ) {
+                LazyVStack(spacing: 12) {
+                    ForEach(users) { model in
+                        listItem(for: model)
+                            .disabled(model.id == defaults.mainUserInfo?.userID)
+                            .accessibilityIdentifier("UserViewCell")
+                    }
                 }
             }
-            .opacity(viewModel.users.isEmpty ? 0 : 1)
+            .padding([.top, .horizontal])
         }
+        .opacity(users.isEmpty ? 0 : 1)
+        .searchable(
+            text: $query,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: Text("Имя пользователя на английском")
+        )
+        .onSubmit(of: .search, search)
+        .loadingOverlay(if: isLoading)
+        .background(Color.swBackground)
         .sheet(
             item: $messageRecipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
+        .alert(errorMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+        .onChange(of: errorMessage, perform: setupErrorAlert)
         .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
-        .onAppear(perform: showKeyboard)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
         .navigationBarTitleDisplayMode(.inline)
@@ -72,15 +73,27 @@ private extension SearchUsersView {
         switch mode {
         case .regular:
             NavigationLink(destination: UserDetailsView(from: model)) {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         case .chat:
             Button {
                 messageRecipient = model
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         }
+    }
+
+    func userRowView(with model: UserModel) -> some View {
+        UserRowView(
+            mode: .regular(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                )
+            )
+        )
     }
 
     func messageSheet(for recipient: UserModel) -> some View {
@@ -91,7 +104,7 @@ private extension SearchUsersView {
             isSendButtonDisabled: !messagingViewModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
-            errorTitle: $errorTitle,
+            errorTitle: $errorMessage,
             dismissError: closeAlert
         )
     }
@@ -110,25 +123,31 @@ private extension SearchUsersView {
     }
 
     func search() {
-        searchTask = Task { await viewModel.searchFor(user: query, with: defaults) }
+        if isLoading { return }
+        isLoading.toggle()
+        searchTask = Task {
+            do {
+                let result = try await APIService(with: defaults)
+                    .findUsers(with: query.withoutSpaces)
+                users = result.map(UserModel.init)
+                if users.isEmpty {
+                    errorMessage = "Не удалось найти такого пользователя"
+                }
+            } catch {
+                errorMessage = ErrorFilterService.message(from: error)
+            }
+            isLoading.toggle()
+        }
     }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
-        errorTitle = message
+        errorMessage = message
     }
 
     func closeAlert() {
-        viewModel.clearErrorMessage()
+        errorMessage = ""
         messagingViewModel.clearErrorMessage()
-    }
-
-    func showKeyboard() {
-        guard !isFocused else { return }
-        Task { @MainActor in
-            try await Task.sleep(nanoseconds: 750_000_000)
-            isFocused = true
-        }
     }
 
     func cancelTasks() {

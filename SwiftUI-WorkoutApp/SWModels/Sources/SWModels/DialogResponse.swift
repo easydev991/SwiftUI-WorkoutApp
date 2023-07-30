@@ -56,7 +56,10 @@ public extension DialogResponse {
     }
 
     var lastMessageDateString: String {
-        DateFormatterService.readableDate(from: lastMessageDate)
+        DateFormatterService.readableDate(
+            from: lastMessageDate,
+            showTimeInThisYear: false
+        )
     }
 
     var unreadMessagesCount: Int {

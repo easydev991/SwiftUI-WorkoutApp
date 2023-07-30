@@ -10,6 +10,13 @@ struct APIService {
     /// Время таймаута для `URLSession`
     private let timeoutInterval: TimeInterval
     /// `true` - нужна базовая аутентификация, `false` - не нужна
+    ///
+    /// Базовая аутентификация не нужна для запросов:
+    /// - `getUpdatedSportsGrounds`
+    /// - `getSportsGround`
+    /// - `getEvents`
+    /// - `registration`
+    /// - `resetPassword`
     private let needAuth: Bool
     /// `true` - можно принудительно деавторизовать пользователя, `false` - не можем
     ///
@@ -37,9 +44,11 @@ struct APIService {
         self.canForceLogout = canForceLogout
     }
 
+    #warning("Запрос не используется, т.к. регистрация в приложении отключена")
     /// Выполняет регистрацию пользователя
     ///
-    /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными
+    /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными,
+    /// поэтому этот запрос не используется
     /// - Parameter model: необходимые для регистрации данные
     /// - Returns: Вся информация о пользователе
     func registration(with model: MainUserForm) async throws {
@@ -111,6 +120,7 @@ struct APIService {
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
 
+    #warning("Запрос не используется, т.к. регистрация в приложении тоже отключена")
     /// Запрашивает удаление профиля текущего пользователя приложения
     func deleteUser() async throws {
         let endpoint = try await Endpoint.deleteUser(auth: defaults.basicAuthInfo())
@@ -1064,7 +1074,7 @@ private extension APIService.Endpoint {
             case classID = "class_id"
         }
 
-        static func makeBody(from dict: [Key: String], with _: [MediaFile] = []) -> Data? {
+        static func makeBody(from dict: [Key: String]) -> Data? {
             dict
                 .map { $0.key.rawValue + "=" + $0.value }
                 .joined(separator: "&")

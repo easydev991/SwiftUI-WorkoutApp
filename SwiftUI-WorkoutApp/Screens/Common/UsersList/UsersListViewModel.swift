@@ -7,6 +7,7 @@ final class UsersListViewModel: ObservableObject {
     @Published private(set) var friendRequests = [UserModel]()
     @Published private(set) var errorMessage = ""
     @Published private(set) var isLoading = false
+    var hasFriendRequests: Bool { !friendRequests.isEmpty }
 
     func makeInfo(for mode: UsersListView.Mode, refresh: Bool, with defaults: DefaultsProtocol) async {
         if !users.isEmpty || isLoading, !refresh { return }
@@ -39,10 +40,9 @@ final class UsersListViewModel: ObservableObject {
 
 private extension UsersListViewModel {
     func makeFriendsList(for id: Int, refresh: Bool, with defaults: DefaultsProtocol) async {
-        let isMainUser = id == defaults.mainUserInfo?.userID
         if !refresh { isLoading.toggle() }
         do {
-            if isMainUser {
+            if id == defaults.mainUserInfo?.userID {
                 await checkFriendRequests(refresh: refresh, with: defaults)
             }
             let friends = try await APIService(with: defaults).getFriendsForUser(id: id)

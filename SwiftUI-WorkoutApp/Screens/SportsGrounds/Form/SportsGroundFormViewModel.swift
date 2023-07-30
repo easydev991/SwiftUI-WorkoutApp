@@ -74,17 +74,11 @@ extension SportsGroundFormViewModel {
             : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
     }
 
+    /// Сколько еще фотографий можно добавить
     var imagesLimit: Int {
         groundID == nil
             ? Constants.photosLimit - newImages.count
             : Constants.photosLimit - newImages.count - groundForm.photosCount
-    }
-
-    var canAddImages: Bool {
-        guard !isLoading else { return false }
-        return groundID == nil
-            ? newImages.count < Constants.photosLimit
-            : (newImages.count + groundForm.photosCount) < Constants.photosLimit
     }
 
     var isNewSportsGround: Bool {

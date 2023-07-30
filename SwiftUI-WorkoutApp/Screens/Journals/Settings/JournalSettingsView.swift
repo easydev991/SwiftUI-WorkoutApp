@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -11,6 +12,7 @@ struct JournalSettingsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
+    @FocusState private var isTextFieldFocused: Bool
     private let options = JournalAccess.allCases
     private let updateOnSuccess: (Int) -> Void
     private let initialJournal: JournalResponse
@@ -26,20 +28,16 @@ struct JournalSettingsView: View {
 
     var body: some View {
         ContentInSheet(title: "Настройки дневника", spacing: .zero) {
-            Form {
-                TextField("Название дневника", text: $journal.title)
+            VStack(spacing: 22) {
+                journalTitleTextField
                 visibilitySettings
                 commentsSettings
                 saveButton
             }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
         .interactiveDismissDisabled(viewModel.isLoading)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.isSettingsUpdated, perform: finishSettings)
@@ -51,8 +49,17 @@ struct JournalSettingsView: View {
 }
 
 private extension JournalSettingsView {
+    var journalTitleTextField: some View {
+        SWTextField(
+            placeholder: "Название дневника",
+            text: $journal.title,
+            isFocused: isTextFieldFocused
+        )
+        .focused($isTextFieldFocused)
+    }
+
     var visibilitySettings: some View {
-        Section("Кто видит записи") {
+        SectionView(headerWithPadding: "Кто видит записи", mode: .regular) {
             Picker(
                 "Доступ на просмотр",
                 selection: $journal.viewAccessType
@@ -66,7 +73,7 @@ private extension JournalSettingsView {
     }
 
     var commentsSettings: some View {
-        Section("Кто может оставлять комментарии") {
+        SectionView(headerWithPadding: "Кто может оставлять комментарии", mode: .regular) {
             Picker(
                 "Доступ на комментирование",
                 selection: $journal.commentAccessType
@@ -77,10 +84,12 @@ private extension JournalSettingsView {
             }
             .pickerStyle(.segmented)
         }
+        .padding(.bottom, 20)
     }
 
     var saveButton: some View {
-        ButtonInForm("Сохранить", action: saveChanges)
+        Button("Сохранить", action: saveChanges)
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(isSaveButtonDisabled)
     }
 

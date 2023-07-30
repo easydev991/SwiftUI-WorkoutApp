@@ -3,6 +3,7 @@ import SWModels
 
 @MainActor
 protocol DefaultsProtocol: AnyObject {
+    var appTheme: AppThemeService.Theme { get }
     var mainUserInfo: UserResponse? { get }
     var mainUserCountryID: Int { get }
     var mainUserCityID: Int { get }
@@ -12,6 +13,7 @@ protocol DefaultsProtocol: AnyObject {
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
     var unreadMessagesCount: Int { get }
+    func setAppTheme(_ theme: AppThemeService.Theme)
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
@@ -32,6 +34,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
+
+    @AppStorage(Key.appTheme.rawValue)
+    private(set) var appTheme = AppThemeService.Theme.system
 
     @AppStorage(Key.authData.rawValue)
     private var authData = Data()
@@ -80,6 +85,13 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         }
     }
 
+    var blacklistedUsersCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("usersCount", comment: ""),
+            blacklistedUsers.count
+        )
+    }
+
     var friendsIdsList: [Int] {
         if let array = try? JSONDecoder().decode([Int].self, from: friendsIds) {
             return array
@@ -94,6 +106,10 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         } else {
             return []
         }
+    }
+
+    func setAppTheme(_ theme: AppThemeService.Theme) {
+        appTheme = theme
     }
 
     func saveAuthData(_ info: AuthData) throws {
@@ -159,7 +175,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, hasSportsGrounds,
+        case isUserAuthorized, hasSportsGrounds, appTheme,
              authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends, unreadMessagesCount
     }

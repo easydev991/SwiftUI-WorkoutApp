@@ -15,7 +15,10 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public let preview: String?
     public let usersTrainHereCount: Int?
     public var usersTrainHereText: String {
-        "Тренируется \(usersTrainHereCount.valueOrZero) чел."
+        String.localizedStringWithFormat(
+            NSLocalizedString("peopleTrainHere", comment: ""),
+            usersTrainHereCount.valueOrZero
+        )
     }
 
     public var commentsOptional: [CommentResponse]?
@@ -210,6 +213,13 @@ public extension SportsGround {
     var participants: [UserResponse] {
         get { usersTrainHere ?? [] }
         set { usersTrainHere = newValue }
+    }
+
+    var participantsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("peopleCount", comment: ""),
+            participants.count
+        )
     }
 
     /// Пользователь тренируется на этой площадке

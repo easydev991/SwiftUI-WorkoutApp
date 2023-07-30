@@ -1,3 +1,4 @@
+import NetworkStatus
 import PDFKit
 import SwiftUI
 
@@ -15,14 +16,14 @@ struct ImageDetailView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: PDFView, context _: Context) {
-        view.backgroundColor = colorScheme == .dark ? .black : .white
+        view.backgroundColor = .init(.swBackground)
     }
 }
 
 #if DEBUG
 struct ImageDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        ImageDetailView(image: .init(named: "defaultWorkoutImage")!)
+        ImageDetailView(image: .init(systemName: "book")!)
     }
 }
 #endif

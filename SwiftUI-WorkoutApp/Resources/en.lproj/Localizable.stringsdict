@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>photosCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 photos</string>
+			<key>one</key>
+			<string>1 photo</string>
+			<key>two</key>
+			<string>2 photos</string>
+			<key>few</key>
+			<string>%d photos</string>
+			<key>many</key>
+			<string>%d photos</string>
+			<key>other</key>
+			<string>%d photos</string>
+		</dict>
+	</dict>
+	<key>photoSectionHeader</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Photos</string>
+			<key>one</key>
+			<string>1 photo</string>
+			<key>two</key>
+			<string>2 photos</string>
+			<key>few</key>
+			<string>%d photos</string>
+			<key>many</key>
+			<string>%d photos</string>
+			<key>other</key>
+			<string>%d photos</string>
+		</dict>
+	</dict>
+	<key>peopleTrainHere</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Nobody trains here yet</string>
+			<key>one</key>
+			<string>1 person trains here</string>
+			<key>two</key>
+			<string>2 persons train here</string>
+			<key>few</key>
+			<string>%d people train here</string>
+			<key>many</key>
+			<string>%d people train here</string>
+			<key>other</key>
+			<string>%d people train here</string>
+		</dict>
+	</dict>
+	<key>groundsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 grounds</string>
+			<key>one</key>
+			<string>1 ground</string>
+			<key>two</key>
+			<string>2 grounds</string>
+			<key>few</key>
+			<string>%d grounds</string>
+			<key>many</key>
+			<string>%d grounds</string>
+			<key>other</key>
+			<string>%d grounds</string>
+		</dict>
+	</dict>
+	<key>journalsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 journals</string>
+			<key>one</key>
+			<string>1 journal</string>
+			<key>two</key>
+			<string>2 journals</string>
+			<key>few</key>
+			<string>%d journals</string>
+			<key>many</key>
+			<string>%d journals</string>
+			<key>other</key>
+			<string>%d journals</string>
+		</dict>
+	</dict>
+	<key>usersCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>nobody yet</string>
+			<key>one</key>
+			<string>1 user</string>
+			<key>two</key>
+			<string>2 users</string>
+			<key>few</key>
+			<string>%d users</string>
+			<key>many</key>
+			<string>%d users</string>
+			<key>other</key>
+			<string>%d users</string>
+		</dict>
+	</dict>
+	<key>friendsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>nobody yet</string>
+			<key>one</key>
+			<string>1 friend</string>
+			<key>two</key>
+			<string>2 friends</string>
+			<key>few</key>
+			<string>%d friends</string>
+			<key>many</key>
+			<string>%d friends</string>
+			<key>other</key>
+			<string>%d friends</string>
+		</dict>
+	</dict>
+	<key>peopleCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>nobody yet</string>
+			<key>one</key>
+			<string>1 person</string>
+			<key>two</key>
+			<string>2 persons</string>
+			<key>few</key>
+			<string>%d people</string>
+			<key>many</key>
+			<string>%d people</string>
+			<key>other</key>
+			<string>%d people</string>
+		</dict>
+	</dict>
+	<key>ageInYears</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>age not specified</string>
+			<key>one</key>
+			<string>1 year</string>
+			<key>two</key>
+			<string>2 years</string>
+			<key>few</key>
+			<string>%d years</string>
+			<key>many</key>
+			<string>%d years</string>
+			<key>other</key>
+			<string>%d years</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

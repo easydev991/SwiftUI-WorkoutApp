@@ -2,48 +2,220 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>yearsCount %lld</key>
+	<key>ageInYears</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@VARIABLE@</string>
-		<key>VARIABLE</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>d</string>
 			<key>zero</key>
-			<string>%lld лет</string>
+			<string>возраст не указан</string>
 			<key>one</key>
-			<string>%lld год</string>
+			<string>1 год</string>
 			<key>two</key>
-			<string>%lld года</string>
+			<string>2 года</string>
 			<key>few</key>
-			<string>%lld года</string>
+			<string>%d лет</string>
 			<key>many</key>
-			<string>%lld лет</string>
+			<string>%d лет</string>
+			<key>other</key>
+			<string>%d лет</string>
 		</dict>
 	</dict>
-	<key>peopleTrainHere %lld</key>
+	<key>peopleCount</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@VARIABLE@</string>
-		<key>VARIABLE</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
-			<string>lld</string>
+			<string>d</string>
 			<key>zero</key>
-			<string>%lld человек</string>
+			<string>пока никого</string>
 			<key>one</key>
-			<string>%lld человек</string>
+			<string>1 человек</string>
 			<key>two</key>
-			<string>%lld человека</string>
+			<string>2 человека</string>
 			<key>few</key>
-			<string>%lld человека</string>
+			<string>%d человека</string>
 			<key>many</key>
-			<string>%lld человек</string>
+			<string>%d человек</string>
+			<key>other</key>
+			<string>%d человек</string>
+		</dict>
+	</dict>
+	<key>friendsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>пока никого</string>
+			<key>one</key>
+			<string>1 друг</string>
+			<key>two</key>
+			<string>2 друга</string>
+			<key>few</key>
+			<string>%d друга</string>
+			<key>many</key>
+			<string>%d друзей</string>
+			<key>other</key>
+			<string>%d друзей</string>
+		</dict>
+	</dict>
+	<key>usersCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>пока никого</string>
+			<key>one</key>
+			<string>1 пользователь</string>
+			<key>two</key>
+			<string>2 пользователя</string>
+			<key>few</key>
+			<string>%d пользователя</string>
+			<key>many</key>
+			<string>%d пользователей</string>
+			<key>other</key>
+			<string>%d пользователей</string>
+		</dict>
+	</dict>
+	<key>groundsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 площадок</string>
+			<key>one</key>
+			<string>1 площадка</string>
+			<key>two</key>
+			<string>2 площадки</string>
+			<key>few</key>
+			<string>%d площадки</string>
+			<key>many</key>
+			<string>%d площадок</string>
+			<key>other</key>
+			<string>%d площадок</string>
+		</dict>
+	</dict>
+	<key>journalsCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 дневников</string>
+			<key>one</key>
+			<string>1 дневник</string>
+			<key>two</key>
+			<string>2 дневника</string>
+			<key>few</key>
+			<string>%d дневника</string>
+			<key>many</key>
+			<string>%d дневников</string>
+			<key>other</key>
+			<string>%d дневников</string>
+		</dict>
+	</dict>
+	<key>peopleTrainHere</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Здесь пока никто не тренируется</string>
+			<key>one</key>
+			<string>Тренируется 1 человек</string>
+			<key>two</key>
+			<string>Тренируются 2 человека</string>
+			<key>few</key>
+			<string>Тренируются %d человека</string>
+			<key>many</key>
+			<string>Тренируются %d человек</string>
+			<key>other</key>
+			<string>Тренируются %d человек</string>
+		</dict>
+	</dict>
+	<key>photoSectionHeader</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>Фотографии</string>
+			<key>one</key>
+			<string>1 фотография</string>
+			<key>two</key>
+			<string>2 фотографии</string>
+			<key>few</key>
+			<string>%d фотография</string>
+			<key>many</key>
+			<string>%d фотографий</string>
+			<key>other</key>
+			<string>%d фотографий</string>
+		</dict>
+	</dict>
+	<key>photosCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@VAR@</string>
+		<key>VAR</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>0 фотографий</string>
+			<key>one</key>
+			<string>1 фотография</string>
+			<key>two</key>
+			<string>2 фотографии</string>
+			<key>few</key>
+			<string>%d фотография</string>
+			<key>many</key>
+			<string>%d фотографий</string>
+			<key>other</key>
+			<string>%d фотографий</string>
 		</dict>
 	</dict>
 </dict>

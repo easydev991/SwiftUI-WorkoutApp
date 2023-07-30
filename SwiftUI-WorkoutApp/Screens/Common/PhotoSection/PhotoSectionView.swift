@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -10,9 +11,9 @@ struct PhotoSectionView: View {
     private let canDelete: Bool
     private let reportPhotoClbk: () -> Void
     private let deletePhotoClbk: (Int) -> Void
-    /// Количество столбцов в сетке с фотографиями
-    private var columns: Int { photos.count > 1 ? 2 : 1 }
-    @State private var fullscreenImage: UIImage?
+    private let screenWidth = UIScreen.main.bounds.size.width
+
+    @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
 
     init(
         with photos: [Photo],
@@ -27,56 +28,83 @@ struct PhotoSectionView: View {
     }
 
     var body: some View {
-        Section("Фотографии") {
+        SectionView(headerWithPadding: "Фотографии", mode: .regular) {
             LazyVGrid(
                 columns: .init(
                     repeating: .init(
-                        .flexible(minimum: 150, maximum: .infinity),
-                        spacing: 12,
-                        alignment: .top
+                        .flexible(minimum: screenWidth * 0.282),
+                        spacing: 2
                     ),
                     count: columns
                 ),
-                spacing: 12
+                spacing: 2
             ) {
                 ForEach(photos) { photo in
-                    PhotoSectionCell(
-                        photo: photo,
-                        canDelete: canDelete,
-                        reportClbk: reportPhotoClbk,
-                        onTapClbk: openImage,
-                        deleteClbk: deletePhotoClbk
-                    )
+                    if columns == 1 {
+                        makeCell(with: photo)
+                            .frame(height: 172)
+                    } else {
+                        GeometryReader { geo in
+                            makeCell(with: photo)
+                                .frame(height: geo.size.width)
+                        }
+                        .clipped()
+                        .aspectRatio(1, contentMode: .fit)
+                        .cornerRadius(4)
+                    }
                 }
             }
-            .fullScreenCover(item: $fullscreenImage) {
-                fullscreenImage = nil
-            } content: { image in
-                ContentInSheet(title: "Фото") {
-                    ImageDetailView(image: image)
-                }
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .insideCardBackground()
+            .fullScreenCover(item: $fullscreenImageInfo) {
+                fullscreenImageInfo = nil
+            } content: { model in
+                PhotoDetailScreen(
+                    model: model,
+                    canDelete: canDelete,
+                    reportPhotoClbk: reportPhotoClbk,
+                    deletePhotoClbk: deletePhotoClbk
+                )
             }
         }
     }
 }
 
 private extension PhotoSectionView {
-    func openImage(_ image: UIImage) {
-        fullscreenImage = image
+    /// Количество столбцов в сетке с фотографиями
+    var columns: Int {
+        switch photos.count {
+        case 1: return 1
+        case 2: return 2
+        default: return 3
+        }
+    }
+
+    func makeCell(with photo: Photo) -> some View {
+        ResizableCachedImage(
+            url: photo.imageURL,
+            didTapImage: { uiImage in
+                fullscreenImageInfo = .init(uiImage: uiImage, id: photo.id)
+            }
+        )
+        .scaledToFill()
     }
 }
 
 #if DEBUG
 struct PhotoSectionView_Previews: PreviewProvider {
     static var previews: some View {
-        List {
+        VStack(spacing: 20) {
             PhotoSectionView(
-                with: [.preview, .preview, .preview],
+                with: Photo.makePreviewList(count: 8),
                 canDelete: true,
                 reportClbk: {},
                 deleteClbk: { _ in }
             )
+            .padding()
+            .background(Color.swBackground)
         }
+        .previewLayout(.sizeThatFits)
     }
 }
 #endif

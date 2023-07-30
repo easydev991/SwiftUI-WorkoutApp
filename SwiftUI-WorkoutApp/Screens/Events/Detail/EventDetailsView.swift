@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -23,51 +24,40 @@ struct EventDetailsView: View {
 
     init(
         with event: EventResponse,
-        deleteClbk: @escaping () -> Void
+        onDeletion: @escaping () -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: event))
-        self.onDeletion = deleteClbk
+        self.onDeletion = onDeletion
     }
 
     var body: some View {
-        List {
-            mainInfo
-            locationInfo
-            if viewModel.event.hasDescription {
-                descriptionSection
+        ScrollView {
+            VStack(spacing: 16) {
+                headerAndMapSection
+                if showParticipantSection {
+                    participantsSection
+                }
+                if viewModel.hasPhotos {
+                    PhotoSectionView(
+                        with: viewModel.event.photos,
+                        canDelete: isAuthor,
+                        reportClbk: { viewModel.reportPhoto() },
+                        deleteClbk: deletePhoto
+                    )
+                }
+                if viewModel.event.hasDescription {
+                    descriptionSection
+                }
+                authorSection
+                if !viewModel.event.comments.isEmpty {
+                    commentsSection
+                }
             }
-            if showParticipantSection {
-                participantsSection
-            }
-            if viewModel.hasPhotos {
-                PhotoSectionView(
-                    with: viewModel.event.photos,
-                    canDelete: isAuthor,
-                    reportClbk: { viewModel.reportPhoto() },
-                    deleteClbk: deletePhoto
-                )
-            }
-            authorSection
-            if !viewModel.event.comments.isEmpty {
-                commentsSection
-            }
-            if defaults.isAuthorized {
-                AddCommentButton(isCreatingComment: $isCreatingComment)
-                    .sheet(isPresented: $isCreatingComment) {
-                        TextEntryView(
-                            mode: .newForEvent(id: viewModel.event.id),
-                            refreshClbk: refreshAction
-                        )
-                    }
-            }
+            .padding(.top, 8)
+            .padding([.horizontal, .bottom])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
                 mode: .editEvent(
@@ -83,7 +73,7 @@ struct EventDetailsView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok", action: { viewModel.clearErrorMessage() })
         }
         .onReceive(viewModel.$event, perform: onReceiveOfEventSetupTrainHere)
         .onChange(of: viewModel.event.trainHere, perform: onChangeOfTrainHere)
@@ -108,68 +98,75 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
-    var mainInfo: some View {
-        Group {
-            Text(viewModel.event.formattedTitle)
-                .font(.title2.bold())
-            dateInfo
-            addressInfo
+    var headerAndMapSection: some View {
+        VStack(spacing: 0) {
+            Group {
+                Text(viewModel.event.formattedTitle)
+                    .font(.title.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                SWDivider()
+                    .padding(.top, 12)
+                    .padding(.horizontal, -12)
+                    .padding(.bottom, 10)
+                HStack {
+                    Text("Когда").font(.headline)
+                    Spacer()
+                    Text(viewModel.event.eventDateString)
+                }
+                SWDivider()
+                    .padding(.top, 10)
+                    .padding(.horizontal, -12)
+                    .padding(.bottom, 12)
+                HStack {
+                    Text("Где").font(.headline)
+                    Spacer()
+                    Text(viewModel.event.shortAddress)
+                }
+                .padding(.bottom, 22)
+            }
+            .foregroundColor(.swMainText)
+            SportsGroundLocationInfo(
+                ground: $viewModel.event.sportsGround,
+                address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
+                appleMapsURL: viewModel.event.sportsGround.appleMapsURL
+            )
         }
-    }
-
-    var dateInfo: some View {
-        HStack {
-            Text("Когда")
-            Spacer()
-            Text(viewModel.event.eventDateString)
-                .fontWeight(.medium)
-        }
-    }
-
-    var addressInfo: some View {
-        HStack {
-            Text("Где")
-            Spacer()
-            Text(viewModel.event.shortAddress)
-                .fontWeight(.medium)
-        }
-    }
-
-    var locationInfo: some View {
-        SportsGroundLocationInfo(
-            ground: $viewModel.event.sportsGround,
-            address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
-            appleMapsURL: viewModel.event.sportsGround.appleMapsURL
-        )
+        .insideCardBackground()
     }
 
     var descriptionSection: some View {
-        Section("Описание") {
+        SectionView(headerWithPadding: "Описание", mode: .card(padding: 12)) {
             Text(.init(viewModel.event.formattedDescription))
+                .foregroundColor(.swMainText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
                 .tint(.blue)
                 .textSelection(.enabled)
         }
     }
 
     var participantsSection: some View {
-        Section {
+        Group {
             if viewModel.hasParticipants {
-                participantsButton
+                NavigationLink {
+                    UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
+                } label: {
+                    FormRowView(
+                        title: "Участники",
+                        trailingContent: .textWithChevron(
+                            viewModel.event.participantsCountString
+                        )
+                    )
+                }
             }
             if viewModel.isEventCurrent {
-                Toggle("Пойду на мероприятие", isOn: $trainHere)
-                    .disabled(viewModel.isLoading || !network.isConnected)
-                    .onChange(of: trainHere, perform: changeTrainHereStatus)
+                FormRowView(
+                    title: "Пойду на мероприятие",
+                    trailingContent: .toggle($trainHere)
+                )
+                .disabled(viewModel.isLoading || !network.isConnected)
+                .onChange(of: trainHere, perform: changeTrainHereStatus)
             }
-        }
-    }
-
-    var participantsButton: some View {
-        NavigationLink {
-            UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
-        } label: {
-            Text("Участники")
-                .badge("peopleTrainHere \(viewModel.event.participants.count)")
         }
     }
 
@@ -196,15 +193,18 @@ private extension EventDetailsView {
     func onChangeOfTrainHere(value: Bool) { trainHere = value }
 
     var authorSection: some View {
-        Section("Организатор") {
-            NavigationLink {
-                UserDetailsView(for: viewModel.event.author)
-            } label: {
-                HStack(spacing: 16) {
-                    CachedImage(url: viewModel.event.author?.avatarURL)
-                    Text(viewModel.event.authorName.valueOrEmpty)
-                        .fontWeight(.medium)
-                }
+        let userModel = UserModel(viewModel.event.author)
+        return SectionView(headerWithPadding: "Организатор", mode: .regular) {
+            NavigationLink(destination: UserDetailsView(for: viewModel.event.author)) {
+                UserRowView(
+                    mode: .regular(
+                        .init(
+                            imageURL: userModel.imageURL,
+                            name: userModel.name,
+                            address: userModel.shortAddress
+                        )
+                    )
+                )
             }
             .disabled(
                 !defaults.isAuthorized
@@ -215,7 +215,7 @@ private extension EventDetailsView {
     }
 
     var commentsSection: some View {
-        Comments(
+        CommentsView(
             items: viewModel.event.comments,
             reportClbk: { viewModel.reportComment($0) },
             deleteClbk: { id in
@@ -223,12 +223,15 @@ private extension EventDetailsView {
                     await viewModel.delete(commentID: id, with: defaults)
                 }
             },
-            editClbk: setupCommentToEdit
+            editClbk: { editComment = $0 },
+            isCreatingComment: $isCreatingComment
         )
-    }
-
-    func setupCommentToEdit(_ comment: CommentResponse) {
-        editComment = comment
+        .sheet(isPresented: $isCreatingComment) {
+            TextEntryView(
+                mode: .newForEvent(id: viewModel.event.id),
+                refreshClbk: refreshAction
+            )
+        }
     }
 
     func askForInfo(refresh: Bool = false) async {
@@ -240,7 +243,7 @@ private extension EventDetailsView {
     }
 
     var deleteButton: some View {
-        Button(action: toggleDeleteConfirmation) {
+        Button(action: { showDeleteDialog.toggle() }) {
             Image(systemName: "trash")
         }
         .confirmationDialog(
@@ -260,12 +263,8 @@ private extension EventDetailsView {
         NavigationLink {
             EventFormView(for: .editExisting(viewModel.event), refreshClbk: refreshAction)
         } label: {
-            Image(systemName: "rectangle.and.pencil.and.ellipsis")
+            Image(systemName: Icons.Regular.pencil.rawValue)
         }
-    }
-
-    func toggleDeleteConfirmation() {
-        showDeleteDialog.toggle()
     }
 
     func deletePhoto(with id: Int) {
@@ -293,28 +292,32 @@ private extension EventDetailsView {
         }
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
     func dismissNotAuth(isAuth: Bool) {
         if !isAuth { dismiss() }
     }
 
-    func dismissDeleted(isDeleted _: Bool) {
-        dismiss()
-        onDeletion()
+    func dismissDeleted(isDeleted: Bool) {
+        if isDeleted {
+            dismiss()
+            onDeletion()
+        }
     }
 
     func cancelTasks() {
-        [refreshButtonTask, deleteCommentTask, goingToEventTask, deletePhotoTask, deleteEventTask].forEach { $0?.cancel() }
+        [
+            refreshButtonTask,
+            deleteCommentTask,
+            goingToEventTask,
+            deletePhotoTask,
+            deleteEventTask
+        ].forEach { $0?.cancel() }
     }
 }
 
 #if DEBUG
 struct EventDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventDetailsView(with: .preview, deleteClbk: {})
+        EventDetailsView(with: .preview, onDeletion: {})
             .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }

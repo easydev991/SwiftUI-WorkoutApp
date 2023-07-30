@@ -31,20 +31,23 @@ final class WorkoutAppUITests: XCTestCase {
         waitAndTapOrFail(element: passwordField)
         passwordField.typeText(Constants.password)
         waitAndTapOrFail(element: loginButton)
-        waitAndTapOrFail(timeout: 5, element: searchUsersButton)
-        waitAndTapOrFail(element: searchUserField)
+        waitAndTapOrFail(timeout: 10, element: searchUsersButton)
+        waitAndTapOrFail(timeout: 10, element: searchUserField)
         searchUserField.typeText(Constants.usernameForSearch)
         searchUserField.typeText("\n") // жмем "return", чтобы начать поиск
-        waitAndTapOrFail(timeout: 5, element: firstFoundUserCell)
-        snapshot("5-profile", timeWaitingForIdle: 5)
+        waitAndTapOrFail(timeout: 10, element: firstFoundUserCell)
+        sleep(5)
+        snapshot("5-profile", timeWaitingForIdle: 10)
         swipeToFind(element: usesSportsGroundsButton, in: app)
-        waitAndTapOrFail(timeout: 5, element: firstSportsGroundCell)
-        snapshot("2-sportsGroundDetails", timeWaitingForIdle: 5)
-        waitAndTapOrFail(element: eventsTabButton)
-        waitAndTapOrFail(element: pastEventsPickerButton)
-        snapshot("3-pastEvents", timeWaitingForIdle: 5)
-        waitAndTapOrFail(element: firstEventViewCell)
-        snapshot("4-eventDetails", timeWaitingForIdle: 5)
+        waitAndTapOrFail(timeout: 10, element: firstSportsGroundCell)
+        snapshot("2-sportsGroundDetails", timeWaitingForIdle: 10)
+        waitAndTapOrFail(timeout: 10, element: eventsTabButton)
+        waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
+        sleep(5)
+        snapshot("3-pastEvents", timeWaitingForIdle: 10)
+        waitAndTapOrFail(timeout: 10, element: firstEventViewCell)
+        sleep(5)
+        snapshot("4-eventDetails", timeWaitingForIdle: 10)
     }
 }
 
@@ -65,9 +68,8 @@ private extension WorkoutAppUITests {
     var loginField: XCUIElement { app.textFields["loginField"] }
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
     var loginButton: XCUIElement { app.buttons["loginButton"] }
-    var profileNavBar: XCUIElement { app.navigationBars["Профиль"] }
-    var searchUsersButton: XCUIElement { profileNavBar.buttons["searchUsersButton"] }
-    var searchUserField: XCUIElement { app.textFields["SearchUserNameField"] }
+    var searchUsersButton: XCUIElement { app.buttons["searchUsersButton"] }
+    var searchUserField: XCUIElement { app.searchFields.firstMatch }
     var keyboardSearchButton: XCUIElement { app.keyboards.buttons["Search"] }
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
     var usesSportsGroundsButton: XCUIElement { app.buttons["usesSportsGroundsButton"] }

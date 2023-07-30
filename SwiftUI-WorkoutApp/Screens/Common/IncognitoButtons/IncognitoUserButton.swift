@@ -1,12 +1,13 @@
+import DesignSystem
 import SwiftUI
 
 struct IncognitoUserButton: View {
+    @State private var isLinkActive = false
     let mode: IncognitoUserButton.Mode
 
     var body: some View {
-        NavigationLink(destination: mode.destination) {
-            mode.label
-        }
+        NavigationLink(mode.title, destination: mode.destination, isActive: $isLinkActive)
+            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
     }
 }
 
@@ -14,23 +15,10 @@ extension IncognitoUserButton {
     enum Mode {
         /// Регистрация
         ///
-        /// `inForm = true` - отображаем кнопку внутри формы (`Form`), иначе - вне формы
-        case register(inForm: Bool)
+        /// Пока недоступна
+        case register
         /// Авторизация
-        case authorize(inForm: Bool)
-
-        @ViewBuilder
-        var label: some View {
-            switch self {
-            case let .register(inForm), let .authorize(inForm):
-                if inForm {
-                    Label(title, systemImage: systemImageName)
-                } else {
-                    Label(title, systemImage: systemImageName)
-                        .roundedStyle()
-                }
-            }
-        }
+        case authorize
     }
 }
 
@@ -44,19 +32,10 @@ private extension IncognitoUserButton.Mode {
         }
     }
 
-    var systemImageName: String {
-        switch self {
-        case .register:
-            return "person.badge.plus"
-        case .authorize:
-            return "arrow.forward.circle"
-        }
-    }
-
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .register: AccountInfoView(mode: .create)
+        case .register: EmptyView()
         case .authorize: LoginView()
         }
     }
@@ -65,13 +44,13 @@ private extension IncognitoUserButton.Mode {
 #if DEBUG
 struct IncognitoUserButton_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
-            IncognitoUserButton(mode: .authorize(inForm: true))
-            IncognitoUserButton(mode: .register(inForm: true))
-            IncognitoUserButton(mode: .authorize(inForm: false))
-            IncognitoUserButton(mode: .register(inForm: false))
+        NavigationView {
+            VStack(spacing: 16) {
+                IncognitoUserButton(mode: .authorize)
+                IncognitoUserButton(mode: .register)
+            }
+            .padding(.horizontal)
         }
-        .padding()
         .previewDisplayName("Инкогнито экран")
     }
 }

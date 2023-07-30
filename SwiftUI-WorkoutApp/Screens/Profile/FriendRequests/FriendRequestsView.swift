@@ -1,28 +1,39 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
 /// Список заявок на добавление в друзья
 struct FriendRequestsView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @ObservedObject var viewModel: UsersListViewModel
     @State private var acceptRequestTask: Task<Void, Never>?
     @State private var declineRequestTask: Task<Void, Never>?
 
     var body: some View {
-        List(viewModel.friendRequests, id: \.self) { item in
-            FriendRequestCell(
-                model: item,
-                acceptClbk: accept,
-                declineClbk: decline
-            )
+        SectionView(headerWithPadding: "Заявки", mode: .card()) {
+            LazyVStack(spacing: 0) {
+                ForEach(Array(zip(viewModel.friendRequests.indices, viewModel.friendRequests)), id: \.0) { index, item in
+                    UserRowView(
+                        mode: .friendRequest(
+                            .init(
+                                imageURL: item.imageURL,
+                                name: item.name,
+                                address: item.shortAddress
+                            ),
+                            .init(
+                                accept: { accept(userID: item.id) },
+                                reject: { decline(userID: item.id) }
+                            )
+                        )
+                    )
+                    .withDivider(
+                        if: index != viewModel.friendRequests.endIndex - 1
+                    )
+                }
+            }
         }
-        .disabled(viewModel.isLoading)
         .animation(.default, value: viewModel.friendRequests)
-        .onChange(of: viewModel.friendRequests, perform: dismissIfNeeded)
         .onDisappear(perform: cancelTasks)
-        .navigationTitle("Заявки")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -37,10 +48,6 @@ private extension FriendRequestsView {
         declineRequestTask = Task {
             await viewModel.respondToFriendRequest(from: userID, accept: false, with: defaults)
         }
-    }
-
-    func dismissIfNeeded(items: [UserModel]) {
-        if items.isEmpty { dismiss() }
     }
 
     func cancelTasks() {

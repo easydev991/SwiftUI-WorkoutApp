@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -30,20 +31,23 @@ struct UserDetailsView: View {
     }
 
     var body: some View {
-        List {
-            userInfoSection
-            if !isMainUser {
-                communicationSection
+        ScrollView {
+            VStack(spacing: 0) {
+                userInfoSection
+                if isMainUser {
+                    editProfileButton
+                }
+                if !isMainUser {
+                    communicationSection
+                }
+                socialInfoSection
             }
-            socialInfoSection
+            .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity)
         .opacity(viewModel.user.isFull ? 1 : 0)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showAlertMessage) {
             Button("Ok", action: closeAlert)
         }
@@ -53,75 +57,83 @@ struct UserDetailsView: View {
         .onChange(of: messagingViewModel.errorMessage, perform: setupResponseAlert)
         .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButtonIfNeeded
+            }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isMainUser {
-                    Group {
+                Group {
+                    if isMainUser {
                         searchUsersButton
                         settingsButton
+                    } else {
+                        blockUserButton
                     }
-                    .disabled(viewModel.isLoading)
                 }
+                .disabled(viewModel.isLoading)
             }
         }
         .onDisappear(perform: cancelTasks)
         .task(priority: .userInitiated) { await askForUserInfo() }
-        .navigationTitle("Профиль")
+        .navigationTitle(isMainUser ? "" : "Профиль")
     }
 }
 
 private extension UserDetailsView {
-    var userInfoSection: some View {
-        Section {
-            HStack {
-                Spacer()
-                VStack(spacing: 16) {
-                    avatarImageView
-                    VStack(spacing: 4) {
-                        Text(viewModel.user.name)
-                            .fontWeight(.bold)
-                        Text(viewModel.user.gender) + Text("yearsCount \(viewModel.user.age)")
-                        Text(viewModel.user.shortAddress)
-                            .multilineTextAlignment(.center)
-                    }
-                }
-                Spacer()
+    @ViewBuilder
+    var refreshButtonIfNeeded: some View {
+        if !DeviceOSVersionChecker.iOS16Available {
+            Button {
+                Task { await askForUserInfo(refresh: true) }
+            } label: {
+                Image(systemName: Icons.Regular.refresh.rawValue)
             }
+            .disabled(viewModel.isLoading)
         }
     }
 
-    var avatarImageView: some View {
-        CachedImage(url: viewModel.user.imageURL, mode: .profileAvatar)
+    var userInfoSection: some View {
+        ProfileView(
+            imageURL: viewModel.user.imageURL,
+            login: viewModel.user.name,
+            genderWithAge: viewModel.user.genderWithAge,
+            countryAndCity: viewModel.user.shortAddress
+        )
+        .padding(.vertical, 24)
+        .padding(.horizontal, 24)
+    }
+
+    var editProfileButton: some View {
+        NavigationLink(destination: EditAccountScreen()) {
+            Text("Изменить профиль")
+        }
+        .buttonStyle(SWButtonStyle(icon: .pencil, mode: .tinted, size: .large))
+        .padding(.bottom, 24)
     }
 
     var communicationSection: some View {
-        Section {
-            sendMessageButton
-            friendActionButton
-            blockUserButton
-        }
-    }
-
-    var sendMessageButton: some View {
-        Button {
-            showMessageSheet.toggle()
-        } label: {
-            Label("Отправить сообщение", systemImage: "plus.message")
-        }
-        .sheet(isPresented: $showMessageSheet) { messageSheet }
-    }
-
-    var friendActionButton: some View {
-        Button {
-            friendActionTask = Task { await viewModel.friendAction(with: defaults) }
-        } label: {
-            Label(
-                viewModel.friendActionOption.rawValue,
-                systemImage: viewModel.friendActionOption.imageName
+        VStack(spacing: 12) {
+            Button("Сообщение") {
+                showMessageSheet.toggle()
+            }
+            .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
+            .sheet(isPresented: $showMessageSheet) { messageSheet }
+            Button(viewModel.friendActionOption.rawValue) {
+                friendActionTask = Task { await viewModel.friendAction(with: defaults) }
+            }
+            .buttonStyle(
+                SWButtonStyle(
+                    icon: viewModel.friendActionOption == .removeFriend
+                        ? .deletePerson
+                        : .addPerson,
+                    mode: .tinted,
+                    size: .large
+                )
             )
+            .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
+                Button("Ok") {}
+            }
         }
-        .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
-            Button("Ok") {}
-        }
+        .padding(.bottom, 24)
     }
 
     var blockUserButton: some View {
@@ -130,7 +142,7 @@ private extension UserDetailsView {
         } label: {
             Label(
                 viewModel.blacklistActionOption.rawValue,
-                systemImage: "exclamationmark.triangle"
+                systemImage: Icons.Regular.exclamation.rawValue
             )
         }
         .confirmationDialog(
@@ -153,7 +165,7 @@ private extension UserDetailsView {
     }
 
     var socialInfoSection: some View {
-        Section {
+        VStack(spacing: 12) {
             if viewModel.user.usesSportsGrounds > .zero {
                 usesSportsGroundsButton
             }
@@ -163,7 +175,7 @@ private extension UserDetailsView {
             if viewModel.user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
                 friendsButton
             }
-            if blacklistedUsersCount > .zero, isMainUser {
+            if !defaults.blacklistedUsers.isEmpty, isMainUser {
                 blacklistButton
             }
             if viewModel.user.journalsCount > .zero, !isMainUser {
@@ -176,8 +188,10 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
         } label: {
-            Label("Где тренируется", systemImage: "mappin.and.ellipse")
-                .badge(viewModel.user.usesSportsGrounds.description)
+            FormRowView(
+                title: "Где тренируется",
+                trailingContent: .textWithChevron(viewModel.user.usesSportsGroundsCountString)
+            )
         }
         .accessibilityIdentifier("usesSportsGroundsButton")
     }
@@ -186,32 +200,31 @@ private extension UserDetailsView {
         NavigationLink {
             SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
         } label: {
-            Label("Добавил площадки", systemImage: "mappin.and.ellipse")
-                .badge(viewModel.user.addedSportsGrounds.count.description)
+            FormRowView(
+                title: "Добавил площадки",
+                trailingContent: .textWithChevron(viewModel.user.addedSportsGroundsCountString)
+            )
         }
     }
 
     var friendsButton: some View {
         NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
-            HStack(spacing: 8) {
-                Label("Друзья", systemImage: "person.3.sequence.fill")
-                Spacer()
-                if friendRequestsCount > .zero, isMainUser {
-                    Image(systemName: "\(friendRequestsCount).circle.fill")
-                        .foregroundColor(.red)
-                }
-                if viewModel.user.friendsCount > .zero {
-                    Text(viewModel.user.friendsCount.description)
-                        .foregroundColor(.secondary)
-                }
-            }
+            FormRowView(
+                title: "Друзья",
+                trailingContent: .textWithBadgeAndChevron(
+                    viewModel.user.friendsCountString,
+                    friendRequestsCount
+                )
+            )
         }
     }
 
     var blacklistButton: some View {
         NavigationLink(destination: UsersListView(mode: .blacklist)) {
-            Label("Черный список", systemImage: "text.badge.xmark")
-                .badge(blacklistedUsersCount.description)
+            FormRowView(
+                title: "Черный список",
+                trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
+            )
         }
     }
 
@@ -221,14 +234,16 @@ private extension UserDetailsView {
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
-            Label("Дневники", systemImage: "text.book.closed.fill")
-                .badge(viewModel.user.journalsCount.description)
+            FormRowView(
+                title: "Дневники",
+                trailingContent: .textWithChevron(viewModel.user.journalsCountString)
+            )
         }
     }
 
     var searchUsersButton: some View {
         NavigationLink(destination: SearchUsersView()) {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: Icons.Regular.magnifyingglass.rawValue)
         }
         .disabled(!network.isConnected)
         .accessibilityIdentifier("searchUsersButton")
@@ -236,7 +251,7 @@ private extension UserDetailsView {
 
     var settingsButton: some View {
         NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
-            Image(systemName: "gearshape.fill")
+            Image(systemName: Icons.Regular.gearshape.rawValue)
         }
     }
 
@@ -282,10 +297,6 @@ private extension UserDetailsView {
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
-    }
-
-    var blacklistedUsersCount: Int {
-        defaults.blacklistedUsers.count
     }
 
     var isMainUser: Bool {

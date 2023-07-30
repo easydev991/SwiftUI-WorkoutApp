@@ -1,35 +1,53 @@
+import DesignSystem
 import ShortAddressService
 import SwiftUI
 import SWModels
 
 struct SportsGroundFilterView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @Binding var filter: Model
-    private let defaultFilter = Model()
+    @Binding private var filter: Model
+    private let defaultFilter: Model
+
+    init(filter: Binding<Model>, currentCity: String?) {
+        self._filter = filter
+        self.defaultFilter = .init(currentCity: currentCity)
+    }
 
     var body: some View {
         ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
-            Form {
-                Section("Размер") {
-                    ForEach(defaultFilter.size, id: \.self) { groundSize in
-                        buttonFor(groundSize)
+            ScrollView {
+                VStack(spacing: 32) {
+                    SectionView(header: "Размер", mode: .card()) {
+                        VStack(spacing: 0) {
+                            ForEach(Array(zip(defaultFilter.size.indices, defaultFilter.size)), id: \.0) { index, groundSize in
+                                buttonFor(groundSize)
+                                    .withDivider(if: index != defaultFilter.size.endIndex - 1)
+                            }
+                        }
                     }
-                }
-                Section("Тип") {
-                    ForEach(defaultFilter.grade, id: \.self) { groundGrade in
-                        buttonFor(groundGrade)
+                    SectionView(
+                        header: "Тип",
+                        mode: .card()
+                    ) {
+                        VStack(spacing: 0) {
+                            ForEach(Array(zip(defaultFilter.grade.indices, defaultFilter.grade)), id: \.0) { index, groundGrade in
+                                buttonFor(groundGrade)
+                                    .withDivider(if: index != defaultFilter.grade.endIndex - 1)
+                            }
+                        }
                     }
-                }
-                if defaults.isAuthorized {
-                    Section {
-                        buttonForMyCity
-                    } header: {
-                        Text("Расположение")
-                    } footer: {
-                        Text(footerCityText)
+                    if defaults.isAuthorized {
+                        SectionView(
+                            header: "Расположение",
+                            footer: footerCityText,
+                            mode: .card()
+                        ) {
+                            buttonForMyCity
+                        }
                     }
+                    resetFilterButton
                 }
-                resetFilterButton
+                .padding([.top, .horizontal])
             }
         }
     }
@@ -54,9 +72,9 @@ private extension SportsGroundFilterView {
                 filter.size.append(size)
             }
         } label: {
-            TextWithCheckmark(
-                title: SportsGroundSize(id: size.code).rawValue,
-                showMark: filter.size.contains(size)
+            TextWithCheckmarkRowView(
+                text: SportsGroundSize(id: size.code).rawValue,
+                isChecked: filter.size.contains(size)
             )
         }
     }
@@ -70,9 +88,9 @@ private extension SportsGroundFilterView {
                 filter.grade.append(grade)
             }
         } label: {
-            TextWithCheckmark(
-                title: SportsGroundGrade(id: grade.code).rawValue,
-                showMark: filter.grade.contains(grade)
+            TextWithCheckmarkRowView(
+                text: SportsGroundGrade(id: grade.code).rawValue,
+                isChecked: filter.grade.contains(grade)
             )
         }
     }
@@ -81,17 +99,18 @@ private extension SportsGroundFilterView {
         Button {
             filter.onlyMyCity.toggle()
         } label: {
-            TextWithCheckmark(
-                title: "Только для моего города",
-                showMark: filter.onlyMyCity == defaultFilter.onlyMyCity
+            TextWithCheckmarkRowView(
+                text: "Только для моего города",
+                isChecked: filter.onlyMyCity == defaultFilter.onlyMyCity
             )
         }
     }
 
     var resetFilterButton: some View {
-        ButtonInForm("Сбросить фильтры") {
+        Button("Сбросить фильтры") {
             filter = defaultFilter
         }
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(!canResetFilter)
     }
 
@@ -122,8 +141,11 @@ private extension SportsGroundFilterView {
 #if DEBUG
 struct SportsGroundFilterView_Previews: PreviewProvider {
     static var previews: some View {
-        SportsGroundFilterView(filter: .constant(.init()))
-            .environmentObject(DefaultsService())
+        SportsGroundFilterView(
+            filter: .constant(.init()),
+            currentCity: "Moscow"
+        )
+        .environmentObject(DefaultsService())
     }
 }
 #endif

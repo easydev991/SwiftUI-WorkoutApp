@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -23,12 +24,8 @@ struct DialogListView: View {
                 dialogList
             }
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.default, value: viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .confirmationDialog(
             Constants.Alert.deleteDialog,
             isPresented: $showDeleteConfirmation,
@@ -56,12 +53,12 @@ private extension DialogListView {
     var refreshButton: some View {
         Button {
             refreshTask = Task {
-                await askForDialogs()
+                await askForDialogs(refresh: true)
             }
         } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
-        .opacity(showEmptyView ? 1 : 0)
+        .opacity(showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0)
         .disabled(viewModel.isLoading)
     }
 
@@ -73,16 +70,23 @@ private extension DialogListView {
                 SearchUsersView(mode: .chat)
             }
         } label: {
-            Image(systemName: "plus")
+            Image(systemName: Icons.Regular.plus.rawValue)
         }
         .opacity(hasFriends || !viewModel.list.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)
     }
 
     var emptyContentView: some View {
-        EmptyContentView(mode: .dialogs, action: emptyViewAction)
-            .opacity(showEmptyView ? 1 : 0)
-            .disabled(viewModel.isLoading)
+        EmptyContentView(
+            mode: .dialogs,
+            isAuthorized: defaults.isAuthorized,
+            hasFriends: defaults.hasFriends,
+            hasSportsGrounds: defaults.hasSportsGrounds,
+            isNetworkConnected: network.isConnected,
+            action: emptyViewAction
+        )
+        .opacity(showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading)
     }
 
     var showEmptyView: Bool {
@@ -96,20 +100,31 @@ private extension DialogListView {
     }
 
     var dialogList: some View {
-        List {
-            ForEach(viewModel.list) { dialog in
-                NavigationLink {
-                    DialogView(
-                        dialog: dialog,
-                        markedAsReadClbk: {
-                            viewModel.markAsRead(dialog, with: defaults)
-                        }
-                    )
-                } label: {
-                    GenericListCell(for: .dialog(dialog))
+        ScrollView {
+            LazyVStack(spacing: 22) {
+                ForEach(viewModel.list) { model in
+                    NavigationLink {
+                        DialogView(
+                            dialog: model,
+                            markedAsReadClbk: {
+                                viewModel.markAsRead(model, with: defaults)
+                            }
+                        )
+                    } label: {
+                        DialogRowView(
+                            model: .init(
+                                avatarURL: model.anotherUserImageURL,
+                                authorName: model.anotherUserName.valueOrEmpty,
+                                dateText: model.lastMessageDateString,
+                                messageText: model.lastMessageFormatted,
+                                unreadCount: model.unreadMessagesCount
+                            )
+                        )
+                    }
                 }
+                .onDelete(perform: initiateDeletion)
             }
-            .onDelete(perform: initiateDeletion)
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0.5 : 1)
         .animation(.default, value: viewModel.isLoading)

@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -6,30 +7,33 @@ struct IncognitoProfileView: View {
     var body: some View {
         VStack(spacing: 16) {
             authInvitation
-            IncognitoUserButton(mode: .authorize(inForm: false))
+            IncognitoUserButton(mode: .authorize)
             registrationInfo
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 IncognitoNavbarInfoButton()
             }
         }
         .padding()
+        .background(Color.swBackground)
     }
 }
 
 private extension IncognitoProfileView {
     var authInvitation: some View {
         Text(Constants.authInvitationText)
-            .font(.title3)
             .multilineTextAlignment(.center)
-            .padding(.horizontal)
+            .foregroundColor(.swMainText)
+            .padding(.bottom, 6)
     }
 
     var registrationInfo: some View {
         Text(Constants.registrationInfoText)
-            .font(.subheadline)
+            .font(.footnote.weight(.medium))
             .multilineTextAlignment(.center)
+            .foregroundColor(.swMainText)
     }
 }
 

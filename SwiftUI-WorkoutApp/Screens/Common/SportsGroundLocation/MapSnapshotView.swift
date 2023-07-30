@@ -1,3 +1,4 @@
+import DesignSystem
 import MapKit
 import SwiftUI
 import SWModels
@@ -23,11 +24,18 @@ struct MapSnapshotView: View {
 
 private extension MapSnapshotView {
     @ViewBuilder
-    func contentView(placeholderSize: CGSize) -> some View {
-        if let image = snapshotImage {
-            Image(uiImage: image)
-        } else {
-            RoundedDefaultImage(size: placeholderSize)
+    func contentView(placeholderSize _: CGSize) -> some View {
+        ZStack {
+            if let image = snapshotImage {
+                Image(uiImage: image)
+            }
+            Image.defaultWorkoutImage
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity)
+                .background(.black)
+                .cornerRadius(12)
+                .opacity(snapshotImage == nil ? 1 : 0)
         }
     }
 
@@ -87,8 +95,6 @@ private extension MapSnapshotView {
 struct MapSnapshotView_Previews: PreviewProvider {
     static var previews: some View {
         MapSnapshotView(ground: .constant(.emptyValue))
-            .frame(width: .infinity, height: 150)
-            .previewLayout(.sizeThatFits)
     }
 }
 #endif

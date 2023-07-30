@@ -1,31 +1,33 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
-    @EnvironmentObject private var network: NetworkStatus
-    @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode
+    let isAuthorized: Bool
+    let hasFriends: Bool
+    let hasSportsGrounds: Bool
+    let isNetworkConnected: Bool
     let action: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
-            Spacer()
-            if network.isConnected {
+            if isNetworkConnected {
                 titleText(mode.message)
-                Button(action: action) {
-                    RoundedButtonLabel(title: actionButtonTitle)
+                if isAuthorized {
+                    Button(actionButtonTitle, action: action)
+                        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
-                .opacity(defaults.isAuthorized ? 1 : 0)
             } else {
                 titleText("Нет соединения с сетью")
                 Image(systemName: "wifi.exclamationmark")
                     .font(.system(size: 60))
             }
             hintTextIfAvailable
-            Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
     }
 }
@@ -33,33 +35,35 @@ struct EmptyContentView: View {
 private extension EmptyContentView {
     func titleText(_ text: String) -> some View {
         Text(text)
-            .font(.title2)
+            .foregroundColor(.swMainText)
             .multilineTextAlignment(.center)
+            .padding(.bottom, 6)
     }
 
     @ViewBuilder
     var hintTextIfAvailable: some View {
         if isHintAvailable {
             Text(Constants.Alert.eventCreationRule)
+                .foregroundColor(.swMainText)
+                .font(.footnote.weight(.medium))
                 .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
         }
     }
 
     var actionButtonTitle: String {
         switch mode {
         case .events:
-            return defaults.hasSportsGrounds && defaults.isAuthorized
+            return hasSportsGrounds && isAuthorized
                 ? "Создать мероприятие"
                 : "Выбрать площадку"
         case .dialogs:
-            return defaults.hasFriends ? "Открыть список друзей" : "Найти пользователя"
+            return hasFriends ? "Открыть список друзей" : "Найти пользователя"
         case .journals: return "Создать дневник"
         }
     }
 
     var isHintAvailable: Bool {
-        mode == .events && defaults.isAuthorized && !defaults.hasSportsGrounds
+        mode == .events && isAuthorized && !hasSportsGrounds
     }
 }
 
@@ -73,7 +77,7 @@ private extension EmptyContentView.Mode {
     var message: String {
         switch self {
         case .events:
-            return "Нет запланированных мероприятий"
+            return "Нет запланированных\nмероприятий"
         case .dialogs:
             return "Чатов пока нет"
         case .journals:
@@ -85,11 +89,27 @@ private extension EmptyContentView.Mode {
 #if DEBUG
 struct EmptyContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
-            EmptyContentView(mode: mode, action: {})
+        VStack {
+            ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
+                EmptyContentView(
+                    mode: mode,
+                    isAuthorized: true,
+                    hasFriends: true,
+                    hasSportsGrounds: true,
+                    isNetworkConnected: true,
+                    action: {}
+                )
+                Divider()
+            }
+            EmptyContentView(
+                mode: .dialogs,
+                isAuthorized: true,
+                hasFriends: true,
+                hasSportsGrounds: true,
+                isNetworkConnected: false,
+                action: {}
+            )
         }
-        .environmentObject(NetworkStatus())
-        .environmentObject(DefaultsService())
         .previewLayout(.sizeThatFits)
     }
 }

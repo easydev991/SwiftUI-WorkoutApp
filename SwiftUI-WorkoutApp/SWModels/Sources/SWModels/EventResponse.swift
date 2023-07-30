@@ -125,6 +125,13 @@ public extension EventResponse {
         }
     }
 
+    var cityName: String? {
+        if let countryID, let cityID {
+            return ShortAddressService(countryID, cityID).cityName
+        }
+        return nil
+    }
+
     var hasDescription: Bool {
         !formattedDescription.isEmpty
     }
@@ -187,6 +194,13 @@ public extension EventResponse {
     var participants: [UserResponse] {
         get { participantsOptional ?? [] }
         set { participantsOptional = newValue }
+    }
+
+    var participantsCountString: String {
+        String.localizedStringWithFormat(
+            NSLocalizedString("peopleCount", comment: ""),
+            participants.count
+        )
     }
 
     /// Пользователь участвует в этом мероприятии

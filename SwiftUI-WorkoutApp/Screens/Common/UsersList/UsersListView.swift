@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -15,27 +16,32 @@ struct UsersListView: View {
     let mode: Mode
 
     var body: some View {
-        Form {
-            if !viewModel.friendRequests.isEmpty {
-                friendRequestsSection
+        ScrollView {
+            VStack(spacing: 0) {
+                friendRequestsSectionIfNeeded
+                SectionView(
+                    header: viewModel.hasFriendRequests ? "Друзья" : nil,
+                    mode: .regular
+                ) {
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.users) { item in
+                            listItem(for: item)
+                                .disabled(item.id == defaults.mainUserInfo?.userID)
+                        }
+                    }
+                }
+                .padding(.top)
             }
-            List(viewModel.users, id: \.self) { model in
-                listItem(for: model)
-                    .disabled(model.id == defaults.mainUserInfo?.userID)
-            }
+            .padding(.horizontal)
         }
         .sheet(
             item: $messageRecipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading || !network.isConnected)
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
+        .disabled(!network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
@@ -85,18 +91,11 @@ private extension UsersListView.Mode {
 }
 
 private extension UsersListView {
-    var friendRequestsSection: some View {
-        Section {
-            NavigationLink {
-                FriendRequestsView(viewModel: viewModel)
-            } label: {
-                HStack {
-                    Label("Заявки", systemImage: "person.fill.badge.plus")
-                    Spacer()
-                    Text(viewModel.friendRequests.count.description)
-                        .foregroundColor(.secondary)
-                }
-            }
+    @ViewBuilder
+    var friendRequestsSectionIfNeeded: some View {
+        if viewModel.hasFriendRequests {
+            FriendRequestsView(viewModel: viewModel)
+                .padding(.top)
         }
     }
 
@@ -107,16 +106,28 @@ private extension UsersListView {
             Button {
                 messageRecipient = model
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         case .friends, .eventParticipants, .groundParticipants, .blacklist:
             NavigationLink {
                 UserDetailsView(from: model)
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
-                UserViewCell(model: model)
+                userRowView(with: model)
             }
         }
+    }
+
+    func userRowView(with model: UserModel) -> some View {
+        UserRowView(
+            mode: .regular(
+                .init(
+                    imageURL: model.imageURL,
+                    name: model.name,
+                    address: model.shortAddress
+                )
+            )
+        )
     }
 
     func messageSheet(for recipient: UserModel) -> some View {

@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -31,12 +32,8 @@ struct EventsListView: View {
             } message: {
                 Text(Constants.Alert.eventCreationRule)
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
-            .overlay {
-                ProgressView()
-                    .opacity(viewModel.isLoading ? 1 : 0)
-            }
-            .animation(.default, value: viewModel.isLoading)
+            .loadingOverlay(if: viewModel.isLoading)
+            .background(Color.swBackground)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }
@@ -63,12 +60,16 @@ struct EventsListView: View {
 private extension EventsListView {
     var refreshButton: some View {
         Button {
-            eventsTask = Task { await askForEvents() }
+            eventsTask = Task { await askForEvents(refresh: true) }
         } label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
-        .opacity(showEmptyView ? 1 : 0)
+        .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
+    }
+
+    var refreshButtonOpacity: CGFloat {
+        showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
     }
 
     var segmentedControl: some View {
@@ -83,17 +84,34 @@ private extension EventsListView {
     }
 
     var emptyView: some View {
-        EmptyContentView(mode: .events, action: createEventIfAvailable)
-            .opacity(showEmptyView ? 1 : 0)
-            .disabled(viewModel.isLoading)
+        EmptyContentView(
+            mode: .events,
+            isAuthorized: defaults.isAuthorized,
+            hasFriends: defaults.hasFriends,
+            hasSportsGrounds: defaults.hasSportsGrounds,
+            isNetworkConnected: network.isConnected,
+            action: createEventIfAvailable
+        )
+        .opacity(showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading)
     }
 
     var eventsList: some View {
-        List(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
-            NavigationLink(destination: EventDetailsView(with: event, deleteClbk: refreshAction)) {
-                EventViewCell(for: $event)
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
+                    NavigationLink(destination: EventDetailsView(with: event, onDeletion: refreshAction)) {
+                        EventRowView(
+                            imageURL: event.previewImageURL,
+                            title: event.formattedTitle,
+                            dateTimeText: event.eventDateString,
+                            locationText: event.cityName
+                        )
+                    }
+                    .accessibilityIdentifier("EventViewCell")
+                }
             }
-            .accessibilityIdentifier("EventViewCell")
+            .padding([.top, .horizontal])
         }
         .opacity(viewModel.isLoading ? 0 : 1)
     }
@@ -116,7 +134,7 @@ private extension EventsListView {
                     createEventIfAvailable()
                 }
             } label: {
-                Image(systemName: "plus")
+                Image(systemName: Icons.Regular.plus.rawValue)
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {

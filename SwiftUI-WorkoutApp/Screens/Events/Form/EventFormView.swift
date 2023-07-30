@@ -1,3 +1,4 @@
+import DesignSystem
 import ImagePicker
 import NetworkStatus
 import SwiftUI
@@ -32,35 +33,19 @@ struct EventFormView: View {
     }
 
     var body: some View {
-        Form {
-            eventNameSection
-            datePickerSection
-            sportsGroundSection
-            descriptionSection
-            if !viewModel.newImages.isEmpty {
-                pickedImagesList
+        ScrollView {
+            VStack(spacing: 0) {
+                eventNameSection
+                sportsGroundSection
+                datePickerSection
+                descriptionSection
+                pickedImagesGrid
+                saveButton
             }
-            if viewModel.imagesLimit > 0 {
-                pickImagesButton
-            }
-            saveButton
+            .padding([.horizontal, .bottom])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
-        .sheet(isPresented: $showImagePicker) {
-            viewModel.deleteExtraImagesIfNeeded()
-        } content: {
-            ImagePicker(
-                pickedImages: $viewModel.newImages,
-                selectionLimit: viewModel.imagesLimit,
-                compressionQuality: .zero
-            )
-        }
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
@@ -89,37 +74,46 @@ private extension EventFormView {
     }
 
     var eventNameSection: some View {
-        Section {
-            TextField("Название мероприятия", text: $viewModel.eventForm.title)
-                .focused($focus, equals: .eventName)
-        }
-    }
-
-    var datePickerSection: some View {
-        Section("Дата и время") {
-            DatePicker(
-                "Дата и время",
-                selection: $viewModel.eventForm.date,
-                in: .now ... viewModel.maxEventFutureDate
+        SectionView(header: "Название", mode: .regular) {
+            SWTextField(
+                placeholder: "Название мероприятия",
+                text: $viewModel.eventForm.title,
+                isFocused: focus == .eventName
             )
-            .labelsHidden()
+            .focused($focus, equals: .eventName)
         }
+        .padding(.top, 22)
+        .padding(.bottom, 16)
     }
 
     var sportsGroundSection: some View {
-        Section("Площадка") {
+        SectionView(header: "Площадка", mode: .regular) {
             switch mode {
             case .regularCreate:
-                Button(action: showGroundPickerIfAvailable) {
-                    Text(viewModel.eventForm.sportsGround.name ?? "Выбрать")
-                        .blueMediumWeight()
+                Button {
+                    showGroundPicker.toggle()
+                } label: {
+                    ListRowView(
+                        leadingContent: .text(viewModel.eventForm.sportsGround.name ?? "Выбрать площадку"),
+                        trailingContent: .chevron
+                    )
                 }
+                .disabled(!viewModel.canShowGroundPicker(with: defaults))
             case let .createForSelected(ground):
-                Text(ground.name.valueOrEmpty)
+                ListRowView(
+                    leadingContent: .text(ground.name.valueOrEmpty),
+                    trailingContent: .empty
+                )
             case let .editExisting(event):
-                Button(action: showGroundPickerIfAvailable) {
-                    Text(event.sportsGround.shortTitle)
+                Button {
+                    showGroundPicker.toggle()
+                } label: {
+                    ListRowView(
+                        leadingContent: .text(event.sportsGround.longTitle),
+                        trailingContent: .chevron
+                    )
                 }
+                .disabled(!viewModel.canShowGroundPicker(with: defaults))
             }
         }
         .sheet(isPresented: $showGroundPicker) {
@@ -132,58 +126,51 @@ private extension EventFormView {
         }
     }
 
-    var descriptionSection: some View {
-        Section("Описание") {
-            TextEditor(text: $viewModel.eventForm.description)
-                .focused($focus, equals: .eventDescription)
-                .frame(height: 100)
-        }
-    }
-
-    var pickedImagesList: some View {
-        Section {
-            PickedImagesList(images: $viewModel.newImages)
-        } header: {
-            Text("Фотографии, \(viewModel.newImages.count) шт.")
-        } footer: {
-            Text(
-                viewModel.imagesLimit <= 0
-                    ? "Больше добавить фото нельзя"
-                    : "Можно добавить еще \(viewModel.imagesLimit) фото"
-            )
-        }
-    }
-
-    var pickImagesButton: some View {
-        AddPhotoButton(
-            isAddingPhotos: $showImagePicker,
-            focusClbk: { focus = nil }
+    var datePickerSection: some View {
+        DatePicker(
+            "Дата и время",
+            selection: $viewModel.eventForm.date,
+            in: .now ... viewModel.maxEventFutureDate
         )
-        .disabled(!viewModel.canAddImages)
+        .padding(.vertical, 22)
+    }
+
+    var descriptionSection: some View {
+        SectionView(header: "Описание", mode: .regular) {
+            SWTextEditor(
+                text: $viewModel.eventForm.description,
+                placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
+                isFocused: focus == .eventDescription,
+                height: 104
+            )
+            .focused($focus, equals: .eventDescription)
+        }
+    }
+
+    var pickedImagesGrid: some View {
+        PickedImagesGrid(
+            images: $viewModel.newImages,
+            showImagePicker: $showImagePicker,
+            selectionLimit: viewModel.imagesLimit,
+            processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+        )
+        .padding(.top, 22)
+        .padding(.bottom, 42)
     }
 
     var saveButton: some View {
-        Section {
-            ButtonInForm("Сохранить", action: saveAction)
-                .disabled(
-                    !viewModel.isFormReady
-                        || viewModel.isLoading
-                        || !network.isConnected
-                )
+        Button("Сохранить") {
+            focus = nil
+            saveEventTask = Task {
+                await viewModel.saveEvent(with: defaults)
+            }
         }
-    }
-
-    func showGroundPickerIfAvailable() {
-        if viewModel.canShowGroundPicker(with: defaults) {
-            showGroundPicker.toggle()
-        }
-    }
-
-    func saveAction() {
-        focus = nil
-        saveEventTask = Task {
-            await viewModel.saveEvent(with: defaults)
-        }
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+        .disabled(
+            !viewModel.isFormReady
+                || viewModel.isLoading
+                || !network.isConnected
+        )
     }
 
     func setupErrorAlert(with message: String) {

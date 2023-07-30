@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 
 struct RootView: View {
@@ -15,32 +16,50 @@ private extension RootView {
         TabView(selection: $viewModel.selectedTab) {
             SportsGroundsMapView()
                 .tabItem {
-                    Label("Площадки", systemImage: "map.circle")
+                    tabItemView(for: .map)
                 }
                 .tag(TabViewModel.Tab.map)
             EventsListView()
                 .tabItem {
-                    Label("Мероприятия", systemImage: "person.3")
+                    tabItemView(for: .events)
                 }
                 .tag(TabViewModel.Tab.events)
             DialogsScreen()
                 .tabItem {
-                    Label("Сообщения", systemImage: "message.fill")
+                    tabItemView(for: .messages)
                 }
                 .tag(TabViewModel.Tab.messages)
                 .badge(defaults.unreadMessagesCount)
             JournalsScreen()
                 .tabItem {
-                    Label("Дневники", systemImage: "list.bullet.circle")
+                    tabItemView(for: .journal)
                 }
                 .tag(TabViewModel.Tab.journal)
             ProfileScreen()
                 .tabItem {
-                    Label("Профиль", systemImage: "person")
+                    tabItemView(for: .profile)
                 }
                 .tag(TabViewModel.Tab.profile)
         }
         .navigationViewStyle(.stack)
+    }
+
+    func tabItemView(for tab: TabViewModel.Tab) -> some View {
+        Group {
+            Text(tab.title)
+            switch tab {
+            case .map:
+                Image.sportsGroundIcon
+            case .events:
+                Image(systemName: Icons.Tabbar.events.rawValue)
+            case .messages:
+                Image(systemName: Icons.Tabbar.messages.rawValue)
+            case .journal:
+                Image(systemName: Icons.Tabbar.journals.rawValue)
+            case .profile:
+                Image(systemName: Icons.Tabbar.profile.rawValue)
+            }
+        }
     }
 }
 

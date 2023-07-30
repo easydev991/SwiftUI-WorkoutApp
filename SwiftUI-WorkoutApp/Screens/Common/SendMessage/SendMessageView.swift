@@ -1,3 +1,4 @@
+import DesignSystem
 import NetworkStatus
 import SwiftUI
 
@@ -38,19 +39,14 @@ struct SendMessageView: View {
     var body: some View {
         ContentInSheet(title: header) {
             VStack {
-                Group {
-                    textView
-                    sendButtonStack
-                }
-                .padding(.horizontal)
+                textView
                 Spacer()
+                sendButton
             }
+            .padding([.horizontal, .bottom])
         }
-        .overlay {
-            ProgressView()
-                .opacity(isLoading ? 1 : 0)
-        }
-        .disabled(isLoading)
+        .background(Color.swBackground)
+        .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: dismissError)
@@ -59,35 +55,23 @@ struct SendMessageView: View {
 }
 
 private extension SendMessageView {
-    var sendButtonStack: some View {
-        HStack {
-            Spacer()
-            sendButton
-        }
-    }
-
     var sendButton: some View {
-        Button {
+        Button("Отправить") {
             isFocused = false
             sendAction()
-        } label: {
-            Label("Отправить", systemImage: "paperplane.fill")
         }
-        .tint(.blue)
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(isSendButtonDisabled || !network.isConnected)
     }
 
     var textView: some View {
-        TextEditor(text: $text)
-            .frame(height: 200)
-            .padding(.horizontal, 8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-            )
-            .focused($isFocused)
-            .onAppear(perform: showKeyboard)
+        SWTextEditor(
+            text: $text,
+            isFocused: isFocused,
+            height: 200
+        )
+        .focused($isFocused)
+        .onAppear(perform: showKeyboard)
     }
 
     func showKeyboard() {
@@ -104,9 +88,9 @@ struct SendMessageView_Previews: PreviewProvider {
     static var previews: some View {
         SendMessageView(
             header: "Новый комментарий",
-            text: .constant(""),
+            text: .constant("Текст комментария"),
             isLoading: false,
-            isSendButtonDisabled: false,
+            isSendButtonDisabled: true,
             sendAction: {},
             showErrorAlert: .constant(false),
             errorTitle: .constant(""),

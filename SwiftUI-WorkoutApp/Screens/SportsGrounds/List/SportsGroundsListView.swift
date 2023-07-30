@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import SWModels
 
@@ -6,6 +7,7 @@ struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundListViewModel()
+    @State private var updateGroundsTask: Task<Void, Never>?
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     /// Площадка для мероприятия
@@ -21,35 +23,45 @@ struct SportsGroundsListView: View {
     }
 
     var body: some View {
-        List(viewModel.list) { ground in
-            switch mode {
-            case .event:
-                Button {
-                    groundInfo = ground
-                    dismiss()
-                } label: {
-                    SportsGroundViewCell(model: ground)
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(viewModel.list) { ground in
+                    switch mode {
+                    case .event:
+                        Button {
+                            groundInfo = ground
+                            dismiss()
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    default:
+                        NavigationLink {
+                            SportsGroundDetailView(
+                                for: ground,
+                                onDeletion: updateDeleted
+                            )
+                        } label: {
+                            SportsGroundRowView(
+                                imageURL: ground.previewImageURL,
+                                title: ground.longTitle,
+                                address: ground.address,
+                                usersTrainHereText: ground.usersTrainHereText
+                            )
+                        }
+                        .accessibilityIdentifier("SportsGroundViewCell")
+                    }
                 }
-                .accessibilityIdentifier("SportsGroundViewCell")
-            default:
-                NavigationLink {
-                    SportsGroundDetailView(
-                        for: ground,
-                        onDeletion: updateDeleted
-                    )
-                } label: {
-                    SportsGroundViewCell(model: ground)
-                }
-                .accessibilityIdentifier("SportsGroundViewCell")
             }
+            .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .overlay {
-            ProgressView()
-                .opacity(viewModel.isLoading ? 1 : 0)
-        }
-        .animation(.easeInOut, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
+        .loadingOverlay(if: viewModel.isLoading)
+        .background(Color.swBackground)
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .onChange(of: viewModel.list, perform: dismissIfEmpty)
         .alert(errorTitle, isPresented: $showErrorAlert) {
@@ -57,8 +69,14 @@ struct SportsGroundsListView: View {
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                refreshButtonIfNeeded
+            }
+        }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onDisappear(perform: cancelTask)
     }
 }
 
@@ -81,6 +99,20 @@ private extension SportsGroundsListView.Mode {
 }
 
 private extension SportsGroundsListView {
+    @ViewBuilder
+    var refreshButtonIfNeeded: some View {
+        if !DeviceOSVersionChecker.iOS16Available {
+            Button {
+                updateGroundsTask = Task {
+                    await askForGrounds(refresh: true)
+                }
+            } label: {
+                Image(systemName: Icons.Regular.refresh.rawValue)
+            }
+            .disabled(viewModel.isLoading)
+        }
+    }
+
     func askForGrounds(refresh: Bool = false) async {
         await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
     }
@@ -103,6 +135,10 @@ private extension SportsGroundsListView {
             defaults.setUserNeedUpdate(true)
             dismiss()
         }
+    }
+
+    func cancelTask() {
+        updateGroundsTask?.cancel()
     }
 }
 

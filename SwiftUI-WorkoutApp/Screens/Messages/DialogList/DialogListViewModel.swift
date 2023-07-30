@@ -9,7 +9,7 @@ final class DialogListViewModel: ObservableObject {
 
     func makeItems(with defaults: DefaultsService, refresh: Bool) async {
         if isLoading || (!list.isEmpty && !refresh) { return }
-        if !refresh { isLoading.toggle() }
+        isLoading.toggle()
         do {
             list = try await APIService(with: defaults).getDialogs()
             let unreadMessagesCount = list.map(\.unreadMessagesCount).reduce(0, +)
@@ -17,7 +17,7 @@ final class DialogListViewModel: ObservableObject {
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
-        if !refresh { isLoading.toggle() }
+        isLoading.toggle()
     }
 
     func deleteDialog(at index: Int?, with defaults: DefaultsProtocol) async {
