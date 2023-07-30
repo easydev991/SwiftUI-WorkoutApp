@@ -11,6 +11,7 @@ struct SendMessageView: View {
     @Binding var errorTitle: String
     @FocusState private var isFocused
     private let header: String
+    private let placeholder: String?
     private let isLoading: Bool
     private let isSendButtonDisabled: Bool
     private let sendAction: () -> Void
@@ -18,6 +19,7 @@ struct SendMessageView: View {
 
     init(
         header: String,
+        placeholder: String? = nil,
         text: Binding<String>,
         isLoading: Bool,
         isSendButtonDisabled: Bool,
@@ -27,6 +29,7 @@ struct SendMessageView: View {
         dismissError: @escaping () -> Void
     ) {
         self.header = header
+        self.placeholder = placeholder
         self._text = text
         self.isLoading = isLoading
         self.isSendButtonDisabled = isSendButtonDisabled
@@ -67,6 +70,7 @@ private extension SendMessageView {
     var textView: some View {
         SWTextEditor(
             text: $text,
+            placeholder: placeholder,
             isFocused: isFocused,
             height: 200
         )

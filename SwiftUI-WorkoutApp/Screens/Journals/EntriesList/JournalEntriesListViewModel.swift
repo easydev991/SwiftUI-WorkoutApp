@@ -6,9 +6,9 @@ import SWModels
 final class JournalEntriesListViewModel: ObservableObject {
     private let feedbackSender: FeedbackSender
     let userID: Int
-    @Published var currentJournal: JournalResponse
-    @Published var list = [JournalEntryResponse]()
+    let currentJournal: JournalResponse
     @Published var newEntryText = ""
+    @Published private(set) var list = [JournalEntryResponse]()
     @Published private(set) var isEntryCreated = false
     @Published private(set) var isSettingsUpdated = false
     @Published private(set) var isLoading = false
