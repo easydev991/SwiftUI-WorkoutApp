@@ -74,12 +74,14 @@ extension SportsGroundFormView {
 
 private extension SportsGroundFormView {
     var addressSection: some View {
-        SWTextField(
-            placeholder: "Адрес площадки",
-            text: $viewModel.groundForm.address,
-            isFocused: isFocused
-        )
-        .focused($isFocused)
+        SectionView(header: "Адрес", mode: .regular) {
+            SWTextField(
+                placeholder: "Адрес площадки",
+                text: $viewModel.groundForm.address,
+                isFocused: isFocused
+            )
+            .focused($isFocused)
+        }
         .padding(.top, 22)
     }
 

@@ -74,18 +74,20 @@ private extension EventFormView {
     }
 
     var eventNameSection: some View {
-        SWTextField(
-            placeholder: "Название мероприятия",
-            text: $viewModel.eventForm.title,
-            isFocused: focus == .eventName
-        )
-        .focused($focus, equals: .eventName)
+        SectionView(header: "Название", mode: .regular) {
+            SWTextField(
+                placeholder: "Название мероприятия",
+                text: $viewModel.eventForm.title,
+                isFocused: focus == .eventName
+            )
+            .focused($focus, equals: .eventName)
+        }
         .padding(.top, 22)
         .padding(.bottom, 16)
     }
 
     var sportsGroundSection: some View {
-        Group {
+        SectionView(header: "Площадка", mode: .regular) {
             switch mode {
             case .regularCreate:
                 Button {
