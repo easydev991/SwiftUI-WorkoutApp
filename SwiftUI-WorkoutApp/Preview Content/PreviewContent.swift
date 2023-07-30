@@ -160,21 +160,4 @@ extension JournalEntryResponse {
 extension Int {
     static var previewUserID: Self { 30 }
 }
-
-extension TextFieldInForm.Mode: CaseIterable, Hashable {
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case let .regular(systemImageName):
-            hasher.combine(systemImageName)
-        case .secure:
-            break
-        }
-    }
-
-    static func == (lhs: TextFieldInForm.Mode, rhs: TextFieldInForm.Mode) -> Bool {
-        lhs.hashValue == rhs.hashValue
-    }
-
-    static var allCases: [TextFieldInForm.Mode] { [.regular(systemImageName: "person"), .secure] }
-}
 #endif
