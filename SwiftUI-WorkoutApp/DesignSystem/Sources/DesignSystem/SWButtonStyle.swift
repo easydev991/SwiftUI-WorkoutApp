@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct SWButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
-    private let icon: Icons.SWButton?
+    private let icon: Icons.Regular?
     private let mode: SWButtonStyle.Mode
     private let size: SWButtonStyle.Size
     private let maxWidth: CGFloat?
@@ -15,7 +15,7 @@ public struct SWButtonStyle: ButtonStyle {
     ///   - maxWidth: Максимальная ширина, по умолчанию `.infinity`.
     ///   Если задать `nil`, то ширина кнопки будет равна ширине текста и паддингов
     public init(
-        icon: Icons.SWButton? = nil,
+        icon: Icons.Regular? = nil,
         mode: Mode,
         size: Size,
         maxWidth: CGFloat? = .infinity

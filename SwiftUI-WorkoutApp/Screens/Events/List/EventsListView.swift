@@ -62,7 +62,7 @@ private extension EventsListView {
         Button {
             eventsTask = Task { await askForEvents(refresh: true) }
         } label: {
-            Image(systemName: Icons.Button.refresh.rawValue)
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
@@ -134,7 +134,7 @@ private extension EventsListView {
                     createEventIfAvailable()
                 }
             } label: {
-                Image(systemName: Icons.Button.plus.rawValue)
+                Image(systemName: Icons.Regular.plus.rawValue)
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {

@@ -107,7 +107,7 @@ private extension SportsGroundsListView {
                     await askForGrounds(refresh: true)
                 }
             } label: {
-                Image(systemName: Icons.Button.refresh.rawValue)
+                Image(systemName: Icons.Regular.refresh.rawValue)
             }
             .disabled(viewModel.isLoading)
         }

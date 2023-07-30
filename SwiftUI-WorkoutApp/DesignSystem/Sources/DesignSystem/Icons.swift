@@ -9,23 +9,15 @@ public extension Image {
 
 public enum Icons {
     /// Названия системных иконок для таббара
-    public enum Tabbar: String {
+    public enum Tabbar: String, CaseIterable {
         case events = "person.3"
         case messages = "message"
         case journals = "list.bullet.circle"
         case profile = "person"
     }
 
-    /// Названия системных иконок, используемых внутри кнопок со стилем `SWButtonStyle`
-    public enum SWButton: String, CaseIterable {
-        case message
-        case addPerson = "person.crop.circle.badge.plus"
-        case deletePerson = "person.crop.circle.badge.minus"
-        case pencil
-    }
-
-    /// Названия системных иконок, используемых внутри обычных кнопок
-    public enum Button: String, CaseIterable {
+    /// Названия остальных иконок
+    public enum Regular: String, CaseIterable {
         case info = "info.circle"
         case plus = "plus.circle"
         case gearshape
@@ -36,13 +28,23 @@ public enum Icons {
         case filter = "line.3.horizontal.decrease.circle"
         case magnifyingglass
         case trash
-    }
-
-    public enum Misc: String, CaseIterable {
+        case pencil
         case clock
         case personInCircle = "person.circle"
         case location = "location.circle"
         case arrowUp = "arrow.up"
+        case message
+        case addPerson = "person.crop.circle.badge.plus"
+        case deletePerson = "person.crop.circle.badge.minus"
+        case signPost = "signpost.right"
+        case envelope
+        case globe = "globe.europe.africa"
+        case person = "person.fill"
+        case personQuestion = "person.fill.questionmark"
+        case calendar
+    }
+
+    public enum Misc: String, CaseIterable {
         case chevron = "chevron.forward"
 
         static var chevronView: some View {
@@ -52,25 +54,15 @@ public enum Icons {
                 .foregroundColor(.swSmallElements)
         }
     }
-
-    /// Иконки для `ListRow`
-    public enum ListRow: String, CaseIterable {
-        case signPost = "signpost.right"
-        case envelope
-        case globe = "globe.europe.africa"
-        case person = "person.fill"
-        case personQuestion = "person.fill.questionmark"
-        case calendar
-    }
 }
 
 #if DEBUG
 struct ButtonIcons_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            Section("SWButton icons") {
+            Section("Tabbar icons") {
                 VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.SWButton.allCases, id: \.rawValue) { icon in
+                    ForEach(Icons.Tabbar.allCases, id: \.rawValue) { icon in
                         HStack(spacing: 16) {
                             Image(systemName: icon.rawValue)
                             Text(icon.rawValue)
@@ -78,9 +70,9 @@ struct ButtonIcons_Previews: PreviewProvider {
                     }
                 }
             }
-            Section("Button icons") {
+            Section("Regular icons") {
                 VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.Button.allCases, id: \.rawValue) { icon in
+                    ForEach(Icons.Regular.allCases, id: \.rawValue) { icon in
                         HStack(spacing: 16) {
                             Image(systemName: icon.rawValue)
                             Text(icon.rawValue)
@@ -91,16 +83,6 @@ struct ButtonIcons_Previews: PreviewProvider {
             Section("Misc icons") {
                 VStack(alignment: .leading, spacing: 16) {
                     ForEach(Icons.Misc.allCases, id: \.rawValue) { icon in
-                        HStack(spacing: 16) {
-                            Image(systemName: icon.rawValue)
-                            Text(icon.rawValue)
-                        }
-                    }
-                }
-            }
-            Section("ListRow icons") {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.ListRow.allCases, id: \.rawValue) { icon in
                         HStack(spacing: 16) {
                             Image(systemName: icon.rawValue)
                             Text(icon.rawValue)

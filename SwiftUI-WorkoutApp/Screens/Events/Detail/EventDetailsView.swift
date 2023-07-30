@@ -263,7 +263,7 @@ private extension EventDetailsView {
         NavigationLink {
             EventFormView(for: .editExisting(viewModel.event), refreshClbk: refreshAction)
         } label: {
-            Image(systemName: "rectangle.and.pencil.and.ellipsis")
+            Image(systemName: Icons.Regular.pencil.rawValue)
         }
     }
 

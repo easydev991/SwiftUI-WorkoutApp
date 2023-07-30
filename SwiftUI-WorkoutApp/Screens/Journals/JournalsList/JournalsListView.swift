@@ -65,7 +65,7 @@ private extension JournalsListView {
                 await askForJournals(refresh: true)
             }
         } label: {
-            Image(systemName: Icons.Button.refresh.rawValue)
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(refreshButtonOpacity)
         .disabled(viewModel.isLoading)
@@ -77,7 +77,7 @@ private extension JournalsListView {
 
     var addJournalButton: some View {
         Button(action: showNewJournalSheet) {
-            Image(systemName: Icons.Button.plus.rawValue)
+            Image(systemName: Icons.Regular.plus.rawValue)
         }
         .opacity(showAddJournalButton ? 1 : 0)
         .disabled(!network.isConnected)

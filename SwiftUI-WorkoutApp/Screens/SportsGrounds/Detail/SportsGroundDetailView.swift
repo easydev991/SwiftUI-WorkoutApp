@@ -241,7 +241,7 @@ private extension SportsGroundDetailView {
                 refreshClbk: refreshAction
             )
         } label: {
-            Image(systemName: "rectangle.and.pencil.and.ellipsis")
+            Image(systemName: Icons.Regular.pencil.rawValue)
         }
     }
 

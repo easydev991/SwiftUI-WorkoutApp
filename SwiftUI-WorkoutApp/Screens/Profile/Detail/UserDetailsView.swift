@@ -85,7 +85,7 @@ private extension UserDetailsView {
             Button {
                 Task { await askForUserInfo(refresh: true) }
             } label: {
-                Image(systemName: Icons.Button.refresh.rawValue)
+                Image(systemName: Icons.Regular.refresh.rawValue)
             }
             .disabled(viewModel.isLoading)
         }
@@ -142,7 +142,7 @@ private extension UserDetailsView {
         } label: {
             Label(
                 viewModel.blacklistActionOption.rawValue,
-                systemImage: Icons.Button.exclamation.rawValue
+                systemImage: Icons.Regular.exclamation.rawValue
             )
         }
         .confirmationDialog(
@@ -243,7 +243,7 @@ private extension UserDetailsView {
 
     var searchUsersButton: some View {
         NavigationLink(destination: SearchUsersView()) {
-            Image(systemName: Icons.Button.magnifyingglass.rawValue)
+            Image(systemName: Icons.Regular.magnifyingglass.rawValue)
         }
         .disabled(!network.isConnected)
         .accessibilityIdentifier("searchUsersButton")
@@ -251,7 +251,7 @@ private extension UserDetailsView {
 
     var settingsButton: some View {
         NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
-            Image(systemName: Icons.Button.gearshape.rawValue)
+            Image(systemName: Icons.Regular.gearshape.rawValue)
         }
     }
 

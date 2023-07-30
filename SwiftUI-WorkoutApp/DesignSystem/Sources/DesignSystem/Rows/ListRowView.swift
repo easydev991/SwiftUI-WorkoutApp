@@ -35,7 +35,7 @@ public extension ListRowView {
         /// Текст
         case text(String)
         /// Иконка с текстом
-        case iconWithText(Icons.ListRow, String)
+        case iconWithText(Icons.Regular, String)
 
         @ViewBuilder
         var view: some View {
@@ -50,7 +50,7 @@ public extension ListRowView {
             }
         }
 
-        public static func makeIconView(with name: Icons.ListRow) -> some View {
+        public static func makeIconView(with name: Icons.Regular) -> some View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .frame(width: 34, height: 34)
                 .foregroundColor(.swTintedButton)

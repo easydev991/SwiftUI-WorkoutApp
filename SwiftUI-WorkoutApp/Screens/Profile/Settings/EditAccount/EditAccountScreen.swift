@@ -98,7 +98,7 @@ private extension EditAccountScreen {
 
     var birthdayPicker: some View {
         HStack(spacing: 12) {
-            ListRowView.LeadingContent.makeIconView(with: Icons.ListRow.calendar)
+            ListRowView.LeadingContent.makeIconView(with: Icons.Regular.calendar)
             DatePicker(
                 viewModel.userForm.placeholder(.birthDate),
                 selection: $viewModel.userForm.birthDate,

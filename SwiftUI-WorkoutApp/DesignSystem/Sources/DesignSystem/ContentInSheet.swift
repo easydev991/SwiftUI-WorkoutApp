@@ -38,7 +38,7 @@ private extension ContentInSheet {
                 Button {
                     dismiss()
                 } label: {
-                    Image(systemName: Icons.Button.xmarkCircle.rawValue)
+                    Image(systemName: Icons.Regular.xmarkCircle.rawValue)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20)

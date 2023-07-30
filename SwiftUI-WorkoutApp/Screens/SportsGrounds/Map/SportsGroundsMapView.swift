@@ -64,7 +64,7 @@ private extension SportsGroundsMapView {
         Button {
             showFilters.toggle()
         } label: {
-            Image(systemName: Icons.Button.filter.rawValue)
+            Image(systemName: Icons.Regular.filter.rawValue)
         }
         .sheet(isPresented: $showFilters) {
             SportsGroundFilterView(
@@ -76,7 +76,7 @@ private extension SportsGroundsMapView {
 
     var refreshButton: some View {
         Button(action: refreshAction) {
-            Image(systemName: Icons.Button.refresh.rawValue)
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
     }
 
@@ -191,7 +191,7 @@ private extension SportsGroundsMapView {
             Button {
                 showGroundCreationSheet.toggle()
             } label: {
-                Image(systemName: Icons.Button.plus.rawValue)
+                Image(systemName: Icons.Regular.plus.rawValue)
             }
             .opacity(viewModel.isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)

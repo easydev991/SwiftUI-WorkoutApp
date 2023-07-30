@@ -91,7 +91,7 @@ private extension JournalEntriesList {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button(action: updateEntries) {
-                Image(systemName: Icons.Button.refresh.rawValue)
+                Image(systemName: Icons.Regular.refresh.rawValue)
             }
             .disabled(viewModel.isLoading)
         }
@@ -102,7 +102,7 @@ private extension JournalEntriesList {
         let isMainUser = viewModel.userID == defaults.mainUserInfo?.userID
         if isMainUser {
             Button(action: showNewEntry) {
-                Image(systemName: Icons.Button.plus.rawValue)
+                Image(systemName: Icons.Regular.plus.rawValue)
             }
             .disabled(viewModel.isLoading || !network.isConnected)
             .sheet(isPresented: $showEntrySheet) {

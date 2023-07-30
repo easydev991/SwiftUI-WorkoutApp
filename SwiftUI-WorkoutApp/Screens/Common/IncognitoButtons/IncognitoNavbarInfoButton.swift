@@ -5,7 +5,7 @@ import SwiftUI
 struct IncognitoNavbarInfoButton: View {
     var body: some View {
         NavigationLink(destination: ProfileSettingsView(mode: .incognito)) {
-            Image(systemName: Icons.Button.info.rawValue)
+            Image(systemName: Icons.Regular.info.rawValue)
         }
     }
 }

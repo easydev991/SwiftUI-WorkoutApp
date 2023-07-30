@@ -56,7 +56,7 @@ private extension DialogListView {
                 await askForDialogs(refresh: true)
             }
         } label: {
-            Image(systemName: Icons.Button.refresh.rawValue)
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0)
         .disabled(viewModel.isLoading)
@@ -70,7 +70,7 @@ private extension DialogListView {
                 SearchUsersView(mode: .chat)
             }
         } label: {
-            Image(systemName: Icons.Button.plus.rawValue)
+            Image(systemName: Icons.Regular.plus.rawValue)
         }
         .opacity(hasFriends || !viewModel.list.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)

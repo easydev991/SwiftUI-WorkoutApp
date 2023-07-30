@@ -79,7 +79,7 @@ private extension DialogView {
                 await askForMessages(refresh: true)
             }
         } label: {
-            Image(systemName: Icons.Button.refresh.rawValue)
+            Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .disabled(isToolbarItemDisabled)
     }

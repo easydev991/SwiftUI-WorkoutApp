@@ -14,7 +14,7 @@ public struct SendChatMessageButton: View {
                 .frame(width: 39, height: 39)
                 .foregroundColor(isEnabled ? .swAccent : .swDisabledButton)
                 .overlay {
-                    Image(systemName: Icons.Misc.arrowUp.rawValue)
+                    Image(systemName: Icons.Regular.arrowUp.rawValue)
                         .foregroundColor(.swBackground)
                 }
         }
