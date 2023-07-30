@@ -19,4 +19,31 @@ public enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
         case .nobody: return "Только я"
         }
     }
+    
+    #warning("Сервер возвращает ошибку 404, ждем от Антона уточнений по API")
+    /// Проверяет возможность создания записи в дневнике
+    /// - Parameters:
+    ///   - journalOwnerUserId: `id` владельца дневника
+    ///   - journalCommentAccess: Тип доступа для создания записей в дневнике.
+    ///   Настраивается владельцем дневника
+    ///   - mainUserId: `id` авторизованного пользователя в мобильном приложении
+    ///   - mainUserFriendsIds: Список идентификаторов друзей авторизованного пользователя
+    /// - Returns: `true` - можно создать запись в дневнике, `false` - нельзя
+    public static func canCreateEntry(
+        journalOwnerUserId: Int,
+        journalCommentAccess: Self,
+        mainUserId: Int?,
+        mainUserFriendsIds: [Int]
+    ) -> Bool {
+        let isOwner = journalOwnerUserId == mainUserId
+        let isFriend = mainUserFriendsIds.contains(journalOwnerUserId)
+        switch journalCommentAccess {
+        case .all:
+            return mainUserId != nil
+        case .friends:
+            return isFriend
+        case .nobody:
+            return isOwner
+        }
+    }
 }
