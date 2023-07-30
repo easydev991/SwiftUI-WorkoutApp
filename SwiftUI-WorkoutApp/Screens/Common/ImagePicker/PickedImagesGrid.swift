@@ -4,15 +4,16 @@ import SwiftUI
 
 struct PickedImagesGrid: View {
     private let screenWidth = UIScreen.main.bounds.size.width
-    private var imagesArray: [PickedPhotoView.Model] {
-        var realImages: [PickedPhotoView.Model] = images.map {
-            .image(.init(uiImage: $0))
+    private var imagesArray: [PickedImageView.Model] {
+        var realImages: [PickedImageView.Model] = images.map {
+            .image($0)
         }
         if selectionLimit > 0 {
             realImages.append(.addImageButton)
         }
         return realImages
     }
+    @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
     @Binding var images: [UIImage]
     @Binding var showImagePicker: Bool
     /// Сколько еще можно выбрать фотографий
@@ -38,19 +39,35 @@ struct PickedImagesGrid: View {
                 ) {
                     ForEach(Array(zip(imagesArray.indices, imagesArray)), id: \.0) { index, model in
                         GeometryReader { geo in
-                            PickedPhotoView(model: model) // добавить кнопку для удаления фотографии (deletePhoto)
-                                .scaledToFill()
-                                .frame(height: geo.size.width)
-                                .onTapGesture {
-                                    if case .addImageButton = model {
+                            PickedImageView(
+                                model: model,
+                                height: geo.size.width,
+                                action: { option in
+                                    switch option {
+                                    case .addImage:
                                         showImagePicker.toggle()
+                                    case .deleteImage:
+                                        deletePhoto(at: index)
+                                    case let .showDetailImage(uiImage):
+                                        fullscreenImageInfo = .init(uiImage: uiImage, id: index)
                                     }
                                 }
+                            )
                         }
                         .aspectRatio(1, contentMode: .fit)
                         .cornerRadius(8)
                     }
                 }
+            }
+            .fullScreenCover(item: $fullscreenImageInfo) {
+                fullscreenImageInfo = nil
+            } content: { model in
+                PhotoDetailScreen(
+                    model: model,
+                    canDelete: true,
+                    reportPhotoClbk: {},
+                    deletePhotoClbk: deletePhoto
+                )
             }
         }
         .sheet(isPresented: $showImagePicker) {
@@ -78,15 +95,18 @@ private extension PickedImagesGrid {
             NSLocalizedString("photosCount", comment: ""),
             selectionLimit
         )
-        return images.count == 0
-            ? "Добавьте фото площадки, максимум \(selectionLimit)"
-            : "Можно добавить ещё \(selectionLimitString)"
+        if images.isEmpty {
+            return "Добавьте фото площадки, максимум \(selectionLimit)"
+        } else {
+            return selectionLimit > 0
+            ? "Можно добавить ещё \(selectionLimitString)"
+            : "Больше добавить фото нельзя"
+        }
     }
 
-    func deletePhoto(at offsets: IndexSet) {
-        if let index = offsets.first {
-            images.remove(at: index)
-        }
+    func deletePhoto(at index: Int) {
+        images.remove(at: index)
+        fullscreenImageInfo = nil
     }
 }
 
