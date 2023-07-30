@@ -34,7 +34,7 @@ struct ChangePasswordView: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .alert(errorMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: clearErrorMessage)
+            Button("Ok") { errorMessage = "" }
         }
         .onChange(of: isChangeSuccessful, perform: performLogout)
         .onChange(of: errorMessage, perform: setupErrorAlert)
@@ -152,10 +152,6 @@ private extension ChangePasswordView {
             }
             isLoading.toggle()
         }
-    }
-
-    func clearErrorMessage() {
-        errorMessage = ""
     }
 
     func performLogout(needRelogin: Bool) {

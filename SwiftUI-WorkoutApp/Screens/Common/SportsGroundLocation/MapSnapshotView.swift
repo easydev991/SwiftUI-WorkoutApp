@@ -10,7 +10,7 @@ struct MapSnapshotView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            contentView(placeholderSize: geometry.size)
+            contentView
                 .animation(.easeInOut, value: snapshotImage)
                 .onAppear {
                     generateSnapshot(for: geometry.size)
@@ -23,8 +23,7 @@ struct MapSnapshotView: View {
 }
 
 private extension MapSnapshotView {
-    @ViewBuilder
-    func contentView(placeholderSize _: CGSize) -> some View {
+    var contentView: some View {
         ZStack {
             if let image = snapshotImage {
                 Image(uiImage: image)

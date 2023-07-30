@@ -152,8 +152,10 @@ private extension JournalEntriesList {
         errorTitle = message
     }
 
-    func closeNewEntrySheet(isSuccess _: Bool) {
-        showEntrySheet.toggle()
+    func closeNewEntrySheet(isSuccess: Bool) {
+        if isSuccess {
+            showEntrySheet.toggle()
+        }
     }
 
     func closeAlert() {

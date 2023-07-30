@@ -34,7 +34,7 @@ struct LoginView: View {
         .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: credentials, perform: clearErrorMessage)
+        .onChange(of: credentials) { _ in errorMessage = "" }
         .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
             Button("Ok") { showResetSuccessfulAlert = false }
         }
@@ -146,10 +146,6 @@ private extension LoginView {
             isLoading.toggle()
         }
         focus = credentials.canRestorePassword ? nil : .username
-    }
-
-    func clearErrorMessage(_: Credentials) {
-        errorMessage = ""
     }
 
     func cancelTasks() {
