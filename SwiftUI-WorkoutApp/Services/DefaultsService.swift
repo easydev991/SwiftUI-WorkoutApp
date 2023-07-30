@@ -23,7 +23,7 @@ protocol DefaultsProtocol: AnyObject {
     func saveUnreadMessagesCount(_ count: Int)
     func saveBlacklist(_ array: [UserResponse]) throws
     func setHasJournals(_ hasJournals: Bool)
-    func setHasSportsGrounds(_ hasGrounds: Bool)
+    func setHasSportsGrounds(_ isAddedGround: Bool)
     func triggerLogout()
 }
 
@@ -150,8 +150,16 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         self.hasJournals = hasJournals
     }
 
-    func setHasSportsGrounds(_ hasGrounds: Bool) {
-        hasSportsGrounds = hasGrounds
+    func setHasSportsGrounds(_ isAddedGround: Bool) {
+        switch (hasSportsGrounds, isAddedGround) {
+        case (true, true), (false, false): break
+        case (true, false):
+            if mainUserInfo?.usedSportsGroundsCount == 1 {
+                hasSportsGrounds = false
+            }
+        case (false, true):
+            hasSportsGrounds = true
+        }
     }
 
     func saveUnreadMessagesCount(_ count: Int) {
