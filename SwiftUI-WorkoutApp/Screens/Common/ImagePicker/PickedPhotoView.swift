@@ -5,7 +5,7 @@ struct PickedImageView: View {
     let model: Model
     let height: CGFloat
     let action: (Action) -> Void
-    
+
     var body: some View {
         switch model {
         case let .image(uiImage):
@@ -42,6 +42,7 @@ extension PickedImageView {
         case image(UIImage)
         case addImageButton
     }
+
     enum Action {
         /// Добавить картинку
         case addImage

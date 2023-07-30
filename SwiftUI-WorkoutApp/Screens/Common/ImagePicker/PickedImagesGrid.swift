@@ -13,6 +13,7 @@ struct PickedImagesGrid: View {
         }
         return realImages
     }
+
     @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
     @Binding var images: [UIImage]
     @Binding var showImagePicker: Bool
@@ -99,8 +100,8 @@ private extension PickedImagesGrid {
             return "Добавьте фото площадки, максимум \(selectionLimit)"
         } else {
             return selectionLimit > 0
-            ? "Можно добавить ещё \(selectionLimitString)"
-            : "Больше добавить фото нельзя"
+                ? "Можно добавить ещё \(selectionLimitString)"
+                : "Больше добавить фото нельзя"
         }
     }
 
