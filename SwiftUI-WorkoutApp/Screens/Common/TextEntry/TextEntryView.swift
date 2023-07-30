@@ -69,12 +69,22 @@ private extension TextEntryView.Mode {
             return "Изменить запись"
         }
     }
+    
+    var placeholder: String? {
+        switch self {
+        case .newForJournal:
+            return "Создай новую запись в дневнике"
+        default:
+            return nil
+        }
+    }
 }
 
 private extension TextEntryView {
     var content: some View {
         SendMessageView(
             header: mode.headerTitle,
+            placeholder: mode.placeholder,
             text: $entryText,
             isLoading: viewModel.isLoading,
             isSendButtonDisabled: !canSend,
