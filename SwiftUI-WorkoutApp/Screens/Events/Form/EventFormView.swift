@@ -34,15 +34,15 @@ struct EventFormView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 16) {
                 eventNameSection
+                descriptionSection
                 sportsGroundSection
                 datePickerSection
-                descriptionSection
                 pickedImagesGrid
                 saveButton
             }
-            .padding([.horizontal, .bottom])
+            .padding()
         }
         .loadingOverlay(if: viewModel.isLoading)
         .background(Color.swBackground)
@@ -82,8 +82,6 @@ private extension EventFormView {
             )
             .focused($focus, equals: .eventName)
         }
-        .padding(.top, 22)
-        .padding(.bottom, 16)
     }
 
     var sportsGroundSection: some View {
@@ -133,12 +131,16 @@ private extension EventFormView {
     }
 
     var datePickerSection: some View {
-        DatePicker(
-            "Дата и время",
-            selection: $viewModel.eventForm.date,
-            in: .now ... viewModel.maxEventFutureDate
-        )
-        .padding(.vertical, 22)
+        VStack(spacing: 16) {
+            SWDivider()
+            DatePicker(
+                "Дата и время",
+                selection: $viewModel.eventForm.date,
+                in: .now ... viewModel.maxEventFutureDate
+            )
+            SWDivider()
+        }
+        .padding(.bottom, 10)
     }
 
     var descriptionSection: some View {
@@ -160,8 +162,6 @@ private extension EventFormView {
             selectionLimit: viewModel.imagesLimit,
             processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
         )
-        .padding(.top, 22)
-        .padding(.bottom, 42)
     }
 
     var saveButton: some View {
@@ -172,6 +172,7 @@ private extension EventFormView {
             }
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+        .padding(.top, 42)
         .disabled(
             !viewModel.isFormReady
                 || viewModel.isLoading
