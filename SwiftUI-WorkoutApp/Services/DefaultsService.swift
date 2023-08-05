@@ -169,15 +169,15 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
-        friendsIds = .init()
-        friendRequests = .init()
-        blacklist = .init()
-        unreadMessagesCount = 0
         isAuthorized = false
-        hasFriends = false
-        hasJournals = false
         hasSportsGrounds = false
-        needUpdateUser = true
+        try? saveFriendsIds([])
+        try? saveFriendRequests([])
+        try? saveBlacklist([])
+        saveUnreadMessagesCount(0)
+        setHasJournals(false)
+        setUserNeedUpdate(true)
+        setAppTheme(.system)
     }
 }
 

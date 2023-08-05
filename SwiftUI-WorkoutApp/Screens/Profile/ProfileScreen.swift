@@ -13,6 +13,7 @@ struct ProfileScreen: View {
                 } else {
                     IncognitoProfileView()
                         .navigationTitle("Профиль")
+                        .navigationBarTitleDisplayMode(.large)
                 }
             }
         }

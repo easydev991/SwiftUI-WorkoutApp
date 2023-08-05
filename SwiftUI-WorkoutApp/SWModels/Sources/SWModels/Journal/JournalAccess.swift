@@ -19,7 +19,7 @@ public enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
         case .nobody: return "Только я"
         }
     }
-    
+
     #warning("Сервер возвращает ошибку 404, ждем от Антона уточнений по API")
     /// Проверяет возможность создания записи в дневнике
     /// - Parameters:

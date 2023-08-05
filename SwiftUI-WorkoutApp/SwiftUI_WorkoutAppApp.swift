@@ -8,6 +8,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
+    @State private var socialUpdateTask: Task<Void, Never>?
 
     init() {
         setupAppearance()
@@ -25,13 +26,18 @@ struct SwiftUI_WorkoutAppApp: App {
                     AppThemeService.set(defaults.appTheme)
                 }
         }
-        .onChange(of: scenePhase) {
-            if case .background = $0 {
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .active:
+                socialUpdateTask = Task {
+                    let isUpdated = await APIService(with: defaults)
+                        .getSocialUpdates(userID: defaults.mainUserInfo?.userID)
+                    defaults.setUserNeedUpdate(!isUpdated)
+                }
+            default:
+                socialUpdateTask?.cancel()
                 defaults.setUserNeedUpdate(true)
             }
-            #if DEBUG
-            print("--- scenePhase = \($0)")
-            #endif
         }
     }
 }

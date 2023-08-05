@@ -67,6 +67,25 @@ struct APIService {
         try await defaults.saveAuthData(authData)
         let result = try await makeResult(LoginResponse.self, for: Endpoint.login.urlRequest(with: baseUrlString))
         try await getUserByID(result.userID, loginFlow: true)
+        await getSocialUpdates(userID: result.userID)
+    }
+
+    /// Запрашивает обновления списка друзей, заявок в друзья, черного списка
+    ///
+    /// - Вызывается при авторизации и при `scenePhase = active`
+    /// - Список чатов не обновляет
+    /// - Returns: `true` - все успешно обновилось, `false` - что-то не обновилось
+    @discardableResult
+    func getSocialUpdates(userID: Int?) async -> Bool {
+        guard let userID else { return false }
+        do {
+            try await getFriendsForUser(id: userID)
+            try await getFriendRequests()
+            try await getBlacklist()
+            return true
+        } catch {
+            return false
+        }
     }
 
     /// Запрашивает данные пользователя по `id`

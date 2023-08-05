@@ -100,8 +100,8 @@ private extension PickedImagesGrid {
             return "Добавьте фотографии, максимум \(selectionLimit)"
         } else {
             return selectionLimit > 0
-            ? "Можно добавить ещё \(selectionLimitString)"
-            : "Добавлено максимальное количество фотографий"
+                ? "Можно добавить ещё \(selectionLimitString)"
+                : "Добавлено максимальное количество фотографий"
         }
     }
 
