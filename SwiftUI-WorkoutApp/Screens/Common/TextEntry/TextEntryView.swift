@@ -69,7 +69,7 @@ private extension TextEntryView.Mode {
             return "Изменить запись"
         }
     }
-    
+
     var placeholder: String? {
         switch self {
         case .newForJournal:

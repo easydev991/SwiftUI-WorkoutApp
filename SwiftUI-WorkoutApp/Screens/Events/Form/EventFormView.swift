@@ -98,7 +98,7 @@ private extension EventFormView {
                 }
                 .disabled(
                     !viewModel.canShowGroundPicker(with: defaults, mode: mode)
-                    || !network.isConnected
+                        || !network.isConnected
                 )
             case let .createForSelected(ground):
                 ListRowView(
@@ -116,7 +116,7 @@ private extension EventFormView {
                 }
                 .disabled(
                     !viewModel.canShowGroundPicker(with: defaults, mode: mode)
-                    || !network.isConnected
+                        || !network.isConnected
                 )
             }
         }

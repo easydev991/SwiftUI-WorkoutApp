@@ -64,7 +64,6 @@ final class EventFormViewModel: ObservableObject {
         case .createForSelected:
             return false
         }
-        
     }
 
     func clearErrorMessage() { errorMessage = "" }
