@@ -62,7 +62,14 @@ struct PhotoSectionView: View {
                 PhotoDetailScreen(
                     model: model,
                     canDelete: canDelete,
-                    reportPhotoClbk: reportPhotoClbk,
+                    reportPhotoClbk: {
+                        fullscreenImageInfo = nil
+                        Task {
+                            // Немного ждем, чтобы закрылось предыдущее модальное окно
+                            try await Task.sleep(nanoseconds: 500_000_000)
+                            await MainActor.run { reportPhotoClbk() }
+                        }
+                    },
                     deletePhotoClbk: deletePhotoClbk
                 )
             }
