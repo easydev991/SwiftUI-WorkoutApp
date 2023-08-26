@@ -15,11 +15,11 @@
 			<key>zero</key>
 			<string>возраст не указан</string>
 			<key>one</key>
-			<string>1 год</string>
+			<string>%d год</string>
 			<key>two</key>
-			<string>2 года</string>
+			<string>%d года</string>
 			<key>few</key>
-			<string>%d лет</string>
+			<string>%d года</string>
 			<key>many</key>
 			<string>%d лет</string>
 			<key>other</key>
@@ -39,9 +39,9 @@
 			<key>zero</key>
 			<string>пока никого</string>
 			<key>one</key>
-			<string>1 человек</string>
+			<string>%d человек</string>
 			<key>two</key>
-			<string>2 человека</string>
+			<string>%d человека</string>
 			<key>few</key>
 			<string>%d человека</string>
 			<key>many</key>
@@ -63,9 +63,9 @@
 			<key>zero</key>
 			<string>пока никого</string>
 			<key>one</key>
-			<string>1 друг</string>
+			<string>%d друг</string>
 			<key>two</key>
-			<string>2 друга</string>
+			<string>%d друга</string>
 			<key>few</key>
 			<string>%d друга</string>
 			<key>many</key>
@@ -87,9 +87,9 @@
 			<key>zero</key>
 			<string>пока никого</string>
 			<key>one</key>
-			<string>1 пользователь</string>
+			<string>%d пользователь</string>
 			<key>two</key>
-			<string>2 пользователя</string>
+			<string>%d пользователя</string>
 			<key>few</key>
 			<string>%d пользователя</string>
 			<key>many</key>
@@ -111,9 +111,9 @@
 			<key>zero</key>
 			<string>0 площадок</string>
 			<key>one</key>
-			<string>1 площадка</string>
+			<string>%d площадка</string>
 			<key>two</key>
-			<string>2 площадки</string>
+			<string>%d площадки</string>
 			<key>few</key>
 			<string>%d площадки</string>
 			<key>many</key>
@@ -135,9 +135,9 @@
 			<key>zero</key>
 			<string>0 дневников</string>
 			<key>one</key>
-			<string>1 дневник</string>
+			<string>%d дневник</string>
 			<key>two</key>
-			<string>2 дневника</string>
+			<string>%d дневника</string>
 			<key>few</key>
 			<string>%d дневника</string>
 			<key>many</key>
@@ -159,9 +159,9 @@
 			<key>zero</key>
 			<string>Здесь пока никто не тренируется</string>
 			<key>one</key>
-			<string>Тренируется 1 человек</string>
+			<string>Тренируется %d человек</string>
 			<key>two</key>
-			<string>Тренируются 2 человека</string>
+			<string>Тренируются %d человека</string>
 			<key>few</key>
 			<string>Тренируются %d человека</string>
 			<key>many</key>
@@ -183,9 +183,9 @@
 			<key>zero</key>
 			<string>Фотографии</string>
 			<key>one</key>
-			<string>1 фотография</string>
+			<string>%d фотография</string>
 			<key>two</key>
-			<string>2 фотографии</string>
+			<string>%d фотографии</string>
 			<key>few</key>
 			<string>%d фотография</string>
 			<key>many</key>
@@ -207,9 +207,9 @@
 			<key>zero</key>
 			<string>0 фотографий</string>
 			<key>one</key>
-			<string>1 фотография</string>
+			<string>%d фотография</string>
 			<key>two</key>
-			<string>2 фотографии</string>
+			<string>%d фотографии</string>
 			<key>few</key>
 			<string>%d фотография</string>
 			<key>many</key>
