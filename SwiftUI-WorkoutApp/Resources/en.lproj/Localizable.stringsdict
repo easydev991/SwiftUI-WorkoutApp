@@ -15,9 +15,9 @@
 			<key>zero</key>
 			<string>0 photos</string>
 			<key>one</key>
-			<string>1 photo</string>
+			<string>%d photo</string>
 			<key>two</key>
-			<string>2 photos</string>
+			<string>%d photos</string>
 			<key>few</key>
 			<string>%d photos</string>
 			<key>many</key>
@@ -39,9 +39,9 @@
 			<key>zero</key>
 			<string>Photos</string>
 			<key>one</key>
-			<string>1 photo</string>
+			<string>%d photo</string>
 			<key>two</key>
-			<string>2 photos</string>
+			<string>%d photos</string>
 			<key>few</key>
 			<string>%d photos</string>
 			<key>many</key>
@@ -63,9 +63,9 @@
 			<key>zero</key>
 			<string>Nobody trains here yet</string>
 			<key>one</key>
-			<string>1 person trains here</string>
+			<string>%d person trains here</string>
 			<key>two</key>
-			<string>2 persons train here</string>
+			<string>%d persons train here</string>
 			<key>few</key>
 			<string>%d people train here</string>
 			<key>many</key>
@@ -87,9 +87,9 @@
 			<key>zero</key>
 			<string>0 grounds</string>
 			<key>one</key>
-			<string>1 ground</string>
+			<string>%d ground</string>
 			<key>two</key>
-			<string>2 grounds</string>
+			<string>%d grounds</string>
 			<key>few</key>
 			<string>%d grounds</string>
 			<key>many</key>
@@ -111,9 +111,9 @@
 			<key>zero</key>
 			<string>0 journals</string>
 			<key>one</key>
-			<string>1 journal</string>
+			<string>%d journal</string>
 			<key>two</key>
-			<string>2 journals</string>
+			<string>%d journals</string>
 			<key>few</key>
 			<string>%d journals</string>
 			<key>many</key>
@@ -135,9 +135,9 @@
 			<key>zero</key>
 			<string>nobody yet</string>
 			<key>one</key>
-			<string>1 user</string>
+			<string>%d user</string>
 			<key>two</key>
-			<string>2 users</string>
+			<string>%d users</string>
 			<key>few</key>
 			<string>%d users</string>
 			<key>many</key>
@@ -159,9 +159,9 @@
 			<key>zero</key>
 			<string>nobody yet</string>
 			<key>one</key>
-			<string>1 friend</string>
+			<string>%d friend</string>
 			<key>two</key>
-			<string>2 friends</string>
+			<string>%d friends</string>
 			<key>few</key>
 			<string>%d friends</string>
 			<key>many</key>
@@ -183,9 +183,9 @@
 			<key>zero</key>
 			<string>nobody yet</string>
 			<key>one</key>
-			<string>1 person</string>
+			<string>%d person</string>
 			<key>two</key>
-			<string>2 persons</string>
+			<string>%d persons</string>
 			<key>few</key>
 			<string>%d people</string>
 			<key>many</key>
@@ -207,9 +207,9 @@
 			<key>zero</key>
 			<string>age not specified</string>
 			<key>one</key>
-			<string>1 year</string>
+			<string>%d year</string>
 			<key>two</key>
-			<string>2 years</string>
+			<string>%d years</string>
 			<key>few</key>
 			<string>%d years</string>
 			<key>many</key>
