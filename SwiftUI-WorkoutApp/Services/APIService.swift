@@ -290,9 +290,8 @@ struct APIService {
             endpoint = .addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
             endpoint = .addCommentToEvent(eventID: id, comment: entryText)
-        case let .journal(id):
-            guard let mainUserID = await defaults.mainUserInfo?.userID else { throw APIError.invalidUserID }
-            endpoint = .saveJournalEntry(userID: mainUserID, journalID: id, message: entryText)
+        case let .journal(ownerId, journalId):
+            endpoint = .saveJournalEntry(userID: ownerId, journalID: journalId, message: entryText)
         }
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
@@ -318,13 +317,10 @@ struct APIService {
                 commentID: entryID,
                 newComment: newEntryText
             )
-        case let .journal(id):
-            guard let mainUserID = await defaults.mainUserInfo?.userID else {
-                throw APIError.invalidUserID
-            }
+        case let .journal(ownerId, journalId):
             endpoint = .editEntry(
-                userID: mainUserID,
-                journalID: id,
+                userID: ownerId,
+                journalID: journalId,
                 entryID: entryID,
                 newEntryText: newEntryText
             )
@@ -344,11 +340,8 @@ struct APIService {
             endpoint = .deleteGroundComment(id, commentID: entryID)
         case let .event(id):
             endpoint = .deleteEventComment(id, commentID: entryID)
-        case let .journal(id):
-            guard let mainUserID = await defaults.mainUserInfo?.userID else {
-                throw APIError.invalidUserID
-            }
-            endpoint = .deleteEntry(userID: mainUserID, journalID: id, entryID: entryID)
+        case let .journal(ownerId, journalId):
+            endpoint = .deleteEntry(userID: ownerId, journalID: journalId, entryID: entryID)
         }
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }

@@ -22,7 +22,7 @@ struct TextEntryView: View {
         switch mode {
         case let .editGround(info),
              let .editEvent(info),
-             let .editJournalEntry(info):
+             let .editJournalEntry(_, info):
             self.oldEntryText = info.oldEntry
         default: break
         }
@@ -44,10 +44,10 @@ extension TextEntryView {
     enum Mode {
         case newForGround(id: Int)
         case newForEvent(id: Int)
-        case newForJournal(id: Int)
+        case newForJournal(ownerId: Int, journalId: Int)
         case editGround(EditInfo)
         case editEvent(EditInfo)
-        case editJournalEntry(EditInfo)
+        case editJournalEntry(ownerId: Int, editInfo: EditInfo)
 
         struct EditInfo {
             let parentObjectID, entryID: Int

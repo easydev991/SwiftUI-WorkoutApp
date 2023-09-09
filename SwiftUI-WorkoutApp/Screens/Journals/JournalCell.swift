@@ -8,6 +8,7 @@ struct JournalCell: View {
     let mode: Mode
     let isNetworkConnected: Bool
     let mainUserID: Int?
+    let isJournalOwner: Bool
 
     var body: some View {
         JournalRowView(
@@ -46,8 +47,8 @@ private extension JournalCell {
         case let .root(setupClbk, deleteClbk):
             if isEntryByMainUser {
                 var array = [OptionButton]()
-                array.append(OptionButton(.setup, action: setupClbk))
-                array.append(OptionButton(.delete, action: deleteClbk))
+                array.append(.init(.setup, action: setupClbk))
+                array.append(.init(.delete, action: deleteClbk))
                 return array
             } else {
                 return []
@@ -55,13 +56,15 @@ private extension JournalCell {
         case let .entry(editClbk, reportClbk, canDelete, deleteClbk):
             if isEntryByMainUser {
                 var array = [OptionButton]()
-                array.append(OptionButton(.edit, action: editClbk))
+                array.append(.init(.edit, action: editClbk))
                 if canDelete {
-                    array.append(OptionButton(.delete, action: deleteClbk))
+                    array.append(.init(.delete, action: deleteClbk))
                 }
                 return array
+            } else if isJournalOwner {
+                return canDelete ? [.init(.delete, action: deleteClbk)] : []
             } else {
-                return [OptionButton(.report, action: reportClbk)]
+                return [.init(.report, action: reportClbk)]
             }
         }
     }
@@ -74,7 +77,8 @@ struct JournalCell_Previews: PreviewProvider {
             model: .init(journalEntryResponse: .preview),
             mode: .root(setupClbk: {}, deleteClbk: {}),
             isNetworkConnected: true,
-            mainUserID: nil
+            mainUserID: nil,
+            isJournalOwner: true
         )
         .previewLayout(.sizeThatFits)
     }

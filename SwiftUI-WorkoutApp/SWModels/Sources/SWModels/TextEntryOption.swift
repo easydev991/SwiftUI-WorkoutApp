@@ -4,5 +4,8 @@ public enum TextEntryOption {
     /// Комментарий к мероприятию
     case event(id: Int)
     /// Запись в дневнике
-    case journal(id: Int)
+    ///
+    /// - `ownerId` - `id` владельца дневника
+    /// - `journalId` - `id` дневника
+    case journal(ownerId: Int, journalId: Int)
 }
