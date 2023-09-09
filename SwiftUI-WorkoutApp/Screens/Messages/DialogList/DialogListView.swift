@@ -17,35 +17,30 @@ struct DialogListView: View {
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
-        Group {
-            if viewModel.list.isEmpty {
-                emptyContentView
-            } else {
-                dialogList
+        dialogList
+            .overlay { emptyContentView }
+            .loadingOverlay(if: viewModel.isLoading)
+            .background(Color.swBackground)
+            .confirmationDialog(
+                Constants.Alert.deleteDialog,
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) { deleteDialogButton }
+            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+            .alert(errorTitle, isPresented: $showErrorAlert) {
+                Button("Ok", action: closeAlert)
             }
-        }
-        .loadingOverlay(if: viewModel.isLoading)
-        .background(Color.swBackground)
-        .confirmationDialog(
-            Constants.Alert.deleteDialog,
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) { deleteDialogButton }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
-        }
-        .task { await askForDialogs() }
-        .refreshable { await askForDialogs(refresh: true) }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                refreshButton
+            .task { await askForDialogs() }
+            .refreshable { await askForDialogs(refresh: true) }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    refreshButton
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    friendListButton
+                }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                friendListButton
-            }
-        }
-        .onDisappear(perform: cancelTasks)
+            .onDisappear(perform: cancelTasks)
     }
 }
 
@@ -126,9 +121,6 @@ private extension DialogListView {
             }
             .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
     }
 
     var deleteDialogButton: some View {

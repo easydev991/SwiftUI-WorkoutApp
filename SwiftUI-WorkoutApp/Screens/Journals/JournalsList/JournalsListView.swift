@@ -24,37 +24,32 @@ struct JournalsListView: View {
     }
 
     var body: some View {
-        Group {
-            if viewModel.list.isEmpty {
-                emptyContentView
-            } else {
-                journalsList
+        journalsList
+            .overlay { emptyContentView }
+            .loadingOverlay(if: viewModel.isLoading)
+            .background(Color.swBackground)
+            .confirmationDialog(
+                Constants.Alert.deleteJournal,
+                isPresented: $showDeleteDialog,
+                titleVisibility: .visible
+            ) { deleteJournalButton }
+            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
+            .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
+            .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
+            .alert(errorTitle, isPresented: $showErrorAlert) {
+                Button("Ok", action: closeAlert)
             }
-        }
-        .loadingOverlay(if: viewModel.isLoading)
-        .background(Color.swBackground)
-        .confirmationDialog(
-            Constants.Alert.deleteJournal,
-            isPresented: $showDeleteDialog,
-            titleVisibility: .visible
-        ) { deleteJournalButton }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
-        .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
-        }
-        .task { await askForJournals() }
-        .refreshable { await askForJournals(refresh: true) }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                refreshButton
+            .task { await askForJournals() }
+            .refreshable { await askForJournals(refresh: true) }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    refreshButton
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    addJournalButton
+                }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                addJournalButton
-            }
-        }
-        .onDisappear(perform: cancelTasks)
+            .onDisappear(perform: cancelTasks)
     }
 }
 
@@ -93,7 +88,6 @@ private extension JournalsListView {
             action: showNewJournalSheet
         )
         .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
     }
 
     var journalsList: some View {
@@ -118,9 +112,6 @@ private extension JournalsListView {
             .padding([.top, .horizontal])
         }
         .sheet(item: $journalToEdit, content: showSettingsSheet)
-        .opacity(viewModel.isLoading ? 0.5 : 1)
-        .animation(.default, value: viewModel.isLoading)
-        .disabled(viewModel.isLoading)
     }
 
     var showEmptyView: Bool {
