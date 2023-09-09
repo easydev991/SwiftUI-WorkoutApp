@@ -104,7 +104,8 @@ private extension JournalsListView {
                                 deleteClbk: { initiateDeletion(for: journal.id) }
                             ),
                             isNetworkConnected: network.isConnected,
-                            mainUserID: defaults.mainUserInfo?.userID
+                            mainUserID: defaults.mainUserInfo?.userID,
+                            isJournalOwner: journal.ownerID == defaults.mainUserInfo?.userID
                         )
                     }
                 }

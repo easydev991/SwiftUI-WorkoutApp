@@ -19,9 +19,10 @@ final class TextEntryViewModel: ObservableObject {
                 isSuccess = try await APIService(with: defaults).addNewEntry(
                     to: .event(id: id), entryText: entryText
                 )
-            case let .newForJournal(id):
+            case let .newForJournal(ownerId, journalId):
                 isSuccess = try await APIService(with: defaults).addNewEntry(
-                    to: .journal(id: id), entryText: entryText
+                    to: .journal(ownerId: ownerId, journalId: journalId),
+                    entryText: entryText
                 )
             default: break
             }
@@ -48,9 +49,9 @@ final class TextEntryViewModel: ObservableObject {
                     entryID: info.entryID,
                     newEntryText: entryText
                 )
-            case let .editJournalEntry(info):
+            case let .editJournalEntry(ownerId, info):
                 isSuccess = try await APIService(with: defaults).editEntry(
-                    for: .journal(id: info.parentObjectID),
+                    for: .journal(ownerId: ownerId, journalId: info.parentObjectID),
                     entryID: info.entryID,
                     newEntryText: entryText
                 )

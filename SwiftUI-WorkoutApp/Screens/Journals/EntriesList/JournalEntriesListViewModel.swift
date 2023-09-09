@@ -43,7 +43,10 @@ final class JournalEntriesListViewModel: ObservableObject {
         guard let entryID, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteEntry(from: .journal(id: currentJournal.id), entryID: entryID) {
+            if try await APIService(with: defaults).deleteEntry(
+                from: .journal(ownerId: userID, journalId: currentJournal.id),
+                entryID: entryID
+            ) {
                 list.removeAll(where: { $0.id == entryID })
             }
         } catch {

@@ -40,7 +40,8 @@ struct JournalEntriesList: View {
                             deleteClbk: { initiateDeletion(for: item.id) }
                         ),
                         isNetworkConnected: network.isConnected,
-                        mainUserID: defaults.mainUserInfo?.userID
+                        mainUserID: defaults.mainUserInfo?.userID,
+                        isJournalOwner: viewModel.userID == defaults.mainUserInfo?.userID
                     )
                 }
             }
@@ -51,7 +52,8 @@ struct JournalEntriesList: View {
         .sheet(item: $editEntry) {
             TextEntryView(
                 mode: .editJournalEntry(
-                    .init(
+                    ownerId: viewModel.userID,
+                    editInfo: .init(
                         parentObjectID: viewModel.currentJournal.id,
                         entryID: $0.id,
                         oldEntry: $0.formattedMessage
@@ -99,15 +101,23 @@ private extension JournalEntriesList {
 
     @ViewBuilder
     var addEntryButtonIfNeeded: some View {
-        let isMainUser = viewModel.userID == defaults.mainUserInfo?.userID
-        if isMainUser {
+        let canCreateEntry = JournalAccess.canCreateEntry(
+            journalOwnerId: viewModel.userID,
+            journalCommentAccess: viewModel.currentJournal.commentAccessType,
+            mainUserId: defaults.mainUserInfo?.userID,
+            mainUserFriendsIds: defaults.friendsIdsList
+        )
+        if canCreateEntry {
             Button(action: showNewEntry) {
                 Image(systemName: Icons.Regular.plus.rawValue)
             }
             .disabled(viewModel.isLoading || !network.isConnected)
             .sheet(isPresented: $showEntrySheet) {
                 TextEntryView(
-                    mode: .newForJournal(id: viewModel.currentJournal.id),
+                    mode: .newForJournal(
+                        ownerId: viewModel.userID,
+                        journalId: viewModel.currentJournal.id
+                    ),
                     refreshClbk: updateEntries
                 )
             }
