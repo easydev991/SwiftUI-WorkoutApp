@@ -20,20 +20,17 @@ struct EventsListView: View {
         NavigationView {
             VStack {
                 segmentedControl
-                if showEmptyView {
-                    emptyView
-                } else {
-                    eventsList
-                }
+                eventsList
+                    .overlay { emptyView }
             }
+            .loadingOverlay(if: viewModel.isLoading)
+            .background(Color.swBackground)
             .alert("Необходимо выбрать площадку", isPresented: $showEventCreationRule) {
                 Button(action: createEventIfAvailable) { Text("Перейти на карту") }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
                 Text(Constants.Alert.eventCreationRule)
             }
-            .loadingOverlay(if: viewModel.isLoading)
-            .background(Color.swBackground)
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
             }

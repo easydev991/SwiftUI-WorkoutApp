@@ -1,13 +1,6 @@
 import SwiftUI
 
 struct LoadingOverlayModifier: ViewModifier {
-    @State private var angle: CGFloat = 0
-    @State private var isAnimating = false
-    private var foreverAnimation: Animation {
-        Animation.linear(duration: 2.0)
-            .repeatForever(autoreverses: false)
-    }
-
     let isLoading: Bool
 
     func body(content: Content) -> some View {
@@ -15,26 +8,32 @@ struct LoadingOverlayModifier: ViewModifier {
             .disabled(isLoading)
             .opacity(isLoading ? 0.5 : 1)
             .overlay {
-                Image("LoadingIndicator", bundle: .module)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .opacity(isLoading ? 1 : 0)
-                    .rotationEffect(.degrees(isAnimating ? angle : 0))
-                    .onChange(of: isLoading) { [isLoading] newValue in
-                        switch (isLoading, newValue) {
-                        case (false, true):
-                            isAnimating = true
-                            withAnimation(foreverAnimation) { angle += 360 }
-                        default: break
-                        }
-                    }
+                LoadingIndicator(isVisible: isLoading)
             }
             .animation(.default, value: isLoading)
     }
 }
 
+private struct LoadingIndicator: View {
+    @State private var isAnimating = false
+    let isVisible: Bool
+
+    var body: some View {
+        Image("LoadingIndicator", bundle: .module)
+            .resizable()
+            .frame(width: 50, height: 50)
+            .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
+            .animation(
+                .linear(duration: 2.0).repeatForever(autoreverses: false),
+                value: isAnimating
+            )
+            .onAppear { isAnimating = true }
+            .opacity(isVisible ? 1 : 0)
+    }
+}
+
 public extension View {
+    /// Добавляет в оверлей индикатор загрузки
     func loadingOverlay(if isLoading: Bool) -> some View {
         modifier(LoadingOverlayModifier(isLoading: isLoading))
     }

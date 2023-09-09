@@ -116,7 +116,6 @@ private extension SportsGroundsMapView {
                 }
                 .padding([.top, .horizontal])
             }
-            .opacity(viewModel.isLoading ? 0.5 : 1)
         case .map:
             MapViewUI(
                 "SportsGroundsMapView",
@@ -127,7 +126,7 @@ private extension SportsGroundsMapView {
                 $viewModel.needUpdateRegion,
                 openDetailsClbk: openDetailsView
             )
-            .opacity(mapOpacity)
+            .opacity(viewModel.shouldHideMap ? 0 : 1)
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
@@ -145,11 +144,6 @@ private extension SportsGroundsMapView {
         case .list: return .inline
         case .map: return viewModel.shouldHideMap ? .large : .inline
         }
-    }
-
-    var mapOpacity: Double {
-        guard !viewModel.shouldHideMap else { return .zero }
-        return viewModel.isLoading ? 0.5 : 1
     }
 
     var locationSettingsReminder: some View {
