@@ -60,7 +60,11 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
 ### Скриншоты  
 1. Генерируем скриншоты при помощи `Fastlane` ([документация](https://docs.fastlane.tools/getting-started/ios/setup/))
 2. Настройки для генерации скриншотов находятся в файле [Snapfile](Snapfile) ([документация](https://docs.fastlane.tools/actions/snapshot/))
-3. Готовые скриншоты сохраняются в папке [screenshots/ru](./screenshots/ru)
+3. Генерация скриншотов выполняется командой в папке с проектом (команда может отличаться в зависимости от способа установки `fastlane`)
+```shell
+rbenv exec fastlane snapshot
+```
+4. Готовые скриншоты сохраняются в папке [screenshots/ru](./screenshots/ru)
 
 | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
 | --- | --- | --- | --- | --- |
@@ -73,7 +77,7 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем [swiftformat (0.50.8)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.52.4)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 
