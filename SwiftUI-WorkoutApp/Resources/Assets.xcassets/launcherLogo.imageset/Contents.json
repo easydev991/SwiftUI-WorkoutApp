@@ -1,0 +1,26 @@
+{
+  "images" : [
+    {
+      "filename" : "workout_logo_png_white.svg",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "compression-type" : "automatic",
+      "filename" : "workout_logo_black-2.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "template-rendering-intent" : "original"
+  }
+}
