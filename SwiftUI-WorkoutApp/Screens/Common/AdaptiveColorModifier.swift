@@ -31,12 +31,12 @@ private extension AdaptiveColorModifier {
         switch mode {
         case let .foreground(inverse):
             if inverse {
-                return colorScheme == .light ? .white : .black
+                colorScheme == .light ? .white : .black
             } else {
-                return colorScheme == .light ? .black : .white
+                colorScheme == .light ? .black : .white
             }
         case .background:
-            return colorScheme == .light ? .black : .white
+            colorScheme == .light ? .black : .white
         }
     }
 }

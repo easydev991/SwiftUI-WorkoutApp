@@ -75,26 +75,26 @@ public extension JournalRowView {
                 case edit, setup, report, delete
                 var title: String {
                     switch self {
-                    case .edit: return "Изменить"
-                    case .setup: return "Настроить"
-                    case .report: return "Пожаловаться"
-                    case .delete: return "Удалить"
+                    case .edit: "Изменить"
+                    case .setup: "Настроить"
+                    case .report: "Пожаловаться"
+                    case .delete: "Удалить"
                     }
                 }
 
                 var systemImageName: String {
                     switch self {
-                    case .edit: return "pencil"
-                    case .setup: return "gearshape"
-                    case .report: return "exclamationmark.triangle"
-                    case .delete: return "trash"
+                    case .edit: "pencil"
+                    case .setup: "gearshape"
+                    case .report: "exclamationmark.triangle"
+                    case .delete: "trash"
                     }
                 }
 
                 var buttonRole: ButtonRole? {
                     switch self {
-                    case .report, .delete: return .destructive
-                    default: return nil
+                    case .report, .delete: .destructive
+                    default: nil
                     }
                 }
             }

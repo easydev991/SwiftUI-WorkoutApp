@@ -30,9 +30,9 @@ public extension Bundle {
         public var errorDescription: String? {
             switch self {
             case let .cannotLoad(fileName):
-                return "Не удалось загрузить файл: \(fileName)"
+                "Не удалось загрузить файл: \(fileName)"
             case let .decodingError(error):
-                return "Ошибка преобразования json: \(error)"
+                "Ошибка преобразования json: \(error)"
             }
         }
     }

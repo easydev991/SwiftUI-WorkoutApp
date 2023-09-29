@@ -13,38 +13,38 @@ public enum Complaint {
     public var subject: String {
         switch self {
         case .eventPhoto:
-            return Complaint.subjectFirstPart + "фото к мероприятию"
+            Complaint.subjectFirstPart + "фото к мероприятию"
         case .eventComment:
-            return Complaint.subjectFirstPart + "комментарий к мероприятию"
+            Complaint.subjectFirstPart + "комментарий к мероприятию"
         case .groundPhoto:
-            return Complaint.subjectFirstPart + "фото к площадке"
+            Complaint.subjectFirstPart + "фото к площадке"
         case .groundComment:
-            return Complaint.subjectFirstPart + "комментарий к площадке"
+            Complaint.subjectFirstPart + "комментарий к площадке"
         case .journalEntry:
-            return Complaint.subjectFirstPart + "запись в дневнике"
+            Complaint.subjectFirstPart + "запись в дневнике"
         }
     }
 
     public var body: String {
         switch self {
         case let .eventPhoto(eventTitle):
-            return "Наименование мероприятия: \(eventTitle)"
+            "Наименование мероприятия: \(eventTitle)"
         case let .eventComment(eventTitle, author, commentText):
-            return """
+            """
             - Наименование мероприятия: \(eventTitle)
             - Автор комментария: \(author)
             - Текст комментария: \(commentText)
             """
         case let .groundPhoto(groundTitle):
-            return "Наименование площадки: \(groundTitle)"
+            "Наименование площадки: \(groundTitle)"
         case let .groundComment(groundTitle, author, commentText):
-            return """
+            """
             - Наименование площадки: \(groundTitle)
             - Автор комментария: \(author)
             - Текст комментария: \(commentText)
             """
         case let .journalEntry(author, entryText):
-            return """
+            """
             Автор записи: \(author)
             Текст записи: \(entryText)
             """

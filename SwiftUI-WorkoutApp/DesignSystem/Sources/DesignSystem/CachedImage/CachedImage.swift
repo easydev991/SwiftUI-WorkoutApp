@@ -55,21 +55,21 @@ public extension CachedImage {
         var size: CGSize {
             switch self {
             case .userListItem, .journalAvatar:
-                return .init(width: 42, height: 42)
+                .init(width: 42, height: 42)
             case .groundListItem, .eventListItem, .dialogListItem:
-                return .init(width: 74, height: 74)
+                .init(width: 74, height: 74)
             case .genericListItem, .journalEntry:
-                return .init(width: 24, height: 24)
+                .init(width: 24, height: 24)
             case .eventPhoto, .groundPhoto:
-                return .init(width: 300, height: 250)
+                .init(width: 300, height: 250)
             case .gridPhoto:
-                return .init(width: 150, height: 150)
+                .init(width: 150, height: 150)
             case .commentAvatar:
-                return .init(width: 40, height: 40)
+                .init(width: 40, height: 40)
             case .avatarInDialogView:
-                return .init(width: 32, height: 32)
+                .init(width: 32, height: 32)
             case .profileAvatar:
-                return .init(width: 150, height: 150)
+                .init(width: 150, height: 150)
             }
         }
     }

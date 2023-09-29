@@ -119,9 +119,9 @@ public extension EventResponse {
 
     var shortAddress: String {
         if let countryID, let cityID {
-            return ShortAddressService(countryID, cityID).address
+            ShortAddressService(countryID, cityID).address
         } else {
-            return "Не указан"
+            "Не указан"
         }
     }
 

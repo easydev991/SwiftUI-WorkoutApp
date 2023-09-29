@@ -286,9 +286,9 @@ private extension EventDetailsView {
 
     var showParticipantSection: Bool {
         if defaults.isAuthorized {
-            return viewModel.hasParticipants || viewModel.isEventCurrent
+            viewModel.hasParticipants || viewModel.isEventCurrent
         } else {
-            return false
+            false
         }
     }
 

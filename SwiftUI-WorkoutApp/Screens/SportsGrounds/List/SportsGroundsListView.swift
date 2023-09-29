@@ -91,9 +91,9 @@ extension SportsGroundsListView {
 private extension SportsGroundsListView.Mode {
     var title: String {
         switch self {
-        case .usedBy: return "Где тренируется"
-        case .event: return "Твои площадки"
-        case .added: return "Добавленные"
+        case .usedBy: "Где тренируется"
+        case .event: "Твои площадки"
+        case .added: "Добавленные"
         }
     }
 }

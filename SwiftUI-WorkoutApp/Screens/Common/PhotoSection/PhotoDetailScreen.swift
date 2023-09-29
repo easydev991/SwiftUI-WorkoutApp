@@ -33,8 +33,8 @@ extension PhotoDetailScreen {
 
         var title: String {
             switch self {
-            case .report: return "Пожаловаться на фото"
-            case .delete: return "Удалить фото"
+            case .report: "Пожаловаться на фото"
+            case .delete: "Удалить фото"
             }
         }
     }

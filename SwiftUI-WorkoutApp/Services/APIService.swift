@@ -269,11 +269,10 @@ struct APIService {
     ///   - form: форма с данными о площадке
     /// - Returns: Обновленная информация о площадке `SportsGround`, но с ошибками, поэтому обрабатываем `SportsGroundResult`
     func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
-        let endpoint: Endpoint
-        if let id {
-            endpoint = Endpoint.editSportsGround(id: id, form: form)
+        let endpoint = if let id {
+            Endpoint.editSportsGround(id: id, form: form)
         } else {
-            endpoint = Endpoint.createSportsGround(form: form)
+            Endpoint.createSportsGround(form: form)
         }
         return try await makeResult(SportsGroundResult.self, for: endpoint.urlRequest(with: baseUrlString))
     }
@@ -284,14 +283,13 @@ struct APIService {
     ///   - comment: текст комментария
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func addNewEntry(to option: TextEntryOption, entryText: String) async throws -> Bool {
-        let endpoint: Endpoint
-        switch option {
+        let endpoint: Endpoint = switch option {
         case let .ground(id):
-            endpoint = .addCommentToSportsGround(groundID: id, comment: entryText)
+            .addCommentToSportsGround(groundID: id, comment: entryText)
         case let .event(id):
-            endpoint = .addCommentToEvent(eventID: id, comment: entryText)
+            .addCommentToEvent(eventID: id, comment: entryText)
         case let .journal(ownerId, journalId):
-            endpoint = .saveJournalEntry(userID: ownerId, journalID: journalId, message: entryText)
+            .saveJournalEntry(userID: ownerId, journalID: journalId, message: entryText)
         }
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
@@ -303,22 +301,21 @@ struct APIService {
     ///   - newEntryText: текст измененной записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func editEntry(for option: TextEntryOption, entryID: Int, newEntryText: String) async throws -> Bool {
-        let endpoint: Endpoint
-        switch option {
+        let endpoint: Endpoint = switch option {
         case let .ground(id):
-            endpoint = .editGroundComment(
+            .editGroundComment(
                 groundID: id,
                 commentID: entryID,
                 newComment: newEntryText
             )
         case let .event(id):
-            endpoint = .editEventComment(
+            .editEventComment(
                 eventID: id,
                 commentID: entryID,
                 newComment: newEntryText
             )
         case let .journal(ownerId, journalId):
-            endpoint = .editEntry(
+            .editEntry(
                 userID: ownerId,
                 journalID: journalId,
                 entryID: entryID,
@@ -334,14 +331,13 @@ struct APIService {
     ///   - entryID: `id` записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
     func deleteEntry(from option: TextEntryOption, entryID: Int) async throws -> Bool {
-        let endpoint: Endpoint
-        switch option {
+        let endpoint: Endpoint = switch option {
         case let .ground(id):
-            endpoint = .deleteGroundComment(id, commentID: entryID)
+            .deleteGroundComment(id, commentID: entryID)
         case let .event(id):
-            endpoint = .deleteEventComment(id, commentID: entryID)
+            .deleteEventComment(id, commentID: entryID)
         case let .journal(ownerId, journalId):
-            endpoint = .deleteEntry(userID: ownerId, journalID: journalId, entryID: entryID)
+            .deleteEntry(userID: ownerId, journalID: journalId, entryID: entryID)
         }
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
@@ -390,11 +386,10 @@ struct APIService {
     ///   - form: форма с данными о мероприятии
     /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому обрабатываем `EventResult`
     func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
-        let endpoint: Endpoint
-        if let id {
-            endpoint = .editEvent(id: id, form: form)
+        let endpoint: Endpoint = if let id {
+            .editEvent(id: id, form: form)
         } else {
-            endpoint = .createEvent(form: form)
+            .createEvent(form: form)
         }
         return try await makeResult(EventResult.self, for: endpoint.urlRequest(with: baseUrlString))
     }
@@ -543,15 +538,14 @@ struct APIService {
     }
 
     func deletePhoto(from container: PhotoContainer) async throws -> Bool {
-        let endpoint: Endpoint
-        switch container {
+        let endpoint: Endpoint = switch container {
         case let .event(input):
-            endpoint = .deleteEventPhoto(
+            .deleteEventPhoto(
                 eventID: input.containerID,
                 photoID: input.photoID
             )
         case let .sportsGround(input):
-            endpoint = .deleteGroundPhoto(
+            .deleteGroundPhoto(
                 groundID: input.containerID,
                 photoID: input.photoID
             )
@@ -915,101 +909,101 @@ private extension APIService.Endpoint {
     var urlPath: String {
         switch self {
         case .registration:
-            return "/registration"
+            "/registration"
         case .login:
-            return "/auth/login"
+            "/auth/login"
         case .resetPassword:
-            return "/auth/reset"
+            "/auth/reset"
         case let .editUser(userID, _):
-            return "/users/\(userID)"
+            "/users/\(userID)"
         case .changePassword:
-            return "/auth/changepass"
+            "/auth/changepass"
         case .deleteUser:
-            return "/users/current"
+            "/users/current"
         case let .getUser(id):
-            return "/users/\(id)"
+            "/users/\(id)"
         case let .getFriendsForUser(id):
-            return "/users/\(id)/friends"
+            "/users/\(id)/friends"
         case .getFriendRequests:
-            return "/friends/requests"
+            "/friends/requests"
         case let .acceptFriendRequest(userID),
              let .declineFriendRequest(userID):
-            return "/friends/\(userID)/accept"
+            "/friends/\(userID)/accept"
         case let .sendFriendRequest(userID),
              let .deleteFriend(userID):
-            return "/friends/\(userID)"
+            "/friends/\(userID)"
         case .getBlacklist:
-            return "/blacklist"
+            "/blacklist"
         case let .addToBlacklist(userID),
              let .deleteFromBlacklist(userID):
-            return "/blacklist/\(userID)"
+            "/blacklist/\(userID)"
         case let .findUsers(name):
-            return "/users/search?name=\(name)"
+            "/users/search?name=\(name)"
         case .getAllSportsGrounds:
-            return "/areas?fields=short"
+            "/areas?fields=short"
         case let .getUpdatedSportsGrounds(date):
-            return "/areas/last/\(date)"
+            "/areas/last/\(date)"
         case .createSportsGround:
-            return "/areas"
+            "/areas"
         case let .getSportsGround(id),
              let .editSportsGround(id, _),
              let .deleteSportsGround(id):
-            return "/areas/\(id)"
+            "/areas/\(id)"
         case let .addCommentToSportsGround(groundID, _):
-            return "/areas/\(groundID)/comments"
+            "/areas/\(groundID)/comments"
         case let .editGroundComment(groundID, commentID, _):
-            return "/areas/\(groundID)/comments/\(commentID)"
+            "/areas/\(groundID)/comments/\(commentID)"
         case let .deleteGroundComment(groundID, commentID):
-            return "/areas/\(groundID)/comments/\(commentID)"
+            "/areas/\(groundID)/comments/\(commentID)"
         case let .getSportsGroundsForUser(userID):
-            return "/users/\(userID)/areas"
+            "/users/\(userID)/areas"
         case let .postTrainHere(groundID), let .deleteTrainHere(groundID):
-            return "/areas/\(groundID)/train"
+            "/areas/\(groundID)/train"
         case .getFutureEvents:
-            return "/trainings/current"
+            "/trainings/current"
         case .getPastEvents:
-            return "/trainings/last"
+            "/trainings/last"
         case let .getEvent(id):
-            return "/trainings/\(id)"
+            "/trainings/\(id)"
         case .createEvent:
-            return "/trainings"
+            "/trainings"
         case let .postGoToEvent(id), let .deleteGoToEvent(id):
-            return "/trainings/\(id)/go"
+            "/trainings/\(id)/go"
         case let .addCommentToEvent(id, _):
-            return "/trainings/\(id)/comments"
+            "/trainings/\(id)/comments"
         case let .deleteEventComment(eventID, commentID):
-            return "/trainings/\(eventID)/comments/\(commentID)"
+            "/trainings/\(eventID)/comments/\(commentID)"
         case let .editEventComment(eventID, commentID, _):
-            return "/trainings/\(eventID)/comments/\(commentID)"
+            "/trainings/\(eventID)/comments/\(commentID)"
         case let .deleteEvent(id), let .editEvent(id, _):
-            return "/trainings/\(id)"
+            "/trainings/\(id)"
         case .getDialogs:
-            return "/dialogs"
+            "/dialogs"
         case let .getMessages(dialogID):
-            return "/dialogs/\(dialogID)/messages"
+            "/dialogs/\(dialogID)/messages"
         case let .sendMessageTo(_, userID):
-            return "/messages/\(userID)"
+            "/messages/\(userID)"
         case .markAsRead:
-            return "/messages/mark_as_read"
+            "/messages/mark_as_read"
         case let .deleteDialog(dialogID):
-            return "/dialogs/\(dialogID)"
+            "/dialogs/\(dialogID)"
         case let .getJournals(userID),
              let .createJournal(userID, _):
-            return "/users/\(userID)/journals"
+            "/users/\(userID)/journals"
         case let .getJournal(userID, journalID),
              let .deleteJournal(userID, journalID),
              let .editJournalSettings(userID, journalID, _, _, _):
-            return "/users/\(userID)/journals/\(journalID)"
+            "/users/\(userID)/journals/\(journalID)"
         case let .getJournalEntries(userID, journalID),
              let .saveJournalEntry(userID, journalID, _):
-            return "/users/\(userID)/journals/\(journalID)/messages"
+            "/users/\(userID)/journals/\(journalID)/messages"
         case let .editEntry(userID, journalID, entryID, _),
              let .deleteEntry(userID, journalID, entryID):
-            return "/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
+            "/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
         case let .deleteEventPhoto(eventID, photoID):
-            return "/trainings/\(eventID)/photos/\(photoID)"
+            "/trainings/\(eventID)/photos/\(photoID)"
         case let .deleteGroundPhoto(groundID, photoID):
-            return "/areas/\(groundID)/photos/\(photoID)"
+            "/areas/\(groundID)/photos/\(photoID)"
         }
     }
 
@@ -1029,7 +1023,7 @@ private extension APIService.Endpoint {
              .addCommentToEvent, .editEventComment, .sendMessageTo,
              .createJournal, .markAsRead, .saveJournalEntry,
              .createSportsGround, .editSportsGround:
-            return .post
+            .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
              .getAllSportsGrounds, .getSportsGround,
              .findUsers, .getSportsGroundsForUser, .getBlacklist,
@@ -1037,7 +1031,7 @@ private extension APIService.Endpoint {
              .getDialogs, .getMessages, .getJournals,
              .getJournal, .getJournalEntries,
              .getUpdatedSportsGrounds:
-            return .get
+            .get
         case .declineFriendRequest, .deleteFriend, .deleteFromBlacklist,
              .deleteGroundComment, .deleteTrainHere,
              .deleteUser, .deleteGoToEvent,
@@ -1045,9 +1039,9 @@ private extension APIService.Endpoint {
              .deleteDialog, .deleteJournal,
              .deleteEntry, .deleteSportsGround,
              .deleteEventPhoto, .deleteGroundPhoto:
-            return .delete
+            .delete
         case .editJournalSettings, .editEntry:
-            return .put
+            .put
         }
     }
 
@@ -1247,23 +1241,23 @@ private extension APIService {
         var errorDescription: String? {
             switch self {
             case .noData:
-                return "Сервер не прислал данные для обработки ответа"
+                "Сервер не прислал данные для обработки ответа"
             case .noResponse:
-                return "Сервер не отвечает"
+                "Сервер не отвечает"
             case .badRequest:
-                return "Запрос содержит ошибку"
+                "Запрос содержит ошибку"
             case .invalidCredentials:
-                return "Некорректное имя пользователя или пароль"
+                "Некорректное имя пользователя или пароль"
             case .notFound:
-                return "Запрашиваемый ресурс не найден"
+                "Запрашиваемый ресурс не найден"
             case .payloadTooLarge:
-                return "Объем данных для загрузки на сервер превышает лимит"
+                "Объем данных для загрузки на сервер превышает лимит"
             case .serverError:
-                return "Внутренняя ошибка сервера"
+                "Внутренняя ошибка сервера"
             case .invalidUserID:
-                return "Некорректный идентификатор пользователя"
+                "Некорректный идентификатор пользователя"
             case let .customError(error):
-                return error
+                error
             }
         }
     }

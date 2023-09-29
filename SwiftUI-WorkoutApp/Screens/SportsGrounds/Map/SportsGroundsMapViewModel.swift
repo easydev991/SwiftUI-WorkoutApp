@@ -45,7 +45,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 guard let self else { return }
-                self.applyFilter(self.userCountryID, self.userCityID)
+                applyFilter(userCountryID, userCityID)
             }
         self.locationErrorCancellable = $locationErrorMessage
             .removeDuplicates()
@@ -144,8 +144,8 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
                 guard let self else { return }
                 if let target = places?.first {
-                    self.filter.currentCity = target.locality
-                    self.addressString = target.thoroughfare.valueOrEmpty
+                    filter.currentCity = target.locality
+                    addressString = target.thoroughfare.valueOrEmpty
                         + " "
                         + target.subThoroughfare.valueOrEmpty
                 }
@@ -203,13 +203,13 @@ private extension SportsGroundsMapViewModel {
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self else { return }
             var result = [SportsGround]()
-            result = self.defaultList.filter { ground in
+            result = defaultList.filter { ground in
                 self.filter.size.map(\.code).contains(ground.sizeID)
                     && self.filter.grade.map(\.code).contains(ground.typeID)
             }
             guard let countryID, countryID != .zero,
                   let cityID, cityID != .zero,
-                  self.filter.onlyMyCity
+                  filter.onlyMyCity
             else {
                 DispatchQueue.main.async {
                     self.sportsGrounds = result

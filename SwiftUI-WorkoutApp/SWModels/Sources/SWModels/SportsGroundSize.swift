@@ -13,9 +13,9 @@ public enum SportsGroundSize: String, CaseIterable {
 
     public var code: Int {
         switch self {
-        case .small: return 1
-        case .medium: return 2
-        case .large: return 3
+        case .small: 1
+        case .medium: 2
+        case .large: 3
         }
     }
 }

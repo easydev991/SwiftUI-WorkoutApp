@@ -6,9 +6,9 @@ public struct ErrorResponse: Codable {
 
     public var realCode: Int {
         if let code, code != .zero {
-            return code
+            code
         } else {
-            return status.valueOrZero
+            status.valueOrZero
         }
     }
 }
