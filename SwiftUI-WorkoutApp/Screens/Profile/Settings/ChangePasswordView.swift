@@ -83,8 +83,7 @@ private extension ChangePasswordView {
     }
 
     var canChangePassword: Bool {
-        !isLoading
-            && model.isReady
+        model.isReady
             && errorMessage.isEmpty
             && network.isConnected
     }

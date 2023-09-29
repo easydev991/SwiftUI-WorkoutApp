@@ -163,7 +163,6 @@ private extension SportsGroundsMapView {
                 viewModel.openAppSettings()
             }
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-            .disabled(viewModel.isLoading)
         }
         .padding(.horizontal)
         .padding(.bottom, 32)

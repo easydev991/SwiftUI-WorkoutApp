@@ -18,10 +18,7 @@ struct SearchUsersView: View {
 
     var body: some View {
         ScrollView {
-            SectionView(
-                header: "Результаты поиска",
-                mode: .regular
-            ) {
+            SectionView(header: "Результаты поиска", mode: .regular) {
                 LazyVStack(spacing: 12) {
                     ForEach(users) { model in
                         listItem(for: model)

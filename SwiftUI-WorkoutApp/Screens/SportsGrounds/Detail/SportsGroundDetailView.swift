@@ -146,7 +146,7 @@ private extension SportsGroundDetailView {
                 title: "Тренируюсь здесь",
                 trailingContent: .toggle($trainHere)
             )
-            .disabled(viewModel.isLoading || !network.isConnected)
+            .disabled(!network.isConnected)
             .onChange(of: trainHere, perform: changeTrainHereStatus)
         }
     }

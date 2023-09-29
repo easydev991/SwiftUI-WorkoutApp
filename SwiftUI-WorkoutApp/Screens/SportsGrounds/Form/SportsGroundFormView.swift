@@ -140,9 +140,7 @@ private extension SportsGroundFormView {
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(
-            !viewModel.isFormReady
-                || viewModel.isLoading
-                || !network.isConnected
+            !viewModel.isFormReady || !network.isConnected
         )
     }
 

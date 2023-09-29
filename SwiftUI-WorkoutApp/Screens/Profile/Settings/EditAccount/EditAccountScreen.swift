@@ -150,8 +150,7 @@ private extension EditAccountScreen {
         Button("Сохранить", action: saveChangesAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(
-                !viewModel.canSaveChanges
-                    || !network.isConnected
+                !viewModel.canSaveChanges || !network.isConnected
             )
     }
 

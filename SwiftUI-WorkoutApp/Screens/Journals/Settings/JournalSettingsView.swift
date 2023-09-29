@@ -74,13 +74,8 @@ private extension JournalSettingsView {
 
     var commentsSettings: some View {
         SectionView(headerWithPadding: "Кто может оставлять комментарии", mode: .regular) {
-            Picker(
-                "Доступ на комментирование",
-                selection: $journal.commentAccessType
-            ) {
-                ForEach(options, id: \.self) {
-                    Text($0.description)
-                }
+            Picker("Доступ на комментирование", selection: $journal.commentAccessType) {
+                ForEach(options, id: \.self) { Text($0.description) }
             }
             .pickerStyle(.segmented)
         }
@@ -100,8 +95,7 @@ private extension JournalSettingsView {
     }
 
     var isSaveButtonDisabled: Bool {
-        viewModel.isLoading
-            || !network.isConnected
+        !network.isConnected
             || journal.title.isEmpty
             || initialJournal == journal
     }

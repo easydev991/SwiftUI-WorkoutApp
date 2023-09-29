@@ -174,9 +174,7 @@ private extension EventFormView {
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .padding(.top, 42)
         .disabled(
-            !viewModel.isFormReady
-                || viewModel.isLoading
-                || !network.isConnected
+            !viewModel.isFormReady || !network.isConnected
         )
     }
 
