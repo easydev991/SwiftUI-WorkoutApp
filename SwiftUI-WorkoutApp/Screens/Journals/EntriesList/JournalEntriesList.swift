@@ -178,11 +178,9 @@ private extension JournalEntriesList {
 }
 
 #if DEBUG
-struct JournalEntriesList_Previews: PreviewProvider {
-    static var previews: some View {
-        JournalEntriesList(for: 30, in: .constant(.preview))
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    JournalEntriesList(for: 30, in: .constant(.preview))
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

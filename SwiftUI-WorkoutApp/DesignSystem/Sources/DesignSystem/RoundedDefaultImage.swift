@@ -19,14 +19,12 @@ public struct RoundedDefaultImage: View {
 }
 
 #if DEBUG
-struct RoundedRectDefaultImage_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 16) {
-            RoundedDefaultImage(size: .init(width: 45, height: 45))
-            RoundedDefaultImage(size: .init(width: 60, height: 60))
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
+#Preview {
+    VStack(spacing: 16) {
+        RoundedDefaultImage(size: .init(width: 45, height: 45))
+        RoundedDefaultImage(size: .init(width: 60, height: 60))
     }
+    .padding()
+    .previewLayout(.sizeThatFits)
 }
 #endif

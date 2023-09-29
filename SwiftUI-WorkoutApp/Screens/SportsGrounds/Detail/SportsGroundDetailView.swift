@@ -294,11 +294,9 @@ private extension SportsGroundDetailView {
 }
 
 #if DEBUG
-struct SportsGroundView_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundDetailView(for: .preview, onDeletion: { _ in })
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    SportsGroundDetailView(for: .preview, onDeletion: { _ in })
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

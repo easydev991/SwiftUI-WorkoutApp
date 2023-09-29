@@ -11,9 +11,7 @@ struct IncognitoNavbarInfoButton: View {
 }
 
 #if DEBUG
-struct IncognitoNavbarInfoButton_Previews: PreviewProvider {
-    static var previews: some View {
-        IncognitoNavbarInfoButton()
-    }
+#Preview {
+    IncognitoNavbarInfoButton()
 }
 #endif

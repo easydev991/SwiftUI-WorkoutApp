@@ -143,10 +143,8 @@ private extension SportsGroundsListView {
 }
 
 #if DEBUG
-struct SportsGroundListView_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundsListView(for: .usedBy(userID: .previewUserID))
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    SportsGroundsListView(for: .usedBy(userID: .previewUserID))
+        .environmentObject(DefaultsService())
 }
 #endif

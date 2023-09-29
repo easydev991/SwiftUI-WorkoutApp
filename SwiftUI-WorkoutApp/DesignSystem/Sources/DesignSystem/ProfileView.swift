@@ -55,16 +55,14 @@ public struct ProfileView: View {
 }
 
 #if DEBUG
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView(
-            imageURL: nil,
-            login: "Beautifulbutterfly101",
-            genderWithAge: "Женщина, 30 лет",
-            countryAndCity: "Россия, Краснодар"
-        )
-        .padding(.horizontal, 40)
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    ProfileView(
+        imageURL: nil,
+        login: "Beautifulbutterfly101",
+        genderWithAge: "Женщина, 30 лет",
+        countryAndCity: "Россия, Краснодар"
+    )
+    .padding(.horizontal, 40)
+    .previewLayout(.sizeThatFits)
 }
 #endif

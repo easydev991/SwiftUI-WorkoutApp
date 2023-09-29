@@ -44,8 +44,28 @@ struct CommentsView: View {
 }
 
 #if DEBUG
-struct CommentsView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    Group {
+        ScrollView {
+            CommentsView(
+                items: [.preview],
+                reportClbk: { _ in },
+                deleteClbk: { _ in },
+                editClbk: { _ in },
+                isCreatingComment: .constant(false)
+            )
+        }
+        .previewDisplayName("Light, single")
+        ScrollView {
+            CommentsView(
+                items: [.preview, .preview, .preview],
+                reportClbk: { _ in },
+                deleteClbk: { _ in },
+                editClbk: { _ in },
+                isCreatingComment: .constant(false)
+            )
+        }
+        .previewDisplayName("Light, multiple")
         Group {
             ScrollView {
                 CommentsView(
@@ -55,8 +75,10 @@ struct CommentsView_Previews: PreviewProvider {
                     editClbk: { _ in },
                     isCreatingComment: .constant(false)
                 )
+                .environment(\.colorScheme, .dark)
+                .padding(.horizontal)
             }
-            .previewDisplayName("Light, single")
+            .previewDisplayName("Dark, single")
             ScrollView {
                 CommentsView(
                     items: [.preview, .preview, .preview],
@@ -65,37 +87,13 @@ struct CommentsView_Previews: PreviewProvider {
                     editClbk: { _ in },
                     isCreatingComment: .constant(false)
                 )
+                .environment(\.colorScheme, .dark)
             }
-            .previewDisplayName("Light, multiple")
-            Group {
-                ScrollView {
-                    CommentsView(
-                        items: [.preview],
-                        reportClbk: { _ in },
-                        deleteClbk: { _ in },
-                        editClbk: { _ in },
-                        isCreatingComment: .constant(false)
-                    )
-                    .environment(\.colorScheme, .dark)
-                    .padding(.horizontal)
-                }
-                .previewDisplayName("Dark, single")
-                ScrollView {
-                    CommentsView(
-                        items: [.preview, .preview, .preview],
-                        reportClbk: { _ in },
-                        deleteClbk: { _ in },
-                        editClbk: { _ in },
-                        isCreatingComment: .constant(false)
-                    )
-                    .environment(\.colorScheme, .dark)
-                }
-                .previewDisplayName("Dark, multiple")
-            }
-            .background(.black)
+            .previewDisplayName("Dark, multiple")
         }
-        .environmentObject(DefaultsService())
-        .environmentObject(NetworkStatus())
+        .background(.black)
     }
+    .environmentObject(DefaultsService())
+    .environmentObject(NetworkStatus())
 }
 #endif

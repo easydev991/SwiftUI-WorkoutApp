@@ -130,56 +130,54 @@ extension SWButtonStyle.Size {
 }
 
 #if DEBUG
-struct SWButtonStyle_Previews: PreviewProvider {
-    static var previews: some View {
-        List {
-            Section("Large") {
-                Section("Текст без иконки") {
-                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                        Button(mode.description + ", only text (enabled)") {}
-                            .buttonStyle(SWButtonStyle(mode: mode, size: .large))
-                        Button(mode.description + ", only text (disabled)") {}
-                            .buttonStyle(SWButtonStyle(mode: mode, size: .large))
-                            .disabled(true)
-                    }
-                }
-                Section("Иконка с текстом") {
-                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                        Button(mode.description + ", icon with text (enabled)") {}
-                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
-                        Button(mode.description + ", icon with text (disabled)") {}
-                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
-                            .disabled(true)
-                    }
+#Preview {
+    List {
+        Section("Large") {
+            Section("Текст без иконки") {
+                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                    Button(mode.description + ", only text (enabled)") {}
+                        .buttonStyle(SWButtonStyle(mode: mode, size: .large))
+                    Button(mode.description + ", only text (disabled)") {}
+                        .buttonStyle(SWButtonStyle(mode: mode, size: .large))
+                        .disabled(true)
                 }
             }
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-            Section("Small") {
-                Section("Текст без иконки") {
-                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                        Button(mode.description + ", only text (enabled)") {}
-                            .buttonStyle(SWButtonStyle(mode: mode, size: .small))
-                        Button(mode.description + ", only text (disabled)") {}
-                            .buttonStyle(SWButtonStyle(mode: mode, size: .small))
-                            .disabled(true)
-                    }
-                }
-                Section("Иконка с текстом") {
-                    ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                        Button(mode.description + ", icon with text (enabled)") {}
-                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
-                        Button(mode.description + ", icon with text (disabled)") {}
-                            .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
-                            .disabled(true)
-                    }
+            Section("Иконка с текстом") {
+                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                    Button(mode.description + ", icon with text (enabled)") {}
+                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
+                    Button(mode.description + ", icon with text (disabled)") {}
+                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
+                        .disabled(true)
                 }
             }
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
         }
-        .listStyle(.grouped)
-        .previewDisplayName("SWButtonStyle")
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+        Section("Small") {
+            Section("Текст без иконки") {
+                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                    Button(mode.description + ", only text (enabled)") {}
+                        .buttonStyle(SWButtonStyle(mode: mode, size: .small))
+                    Button(mode.description + ", only text (disabled)") {}
+                        .buttonStyle(SWButtonStyle(mode: mode, size: .small))
+                        .disabled(true)
+                }
+            }
+            Section("Иконка с текстом") {
+                ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
+                    Button(mode.description + ", icon with text (enabled)") {}
+                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
+                    Button(mode.description + ", icon with text (disabled)") {}
+                        .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
+                        .disabled(true)
+                }
+            }
+        }
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
+    .listStyle(.grouped)
+    .previewDisplayName("SWButtonStyle")
 }
 #endif

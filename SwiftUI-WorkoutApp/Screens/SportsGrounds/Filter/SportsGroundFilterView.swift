@@ -139,13 +139,11 @@ private extension SportsGroundFilterView {
 }
 
 #if DEBUG
-struct SportsGroundFilterView_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundFilterView(
-            filter: .constant(.init()),
-            currentCity: "Moscow"
-        )
-        .environmentObject(DefaultsService())
-    }
+#Preview {
+    SportsGroundFilterView(
+        filter: .constant(.init()),
+        currentCity: "Moscow"
+    )
+    .environmentObject(DefaultsService())
 }
 #endif

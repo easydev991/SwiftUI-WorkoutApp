@@ -100,8 +100,8 @@ public extension ListRowView {
 }
 
 #if DEBUG
-struct ListRowView_Previews: PreviewProvider {
-    static let models: [(left: ListRowView.LeadingContent, right: ListRowView.TrailingContent)] = [
+#Preview {
+    let models: [(left: ListRowView.LeadingContent, right: ListRowView.TrailingContent)] = [
         (.text("Текст"), .empty),
         (.text("Текст"), .chevron),
         (.text("Текст"), .text("подпись")),
@@ -111,13 +111,11 @@ struct ListRowView_Previews: PreviewProvider {
         (.iconWithText(.signPost, "Text"), .text("подпись")),
         (.iconWithText(.signPost, "Text"), .textWithChevron("подпись"))
     ]
-    static var previews: some View {
-        VStack(spacing: 0) {
-            ForEach(Array(zip(models.indices, models)), id: \.0) { _, model in
-                ListRowView(leadingContent: model.left, trailingContent: model.right)
-            }
+    return VStack(spacing: 0) {
+        ForEach(Array(zip(models.indices, models)), id: \.0) { _, model in
+            ListRowView(leadingContent: model.left, trailingContent: model.right)
         }
-        .padding()
     }
+    .padding()
 }
 #endif

@@ -91,9 +91,7 @@ private extension MapSnapshotView {
 }
 
 #if DEBUG
-struct MapSnapshotView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapSnapshotView(ground: .constant(.emptyValue))
-    }
+#Preview {
+    MapSnapshotView(ground: .constant(.emptyValue))
 }
 #endif

@@ -53,24 +53,20 @@ extension SectionSupplementaryView {
 }
 
 #if DEBUG
-struct SectionSupplementaryView_Previews: PreviewProvider {
-    static let headers = ["Комментарии", "Друзья", "Результаты поиска"]
-
-    static var previews: some View {
-        VStack(spacing: 0) {
-            ForEach(headers, id: \.self) { text in
-                SectionSupplementaryView(text, mode: .header(hasLeftPadding: true))
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundColor(.gray.opacity(0.3))
-                SectionSupplementaryView(text, mode: .footer)
-                SectionSupplementaryView(text, mode: .header(hasLeftPadding: false))
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundColor(.black.opacity(0.3))
-                Spacer().frame(height: 50)
-            }
+#Preview {
+    let headers = ["Комментарии", "Друзья", "Результаты поиска"]
+    return VStack(spacing: 0) {
+        ForEach(headers, id: \.self) { text in
+            SectionSupplementaryView(text, mode: .header(hasLeftPadding: true))
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundColor(.gray.opacity(0.3))
+            SectionSupplementaryView(text, mode: .footer)
+            SectionSupplementaryView(text, mode: .header(hasLeftPadding: false))
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundColor(.black.opacity(0.3))
+            Spacer().frame(height: 50)
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
     }
+    .padding()
 }
 #endif

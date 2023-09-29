@@ -315,11 +315,9 @@ private extension EventDetailsView {
 }
 
 #if DEBUG
-struct EventDetailsView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventDetailsView(with: .preview, onDeletion: {})
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    EventDetailsView(with: .preview, onDeletion: {})
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

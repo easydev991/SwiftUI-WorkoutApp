@@ -83,18 +83,16 @@ private extension DialogRowView {
 }
 
 #if DEBUG
-struct DialogRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        DialogRowView(
-            model: .init(
-                avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
-                authorName: "angryswan732",
-                dateText: "12:30",
-                messageText: "Привет)) Давай в 18:30?",
-                unreadCount: 3
-            )
+#Preview {
+    DialogRowView(
+        model: .init(
+            avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+            authorName: "angryswan732",
+            dateText: "12:30",
+            messageText: "Привет)) Давай в 18:30?",
+            unreadCount: 3
         )
-        .previewLayout(.sizeThatFits)
-    }
+    )
+    .previewLayout(.sizeThatFits)
 }
 #endif

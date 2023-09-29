@@ -206,11 +206,9 @@ private extension JournalsListView {
 }
 
 #if DEBUG
-struct JournalsListView_Previews: PreviewProvider {
-    static var previews: some View {
-        JournalsListView(for: .previewUserID)
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    JournalsListView(for: .previewUserID)
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

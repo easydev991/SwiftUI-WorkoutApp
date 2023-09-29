@@ -87,30 +87,28 @@ private extension EmptyContentView.Mode {
 }
 
 #if DEBUG
-struct EmptyContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
-                EmptyContentView(
-                    mode: mode,
-                    isAuthorized: true,
-                    hasFriends: true,
-                    hasSportsGrounds: true,
-                    isNetworkConnected: true,
-                    action: {}
-                )
-                Divider()
-            }
+#Preview {
+    VStack {
+        ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
             EmptyContentView(
-                mode: .dialogs,
+                mode: mode,
                 isAuthorized: true,
                 hasFriends: true,
                 hasSportsGrounds: true,
-                isNetworkConnected: false,
+                isNetworkConnected: true,
                 action: {}
             )
+            Divider()
         }
-        .previewLayout(.sizeThatFits)
+        EmptyContentView(
+            mode: .dialogs,
+            isAuthorized: true,
+            hasFriends: true,
+            hasSportsGrounds: true,
+            isNetworkConnected: false,
+            action: {}
+        )
     }
+    .previewLayout(.sizeThatFits)
 }
 #endif

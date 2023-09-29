@@ -71,16 +71,14 @@ private extension JournalCell {
 }
 
 #if DEBUG
-struct JournalCell_Previews: PreviewProvider {
-    static var previews: some View {
-        JournalCell(
-            model: .init(journalEntryResponse: .preview),
-            mode: .root(setupClbk: {}, deleteClbk: {}),
-            isNetworkConnected: true,
-            mainUserID: nil,
-            isJournalOwner: true
-        )
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    JournalCell(
+        model: .init(journalEntryResponse: .preview),
+        mode: .root(setupClbk: {}, deleteClbk: {}),
+        isNetworkConnected: true,
+        mainUserID: nil,
+        isJournalOwner: true
+    )
+    .previewLayout(.sizeThatFits)
 }
 #endif

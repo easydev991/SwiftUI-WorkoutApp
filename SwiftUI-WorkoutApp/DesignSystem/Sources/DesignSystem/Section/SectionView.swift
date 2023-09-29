@@ -103,22 +103,19 @@ public extension SectionView {
 }
 
 #if DEBUG
-struct SectionView_Previews: PreviewProvider {
-    static let contentText = "Content Content Content Content Content Content Content Content Content Content Content Content Content"
-
-    static var previews: some View {
-        VStack(spacing: 20) {
-            SectionView(header: "Header", footer: "Footer", mode: .regular) {
-                Text(contentText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            SectionView(headerWithPadding: "Header", footer: "Footer", mode: .card()) {
-                Text(contentText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-            }
+#Preview {
+    let contentText = "Content Content Content Content Content Content Content Content Content Content Content Content Content"
+    return VStack(spacing: 20) {
+        SectionView(header: "Header", footer: "Footer", mode: .regular) {
+            Text(contentText)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.horizontal)
+        SectionView(headerWithPadding: "Header", footer: "Footer", mode: .card()) {
+            Text(contentText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+        }
     }
+    .padding(.horizontal)
 }
 #endif

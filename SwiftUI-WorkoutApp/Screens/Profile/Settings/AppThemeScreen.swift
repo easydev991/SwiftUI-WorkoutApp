@@ -31,12 +31,10 @@ struct AppThemeScreen: View {
 }
 
 #if DEBUG
-struct AppThemeScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            AppThemeScreen()
-                .environmentObject(DefaultsService())
-        }
+#Preview {
+    NavigationView {
+        AppThemeScreen()
+            .environmentObject(DefaultsService())
     }
 }
 #endif

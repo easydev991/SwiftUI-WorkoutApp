@@ -76,15 +76,13 @@ public extension CachedImage {
 }
 
 #if DEBUG
-struct SmallProfileCacheImageView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScrollView {
-            ForEach(CachedImage.Mode.allCases, id: \.self) { mode in
-                CachedImage(
-                    url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
-                    mode: mode
-                )
-            }
+#Preview {
+    ScrollView {
+        ForEach(CachedImage.Mode.allCases, id: \.self) { mode in
+            CachedImage(
+                url: .init(string: "https://workout.su/img/avatar_default.jpg")!,
+                mode: mode
+            )
         }
     }
 }

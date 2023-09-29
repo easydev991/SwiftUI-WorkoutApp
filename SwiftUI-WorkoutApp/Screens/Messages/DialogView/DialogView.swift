@@ -182,11 +182,9 @@ private extension DialogView {
 }
 
 #if DEBUG
-struct DialogView_Previews: PreviewProvider {
-    static var previews: some View {
-        DialogView(dialog: .preview, markedAsReadClbk: {})
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    DialogView(dialog: .preview, markedAsReadClbk: {})
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

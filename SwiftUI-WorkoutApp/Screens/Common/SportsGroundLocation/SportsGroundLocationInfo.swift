@@ -44,14 +44,12 @@ struct SportsGroundLocationInfo: View {
 }
 
 #if DEBUG
-struct SportsGroundLocationInfo_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundLocationInfo(
-            ground: .constant(.preview),
-            address: "Краснодар, ул. Восточно-кругликовская",
-            appleMapsURL: .init(string: "maps://?saddr=&daddr=55.72681766162947,37.50063106774381")
-        )
-        .padding()
-    }
+#Preview {
+    SportsGroundLocationInfo(
+        ground: .constant(.preview),
+        address: "Краснодар, ул. Восточно-кругликовская",
+        appleMapsURL: .init(string: "maps://?saddr=&daddr=55.72681766162947,37.50063106774381")
+    )
+    .padding()
 }
 #endif

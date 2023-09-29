@@ -23,9 +23,7 @@ public struct SendChatMessageButton: View {
 }
 
 #if DEBUG
-struct SendChatMessageButton_Previews: PreviewProvider {
-    static var previews: some View {
-        SendChatMessageButton {}
-    }
+#Preview {
+    SendChatMessageButton {}
 }
 #endif
