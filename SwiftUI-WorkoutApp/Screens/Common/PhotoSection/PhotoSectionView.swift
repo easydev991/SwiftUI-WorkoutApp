@@ -99,19 +99,17 @@ private extension PhotoSectionView {
 }
 
 #if DEBUG
-struct PhotoSectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 20) {
-            PhotoSectionView(
-                with: Photo.makePreviewList(count: 8),
-                canDelete: true,
-                reportClbk: {},
-                deleteClbk: { _ in }
-            )
-            .padding()
-            .background(Color.swBackground)
-        }
-        .previewLayout(.sizeThatFits)
+#Preview {
+    VStack(spacing: 20) {
+        PhotoSectionView(
+            with: Photo.makePreviewList(count: 8),
+            canDelete: true,
+            reportClbk: {},
+            deleteClbk: { _ in }
+        )
+        .padding()
+        .background(Color.swBackground)
     }
+    .previewLayout(.sizeThatFits)
 }
 #endif

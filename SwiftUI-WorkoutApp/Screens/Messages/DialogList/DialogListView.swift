@@ -169,11 +169,9 @@ private extension DialogListView {
 }
 
 #if DEBUG
-struct DialogListView_Previews: PreviewProvider {
-    static var previews: some View {
-        DialogListView()
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    DialogListView()
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

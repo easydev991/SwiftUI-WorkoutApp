@@ -27,12 +27,10 @@ public struct TextWithCheckmarkRowView: View {
 }
 
 #if DEBUG
-struct TextWithCheckmarkRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        TextWithCheckmarkRowView(text: "Checked text", isChecked: true)
-            .insideCardBackground(padding: 0)
-            .padding()
-            .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    TextWithCheckmarkRowView(text: "Checked text", isChecked: true)
+        .insideCardBackground(padding: 0)
+        .padding()
+        .previewLayout(.sizeThatFits)
 }
 #endif

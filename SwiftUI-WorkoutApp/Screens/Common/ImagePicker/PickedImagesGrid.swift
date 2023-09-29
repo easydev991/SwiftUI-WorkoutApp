@@ -112,17 +112,15 @@ private extension PickedImagesGrid {
 }
 
 #if DEBUG
-struct PickedImagesGrid_Previews: PreviewProvider {
-    static var previews: some View {
-        PickedImagesGrid(
-            images: .constant([
-                .init(systemName: "person")!,
-                .init(systemName: "book")!
-            ]),
-            showImagePicker: .constant(false),
-            selectionLimit: 5,
-            processExtraImages: {}
-        )
-    }
+#Preview {
+    PickedImagesGrid(
+        images: .constant([
+            .init(systemName: "person")!,
+            .init(systemName: "book")!
+        ]),
+        showImagePicker: .constant(false),
+        selectionLimit: 5,
+        processExtraImages: {}
+    )
 }
 #endif

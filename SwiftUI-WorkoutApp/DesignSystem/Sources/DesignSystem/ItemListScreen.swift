@@ -66,13 +66,11 @@ private extension ItemListScreen {
 }
 
 #if DEBUG
-struct ItemListScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        ItemListScreen(
-            allItems: ["Россия, Канада, Австралия"],
-            selectedItem: "Россия",
-            didSelectItem: { _ in }
-        )
-    }
+#Preview {
+    ItemListScreen(
+        allItems: ["Россия, Канада, Австралия"],
+        selectedItem: "Россия",
+        didSelectItem: { _ in }
+    )
 }
 #endif

@@ -34,31 +34,29 @@ public extension Color {
 }
 
 #if DEBUG
-struct AllColors_Previews: PreviewProvider {
-    static let colors: [Color] = [
+#Preview {
+    let colors: [Color] = [
         .swBackground, .swCardBackground, .swSmallElements, .swSeparators,
         .swMainText, .swAccent, .swFilledButtonText, .swFilledButtonPressed,
         .swDisabledButton, .swDisabledButtonText,
         .swTintedButton, .swTintedButtonPressed,
         .swXmarkButton, .swAddPhotoButton, .swError
     ]
-    static var previews: some View {
-        ScrollView {
-            VStack(spacing: 4) {
-                ForEach(colors, id: \.self) { color in
-                    HStack(spacing: 20) {
-                        Group {
-                            Circle()
-                            Circle()
-                                .environment(\.colorScheme, .dark)
-                        }
-                        .foregroundColor(color)
-                        .frame(width: 50, height: 50)
+    return ScrollView {
+        VStack(spacing: 4) {
+            ForEach(colors, id: \.self) { color in
+                HStack(spacing: 20) {
+                    Group {
+                        Circle()
+                        Circle()
+                            .environment(\.colorScheme, .dark)
                     }
+                    .foregroundColor(color)
+                    .frame(width: 50, height: 50)
                 }
             }
-            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
     }
 }
 #endif

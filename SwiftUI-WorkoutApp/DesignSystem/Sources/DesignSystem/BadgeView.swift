@@ -10,9 +10,7 @@ struct BadgeView: View {
 }
 
 #if DEBUG
-struct BadgeView_Previews: PreviewProvider {
-    static var previews: some View {
-        BadgeView(value: 1)
-    }
+#Preview {
+    BadgeView(value: 1)
 }
 #endif

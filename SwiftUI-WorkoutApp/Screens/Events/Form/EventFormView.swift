@@ -200,11 +200,9 @@ private extension EventFormView {
 }
 
 #if DEBUG
-struct CreateEventView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventFormView(for: .regularCreate, refreshClbk: {})
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    EventFormView(for: .regularCreate, refreshClbk: {})
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

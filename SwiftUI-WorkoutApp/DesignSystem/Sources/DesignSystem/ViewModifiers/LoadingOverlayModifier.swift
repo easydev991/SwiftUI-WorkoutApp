@@ -41,10 +41,7 @@ public extension View {
 }
 
 #if DEBUG
-struct LoadingOverlayModifier_Previews: PreviewProvider {
-    static var previews: some View {
-        Text("Loading...")
-            .loadingOverlay(if: true)
-    }
+#Preview {
+    Text("Loading...").loadingOverlay(if: true)
 }
 #endif

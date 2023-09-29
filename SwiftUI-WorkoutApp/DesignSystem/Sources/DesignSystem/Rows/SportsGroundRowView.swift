@@ -77,37 +77,35 @@ private extension SportsGroundRowView {
 }
 
 #if DEBUG
-struct SportsGroundRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ForEach(ColorScheme.allCases, id: \.self) { scheme in
-                VStack(spacing: 12) {
-                    SportsGroundRowView(
-                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
-                        title: "N° 3 Легендарная / Средняя",
-                        address: "м. Партизанская, улица 2-я Советская",
-                        usersTrainHereText: "Тренируются 5 человек"
-                    )
-                    SportsGroundRowView(
-                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
-                        title: "N° 3 Легендарная / Средняя",
-                        address: nil,
-                        usersTrainHereText: "Тренируются 5 человек"
-                    )
-                    SportsGroundRowView(
-                        imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
-                        title: "N° 3 Легендарная / Средняя",
-                        address: "м. Партизанская, улица 2-я Советская",
-                        usersTrainHereText: "Здесь пока никто не тренируется"
-                    )
-                }
-                .padding()
-                .background(Color.swBackground)
-                .environment(\.colorScheme, scheme)
-                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
+#Preview {
+    Group {
+        ForEach(ColorScheme.allCases, id: \.self) { scheme in
+            VStack(spacing: 12) {
+                SportsGroundRowView(
+                    imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                    title: "N° 3 Легендарная / Средняя",
+                    address: "м. Партизанская, улица 2-я Советская",
+                    usersTrainHereText: "Тренируются 5 человек"
+                )
+                SportsGroundRowView(
+                    imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                    title: "N° 3 Легендарная / Средняя",
+                    address: nil,
+                    usersTrainHereText: "Тренируются 5 человек"
+                )
+                SportsGroundRowView(
+                    imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+                    title: "N° 3 Легендарная / Средняя",
+                    address: "м. Партизанская, улица 2-я Советская",
+                    usersTrainHereText: "Здесь пока никто не тренируется"
+                )
             }
+            .padding()
+            .background(Color.swBackground)
+            .environment(\.colorScheme, scheme)
+            .previewDisplayName(scheme == .dark ? "Dark" : "Light")
         }
-        .previewLayout(.sizeThatFits)
     }
+    .previewLayout(.sizeThatFits)
 }
 #endif

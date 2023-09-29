@@ -30,10 +30,8 @@ private extension DialogsScreen {
 }
 
 #if DEBUG
-struct MessagesView_Previews: PreviewProvider {
-    static var previews: some View {
-        DialogsScreen()
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    DialogsScreen()
+        .environmentObject(DefaultsService())
 }
 #endif

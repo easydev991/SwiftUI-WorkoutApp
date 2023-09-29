@@ -29,9 +29,7 @@ public struct ResizableCachedImage: View {
 }
 
 #if DEBUG
-struct ResizableCachedImage_Previews: PreviewProvider {
-    static var previews: some View {
-        ResizableCachedImage(url: nil, didTapImage: { _ in })
-    }
+#Preview {
+    ResizableCachedImage(url: nil, didTapImage: { _ in })
 }
 #endif

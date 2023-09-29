@@ -72,23 +72,21 @@ public extension FormRowView {
 }
 
 #if DEBUG
-struct FormRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ForEach(ColorScheme.allCases, id: \.self) { scheme in
-                VStack(spacing: 20) {
-                    FormRowView(title: "Друзья", trailingContent: .textWithChevron("56 друзей"))
-                    FormRowView(title: "Друзья", trailingContent: .textWithBadgeAndChevron("56 друзей", 5))
-                    FormRowView(title: "Где тренируется", trailingContent: .textWithChevron("26 площадок"))
-                    FormRowView(title: "Тренируюсь здесь", trailingContent: .toggle(.constant(true)))
-                }
-                .padding()
-                .background(Color.swBackground)
-                .environment(\.colorScheme, scheme)
-                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
+#Preview {
+    Group {
+        ForEach(ColorScheme.allCases, id: \.self) { scheme in
+            VStack(spacing: 20) {
+                FormRowView(title: "Друзья", trailingContent: .textWithChevron("56 друзей"))
+                FormRowView(title: "Друзья", trailingContent: .textWithBadgeAndChevron("56 друзей", 5))
+                FormRowView(title: "Где тренируется", trailingContent: .textWithChevron("26 площадок"))
+                FormRowView(title: "Тренируюсь здесь", trailingContent: .toggle(.constant(true)))
             }
+            .padding()
+            .background(Color.swBackground)
+            .environment(\.colorScheme, scheme)
+            .previewDisplayName(scheme == .dark ? "Dark" : "Light")
         }
-        .previewLayout(.sizeThatFits)
     }
+    .previewLayout(.sizeThatFits)
 }
 #endif

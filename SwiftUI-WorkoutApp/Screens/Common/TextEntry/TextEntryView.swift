@@ -162,10 +162,8 @@ private extension TextEntryView {
 }
 
 #if DEBUG
-struct CreateCommentView_Previews: PreviewProvider {
-    static var previews: some View {
-        TextEntryView(mode: .newForGround(id: .zero), refreshClbk: {})
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    TextEntryView(mode: .newForGround(id: .zero), refreshClbk: {})
+        .environmentObject(DefaultsService())
 }
 #endif

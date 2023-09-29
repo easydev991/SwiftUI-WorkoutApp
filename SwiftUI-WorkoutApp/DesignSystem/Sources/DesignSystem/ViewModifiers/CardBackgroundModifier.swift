@@ -27,15 +27,13 @@ public extension View {
 }
 
 #if DEBUG
-struct CardBackgroundModifier_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 16) {
-            Text("Light mode text")
-                .insideCardBackground()
-            Text("Dark mode text")
-                .insideCardBackground()
-                .environment(\.colorScheme, .dark)
-        }
+#Preview {
+    VStack(spacing: 16) {
+        Text("Light mode text")
+            .insideCardBackground()
+        Text("Dark mode text")
+            .insideCardBackground()
+            .environment(\.colorScheme, .dark)
     }
 }
 #endif

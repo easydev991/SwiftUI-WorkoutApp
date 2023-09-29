@@ -230,15 +230,13 @@ private extension ProfileSettingsView {
 }
 
 #if DEBUG
-struct ProfileSettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ProfileSettingsView.Mode.allCases, id: \.self) { mode in
-            NavigationView {
-                ProfileSettingsView(mode: mode)
-            }
-            .previewDisplayName(mode == .authorized ? "Авторизованный" : "Инкогнито")
+#Preview {
+    ForEach(ProfileSettingsView.Mode.allCases, id: \.self) { mode in
+        NavigationView {
+            ProfileSettingsView(mode: mode)
         }
-        .environmentObject(DefaultsService())
+        .previewDisplayName(mode == .authorized ? "Авторизованный" : "Инкогнито")
     }
+    .environmentObject(DefaultsService())
 }
 #endif

@@ -153,9 +153,7 @@ private extension SearchUsersView {
 }
 
 #if DEBUG
-struct SearchUsersView_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchUsersView()
-    }
+#Preview {
+    SearchUsersView()
 }
 #endif

@@ -176,11 +176,9 @@ private extension UsersListView {
 }
 
 #if DEBUG
-struct UsersListView_Previews: PreviewProvider {
-    static var previews: some View {
-        UsersListView(mode: .friends(userID: .previewUserID))
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    UsersListView(mode: .friends(userID: .previewUserID))
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

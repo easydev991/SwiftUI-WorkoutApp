@@ -42,16 +42,14 @@ private extension IncognitoUserButton.Mode {
 }
 
 #if DEBUG
-struct IncognitoUserButton_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            VStack(spacing: 16) {
-                IncognitoUserButton(mode: .authorize)
-                IncognitoUserButton(mode: .register)
-            }
-            .padding(.horizontal)
+#Preview {
+    NavigationView {
+        VStack(spacing: 16) {
+            IncognitoUserButton(mode: .authorize)
+            IncognitoUserButton(mode: .register)
         }
-        .previewDisplayName("Инкогнито экран")
+        .padding(.horizontal)
     }
+    .previewDisplayName("Инкогнито экран")
 }
 #endif

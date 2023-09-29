@@ -176,12 +176,10 @@ private extension EventsListView {
 }
 
 #if DEBUG
-struct EventsListView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventsListView()
-            .environmentObject(TabViewModel())
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    EventsListView()
+        .environmentObject(TabViewModel())
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

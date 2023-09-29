@@ -149,30 +149,28 @@ private extension JournalRowView {
 }
 
 #if DEBUG
-struct JournalRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 30) {
-            JournalRowView(
-                model: .init(
-                    avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
-                    title: "Дневник 1",
-                    dateText: "21 мая 2023",
-                    bodyText: "Классная площадка, часто тренируюсь здесь с друзьями. Сегодня тренировался на стадионе. Для начала небольшая пробежка для разминки",
-                    bodyTextLinelimit: 2
-                )
+#Preview {
+    VStack(spacing: 30) {
+        JournalRowView(
+            model: .init(
+                avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+                title: "Дневник 1",
+                dateText: "21 мая 2023",
+                bodyText: "Классная площадка, часто тренируюсь здесь с друзьями. Сегодня тренировался на стадионе. Для начала небольшая пробежка для разминки",
+                bodyTextLinelimit: 2
             )
-            JournalRowView(
-                model: .init(
-                    avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
-                    title: "Kahar",
-                    dateText: "21 мая 2023",
-                    bodyText: "Классная площадка, часто тренируюсь здесь с друзьями. Сегодня тренировался на стадионе. Для начала небольшая пробежка для разминки"
-                )
+        )
+        JournalRowView(
+            model: .init(
+                avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+                title: "Kahar",
+                dateText: "21 мая 2023",
+                bodyText: "Классная площадка, часто тренируюсь здесь с друзьями. Сегодня тренировался на стадионе. Для начала небольшая пробежка для разминки"
             )
-            .environment(\.colorScheme, .dark)
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
+        )
+        .environment(\.colorScheme, .dark)
     }
+    .padding()
+    .previewLayout(.sizeThatFits)
 }
 #endif

@@ -88,19 +88,17 @@ private extension SendMessageView {
 }
 
 #if DEBUG
-struct SendMessageView_Previews: PreviewProvider {
-    static var previews: some View {
-        SendMessageView(
-            header: "Новый комментарий",
-            text: .constant("Текст комментария"),
-            isLoading: false,
-            isSendButtonDisabled: true,
-            sendAction: {},
-            showErrorAlert: .constant(false),
-            errorTitle: .constant(""),
-            dismissError: {}
-        )
-        .environmentObject(NetworkStatus())
-    }
+#Preview {
+    SendMessageView(
+        header: "Новый комментарий",
+        text: .constant("Текст комментария"),
+        isLoading: false,
+        isSendButtonDisabled: true,
+        sendAction: {},
+        showErrorAlert: .constant(false),
+        errorTitle: .constant(""),
+        dismissError: {}
+    )
+    .environmentObject(NetworkStatus())
 }
 #endif

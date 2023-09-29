@@ -65,23 +65,21 @@ public extension ChatBubbleRowView {
 }
 
 #if DEBUG
-struct ChatBubbleRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            ChatBubbleRowView(
-                messageType: .incoming,
-                message: "orem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper.",
-                messageTime: "11:22"
-            )
-            ChatBubbleRowView(
-                messageType: .sent,
-                message: "Phasellus non mauris sem. Donec sed fermentum eros.",
-                messageTime: "11:23"
-            )
-        }
-        .padding(.horizontal)
-        .textSelection(.enabled)
-        .previewLayout(.sizeThatFits)
+#Preview {
+    VStack {
+        ChatBubbleRowView(
+            messageType: .incoming,
+            message: "orem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut semper quam. Phasellus non mauris sem. Donec sed fermentum eros. Donec pretium nec turpis a semper.",
+            messageTime: "11:22"
+        )
+        ChatBubbleRowView(
+            messageType: .sent,
+            message: "Phasellus non mauris sem. Donec sed fermentum eros.",
+            messageTime: "11:23"
+        )
     }
+    .padding(.horizontal)
+    .textSelection(.enabled)
+    .previewLayout(.sizeThatFits)
 }
 #endif

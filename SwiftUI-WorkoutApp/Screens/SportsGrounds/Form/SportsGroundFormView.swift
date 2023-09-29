@@ -164,11 +164,9 @@ private extension SportsGroundFormView {
 }
 
 #if DEBUG
-struct CreateOrEditGroundView_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundFormView(.editExisting(.preview), refreshClbk: {})
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    SportsGroundFormView(.editExisting(.preview), refreshClbk: {})
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

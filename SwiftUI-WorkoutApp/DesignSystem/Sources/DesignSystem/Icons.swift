@@ -57,42 +57,40 @@ public enum Icons {
 }
 
 #if DEBUG
-struct ButtonIcons_Previews: PreviewProvider {
-    static var previews: some View {
-        List {
-            Section("Tabbar icons") {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.Tabbar.allCases, id: \.rawValue) { icon in
-                        HStack(spacing: 16) {
-                            Image(systemName: icon.rawValue)
-                            Text(icon.rawValue)
-                        }
-                    }
-                }
-            }
-            Section("Regular icons") {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.Regular.allCases, id: \.rawValue) { icon in
-                        HStack(spacing: 16) {
-                            Image(systemName: icon.rawValue)
-                            Text(icon.rawValue)
-                        }
-                    }
-                }
-            }
-            Section("Misc icons") {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(Icons.Misc.allCases, id: \.rawValue) { icon in
-                        HStack(spacing: 16) {
-                            Image(systemName: icon.rawValue)
-                            Text(icon.rawValue)
-                        }
+#Preview {
+    List {
+        Section("Tabbar icons") {
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(Icons.Tabbar.allCases, id: \.rawValue) { icon in
+                    HStack(spacing: 16) {
+                        Image(systemName: icon.rawValue)
+                        Text(icon.rawValue)
                     }
                 }
             }
         }
-        .listStyle(.plain)
-        .previewDisplayName("Icons")
+        Section("Regular icons") {
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(Icons.Regular.allCases, id: \.rawValue) { icon in
+                    HStack(spacing: 16) {
+                        Image(systemName: icon.rawValue)
+                        Text(icon.rawValue)
+                    }
+                }
+            }
+        }
+        Section("Misc icons") {
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(Icons.Misc.allCases, id: \.rawValue) { icon in
+                    HStack(spacing: 16) {
+                        Image(systemName: icon.rawValue)
+                        Text(icon.rawValue)
+                    }
+                }
+            }
+        }
     }
+    .listStyle(.plain)
+    .previewDisplayName("Icons")
 }
 #endif

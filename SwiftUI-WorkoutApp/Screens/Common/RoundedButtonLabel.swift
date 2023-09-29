@@ -10,9 +10,7 @@ struct RoundedButtonLabel: View {
 }
 
 #if DEBUG
-struct RoundedButtonLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        RoundedButtonLabel(title: "Лейбл кнопки")
-    }
+#Preview {
+    RoundedButtonLabel(title: "Лейбл кнопки")
 }
 #endif

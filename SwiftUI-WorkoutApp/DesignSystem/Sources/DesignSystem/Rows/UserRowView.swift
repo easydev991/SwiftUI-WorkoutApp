@@ -129,29 +129,25 @@ private extension UserRowView {
 }
 
 #if DEBUG
-struct UserRowView_Previews: PreviewProvider {
-    static let baseModel: UserRowView.Mode.BaseModel = .init(
+#Preview {
+    let baseModel: UserRowView.Mode.BaseModel = .init(
         imageURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
         name: "Beautifulbutterfly101",
         address: "Россия, Краснодар"
     )
-
-    static var previews: some View {
-        Group {
-            ForEach(ColorScheme.allCases, id: \.self) { scheme in
-                VStack(spacing: 20) {
-                    UserRowView(mode: .regular(baseModel))
-                    UserRowView(
-                        mode: .friendRequest(baseModel, .init(accept: {}, reject: {}))
-                    )
-                    .insideCardBackground(padding: 0)
-                }
-                .environment(\.colorScheme, scheme)
-                .previewDisplayName(scheme == .dark ? "Dark" : "Light")
+    return Group {
+        ForEach(ColorScheme.allCases, id: \.self) { scheme in
+            VStack(spacing: 20) {
+                UserRowView(mode: .regular(baseModel))
+                UserRowView(
+                    mode: .friendRequest(baseModel, .init(accept: {}, reject: {}))
+                )
+                .insideCardBackground(padding: 0)
             }
+            .environment(\.colorScheme, scheme)
+            .previewDisplayName(scheme == .dark ? "Dark" : "Light")
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
     }
+    .padding()
 }
 #endif

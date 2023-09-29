@@ -9,9 +9,7 @@ public struct SWDivider: View {
 }
 
 #if DEBUG
-struct SWDivider_Previews: PreviewProvider {
-    static var previews: some View {
-        SWDivider()
-    }
+#Preview {
+    SWDivider()
 }
 #endif

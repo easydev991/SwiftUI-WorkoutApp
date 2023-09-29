@@ -63,31 +63,29 @@ private extension SWTextEditor {
 }
 
 #if DEBUG
-struct SWTextEditor_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 20) {
-            SWTextEditor(
-                text: .constant(""),
-                placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
-                isFocused: false,
-                height: 100
-            )
-            SWTextEditor(
-                text: .constant(""),
-                placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
-                isFocused: true,
-                height: 100
-            )
-            SWTextEditor(
-                text: .constant(
-                    "Мероприятие будет длится около трех часов, так что можно приходить в любое удобное время. Остались вопросы - задавайте в сообщениях."
-                ),
-                placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
-                isFocused: true,
-                height: 100
-            )
-        }
-        .padding()
+#Preview {
+    VStack(spacing: 20) {
+        SWTextEditor(
+            text: .constant(""),
+            placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
+            isFocused: false,
+            height: 100
+        )
+        SWTextEditor(
+            text: .constant(""),
+            placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
+            isFocused: true,
+            height: 100
+        )
+        SWTextEditor(
+            text: .constant(
+                "Мероприятие будет длится около трех часов, так что можно приходить в любое удобное время. Остались вопросы - задавайте в сообщениях."
+            ),
+            placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
+            isFocused: true,
+            height: 100
+        )
     }
+    .padding()
 }
 #endif

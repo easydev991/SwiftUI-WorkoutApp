@@ -16,11 +16,9 @@ struct RoundedCornerShape: Shape {
 }
 
 #if DEBUG
-struct RoundedCornerShape_Previews: PreviewProvider {
-    static var previews: some View {
-        Rectangle()
-            .foregroundColor(.blue)
-            .clipShape(RoundedCornerShape(radius: 20, corners: .bottomLeft))
-    }
+#Preview {
+    Rectangle()
+        .foregroundColor(.blue)
+        .clipShape(RoundedCornerShape(radius: 20, corners: .bottomLeft))
 }
 #endif

@@ -233,11 +233,9 @@ private extension SportsGroundsMapView {
 }
 
 #if DEBUG
-struct SportsGroundsMapView_Previews: PreviewProvider {
-    static var previews: some View {
-        SportsGroundsMapView()
-            .environmentObject(NetworkStatus())
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    SportsGroundsMapView()
+        .environmentObject(NetworkStatus())
+        .environmentObject(DefaultsService())
 }
 #endif

@@ -23,11 +23,9 @@ extension View {
 }
 
 #if DEBUG
-struct AdaptiveRoundedRectangleModifier_Previews: PreviewProvider {
-    static var previews: some View {
-        Text("Какой-то текст")
-            .roundedStyle()
-            .padding()
-    }
+#Preview {
+    Text("Какой-то текст")
+        .roundedStyle()
+        .padding()
 }
 #endif

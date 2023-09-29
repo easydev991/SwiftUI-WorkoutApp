@@ -38,10 +38,8 @@ private extension IncognitoProfileView {
 }
 
 #if DEBUG
-struct IncognitoProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        IncognitoProfileView()
-            .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    IncognitoProfileView()
+        .previewLayout(.sizeThatFits)
 }
 #endif

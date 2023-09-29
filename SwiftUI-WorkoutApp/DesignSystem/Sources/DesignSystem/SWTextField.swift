@@ -97,40 +97,38 @@ private extension SWTextField {
 }
 
 #if DEBUG
-struct SWTextField_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 20) {
-            SWTextField(
-                placeholder: "Placeholder",
-                text: .constant(""),
-                isFocused: false
-            )
-            SWTextField(
-                placeholder: "Placeholder",
-                text: .constant(""),
-                isSecure: true,
-                isFocused: false
-            )
-            SWTextField(
-                placeholder: "Placeholder",
-                text: .constant("Text"),
-                isFocused: true
-            )
-            SWTextField(
-                placeholder: "Placeholder",
-                text: .constant("Text"),
-                isFocused: false,
-                errorState: .noMessage
-            )
-            SWTextField(
-                placeholder: "Placeholder",
-                text: .constant("Text"),
-                isFocused: false,
-                errorState: .message("Error message")
-            )
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
+#Preview {
+    VStack(spacing: 20) {
+        SWTextField(
+            placeholder: "Placeholder",
+            text: .constant(""),
+            isFocused: false
+        )
+        SWTextField(
+            placeholder: "Placeholder",
+            text: .constant(""),
+            isSecure: true,
+            isFocused: false
+        )
+        SWTextField(
+            placeholder: "Placeholder",
+            text: .constant("Text"),
+            isFocused: true
+        )
+        SWTextField(
+            placeholder: "Placeholder",
+            text: .constant("Text"),
+            isFocused: false,
+            errorState: .noMessage
+        )
+        SWTextField(
+            placeholder: "Placeholder",
+            text: .constant("Text"),
+            isFocused: false,
+            errorState: .message("Error message")
+        )
     }
+    .padding()
+    .previewLayout(.sizeThatFits)
 }
 #endif

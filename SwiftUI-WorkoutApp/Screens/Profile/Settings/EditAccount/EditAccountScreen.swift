@@ -173,13 +173,11 @@ private extension EditAccountScreen {
 }
 
 #if DEBUG
-struct EditAccountScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            EditAccountScreen()
-                .environmentObject(NetworkStatus())
-                .environmentObject(DefaultsService())
-        }
+#Preview {
+    NavigationView {
+        EditAccountScreen()
+            .environmentObject(NetworkStatus())
+            .environmentObject(DefaultsService())
     }
 }
 #endif

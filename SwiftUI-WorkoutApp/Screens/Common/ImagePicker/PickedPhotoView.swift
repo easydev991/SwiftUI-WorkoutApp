@@ -53,11 +53,9 @@ extension PickedImageView {
     }
 }
 
-struct PickedImageView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 12) {
-            PickedImageView(model: .addImageButton, height: 100, action: { _ in })
-            PickedImageView(model: .image(.init()), height: 100, action: { _ in })
-        }
+#Preview {
+    VStack(spacing: 12) {
+        PickedImageView(model: .addImageButton, height: 100, action: { _ in })
+        PickedImageView(model: .image(.init()), height: 100, action: { _ in })
     }
 }

@@ -108,15 +108,13 @@ private extension PhotoDetailScreen {
 }
 
 #if DEBUG
-struct PhotoDetailScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        PhotoDetailScreen(
-            model: .init(uiImage: .init(), id: 1),
-            canDelete: false,
-            reportPhotoClbk: {},
-            deletePhotoClbk: { _ in }
-        )
-        .environmentObject(NetworkStatus())
-    }
+#Preview {
+    PhotoDetailScreen(
+        model: .init(uiImage: .init(), id: 1),
+        canDelete: false,
+        reportPhotoClbk: {},
+        deletePhotoClbk: { _ in }
+    )
+    .environmentObject(NetworkStatus())
 }
 #endif

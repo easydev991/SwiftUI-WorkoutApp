@@ -52,13 +52,11 @@ private extension ContentInSheet {
 }
 
 #if DEBUG
-struct ContentInSheet_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentInSheet(title: "Header") {
-            Text("Some content")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.yellow)
-        }
+#Preview {
+    ContentInSheet(title: "Header") {
+        Text("Some content")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.yellow)
     }
 }
 #endif

@@ -43,21 +43,19 @@ public extension View {
 }
 
 #if DEBUG
-struct BorderedCircleClipshapeModifier_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 16) {
-            Image.defaultWorkoutImage
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .borderedClipshape(.circle)
-            Image.defaultWorkoutImage
-                .resizable()
-                .scaledToFit()
-                .frame(width: 120, height: 120)
-                .borderedClipshape(.roundedRectangle)
-        }
-        .previewLayout(.sizeThatFits)
+#Preview {
+    VStack(spacing: 16) {
+        Image.defaultWorkoutImage
+            .resizable()
+            .scaledToFit()
+            .frame(width: 80, height: 80)
+            .borderedClipshape(.circle)
+        Image.defaultWorkoutImage
+            .resizable()
+            .scaledToFit()
+            .frame(width: 120, height: 120)
+            .borderedClipshape(.roundedRectangle)
     }
+    .previewLayout(.sizeThatFits)
 }
 #endif

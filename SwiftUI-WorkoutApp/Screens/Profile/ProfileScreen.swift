@@ -23,10 +23,8 @@ struct ProfileScreen: View {
 }
 
 #if DEBUG
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileScreen()
-            .environmentObject(DefaultsService())
-    }
+#Preview {
+    ProfileScreen()
+        .environmentObject(DefaultsService())
 }
 #endif
