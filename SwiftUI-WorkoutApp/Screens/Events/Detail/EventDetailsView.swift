@@ -164,7 +164,7 @@ private extension EventDetailsView {
                     title: "Пойду на мероприятие",
                     trailingContent: .toggle($trainHere)
                 )
-                .disabled(viewModel.isLoading || !network.isConnected)
+                .disabled(!network.isConnected)
                 .onChange(of: trainHere, perform: changeTrainHereStatus)
             }
         }

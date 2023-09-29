@@ -7,10 +7,10 @@ struct LoadingOverlayModifier: ViewModifier {
         content
             .disabled(isLoading)
             .opacity(isLoading ? 0.5 : 1)
+            .animation(.default, value: isLoading)
             .overlay {
                 LoadingIndicator(isVisible: isLoading)
             }
-            .animation(.default, value: isLoading)
     }
 }
 
@@ -22,13 +22,14 @@ private struct LoadingIndicator: View {
         Image("LoadingIndicator", bundle: .module)
             .resizable()
             .frame(width: 50, height: 50)
+            .opacity(isVisible ? 1 : 0)
+            .animation(.default, value: isVisible)
             .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
             .animation(
                 .linear(duration: 2.0).repeatForever(autoreverses: false),
                 value: isAnimating
             )
             .onAppear { isAnimating = true }
-            .opacity(isVisible ? 1 : 0)
     }
 }
 
