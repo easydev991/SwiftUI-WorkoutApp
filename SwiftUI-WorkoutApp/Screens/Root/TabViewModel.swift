@@ -14,15 +14,15 @@ extension TabViewModel {
         private var title: String {
             switch self {
             case .map:
-                return "Площадки"
+                "Площадки"
             case .events:
-                return "Мероприятия"
+                "Мероприятия"
             case .messages:
-                return "Сообщения"
+                "Сообщения"
             case .journal:
-                return "Дневники"
+                "Дневники"
             case .profile:
-                return "Профиль"
+                "Профиль"
             }
         }
 

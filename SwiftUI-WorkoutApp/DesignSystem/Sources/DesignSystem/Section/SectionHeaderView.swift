@@ -30,8 +30,8 @@ struct SectionSupplementaryView: View {
 
     private var vPadding: (edges: Edge.Set, value: CGFloat) {
         switch mode {
-        case .header: return (.bottom, 6)
-        case .footer: return (.top, 12)
+        case .header: (.bottom, 6)
+        case .footer: (.top, 12)
         }
     }
 }
@@ -44,9 +44,9 @@ extension SectionSupplementaryView {
         var hasLeftPadding: Bool {
             switch self {
             case let .header(hasLeftPadding):
-                return hasLeftPadding
+                hasLeftPadding
             case .footer:
-                return true
+                true
             }
         }
     }

@@ -53,12 +53,12 @@ private extension EmptyContentView {
     var actionButtonTitle: String {
         switch mode {
         case .events:
-            return hasSportsGrounds && isAuthorized
+            hasSportsGrounds && isAuthorized
                 ? "Создать мероприятие"
                 : "Выбрать площадку"
         case .dialogs:
-            return hasFriends ? "Открыть список друзей" : "Найти пользователя"
-        case .journals: return "Создать дневник"
+            hasFriends ? "Открыть список друзей" : "Найти пользователя"
+        case .journals: "Создать дневник"
         }
     }
 
@@ -77,11 +77,11 @@ private extension EmptyContentView.Mode {
     var message: String {
         switch self {
         case .events:
-            return "Нет запланированных\nмероприятий"
+            "Нет запланированных\nмероприятий"
         case .dialogs:
-            return "Чатов пока нет"
+            "Чатов пока нет"
         case .journals:
-            return "Дневников пока нет"
+            "Дневников пока нет"
         }
     }
 }

@@ -79,13 +79,13 @@ private extension UsersListView.Mode {
     var title: String {
         switch self {
         case .friends, .friendsForChat:
-            return "Друзья"
+            "Друзья"
         case .eventParticipants:
-            return "Участники мероприятия"
+            "Участники мероприятия"
         case .groundParticipants:
-            return "Здесь тренируются"
+            "Здесь тренируются"
         case .blacklist:
-            return "Черный список"
+            "Черный список"
         }
     }
 }

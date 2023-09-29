@@ -19,22 +19,22 @@ public enum Gender: String, CaseIterable, CustomStringConvertible, Codable {
     public var code: Int {
         switch self {
         case .unspecified:
-            return -1
+            -1
         case .male:
-            return 0
+            0
         case .female:
-            return 1
+            1
         }
     }
 
     public var description: String {
         switch self {
         case .unspecified:
-            return ""
+            ""
         case .male:
-            return "Мужчина"
+            "Мужчина"
         case .female:
-            return "Женщина"
+            "Женщина"
         }
     }
 }

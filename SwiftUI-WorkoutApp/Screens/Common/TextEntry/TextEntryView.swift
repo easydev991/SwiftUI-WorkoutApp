@@ -60,22 +60,22 @@ private extension TextEntryView.Mode {
     var headerTitle: String {
         switch self {
         case .newForEvent, .newForGround:
-            return "Новый комментарий"
+            "Новый комментарий"
         case .editEvent, .editGround:
-            return "Изменить комментарий"
+            "Изменить комментарий"
         case .newForJournal:
-            return "Новая запись"
+            "Новая запись"
         case .editJournalEntry:
-            return "Изменить запись"
+            "Изменить запись"
         }
     }
 
     var placeholder: String? {
         switch self {
         case .newForJournal:
-            return "Создай новую запись в дневнике"
+            "Создай новую запись в дневнике"
         default:
-            return nil
+            nil
         }
     }
 }
@@ -150,9 +150,9 @@ private extension TextEntryView {
     var canSend: Bool {
         switch mode {
         case .newForGround, .newForEvent, .newForJournal:
-            return !entryText.isEmpty && !viewModel.isLoading
+            !entryText.isEmpty && !viewModel.isLoading
         case .editGround, .editEvent, .editJournalEntry:
-            return entryText != oldEntryText && !viewModel.isLoading
+            entryText != oldEntryText && !viewModel.isLoading
         }
     }
 

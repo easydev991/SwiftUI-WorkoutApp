@@ -26,9 +26,9 @@ private extension IncognitoUserButton.Mode {
     var title: String {
         switch self {
         case .register:
-            return "Регистрация"
+            "Регистрация"
         case .authorize:
-            return "Авторизация"
+            "Авторизация"
         }
     }
 

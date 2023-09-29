@@ -14,9 +14,9 @@ public enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .all: return "Все"
-        case .friends: return "Друзья"
-        case .nobody: return "Только я"
+        case .all: "Все"
+        case .friends: "Друзья"
+        case .nobody: "Только я"
         }
     }
 

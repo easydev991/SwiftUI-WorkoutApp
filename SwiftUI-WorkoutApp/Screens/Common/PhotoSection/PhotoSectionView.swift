@@ -81,9 +81,9 @@ private extension PhotoSectionView {
     /// Количество столбцов в сетке с фотографиями
     var columns: Int {
         switch photos.count {
-        case 1: return 1
-        case 2: return 2
-        default: return 3
+        case 1: 1
+        case 2: 2
+        default: 3
         }
     }
 

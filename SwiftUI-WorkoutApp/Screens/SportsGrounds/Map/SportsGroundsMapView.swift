@@ -141,8 +141,8 @@ private extension SportsGroundsMapView {
 
     var navigationTitleDisplayMode: NavigationBarItem.TitleDisplayMode {
         switch presentation {
-        case .list: return .inline
-        case .map: return viewModel.shouldHideMap ? .large : .inline
+        case .list: .inline
+        case .map: viewModel.shouldHideMap ? .large : .inline
         }
     }
 

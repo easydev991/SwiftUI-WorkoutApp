@@ -15,10 +15,10 @@ public enum SportsGroundGrade: String, CaseIterable {
 
     public var code: Int {
         switch self {
-        case .soviet: return 1
-        case .modern: return 2
-        case .collars: return 3
-        case .legendary: return 6
+        case .soviet: 1
+        case .modern: 2
+        case .collars: 3
+        case .legendary: 6
         }
     }
 }

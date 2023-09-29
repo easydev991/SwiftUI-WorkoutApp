@@ -67,16 +67,16 @@ public extension DateFormatterService {
             showTimeInThisYear: Bool
         ) -> (prefix: String, date: String) {
             if date.isToday {
-                return ("", mediumTime.rawValue)
+                ("", mediumTime.rawValue)
             } else if date.isYesterday {
-                return ("Вчера, ", mediumTime.rawValue)
+                ("Вчера, ", mediumTime.rawValue)
             } else if date.isThisYear {
-                return (
+                (
                     "",
                     showTimeInThisYear ? dayMonthMediumTime.rawValue : dayMonth.rawValue
                 )
             } else {
-                return ("", dayMonthYear.rawValue)
+                ("", dayMonthYear.rawValue)
             }
         }
     }

@@ -90,8 +90,8 @@ public extension SWButtonStyle {
         /// Описание для превью
         var description: String {
             switch self {
-            case .filled: return "Filled"
-            case .tinted: return "Tinted"
+            case .filled: "Filled"
+            case .tinted: "Tinted"
             }
         }
     }
@@ -103,8 +103,8 @@ public extension SWButtonStyle {
         /// Описание для превью
         var description: String {
             switch self {
-            case .large: return "Large"
-            case .small: return "Small"
+            case .large: "Large"
+            case .small: "Small"
             }
         }
     }

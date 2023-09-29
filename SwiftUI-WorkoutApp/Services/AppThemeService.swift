@@ -12,14 +12,13 @@ enum AppThemeService {
     ///
     /// - Parameter newTheme: Новая тема
     static func set(_ newTheme: Theme) {
-        var userInterfaceStyle: UIUserInterfaceStyle
-        switch newTheme {
+        var userInterfaceStyle: UIUserInterfaceStyle = switch newTheme {
         case .dark:
-            userInterfaceStyle = .dark
+            .dark
         case .light:
-            userInterfaceStyle = .light
+            .light
         case .system:
-            userInterfaceStyle = .unspecified
+            .unspecified
         }
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
