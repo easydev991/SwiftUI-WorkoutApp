@@ -6,8 +6,8 @@ struct LoadingOverlayModifier: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
             if isLoading {
-                Color.swBackground
-                LoadingIndicator(isVisible: true)
+                content.opacity(0.5)
+                LoadingIndicator()
             } else {
                 content
             }
@@ -19,13 +19,11 @@ struct LoadingOverlayModifier: ViewModifier {
 
 private struct LoadingIndicator: View {
     @State private var isAnimating = false
-    let isVisible: Bool
 
     var body: some View {
         Image("LoadingIndicator", bundle: .module)
             .resizable()
             .frame(width: 50, height: 50)
-            .animation(.default, value: isVisible)
             .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
             .animation(
                 .linear(duration: 2.0).repeatForever(autoreverses: false),
