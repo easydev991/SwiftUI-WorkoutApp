@@ -116,7 +116,7 @@ private extension JournalsListView {
     }
 
     var showEmptyView: Bool {
-        viewModel.list.isEmpty && isMainUser
+        viewModel.list.isEmpty && isMainUser && !viewModel.isLoading
     }
 
     var isMainUser: Bool {

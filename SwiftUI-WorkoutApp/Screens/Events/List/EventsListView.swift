@@ -150,7 +150,7 @@ private extension EventsListView {
     }
 
     var showEmptyView: Bool {
-        selectedEventType == .future && viewModel.futureEvents.isEmpty
+        selectedEventType == .future && viewModel.futureEvents.isEmpty && !viewModel.isLoading
     }
 
     func selectedEventAction(_: EventType) {
