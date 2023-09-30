@@ -95,31 +95,40 @@ private extension DialogListView {
     }
 
     var dialogList: some View {
-        ScrollView {
-            LazyVStack(spacing: 22) {
-                ForEach(viewModel.list) { model in
-                    NavigationLink {
-                        DialogView(
-                            dialog: model,
-                            markedAsReadClbk: {
-                                viewModel.markAsRead(model, with: defaults)
-                            }
-                        )
-                    } label: {
-                        DialogRowView(
-                            model: .init(
-                                avatarURL: model.anotherUserImageURL,
-                                authorName: model.anotherUserName.valueOrEmpty,
-                                dateText: model.lastMessageDateString,
-                                messageText: model.lastMessageFormatted,
-                                unreadCount: model.unreadMessagesCount
-                            )
-                        )
-                    }
-                }
-                .onDelete(perform: initiateDeletion)
+        List {
+            ForEach(viewModel.list) { model in
+                dialogListItem(model)
+                    .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    .listRowBackground(Color.swBackground)
+                    .listRowSeparator(.hidden)
             }
-            .padding([.top, .horizontal])
+            .onDelete(perform: initiateDeletion)
+        }
+        .listStyle(.plain)
+    }
+
+    func dialogListItem(_ model: DialogResponse) -> some View {
+        DialogRowView(
+            model: .init(
+                avatarURL: model.anotherUserImageURL,
+                authorName: model.anotherUserName.valueOrEmpty,
+                dateText: model.lastMessageDateString,
+                messageText: model.lastMessageFormatted,
+                unreadCount: model.unreadMessagesCount
+            )
+        )
+        .background {
+            NavigationLink {
+                DialogView(
+                    dialog: model,
+                    markedAsReadClbk: {
+                        viewModel.markAsRead(model, with: defaults)
+                    }
+                )
+            } label: {
+                EmptyView()
+            }
+            .opacity(0)
         }
     }
 
