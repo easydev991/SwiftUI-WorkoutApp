@@ -41,7 +41,7 @@ redundantGet, \
 redundantLet, \
 redundantObjc, \
 redundantOptionalBinding, \
-sortedImports, \
+sortImports, \
 spaceAroundBraces, \
 spaceInsideGenerics, \
 strongifiedSelf, \
