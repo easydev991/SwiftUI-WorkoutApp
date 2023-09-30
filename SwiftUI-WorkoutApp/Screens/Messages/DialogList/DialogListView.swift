@@ -85,7 +85,7 @@ private extension DialogListView {
     }
 
     var showEmptyView: Bool {
-        viewModel.list.isEmpty
+        viewModel.list.isEmpty && !viewModel.isLoading
     }
 
     var emptyViewButtonTitle: String {
