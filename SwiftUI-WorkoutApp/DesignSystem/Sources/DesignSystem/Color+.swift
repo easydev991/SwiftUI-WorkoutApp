@@ -2,35 +2,35 @@ import SwiftUI
 
 public extension Color {
     /// Фон
-    static let swBackground = Color("swBackground", bundle: .module)
+    static let swBackground = Color(.swBackground)
     /// Фон карточек
-    static let swCardBackground = Color("swCardBackground", bundle: .module)
+    static let swCardBackground = Color(.swCardBackground)
     /// Подписи/иконки
-    static let swSmallElements = Color("swSmallElements", bundle: .module)
+    static let swSmallElements = Color(.swSmallElements)
     /// Разделители
-    static let swSeparators = Color("swSeparators", bundle: .module)
+    static let swSeparators = Color(.swSeparators)
     /// Основной текст
-    static let swMainText = Color("swMainText", bundle: .module)
+    static let swMainText = Color(.swMainText)
     /// `AccentColor` для приложения
-    static let swAccent = Color("swAccent", bundle: .module)
+    static let swAccent = Color(.swAccent)
     /// Цвет текста в `filled`-кнопке
-    static let swFilledButtonText = Color("swFilledButtonText", bundle: .module)
+    static let swFilledButtonText = Color(.swFilledButtonText)
     /// Нажатые `filled`-кнопки
-    static let swFilledButtonPressed = Color("swFilledButtonPressed", bundle: .module)
+    static let swFilledButtonPressed = Color(.swFilledButtonPressed)
     /// Неактивные кнопки
-    static let swDisabledButton = Color("swDisabledButton", bundle: .module)
+    static let swDisabledButton = Color(.swDisabledButton)
     /// Цвет текста неактивных кнопок
-    static let swDisabledButtonText = Color("swDisabledButtonText", bundle: .module)
+    static let swDisabledButtonText = Color(.swDisabledButtonText)
     /// `tinted`-кнопки
-    static let swTintedButton = Color("swTintedButton", bundle: .module)
+    static let swTintedButton = Color(.swTintedButton)
     /// Нажатые `tinted`-кнопки
-    static let swTintedButtonPressed = Color("swTintedButtonPressed", bundle: .module)
+    static let swTintedButtonPressed = Color(.swTintedButtonPressed)
     /// Цвет кнопки удаления фото
-    static let swXmarkButton = Color("swXmarkButton", bundle: .module)
+    static let swXmarkButton = Color(.swXmarkButton)
     /// Цвет кнопки добавления фото
-    static let swAddPhotoButton = Color("swAddPhotoButton", bundle: .module)
+    static let swAddPhotoButton = Color(.swAddPhotoButton)
     /// Ошибки
-    static let swError = Color("swError", bundle: .module)
+    static let swError = Color(.swError)
 }
 
 #if DEBUG

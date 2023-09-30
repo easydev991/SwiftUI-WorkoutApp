@@ -21,7 +21,7 @@ private struct LoadingIndicator: View {
     @State private var isAnimating = false
 
     var body: some View {
-        Image("LoadingIndicator", bundle: .module)
+        Image(.loadingIndicator)
             .resizable()
             .frame(width: 50, height: 50)
             .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))

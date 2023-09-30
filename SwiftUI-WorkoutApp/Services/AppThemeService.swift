@@ -12,7 +12,11 @@ enum AppThemeService {
     ///
     /// - Parameter newTheme: Новая тема
     static func set(_ newTheme: Theme) {
-        var userInterfaceStyle: UIUserInterfaceStyle = switch newTheme {
+        let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)
+        keyWindow?.overrideUserInterfaceStyle = switch newTheme {
         case .dark:
             .dark
         case .light:
@@ -20,10 +24,5 @@ enum AppThemeService {
         case .system:
             .unspecified
         }
-        let keyWindow = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
-        keyWindow?.overrideUserInterfaceStyle = userInterfaceStyle
     }
 }
