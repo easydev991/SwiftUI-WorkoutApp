@@ -96,9 +96,8 @@ private extension DialogListView {
 
     @ViewBuilder
     var dialogList: some View {
-        if viewModel.list.isEmpty {
+        ZStack {
             Color.swBackground
-        } else {
             List {
                 ForEach(viewModel.list) { model in
                     dialogListItem(model)
@@ -109,7 +108,9 @@ private extension DialogListView {
                 .onDelete(perform: initiateDeletion)
             }
             .listStyle(.plain)
+            .opacity(viewModel.list.isEmpty ? 0 : 1)
         }
+        .animation(.default, value: viewModel.list.count)
     }
 
     func dialogListItem(_ model: DialogResponse) -> some View {
