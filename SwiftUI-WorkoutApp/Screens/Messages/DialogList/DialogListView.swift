@@ -94,17 +94,22 @@ private extension DialogListView {
             : "Найти пользователя"
     }
 
+    @ViewBuilder
     var dialogList: some View {
-        List {
-            ForEach(viewModel.list) { model in
-                dialogListItem(model)
-                    .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
-                    .listRowBackground(Color.swBackground)
-                    .listRowSeparator(.hidden)
+        if viewModel.list.isEmpty {
+            Color.swBackground
+        } else {
+            List {
+                ForEach(viewModel.list) { model in
+                    dialogListItem(model)
+                        .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
+                        .listRowBackground(Color.swBackground)
+                        .listRowSeparator(.hidden)
+                }
+                .onDelete(perform: initiateDeletion)
             }
-            .onDelete(perform: initiateDeletion)
+            .listStyle(.plain)
         }
-        .listStyle(.plain)
     }
 
     func dialogListItem(_ model: DialogResponse) -> some View {
