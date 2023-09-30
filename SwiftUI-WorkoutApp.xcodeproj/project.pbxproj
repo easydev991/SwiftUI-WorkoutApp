@@ -36,7 +36,6 @@
 		6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */; };
 		6758B92C281D9283001D83D8 /* EventFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B92B281D9283001D83D8 /* EventFormViewModel.swift */; };
 		6758B936281E5EA9001D83D8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B935281E5EA9001D83D8 /* APIService.swift */; };
-		675A370328547ACA00DAE071 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 675A370528547ACA00DAE071 /* Localizable.stringsdict */; };
 		675A370A2854810B00DAE071 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 675A37092854810B00DAE071 /* Utils */; };
 		675E5618297D21D400B4981A /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675E5617297D21D400B4981A /* Array+.swift */; };
 		675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* TextEntryView.swift */; };
@@ -69,13 +68,13 @@
 		6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA72280B43FE00DB76F1 /* LoginView.swift */; };
 		6798AA79280BE8E200DB76F1 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA75280BE8E200DB76F1 /* countries.json */; };
 		6798AA7B280BE8E200DB76F1 /* oldSportsGrounds.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */; };
-		6798AA7E280BF13100DB76F1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA80280BF13100DB76F1 /* Localizable.strings */; };
 		6798AA84280C0F7D00DB76F1 /* EditAccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */; };
 		679F3AFF29683EB300BB3590 /* RoundedButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3AFE29683EB300BB3590 /* RoundedButtonLabel.swift */; };
 		679F3B012968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */; };
 		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */; };
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
+		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
 		67A6FEF529E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
 		67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371702A63FF6F000FF143 /* AppThemeScreen.swift */; };
@@ -151,7 +150,6 @@
 		6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailViewModel.swift; sourceTree = "<group>"; };
 		6758B92B281D9283001D83D8 /* EventFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFormViewModel.swift; sourceTree = "<group>"; };
 		6758B935281E5EA9001D83D8 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
-		675A370628547ACD00DAE071 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		675A3707285480E600DAE071 /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utils; path = "SwiftUI-WorkoutApp/Utils"; sourceTree = "<group>"; };
 		675E5617297D21D400B4981A /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		675EC64E2814126800C2E229 /* TextEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryView.swift; sourceTree = "<group>"; };
@@ -186,14 +184,13 @@
 		6798AA72280B43FE00DB76F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6798AA75280BE8E200DB76F1 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldSportsGrounds.json; sourceTree = "<group>"; };
-		6798AA7F280BF13100DB76F1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		6798AA81280BF14500DB76F1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountScreen.swift; sourceTree = "<group>"; };
 		679F3AFE29683EB300BB3590 /* RoundedButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonLabel.swift; sourceTree = "<group>"; };
 		679F3B002968401700BB3590 /* AdaptiveRoundedRectangleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRoundedRectangleModifier.swift; sourceTree = "<group>"; };
 		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoUserButton.swift; sourceTree = "<group>"; };
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
+		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOSVersionChecker.swift; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
 		67B371702A63FF6F000FF143 /* AppThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeScreen.swift; sourceTree = "<group>"; };
@@ -213,7 +210,6 @@
 		67D916872838F4C40098D3CB /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
 		67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryViewModel.swift; sourceTree = "<group>"; };
-		67EA685A2A6F0AB900697C88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailScreen.swift; sourceTree = "<group>"; };
 		67FBF64A283379D9008A7968 /* EventsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListViewModel.swift; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
@@ -540,8 +536,7 @@
 				6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */,
 				6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */,
 				6798AA41280AEDCA00DB76F1 /* Assets.xcassets */,
-				6798AA80280BF13100DB76F1 /* Localizable.strings */,
-				675A370528547ACA00DAE071 /* Localizable.stringsdict */,
+				67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -837,9 +832,8 @@
 				6798AA45280AEDCA00DB76F1 /* Preview Assets.xcassets in Resources */,
 				6798AA79280BE8E200DB76F1 /* countries.json in Resources */,
 				672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */,
-				6798AA7E280BF13100DB76F1 /* Localizable.strings in Resources */,
 				6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */,
-				675A370328547ACA00DAE071 /* Localizable.stringsdict in Resources */,
+				67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -959,27 +953,6 @@
 			targetProxy = 675083AE297C0A60008D8C52 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		675A370528547ACA00DAE071 /* Localizable.stringsdict */ = {
-			isa = PBXVariantGroup;
-			children = (
-				675A370628547ACD00DAE071 /* ru */,
-				67EA685A2A6F0AB900697C88 /* en */,
-			);
-			name = Localizable.stringsdict;
-			sourceTree = "<group>";
-		};
-		6798AA80280BF13100DB76F1 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6798AA7F280BF13100DB76F1 /* en */,
-				6798AA81280BF14500DB76F1 /* ru */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		67138D8C297311BD00BBF450 /* Debug */ = {
@@ -1127,6 +1100,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1183,6 +1157,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
