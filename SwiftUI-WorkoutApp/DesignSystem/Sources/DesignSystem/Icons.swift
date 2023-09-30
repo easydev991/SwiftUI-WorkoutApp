@@ -2,9 +2,9 @@ import SwiftUI
 
 public extension Image {
     /// Картинка для вкладки с площадками в таббаре
-    static let sportsGroundIcon = Image("SportsGroundTabbarIcon", bundle: .module)
+    static let sportsGroundIcon = Image(.sportsGroundTabbarIcon)
     /// Картинка-заглушка
-    static let defaultWorkoutImage = Image("defaultWorkoutImage", bundle: .module)
+    static let defaultWorkout = Image(.defaultWorkout)
 }
 
 public enum Icons {

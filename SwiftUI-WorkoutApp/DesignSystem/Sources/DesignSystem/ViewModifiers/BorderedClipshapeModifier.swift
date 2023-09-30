@@ -45,12 +45,12 @@ public extension View {
 #if DEBUG
 #Preview {
     VStack(spacing: 16) {
-        Image.defaultWorkoutImage
+        Image.defaultWorkout
             .resizable()
             .scaledToFit()
             .frame(width: 80, height: 80)
             .borderedClipshape(.circle)
-        Image.defaultWorkoutImage
+        Image.defaultWorkout
             .resizable()
             .scaledToFit()
             .frame(width: 120, height: 120)

@@ -22,7 +22,7 @@ public struct ResizableCachedImage: View {
                     .resizable()
             }
         } placeholder: {
-            Image.defaultWorkoutImage
+            Image.defaultWorkout
                 .resizable()
         }
     }

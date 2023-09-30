@@ -28,7 +28,7 @@ private extension MapSnapshotView {
             if let image = snapshotImage {
                 Image(uiImage: image)
             }
-            Image.defaultWorkoutImage
+            Image.defaultWorkout
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: .infinity)
