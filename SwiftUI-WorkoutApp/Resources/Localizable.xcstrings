@@ -1072,6 +1072,17 @@
         }
       }
     },
+    "Карта" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Map"
+          }
+        }
+      }
+    },
     "Когда" : {
       "localizations" : {
         "en" : {
@@ -1410,6 +1421,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сохранить изменения"
+          }
+        }
+      }
+    },
+    "Список" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List"
           }
         }
       }
