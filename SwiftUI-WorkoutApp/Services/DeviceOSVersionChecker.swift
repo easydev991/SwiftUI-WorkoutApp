@@ -12,9 +12,9 @@ enum DeviceOSVersionChecker {
     /// До iOS 16 `ScrollView` не поддерживает `refreshable`
     static var iOS16Available: Bool {
         if #available(iOS 16, *) {
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 }

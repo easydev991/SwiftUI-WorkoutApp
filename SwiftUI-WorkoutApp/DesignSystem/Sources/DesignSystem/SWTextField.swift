@@ -51,9 +51,9 @@ public extension SWTextField {
 
         var message: String? {
             if case let .message(text) = self, !text.isEmpty {
-                return text
+                text
             } else {
-                return nil
+                nil
             }
         }
     }
