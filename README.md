@@ -77,7 +77,7 @@ rbenv exec fastlane snapshot
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем [swiftformat (0.52.5)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.52.6)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 

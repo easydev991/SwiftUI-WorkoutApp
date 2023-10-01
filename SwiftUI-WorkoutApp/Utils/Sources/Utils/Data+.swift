@@ -5,9 +5,9 @@ public extension Data {
         if let object = try? JSONSerialization.jsonObject(with: self, options: [.fragmentsAllowed]),
            let jsonData = try? JSONSerialization.data(withJSONObject: object, options: .prettyPrinted),
            let json = String(data: jsonData, encoding: .utf8) {
-            return json
+            json
         } else {
-            return ""
+            ""
         }
     }
 
