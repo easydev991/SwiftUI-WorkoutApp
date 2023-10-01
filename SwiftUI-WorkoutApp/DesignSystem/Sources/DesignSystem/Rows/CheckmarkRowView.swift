@@ -11,7 +11,7 @@ public struct TextWithCheckmarkRowView: View {
 
     public var body: some View {
         HStack(spacing: 10) {
-            Text(text)
+            Text(.init(stringLiteral: text))
                 .lineLimit(1)
                 .foregroundColor(.swMainText)
                 .frame(maxWidth: .infinity, alignment: .leading)
