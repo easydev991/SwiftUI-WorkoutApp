@@ -1007,6 +1007,23 @@
         }
       }
     },
+    "Изменить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить"
+          }
+        }
+      }
+    },
     "Изменить пароль" : {
       "localizations" : {
         "en" : {
@@ -1119,6 +1136,17 @@
         }
       }
     },
+    "Настроить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        }
+      }
+    },
     "Необходимо выбрать площадку" : {
       "localizations" : {
         "en" : {
@@ -1211,6 +1239,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Площадки (%lld)"
+          }
+        }
+      }
+    },
+    "Пожаловаться" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report"
           }
         }
       }
