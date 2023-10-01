@@ -1,8 +1,14 @@
 {
-  "sourceLanguage" : "en",
+  "sourceLanguage" : "ru",
   "strings" : {
     "" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",

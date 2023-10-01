@@ -784,7 +784,7 @@
 			};
 			buildConfigurationList = 6798AA35280AEDC900DB76F1 /* Build configuration list for PBXProject "SwiftUI-WorkoutApp" */;
 			compatibilityVersion = "Xcode 13.0";
-			developmentRegion = en;
+			developmentRegion = ru;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
