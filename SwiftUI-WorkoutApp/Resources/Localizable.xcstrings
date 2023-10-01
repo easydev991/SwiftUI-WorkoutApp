@@ -847,6 +847,17 @@
         }
       }
     },
+    "Большая" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large"
+          }
+        }
+      }
+    },
     "Войти" : {
       "localizations" : {
         "en" : {
@@ -1095,6 +1106,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда"
+          }
+        }
+      }
+    },
+    "Маленькая" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small"
           }
         }
       }
@@ -1448,6 +1470,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Способ отображения"
+          }
+        }
+      }
+    },
+    "Средняя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medium"
           }
         }
       }
