@@ -44,9 +44,7 @@ public extension JournalEntryResponse {
     }
 
     var formattedMessage: String {
-        message.valueOrEmpty
-            .withoutHTML
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        message.valueOrEmpty.withoutHTML
     }
 
     var messageDateString: String {
