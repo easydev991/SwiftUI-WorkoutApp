@@ -95,7 +95,7 @@ private extension SportsGroundFormView {
         } label: {
             ListRowView(
                 leadingContent: .text("Тип площадки"),
-                trailingContent: .text(viewModel.groundForm.gradeString)
+                trailingContent: .text(.init(viewModel.groundForm.gradeString))
             )
         }
     }
@@ -110,7 +110,7 @@ private extension SportsGroundFormView {
         } label: {
             ListRowView(
                 leadingContent: .text("Размер площадки"),
-                trailingContent: .text(viewModel.groundForm.sizeString)
+                trailingContent: .text(.init(viewModel.groundForm.sizeString))
             )
         }
     }

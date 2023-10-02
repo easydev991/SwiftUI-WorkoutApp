@@ -389,6 +389,17 @@
         }
       }
     },
+    "Oleg991 на boosty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oleg991 (boots)"
+          }
+        }
+      }
+    },
     "peopleCount" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -858,6 +869,17 @@
         }
       }
     },
+    "Версия" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        }
+      }
+    },
     "Войти" : {
       "localizations" : {
         "en" : {
@@ -886,6 +908,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Выйти"
+          }
+        }
+      }
+    },
+    "Выйти из профиля" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log out of your profile"
           }
         }
       }
@@ -982,6 +1015,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доступ на просмотр"
+          }
+        }
+      }
+    },
+    "Женский" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Female"
+          }
+        }
+      }
+    },
+    "Женщина" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woman"
           }
         }
       }
@@ -1083,6 +1138,16 @@
         }
       }
     },
+    "Как в системе" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
+    },
     "Карта" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1106,6 +1171,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда"
+          }
+        }
+      }
+    },
+    "Легендарная" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendary"
+          }
+        }
+      }
+    },
+    "Магазин WORKOUT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WORKOUT shop"
           }
         }
       }
@@ -1153,6 +1240,28 @@
         }
       }
     },
+    "Мужской" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Male"
+          }
+        }
+      }
+    },
+    "Мужчина" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Man"
+          }
+        }
+      }
+    },
     "На весь экран" : {
       "localizations" : {
         "en" : {
@@ -1180,6 +1289,17 @@
         }
       }
     },
+    "Не указан" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not specified"
+          }
+        }
+      }
+    },
     "Необходимо выбрать площадку" : {
       "localizations" : {
         "en" : {
@@ -1192,6 +1312,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Необходимо выбрать площадку"
+          }
+        }
+      }
+    },
+    "О приложении" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About the app"
           }
         }
       }
@@ -1224,6 +1355,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отправить"
+          }
+        }
+      }
+    },
+    "Отправить обратную связь" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send feedback"
+          }
+        }
+      }
+    },
+    "Официальный сайт" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Official website"
+          }
+        }
+      }
+    },
+    "Оценить приложение" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate the app"
           }
         }
       }
@@ -1276,6 +1440,28 @@
         }
       }
     },
+    "Поддержать проект" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the project"
+          }
+        }
+      }
+    },
+    "Поддержать разработчика" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the developer"
+          }
+        }
+      }
+    },
     "Пожаловаться" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1299,6 +1485,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск пользователей"
+          }
+        }
+      }
+    },
+    "Пользовательское соглашение" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of use"
           }
         }
       }
@@ -1351,6 +1548,17 @@
         }
       }
     },
+    "Размер площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports ground size"
+          }
+        }
+      }
+    },
     "Сбросить фильтры" : {
       "localizations" : {
         "en" : {
@@ -1363,6 +1571,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сбросить фильтры"
+          }
+        }
+      }
+    },
+    "Светлая тема" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light mode"
+          }
+        }
+      }
+    },
+    "Советская" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soviet"
+          }
+        }
+      }
+    },
+    "Современная" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modern"
           }
         }
       }
@@ -1501,6 +1741,16 @@
         }
       }
     },
+    "Темная тема" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark mode"
+          }
+        }
+      }
+    },
     "Тип мероприятия" : {
       "localizations" : {
         "en" : {
@@ -1513,6 +1763,27 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тип мероприятия"
+          }
+        }
+      }
+    },
+    "Тип площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports ground type"
+          }
+        }
+      }
+    },
+    "Только для моего города" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only for my city"
           }
         }
       }
@@ -1545,6 +1816,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Фото"
+          }
+        }
+      }
+    },
+    "Хомуты" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collars"
           }
         }
       }

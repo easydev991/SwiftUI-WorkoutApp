@@ -91,7 +91,7 @@ private extension EditAccountScreen {
                     .personQuestion,
                     viewModel.userForm.placeholder(.gender)
                 ),
-                trailingContent: .text(viewModel.currentGender.rawValue)
+                trailingContent: .text(.init(viewModel.currentGender.rawValue))
             )
         }
     }
@@ -122,7 +122,7 @@ private extension EditAccountScreen {
                     .globe,
                     viewModel.userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(viewModel.userForm.country.name)
+                trailingContent: .textWithChevron(.init(viewModel.userForm.country.name))
             )
         }
         .padding(.bottom, 6)
@@ -141,7 +141,7 @@ private extension EditAccountScreen {
                     .signPost,
                     viewModel.userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(viewModel.userForm.city.name)
+                trailingContent: .textWithChevron(.init(viewModel.userForm.city.name))
             )
         }
     }

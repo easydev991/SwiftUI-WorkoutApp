@@ -126,7 +126,7 @@ private extension ProfileSettingsView {
         NavigationLink(destination: AppThemeScreen()) {
             ListRowView(
                 leadingContent: .text("Тема приложения"),
-                trailingContent: .textWithChevron(defaults.appTheme.rawValue)
+                trailingContent: .textWithChevron(defaults.appTheme.localizedKey)
             )
         }
     }
@@ -206,7 +206,7 @@ private extension ProfileSettingsView {
     var appVersionView: some View {
         ListRowView(
             leadingContent: .text("Версия"),
-            trailingContent: .text(Constants.appVersion)
+            trailingContent: .text(.init(Constants.appVersion))
         )
     }
 

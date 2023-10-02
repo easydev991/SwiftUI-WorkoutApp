@@ -72,9 +72,9 @@ public extension ListRowView {
         /// Шеврон
         case chevron
         /// Текст
-        case text(String)
+        case text(LocalizedStringKey)
         /// Текст с шевроном
-        case textWithChevron(String)
+        case textWithChevron(LocalizedStringKey)
 
         @ViewBuilder
         func makeView(isEnabled: Bool) -> some View {
@@ -93,7 +93,7 @@ public extension ListRowView {
             }
         }
 
-        private func makeTextView(with text: String) -> some View {
+        private func makeTextView(with text: LocalizedStringKey) -> some View {
             Text(text).foregroundColor(.swSmallElements)
         }
     }

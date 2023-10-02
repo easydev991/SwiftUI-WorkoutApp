@@ -36,7 +36,7 @@ public struct ItemListScreen: View {
                             dismiss()
                         } label: {
                             TextWithCheckmarkRowView(
-                                text: item,
+                                text: .init(item),
                                 isChecked: item == selectedItem
                             )
                         }

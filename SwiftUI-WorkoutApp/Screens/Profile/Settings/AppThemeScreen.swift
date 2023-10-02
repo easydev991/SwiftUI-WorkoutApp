@@ -13,7 +13,7 @@ struct AppThemeScreen: View {
                         defaults.setAppTheme(theme)
                     } label: {
                         TextWithCheckmarkRowView(
-                            text: theme.rawValue,
+                            text: theme.localizedKey,
                             isChecked: defaults.appTheme == theme
                         )
                     }

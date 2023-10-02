@@ -83,7 +83,7 @@ private extension SportsGroundsMapView {
     var segmentedControl: some View {
         Picker("Способ отображения", selection: $presentation) {
             ForEach(Presentation.allCases, id: \.self) {
-                Text(LocalizedStringKey(stringLiteral: $0.rawValue))
+                Text(.init($0.rawValue))
                     .accessibilityIdentifier($0.rawValue)
             }
         }

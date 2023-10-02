@@ -73,7 +73,7 @@ private extension SportsGroundFilterView {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: SportsGroundSize(id: size.code).rawValue,
+                text: .init(SportsGroundSize(id: size.code).rawValue),
                 isChecked: filter.size.contains(size)
             )
         }
@@ -89,7 +89,7 @@ private extension SportsGroundFilterView {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: SportsGroundGrade(id: grade.code).rawValue,
+                text: .init(SportsGroundGrade(id: grade.code).rawValue),
                 isChecked: filter.grade.contains(grade)
             )
         }
