@@ -947,6 +947,28 @@
         }
       }
     },
+    "Все" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everybody"
+          }
+        }
+      }
+    },
+    "Выбрать площадку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a sports ground"
+          }
+        }
+      }
+    },
     "Выйти" : {
       "localizations" : {
         "en" : {
@@ -1030,6 +1052,17 @@
         }
       }
     },
+    "Город" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "City"
+          }
+        }
+      }
+    },
     "Дата и время" : {
       "localizations" : {
         "en" : {
@@ -1042,6 +1075,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дата и время"
+          }
+        }
+      }
+    },
+    "Дата рождения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date of birth"
           }
         }
       }
@@ -1096,6 +1140,17 @@
         }
       }
     },
+    "Дневников пока нет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No journals here yet"
+          }
+        }
+      }
+    },
     "Добавил" : {
       "localizations" : {
         "en" : {
@@ -1108,6 +1163,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавил"
+          }
+        }
+      }
+    },
+    "Добавить в друзья" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a friend"
           }
         }
       }
@@ -1375,6 +1441,17 @@
         }
       }
     },
+    "Имя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
     "Имя пользователя на английском" : {
       "localizations" : {
         "en" : {
@@ -1523,6 +1600,17 @@
         }
       }
     },
+    "Логин" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login"
+          }
+        }
+      }
+    },
     "Магазин WORKOUT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1655,6 +1743,17 @@
         }
       }
     },
+    "Найти пользователя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find a user"
+          }
+        }
+      }
+    },
     "Настроить" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1694,13 +1793,45 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose a sports ground first"
+            "value" : "Select a sports ground first"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Необходимо выбрать площадку"
+          }
+        }
+      }
+    },
+    "Нет запланированных\nмероприятий" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No upcoming events yet"
+          }
+        }
+      }
+    },
+    "Нет запланированных\\nмероприятий" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No upcoming events yet"
+          }
+        }
+      }
+    },
+    "Нет соединения с сетью" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No network connection"
           }
         }
       }
@@ -1786,6 +1917,17 @@
         }
       }
     },
+    "Открыть список друзей" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open friend list"
+          }
+        }
+      }
+    },
     "Отправить" : {
       "localizations" : {
         "en" : {
@@ -1853,6 +1995,17 @@
         }
       }
     },
+    "Пароль (минимум 6 символов)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password (6+ characters)"
+          }
+        }
+      }
+    },
     "Перейти на карту" : {
       "localizations" : {
         "en" : {
@@ -1881,6 +2034,27 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Площадка"
+          }
+        }
+      }
+    },
+    "Площадка № %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports ground № %lld"
+          }
+        }
+      }
+    },
+    "Площадки" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports grounds"
           }
         }
       }
@@ -1997,6 +2171,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск пользователей"
+          }
+        }
+      }
+    },
+    "Пол" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gender"
           }
         }
       }
@@ -2268,6 +2453,17 @@
         }
       }
     },
+    "Создать дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a journal"
+          }
+        }
+      }
+    },
     "Создать мероприятие" : {
       "localizations" : {
         "en" : {
@@ -2394,6 +2590,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Средняя"
+          }
+        }
+      }
+    },
+    "Страна" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Country"
           }
         }
       }
@@ -2548,6 +2755,17 @@
         }
       }
     },
+    "Только я" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only me"
+          }
+        }
+      }
+    },
     "Удалить" : {
       "localizations" : {
         "en" : {
@@ -2611,6 +2829,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить запись из дневника?"
+          }
+        }
+      }
+    },
+    "Удалить из друзей" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from friends"
           }
         }
       }
@@ -2729,6 +2958,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Хомуты"
+          }
+        }
+      }
+    },
+    "Чатов пока нет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No chats here yet"
           }
         }
       }
