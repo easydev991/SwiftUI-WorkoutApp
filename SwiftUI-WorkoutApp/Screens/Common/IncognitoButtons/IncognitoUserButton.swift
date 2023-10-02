@@ -23,7 +23,7 @@ extension IncognitoUserButton {
 }
 
 private extension IncognitoUserButton.Mode {
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .register:
             "Регистрация"

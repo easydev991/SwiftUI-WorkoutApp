@@ -43,7 +43,7 @@ private extension EmptyContentView {
     @ViewBuilder
     var hintTextIfAvailable: some View {
         if isHintAvailable {
-            Text(Constants.Alert.eventCreationRule)
+            Text(.init(Constants.Alert.eventCreationRule))
                 .foregroundColor(.swMainText)
                 .font(.footnote.weight(.medium))
                 .multilineTextAlignment(.center)

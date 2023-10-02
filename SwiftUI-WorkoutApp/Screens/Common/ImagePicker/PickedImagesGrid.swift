@@ -92,6 +92,7 @@ private extension PickedImagesGrid {
     }
 
     var subtitle: String {
+        #warning("Возвращать String.localized")
         let selectionLimitString = String.localizedStringWithFormat(
             NSLocalizedString("photosCount", comment: ""),
             selectionLimit

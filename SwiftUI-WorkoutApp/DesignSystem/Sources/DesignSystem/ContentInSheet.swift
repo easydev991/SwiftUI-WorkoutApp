@@ -28,7 +28,7 @@ public struct ContentInSheet<Content: View>: View {
 
 private extension ContentInSheet {
     var headerForSheet: some View {
-        Text(title)
+        Text(.init(title))
             .lineLimit(1)
             .font(.headline)
             .foregroundColor(.swMainText)

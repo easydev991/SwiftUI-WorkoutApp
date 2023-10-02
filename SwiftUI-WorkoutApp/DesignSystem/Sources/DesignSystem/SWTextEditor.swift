@@ -37,13 +37,15 @@ public struct SWTextEditor: View {
             )
             .animation(.default, value: isFocused)
             .overlay(alignment: .topLeading) {
-                Text(placeholder ?? "")
-                    .foregroundColor(.swSeparators)
-                    .multilineTextAlignment(.leading)
-                    .opacity(text.isEmpty ? 1 : 0)
-                    .padding(.top, 10)
-                    .padding(.horizontal, 12)
-                    .allowsHitTesting(false)
+                if let placeholder {
+                    Text(.init(placeholder))
+                        .foregroundColor(.swSeparators)
+                        .multilineTextAlignment(.leading)
+                        .opacity(text.isEmpty ? 1 : 0)
+                        .padding(.top, 10)
+                        .padding(.horizontal, 12)
+                        .allowsHitTesting(false)
+                }
             }
     }
 }
