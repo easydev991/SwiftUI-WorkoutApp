@@ -897,6 +897,23 @@
         }
       }
     },
+    "Английский" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Английский"
+          }
+        }
+      }
+    },
     "Большая" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2591,6 +2608,23 @@
         }
       }
     },
+    "Русский" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Russian"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Русский"
+          }
+        }
+      }
+    },
     "Сбросить фильтры" : {
       "localizations" : {
         "en" : {
@@ -3272,6 +3306,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
+          }
+        }
+      }
+    },
+    "Язык" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык"
           }
         }
       }

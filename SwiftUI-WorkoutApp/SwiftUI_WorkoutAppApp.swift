@@ -18,6 +18,7 @@ struct SwiftUI_WorkoutAppApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environment(\.locale, .init(identifier: defaults.appLanguage.code))
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)

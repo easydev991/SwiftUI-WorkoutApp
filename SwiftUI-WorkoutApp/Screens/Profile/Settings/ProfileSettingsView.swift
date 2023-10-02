@@ -27,6 +27,7 @@ struct ProfileSettingsView: View {
                             authorizeView
                         }
                         appThemeButton
+                        languagePicker
                     }
                 }
                 dividerView
@@ -127,6 +128,27 @@ private extension ProfileSettingsView {
             ListRowView(
                 leadingContent: .text("Тема приложения"),
                 trailingContent: .textWithChevron(defaults.appTheme.rawValue)
+            )
+        }
+    }
+
+    var languagePicker: some View {
+        Menu {
+            Picker(
+                "",
+                selection: .init(
+                    get: { defaults.appLanguage.rawValue },
+                    set: { defaults.setAppLanguage($0) }
+                )
+            ) {
+                ForEach(AppLanguage.allCases.map(\.rawValue), id: \.self) {
+                    Text(.init($0))
+                }
+            }
+        } label: {
+            ListRowView(
+                leadingContent: .text("Язык"),
+                trailingContent: .textWithChevron(defaults.appLanguage.rawValue)
             )
         }
     }
