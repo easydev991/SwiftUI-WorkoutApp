@@ -41,11 +41,11 @@ public extension ListRowView {
         var view: some View {
             switch self {
             case let .text(text):
-                makeTextView(with: text)
+                makeTextView(with: .init(text))
             case let .iconWithText(iconName, text):
                 HStack(spacing: 12) {
                     ListRowView.LeadingContent.makeIconView(with: iconName)
-                    makeTextView(with: text)
+                    makeTextView(with: .init(text))
                 }
             }
         }
@@ -60,7 +60,7 @@ public extension ListRowView {
                 }
         }
 
-        private func makeTextView(with text: String) -> some View {
+        private func makeTextView(with text: LocalizedStringKey) -> some View {
             Text(text).foregroundColor(.swMainText)
         }
     }
@@ -72,9 +72,9 @@ public extension ListRowView {
         /// Шеврон
         case chevron
         /// Текст
-        case text(LocalizedStringKey)
+        case text(String)
         /// Текст с шевроном
-        case textWithChevron(LocalizedStringKey)
+        case textWithChevron(String)
 
         @ViewBuilder
         func makeView(isEnabled: Bool) -> some View {
@@ -84,10 +84,10 @@ public extension ListRowView {
             case .chevron:
                 if isEnabled { Icons.Misc.chevronView }
             case let .text(text):
-                makeTextView(with: text)
+                makeTextView(with: .init(text))
             case let .textWithChevron(text):
                 HStack(spacing: 12) {
-                    makeTextView(with: text)
+                    makeTextView(with: .init(text))
                     if isEnabled { Icons.Misc.chevronView }
                 }
             }

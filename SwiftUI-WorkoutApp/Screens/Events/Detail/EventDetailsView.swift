@@ -247,7 +247,7 @@ private extension EventDetailsView {
             Image(systemName: "trash")
         }
         .confirmationDialog(
-            Constants.Alert.deleteEvent,
+            .init(Constants.Alert.deleteEvent),
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {

@@ -222,7 +222,7 @@ private extension SportsGroundDetailView {
             Image(systemName: "trash")
         }
         .confirmationDialog(
-            Constants.Alert.deleteGround,
+            .init(Constants.Alert.deleteGround),
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {

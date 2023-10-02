@@ -395,7 +395,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oleg991 (boots)"
+            "value" : "Oleg991 (boosty)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oleg991 на boosty"
           }
         }
       }
@@ -858,6 +864,23 @@
         }
       }
     },
+    "Авторизуйтесь, чтобы иметь\\nдоступ ко всем возможностям" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log in to have\\naccess to all features"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Авторизуйтесь, чтобы иметь\\nдоступ ко всем возможностям"
+          }
+        }
+      }
+    },
     "Большая" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -865,6 +888,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Large"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большая"
           }
         }
       }
@@ -876,6 +905,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия"
           }
         }
       }
@@ -920,6 +955,29 @@
             "state" : "translated",
             "value" : "Log out of your profile"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из профиля"
+          }
+        }
+      }
+    },
+    "Выйти из учетной записи?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log out of your profile?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из учетной записи?"
+          }
         }
       }
     },
@@ -951,6 +1009,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дата и время"
+          }
+        }
+      }
+    },
+    "Для восстановления пароля введите логин или email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To recover your password, enter your login or email"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для восстановления пароля введите логин или email"
+          }
+        }
+      }
+    },
+    "Для отображения твоего\\nместоположения необходимо\\nразрешить доступ к геолокации в\\nнастройках" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To display your\\nlocation, please\\ngive access to geolocation in\\nsettings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для отображения твоего\\nместоположения необходимо\\nразрешить доступ к геолокации в\\nнастройках"
           }
         }
       }
@@ -1027,6 +1119,12 @@
             "state" : "translated",
             "value" : "Female"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Женский"
+          }
         }
       }
     },
@@ -1037,6 +1135,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Woman"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Женщина"
+          }
+        }
+      }
+    },
+    "Заблокировать пользователя?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Block this user?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заблокировать пользователя?"
           }
         }
       }
@@ -1069,6 +1190,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Закрыть"
+          }
+        }
+      }
+    },
+    "Запрещен доступ к геолокации" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have not granted access to geolocation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрещен доступ к геолокации"
+          }
+        }
+      }
+    },
+    "Запрос отправлен!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request has been sent!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрос отправлен!"
           }
         }
       }
@@ -1138,12 +1293,36 @@
         }
       }
     },
+    "Инструкция для восстановления пароля выслана на email, указанный при регистрации" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instructions for recovering your password have been sent to the email specified during registration"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инструкция для восстановления пароля выслана на email, указанный при регистрации"
+          }
+        }
+      }
+    },
     "Как в системе" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как в системе"
           }
         }
       }
@@ -1155,6 +1334,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Map"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Карта"
           }
         }
       }
@@ -1183,6 +1368,12 @@
             "state" : "translated",
             "value" : "Legendary"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Легендарная"
+          }
         }
       }
     },
@@ -1194,6 +1385,12 @@
             "state" : "translated",
             "value" : "WORKOUT shop"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Магазин WORKOUT"
+          }
         }
       }
     },
@@ -1204,6 +1401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Small"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Маленькая"
           }
         }
       }
@@ -1248,6 +1451,12 @@
             "state" : "translated",
             "value" : "Male"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мужской"
+          }
         }
       }
     },
@@ -1258,6 +1467,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Man"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мужчина"
           }
         }
       }
@@ -1286,6 +1501,12 @@
             "state" : "translated",
             "value" : "Configure"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настроить"
+          }
         }
       }
     },
@@ -1296,6 +1517,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not specified"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не указан"
           }
         }
       }
@@ -1323,6 +1550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About the app"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О приложении"
           }
         }
       }
@@ -1367,6 +1600,12 @@
             "state" : "translated",
             "value" : "Send feedback"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить обратную связь"
+          }
         }
       }
     },
@@ -1378,6 +1617,12 @@
             "state" : "translated",
             "value" : "Official website"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Официальный сайт"
+          }
         }
       }
     },
@@ -1388,6 +1633,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rate the app"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценить приложение"
           }
         }
       }
@@ -1448,6 +1699,12 @@
             "state" : "translated",
             "value" : "Support the project"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержать проект"
+          }
         }
       }
     },
@@ -1459,6 +1716,12 @@
             "state" : "translated",
             "value" : "Support the developer"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержать разработчика"
+          }
         }
       }
     },
@@ -1469,6 +1732,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Report"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожаловаться"
+          }
+        }
+      }
+    },
+    "Пожаловаться на фото" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report the photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожаловаться на фото"
           }
         }
       }
@@ -1489,6 +1775,40 @@
         }
       }
     },
+    "Пользователь будет добавлен в черный список" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user will be added to your black list"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользователь будет добавлен в черный список"
+          }
+        }
+      }
+    },
+    "Пользователь будет удален из черного списка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user will be removed from your black list"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользователь будет удален из черного списка"
+          }
+        }
+      }
+    },
     "Пользовательское соглашение" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1496,6 +1816,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terms of use"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользовательское соглашение"
           }
         }
       }
@@ -1548,6 +1874,23 @@
         }
       }
     },
+    "Разблокировать пользователя?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unblock this user?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разблокировать пользователя?"
+          }
+        }
+      }
+    },
     "Размер площадки" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1555,6 +1898,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sports ground size"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер площадки"
+          }
+        }
+      }
+    },
+    "Регистрация доступна на сайте workout.su" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration is available on workout.su"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Регистрация доступна на сайте workout.su"
           }
         }
       }
@@ -1576,11 +1942,18 @@
       }
     },
     "Светлая тема" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Light mode"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая тема"
           }
         }
       }
@@ -1593,6 +1966,12 @@
             "state" : "translated",
             "value" : "Soviet"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Советская"
+          }
         }
       }
     },
@@ -1603,6 +1982,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modern"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Современная"
           }
         }
       }
@@ -1695,6 +2080,12 @@
             "state" : "translated",
             "value" : "List"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Список"
+          }
         }
       }
     },
@@ -1722,6 +2113,12 @@
             "state" : "translated",
             "value" : "Medium"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средняя"
+          }
         }
       }
     },
@@ -1742,11 +2139,18 @@
       }
     },
     "Темная тема" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark mode"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Темная тема"
           }
         }
       }
@@ -1775,15 +2179,28 @@
             "state" : "translated",
             "value" : "Sports ground type"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип площадки"
+          }
         }
       }
     },
     "Только для моего города" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Only for my city"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Только для моего города"
           }
         }
       }
@@ -1800,6 +2217,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить"
+          }
+        }
+      }
+    },
+    "Удалить диалог?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the dialog?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить диалог?"
+          }
+        }
+      }
+    },
+    "Удалить дневник?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the journal?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить дневник?"
+          }
+        }
+      }
+    },
+    "Удалить запись из дневника?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the journal entry?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить запись из дневника?"
+          }
+        }
+      }
+    },
+    "Удалить мероприятие?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the event?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить мероприятие?"
+          }
+        }
+      }
+    },
+    "Удалить площадку?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the sports ground?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить площадку?"
+          }
+        }
+      }
+    },
+    "Удалить фото" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить фото"
           }
         }
       }
@@ -1827,6 +2346,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collars"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хомуты"
+          }
+        }
+      }
+    },
+    "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To create an event, you need to specify at least one sports ground where you train"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься"
           }
         }
       }

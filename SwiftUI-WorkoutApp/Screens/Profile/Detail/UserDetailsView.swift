@@ -146,7 +146,7 @@ private extension UserDetailsView {
             )
         }
         .confirmationDialog(
-            viewModel.blacklistActionOption.dialogTitle,
+            .init(viewModel.blacklistActionOption.dialogTitle),
             isPresented: $showBlacklistConfirmation,
             titleVisibility: .visible
         ) {

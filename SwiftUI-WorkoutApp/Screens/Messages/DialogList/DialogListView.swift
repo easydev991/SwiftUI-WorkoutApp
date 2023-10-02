@@ -22,7 +22,7 @@ struct DialogListView: View {
             .loadingOverlay(if: viewModel.isLoading)
             .background(Color.swBackground)
             .confirmationDialog(
-                Constants.Alert.deleteDialog,
+                .init(Constants.Alert.deleteDialog),
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) { deleteDialogButton }

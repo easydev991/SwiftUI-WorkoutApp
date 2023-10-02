@@ -1,20 +1,11 @@
-import SwiftUI
 import UIKit
 
 enum AppThemeService {
-    enum Theme: Int, CaseIterable, Identifiable {
-        var id: Int { rawValue }
-        case dark = 0
-        case light = 1
-        case system = 2
-
-        var localizedKey: LocalizedStringKey {
-            switch self {
-            case .dark: "Темная тема"
-            case .light: "Светлая тема"
-            case .system: "Как в системе"
-            }
-        }
+    enum Theme: String, CaseIterable, Identifiable {
+        var id: String { rawValue }
+        case dark = "Темная тема"
+        case light = "Светлая тема"
+        case system = "Как в системе"
     }
 
     /// Задает выбранную тему для приложения

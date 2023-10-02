@@ -126,7 +126,7 @@ private extension ProfileSettingsView {
         NavigationLink(destination: AppThemeScreen()) {
             ListRowView(
                 leadingContent: .text("Тема приложения"),
-                trailingContent: .textWithChevron(defaults.appTheme.localizedKey)
+                trailingContent: .textWithChevron(defaults.appTheme.rawValue)
             )
         }
     }
@@ -138,7 +138,7 @@ private extension ProfileSettingsView {
             ListRowView(leadingContent: .text("Выйти из профиля"))
         }
         .confirmationDialog(
-            Constants.Alert.logout,
+            .init(Constants.Alert.logout),
             isPresented: $showLogoutDialog,
             titleVisibility: .visible
         ) {
