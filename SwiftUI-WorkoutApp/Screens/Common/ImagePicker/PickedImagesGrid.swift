@@ -23,7 +23,7 @@ struct PickedImagesGrid: View {
     let processExtraImages: () -> Void
 
     var body: some View {
-        SectionView(header: header, mode: .regular) {
+        SectionView(header: .init(header), mode: .regular) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(subtitle)
                     .font(.subheadline)

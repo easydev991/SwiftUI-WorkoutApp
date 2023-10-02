@@ -39,7 +39,7 @@ struct SportsGroundFilterView: View {
                     if defaults.isAuthorized {
                         SectionView(
                             header: "Расположение",
-                            footer: footerCityText,
+                            footer: .init(footerCityText),
                             mode: .card()
                         ) {
                             buttonForMyCity
@@ -124,6 +124,7 @@ private extension SportsGroundFilterView {
         if let currentCity, currentCity != userProfileCity {
             resultString += "\nТекущий город: \(currentCity)"
         }
+        #warning("Возвращать String.localized")
         return resultString
     }
 

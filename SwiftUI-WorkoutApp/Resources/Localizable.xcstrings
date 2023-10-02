@@ -881,6 +881,22 @@
         }
       }
     },
+    "Адрес" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Address"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адрес"
+          }
+        }
+      }
+    },
     "Большая" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -997,6 +1013,23 @@
         }
       }
     },
+    "Где тренируется" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Where trains"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Где тренируется"
+          }
+        }
+      }
+    },
     "Дата и время" : {
       "localizations" : {
         "en" : {
@@ -1063,6 +1096,22 @@
         }
       }
     },
+    "Добавил" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added by"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавил"
+          }
+        }
+      }
+    },
     "Добавить комментарий" : {
       "localizations" : {
         "en" : {
@@ -1075,6 +1124,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить комментарий"
+          }
+        }
+      }
+    },
+    "Добавленные" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added sports grounds"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавленные"
           }
         }
       }
@@ -1107,6 +1173,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доступ на просмотр"
+          }
+        }
+      }
+    },
+    "Друзья" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friends"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Друзья"
           }
         }
       }
@@ -1224,6 +1306,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Запрос отправлен!"
+          }
+        }
+      }
+    },
+    "Заявки" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requests"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заявки"
           }
         }
       }
@@ -1356,6 +1454,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда"
+          }
+        }
+      }
+    },
+    "Комментарии" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comments"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Комментарии"
+          }
+        }
+      }
+    },
+    "Кто видит записи" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Who can see the entries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кто видит записи"
+          }
+        }
+      }
+    },
+    "Кто может оставлять комментарии" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Who can leave comments"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кто может оставлять комментарии"
           }
         }
       }
@@ -1493,6 +1639,22 @@
         }
       }
     },
+    "Название" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название"
+          }
+        }
+      }
+    },
     "Настроить" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1543,6 +1705,22 @@
         }
       }
     },
+    "Новый пароль" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый пароль"
+          }
+        }
+      }
+    },
     "О приложении" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1556,6 +1734,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "О приложении"
+          }
+        }
+      }
+    },
+    "Описание" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Description"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Описание"
+          }
+        }
+      }
+    },
+    "Организатор" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Организатор"
           }
         }
       }
@@ -1721,6 +1931,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поддержать разработчика"
+          }
+        }
+      }
+    },
+    "Подтверждение пароля" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password confirmation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подтверждение пароля"
           }
         }
       }
@@ -1891,6 +2117,23 @@
         }
       }
     },
+    "Размер" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер"
+          }
+        }
+      }
+    },
     "Размер площадки" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1908,6 +2151,23 @@
         }
       }
     },
+    "Расположение" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расположение"
+          }
+        }
+      }
+    },
     "Регистрация доступна на сайте workout.su" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1921,6 +2181,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Регистрация доступна на сайте workout.su"
+          }
+        }
+      }
+    },
+    "Результаты поиска" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search results"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Результаты поиска"
           }
         }
       }
@@ -2122,6 +2398,56 @@
         }
       }
     },
+    "Твои площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your sports grounds"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои площадки"
+          }
+        }
+      }
+    },
+    "Твой город в профиле: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your city in profile: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой город в профиле: %@"
+          }
+        }
+      }
+    },
+    "Текущий пароль" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текущий пароль"
+          }
+        }
+      }
+    },
     "Тема приложения" : {
       "localizations" : {
         "en" : {
@@ -2151,6 +2477,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Темная тема"
+          }
+        }
+      }
+    },
+    "Тип" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип"
           }
         }
       }
@@ -2323,6 +2666,23 @@
         }
       }
     },
+    "Фильтр площадок" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports grounds filter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтр площадок"
+          }
+        }
+      }
+    },
     "Фото" : {
       "localizations" : {
         "en" : {
@@ -2335,6 +2695,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Фото"
+          }
+        }
+      }
+    },
+    "Фотографии" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фотографии"
           }
         }
       }
