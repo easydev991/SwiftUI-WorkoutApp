@@ -63,9 +63,7 @@ public extension JournalResponse {
     }
 
     var formattedLastMessage: String {
-        lastMessageText.valueOrEmpty
-            .withoutHTML
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        lastMessageText.valueOrEmpty.withoutHTML
     }
 
     var lastMessageDateString: String {

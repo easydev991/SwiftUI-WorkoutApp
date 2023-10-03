@@ -26,8 +26,8 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String? {
-        let grade = SportsGroundGrade(id: typeID).rawValue
-        let size = SportsGroundSize(id: sizeID).rawValue
+        let grade = NSLocalizedString(SportsGroundGrade(id: typeID).rawValue, comment: "")
+        let size = NSLocalizedString(SportsGroundSize(id: sizeID).rawValue, comment: "")
         return grade + " / " + size
     }
 
@@ -178,7 +178,7 @@ public struct CommentResponse: Codable, Identifiable, Hashable {
     public let user: UserResponse?
 
     public var formattedBody: String {
-        body.valueOrEmpty.withoutHTML.trimmingCharacters(in: .whitespacesAndNewlines)
+        body.valueOrEmpty.withoutHTML
     }
 
     public enum CodingKeys: String, CodingKey {

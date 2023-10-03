@@ -76,7 +76,7 @@ extension UsersListView {
 }
 
 private extension UsersListView.Mode {
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .friends, .friendsForChat:
             "Друзья"

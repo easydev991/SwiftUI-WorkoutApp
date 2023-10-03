@@ -65,7 +65,7 @@ private extension JournalSettingsView {
                 selection: $journal.viewAccessType
             ) {
                 ForEach(options, id: \.self) {
-                    Text($0.description)
+                    Text(.init($0.description))
                 }
             }
             .pickerStyle(.segmented)
@@ -75,7 +75,9 @@ private extension JournalSettingsView {
     var commentsSettings: some View {
         SectionView(headerWithPadding: "Кто может оставлять комментарии", mode: .regular) {
             Picker("Доступ на комментирование", selection: $journal.commentAccessType) {
-                ForEach(options, id: \.self) { Text($0.description) }
+                ForEach(options, id: \.self) {
+                    Text(.init($0.description))
+                }
             }
             .pickerStyle(.segmented)
         }

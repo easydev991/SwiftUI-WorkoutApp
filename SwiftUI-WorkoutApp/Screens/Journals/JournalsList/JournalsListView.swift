@@ -29,7 +29,7 @@ struct JournalsListView: View {
             .loadingOverlay(if: viewModel.isLoading)
             .background(Color.swBackground)
             .confirmationDialog(
-                Constants.Alert.deleteJournal,
+                .init(Constants.Alert.deleteJournal),
                 isPresented: $showDeleteDialog,
                 titleVisibility: .visible
             ) { deleteJournalButton }

@@ -20,7 +20,7 @@ public struct FormRowView: View {
 
     public var body: some View {
         HStack(spacing: 12) {
-            Text(title)
+            Text(.init(title))
                 .font(.headline)
                 .foregroundColor(.swMainText)
                 .fixedSize()

@@ -82,7 +82,7 @@ private extension EditAccountScreen {
         Menu {
             Picker("", selection: $viewModel.userForm.genderCode) {
                 ForEach(Gender.possibleGenders, id: \.code) {
-                    Text($0.rawValue)
+                    Text(.init($0.rawValue))
                 }
             }
         } label: {
@@ -91,7 +91,7 @@ private extension EditAccountScreen {
                     .personQuestion,
                     viewModel.userForm.placeholder(.gender)
                 ),
-                trailingContent: .text(viewModel.currentGender.rawValue)
+                trailingContent: .text(.init(viewModel.currentGender.rawValue))
             )
         }
     }
@@ -100,7 +100,7 @@ private extension EditAccountScreen {
         HStack(spacing: 12) {
             ListRowView.LeadingContent.makeIconView(with: Icons.Regular.calendar)
             DatePicker(
-                viewModel.userForm.placeholder(.birthDate),
+                .init(viewModel.userForm.placeholder(.birthDate)),
                 selection: $viewModel.userForm.birthDate,
                 in: ...Constants.minUserAge,
                 displayedComponents: .date
@@ -112,6 +112,7 @@ private extension EditAccountScreen {
     var countryPicker: some View {
         NavigationLink {
             ItemListScreen(
+                mode: .country,
                 allItems: viewModel.countries.map(\.name),
                 selectedItem: viewModel.userForm.country.name,
                 didSelectItem: { viewModel.selectCountry(name: $0) }
@@ -122,7 +123,7 @@ private extension EditAccountScreen {
                     .globe,
                     viewModel.userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(viewModel.userForm.country.name)
+                trailingContent: .textWithChevron(.init(viewModel.userForm.country.name))
             )
         }
         .padding(.bottom, 6)
@@ -131,6 +132,7 @@ private extension EditAccountScreen {
     var cityPicker: some View {
         NavigationLink {
             ItemListScreen(
+                mode: .city,
                 allItems: viewModel.cities.map(\.name),
                 selectedItem: viewModel.userForm.city.name,
                 didSelectItem: { viewModel.selectCity(name: $0) }
@@ -141,7 +143,7 @@ private extension EditAccountScreen {
                     .signPost,
                     viewModel.userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(viewModel.userForm.city.name)
+                trailingContent: .textWithChevron(.init(viewModel.userForm.city.name))
             )
         }
     }

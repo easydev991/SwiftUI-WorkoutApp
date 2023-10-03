@@ -11,7 +11,7 @@ extension TabViewModel {
     enum Tab: Int, Hashable, CaseIterable {
         case map = 0, events, messages, journal, profile
 
-        private var title: String {
+        private var title: LocalizedStringKey {
             switch self {
             case .map:
                 "Площадки"

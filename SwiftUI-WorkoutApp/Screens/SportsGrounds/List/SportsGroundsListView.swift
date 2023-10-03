@@ -89,7 +89,7 @@ extension SportsGroundsListView {
 }
 
 private extension SportsGroundsListView.Mode {
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .usedBy: "Где тренируется"
         case .event: "Твои площадки"

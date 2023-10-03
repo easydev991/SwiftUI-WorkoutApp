@@ -71,9 +71,9 @@ public extension JournalRowView {
             }
 
             public enum Option: Identifiable {
-                public var id: String { title + systemImageName }
+                public var id: String { systemImageName }
                 case edit, setup, report, delete
-                var title: String {
+                var title: LocalizedStringKey {
                     switch self {
                     case .edit: "Изменить"
                     case .setup: "Настроить"

@@ -10,7 +10,7 @@ struct SendMessageView: View {
     @Binding var showErrorAlert: Bool
     @Binding var errorTitle: String
     @FocusState private var isFocused
-    private let header: String
+    private let header: LocalizedStringKey
     private let placeholder: String?
     private let isLoading: Bool
     private let isSendButtonDisabled: Bool
@@ -18,7 +18,7 @@ struct SendMessageView: View {
     private let dismissError: () -> Void
 
     init(
-        header: String,
+        header: LocalizedStringKey,
         placeholder: String? = nil,
         text: Binding<String>,
         isLoading: Bool,

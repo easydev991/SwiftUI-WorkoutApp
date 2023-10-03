@@ -74,12 +74,12 @@ private extension PhotoDetailScreen {
             Image(systemName: Icons.Regular.trash.rawValue)
         }
         .confirmationDialog(
-            DialogOption.delete.title,
+            .init(DialogOption.delete.title),
             isPresented: $showDeleteDialog,
             titleVisibility: .hidden
         ) {
             Button(
-                DialogOption.delete.title,
+                .init(DialogOption.delete.title),
                 role: .destructive
             ) {
                 deletePhotoClbk(model.id)
@@ -94,12 +94,12 @@ private extension PhotoDetailScreen {
             Image(systemName: Icons.Regular.exclamation.rawValue)
         }
         .confirmationDialog(
-            DialogOption.report.title,
+            .init(DialogOption.report.title),
             isPresented: $showReportDialog,
             titleVisibility: .hidden
         ) {
             Button(
-                DialogOption.report.title,
+                .init(DialogOption.report.title),
                 role: .destructive,
                 action: reportPhotoClbk
             )

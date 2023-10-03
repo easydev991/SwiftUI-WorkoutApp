@@ -19,8 +19,8 @@ public struct SectionView<Content: View>: View {
     }
 
     public init(
-        header: String? = nil,
-        footer: String? = nil,
+        header: LocalizedStringKey? = nil,
+        footer: LocalizedStringKey? = nil,
         mode: Mode,
         @ViewBuilder content: () -> Content
     ) {
@@ -33,8 +33,8 @@ public struct SectionView<Content: View>: View {
     }
 
     public init(
-        headerWithPadding: String? = nil,
-        footer: String? = nil,
+        headerWithPadding: LocalizedStringKey? = nil,
+        footer: LocalizedStringKey? = nil,
         mode: Mode,
         @ViewBuilder content: () -> Content
     ) {
@@ -79,10 +79,10 @@ public extension SectionView {
 
     /// Модель для хедера/футера
     struct HeaderFooter {
-        let title: String
+        let title: LocalizedStringKey
         let mode: SectionSupplementaryView.Mode
 
-        init?(title: String?, mode: SectionSupplementaryView.Mode) {
+        init?(title: LocalizedStringKey?, mode: SectionSupplementaryView.Mode) {
             guard let title else { return nil }
             self.title = title
             self.mode = mode

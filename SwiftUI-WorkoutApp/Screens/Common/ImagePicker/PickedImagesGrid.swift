@@ -23,7 +23,7 @@ struct PickedImagesGrid: View {
     let processExtraImages: () -> Void
 
     var body: some View {
-        SectionView(header: header, mode: .regular) {
+        SectionView(header: .init(header), mode: .regular) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(subtitle)
                     .font(.subheadline)
@@ -92,16 +92,12 @@ private extension PickedImagesGrid {
     }
 
     var subtitle: String {
-        let selectionLimitString = String.localizedStringWithFormat(
-            NSLocalizedString("photosCount", comment: ""),
-            selectionLimit
-        )
         if images.isEmpty {
-            return "Добавьте фотографии, максимум \(selectionLimit)"
+            String(format: NSLocalizedString("Добавьте фотографии, максимум %lld", comment: ""), selectionLimit)
         } else {
-            return selectionLimit > 0
-                ? "Можно добавить ещё \(selectionLimitString)"
-                : "Добавлено максимальное количество фотографий"
+            selectionLimit > 0
+                ? String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
+                : NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
         }
     }
 

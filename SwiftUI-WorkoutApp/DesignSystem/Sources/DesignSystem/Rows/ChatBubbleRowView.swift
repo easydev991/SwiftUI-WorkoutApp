@@ -33,6 +33,7 @@ public struct ChatBubbleRowView: View {
                 .font(.caption2)
                 .foregroundColor(.swSmallElements)
         }
+        .textSelection(.enabled)
         .padding(messageType == .sent ? .leading : .trailing, 50)
         .frame(
             maxWidth: .infinity,
@@ -79,7 +80,6 @@ public extension ChatBubbleRowView {
         )
     }
     .padding(.horizontal)
-    .textSelection(.enabled)
     .previewLayout(.sizeThatFits)
 }
 #endif

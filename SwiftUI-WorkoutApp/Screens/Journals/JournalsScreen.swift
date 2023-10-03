@@ -21,7 +21,7 @@ struct JournalsScreen: View {
 }
 
 private extension JournalsScreen {
-    var navigationTitle: String {
+    var navigationTitle: LocalizedStringKey {
         defaults.isAuthorized ? "Дневники тренировок" : "Дневники"
     }
 

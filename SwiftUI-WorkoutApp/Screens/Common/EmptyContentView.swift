@@ -33,7 +33,7 @@ struct EmptyContentView: View {
 }
 
 private extension EmptyContentView {
-    func titleText(_ text: String) -> some View {
+    func titleText(_ text: LocalizedStringKey) -> some View {
         Text(text)
             .foregroundColor(.swMainText)
             .multilineTextAlignment(.center)
@@ -43,14 +43,14 @@ private extension EmptyContentView {
     @ViewBuilder
     var hintTextIfAvailable: some View {
         if isHintAvailable {
-            Text(Constants.Alert.eventCreationRule)
+            Text(.init(Constants.Alert.eventCreationRule))
                 .foregroundColor(.swMainText)
                 .font(.footnote.weight(.medium))
                 .multilineTextAlignment(.center)
         }
     }
 
-    var actionButtonTitle: String {
+    var actionButtonTitle: LocalizedStringKey {
         switch mode {
         case .events:
             hasSportsGrounds && isAuthorized
@@ -74,7 +74,7 @@ extension EmptyContentView {
 }
 
 private extension EmptyContentView.Mode {
-    var message: String {
+    var message: LocalizedStringKey {
         switch self {
         case .events:
             "Нет запланированных\nмероприятий"

@@ -39,7 +39,7 @@ struct SportsGroundFilterView: View {
                     if defaults.isAuthorized {
                         SectionView(
                             header: "Расположение",
-                            footer: footerCityText,
+                            footer: .init(footerCityText),
                             mode: .card()
                         ) {
                             buttonForMyCity
@@ -73,7 +73,7 @@ private extension SportsGroundFilterView {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: SportsGroundSize(id: size.code).rawValue,
+                text: .init(SportsGroundSize(id: size.code).rawValue),
                 isChecked: filter.size.contains(size)
             )
         }
@@ -89,7 +89,7 @@ private extension SportsGroundFilterView {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: SportsGroundGrade(id: grade.code).rawValue,
+                text: .init(SportsGroundGrade(id: grade.code).rawValue),
                 isChecked: filter.grade.contains(grade)
             )
         }
@@ -119,10 +119,11 @@ private extension SportsGroundFilterView {
         let currentCity = filter.currentCity
         let userProfileCity = ShortAddressService(defaults.mainUserCountryID, defaults.mainUserCityID).cityName
         if let userProfileCity {
-            resultString += "Твой город в профиле: \(userProfileCity)"
+            resultString += String(format: NSLocalizedString("Твой город в профиле: %@", comment: ""), userProfileCity)
         }
         if let currentCity, currentCity != userProfileCity {
-            resultString += "\nТекущий город: \(currentCity)"
+            resultString += "\n"
+            resultString += String(format: NSLocalizedString("Текущий город: %@", comment: ""), currentCity)
         }
         return resultString
     }

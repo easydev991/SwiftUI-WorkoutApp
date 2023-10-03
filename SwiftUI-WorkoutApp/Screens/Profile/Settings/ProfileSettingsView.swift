@@ -27,6 +27,7 @@ struct ProfileSettingsView: View {
                             authorizeView
                         }
                         appThemeButton
+                        languagePicker
                     }
                 }
                 dividerView
@@ -65,7 +66,7 @@ extension ProfileSettingsView {
 }
 
 private extension ProfileSettingsView.Mode {
-    var title: String {
+    var title: LocalizedStringKey {
         self == .authorized ? "Настройки" : "Информация"
     }
 
@@ -75,7 +76,7 @@ private extension ProfileSettingsView.Mode {
         case .authorized:
             EmptyView()
         case .incognito:
-            Text(Constants.registrationInfoText)
+            Text(.init(Constants.registrationInfoText))
                 .font(.subheadline)
                 .foregroundColor(.swSmallElements)
                 .multilineTextAlignment(.leading)
@@ -131,6 +132,27 @@ private extension ProfileSettingsView {
         }
     }
 
+    var languagePicker: some View {
+        Menu {
+            Picker(
+                "",
+                selection: .init(
+                    get: { defaults.appLanguage.rawValue },
+                    set: { defaults.setAppLanguage($0) }
+                )
+            ) {
+                ForEach(AppLanguage.allCases.map(\.rawValue), id: \.self) {
+                    Text(.init($0))
+                }
+            }
+        } label: {
+            ListRowView(
+                leadingContent: .text("Язык"),
+                trailingContent: .textWithChevron(defaults.appLanguage.rawValue)
+            )
+        }
+    }
+
     var logoutButton: some View {
         Button {
             showLogoutDialog.toggle()
@@ -138,7 +160,7 @@ private extension ProfileSettingsView {
             ListRowView(leadingContent: .text("Выйти из профиля"))
         }
         .confirmationDialog(
-            Constants.Alert.logout,
+            .init(Constants.Alert.logout),
             isPresented: $showLogoutDialog,
             titleVisibility: .visible
         ) {
@@ -206,7 +228,7 @@ private extension ProfileSettingsView {
     var appVersionView: some View {
         ListRowView(
             leadingContent: .text("Версия"),
-            trailingContent: .text(Constants.appVersion)
+            trailingContent: .text(.init(Constants.appVersion))
         )
     }
 

@@ -117,7 +117,7 @@ private extension UserDetailsView {
             }
             .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
             .sheet(isPresented: $showMessageSheet) { messageSheet }
-            Button(viewModel.friendActionOption.rawValue) {
+            Button(.init(viewModel.friendActionOption.rawValue)) {
                 friendActionTask = Task { await viewModel.friendAction(with: defaults) }
             }
             .buttonStyle(
@@ -129,7 +129,7 @@ private extension UserDetailsView {
                     size: .large
                 )
             )
-            .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
+            .alert(.init(Constants.Alert.friendRequestSent), isPresented: $isFriendRequestSent) {
                 Button("Ok") {}
             }
         }
@@ -146,17 +146,17 @@ private extension UserDetailsView {
             )
         }
         .confirmationDialog(
-            viewModel.blacklistActionOption.dialogTitle,
+            .init(viewModel.blacklistActionOption.dialogTitle),
             isPresented: $showBlacklistConfirmation,
             titleVisibility: .visible
         ) {
-            Button(viewModel.blacklistActionOption.rawValue, role: .destructive) {
+            Button(.init(viewModel.blacklistActionOption.rawValue), role: .destructive) {
                 blacklistUserTask = Task {
                     await viewModel.blacklistUser(with: defaults)
                 }
             }
         } message: {
-            Text(viewModel.blacklistActionOption.dialogMessage)
+            Text(.init(viewModel.blacklistActionOption.dialogMessage))
         }
     }
 

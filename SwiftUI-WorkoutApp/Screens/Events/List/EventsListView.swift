@@ -29,7 +29,7 @@ struct EventsListView: View {
                 Button(action: createEventIfAvailable) { Text("Перейти на карту") }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
-                Text(Constants.Alert.eventCreationRule)
+                Text(.init(Constants.Alert.eventCreationRule))
             }
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
@@ -72,7 +72,7 @@ private extension EventsListView {
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) {
-                Text($0.rawValue)
+                Text(.init($0.rawValue))
                     .accessibilityIdentifier($0.rawValue)
             }
         }

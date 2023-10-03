@@ -2,25 +2,21 @@ import SwiftUI
 
 /// Выглядит аналогично стандартному заголовку/футеру секции в списке/форме
 struct SectionSupplementaryView: View {
-    private let text: String
+    private let text: LocalizedStringKey
     private let mode: Mode
 
     /// Инициализирует `SectionHeaderView`
     /// - Parameters:
     ///   - text: Текст
     ///   - mode: Режим (заголовок/футер)
-    init(_ text: String, mode: Mode) {
-        switch mode {
-        case .header:
-            self.text = text.uppercased()
-        case .footer:
-            self.text = text
-        }
+    init(_ text: LocalizedStringKey, mode: Mode) {
+        self.text = text
         self.mode = mode
     }
 
     var body: some View {
         Text(text)
+            .textCase(mode.textCase)
             .foregroundColor(.swSmallElements)
             .font(.footnote)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -49,6 +45,13 @@ extension SectionSupplementaryView {
                 true
             }
         }
+
+        var textCase: Text.Case? {
+            switch self {
+            case .header: .uppercase
+            case .footer: nil
+            }
+        }
     }
 }
 
@@ -57,11 +60,11 @@ extension SectionSupplementaryView {
     let headers = ["Комментарии", "Друзья", "Результаты поиска"]
     return VStack(spacing: 0) {
         ForEach(headers, id: \.self) { text in
-            SectionSupplementaryView(text, mode: .header(hasLeftPadding: true))
+            SectionSupplementaryView(.init(text), mode: .header(hasLeftPadding: true))
             RoundedRectangle(cornerRadius: 12)
                 .foregroundColor(.gray.opacity(0.3))
-            SectionSupplementaryView(text, mode: .footer)
-            SectionSupplementaryView(text, mode: .header(hasLeftPadding: false))
+            SectionSupplementaryView(.init(text), mode: .footer)
+            SectionSupplementaryView(.init(text), mode: .header(hasLeftPadding: false))
             RoundedRectangle(cornerRadius: 12)
                 .foregroundColor(.black.opacity(0.3))
             Spacer().frame(height: 50)

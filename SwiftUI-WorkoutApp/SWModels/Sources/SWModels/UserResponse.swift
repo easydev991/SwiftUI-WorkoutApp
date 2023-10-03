@@ -77,7 +77,7 @@ public extension UserResponse {
     }
 
     var gender: String {
-        (Gender(genderCode.valueOrZero)?.description).valueOrEmpty
+        NSLocalizedString((Gender(genderCode.valueOrZero)?.description).valueOrEmpty, comment: "")
     }
 
     var friendRequestsCount: Int {

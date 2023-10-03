@@ -23,14 +23,14 @@ struct IncognitoProfileView: View {
 
 private extension IncognitoProfileView {
     var authInvitation: some View {
-        Text(Constants.authInvitationText)
+        Text(.init(Constants.authInvitationText))
             .multilineTextAlignment(.center)
             .foregroundColor(.swMainText)
             .padding(.bottom, 6)
     }
 
     var registrationInfo: some View {
-        Text(Constants.registrationInfoText)
+        Text(.init(Constants.registrationInfoText))
             .font(.footnote.weight(.medium))
             .multilineTextAlignment(.center)
             .foregroundColor(.swMainText)

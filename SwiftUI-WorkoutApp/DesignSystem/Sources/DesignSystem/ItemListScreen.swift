@@ -6,6 +6,7 @@ import SwiftUI
 public struct ItemListScreen: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchQuery = ""
+    private let mode: Mode
     private let allItems: [String]
     private let selectedItem: String
     private let didSelectItem: (String) -> Void
@@ -16,10 +17,12 @@ public struct ItemListScreen: View {
     ///   - selectedItem: Выбранный элемент
     ///   - didSelectItem: Возвращает выбранный элемент
     public init(
+        mode: Mode,
         allItems: [String],
         selectedItem: String,
         didSelectItem: @escaping (String) -> Void
     ) {
+        self.mode = mode
         self.allItems = allItems
         self.selectedItem = selectedItem
         self.didSelectItem = didSelectItem
@@ -36,7 +39,7 @@ public struct ItemListScreen: View {
                             dismiss()
                         } label: {
                             TextWithCheckmarkRowView(
-                                text: item,
+                                text: .init(item),
                                 isChecked: item == selectedItem
                             )
                         }
@@ -52,8 +55,20 @@ public struct ItemListScreen: View {
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: Text("Поиск")
         )
-        .navigationTitle("Выбери страну")
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+public extension ItemListScreen {
+    enum Mode {
+        case country, city
+        var title: LocalizedStringKey {
+            switch self {
+            case .country: "Выбери страну"
+            case .city: "Выбери город"
+            }
+        }
     }
 }
 
@@ -68,6 +83,7 @@ private extension ItemListScreen {
 #if DEBUG
 #Preview {
     ItemListScreen(
+        mode: .country,
         allItems: ["Россия, Канада, Австралия"],
         selectedItem: "Россия",
         didSelectItem: { _ in }

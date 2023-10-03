@@ -63,7 +63,7 @@ struct JournalEntriesList: View {
             )
         }
         .confirmationDialog(
-            Constants.Alert.deleteJournalEntry,
+            .init(Constants.Alert.deleteJournalEntry),
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteEntryButton }

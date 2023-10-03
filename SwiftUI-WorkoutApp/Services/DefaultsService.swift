@@ -3,6 +3,7 @@ import SWModels
 
 @MainActor
 protocol DefaultsProtocol: AnyObject {
+    var appLanguage: AppLanguage { get }
     var appTheme: AppThemeService.Theme { get }
     var mainUserInfo: UserResponse? { get }
     var mainUserCountryID: Int { get }
@@ -13,6 +14,7 @@ protocol DefaultsProtocol: AnyObject {
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
     var unreadMessagesCount: Int { get }
+    func setAppLanguage(_ language: String)
     func setAppTheme(_ theme: AppThemeService.Theme)
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
@@ -34,6 +36,11 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
+
+    @AppStorage(Key.appLanguage.rawValue)
+    private(set) var appLanguage = AppLanguage(
+        rawValue: Locale.current.languageCode ?? "ru"
+    ) ?? .rus
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppThemeService.Theme.system
@@ -106,6 +113,10 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         } else {
             return []
         }
+    }
+
+    func setAppLanguage(_ language: String) {
+        appLanguage = .init(rawValue: language) ?? .rus
     }
 
     func setAppTheme(_ theme: AppThemeService.Theme) {
@@ -183,7 +194,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, hasSportsGrounds, appTheme,
+        case isUserAuthorized, hasSportsGrounds, appTheme, appLanguage,
              authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends, unreadMessagesCount
     }

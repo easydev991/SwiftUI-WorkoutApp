@@ -83,7 +83,7 @@ private extension SportsGroundsMapView {
     var segmentedControl: some View {
         Picker("Способ отображения", selection: $presentation) {
             ForEach(Presentation.allCases, id: \.self) {
-                Text($0.rawValue)
+                Text(.init($0.rawValue))
                     .accessibilityIdentifier($0.rawValue)
             }
         }
@@ -148,7 +148,7 @@ private extension SportsGroundsMapView {
 
     var locationSettingsReminder: some View {
         VStack(spacing: 12) {
-            Text(viewModel.locationErrorMessage)
+            Text(.init(viewModel.locationErrorMessage))
                 .foregroundColor(.swMainText)
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)

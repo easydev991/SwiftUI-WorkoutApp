@@ -35,7 +35,7 @@ public struct SWTextField: View {
                 .padding(12)
                 .background {
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(borderColor, lineWidth: 0.5)
+                        .strokeBorder(borderColor, lineWidth: 1)
                         .animation(.default, value: isFocused)
                 }
             errorMessageViewIfNeeded
@@ -72,16 +72,16 @@ private extension SWTextField {
     @ViewBuilder
     var textField: some View {
         if isSecure {
-            SecureField(placeholder, text: $text)
+            SecureField(.init(placeholder), text: $text)
         } else {
-            TextField(placeholder, text: $text)
+            TextField(.init(placeholder), text: $text)
         }
     }
 
     @ViewBuilder
     var errorMessageViewIfNeeded: some View {
         if let message = errorState?.message {
-            Text(message)
+            Text(.init(message))
                 .font(.subheadline)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(.swError)
