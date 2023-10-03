@@ -76,7 +76,7 @@ private extension ProfileSettingsView.Mode {
         case .authorized:
             EmptyView()
         case .incognito:
-            Text(Constants.registrationInfoText)
+            Text(.init(Constants.registrationInfoText))
                 .font(.subheadline)
                 .foregroundColor(.swSmallElements)
                 .multilineTextAlignment(.leading)

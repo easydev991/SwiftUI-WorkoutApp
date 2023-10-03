@@ -864,19 +864,19 @@
         }
       }
     },
-    "Авторизуйтесь, чтобы иметь\\nдоступ ко всем возможностям" : {
+    "Авторизуйтесь, чтобы иметь доступ ко всем возможностям" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Log in to have\\naccess to all features"
+            "value" : "Log in to have access to all features"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Авторизуйтесь, чтобы иметь\\nдоступ ко всем возможностям"
+            "value" : "Авторизуйтесь, чтобы иметь доступ ко всем возможностям"
           }
         }
       }
@@ -978,6 +978,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Версия"
+          }
+        }
+      }
+    },
+    "Внутренняя ошибка сервера" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internal Server Error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внутренняя ошибка сервера"
           }
         }
       }
@@ -1199,19 +1216,19 @@
         }
       }
     },
-    "Для отображения твоего\\nместоположения необходимо\\nразрешить доступ к геолокации в\\nнастройках" : {
+    "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To display your\\nlocation, please\\ngive access to geolocation in\\nsettings"
+            "value" : "To display your location, please give access to geolocation in settings"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для отображения твоего\\nместоположения необходимо\\nразрешить доступ к геолокации в\\nнастройках"
+            "value" : "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках"
           }
         }
       }
@@ -1278,6 +1295,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавил"
+          }
+        }
+      }
+    },
+    "Добавил площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added sports grounds"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавил площадки"
+          }
+        }
+      }
+    },
+    "Добавить" : {
+      "comment" : "Принять заявку на добавление в друзья",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить"
           }
         }
       }
@@ -1414,6 +1466,23 @@
         }
       }
     },
+    "Заблокировать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Block"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заблокировать"
+          }
+        }
+      }
+    },
     "Заблокировать пользователя?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1463,6 +1532,23 @@
         }
       }
     },
+    "Запрашиваемый ресурс не найден" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The requested resource is not found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрашиваемый ресурс не найден"
+          }
+        }
+      }
+    },
     "Запрещен доступ к геолокации" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1493,6 +1579,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Запрос отправлен!"
+          }
+        }
+      }
+    },
+    "Запрос содержит ошибку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The request contains an error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрос содержит ошибку"
           }
         }
       }
@@ -1812,6 +1915,23 @@
         }
       }
     },
+    "Логин или email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login or email"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Логин или email"
+          }
+        }
+      }
+    },
     "Магазин WORKOUT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2063,6 +2183,40 @@
         }
       }
     },
+    "Некорректное имя пользователя или пароль" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid username or password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Некорректное имя пользователя или пароль"
+          }
+        }
+      }
+    },
+    "Некорректный идентификатор пользователя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid user ID"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Некорректный идентификатор пользователя"
+          }
+        }
+      }
+    },
     "Необходимо выбрать площадку" : {
       "localizations" : {
         "en" : {
@@ -2278,6 +2432,23 @@
         }
       }
     },
+    "Объем данных для загрузки на сервер превышает лимит" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The amount of data to upload to the server exceeds the limit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Объем данных для загрузки на сервер превышает лимит"
+          }
+        }
+      }
+    },
     "Описание" : {
       "localizations" : {
         "en" : {
@@ -2306,6 +2477,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Организатор"
+          }
+        }
+      }
+    },
+    "Отклонить" : {
+      "comment" : "Отклонить заявку на добавление в друзья",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decline"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отклонить"
           }
         }
       }
@@ -2423,6 +2612,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пароли должны совпадать"
+          }
+        }
+      }
+    },
+    "Пароль" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пароль"
           }
         }
       }
@@ -2741,6 +2947,23 @@
         }
       }
     },
+    "Разблокировать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unblock"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разблокировать"
+          }
+        }
+      }
+    },
     "Разблокировать пользователя?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2905,6 +3128,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Светлая тема"
+          }
+        }
+      }
+    },
+    "Сервер не отвечает" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server is not responding"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер не отвечает"
+          }
+        }
+      }
+    },
+    "Сервер не прислал данные для обработки ответа" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The server did not send data to process the response"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер не прислал данные для обработки ответа"
           }
         }
       }

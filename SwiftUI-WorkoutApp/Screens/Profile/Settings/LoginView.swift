@@ -35,7 +35,7 @@ struct LoginView: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .onChange(of: credentials) { _ in errorMessage = "" }
-        .alert(Constants.Alert.resetSuccessful, isPresented: $showResetSuccessfulAlert) {
+        .alert(.init(Constants.Alert.resetSuccessful), isPresented: $showResetSuccessfulAlert) {
             Button("Ok") { showResetSuccessfulAlert = false }
         }
         .onDisappear(perform: cancelTasks)
@@ -110,7 +110,7 @@ private extension LoginView {
     var forgotPasswordButton: some View {
         Button("Забыли пароль?", action: forgotPasswordAction)
             .tint(.swMainText)
-            .alert(Constants.Alert.forgotPassword, isPresented: $showResetInfoAlert) {
+            .alert(.init(Constants.Alert.forgotPassword), isPresented: $showResetInfoAlert) {
                 Button("Ok") { showResetInfoAlert = false }
             }
     }

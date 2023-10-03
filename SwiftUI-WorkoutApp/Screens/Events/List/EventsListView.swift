@@ -29,7 +29,7 @@ struct EventsListView: View {
                 Button(action: createEventIfAvailable) { Text("Перейти на карту") }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
-                Text(Constants.Alert.eventCreationRule)
+                Text(.init(Constants.Alert.eventCreationRule))
             }
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)

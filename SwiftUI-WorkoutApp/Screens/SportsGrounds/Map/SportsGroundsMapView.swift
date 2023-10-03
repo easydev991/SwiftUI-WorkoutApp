@@ -148,7 +148,7 @@ private extension SportsGroundsMapView {
 
     var locationSettingsReminder: some View {
         VStack(spacing: 12) {
-            Text(viewModel.locationErrorMessage)
+            Text(.init(viewModel.locationErrorMessage))
                 .foregroundColor(.swMainText)
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
