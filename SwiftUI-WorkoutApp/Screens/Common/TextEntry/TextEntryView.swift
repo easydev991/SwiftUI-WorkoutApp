@@ -57,7 +57,7 @@ extension TextEntryView {
 }
 
 private extension TextEntryView.Mode {
-    var headerTitle: String {
+    var headerTitle: LocalizedStringKey {
         switch self {
         case .newForEvent, .newForGround:
             "Новый комментарий"

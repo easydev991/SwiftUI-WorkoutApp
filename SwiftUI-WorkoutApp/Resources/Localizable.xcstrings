@@ -1016,6 +1016,22 @@
         }
       }
     },
+    "Выбери площадку" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the ground"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери площадку"
+          }
+        }
+      }
+    },
     "Выбрать площадку" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2130,6 +2146,54 @@
         }
       }
     },
+    "Новая площадка" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New sports ground"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая площадка"
+          }
+        }
+      }
+    },
+    "Новое мероприятие" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New event"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое мероприятие"
+          }
+        }
+      }
+    },
+    "Новое сообщение" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New message"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое сообщение"
+          }
+        }
+      }
+    },
     "Новый дневник" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2958,6 +3022,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сообщение"
+          }
+        }
+      }
+    },
+    "Сообщение для %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message for %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сообщение для %@"
           }
         }
       }
