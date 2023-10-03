@@ -92,17 +92,12 @@ private extension PickedImagesGrid {
     }
 
     var subtitle: String {
-        #warning("Возвращать String.localized")
-        let selectionLimitString = String.localizedStringWithFormat(
-            NSLocalizedString("photosCount", comment: ""),
-            selectionLimit
-        )
         if images.isEmpty {
-            return "Добавьте фотографии, максимум \(selectionLimit)"
+            String(format: NSLocalizedString("Добавьте фотографии, максимум %lld", comment: ""), selectionLimit)
         } else {
-            return selectionLimit > 0
-                ? "Можно добавить ещё \(selectionLimitString)"
-                : "Добавлено максимальное количество фотографий"
+            selectionLimit > 0
+                ? String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
+                : NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
         }
     }
 

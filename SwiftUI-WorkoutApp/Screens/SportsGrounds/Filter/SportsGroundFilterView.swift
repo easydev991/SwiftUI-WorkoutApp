@@ -119,12 +119,12 @@ private extension SportsGroundFilterView {
         let currentCity = filter.currentCity
         let userProfileCity = ShortAddressService(defaults.mainUserCountryID, defaults.mainUserCityID).cityName
         if let userProfileCity {
-            resultString += "Твой город в профиле: \(userProfileCity)"
+            resultString += String(format: NSLocalizedString("Твой город в профиле: %@", comment: ""), userProfileCity)
         }
         if let currentCity, currentCity != userProfileCity {
-            resultString += "\nТекущий город: \(currentCity)"
+            resultString += "\n"
+            resultString += String(format: NSLocalizedString("Текущий город: %@", comment: ""), currentCity)
         }
-        #warning("Возвращать String.localized")
         return resultString
     }
 

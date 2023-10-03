@@ -89,7 +89,7 @@ private extension SportsGroundFormView {
         Menu {
             Picker("", selection: $viewModel.groundForm.typeID) {
                 ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
-                    Text(SportsGroundGrade(id: $0).rawValue)
+                    Text(.init(SportsGroundGrade(id: $0).rawValue))
                 }
             }
         } label: {
@@ -104,7 +104,7 @@ private extension SportsGroundFormView {
         Menu {
             Picker("", selection: $viewModel.groundForm.sizeID) {
                 ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
-                    Text(SportsGroundSize(id: $0).rawValue)
+                    Text(.init(SportsGroundSize(id: $0).rawValue))
                 }
             }
         } label: {

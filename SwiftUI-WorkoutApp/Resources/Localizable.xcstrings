@@ -26,31 +26,31 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d years"
+                  "value" : "%d years old"
                 }
               },
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d years"
+                  "value" : "%d years old"
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d year"
+                  "value" : "%d year old"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d years"
+                  "value" : "%d years old"
                 }
               },
               "two" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d years"
+                  "value" : "%d years old"
                 }
               },
               "zero" : {
@@ -584,94 +584,6 @@
         }
       }
     },
-    "photosCount" : {
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d photos"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d photos"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d photo"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d photos"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d photos"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 photos"
-                }
-              }
-            }
-          }
-        },
-        "ru" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d фотография"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d фотографий"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d фотография"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d фотографий"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d фотографии"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 фотографий"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "photoSectionHeader" : {
       "localizations" : {
         "en" : {
@@ -897,6 +809,23 @@
         }
       }
     },
+    "Адрес площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sports ground address"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адрес площадки"
+          }
+        }
+      }
+    },
     "Английский" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1033,6 +962,23 @@
         }
       }
     },
+    "Выбери город" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a city"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери город"
+          }
+        }
+      }
+    },
     "Выбери площадку" : {
       "localizations" : {
         "en" : {
@@ -1045,6 +991,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Выбери площадку"
+          }
+        }
+      }
+    },
+    "Выбери страну" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a country"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери страну"
           }
         }
       }
@@ -1384,6 +1347,57 @@
         }
       }
     },
+    "Добавлено максимальное количество фотографий" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum number of photos added"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавлено максимальное количество фотографий"
+          }
+        }
+      }
+    },
+    "Добавьте немного подробностей о предстоящем мероприятии" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add some details about the upcoming event"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте немного подробностей о предстоящем мероприятии"
+          }
+        }
+      }
+    },
+    "Добавьте фотографии, максимум %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add photos, %lld max"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте фотографии, максимум %lld"
+          }
+        }
+      }
+    },
     "Доступ на комментирование" : {
       "localizations" : {
         "en" : {
@@ -1622,7 +1636,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "They train here"
+            "value" : "They workout here"
           }
         },
         "ru" : {
@@ -2015,6 +2029,23 @@
         }
       }
     },
+    "Можно добавить ещё %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can add %lld more"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Можно добавить ещё %lld"
+          }
+        }
+      }
+    },
     "Мужской" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2094,6 +2125,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Название дневника"
+          }
+        }
+      }
+    },
+    "Название мероприятия" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event title"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название мероприятия"
           }
         }
       }
@@ -2470,7 +2518,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Organizer"
+            "value" : "Organised by"
           }
         },
         "ru" : {
@@ -2666,6 +2714,23 @@
         }
       }
     },
+    "Планируемые" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planned"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Планируемые"
+          }
+        }
+      }
+    },
     "Площадка" : {
       "localizations" : {
         "en" : {
@@ -2815,6 +2880,23 @@
         }
       }
     },
+    "Поиск" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск"
+          }
+        }
+      }
+    },
     "Поиск пользователей" : {
       "localizations" : {
         "en" : {
@@ -2943,6 +3025,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Профиль"
+          }
+        }
+      }
+    },
+    "Прошедшие" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Past"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прошедшие"
           }
         }
       }
@@ -3438,13 +3537,30 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your city in profile: %@"
+            "value" : "The city in your profile is %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Твой город в профиле: %@"
+          }
+        }
+      }
+    },
+    "Текущий город: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current city: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текущий город: %@"
           }
         }
       }
@@ -3554,7 +3670,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only for my city"
+            "value" : "Only in my city"
           }
         },
         "ru" : {
@@ -3578,6 +3694,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Только я"
+          }
+        }
+      }
+    },
+    "Тренируюсь здесь" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I workout here"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тренируюсь здесь"
           }
         }
       }
@@ -3713,6 +3846,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить фото"
+          }
+        }
+      }
+    },
+    "Участники" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participants"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Участники"
           }
         }
       }

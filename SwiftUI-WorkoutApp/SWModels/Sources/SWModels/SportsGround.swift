@@ -26,8 +26,8 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String? {
-        let grade = SportsGroundGrade(id: typeID).rawValue
-        let size = SportsGroundSize(id: sizeID).rawValue
+        let grade = NSLocalizedString(SportsGroundGrade(id: typeID).rawValue, comment: "")
+        let size = NSLocalizedString(SportsGroundSize(id: sizeID).rawValue, comment: "")
         return grade + " / " + size
     }
 

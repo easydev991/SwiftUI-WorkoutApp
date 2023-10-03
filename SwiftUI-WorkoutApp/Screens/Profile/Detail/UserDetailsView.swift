@@ -129,7 +129,7 @@ private extension UserDetailsView {
                     size: .large
                 )
             )
-            .alert(Constants.Alert.friendRequestSent, isPresented: $isFriendRequestSent) {
+            .alert(.init(Constants.Alert.friendRequestSent), isPresented: $isFriendRequestSent) {
                 Button("Ok") {}
             }
         }

@@ -72,7 +72,7 @@ private extension EventsListView {
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) {
-                Text($0.rawValue)
+                Text(.init($0.rawValue))
                     .accessibilityIdentifier($0.rawValue)
             }
         }

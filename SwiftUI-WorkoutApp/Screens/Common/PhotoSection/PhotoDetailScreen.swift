@@ -79,7 +79,7 @@ private extension PhotoDetailScreen {
             titleVisibility: .hidden
         ) {
             Button(
-                DialogOption.delete.title,
+                .init(DialogOption.delete.title),
                 role: .destructive
             ) {
                 deletePhotoClbk(model.id)
