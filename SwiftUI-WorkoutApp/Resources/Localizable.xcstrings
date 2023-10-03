@@ -931,6 +931,40 @@
         }
       }
     },
+    "Введите новый пароль" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a new password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите новый пароль"
+          }
+        }
+      }
+    },
+    "Введите пароль" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter current password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите пароль"
+          }
+        }
+      }
+    },
     "Версия" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1794,6 +1828,23 @@
         }
       }
     },
+    "Минимум 6 символов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At least 6 characters"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минимум 6 символов"
+          }
+        }
+      }
+    },
     "Мужской" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2027,6 +2078,23 @@
         }
       }
     },
+    "Новый пароль ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New password again"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый пароль ещё раз"
+          }
+        }
+      }
+    },
     "О приложении" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2172,6 +2240,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Оценить приложение"
+          }
+        }
+      }
+    },
+    "Пароли должны совпадать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwords must match"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пароли должны совпадать"
           }
         }
       }
