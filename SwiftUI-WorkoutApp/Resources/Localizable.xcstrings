@@ -1216,6 +1216,23 @@
         }
       }
     },
+    "Дневники тренировок" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout journals"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневники тренировок"
+          }
+        }
+      }
+    },
     "Дневников пока нет" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1630,6 +1647,23 @@
         }
       }
     },
+    "Информация" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Информация"
+          }
+        }
+      }
+    },
     "Как в системе" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1911,6 +1945,23 @@
         }
       }
     },
+    "Название дневника" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal title"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название дневника"
+          }
+        }
+      }
+    },
     "Найти пользователя" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1941,6 +1992,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Настроить"
+          }
+        }
+      }
+    },
+    "Настройки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        }
+      }
+    },
+    "Настройки дневника" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки дневника"
           }
         }
       }
@@ -2041,6 +2126,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новая запись"
+          }
+        }
+      }
+    },
+    "Новый дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New journal"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый дневник"
           }
         }
       }
@@ -2790,6 +2892,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Создай новую запись в дневнике"
+          }
+        }
+      }
+    },
+    "Создай первую запись в дневнике" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create the first entry"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создай первую запись в дневнике"
           }
         }
       }

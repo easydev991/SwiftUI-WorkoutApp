@@ -66,7 +66,7 @@ extension ProfileSettingsView {
 }
 
 private extension ProfileSettingsView.Mode {
-    var title: String {
+    var title: LocalizedStringKey {
         self == .authorized ? "Настройки" : "Информация"
     }
 
