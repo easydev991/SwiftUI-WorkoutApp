@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class UserDetailsViewModel: ObservableObject {
@@ -53,7 +54,7 @@ final class UserDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).blacklistAction(
+            if try await SWClient(with: defaults).blacklistAction(
                 userID: user.id, option: blacklistActionOption
             ) {
                 switch blacklistActionOption {
@@ -75,7 +76,7 @@ final class UserDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).friendAction(userID: user.id, option: friendActionOption) {
+            if try await SWClient(with: defaults).friendAction(userID: user.id, option: friendActionOption) {
                 switch friendActionOption {
                 case .sendFriendRequest:
                     requestedFriendship.toggle()
@@ -95,7 +96,7 @@ final class UserDetailsViewModel: ObservableObject {
 private extension UserDetailsViewModel {
     func makeUserInfo(for userID: Int, with defaults: DefaultsProtocol) async {
         do {
-            let info = try await APIService(with: defaults).getUserByID(userID)
+            let info = try await SWClient(with: defaults).getUserByID(userID)
             user = .init(info)
         } catch {
             responseMessage = ErrorFilterService.message(from: error)
@@ -103,7 +104,7 @@ private extension UserDetailsViewModel {
     }
 
     func makeBlacklistAndFriedRequests(with defaults: DefaultsProtocol) async {
-        let apiService = APIService(with: defaults)
+        let apiService = SWClient(with: defaults)
         try? await apiService.getFriendRequests()
         try? await apiService.getBlacklist()
     }

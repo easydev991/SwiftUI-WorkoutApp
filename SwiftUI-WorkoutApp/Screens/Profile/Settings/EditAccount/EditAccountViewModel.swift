@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class EditAccountViewModel: ObservableObject {
@@ -45,7 +46,7 @@ final class EditAccountViewModel: ObservableObject {
         isLoading.toggle()
         do {
             let userID = (defaults.mainUserInfo?.userID).valueOrZero
-            isProfileSaved = try await APIService(with: defaults).editUser(userID, model: userForm)
+            isProfileSaved = try await SWClient(with: defaults).editUser(userID, model: userForm)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

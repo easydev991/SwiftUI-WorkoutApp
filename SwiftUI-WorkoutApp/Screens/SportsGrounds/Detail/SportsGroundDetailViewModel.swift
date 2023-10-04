@@ -1,6 +1,7 @@
 import FeedbackSender
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class SportsGroundDetailViewModel: ObservableObject {
@@ -20,7 +21,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading || ground.isFull, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            ground = try await APIService(with: defaults, needAuth: false).getSportsGround(id: ground.id)
+            ground = try await SWClient(with: defaults, needAuth: false).getSportsGround(id: ground.id)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }
@@ -37,7 +38,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         ground.trainHere = newValue
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).changeTrainHereStatus(newValue, for: ground.id) {
+            if try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: ground.id) {
                 if newValue, let userInfo = defaults.mainUserInfo {
                     ground.participants.append(userInfo)
                 } else {
@@ -58,7 +59,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deletePhoto(
+            if try await SWClient(with: defaults).deletePhoto(
                 from: .sportsGround(.init(containerID: ground.id, photoID: photoID))
             ) {
                 ground.photos.removeAll(where: { $0.id == photoID })
@@ -73,7 +74,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
+            if try await SWClient(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: commentID) {
                 ground.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
@@ -108,7 +109,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isDeleted = try await APIService(with: defaults).delete(groundID: ground.id)
+            isDeleted = try await SWClient(with: defaults).delete(groundID: ground.id)
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

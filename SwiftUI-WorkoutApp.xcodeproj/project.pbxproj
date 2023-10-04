@@ -34,7 +34,6 @@
 		6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */; };
 		6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */; };
 		6758B92C281D9283001D83D8 /* EventFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B92B281D9283001D83D8 /* EventFormViewModel.swift */; };
-		6758B936281E5EA9001D83D8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B935281E5EA9001D83D8 /* APIService.swift */; };
 		675A370A2854810B00DAE071 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 675A37092854810B00DAE071 /* Utils */; };
 		675E5618297D21D400B4981A /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675E5617297D21D400B4981A /* Array+.swift */; };
 		675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* TextEntryView.swift */; };
@@ -52,6 +51,7 @@
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
 		67891E36283E945100B10802 /* SportsGroundFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E35283E945100B10802 /* SportsGroundFormViewModel.swift */; };
 		67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* SportsGroundFormView.swift */; };
+		678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
 		6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3F280AEDC900DB76F1 /* RootView.swift */; };
 		6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA41280AEDCA00DB76F1 /* Assets.xcassets */; };
@@ -145,7 +145,6 @@
 		6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
 		6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailViewModel.swift; sourceTree = "<group>"; };
 		6758B92B281D9283001D83D8 /* EventFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFormViewModel.swift; sourceTree = "<group>"; };
-		6758B935281E5EA9001D83D8 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		675A3707285480E600DAE071 /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utils; path = "SwiftUI-WorkoutApp/Utils"; sourceTree = "<group>"; };
 		675E5617297D21D400B4981A /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		675EC64E2814126800C2E229 /* TextEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryView.swift; sourceTree = "<group>"; };
@@ -164,6 +163,7 @@
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
 		67891E35283E945100B10802 /* SportsGroundFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormViewModel.swift; sourceTree = "<group>"; };
 		67891E37283E947B00B10802 /* SportsGroundFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormView.swift; sourceTree = "<group>"; };
+		678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWNetworkClient; path = "SwiftUI-WorkoutApp/SWNetworkClient"; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_WorkoutAppApp.swift; sourceTree = "<group>"; };
 		6798AA3F280AEDC900DB76F1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -229,6 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */,
 				670431512964544D0090CAC3 /* FeedbackSender in Frameworks */,
 				67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */,
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
@@ -462,6 +463,7 @@
 		6798AA31280AEDC900DB76F1 = {
 			isa = PBXGroup;
 			children = (
+				678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */,
 				6734D39229BC693D0000B5B1 /* DesignSystem */,
 				671CD13729A28CB800645678 /* SWModels */,
 				67FE5583297BF78500DC52BF /* ShortAddressService */,
@@ -538,7 +540,6 @@
 		6798AA62280B1A5A00DB76F1 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				6758B935281E5EA9001D83D8 /* APIService.swift */,
 				67B78711281D654C008B104F /* DefaultsService.swift */,
 				67B65DAC289E860E00FBAFCB /* ErrorFilterService.swift */,
 				679F3B02296841DD00BB3590 /* URLOpener.swift */,
@@ -745,6 +746,7 @@
 				67FE5584297BF82000DC52BF /* ShortAddressService */,
 				671CD13829A2904200645678 /* SWModels */,
 				6734D39329BC69580000B5B1 /* DesignSystem */,
+				678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -920,7 +922,6 @@
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */,
 				67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */,
-				6758B936281E5EA9001D83D8 /* APIService.swift in Sources */,
 				6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */,
 				675EC6572815433600C2E229 /* UsersListView.swift in Sources */,
 				675EC65F2815532800C2E229 /* EventFormView.swift in Sources */,
@@ -1316,6 +1317,10 @@
 		675A37092854810B00DAE071 /* Utils */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utils;
+		};
+		678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SWNetworkClient;
 		};
 		67CB32D0297BE0F8009380DF /* NetworkStatus */ = {
 			isa = XCSwiftPackageProductDependency;

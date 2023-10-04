@@ -2,6 +2,7 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран для авторизации
 ///
@@ -121,7 +122,7 @@ private extension LoginView {
         isLoading.toggle()
         loginTask = Task {
             do {
-                try await APIService(with: defaults, canForceLogout: false)
+                try await SWClient(with: defaults, canForceLogout: false)
                     .logInWith(credentials.login, credentials.password)
             } catch {
                 errorMessage = ErrorFilterService.message(from: error)
@@ -138,7 +139,7 @@ private extension LoginView {
         isLoading.toggle()
         resetPasswordTask = Task {
             do {
-                showResetSuccessfulAlert = try await APIService(with: defaults, needAuth: false)
+                showResetSuccessfulAlert = try await SWClient(with: defaults, needAuth: false)
                     .resetPassword(for: credentials.login)
             } catch {
                 errorMessage = ErrorFilterService.message(from: error)

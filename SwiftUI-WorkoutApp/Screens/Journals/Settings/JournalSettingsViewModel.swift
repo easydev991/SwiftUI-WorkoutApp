@@ -1,6 +1,8 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class JournalSettingsViewModel: ObservableObject {
     @Published private(set) var isSettingsUpdated = false
@@ -11,7 +13,7 @@ final class JournalSettingsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).editJournalSettings(
+            if try await SWClient(with: defaults).editJournalSettings(
                 for: journal.id, title: journal.title, viewAccess: journal.viewAccessType, commentAccess: journal.commentAccessType
             ) {
                 isSettingsUpdated.toggle()

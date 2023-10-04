@@ -1,5 +1,8 @@
 import Foundation
+import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class TextEntryViewModel: ObservableObject {
     @Published private(set) var isSuccess = false
@@ -12,15 +15,15 @@ final class TextEntryViewModel: ObservableObject {
         do {
             switch mode {
             case let .newForGround(id):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await SWClient(with: defaults).addNewEntry(
                     to: .ground(id: id), entryText: entryText
                 )
             case let .newForEvent(id):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await SWClient(with: defaults).addNewEntry(
                     to: .event(id: id), entryText: entryText
                 )
             case let .newForJournal(ownerId, journalId):
-                isSuccess = try await APIService(with: defaults).addNewEntry(
+                isSuccess = try await SWClient(with: defaults).addNewEntry(
                     to: .journal(ownerId: ownerId, journalId: journalId),
                     entryText: entryText
                 )
@@ -38,19 +41,19 @@ final class TextEntryViewModel: ObservableObject {
         do {
             switch mode {
             case let .editGround(info):
-                isSuccess = try await APIService(with: defaults).editEntry(
+                isSuccess = try await SWClient(with: defaults).editEntry(
                     for: .ground(id: info.parentObjectID),
                     entryID: info.entryID,
                     newEntryText: entryText
                 )
             case let .editEvent(info):
-                isSuccess = try await APIService(with: defaults).editEntry(
+                isSuccess = try await SWClient(with: defaults).editEntry(
                     for: .event(id: info.parentObjectID),
                     entryID: info.entryID,
                     newEntryText: entryText
                 )
             case let .editJournalEntry(ownerId, info):
-                isSuccess = try await APIService(with: defaults).editEntry(
+                isSuccess = try await SWClient(with: defaults).editEntry(
                     for: .journal(ownerId: ownerId, journalId: info.parentObjectID),
                     entryID: info.entryID,
                     newEntryText: entryText

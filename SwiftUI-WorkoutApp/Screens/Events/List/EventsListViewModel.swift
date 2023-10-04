@@ -1,6 +1,8 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class EventsListViewModel: ObservableObject {
     @Published var futureEvents = [EventResponse]()
@@ -15,7 +17,7 @@ final class EventsListViewModel: ObservableObject {
         { return }
         if !refresh { isLoading.toggle() }
         do {
-            let list = try await APIService(with: defaults, needAuth: false).getEvents(of: type)
+            let list = try await SWClient(with: defaults, needAuth: false).getEvents(of: type)
             switch type {
             case .future: futureEvents = list
             case .past: pastEvents = list

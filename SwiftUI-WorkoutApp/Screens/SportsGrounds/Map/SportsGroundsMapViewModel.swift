@@ -3,6 +3,7 @@ import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
@@ -65,7 +66,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
         isLoading.toggle()
         do {
-            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: previousManualUpdateDateString
             )
             updateDefaultList(with: updatedGrounds)
@@ -83,7 +84,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
             updateDefaultList(with: updatedGrounds)

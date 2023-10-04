@@ -1,5 +1,6 @@
 import DesignSystem
 import NetworkStatus
+import SWNetworkClient
 import SwiftUI
 
 @main
@@ -31,7 +32,7 @@ struct SwiftUI_WorkoutAppApp: App {
             switch phase {
             case .active:
                 socialUpdateTask = Task {
-                    let isUpdated = await APIService(with: defaults)
+                    let isUpdated = await SWClient(with: defaults)
                         .getSocialUpdates(userID: defaults.mainUserInfo?.userID)
                     defaults.setUserNeedUpdate(!isUpdated)
                 }

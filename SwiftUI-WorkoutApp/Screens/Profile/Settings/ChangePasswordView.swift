@@ -2,6 +2,7 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран для смены пароля
 struct ChangePasswordView: View {
@@ -144,7 +145,7 @@ private extension ChangePasswordView {
         isLoading.toggle()
         changePasswordTask = Task {
             do {
-                isChangeSuccessful = try await APIService(with: defaults)
+                isChangeSuccessful = try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
             } catch {
                 errorMessage = ErrorFilterService.message(from: error)

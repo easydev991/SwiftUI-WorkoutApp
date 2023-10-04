@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 import UIKit.UIImage
 
 @MainActor
@@ -41,7 +42,7 @@ final class EventFormViewModel: ObservableObject {
         isLoading.toggle()
         eventForm.newMediaFiles = newImages.toMediaFiles
         do {
-            isEventSaved = try await APIService(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
+            isEventSaved = try await SWClient(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
         } catch {
             errorMessage = ErrorFilterService.message(from: error)
         }

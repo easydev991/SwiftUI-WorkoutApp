@@ -2,34 +2,6 @@ import SwiftUI
 import SWModels
 
 @MainActor
-protocol DefaultsProtocol: AnyObject {
-    var appLanguage: AppLanguage { get }
-    var appTheme: AppThemeService.Theme { get }
-    var mainUserInfo: UserResponse? { get }
-    var mainUserCountryID: Int { get }
-    var mainUserCityID: Int { get }
-    var needUpdateUser: Bool { get }
-    var isAuthorized: Bool { get }
-    var friendRequestsList: [UserResponse] { get }
-    var friendsIdsList: [Int] { get }
-    var blacklistedUsers: [UserResponse] { get }
-    var unreadMessagesCount: Int { get }
-    func setAppLanguage(_ language: String)
-    func setAppTheme(_ theme: AppThemeService.Theme)
-    func saveAuthData(_ info: AuthData) throws
-    func basicAuthInfo() throws -> AuthData
-    func setUserNeedUpdate(_ newValue: Bool)
-    func saveUserInfo(_ info: UserResponse) throws
-    func saveFriendsIds(_ ids: [Int]) throws
-    func saveFriendRequests(_ array: [UserResponse]) throws
-    func saveUnreadMessagesCount(_ count: Int)
-    func saveBlacklist(_ array: [UserResponse]) throws
-    func setHasJournals(_ hasJournals: Bool)
-    func setHasSportsGrounds(_ isAddedGround: Bool)
-    func triggerLogout()
-}
-
-@MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
@@ -43,7 +15,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     ) ?? .rus
 
     @AppStorage(Key.appTheme.rawValue)
-    private(set) var appTheme = AppThemeService.Theme.system
+    private(set) var appTheme = AppColorTheme.system
 
     @AppStorage(Key.authData.rawValue)
     private var authData = Data()
@@ -119,7 +91,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         appLanguage = .init(rawValue: language) ?? .rus
     }
 
-    func setAppTheme(_ theme: AppThemeService.Theme) {
+    func setAppTheme(_ theme: AppColorTheme) {
         appTheme = theme
     }
 
