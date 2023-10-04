@@ -1,6 +1,7 @@
 import FeedbackSender
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class EventDetailsViewModel: ObservableObject {
@@ -22,9 +23,9 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading || event.isFull, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            event = try await APIService(with: defaults).getEvent(by: event.id)
+            event = try await SWClient(with: defaults).getEvent(by: event.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -39,7 +40,7 @@ final class EventDetailsViewModel: ObservableObject {
         event.trainHere = newValue
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
+            if try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
                 if newValue, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
                 } else {
@@ -49,7 +50,7 @@ final class EventDetailsViewModel: ObservableObject {
                 event.trainHere = oldValue
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
             event.trainHere = oldValue
         }
         isLoading.toggle()
@@ -59,13 +60,13 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deletePhoto(
+            if try await SWClient(with: defaults).deletePhoto(
                 from: .event(.init(containerID: event.id, photoID: photoID))
             ) {
                 event.photos.removeAll(where: { $0.id == photoID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -74,11 +75,11 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteEntry(from: .event(id: event.id), entryID: commentID) {
+            if try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryID: commentID) {
                 event.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -109,9 +110,9 @@ final class EventDetailsViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            isEventDeleted = try await APIService(with: defaults).delete(eventID: event.id)
+            isEventDeleted = try await SWClient(with: defaults).delete(eventID: event.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

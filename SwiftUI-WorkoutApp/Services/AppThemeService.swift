@@ -1,17 +1,11 @@
 import UIKit
+import SWModels
 
 enum AppThemeService {
-    enum Theme: String, CaseIterable, Identifiable {
-        var id: String { rawValue }
-        case dark = "Темная тема"
-        case light = "Светлая тема"
-        case system = "Как в системе"
-    }
-
     /// Задает выбранную тему для приложения
     ///
     /// - Parameter newTheme: Новая тема
-    static func set(_ newTheme: Theme) {
+    static func set(_ newTheme: AppColorTheme) {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .flatMap(\.windows)

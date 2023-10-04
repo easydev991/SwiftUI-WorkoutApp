@@ -3,6 +3,7 @@ import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
@@ -65,13 +66,13 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         }
         isLoading.toggle()
         do {
-            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: previousManualUpdateDateString
             )
             updateDefaultList(with: updatedGrounds)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -83,13 +84,13 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            let updatedGrounds = try await APIService(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
             updateDefaultList(with: updatedGrounds)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -237,7 +238,7 @@ private extension SportsGroundsMapViewModel {
             )
             defaultList = oldGrounds
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 

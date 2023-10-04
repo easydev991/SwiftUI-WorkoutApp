@@ -1,7 +1,9 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 import UIKit.UIImage
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class SportsGroundFormViewModel: ObservableObject {
     @Published var groundForm: SportsGroundForm
@@ -57,9 +59,9 @@ final class SportsGroundFormViewModel: ObservableObject {
         isLoading.toggle()
         groundForm.newMediaFiles = newImages.toMediaFiles
         do {
-            isSuccess = try await APIService(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
+            isSuccess = try await SWClient(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

@@ -1,5 +1,6 @@
 import DesignSystem
 import SwiftUI
+import SWModels
 
 /// Экран "Тема приложения"
 struct AppThemeScreen: View {
@@ -8,7 +9,7 @@ struct AppThemeScreen: View {
     var body: some View {
         SectionView(mode: .card()) {
             VStack(spacing: 0) {
-                ForEach(AppThemeService.Theme.allCases) { theme in
+                ForEach(AppColorTheme.allCases) { theme in
                     Button {
                         defaults.setAppTheme(theme)
                     } label: {

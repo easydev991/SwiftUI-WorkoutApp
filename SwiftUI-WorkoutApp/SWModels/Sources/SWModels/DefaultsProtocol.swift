@@ -1,0 +1,29 @@
+import Foundation
+
+@MainActor
+public protocol DefaultsProtocol: AnyObject {
+    var appLanguage: AppLanguage { get }
+    var appTheme: AppColorTheme { get }
+    var mainUserInfo: UserResponse? { get }
+    var mainUserCountryID: Int { get }
+    var mainUserCityID: Int { get }
+    var needUpdateUser: Bool { get }
+    var isAuthorized: Bool { get }
+    var friendRequestsList: [UserResponse] { get }
+    var friendsIdsList: [Int] { get }
+    var blacklistedUsers: [UserResponse] { get }
+    var unreadMessagesCount: Int { get }
+    func setAppLanguage(_ language: String)
+    func setAppTheme(_ theme: AppColorTheme)
+    func saveAuthData(_ info: AuthData) throws
+    func basicAuthInfo() throws -> AuthData
+    func setUserNeedUpdate(_ newValue: Bool)
+    func saveUserInfo(_ info: UserResponse) throws
+    func saveFriendsIds(_ ids: [Int]) throws
+    func saveFriendRequests(_ array: [UserResponse]) throws
+    func saveUnreadMessagesCount(_ count: Int)
+    func saveBlacklist(_ array: [UserResponse]) throws
+    func setHasJournals(_ hasJournals: Bool)
+    func setHasSportsGrounds(_ isAddedGround: Bool)
+    func triggerLogout()
+}

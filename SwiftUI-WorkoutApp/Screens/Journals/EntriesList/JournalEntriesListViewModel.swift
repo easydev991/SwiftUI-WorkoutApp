@@ -1,6 +1,7 @@
 import FeedbackSender
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class JournalEntriesListViewModel: ObservableObject {
@@ -25,9 +26,9 @@ final class JournalEntriesListViewModel: ObservableObject {
         if isLoading || !list.isEmpty, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
+            list = try await SWClient(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -43,14 +44,14 @@ final class JournalEntriesListViewModel: ObservableObject {
         guard let entryID, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteEntry(
+            if try await SWClient(with: defaults).deleteEntry(
                 from: .journal(ownerId: userID, journalId: currentJournal.id),
                 entryID: entryID
             ) {
                 list.removeAll(where: { $0.id == entryID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

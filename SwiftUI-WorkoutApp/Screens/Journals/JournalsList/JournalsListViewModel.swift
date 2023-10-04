@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class JournalsListViewModel: ObservableObject {
@@ -14,9 +15,9 @@ final class JournalsListViewModel: ObservableObject {
         if isLoading || !list.isEmpty, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getJournals(for: userID)
+            list = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -25,14 +26,14 @@ final class JournalsListViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).createJournal(with: newJournalTitle) {
+            if try await SWClient(with: defaults).createJournal(with: newJournalTitle) {
                 newJournalTitle = ""
                 isJournalCreated.toggle()
                 let userID = (defaults.mainUserInfo?.userID).valueOrZero
                 await makeItems(for: userID, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -42,12 +43,12 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
         do {
             let userID = (defaults.mainUserInfo?.userID).valueOrZero
-            let result = try await APIService(with: defaults).getJournal(for: userID, journalID: journalID)
+            let result = try await SWClient(with: defaults).getJournal(for: userID, journalID: journalID)
             if let index = list.firstIndex(where: { $0.id == journalID }) {
                 list[index] = result
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -56,12 +57,12 @@ final class JournalsListViewModel: ObservableObject {
         guard let journalID, !isLoading else { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).deleteJournal(journalID: journalID) {
+            if try await SWClient(with: defaults).deleteJournal(journalID: journalID) {
                 list.removeAll(where: { $0.id == journalID })
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

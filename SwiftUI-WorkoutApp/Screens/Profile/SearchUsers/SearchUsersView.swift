@@ -1,6 +1,7 @@
 import DesignSystem
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {
@@ -124,14 +125,14 @@ private extension SearchUsersView {
         isLoading.toggle()
         searchTask = Task {
             do {
-                let result = try await APIService(with: defaults)
+                let result = try await SWClient(with: defaults)
                     .findUsers(with: query.withoutSpaces)
                 users = result.map(UserModel.init)
                 if users.isEmpty {
                     errorMessage = "Не удалось найти такого пользователя"
                 }
             } catch {
-                errorMessage = ErrorFilterService.message(from: error)
+                errorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }

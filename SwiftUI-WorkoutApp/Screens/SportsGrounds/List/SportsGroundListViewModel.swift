@@ -1,6 +1,8 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class SportsGroundListViewModel: ObservableObject {
     @Published private(set) var list = [SportsGround]()
@@ -41,9 +43,9 @@ private extension SportsGroundListViewModel {
             if userID == defaults.mainUserInfo?.userID {
                 defaults.setUserNeedUpdate(false)
             }
-            list = try await APIService(with: defaults).getSportsGroundsForUser(userID)
+            list = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 }

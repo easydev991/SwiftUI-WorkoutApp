@@ -1,6 +1,8 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class UsersListViewModel: ObservableObject {
     @Published private(set) var users = [UserModel]()
@@ -25,12 +27,12 @@ final class UsersListViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
+            if try await SWClient(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
                 friendRequests = defaults.friendRequestsList.map(UserModel.init)
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -45,17 +47,17 @@ private extension UsersListViewModel {
             if id == defaults.mainUserInfo?.userID {
                 await checkFriendRequests(refresh: refresh, with: defaults)
             }
-            let friends = try await APIService(with: defaults).getFriendsForUser(id: id)
+            let friends = try await SWClient(with: defaults).getFriendsForUser(id: id)
             users = friends.map(UserModel.init)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
 
     func checkFriendRequests(refresh: Bool, with defaults: DefaultsProtocol) async {
         if defaults.friendRequestsList.isEmpty || refresh {
-            try? await APIService(with: defaults).getFriendRequests()
+            try? await SWClient(with: defaults).getFriendRequests()
         }
         friendRequests = defaults.friendRequestsList.map(UserModel.init)
     }
@@ -64,11 +66,11 @@ private extension UsersListViewModel {
         if !refresh { isLoading.toggle() }
         do {
             if defaults.blacklistedUsers.isEmpty {
-                try await APIService(with: defaults).getBlacklist()
+                try await SWClient(with: defaults).getBlacklist()
             }
             users = defaults.blacklistedUsers.map(UserModel.init)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }

@@ -1,6 +1,8 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class DialogListViewModel: ObservableObject {
     @Published var list = [DialogResponse]()
@@ -11,11 +13,11 @@ final class DialogListViewModel: ObservableObject {
         if isLoading || (!list.isEmpty && !refresh) { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getDialogs()
+            list = try await SWClient(with: defaults).getDialogs()
             let unreadMessagesCount = list.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -25,11 +27,11 @@ final class DialogListViewModel: ObservableObject {
         isLoading.toggle()
         do {
             let dialogID = list[index].id
-            if try await APIService(with: defaults).deleteDialog(dialogID) {
+            if try await SWClient(with: defaults).deleteDialog(dialogID) {
                 list.remove(at: index)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

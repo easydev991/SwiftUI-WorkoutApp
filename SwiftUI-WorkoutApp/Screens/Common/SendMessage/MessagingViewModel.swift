@@ -1,5 +1,8 @@
 import Foundation
+import SWModels
+import SWNetworkClient
 
+#warning("Лишняя вьюмодель")
 @MainActor
 final class MessagingViewModel: ObservableObject {
     @Published var messageText = ""
@@ -12,11 +15,11 @@ final class MessagingViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).sendMessage(messageText, to: userID) {
+            if try await SWClient(with: defaults).sendMessage(messageText, to: userID) {
                 isMessageSent.toggle()
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

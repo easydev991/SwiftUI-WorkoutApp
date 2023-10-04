@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class DialogViewModel: ObservableObject {
@@ -13,20 +14,20 @@ final class DialogViewModel: ObservableObject {
         if isLoading, !refresh { return }
         if !refresh { isLoading.toggle() }
         do {
-            list = try await APIService(with: defaults).getMessages(for: dialogID).reversed()
+            list = try await SWClient(with: defaults).getMessages(for: dialogID).reversed()
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
 
     func markAsRead(from userID: Int, with defaults: DefaultsProtocol) async {
         do {
-            if try await APIService(with: defaults).markAsRead(from: userID) {
+            if try await SWClient(with: defaults).markAsRead(from: userID) {
                 markedAsRead = true
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 
@@ -34,12 +35,12 @@ final class DialogViewModel: ObservableObject {
         if isLoading { return }
         isLoading.toggle()
         do {
-            if try await APIService(with: defaults).sendMessage(newMessage, to: userID) {
+            if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {
                 newMessage = ""
                 await makeItems(for: dialog, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
