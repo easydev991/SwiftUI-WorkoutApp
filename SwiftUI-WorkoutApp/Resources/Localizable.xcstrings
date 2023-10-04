@@ -2163,6 +2163,22 @@
         }
       }
     },
+    "Написать письмо" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write a letter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написать письмо"
+          }
+        }
+      }
+    },
     "Настроить" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2459,6 +2475,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новый пароль ещё раз"
+          }
+        }
+      }
+    },
+    "Нужно обновить данные о площадке?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Should we update any information about this sports ground?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно обновить данные о площадке?"
           }
         }
       }
