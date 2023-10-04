@@ -1,4 +1,5 @@
 import DesignSystem
+import FeedbackSender
 import NetworkStatus
 import SwiftUI
 import SWModels
@@ -12,21 +13,24 @@ struct SportsGroundDetailView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
-    @State private var showDeleteDialog = false
     @State private var trainHere = false
     @State private var editComment: CommentResponse?
+    @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
+    private let feedbackSender: FeedbackSender
     private let onDeletion: (Int) -> Void
 
     init(
         for ground: SportsGround,
+        feedbackSender: FeedbackSender = FeedbackSenderImp(),
         onDeletion: @escaping (Int) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: .init(with: ground))
+        self.feedbackSender = feedbackSender
         self.onDeletion = onDeletion
     }
 
@@ -86,6 +90,8 @@ struct SportsGroundDetailView: View {
                         editGroundButton
                     }
                     .disabled(viewModel.isLoading || !network.isConnected)
+                } else {
+                    feedbackButton
                 }
             }
         }
@@ -217,13 +223,33 @@ private extension SportsGroundDetailView {
         }
     }
 
+    var feedbackButton: some View {
+        Button(action: { dialogs.showFeedback.toggle() }) {
+            Image(systemName: Icons.Regular.exclamationArrowCircle.rawValue)
+        }
+        .disabled(viewModel.isLoading)
+        .confirmationDialog(
+            .init(Constants.Alert.groundFeedback),
+            isPresented: $dialogs.showFeedback,
+            titleVisibility: .visible
+        ) {
+            Button("Написать письмо") {
+                feedbackSender.sendFeedback(
+                    subject: Feedback.makeSubject(for: viewModel.ground.shortTitle),
+                    messageBody: Feedback.body,
+                    recipients: Constants.feedbackRecipient
+                )
+            }
+        }
+    }
+    
     var deleteButton: some View {
-        Button(action: { showDeleteDialog.toggle() }) {
-            Image(systemName: "trash")
+        Button(action: { dialogs.showDelete.toggle() }) {
+            Image(systemName: Icons.Regular.trash.rawValue)
         }
         .confirmationDialog(
             .init(Constants.Alert.deleteGround),
-            isPresented: $showDeleteDialog,
+            isPresented: $dialogs.showDelete,
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
@@ -290,6 +316,26 @@ private extension SportsGroundDetailView {
             deletePhotoTask,
             deleteGroundTask
         ].forEach { $0?.cancel() }
+    }
+}
+
+private extension SportsGroundDetailView {
+    /// Содержит переключатели для диалогов на экране
+    struct ConfirmationDialogs {
+        /// Спросить об удалении площадки
+        var showDelete = false
+        /// Спросить о необходимости обновления площадки
+        var showFeedback = false
+    }
+    
+    enum Feedback {
+        static func makeSubject(for groundNumber: String) -> String {
+            "\(ProcessInfo.processInfo.processName): Обновление площадки \(groundNumber)"
+        }
+        static let body = """
+            Какую информацию о площадке нужно обновить?
+            \n
+        """
     }
 }
 
