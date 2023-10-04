@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/CachedAsyncImage991",
       "state" : {
-        "revision" : "60fd622c825dcd41d3ef191bd080b199a739218c",
-        "version" : "1.0.4"
+        "revision" : "669e2da9937af86e10edd8104a456dfd5c68305b",
+        "version" : "1.0.7"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/FeedbackSender",
       "state" : {
-        "revision" : "f1344cbd04a9baef7cc135947efb7c68c256b225",
-        "version" : "1.0.1"
+        "revision" : "106d7e5c459d8ea0d622b4630110726552280345",
+        "version" : "1.0.2"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/ImagePicker",
       "state" : {
-        "revision" : "eaf456d407421ec6ef8cf7c83d6a3cacefc14e88",
-        "version" : "1.0.4"
+        "revision" : "1d13b1c0cce41940ef01e3111d90a4440cf14ac8",
+        "version" : "1.0.5"
       }
     },
     {
