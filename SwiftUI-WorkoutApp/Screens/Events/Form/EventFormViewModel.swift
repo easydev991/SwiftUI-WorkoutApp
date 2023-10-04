@@ -44,7 +44,7 @@ final class EventFormViewModel: ObservableObject {
         do {
             isEventSaved = try await SWClient(with: defaults).saveEvent(id: eventID, form: eventForm).id != .zero
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

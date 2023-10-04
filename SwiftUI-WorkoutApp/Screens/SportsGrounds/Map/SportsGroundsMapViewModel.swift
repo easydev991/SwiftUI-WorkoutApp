@@ -72,7 +72,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             updateDefaultList(with: updatedGrounds)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -90,7 +90,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             updateDefaultList(with: updatedGrounds)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -238,7 +238,7 @@ private extension SportsGroundsMapViewModel {
             )
             defaultList = oldGrounds
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 

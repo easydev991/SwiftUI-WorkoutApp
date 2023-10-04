@@ -148,7 +148,7 @@ private extension ChangePasswordView {
                 isChangeSuccessful = try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
             } catch {
-                errorMessage = ErrorFilterService.message(from: error)
+                errorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }

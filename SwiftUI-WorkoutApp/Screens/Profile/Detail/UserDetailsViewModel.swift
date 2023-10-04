@@ -67,7 +67,7 @@ final class UserDetailsViewModel: ObservableObject {
                 }
             }
         } catch {
-            responseMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -85,7 +85,7 @@ final class UserDetailsViewModel: ObservableObject {
                 }
             }
         } catch {
-            responseMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -99,7 +99,7 @@ private extension UserDetailsViewModel {
             let info = try await SWClient(with: defaults).getUserByID(userID)
             user = .init(info)
         } catch {
-            responseMessage = ErrorFilterService.message(from: error)
+            responseMessage = ErrorFilter.message(from: error)
         }
     }
 

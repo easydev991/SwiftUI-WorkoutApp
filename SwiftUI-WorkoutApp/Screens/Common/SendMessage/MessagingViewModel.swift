@@ -19,7 +19,7 @@ final class MessagingViewModel: ObservableObject {
                 isMessageSent.toggle()
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

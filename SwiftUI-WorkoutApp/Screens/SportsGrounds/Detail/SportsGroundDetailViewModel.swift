@@ -23,7 +23,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         do {
             ground = try await SWClient(with: defaults, needAuth: false).getSportsGround(id: ground.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -49,7 +49,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 ground.trainHere = oldValue
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
             ground.trainHere = oldValue
         }
         isLoading.toggle()
@@ -65,7 +65,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 ground.photos.removeAll(where: { $0.id == photoID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -78,7 +78,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
                 ground.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -111,7 +111,7 @@ final class SportsGroundDetailViewModel: ObservableObject {
         do {
             isDeleted = try await SWClient(with: defaults).delete(groundID: ground.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

@@ -61,7 +61,7 @@ final class SportsGroundFormViewModel: ObservableObject {
         do {
             isSuccess = try await SWClient(with: defaults).saveSportsGround(id: groundID, form: groundForm).id != .zero
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

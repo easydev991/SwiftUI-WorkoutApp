@@ -28,7 +28,7 @@ final class JournalEntriesListViewModel: ObservableObject {
         do {
             list = try await SWClient(with: defaults).getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -51,7 +51,7 @@ final class JournalEntriesListViewModel: ObservableObject {
                 list.removeAll(where: { $0.id == entryID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

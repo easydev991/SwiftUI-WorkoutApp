@@ -132,7 +132,7 @@ private extension SearchUsersView {
                     errorMessage = "Не удалось найти такого пользователя"
                 }
             } catch {
-                errorMessage = ErrorFilterService.message(from: error)
+                errorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }

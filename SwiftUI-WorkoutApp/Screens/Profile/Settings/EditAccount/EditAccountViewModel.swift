@@ -48,7 +48,7 @@ final class EditAccountViewModel: ObservableObject {
             let userID = (defaults.mainUserInfo?.userID).valueOrZero
             isProfileSaved = try await SWClient(with: defaults).editUser(userID, model: userForm)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -76,7 +76,7 @@ private extension EditAccountViewModel {
                 #endif
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 

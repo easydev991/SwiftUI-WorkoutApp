@@ -25,7 +25,7 @@ final class EventDetailsViewModel: ObservableObject {
         do {
             event = try await SWClient(with: defaults).getEvent(by: event.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -50,7 +50,7 @@ final class EventDetailsViewModel: ObservableObject {
                 event.trainHere = oldValue
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
             event.trainHere = oldValue
         }
         isLoading.toggle()
@@ -66,7 +66,7 @@ final class EventDetailsViewModel: ObservableObject {
                 event.photos.removeAll(where: { $0.id == photoID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -79,7 +79,7 @@ final class EventDetailsViewModel: ObservableObject {
                 event.comments.removeAll(where: { $0.id == commentID })
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -112,7 +112,7 @@ final class EventDetailsViewModel: ObservableObject {
         do {
             isEventDeleted = try await SWClient(with: defaults).delete(eventID: event.id)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

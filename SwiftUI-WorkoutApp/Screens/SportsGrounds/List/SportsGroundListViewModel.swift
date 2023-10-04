@@ -45,7 +45,7 @@ private extension SportsGroundListViewModel {
             }
             list = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 }

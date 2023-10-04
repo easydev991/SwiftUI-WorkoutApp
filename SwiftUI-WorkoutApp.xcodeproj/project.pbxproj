@@ -72,11 +72,9 @@
 		679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */; };
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
-		67A6FEF529E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
 		67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371702A63FF6F000FF143 /* AppThemeScreen.swift */; };
 		67B371732A640079000FF143 /* AppThemeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371722A640079000FF143 /* AppThemeService.swift */; };
-		67B65DAD289E860E00FBAFCB /* ErrorFilterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B65DAC289E860E00FBAFCB /* ErrorFilterService.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
 		67B78714281D74F3008B104F /* EditAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78713281D74F3008B104F /* EditAccountViewModel.swift */; };
 		67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */; };
@@ -185,11 +183,9 @@
 		679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoUserButton.swift; sourceTree = "<group>"; };
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOSVersionChecker.swift; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
 		67B371702A63FF6F000FF143 /* AppThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeScreen.swift; sourceTree = "<group>"; };
 		67B371722A640079000FF143 /* AppThemeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeService.swift; sourceTree = "<group>"; };
-		67B65DAC289E860E00FBAFCB /* ErrorFilterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorFilterService.swift; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		67B78713281D74F3008B104F /* EditAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountViewModel.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapViewModel.swift; sourceTree = "<group>"; };
@@ -541,9 +537,7 @@
 			isa = PBXGroup;
 			children = (
 				67B78711281D654C008B104F /* DefaultsService.swift */,
-				67B65DAC289E860E00FBAFCB /* ErrorFilterService.swift */,
 				679F3B02296841DD00BB3590 /* URLOpener.swift */,
-				67A6FEF429E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift */,
 				67B371722A640079000FF143 /* AppThemeService.swift */,
 			);
 			path = Services;
@@ -890,7 +884,6 @@
 				6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */,
 				674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */,
-				67B65DAD289E860E00FBAFCB /* ErrorFilterService.swift in Sources */,
 				6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */,
 				67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */,
 				676B3AFA283507E900DB4ADA /* EventDetailsViewModel.swift in Sources */,
@@ -918,7 +911,6 @@
 				67B78714281D74F3008B104F /* EditAccountViewModel.swift in Sources */,
 				6762775B283A87AD009C203F /* JournalCell.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* EditAccountScreen.swift in Sources */,
-				67A6FEF529E1DD0F002DCBA1 /* DeviceOSVersionChecker.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */,
 				67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */,

@@ -125,7 +125,7 @@ private extension LoginView {
                 try await SWClient(with: defaults, canForceLogout: false)
                     .logInWith(credentials.login, credentials.password)
             } catch {
-                errorMessage = ErrorFilterService.message(from: error)
+                errorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }
@@ -142,7 +142,7 @@ private extension LoginView {
                 showResetSuccessfulAlert = try await SWClient(with: defaults, needAuth: false)
                     .resetPassword(for: credentials.login)
             } catch {
-                errorMessage = ErrorFilterService.message(from: error)
+                errorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }

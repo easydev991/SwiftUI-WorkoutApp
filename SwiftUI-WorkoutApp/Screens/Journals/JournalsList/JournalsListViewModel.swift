@@ -17,7 +17,7 @@ final class JournalsListViewModel: ObservableObject {
         do {
             list = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -33,7 +33,7 @@ final class JournalsListViewModel: ObservableObject {
                 await makeItems(for: userID, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -48,7 +48,7 @@ final class JournalsListViewModel: ObservableObject {
                 list[index] = result
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -62,7 +62,7 @@ final class JournalsListViewModel: ObservableObject {
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

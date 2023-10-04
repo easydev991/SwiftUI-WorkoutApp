@@ -16,7 +16,7 @@ final class DialogViewModel: ObservableObject {
         do {
             list = try await SWClient(with: defaults).getMessages(for: dialogID).reversed()
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -27,7 +27,7 @@ final class DialogViewModel: ObservableObject {
                 markedAsRead = true
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
     }
 
@@ -40,7 +40,7 @@ final class DialogViewModel: ObservableObject {
                 await makeItems(for: dialog, refresh: true, with: defaults)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }

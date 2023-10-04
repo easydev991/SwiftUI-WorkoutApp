@@ -32,7 +32,7 @@ final class UsersListViewModel: ObservableObject {
                 defaults.setUserNeedUpdate(true)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
@@ -50,7 +50,7 @@ private extension UsersListViewModel {
             let friends = try await SWClient(with: defaults).getFriendsForUser(id: id)
             users = friends.map(UserModel.init)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -70,7 +70,7 @@ private extension UsersListViewModel {
             }
             users = defaults.blacklistedUsers.map(UserModel.init)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }

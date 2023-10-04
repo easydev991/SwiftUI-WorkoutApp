@@ -17,7 +17,7 @@ final class DialogListViewModel: ObservableObject {
             let unreadMessagesCount = list.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         if !refresh { isLoading.toggle() }
     }
@@ -31,7 +31,7 @@ final class DialogListViewModel: ObservableObject {
                 list.remove(at: index)
             }
         } catch {
-            errorMessage = ErrorFilterService.message(from: error)
+            errorMessage = ErrorFilter.message(from: error)
         }
         isLoading.toggle()
     }
