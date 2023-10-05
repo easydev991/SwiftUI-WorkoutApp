@@ -173,10 +173,9 @@ private extension JournalsListView {
         }
     }
 
-    func update(journalID: Int) {
-        updateListTask = Task {
-            await viewModel.update(journalID: journalID, with: defaults)
-        }
+    func update(journal: JournalResponse) {
+        journalToEdit = nil
+        viewModel.update(journal)
     }
 
     func initiateDeletion(for journalID: Int) {

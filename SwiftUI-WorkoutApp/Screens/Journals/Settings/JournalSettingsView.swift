@@ -2,24 +2,25 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var network: NetworkStatus
-    @StateObject private var viewModel = JournalSettingsViewModel()
     @State private var journal: JournalResponse
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
     @FocusState private var isTextFieldFocused: Bool
     private let options = JournalAccess.allCases
-    private let updateOnSuccess: (Int) -> Void
+    private let updateOnSuccess: (JournalResponse) -> Void
     private let initialJournal: JournalResponse
 
     init(
         with journalToEdit: JournalResponse,
-        updatedClbk: @escaping (Int) -> Void
+        updatedClbk: @escaping (JournalResponse) -> Void
     ) {
         self.initialJournal = journalToEdit
         _journal = .init(initialValue: journalToEdit)
@@ -37,14 +38,12 @@ struct JournalSettingsView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .padding([.top, .horizontal])
         }
-        .loadingOverlay(if: viewModel.isLoading)
-        .interactiveDismissDisabled(viewModel.isLoading)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.isSettingsUpdated, perform: finishSettings)
+        .loadingOverlay(if: isLoading)
+        .interactiveDismissDisabled(isLoading)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { alertMessage = "" }
         }
-        .onDisappear(perform: cancelTask)
+        .onDisappear { saveJournalChangesTask?.cancel() }
     }
 }
 
@@ -92,7 +91,22 @@ private extension JournalSettingsView {
 
     func saveChanges() {
         saveJournalChangesTask = Task {
-            await viewModel.editJournalSettings(for: journal, with: defaults)
+            isLoading = true
+            do {
+                if try await SWClient(with: defaults).editJournalSettings(
+                    for: journal.id,
+                    title: journal.title,
+                    viewAccess: journal.viewAccessType,
+                    commentAccess: journal.commentAccessType
+                ) {
+                    updateOnSuccess(journal)
+                }
+            } catch {
+                let message = ErrorFilter.message(from: error)
+                showErrorAlert = !message.isEmpty
+                alertMessage = message
+            }
+            isLoading.toggle()
         }
     }
 
@@ -100,26 +114,6 @@ private extension JournalSettingsView {
         !network.isConnected
             || journal.title.isEmpty
             || initialJournal == journal
-    }
-
-    func setupErrorAlert(with message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func finishSettings(isSuccess: Bool) {
-        if isSuccess {
-            updateOnSuccess(journal.id)
-            dismiss()
-        }
-    }
-
-    func cancelTask() {
-        saveJournalChangesTask?.cancel()
     }
 }
 

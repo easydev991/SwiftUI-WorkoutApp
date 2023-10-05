@@ -38,19 +38,10 @@ final class JournalsListViewModel: ObservableObject {
         isLoading.toggle()
     }
 
-    func update(journalID: Int, with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            let userID = (defaults.mainUserInfo?.userID).valueOrZero
-            let result = try await SWClient(with: defaults).getJournal(for: userID, journalID: journalID)
-            if let index = list.firstIndex(where: { $0.id == journalID }) {
-                list[index] = result
-            }
-        } catch {
-            errorMessage = ErrorFilter.message(from: error)
+    func update(_ journal: JournalResponse) {
+        if let index = list.firstIndex(where: { $0.id == journal.id }) {
+            list[index] = journal
         }
-        isLoading.toggle()
     }
 
     func delete(journalID: Int?, with defaults: DefaultsProtocol) async {
