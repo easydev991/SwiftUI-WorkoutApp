@@ -1,17 +1,14 @@
 import SwiftUI
+import SWNetworkClient
 
 /// Экран для создания и изменения текстовой записи (комментарий к площадке, мерпориятию или дневнику)
 struct TextEntryView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = TextEntryViewModel()
+    @State private var isLoading = false
     @State private var entryText = ""
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var addEntryTask: Task<Void, Never>?
-    @State private var editEntryTask: Task<Void, Never>?
-    @FocusState private var isFocused
-
+    @State private var saveEntryTask: Task<Void, Never>?
     private let mode: Mode
     private var oldEntryText: String?
     private let refreshClbk: () -> Void
@@ -29,14 +26,23 @@ struct TextEntryView: View {
     }
 
     var body: some View {
-        content
-            .alert(errorTitle, isPresented: $showErrorAlert) {
-                Button("Ok", action: closeAlert)
+        SendMessageView(
+            header: mode.headerTitle,
+            placeholder: mode.placeholder,
+            text: $entryText,
+            isLoading: isLoading,
+            isSendButtonDisabled: !canSend,
+            sendAction: sendAction,
+            showErrorAlert: $showErrorAlert,
+            errorTitle: $errorTitle,
+            dismissError: { setupErrorAlert(with: "") }
+        )
+        .onAppear {
+            if let oldEntry = oldEntryText {
+                entryText = oldEntry
             }
-            .onChange(of: viewModel.isSuccess, perform: dismissOnSuccess)
-            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onAppear(perform: setupOldEntryIfNeeded)
-            .onDisappear(perform: cancelTasks)
+        }
+        .onDisappear { saveEntryTask?.cancel() }
     }
 }
 
@@ -81,83 +87,64 @@ private extension TextEntryView.Mode {
 }
 
 private extension TextEntryView {
-    var content: some View {
-        SendMessageView(
-            header: mode.headerTitle,
-            placeholder: mode.placeholder,
-            text: $entryText,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: !canSend,
-            sendAction: sendAction,
-            showErrorAlert: $showErrorAlert,
-            errorTitle: $errorTitle,
-            dismissError: closeAlert
-        )
-    }
-
     func sendAction() {
-        switch mode {
-        case .newForGround, .newForEvent, .newForJournal:
-            addEntryTask = Task {
-                await viewModel.addNewEntry(
-                    mode,
-                    entryText: entryText,
-                    defaults: defaults
-                )
+        isLoading = true
+        saveEntryTask = Task {
+            do {
+                let client = SWClient(with: defaults)
+                let isSuccess: Bool = switch mode {
+                case let .newForGround(id):
+                    try await client.addNewEntry(
+                        to: .ground(id: id), entryText: entryText
+                    )
+                case let .newForEvent(id):
+                    try await client.addNewEntry(
+                        to: .event(id: id), entryText: entryText
+                    )
+                case let .newForJournal(ownerId, journalId):
+                    try await client.addNewEntry(
+                        to: .journal(ownerId: ownerId, journalId: journalId),
+                        entryText: entryText
+                    )
+                case let .editGround(info):
+                    try await client.editEntry(
+                        for: .ground(id: info.parentObjectID),
+                        entryID: info.entryID,
+                        newEntryText: entryText
+                    )
+                case let .editEvent(info):
+                    try await client.editEntry(
+                        for: .event(id: info.parentObjectID),
+                        entryID: info.entryID,
+                        newEntryText: entryText
+                    )
+                case let .editJournalEntry(ownerId, info):
+                    try await client.editEntry(
+                        for: .journal(ownerId: ownerId, journalId: info.parentObjectID),
+                        entryID: info.entryID,
+                        newEntryText: entryText
+                    )
+                }
+                if isSuccess { refreshClbk() }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
             }
-        case .editGround, .editEvent, .editJournalEntry:
-            editEntryTask = Task {
-                await viewModel.editEntry(
-                    for: mode,
-                    entryText: entryText,
-                    with: defaults
-                )
-            }
+            isLoading = false
         }
-        isFocused.toggle()
-    }
-
-    func dismissOnSuccess(isSuccess: Bool) {
-        if isSuccess {
-            refreshClbk()
-            dismiss()
-        }
-    }
-
-    func closeAlert() {
-        viewModel.closedErrorAlert()
     }
 
     func setupErrorAlert(with message: String) {
-        showErrorAlert = !message.isEmpty
         errorTitle = message
-    }
-
-    func showKeyboard() {
-        guard !isFocused else { return }
-        Task { @MainActor in
-            try await Task.sleep(nanoseconds: 750_000_000)
-            isFocused = true
-        }
-    }
-
-    func setupOldEntryIfNeeded() {
-        if let oldEntry = oldEntryText {
-            entryText = oldEntry
-        }
+        showErrorAlert = !message.isEmpty
     }
 
     var canSend: Bool {
         switch mode {
         case .newForGround, .newForEvent, .newForJournal:
-            !entryText.isEmpty && !viewModel.isLoading
+            !entryText.isEmpty
         case .editGround, .editEvent, .editJournalEntry:
-            entryText != oldEntryText && !viewModel.isLoading
+            entryText != oldEntryText
         }
-    }
-
-    func cancelTasks() {
-        [addEntryTask, editEntryTask].forEach { $0?.cancel() }
     }
 }
 

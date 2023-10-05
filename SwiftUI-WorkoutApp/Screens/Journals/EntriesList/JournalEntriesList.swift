@@ -129,6 +129,8 @@ private extension JournalEntriesList {
     }
 
     func updateEntries() {
+        showEntrySheet = false
+        editEntry = nil
         updateEntriesTask = Task {
             await viewModel.makeItems(with: defaults, refresh: true)
         }

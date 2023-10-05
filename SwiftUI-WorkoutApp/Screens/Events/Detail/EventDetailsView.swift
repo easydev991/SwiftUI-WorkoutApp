@@ -239,6 +239,8 @@ private extension EventDetailsView {
     }
 
     func refreshAction() {
+        isCreatingComment = false
+        editComment = nil
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 

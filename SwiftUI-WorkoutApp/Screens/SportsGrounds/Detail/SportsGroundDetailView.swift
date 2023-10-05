@@ -272,6 +272,8 @@ private extension SportsGroundDetailView {
     }
 
     func refreshAction() {
+        isCreatingComment = false
+        editComment = nil
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
