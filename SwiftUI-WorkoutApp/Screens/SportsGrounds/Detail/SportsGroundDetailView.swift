@@ -242,7 +242,7 @@ private extension SportsGroundDetailView {
             }
         }
     }
-    
+
     var deleteButton: some View {
         Button(action: { dialogs.showDelete.toggle() }) {
             Image(systemName: Icons.Regular.trash.rawValue)
@@ -327,11 +327,12 @@ private extension SportsGroundDetailView {
         /// Спросить о необходимости обновления площадки
         var showFeedback = false
     }
-    
+
     enum Feedback {
         static func makeSubject(for groundNumber: String) -> String {
             "\(ProcessInfo.processInfo.processName): Обновление площадки \(groundNumber)"
         }
+
         static let body = """
             Какую информацию о площадке нужно обновить?
             \n
