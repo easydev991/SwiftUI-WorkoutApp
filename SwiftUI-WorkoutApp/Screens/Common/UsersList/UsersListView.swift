@@ -8,11 +8,14 @@ import SWNetworkClient
 struct UsersListView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = UsersListViewModel()
+    @State private var users = [UserModel]()
+    @State private var friendRequests = [UserModel]()
+    @State private var isLoading = false
     @State private var messagingModel = MessagingModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
+    @State private var friendRequestTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
@@ -20,11 +23,11 @@ struct UsersListView: View {
             VStack(spacing: 0) {
                 friendRequestsSectionIfNeeded
                 SectionView(
-                    header: viewModel.hasFriendRequests ? "Друзья" : nil,
+                    header: friendRequests.isEmpty ? nil : "Друзья",
                     mode: .regular
                 ) {
                     LazyVStack(spacing: 12) {
-                        ForEach(viewModel.users) { item in
+                        ForEach(users) { item in
                             listItem(for: item)
                                 .disabled(item.id == defaults.mainUserInfo?.userID)
                         }
@@ -39,13 +42,12 @@ struct UsersListView: View {
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .disabled(!network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok", action: closeAlert)
         }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
         .onDisappear { sendMessageTask?.cancel() }
@@ -91,9 +93,12 @@ private extension UsersListView.Mode {
 private extension UsersListView {
     @ViewBuilder
     var friendRequestsSectionIfNeeded: some View {
-        if viewModel.hasFriendRequests {
-            FriendRequestsView(viewModel: viewModel)
-                .padding(.top)
+        if !friendRequests.isEmpty {
+            FriendRequestsView(
+                friendRequests: friendRequests,
+                action: respondToFriendRequest
+            )
+            .padding(.top)
         }
     }
 
@@ -162,7 +167,48 @@ private extension UsersListView {
     }
 
     func askForUsers(refresh: Bool = false) async {
-        await viewModel.makeInfo(for: mode, refresh: refresh, with: defaults)
+        do {
+            if !users.isEmpty || isLoading, !refresh { return }
+            switch mode {
+            case let .friends(userID), let .friendsForChat(userID):
+                if !refresh { isLoading = true }
+                if userID == defaults.mainUserInfo?.userID {
+                    if defaults.friendRequestsList.isEmpty || refresh {
+                        try? await SWClient(with: defaults).getFriendRequests()
+                    }
+                    friendRequests = defaults.friendRequestsList.map(UserModel.init)
+                }
+                let friends = try await SWClient(with: defaults).getFriendsForUser(id: userID)
+                users = friends.map(UserModel.init)
+            case let .eventParticipants(list), let .groundParticipants(list):
+                users = list.map(UserModel.init)
+            case .blacklist:
+                if !refresh { isLoading = true }
+                if defaults.blacklistedUsers.isEmpty {
+                    try await SWClient(with: defaults).getBlacklist()
+                }
+                users = defaults.blacklistedUsers.map(UserModel.init)
+            }
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        if !refresh { isLoading = false }
+    }
+
+    func respondToFriendRequest(from userID: Int, accept: Bool) {
+        if isLoading { return }
+        isLoading = true
+        friendRequestTask = Task {
+            do {
+                if try await SWClient(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
+                    friendRequests = defaults.friendRequestsList.map(UserModel.init)
+                    defaults.setUserNeedUpdate(true)
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
     }
 
     func setupErrorAlert(with message: String) {
@@ -170,10 +216,7 @@ private extension UsersListView {
         errorTitle = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-        errorTitle = ""
-    }
+    func closeAlert() { errorTitle = "" }
 }
 
 #if DEBUG
