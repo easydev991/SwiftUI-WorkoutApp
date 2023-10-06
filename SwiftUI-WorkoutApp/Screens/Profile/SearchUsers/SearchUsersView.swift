@@ -6,10 +6,9 @@ import SWNetworkClient
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var messagingViewModel = MessagingViewModel()
+    @State private var messagingModel = MessagingModel()
     @State private var users = [UserModel]()
     @State private var isLoading = false
-    @State private var messageRecipient: UserModel?
     @State private var query = ""
     @State private var showErrorAlert = false
     @State private var errorMessage = ""
@@ -40,7 +39,7 @@ struct SearchUsersView: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(
-            item: $messageRecipient,
+            item: $messagingModel.recipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
@@ -48,8 +47,6 @@ struct SearchUsersView: View {
             Button("Ok", action: onCloseAlert)
         }
         .onChange(of: errorMessage, perform: setupErrorAlert)
-        .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
         .navigationBarTitleDisplayMode(.inline)
@@ -75,7 +72,7 @@ private extension SearchUsersView {
             }
         case .chat:
             Button {
-                messageRecipient = model
+                messagingModel.recipient = model
             } label: {
                 userRowView(with: model)
             }
@@ -97,9 +94,9 @@ private extension SearchUsersView {
     func messageSheet(for recipient: UserModel) -> some View {
         SendMessageView(
             header: "Сообщение для \(recipient.name)",
-            text: $messagingViewModel.messageText,
-            isLoading: messagingViewModel.isLoading,
-            isSendButtonDisabled: !messagingViewModel.canSendMessage,
+            text: $messagingModel.message,
+            isLoading: messagingModel.isLoading,
+            isSendButtonDisabled: !messagingModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorMessage,
@@ -108,15 +105,22 @@ private extension SearchUsersView {
     }
 
     func sendMessage(to userID: Int) {
+        messagingModel.isLoading = true
         sendMessageTask = Task {
-            await messagingViewModel.sendMessage(to: userID, with: defaults)
+            do {
+                let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
+                endMessaging(isSuccess: isSuccess)
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            messagingModel.isLoading = false
         }
     }
 
     func endMessaging(isSuccess: Bool = true) {
         if isSuccess {
-            messagingViewModel.messageText = ""
-            messageRecipient = nil
+            messagingModel.message = ""
+            messagingModel.recipient = nil
         }
     }
 
@@ -143,10 +147,7 @@ private extension SearchUsersView {
         errorMessage = message
     }
 
-    func onCloseAlert() {
-        errorMessage = ""
-        messagingViewModel.clearErrorMessage()
-    }
+    func onCloseAlert() { errorMessage = "" }
 
     func cancelTasks() {
         [searchTask, sendMessageTask].forEach { $0?.cancel() }

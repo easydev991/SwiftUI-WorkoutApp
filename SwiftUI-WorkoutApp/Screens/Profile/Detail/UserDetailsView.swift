@@ -2,14 +2,14 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран с детальной информацией профиля
 struct UserDetailsView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel: UserDetailsViewModel
-    @StateObject private var messagingViewModel = MessagingViewModel()
-    @State private var showMessageSheet = false
+    @State private var messagingModel = MessagingModel()
     @State private var isFriendRequestSent = false
     @State private var showAlertMessage = false
     @State private var showBlacklistConfirmation = false
@@ -54,8 +54,6 @@ struct UserDetailsView: View {
         .refreshable { await askForUserInfo(refresh: true) }
         .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
         .onChange(of: viewModel.responseMessage, perform: setupResponseAlert)
-        .onChange(of: messagingViewModel.errorMessage, perform: setupResponseAlert)
-        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 refreshButtonIfNeeded
@@ -113,10 +111,10 @@ private extension UserDetailsView {
     var communicationSection: some View {
         VStack(spacing: 12) {
             Button("Сообщение") {
-                showMessageSheet.toggle()
+                messagingModel.recipient = viewModel.user
             }
             .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
-            .sheet(isPresented: $showMessageSheet) { messageSheet }
+            .sheet(item: $messagingModel.recipient, content: messageSheet)
             Button(.init(viewModel.friendActionOption.rawValue)) {
                 friendActionTask = Task { await viewModel.friendAction(with: defaults) }
             }
@@ -259,12 +257,12 @@ private extension UserDetailsView {
         await viewModel.makeUserInfo(refresh: refresh, with: defaults)
     }
 
-    var messageSheet: some View {
+    func messageSheet(for recipient: UserModel) -> some View {
         SendMessageView(
-            header: "Новое сообщение",
-            text: $messagingViewModel.messageText,
-            isLoading: messagingViewModel.isLoading,
-            isSendButtonDisabled: !messagingViewModel.canSendMessage,
+            header: "Сообщение для \(recipient.name)",
+            text: $messagingModel.message,
+            isLoading: messagingModel.isLoading,
+            isSendButtonDisabled: !messagingModel.canSendMessage,
             sendAction: sendMessage,
             showErrorAlert: $showAlertMessage,
             errorTitle: $alertMessage,
@@ -273,15 +271,17 @@ private extension UserDetailsView {
     }
 
     func sendMessage() {
+        messagingModel.isLoading = true
         sendMessageTask = Task {
-            await messagingViewModel.sendMessage(to: viewModel.user.id, with: defaults)
-        }
-    }
-
-    func endMessaging(isSuccess: Bool) {
-        if isSuccess {
-            messagingViewModel.messageText = ""
-            showMessageSheet.toggle()
+            do {
+                if try await SWClient(with: defaults).sendMessage(messagingModel.message, to: viewModel.user.id) {
+                    messagingModel.message = ""
+                    messagingModel.recipient = nil
+                }
+            } catch {
+                setupResponseAlert(with: ErrorFilter.message(from: error))
+            }
+            messagingModel.isLoading = false
         }
     }
 
@@ -292,7 +292,7 @@ private extension UserDetailsView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
-        messagingViewModel.clearErrorMessage()
+        alertMessage = ""
     }
 
     var friendRequestsCount: Int {

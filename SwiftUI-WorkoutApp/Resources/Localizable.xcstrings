@@ -2397,6 +2397,7 @@
       }
     },
     "Новое сообщение" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

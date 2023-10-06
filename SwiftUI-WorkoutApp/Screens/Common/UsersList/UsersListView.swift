@@ -2,14 +2,14 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран со списком пользователей
 struct UsersListView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = UsersListViewModel()
-    @StateObject private var messagingViewModel = MessagingViewModel()
-    @State private var messageRecipient: UserModel?
+    @State private var messagingModel = MessagingModel()
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
@@ -35,7 +35,7 @@ struct UsersListView: View {
             .padding(.horizontal)
         }
         .sheet(
-            item: $messageRecipient,
+            item: $messagingModel.recipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
@@ -46,11 +46,9 @@ struct UsersListView: View {
             Button("Ok", action: closeAlert)
         }
         .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: messagingViewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: messagingViewModel.isMessageSent, perform: endMessaging)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
-        .onDisappear(perform: cancelTask)
+        .onDisappear { sendMessageTask?.cancel() }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -104,7 +102,7 @@ private extension UsersListView {
         switch mode {
         case .friendsForChat:
             Button {
-                messageRecipient = model
+                messagingModel.recipient = model
             } label: {
                 userRowView(with: model)
             }
@@ -133,9 +131,9 @@ private extension UsersListView {
     func messageSheet(for recipient: UserModel) -> some View {
         SendMessageView(
             header: "Сообщение для \(recipient.name)",
-            text: $messagingViewModel.messageText,
-            isLoading: messagingViewModel.isLoading,
-            isSendButtonDisabled: !messagingViewModel.canSendMessage,
+            text: $messagingModel.message,
+            isLoading: messagingModel.isLoading,
+            isSendButtonDisabled: !messagingModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
@@ -144,15 +142,22 @@ private extension UsersListView {
     }
 
     func sendMessage(to userID: Int) {
+        messagingModel.isLoading = true
         sendMessageTask = Task {
-            await messagingViewModel.sendMessage(to: userID, with: defaults)
+            do {
+                let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
+                endMessaging(isSuccess: isSuccess)
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            messagingModel.isLoading = false
         }
     }
 
     func endMessaging(isSuccess: Bool = true) {
         if isSuccess {
-            messagingViewModel.messageText = ""
-            messageRecipient = nil
+            messagingModel.message = ""
+            messagingModel.recipient = nil
         }
     }
 
@@ -167,11 +172,7 @@ private extension UsersListView {
 
     func closeAlert() {
         viewModel.clearErrorMessage()
-        messagingViewModel.clearErrorMessage()
-    }
-
-    func cancelTask() {
-        sendMessageTask?.cancel()
+        errorTitle = ""
     }
 }
 
