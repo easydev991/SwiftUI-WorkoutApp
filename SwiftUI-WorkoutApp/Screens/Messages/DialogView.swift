@@ -2,12 +2,17 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран с диалогом
 struct DialogView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = DialogViewModel()
+    @State private var messages = [MessageResponse]()
+    @State private var newMessage = ""
+    @State private var isLoading = false
+    /// `NavigationLink` не работает сам по себе внутри тулбара,
+    /// т.к. тулбар не находится в иерархии `NavigationView`
     @State private var openAnotherUserProfile = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -23,7 +28,7 @@ struct DialogView: View {
             VStack {
                 ScrollView {
                     LazyVStack(spacing: 6) {
-                        ForEach(viewModel.list) { message in
+                        ForEach(messages) { message in
                             ChatBubbleRowView(
                                 messageType: message.userID == defaults.mainUserInfo?.userID
                                     ? .sent
@@ -35,7 +40,7 @@ struct DialogView: View {
                     }
                     .padding(.horizontal)
                     .id(chatScrollView)
-                    .onChange(of: viewModel.list) { _ in
+                    .onChange(of: messages) { _ in
                         withAnimation {
                             scrollView.scrollTo(chatScrollView, anchor: .bottom)
                         }
@@ -51,14 +56,14 @@ struct DialogView: View {
             }
         }
         .background(Color.swBackground)
-        .onChange(of: viewModel.markedAsRead, perform: updateDialogUnreadCount)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { errorTitle = "" }
         }
         .task(priority: .low) { await markAsRead() }
         .task(priority: .high) { await askForMessages() }
-        .onDisappear(perform: cancelTasks)
+        .onDisappear {
+            [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 refreshButton
@@ -87,9 +92,7 @@ private extension DialogView {
     var anotherUserProfileButton: some View {
         NavigationLink(
             isActive: $openAnotherUserProfile,
-            destination: {
-                UserDetailsView(from: dialog)
-            },
+            destination: { UserDetailsView(from: dialog) },
             label: {
                 CachedImage(
                     url: dialog.anotherUserImageURL,
@@ -105,7 +108,7 @@ private extension DialogView {
     }
 
     var isToolbarItemDisabled: Bool {
-        viewModel.isLoading || !network.isConnected
+        isLoading || !network.isConnected
     }
 
     var sendMessageBar: some View {
@@ -132,52 +135,64 @@ private extension DialogView {
     @ViewBuilder
     var newMessageTextField: some View {
         if #available(iOS 16.0, *) {
-            TextEditor(text: $viewModel.newMessage)
+            TextEditor(text: $newMessage)
                 .tint(.swAccent)
                 .scrollContentBackground(.hidden)
         } else {
-            TextEditor(text: $viewModel.newMessage)
+            TextEditor(text: $newMessage)
                 .accentColor(.swAccent)
         }
     }
 
     var isSendButtonDisabled: Bool {
-        viewModel.newMessage.isEmpty
-            || viewModel.isLoading
+        newMessage.isEmpty
+            || isLoading
             || !network.isConnected
     }
 
-    func updateDialogUnreadCount(isRead: Bool) {
-        if isRead { markedAsReadClbk(dialog) }
-    }
-
     func markAsRead() async {
-        if dialog.unreadMessagesCount > .zero {
-            await viewModel.markAsRead(from: dialog.anotherUserID.valueOrZero, with: defaults)
+        guard dialog.hasUnreadMessages else { return }
+        do {
+            let userID = dialog.anotherUserID.valueOrZero
+            if try await SWClient(with: defaults).markAsRead(from: userID) {
+                markedAsReadClbk(dialog)
+            }
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
         }
     }
 
     func askForMessages(refresh: Bool = false) async {
-        await viewModel.makeItems(for: dialog.id, refresh: refresh, with: defaults)
+        if isLoading, !refresh { return }
+        if !refresh { isLoading = true }
+        do {
+            messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
     func sendMessage() {
         sendMessageTask = Task(priority: .userInitiated) {
-            await viewModel.sendMessage(in: dialog.id, to: dialog.anotherUserID.valueOrZero, with: defaults)
+            if isLoading { return }
+            isLoading = true
+            do {
+                let userID = dialog.anotherUserID.valueOrZero
+                if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {
+                    newMessage = ""
+                    await askForMessages(refresh: true)
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
         }
     }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func cancelTasks() {
-        [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
     }
 }
 

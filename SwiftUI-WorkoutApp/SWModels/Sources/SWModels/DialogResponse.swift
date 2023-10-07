@@ -60,6 +60,10 @@ public extension DialogResponse {
         )
     }
 
+    var hasUnreadMessages: Bool {
+        unreadMessagesCount > 0
+    }
+
     var unreadMessagesCount: Int {
         get { unreadCountOptional.valueOrZero }
         set { unreadCountOptional = newValue }
