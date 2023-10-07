@@ -211,6 +211,7 @@ private extension SportsGroundsMapView {
     }
 
     func getNewSportsGround() {
+        defaults.setUserNeedUpdate(true)
         Task { await viewModel.checkForRecentUpdates(with: defaults) }
     }
 
