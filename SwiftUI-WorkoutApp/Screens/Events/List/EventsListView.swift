@@ -2,13 +2,16 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран со списком мероприятий
 struct EventsListView: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = EventsListViewModel()
+    @State private var futureEvents = [EventResponse]()
+    @State private var pastEvents = [EventResponse]()
+    @State private var isLoading = false
     @State private var selectedEventType = EventType.future
     @State private var showEventCreationSheet = false
     @State private var showEventCreationRule = false
@@ -23,19 +26,20 @@ struct EventsListView: View {
                 eventsList
                     .overlay { emptyView }
             }
-            .loadingOverlay(if: viewModel.isLoading)
+            .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
             .alert("Необходимо выбрать площадку", isPresented: $showEventCreationRule) {
-                Button(action: createEventIfAvailable) { Text("Перейти на карту") }
+                Button("Перейти на карту", action: goToMap)
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
                 Text(.init(Constants.Alert.eventCreationRule))
             }
             .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button("Ok", action: closeAlert)
+                Button("Ok") { alertMessage = "" }
             }
-            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: selectedEventType, perform: selectedEventAction)
+            .onChange(of: selectedEventType) { _ in
+                eventsTask = Task { await askForEvents() }
+            }
             .refreshable { await askForEvents(refresh: true) }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -50,7 +54,7 @@ struct EventsListView: View {
         }
         .navigationViewStyle(.stack)
         .task { await askForEvents() }
-        .onDisappear(perform: cancelTask)
+        .onDisappear { eventsTask?.cancel() }
     }
 }
 
@@ -62,7 +66,7 @@ private extension EventsListView {
             Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(refreshButtonOpacity)
-        .disabled(viewModel.isLoading)
+        .disabled(isLoading)
     }
 
     var refreshButtonOpacity: CGFloat {
@@ -87,16 +91,23 @@ private extension EventsListView {
             hasFriends: defaults.hasFriends,
             hasSportsGrounds: defaults.hasSportsGrounds,
             isNetworkConnected: network.isConnected,
-            action: createEventIfAvailable
+            action: {
+                if canAddEvent {
+                    showEventCreationSheet.toggle()
+                } else {
+                    goToMap()
+                }
+            }
         )
         .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
     }
+
+    func goToMap() { tabViewModel.selectTab(.map) }
 
     var eventsList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(selectedEventType == .future ? $viewModel.futureEvents : $viewModel.pastEvents) { $event in
+                ForEach(selectedEventType == .future ? $futureEvents : $pastEvents) { $event in
                     NavigationLink(destination: EventDetailsView(with: event, onDeletion: refreshAction)) {
                         EventRowView(
                             imageURL: event.previewImageURL,
@@ -110,25 +121,17 @@ private extension EventsListView {
             }
             .padding([.top, .horizontal])
         }
-        .opacity(viewModel.isLoading ? 0 : 1)
-    }
-
-    func createEventIfAvailable() {
-        if canAddEvent {
-            showEventCreationSheet.toggle()
-        } else {
-            tabViewModel.selectTab(.map)
-        }
+        .opacity(isLoading ? 0 : 1)
     }
 
     @ViewBuilder
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
-                if !defaults.hasSportsGrounds {
-                    showEventCreationRule.toggle()
+                if defaults.hasSportsGrounds {
+                    showEventCreationSheet.toggle()
                 } else {
-                    createEventIfAvailable()
+                    showEventCreationRule.toggle()
                 }
             } label: {
                 Image(systemName: Icons.Regular.plus.rawValue)
@@ -150,15 +153,30 @@ private extension EventsListView {
     }
 
     var showEmptyView: Bool {
-        selectedEventType == .future && viewModel.futureEvents.isEmpty && !viewModel.isLoading
-    }
-
-    func selectedEventAction(_: EventType) {
-        eventsTask = Task { await askForEvents() }
+        selectedEventType == .future && futureEvents.isEmpty && !isLoading
     }
 
     func askForEvents(refresh: Bool = false) async {
-        await viewModel.askForEvents(type: selectedEventType, refresh: refresh, with: defaults)
+        let hasFutureEvents = selectedEventType == .future && !futureEvents.isEmpty
+        let hasPastEvents = selectedEventType == .past && !pastEvents.isEmpty
+        if isLoading && !refresh
+            || (hasFutureEvents && !refresh)
+            || (hasPastEvents && !refresh)
+        { return }
+        if !refresh { isLoading = true }
+        do {
+            let list = try await SWClient(with: defaults, needAuth: false).getEvents(of: selectedEventType)
+            switch selectedEventType {
+            case .future: futureEvents = list
+            case .past: pastEvents = list
+            }
+        } catch {
+            if selectedEventType == .past {
+                setupOldEventsFromBundle()
+            }
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
     func refreshAction() {
@@ -170,9 +188,18 @@ private extension EventsListView {
         alertMessage = message
     }
 
-    func closeAlert() { viewModel.clearErrorMessage() }
-
-    func cancelTask() { eventsTask?.cancel() }
+    func setupOldEventsFromBundle() {
+        do {
+            let oldEvents = try Bundle.main.decodeJson(
+                [EventResponse].self,
+                fileName: "oldEvents",
+                extension: "json"
+            )
+            pastEvents = oldEvents
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+    }
 }
 
 #if DEBUG
