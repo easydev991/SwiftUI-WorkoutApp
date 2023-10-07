@@ -16,7 +16,7 @@ struct DialogView: View {
     @Namespace private var chatScrollView
     @FocusState private var isMessageBarFocused: Bool
     let dialog: DialogResponse
-    let markedAsReadClbk: () -> Void
+    let markedAsReadClbk: (DialogResponse) -> Void
 
     var body: some View {
         ScrollViewReader { scrollView in
@@ -148,7 +148,7 @@ private extension DialogView {
     }
 
     func updateDialogUnreadCount(isRead: Bool) {
-        if isRead { markedAsReadClbk() }
+        if isRead { markedAsReadClbk(dialog) }
     }
 
     func markAsRead() async {
@@ -183,7 +183,7 @@ private extension DialogView {
 
 #if DEBUG
 #Preview {
-    DialogView(dialog: .preview, markedAsReadClbk: {})
+    DialogView(dialog: .preview, markedAsReadClbk: { _ in })
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }

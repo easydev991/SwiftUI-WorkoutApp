@@ -2,12 +2,14 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Список диалогов
 struct DialogListView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = DialogListViewModel()
+    @State private var dialogs = [DialogResponse]()
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var indexToDelete: Int?
@@ -19,16 +21,15 @@ struct DialogListView: View {
     var body: some View {
         dialogList
             .overlay { emptyContentView }
-            .loadingOverlay(if: viewModel.isLoading)
+            .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
             .confirmationDialog(
                 .init(Constants.Alert.deleteDialog),
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) { deleteDialogButton }
-            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .alert(errorTitle, isPresented: $showErrorAlert) {
-                Button("Ok", action: closeAlert)
+                Button("Ok") { errorTitle = "" }
             }
             .task { await askForDialogs() }
             .refreshable { await askForDialogs(refresh: true) }
@@ -40,7 +41,9 @@ struct DialogListView: View {
                     friendListButton
                 }
             }
-            .onDisappear(perform: cancelTasks)
+            .onDisappear {
+                [refreshTask, deleteDialogTask].forEach { $0?.cancel() }
+            }
     }
 }
 
@@ -54,7 +57,7 @@ private extension DialogListView {
             Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0)
-        .disabled(viewModel.isLoading)
+        .disabled(isLoading)
     }
 
     var friendListButton: some View {
@@ -67,7 +70,7 @@ private extension DialogListView {
         } label: {
             Image(systemName: Icons.Regular.plus.rawValue)
         }
-        .opacity(hasFriends || !viewModel.list.isEmpty ? 1 : 0)
+        .opacity(hasFriends || !dialogs.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)
     }
 
@@ -81,17 +84,10 @@ private extension DialogListView {
             action: emptyViewAction
         )
         .opacity(showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
     }
 
     var showEmptyView: Bool {
-        viewModel.list.isEmpty && !viewModel.isLoading
-    }
-
-    var emptyViewButtonTitle: String {
-        hasFriends
-            ? "Открыть список друзей"
-            : "Найти пользователя"
+        dialogs.isEmpty && !isLoading
     }
 
     @ViewBuilder
@@ -99,7 +95,7 @@ private extension DialogListView {
         ZStack {
             Color.swBackground
             List {
-                ForEach(viewModel.list) { model in
+                ForEach(dialogs) { model in
                     dialogListItem(model)
                         .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
                         .listRowBackground(Color.swBackground)
@@ -108,9 +104,9 @@ private extension DialogListView {
                 .onDelete(perform: initiateDeletion)
             }
             .listStyle(.plain)
-            .opacity(viewModel.list.isEmpty ? 0 : 1)
+            .opacity(dialogs.isEmpty ? 0 : 1)
         }
-        .animation(.default, value: viewModel.list.count)
+        .animation(.default, value: dialogs.count)
     }
 
     func dialogListItem(_ model: DialogResponse) -> some View {
@@ -125,12 +121,7 @@ private extension DialogListView {
         )
         .background {
             NavigationLink {
-                DialogView(
-                    dialog: model,
-                    markedAsReadClbk: {
-                        viewModel.markAsRead(model, with: defaults)
-                    }
-                )
+                DialogView(dialog: model, markedAsReadClbk: markAsRead)
             } label: {
                 EmptyView()
             }
@@ -154,8 +145,34 @@ private extension DialogListView {
         openFriendList.toggle()
     }
 
+    func markAsRead(_ dialog: DialogResponse) {
+        dialogs = dialogs.map { item in
+            if item.id == dialog.id {
+                var updatedDialog = dialog
+                updatedDialog.unreadMessagesCount = 0
+                return updatedDialog
+            } else {
+                return item
+            }
+        }
+        guard dialog.unreadMessagesCount > 0,
+              defaults.unreadMessagesCount >= dialog.unreadMessagesCount
+        else { return }
+        let newValue = defaults.unreadMessagesCount - dialog.unreadMessagesCount
+        defaults.saveUnreadMessagesCount(newValue)
+    }
+
     func askForDialogs(refresh: Bool = false) async {
-        await viewModel.makeItems(with: defaults, refresh: refresh)
+        if isLoading || (!dialogs.isEmpty && !refresh) { return }
+        if !refresh { isLoading = true }
+        do {
+            dialogs = try await SWClient(with: defaults).getDialogs()
+            let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
+            defaults.saveUnreadMessagesCount(unreadMessagesCount)
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
     func initiateDeletion(at indexSet: IndexSet) {
@@ -165,21 +182,23 @@ private extension DialogListView {
 
     func deleteAction(at index: Int?) {
         deleteDialogTask = Task {
-            await viewModel.deleteDialog(at: index, with: defaults)
+            guard let index, !isLoading else { return }
+            isLoading = true
+            do {
+                let dialogID = dialogs[index].id
+                if try await SWClient(with: defaults).deleteDialog(dialogID) {
+                    dialogs.remove(at: index)
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
         }
     }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func cancelTasks() {
-        [refreshTask, deleteDialogTask].forEach { $0?.cancel() }
     }
 }
 
