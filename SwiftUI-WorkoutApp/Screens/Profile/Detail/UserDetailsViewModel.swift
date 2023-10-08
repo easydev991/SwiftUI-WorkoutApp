@@ -2,6 +2,7 @@ import Foundation
 import SWModels
 import SWNetworkClient
 
+#warning("Удалить вьюмодель")
 @MainActor
 final class UserDetailsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
