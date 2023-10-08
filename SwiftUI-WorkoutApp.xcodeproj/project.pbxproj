@@ -38,7 +38,6 @@
 		675EC65F2815532800C2E229 /* EventFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC65E2815532800C2E229 /* EventFormView.swift */; };
 		675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */; };
 		67627750283A3A54009C203F /* JournalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762774F283A3A54009C203F /* JournalsListView.swift */; };
-		67627752283A4089009C203F /* JournalsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627751283A4089009C203F /* JournalsListViewModel.swift */; };
 		67627755283A4C77009C203F /* JournalEntriesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627754283A4C77009C203F /* JournalEntriesList.swift */; };
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
@@ -138,7 +137,6 @@
 		675EC65E2815532800C2E229 /* EventFormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventFormView.swift; sourceTree = "<group>"; };
 		675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSnapshotView.swift; sourceTree = "<group>"; };
 		6762774F283A3A54009C203F /* JournalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsListView.swift; sourceTree = "<group>"; };
-		67627751283A4089009C203F /* JournalsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsListViewModel.swift; sourceTree = "<group>"; };
 		67627754283A4C77009C203F /* JournalEntriesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesList.swift; sourceTree = "<group>"; };
 		6762775A283A87AD009C203F /* JournalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCell.swift; sourceTree = "<group>"; };
 		6766A035284603CA0033F1E8 /* TabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModel.swift; sourceTree = "<group>"; };
@@ -365,7 +363,6 @@
 			isa = PBXGroup;
 			children = (
 				6762774F283A3A54009C203F /* JournalsListView.swift */,
-				67627751283A4089009C203F /* JournalsListViewModel.swift */,
 			);
 			path = JournalsList;
 			sourceTree = "<group>";
@@ -841,7 +838,6 @@
 				6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */,
 				67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */,
 				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
-				67627752283A4089009C203F /* JournalsListViewModel.swift in Sources */,
 				67627750283A3A54009C203F /* JournalsListView.swift in Sources */,
 				67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,

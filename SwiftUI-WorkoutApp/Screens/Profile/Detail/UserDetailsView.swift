@@ -228,7 +228,7 @@ private extension UserDetailsView {
 
     var journalsButton: some View {
         NavigationLink {
-            JournalsListView(for: viewModel.user.id)
+            JournalsListView(userID: viewModel.user.id)
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
