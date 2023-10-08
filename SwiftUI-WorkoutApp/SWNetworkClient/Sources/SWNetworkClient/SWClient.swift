@@ -13,8 +13,6 @@ public struct SWClient {
     ///
     /// Базовая аутентификация не нужна для запросов:
     /// - `getUpdatedSportsGrounds`
-    /// - `getSportsGround`
-    /// - `getEvents`
     /// - `registration`
     /// - `resetPassword`
     let needAuth: Bool

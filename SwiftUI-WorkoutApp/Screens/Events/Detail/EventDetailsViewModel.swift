@@ -41,6 +41,8 @@ final class EventDetailsViewModel: ObservableObject {
         isLoading.toggle()
         do {
             if try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
+                // Чтобы не делать лишнее обновление данных мероприятия,
+                // локально изменяем список участников
                 if newValue, let userInfo = defaults.mainUserInfo {
                     event.participants.append(userInfo)
                 } else {
