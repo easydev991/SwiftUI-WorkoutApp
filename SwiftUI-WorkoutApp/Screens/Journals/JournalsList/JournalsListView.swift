@@ -93,9 +93,9 @@ private extension JournalsListView {
     var journalsList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach($viewModel.list) { $journal in
+                ForEach(viewModel.list) { journal in
                     NavigationLink {
-                        JournalEntriesList(for: userID, in: $journal)
+                        JournalEntriesList(for: userID, in: journal)
                     } label: {
                         JournalCell(
                             model: .init(journalResponse: journal),

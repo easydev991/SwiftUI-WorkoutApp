@@ -4,7 +4,7 @@ import SWNetworkClient
 
 @MainActor
 final class JournalsListViewModel: ObservableObject {
-    @Published var list = [JournalResponse]()
+    @Published private(set) var list = [JournalResponse]()
     @Published var newJournalTitle = ""
     @Published private(set) var isJournalCreated = false
     @Published private(set) var isLoading = false

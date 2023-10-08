@@ -1,60 +1,65 @@
 import DesignSystem
+import FeedbackSender
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
+    private let feedbackSender: FeedbackSender
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: JournalEntriesListViewModel
+    @State private var entries = [JournalEntryResponse]()
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    @State private var showEntrySheet = false
+    @State private var showCreateEntrySheet = false
     @State private var entryIdToDelete: Int?
     @State private var showDeleteDialog = false
     @State private var editEntry: JournalEntryResponse?
-    @State private var editAccessTask: Task<Void, Never>?
     @State private var deleteEntryTask: Task<Void, Never>?
     @State private var updateEntriesTask: Task<Void, Never>?
+    private let currentJournal: JournalResponse
+    private let userID: Int
 
-    init(for userID: Int, in journal: Binding<JournalResponse>) {
-        _viewModel = StateObject(
-            wrappedValue: .init(
-                for: userID,
-                with: journal.wrappedValue
-            )
-        )
+    init(for userID: Int, in journal: JournalResponse) {
+        self.userID = userID
+        self.currentJournal = journal
+        self.feedbackSender = FeedbackSenderImp()
     }
 
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.list) { item in
+                ForEach(entries) { item in
                     JournalCell(
                         model: .init(journalEntryResponse: item),
                         mode: .entry(
-                            editClbk: { setupEntryToEdit(item) },
-                            reportClbk: { viewModel.reportEntry(item) },
-                            canDelete: viewModel.checkIfCanDelete(entry: item),
-                            deleteClbk: { initiateDeletion(for: item.id) }
+                            editClbk: { editEntry = item },
+                            reportClbk: { reportEntry(item) },
+                            canDelete: checkIfCanDelete(entry: item),
+                            deleteClbk: {
+                                entryIdToDelete = item.id
+                                showDeleteDialog = true
+                            }
                         ),
                         isNetworkConnected: network.isConnected,
                         mainUserID: defaults.mainUserInfo?.userID,
-                        isJournalOwner: viewModel.userID == defaults.mainUserInfo?.userID
+                        isJournalOwner: userID == defaults.mainUserInfo?.userID
                     )
                 }
             }
             .padding([.top, .horizontal])
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editEntry) {
             TextEntryView(
                 mode: .editJournalEntry(
-                    ownerId: viewModel.userID,
+                    ownerId: userID,
                     editInfo: .init(
-                        parentObjectID: viewModel.currentJournal.id,
+                        parentObjectID: currentJournal.id,
                         entryID: $0.id,
                         oldEntry: $0.formattedMessage
                     )
@@ -67,10 +72,8 @@ struct JournalEntriesList: View {
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteEntryButton }
-        .onChange(of: viewModel.isEntryCreated, perform: closeNewEntrySheet)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { errorTitle = "" }
         }
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
@@ -83,7 +86,7 @@ struct JournalEntriesList: View {
             }
         }
         .onDisappear(perform: cancelTasks)
-        .navigationTitle(viewModel.currentJournal.title)
+        .navigationTitle(currentJournal.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -95,28 +98,28 @@ private extension JournalEntriesList {
             Button(action: updateEntries) {
                 Image(systemName: Icons.Regular.refresh.rawValue)
             }
-            .disabled(viewModel.isLoading)
+            .disabled(isLoading)
         }
     }
 
     @ViewBuilder
     var addEntryButtonIfNeeded: some View {
         let canCreateEntry = JournalAccess.canCreateEntry(
-            journalOwnerId: viewModel.userID,
-            journalCommentAccess: viewModel.currentJournal.commentAccessType,
+            journalOwnerId: userID,
+            journalCommentAccess: currentJournal.commentAccessType,
             mainUserId: defaults.mainUserInfo?.userID,
             mainUserFriendsIds: defaults.friendsIdsList
         )
         if canCreateEntry {
-            Button(action: showNewEntry) {
+            Button { showCreateEntrySheet = true } label: {
                 Image(systemName: Icons.Regular.plus.rawValue)
             }
-            .disabled(viewModel.isLoading || !network.isConnected)
-            .sheet(isPresented: $showEntrySheet) {
+            .disabled(isLoading || !network.isConnected)
+            .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryView(
                     mode: .newForJournal(
-                        ownerId: viewModel.userID,
-                        journalId: viewModel.currentJournal.id
+                        ownerId: userID,
+                        journalId: currentJournal.id
                     ),
                     refreshClbk: updateEntries
                 )
@@ -124,35 +127,59 @@ private extension JournalEntriesList {
         }
     }
 
-    func setupEntryToEdit(_ entry: JournalEntryResponse) {
-        editEntry = entry
+    /// Проверяем возможность удаления указанной записи
+    ///
+    /// Сервер не дает удалить самую первую запись в дневнике
+    func checkIfCanDelete(entry: JournalEntryResponse) -> Bool {
+        entry.id != entries.map(\.id).min()
+    }
+
+    func reportEntry(_ entry: JournalEntryResponse) {
+        let complaint = Complaint.journalEntry(
+            author: entry.authorName ?? "неизвестен",
+            entryText: entry.formattedMessage
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 
     func updateEntries() {
-        showEntrySheet = false
+        showCreateEntrySheet = false
         editEntry = nil
-        updateEntriesTask = Task {
-            await viewModel.makeItems(with: defaults, refresh: true)
-        }
-    }
-
-    func showNewEntry() {
-        showEntrySheet.toggle()
+        updateEntriesTask = Task { await askForEntries(refresh: true) }
     }
 
     func askForEntries(refresh: Bool = false) async {
-        await viewModel.makeItems(with: defaults, refresh: refresh)
-    }
-
-    func initiateDeletion(for id: Int) {
-        entryIdToDelete = id
-        showDeleteDialog.toggle()
+        if isLoading || !entries.isEmpty, !refresh { return }
+        if !refresh { isLoading = true }
+        do {
+            entries = try await SWClient(with: defaults)
+                .getJournalEntries(for: userID, journalID: currentJournal.id)
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
             deleteEntryTask = Task {
-                await viewModel.delete(entryIdToDelete, with: defaults)
+                guard let entryID = entryIdToDelete else { return }
+                isLoading = true
+                do {
+                    if try await SWClient(with: defaults).deleteEntry(
+                        from: .journal(ownerId: userID, journalId: currentJournal.id),
+                        entryID: entryID
+                    ) {
+                        entries.removeAll(where: { $0.id == entryID })
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                }
+                isLoading = false
             }
         } label: {
             Text("Удалить")
@@ -164,24 +191,14 @@ private extension JournalEntriesList {
         errorTitle = message
     }
 
-    func closeNewEntrySheet(isSuccess: Bool) {
-        if isSuccess {
-            showEntrySheet.toggle()
-        }
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
     func cancelTasks() {
-        [editAccessTask, deleteEntryTask, updateEntriesTask].forEach { $0?.cancel() }
+        [deleteEntryTask, updateEntriesTask].forEach { $0?.cancel() }
     }
 }
 
 #if DEBUG
 #Preview {
-    JournalEntriesList(for: 30, in: .constant(.preview))
+    JournalEntriesList(for: 30, in: .preview)
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
