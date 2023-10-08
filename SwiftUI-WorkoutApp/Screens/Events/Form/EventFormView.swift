@@ -3,32 +3,43 @@ import ImagePicker
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: EventFormViewModel
+    @State private var eventForm: EventForm
+    @State private var newImages = [UIImage]()
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showImagePicker = false
     @State private var showGroundPicker = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
+    private let oldEventForm: EventForm
     private let mode: Mode
     private var refreshClbk: (() -> Void)?
+    private let maxEventFutureDate = Calendar.current.date(
+        byAdding: .year, value: 1, to: .now
+    ) ?? .now
 
     init(for mode: Mode, refreshClbk: (() -> Void)? = nil) {
         self.mode = mode
         self.refreshClbk = refreshClbk
         switch mode {
         case let .editExisting(event):
-            _viewModel = StateObject(wrappedValue: .init(with: event))
+            self.oldEventForm = .init(event)
+            _eventForm = .init(initialValue: oldEventForm)
         case let .createForSelected(ground):
-            _viewModel = StateObject(wrappedValue: .init(with: ground))
+            self.oldEventForm = .emptyValue
+            _eventForm = .init(initialValue: oldEventForm)
+            eventForm.sportsGround = ground
         case .regularCreate:
-            _viewModel = StateObject(wrappedValue: .init())
+            self.oldEventForm = .init(nil)
+            _eventForm = .init(initialValue: oldEventForm)
         }
     }
 
@@ -44,14 +55,12 @@ struct EventFormView: View {
             }
             .padding()
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { alertMessage = "" }
         }
-        .onChange(of: viewModel.isEventSaved, perform: dismiss)
-        .onDisappear(perform: cancelTask)
+        .onDisappear { saveEventTask?.cancel() }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -65,6 +74,14 @@ extension EventFormView {
         case createForSelected(SportsGround)
         /// Для редактирования мероприятия
         case editExisting(EventResponse)
+
+        var eventID: Int? {
+            if case let .editExisting(eventResponse) = self {
+                eventResponse.id
+            } else {
+                nil
+            }
+        }
     }
 }
 
@@ -77,7 +94,7 @@ private extension EventFormView {
         SectionView(header: "Название", mode: .regular) {
             SWTextField(
                 placeholder: "Название мероприятия",
-                text: $viewModel.eventForm.title,
+                text: $eventForm.title,
                 isFocused: focus == .eventName
             )
             .focused($focus, equals: .eventName)
@@ -88,43 +105,35 @@ private extension EventFormView {
         SectionView(header: "Площадка", mode: .regular) {
             switch mode {
             case .regularCreate:
-                Button {
-                    showGroundPicker.toggle()
-                } label: {
+                Button { showGroundPicker = true } label: {
                     ListRowView(
-                        leadingContent: .text(viewModel.eventForm.sportsGround.name ?? "Выбрать площадку"),
+                        leadingContent: .text(eventForm.sportsGround.name ?? "Выбрать площадку"),
                         trailingContent: .chevron
                     )
                 }
-                .disabled(
-                    !viewModel.canShowGroundPicker(with: defaults, mode: mode)
-                        || !network.isConnected
-                )
+                .disabled(!canShowGroundPicker)
             case let .createForSelected(ground):
                 ListRowView(
                     leadingContent: .text(ground.name.valueOrEmpty),
                     trailingContent: .empty
                 )
             case let .editExisting(event):
-                Button {
-                    showGroundPicker.toggle()
-                } label: {
+                Button { showGroundPicker = true } label: {
                     ListRowView(
                         leadingContent: .text(event.sportsGround.longTitle),
                         trailingContent: .chevron
                     )
                 }
-                .disabled(
-                    !viewModel.canShowGroundPicker(with: defaults, mode: mode)
-                        || !network.isConnected
-                )
+                .disabled(!canShowGroundPicker)
             }
         }
         .sheet(isPresented: $showGroundPicker) {
             ContentInSheet(title: "Выбери площадку", spacing: .zero) {
                 SportsGroundsListView(
+                    // `canShowGroundPicker` проверяет на существование `userID`
+                    // поэтому тут смело делаем force unwrap
                     for: .event(userID: defaults.mainUserInfo!.userID!),
-                    ground: $viewModel.eventForm.sportsGround
+                    ground: $eventForm.sportsGround
                 )
             }
         }
@@ -135,8 +144,8 @@ private extension EventFormView {
             SWDivider()
             DatePicker(
                 "Дата и время",
-                selection: $viewModel.eventForm.date,
-                in: .now ... viewModel.maxEventFutureDate
+                selection: $eventForm.date,
+                in: .now ... maxEventFutureDate
             )
             SWDivider()
         }
@@ -146,7 +155,7 @@ private extension EventFormView {
     var descriptionSection: some View {
         SectionView(header: "Описание", mode: .regular) {
             SWTextEditor(
-                text: $viewModel.eventForm.description,
+                text: $eventForm.description,
                 placeholder: "Добавьте немного подробностей о предстоящем мероприятии",
                 isFocused: focus == .eventDescription,
                 height: 104
@@ -157,25 +166,51 @@ private extension EventFormView {
 
     var pickedImagesGrid: some View {
         PickedImagesGrid(
-            images: $viewModel.newImages,
+            images: $newImages,
             showImagePicker: $showImagePicker,
-            selectionLimit: viewModel.imagesLimit,
-            processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+            selectionLimit: imagesLimit,
+            processExtraImages: {
+                while imagesLimit < 0 {
+                    newImages.removeLast()
+                }
+            }
         )
     }
 
     var saveButton: some View {
         Button("Сохранить") {
             focus = nil
+            isLoading = true
             saveEventTask = Task {
-                await viewModel.saveEvent(with: defaults)
+                eventForm.newMediaFiles = newImages.toMediaFiles
+                do {
+                    let savedEvent = try await SWClient(with: defaults)
+                        .saveEvent(id: mode.eventID, form: eventForm)
+                    if savedEvent.id != .zero {
+                        refreshClbk?()
+                        dismiss()
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                }
+                isLoading = false
             }
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .padding(.top, 42)
-        .disabled(
-            !viewModel.isFormReady || !network.isConnected
-        )
+        .disabled(!isFormReady || !network.isConnected)
+    }
+
+    var isFormReady: Bool {
+        mode.eventID == nil
+            ? eventForm.isReadyToCreate
+            : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
+    }
+
+    var imagesLimit: Int {
+        mode.eventID == nil
+            ? Constants.photosLimit - newImages.count
+            : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
 
     func setupErrorAlert(with message: String) {
@@ -183,19 +218,20 @@ private extension EventFormView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func dismiss(isSuccess: Bool) {
-        if isSuccess {
-            refreshClbk?()
-            dismiss()
+    /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
+    var canShowGroundPicker: Bool {
+        guard network.isConnected,
+              let userInfo = defaults.mainUserInfo,
+              userInfo.userID != nil
+        else { return false }
+        switch mode {
+        case .regularCreate:
+            return true
+        case .editExisting:
+            return userInfo.usedSportsGroundsCount > 1
+        case .createForSelected:
+            return false
         }
-    }
-
-    func cancelTask() {
-        saveEventTask?.cancel()
     }
 }
 
