@@ -100,7 +100,7 @@ private extension SportsGroundsMapView {
                     ForEach(viewModel.sportsGrounds) { ground in
                         NavigationLink {
                             SportsGroundDetailView(
-                                for: ground,
+                                ground: ground,
                                 onDeletion: updateDeleted
                             )
                         } label: {
@@ -130,7 +130,7 @@ private extension SportsGroundsMapView {
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
-                        for: viewModel.selectedGround,
+                        ground: viewModel.selectedGround,
                         onDeletion: updateDeleted
                     )
                 } label: { EmptyView() }

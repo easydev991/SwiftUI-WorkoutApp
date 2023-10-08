@@ -109,7 +109,7 @@ private extension SportsGroundsListView {
         default:
             NavigationLink {
                 SportsGroundDetailView(
-                    for: ground,
+                    ground: ground,
                     onDeletion: { id in
                         grounds.removeAll(where: { $0.id == id })
                     }

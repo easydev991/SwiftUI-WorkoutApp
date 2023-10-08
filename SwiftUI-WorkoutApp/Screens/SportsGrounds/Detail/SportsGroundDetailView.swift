@@ -3,17 +3,17 @@ import FeedbackSender
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: SportsGroundDetailViewModel
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
-    @State private var trainHere = false
     @State private var editComment: CommentResponse?
     @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
@@ -21,18 +21,9 @@ struct SportsGroundDetailView: View {
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    private let feedbackSender: FeedbackSender
-    private let onDeletion: (Int) -> Void
-
-    init(
-        for ground: SportsGround,
-        feedbackSender: FeedbackSender = FeedbackSenderImp(),
-        onDeletion: @escaping (Int) -> Void
-    ) {
-        _viewModel = StateObject(wrappedValue: .init(with: ground))
-        self.feedbackSender = feedbackSender
-        self.onDeletion = onDeletion
-    }
+    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
+    @State var ground: SportsGround
+    let onDeletion: (Int) -> Void
 
     var body: some View {
         ScrollView {
@@ -41,29 +32,29 @@ struct SportsGroundDetailView: View {
                 if defaults.isAuthorized {
                     participantsAndEventSection
                 }
-                if viewModel.hasPhotos {
+                if ground.hasPhotos {
                     PhotoSectionView(
-                        with: viewModel.ground.photos,
+                        with: ground.photos,
                         canDelete: isGroundAuthor,
-                        reportClbk: { viewModel.reportPhoto() },
+                        reportClbk: reportPhoto,
                         deleteClbk: deletePhoto
                     )
                 }
                 authorSection
-                if !viewModel.ground.comments.isEmpty {
+                if ground.hasComments {
                     commentsSection
                 }
             }
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
                 mode: .editGround(
                     .init(
-                        parentObjectID: viewModel.ground.id,
+                        parentObjectID: ground.id,
                         entryID: $0.id,
                         oldEntry: $0.formattedBody
                     )
@@ -74,13 +65,11 @@ struct SportsGroundDetailView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: { viewModel.clearErrorMessage() })
+            Button("Ok") { alertMessage = "" }
         }
-        .onReceive(viewModel.$ground, perform: onReceiveOfGroundSetupTrainHere)
-        .onChange(of: viewModel.ground.trainHere, perform: onChangeOfTrainHere)
-        .onChange(of: viewModel.isDeleted, perform: dismissDeleted)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
+        .onChange(of: defaults.isAuthorized) { isAuth in
+            if !isAuth { dismiss() }
+        }
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -89,9 +78,10 @@ struct SportsGroundDetailView: View {
                         deleteButton
                         editGroundButton
                     }
-                    .disabled(viewModel.isLoading || !network.isConnected)
+                    .disabled(isLoading || !network.isConnected)
                 } else {
                     feedbackButton
+                        .disabled(isLoading)
                 }
             }
         }
@@ -104,21 +94,21 @@ private extension SportsGroundDetailView {
     var headerAndMapSection: some View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text(viewModel.ground.shortTitle)
+                Text(ground.shortTitle)
                     .font(.title.bold())
                     .foregroundColor(.swMainText)
                 Spacer()
-                Text(viewModel.ground.subtitle.valueOrEmpty)
+                Text(ground.subtitle.valueOrEmpty)
                     .foregroundColor(.swSmallElements)
             }
             SportsGroundLocationInfo(
-                ground: $viewModel.ground,
-                address: viewModel.ground.address.valueOrEmpty,
-                appleMapsURL: viewModel.ground.appleMapsURL
+                ground: $ground,
+                address: ground.address.valueOrEmpty,
+                appleMapsURL: ground.appleMapsURL
             )
             if defaults.isAuthorized {
                 NavigationLink {
-                    EventFormView(for: .createForSelected(viewModel.ground))
+                    EventFormView(for: .createForSelected(ground))
                 } label: {
                     Text("Создать мероприятие")
                 }
@@ -131,60 +121,72 @@ private extension SportsGroundDetailView {
 
     var participantsAndEventSection: some View {
         Group {
-            if let participants = viewModel.ground.usersTrainHere,
-               !participants.isEmpty {
+            if ground.hasParticipants {
                 NavigationLink {
                     UsersListView(
                         mode: .groundParticipants(
-                            list: viewModel.ground.participants
+                            list: ground.participants
                         )
                     )
                 } label: {
                     FormRowView(
                         title: "Здесь тренируются",
                         trailingContent: .textWithChevron(
-                            viewModel.ground.participantsCountString
+                            ground.participantsCountString
                         )
                     )
                 }
             }
             FormRowView(
                 title: "Тренируюсь здесь",
-                trailingContent: .toggle($trainHere)
+                trailingContent: .toggle(
+                    .init(
+                        get: { ground.trainHere },
+                        set: changeTrainHereStatus
+                    )
+                )
             )
             .disabled(!network.isConnected)
-            .onChange(of: trainHere, perform: changeTrainHereStatus)
         }
     }
 
     func changeTrainHereStatus(newValue: Bool) {
-        let oldValue = viewModel.ground.trainHere
+        let oldValue = ground.trainHere
         switch (oldValue, newValue) {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
+            if isLoading { return }
+            let oldValue = ground.trainHere
+            ground.trainHere = newValue
+            isLoading = true
             changeTrainHereTask = Task {
-                await viewModel.changeTrainHereStatus(newValue, with: defaults)
+                do {
+                    if try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: ground.id) {
+                        // Чтобы не делать лишнее обновление данных площадки,
+                        // локально изменяем список тренирующихся
+                        if newValue, let userInfo = defaults.mainUserInfo {
+                            ground.participants.append(userInfo)
+                        } else {
+                            ground.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
+                        }
+                        defaults.setUserNeedUpdate(true)
+                    } else {
+                        ground.trainHere = oldValue
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    ground.trainHere = oldValue
+                }
+                isLoading = false
             }
         }
     }
 
-    /// Настраиваем начальное состояние `trainHere` при появлении экрана
-    func onReceiveOfGroundSetupTrainHere(ground: SportsGround) {
-        trainHere = ground.trainHere
-    }
-
-    /// Обновляем состояние `trainHere` при получении изменений от `viewModel`
-    ///
-    /// Например, если сервер вернул ошибку при попытке сменить статус
-    func onChangeOfTrainHere(value: Bool) {
-        trainHere = value
-    }
-
     var authorSection: some View {
-        let userModel = UserModel(viewModel.ground.author)
+        let userModel = UserModel(ground.author)
         return SectionView(headerWithPadding: "Добавил", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: viewModel.ground.author)) {
+            NavigationLink(destination: UserDetailsView(for: ground.author)) {
                 UserRowView(
                     mode: .regular(
                         .init(
@@ -197,7 +199,7 @@ private extension SportsGroundDetailView {
             }
             .disabled(
                 !defaults.isAuthorized
-                    || viewModel.ground.authorID == defaults.mainUserInfo?.userID
+                    || isGroundAuthor
                     || !network.isConnected
             )
         }
@@ -205,19 +207,15 @@ private extension SportsGroundDetailView {
 
     var commentsSection: some View {
         CommentsView(
-            items: viewModel.ground.comments,
-            reportClbk: { viewModel.reportComment($0) },
-            deleteClbk: { id in
-                deleteCommentTask = Task {
-                    await viewModel.delete(commentID: id, with: defaults)
-                }
-            },
+            items: ground.comments,
+            reportClbk: reportComment,
+            deleteClbk: deleteComment,
             editClbk: { editComment = $0 },
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
             TextEntryView(
-                mode: .newForGround(id: viewModel.ground.id),
+                mode: .newForGround(id: ground.id),
                 refreshClbk: refreshAction
             )
         }
@@ -227,7 +225,6 @@ private extension SportsGroundDetailView {
         Button(action: { dialogs.showFeedback.toggle() }) {
             Image(systemName: Icons.Regular.exclamationArrowCircle.rawValue)
         }
-        .disabled(viewModel.isLoading)
         .confirmationDialog(
             .init(Constants.Alert.groundFeedback),
             isPresented: $dialogs.showFeedback,
@@ -235,7 +232,7 @@ private extension SportsGroundDetailView {
         ) {
             Button("Написать письмо") {
                 feedbackSender.sendFeedback(
-                    subject: Feedback.makeSubject(for: viewModel.ground.shortTitle),
+                    subject: Feedback.makeSubject(for: ground.shortTitle),
                     messageBody: Feedback.body,
                     recipients: Constants.feedbackRecipient
                 )
@@ -244,7 +241,7 @@ private extension SportsGroundDetailView {
     }
 
     var deleteButton: some View {
-        Button(action: { dialogs.showDelete.toggle() }) {
+        Button(action: { dialogs.showDelete = true }) {
             Image(systemName: Icons.Regular.trash.rawValue)
         }
         .confirmationDialog(
@@ -253,8 +250,18 @@ private extension SportsGroundDetailView {
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
+                isLoading = true
                 deleteGroundTask = Task {
-                    await viewModel.deleteGround(with: defaults)
+                    do {
+                        if try await SWClient(with: defaults).delete(groundID: ground.id) {
+                            defaults.setUserNeedUpdate(true)
+                            dismiss()
+                            onDeletion(ground.id)
+                        }
+                    } catch {
+                        setupErrorAlert(with: ErrorFilter.message(from: error))
+                    }
+                    isLoading = false
                 }
             }
         }
@@ -262,10 +269,7 @@ private extension SportsGroundDetailView {
 
     var editGroundButton: some View {
         NavigationLink {
-            SportsGroundFormView(
-                .editExisting(viewModel.ground),
-                refreshClbk: refreshAction
-            )
+            SportsGroundFormView(.editExisting(ground), refreshClbk: refreshAction)
         } label: {
             Image(systemName: Icons.Regular.pencil.rawValue)
         }
@@ -278,12 +282,46 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForSportsGround(refresh: refresh, with: defaults)
+        if isLoading || ground.isFull, !refresh { return }
+        if !refresh { isLoading = true }
+        do {
+            ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
+                .getSportsGround(id: ground.id)
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
+    }
+
+    func deleteComment(with id: Int) {
+        if isLoading { return }
+        isLoading = true
+        deleteCommentTask = Task {
+            do {
+                if try await SWClient(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: id) {
+                    ground.comments.removeAll(where: { $0.id == id })
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
     }
 
     func deletePhoto(with id: Int) {
+        if isLoading { return }
+        isLoading = true
         deletePhotoTask = Task {
-            await viewModel.delete(photoID: id, with: defaults)
+            do {
+                if try await SWClient(with: defaults).deletePhoto(
+                    from: .sportsGround(.init(containerID: ground.id, photoID: id))
+                ) {
+                    ground.photos.removeAll(where: { $0.id == id })
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
         }
     }
 
@@ -292,22 +330,32 @@ private extension SportsGroundDetailView {
         alertMessage = message
     }
 
+    func reportPhoto() {
+        let complaint = Complaint.groundPhoto(groundTitle: ground.shortTitle)
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
+
+    func reportComment(_ comment: CommentResponse) {
+        let complaint = Complaint.groundComment(
+            groundTitle: ground.shortTitle,
+            author: comment.user?.userName ?? "неизвестен",
+            commentText: comment.formattedBody
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
+
     var isGroundAuthor: Bool {
         defaults.isAuthorized
-            ? viewModel.ground.authorID == defaults.mainUserInfo?.userID
+            ? ground.authorID == defaults.mainUserInfo?.userID
             : false
-    }
-
-    func dismissNotAuth(isAuth: Bool) {
-        if !isAuth { dismiss() }
-    }
-
-    func dismissDeleted(isDeleted: Bool) {
-        if isDeleted {
-            dismiss()
-            onDeletion(viewModel.ground.id)
-            defaults.setUserNeedUpdate(true)
-        }
     }
 
     func cancelTasks() {
@@ -344,7 +392,7 @@ private extension SportsGroundDetailView {
 
 #if DEBUG
 #Preview {
-    SportsGroundDetailView(for: .preview, onDeletion: { _ in })
+    SportsGroundDetailView(ground: .preview, onDeletion: { _ in })
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
