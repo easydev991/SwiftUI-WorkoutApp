@@ -8,26 +8,27 @@ import SWNetworkClient
 struct UserDetailsView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: UserDetailsViewModel
+    @State private var isLoading = false
+    @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
-    @State private var isFriendRequestSent = false
     @State private var showAlertMessage = false
     @State private var showBlacklistConfirmation = false
     @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var blacklistUserTask: Task<Void, Never>?
+    @State private var user: UserModel
 
     init(for user: UserResponse?) {
-        _viewModel = StateObject(wrappedValue: .init(with: user))
+        _user = .init(initialValue: .init(user))
     }
 
     init(from model: UserModel) {
-        _viewModel = StateObject(wrappedValue: .init(from: model))
+        _user = .init(initialValue: model)
     }
 
     init(from dialog: DialogResponse) {
-        _viewModel = StateObject(wrappedValue: .init(from: dialog))
+        _user = .init(initialValue: .init(from: dialog))
     }
 
     var body: some View {
@@ -45,15 +46,13 @@ struct UserDetailsView: View {
             .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .opacity(viewModel.user.isFull ? 1 : 0)
-        .loadingOverlay(if: viewModel.isLoading)
+        .opacity(user.isFull ? 1 : 0)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showAlertMessage) {
             Button("Ok", action: closeAlert)
         }
         .refreshable { await askForUserInfo(refresh: true) }
-        .onChange(of: viewModel.requestedFriendship, perform: toggleFriendRequestSent)
-        .onChange(of: viewModel.responseMessage, perform: setupResponseAlert)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 refreshButtonIfNeeded
@@ -67,7 +66,7 @@ struct UserDetailsView: View {
                         blockUserButton
                     }
                 }
-                .disabled(viewModel.isLoading)
+                .disabled(isLoading)
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -85,19 +84,18 @@ private extension UserDetailsView {
             } label: {
                 Image(systemName: Icons.Regular.refresh.rawValue)
             }
-            .disabled(viewModel.isLoading)
+            .disabled(isLoading)
         }
     }
 
     var userInfoSection: some View {
         ProfileView(
-            imageURL: viewModel.user.imageURL,
-            login: viewModel.user.name,
-            genderWithAge: viewModel.user.genderWithAge,
-            countryAndCity: viewModel.user.shortAddress
+            imageURL: user.imageURL,
+            login: user.name,
+            genderWithAge: user.genderWithAge,
+            countryAndCity: user.shortAddress
         )
-        .padding(.vertical, 24)
-        .padding(.horizontal, 24)
+        .padding(24)
     }
 
     var editProfileButton: some View {
@@ -111,25 +109,23 @@ private extension UserDetailsView {
     var communicationSection: some View {
         VStack(spacing: 12) {
             Button("Сообщение") {
-                messagingModel.recipient = viewModel.user
+                messagingModel.recipient = user
             }
             .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
             .sheet(item: $messagingModel.recipient, content: messageSheet)
-            Button(.init(viewModel.friendActionOption.rawValue)) {
-                friendActionTask = Task { await viewModel.friendAction(with: defaults) }
-            }
-            .buttonStyle(
-                SWButtonStyle(
-                    icon: viewModel.friendActionOption == .removeFriend
-                        ? .deletePerson
-                        : .addPerson,
-                    mode: .tinted,
-                    size: .large
+            Button(.init(socialActions.friend.rawValue), action: performFriendAction)
+                .buttonStyle(
+                    SWButtonStyle(
+                        icon: socialActions.friend == .removeFriend
+                            ? .deletePerson
+                            : .addPerson,
+                        mode: .tinted,
+                        size: .large
+                    )
                 )
-            )
-            .alert(.init(Constants.Alert.friendRequestSent), isPresented: $isFriendRequestSent) {
-                Button("Ok") {}
-            }
+                .alert(.init(Constants.Alert.friendRequestSent), isPresented: $socialActions.isFriendRequestSent) {
+                    Button("Ok") {}
+                }
         }
         .padding(.bottom, 24)
     }
@@ -139,44 +135,44 @@ private extension UserDetailsView {
             showBlacklistConfirmation.toggle()
         } label: {
             Label(
-                viewModel.blacklistActionOption.rawValue,
+                socialActions.blacklist.rawValue,
                 systemImage: Icons.Regular.exclamation.rawValue
             )
         }
         .confirmationDialog(
-            .init(viewModel.blacklistActionOption.dialogTitle),
+            .init(socialActions.blacklist.dialogTitle),
             isPresented: $showBlacklistConfirmation,
             titleVisibility: .visible
         ) {
-            Button(.init(viewModel.blacklistActionOption.rawValue), role: .destructive) {
-                blacklistUserTask = Task {
-                    await viewModel.blacklistUser(with: defaults)
-                }
-            }
+            Button(
+                .init(socialActions.blacklist.rawValue),
+                role: .destructive,
+                action: performBlacklistAction
+            )
         } message: {
-            Text(.init(viewModel.blacklistActionOption.dialogMessage))
+            Text(.init(socialActions.blacklist.dialogMessage))
         }
     }
 
     func toggleFriendRequestSent(isSent: Bool) {
-        isFriendRequestSent = isSent
+        socialActions.isFriendRequestSent = isSent
     }
 
     var socialInfoSection: some View {
         VStack(spacing: 12) {
-            if viewModel.user.usesSportsGrounds > .zero {
+            if user.usesSportsGrounds > .zero {
                 usesSportsGroundsButton
             }
-            if !viewModel.user.addedSportsGrounds.isEmpty {
+            if !user.addedSportsGrounds.isEmpty {
                 addedSportsGroundsButton
             }
-            if viewModel.user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
+            if user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
                 friendsButton
             }
             if !defaults.blacklistedUsers.isEmpty, isMainUser {
                 blacklistButton
             }
-            if viewModel.user.journalsCount > .zero, !isMainUser {
+            if user.journalsCount > .zero, !isMainUser {
                 journalsButton
             }
         }
@@ -184,11 +180,11 @@ private extension UserDetailsView {
 
     var usesSportsGroundsButton: some View {
         NavigationLink {
-            SportsGroundsListView(for: .usedBy(userID: viewModel.user.id))
+            SportsGroundsListView(for: .usedBy(userID: user.id))
         } label: {
             FormRowView(
                 title: "Где тренируется",
-                trailingContent: .textWithChevron(viewModel.user.usesSportsGroundsCountString)
+                trailingContent: .textWithChevron(user.usesSportsGroundsCountString)
             )
         }
         .accessibilityIdentifier("usesSportsGroundsButton")
@@ -196,21 +192,21 @@ private extension UserDetailsView {
 
     var addedSportsGroundsButton: some View {
         NavigationLink {
-            SportsGroundsListView(for: .added(list: viewModel.user.addedSportsGrounds))
+            SportsGroundsListView(for: .added(list: user.addedSportsGrounds))
         } label: {
             FormRowView(
                 title: "Добавил площадки",
-                trailingContent: .textWithChevron(viewModel.user.addedSportsGroundsCountString)
+                trailingContent: .textWithChevron(user.addedSportsGroundsCountString)
             )
         }
     }
 
     var friendsButton: some View {
-        NavigationLink(destination: UsersListView(mode: .friends(userID: viewModel.user.id))) {
+        NavigationLink(destination: UsersListView(mode: .friends(userID: user.id))) {
             FormRowView(
                 title: "Друзья",
                 trailingContent: .textWithBadgeAndChevron(
-                    viewModel.user.friendsCountString,
+                    user.friendsCountString,
                     friendRequestsCount
                 )
             )
@@ -228,13 +224,13 @@ private extension UserDetailsView {
 
     var journalsButton: some View {
         NavigationLink {
-            JournalsListView(userID: viewModel.user.id)
+            JournalsListView(userID: user.id)
                 .navigationTitle("Дневники")
                 .navigationBarTitleDisplayMode(.inline)
         } label: {
             FormRowView(
                 title: "Дневники",
-                trailingContent: .textWithChevron(viewModel.user.journalsCountString)
+                trailingContent: .textWithChevron(user.journalsCountString)
             )
         }
     }
@@ -253,8 +249,71 @@ private extension UserDetailsView {
         }
     }
 
+    func performFriendAction() {
+        isLoading = true
+        friendActionTask = Task {
+            do {
+                if try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend) {
+                    switch socialActions.friend {
+                    case .sendFriendRequest:
+                        socialActions.isFriendRequestSent = true
+                    case .removeFriend:
+                        socialActions.friend = .sendFriendRequest
+                    }
+                }
+            } catch {
+                setupResponseAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
+    }
+
+    func performBlacklistAction() {
+        isLoading = true
+        blacklistUserTask = Task {
+            do {
+                if try await SWClient(with: defaults).blacklistAction(
+                    userID: user.id, option: socialActions.blacklist
+                ) {
+                    switch socialActions.blacklist {
+                    case .add:
+                        setupResponseAlert(with: "Пользователь добавлен в черный список")
+                        socialActions.blacklist = .remove
+                    case .remove:
+                        setupResponseAlert(with: "Пользователь удален из черного списка")
+                        socialActions.blacklist = .add
+                    }
+                }
+            } catch {
+                setupResponseAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
+    }
+
     func askForUserInfo(refresh: Bool = false) async {
-        await viewModel.makeUserInfo(refresh: refresh, with: defaults)
+        guard !isLoading else { return }
+        if !refresh { isLoading = true }
+        if isMainUser {
+            if !refresh, !defaults.needUpdateUser,
+               let mainUserInfo = defaults.mainUserInfo {
+                user = .init(mainUserInfo)
+            } else {
+                await makeUserInfo()
+                await makeBlacklistAndFriedRequests()
+            }
+        } else {
+            if user.isFull, !refresh {
+                isLoading = false
+                return
+            }
+            await makeUserInfo()
+            let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
+            socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
+            let isPersonBlocked = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
+            socialActions.blacklist = isPersonBlocked ? .remove : .add
+        }
+        isLoading = false
     }
 
     func messageSheet(for recipient: UserModel) -> some View {
@@ -270,11 +329,20 @@ private extension UserDetailsView {
         )
     }
 
+    func makeUserInfo() async {
+        do {
+            let info = try await SWClient(with: defaults).getUserByID(user.id)
+            user = .init(info)
+        } catch {
+            setupResponseAlert(with: ErrorFilter.message(from: error))
+        }
+    }
+
     func sendMessage() {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                if try await SWClient(with: defaults).sendMessage(messagingModel.message, to: viewModel.user.id) {
+                if try await SWClient(with: defaults).sendMessage(messagingModel.message, to: user.id) {
                     messagingModel.message = ""
                     messagingModel.recipient = nil
                 }
@@ -290,21 +358,32 @@ private extension UserDetailsView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-        alertMessage = ""
-    }
+    func closeAlert() { alertMessage = "" }
 
     var friendRequestsCount: Int {
         defaults.friendRequestsList.count
     }
 
     var isMainUser: Bool {
-        viewModel.user.id == defaults.mainUserInfo?.userID
+        user.id == defaults.mainUserInfo?.userID
+    }
+
+    func makeBlacklistAndFriedRequests() async {
+        let apiService = SWClient(with: defaults)
+        try? await apiService.getFriendRequests()
+        try? await apiService.getBlacklist()
     }
 
     func cancelTasks() {
         [friendActionTask, sendMessageTask, blacklistUserTask].forEach { $0?.cancel() }
+    }
+}
+
+private extension UserDetailsView {
+    struct SocialActions {
+        var friend = FriendAction.sendFriendRequest
+        var isFriendRequestSent = false
+        var blacklist = BlacklistOption.add
     }
 }
 
