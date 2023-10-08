@@ -180,15 +180,21 @@ public extension EventResponse {
         DateFormatterService.readableDate(from: beginDate)
     }
 
+    var hasComments: Bool { !comments.isEmpty }
+
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
 
+    var hasPhotos: Bool { !photos.isEmpty }
+
     var photos: [Photo] {
         get { photosOptional ?? [] }
         set { photosOptional = newValue }
     }
+
+    var hasParticipants: Bool { !participants.isEmpty }
 
     /// Список участников мероприятия
     var participants: [UserResponse] {

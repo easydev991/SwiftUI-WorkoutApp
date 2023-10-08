@@ -108,7 +108,7 @@ private extension EventsListView {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(selectedEventType == .future ? $futureEvents : $pastEvents) { $event in
-                    NavigationLink(destination: EventDetailsView(with: event, onDeletion: refreshAction)) {
+                    NavigationLink(destination: EventDetailsView(event: event, onDeletion: removeEvent)) {
                         EventRowView(
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,
@@ -182,6 +182,11 @@ private extension EventsListView {
 
     func refreshAction() {
         eventsTask = Task { await askForEvents(refresh: true) }
+    }
+    
+    func removeEvent(with id: Int) {
+        futureEvents.removeAll(where: { $0.id == id })
+        pastEvents.removeAll(where: { $0.id == id })
     }
 
     func setupErrorAlert(with message: String) {

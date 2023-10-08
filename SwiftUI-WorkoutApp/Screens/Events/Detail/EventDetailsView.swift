@@ -1,34 +1,29 @@
 import DesignSystem
+import FeedbackSender
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: EventDetailsViewModel
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
     @State private var showDeleteDialog = false
-    @State private var trainHere = false
     @State private var editComment: CommentResponse?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    private let onDeletion: () -> Void
-
-    init(
-        with event: EventResponse,
-        onDeletion: @escaping () -> Void
-    ) {
-        _viewModel = StateObject(wrappedValue: .init(with: event))
-        self.onDeletion = onDeletion
-    }
+    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
+    @State var event: EventResponse
+    let onDeletion: (Int) -> Void
 
     var body: some View {
         ScrollView {
@@ -37,32 +32,32 @@ struct EventDetailsView: View {
                 if showParticipantSection {
                     participantsSection
                 }
-                if viewModel.hasPhotos {
+                if event.hasPhotos {
                     PhotoSectionView(
-                        with: viewModel.event.photos,
-                        canDelete: isAuthor,
-                        reportClbk: { viewModel.reportPhoto() },
+                        with: event.photos,
+                        canDelete: isEventAuthor,
+                        reportClbk: reportPhoto,
                         deleteClbk: deletePhoto
                     )
                 }
-                if viewModel.event.hasDescription {
+                if event.hasDescription {
                     descriptionSection
                 }
                 authorSection
-                if !viewModel.event.comments.isEmpty {
+                if event.hasComments {
                     commentsSection
                 }
             }
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
                 mode: .editEvent(
                     .init(
-                        parentObjectID: viewModel.event.id,
+                        parentObjectID: event.id,
                         entryID: $0.id,
                         oldEntry: $0.formattedBody
                     )
@@ -73,22 +68,20 @@ struct EventDetailsView: View {
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: { viewModel.clearErrorMessage() })
+            Button("Ok") { alertMessage = "" }
         }
-        .onReceive(viewModel.$event, perform: onReceiveOfEventSetupTrainHere)
-        .onChange(of: viewModel.event.trainHere, perform: onChangeOfTrainHere)
-        .onChange(of: viewModel.isEventDeleted, perform: dismissDeleted)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: defaults.isAuthorized, perform: dismissNotAuth)
+        .onChange(of: defaults.isAuthorized) { isAuth in
+            if !isAuth { dismiss() }
+        }
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isAuthor, network.isConnected {
+                if isEventAuthor {
                     Group {
                         deleteButton
                         editEventButton
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(isLoading || !network.isConnected)
                 }
             }
         }
@@ -101,7 +94,7 @@ private extension EventDetailsView {
     var headerAndMapSection: some View {
         VStack(spacing: 0) {
             Group {
-                Text(viewModel.event.formattedTitle)
+                Text(event.formattedTitle)
                     .font(.title.bold())
                     .frame(maxWidth: .infinity, alignment: .leading)
                 SWDivider()
@@ -111,7 +104,7 @@ private extension EventDetailsView {
                 HStack {
                     Text("Когда").font(.headline)
                     Spacer()
-                    Text(viewModel.event.eventDateString)
+                    Text(event.eventDateString)
                 }
                 SWDivider()
                     .padding(.top, 10)
@@ -120,15 +113,15 @@ private extension EventDetailsView {
                 HStack {
                     Text("Где").font(.headline)
                     Spacer()
-                    Text(viewModel.event.shortAddress)
+                    Text(event.shortAddress)
                 }
                 .padding(.bottom, 22)
             }
             .foregroundColor(.swMainText)
             SportsGroundLocationInfo(
-                ground: $viewModel.event.sportsGround,
-                address: viewModel.event.fullAddress ?? viewModel.event.shortAddress,
-                appleMapsURL: viewModel.event.sportsGround.appleMapsURL
+                ground: $event.sportsGround,
+                address: event.fullAddress ?? event.shortAddress,
+                appleMapsURL: event.sportsGround.appleMapsURL
             )
         }
         .insideCardBackground()
@@ -136,7 +129,7 @@ private extension EventDetailsView {
 
     var descriptionSection: some View {
         SectionView(headerWithPadding: "Описание", mode: .card(padding: 12)) {
-            Text(.init(viewModel.event.formattedDescription))
+            Text(.init(event.formattedDescription))
                 .foregroundColor(.swMainText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
@@ -147,55 +140,69 @@ private extension EventDetailsView {
 
     var participantsSection: some View {
         Group {
-            if viewModel.hasParticipants {
+            if event.hasParticipants {
                 NavigationLink {
-                    UsersListView(mode: .eventParticipants(list: viewModel.event.participants))
+                    UsersListView(mode: .eventParticipants(list: event.participants))
                 } label: {
                     FormRowView(
                         title: "Участники",
                         trailingContent: .textWithChevron(
-                            viewModel.event.participantsCountString
+                            event.participantsCountString
                         )
                     )
                 }
             }
-            if viewModel.isEventCurrent {
+            if event.isCurrent.isTrue {
                 FormRowView(
                     title: "Пойду на мероприятие",
-                    trailingContent: .toggle($trainHere)
+                    trailingContent: .toggle(
+                        .init(
+                            get: { event.trainHere },
+                            set: changeTrainHereStatus
+                        )
+                    )
                 )
                 .disabled(!network.isConnected)
-                .onChange(of: trainHere, perform: changeTrainHereStatus)
             }
         }
     }
 
     func changeTrainHereStatus(newValue: Bool) {
-        let oldValue = viewModel.event.trainHere
+        let oldValue = event.trainHere
         switch (oldValue, newValue) {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
+            if isLoading { return }
+            let oldValue = event.trainHere
+            event.trainHere = newValue
+            isLoading = true
             goingToEventTask = Task {
-                await viewModel.changeIsGoingToEvent(newValue, with: defaults)
+                do {
+                    if try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
+                        // Чтобы не делать лишнее обновление данных мероприятия,
+                        // локально изменяем список участников
+                        if newValue, let userInfo = defaults.mainUserInfo {
+                            event.participants.append(userInfo)
+                        } else {
+                            event.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
+                        }
+                    } else {
+                        event.trainHere = oldValue
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    event.trainHere = oldValue
+                }
+                isLoading = false
             }
         }
     }
 
-    /// Настраиваем начальное состояние `trainHere` при появлении экрана
-    func onReceiveOfEventSetupTrainHere(event: EventResponse) {
-        trainHere = event.trainHere
-    }
-
-    /// Обновляем состояние `trainHere` при получении изменений от `viewModel`
-    ///
-    /// Например, если сервер вернул ошибку при попытке сменить статус
-    func onChangeOfTrainHere(value: Bool) { trainHere = value }
-
     var authorSection: some View {
-        let userModel = UserModel(viewModel.event.author)
+        let userModel = UserModel(event.author)
         return SectionView(headerWithPadding: "Организатор", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: viewModel.event.author)) {
+            NavigationLink(destination: UserDetailsView(for: event.author)) {
                 UserRowView(
                     mode: .regular(
                         .init(
@@ -208,7 +215,7 @@ private extension EventDetailsView {
             }
             .disabled(
                 !defaults.isAuthorized
-                    || viewModel.event.authorID == defaults.mainUserInfo?.userID
+                    || isEventAuthor
                     || !network.isConnected
             )
         }
@@ -216,37 +223,23 @@ private extension EventDetailsView {
 
     var commentsSection: some View {
         CommentsView(
-            items: viewModel.event.comments,
-            reportClbk: { viewModel.reportComment($0) },
-            deleteClbk: { id in
-                deleteCommentTask = Task {
-                    await viewModel.delete(commentID: id, with: defaults)
-                }
-            },
+            items: event.comments,
+            reportClbk: reportComment,
+            deleteClbk: deleteComment,
             editClbk: { editComment = $0 },
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
             TextEntryView(
-                mode: .newForEvent(id: viewModel.event.id),
+                mode: .newForEvent(id: event.id),
                 refreshClbk: refreshAction
             )
         }
     }
-
-    func askForInfo(refresh: Bool = false) async {
-        await viewModel.askForEvent(refresh: refresh, with: defaults)
-    }
-
-    func refreshAction() {
-        isCreatingComment = false
-        editComment = nil
-        refreshButtonTask = Task { await askForInfo(refresh: true) }
-    }
-
+    
     var deleteButton: some View {
-        Button(action: { showDeleteDialog.toggle() }) {
-            Image(systemName: "trash")
+        Button(action: { showDeleteDialog = true }) {
+            Image(systemName: Icons.Regular.trash.rawValue)
         }
         .confirmationDialog(
             .init(Constants.Alert.deleteEvent),
@@ -254,8 +247,17 @@ private extension EventDetailsView {
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
+                isLoading = true
                 deleteEventTask = Task {
-                    await viewModel.deleteEvent(with: defaults)
+                    do {
+                        if try await SWClient(with: defaults).delete(eventID: event.id) {
+                            dismiss()
+                            onDeletion(event.id)
+                        }
+                    } catch {
+                        setupErrorAlert(with: ErrorFilter.message(from: error))
+                    }
+                    isLoading = false
                 }
             }
         }
@@ -263,15 +265,59 @@ private extension EventDetailsView {
 
     var editEventButton: some View {
         NavigationLink {
-            EventFormView(for: .editExisting(viewModel.event), refreshClbk: refreshAction)
+            EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
         } label: {
             Image(systemName: Icons.Regular.pencil.rawValue)
         }
     }
+    
+    func refreshAction() {
+        isCreatingComment = false
+        editComment = nil
+        refreshButtonTask = Task { await askForInfo(refresh: true) }
+    }
+    
+    func askForInfo(refresh: Bool = false) async {
+        if isLoading || event.isFull, !refresh { return }
+        if !refresh { isLoading = true }
+        do {
+            event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
+                .getEvent(by: event.id)
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
+    }
+
+    func deleteComment(with id: Int) {
+        if isLoading { return }
+        isLoading = true
+        deleteCommentTask = Task {
+            do {
+                if try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryID: id) {
+                    event.comments.removeAll(where: { $0.id == id })
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
+    }
 
     func deletePhoto(with id: Int) {
+        if isLoading { return }
+        isLoading = true
         deletePhotoTask = Task {
-            await viewModel.delete(photoID: id, with: defaults)
+            do {
+                if try await SWClient(with: defaults).deletePhoto(
+                    from: .event(.init(containerID: event.id, photoID: id))
+                ) {
+                    event.photos.removeAll(where: { $0.id == id })
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
         }
     }
 
@@ -279,29 +325,40 @@ private extension EventDetailsView {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
+    
+    func reportPhoto() {
+        let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
 
-    var isAuthor: Bool {
+    func reportComment(_ comment: CommentResponse) {
+        let complaint = Complaint.eventComment(
+            eventTitle: event.formattedTitle,
+            author: comment.user?.userName ?? "неизвестен",
+            commentText: comment.formattedBody
+        )
+        feedbackSender.sendFeedback(
+            subject: complaint.subject,
+            messageBody: complaint.body,
+            recipients: Constants.feedbackRecipient
+        )
+    }
+
+    var isEventAuthor: Bool {
         defaults.isAuthorized
-            ? viewModel.event.authorID == defaults.mainUserInfo?.userID
+            ? event.authorID == defaults.mainUserInfo?.userID
             : false
     }
 
     var showParticipantSection: Bool {
         if defaults.isAuthorized {
-            viewModel.hasParticipants || viewModel.isEventCurrent
+            event.hasParticipants || event.isCurrent.isTrue
         } else {
             false
-        }
-    }
-
-    func dismissNotAuth(isAuth: Bool) {
-        if !isAuth { dismiss() }
-    }
-
-    func dismissDeleted(isDeleted: Bool) {
-        if isDeleted {
-            dismiss()
-            onDeletion()
         }
     }
 
@@ -318,7 +375,7 @@ private extension EventDetailsView {
 
 #if DEBUG
 #Preview {
-    EventDetailsView(with: .preview, onDeletion: {})
+    EventDetailsView(event: .preview, onDeletion: { _ in })
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
