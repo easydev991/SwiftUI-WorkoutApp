@@ -183,7 +183,7 @@ private extension EventsListView {
     func refreshAction() {
         eventsTask = Task { await askForEvents(refresh: true) }
     }
-    
+
     func removeEvent(with id: Int) {
         futureEvents.removeAll(where: { $0.id == id })
         pastEvents.removeAll(where: { $0.id == id })

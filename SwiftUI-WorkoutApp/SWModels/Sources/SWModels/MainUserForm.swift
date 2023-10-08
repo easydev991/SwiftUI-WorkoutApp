@@ -72,12 +72,13 @@ public extension MainUserForm {
     }
 
     /// Готовность формы к сохранению обновленных данных
-    var isReadyToSave: Bool {
-        !userName.isEmpty
+    func isReadyToSave(comparedTo oldForm: MainUserForm) -> Bool {
+        let isNewFormNotEmpty = !userName.isEmpty
             && !email.isEmpty
             && !fullName.isEmpty
             && genderCode != Gender.unspecified.code
             && birthDate <= Constants.minUserAge
+        return isNewFormNotEmpty && self != oldForm
     }
 
     static var emptyValue: Self {

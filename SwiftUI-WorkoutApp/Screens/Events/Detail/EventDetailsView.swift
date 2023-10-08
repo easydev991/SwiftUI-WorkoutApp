@@ -236,7 +236,7 @@ private extension EventDetailsView {
             )
         }
     }
-    
+
     var deleteButton: some View {
         Button(action: { showDeleteDialog = true }) {
             Image(systemName: Icons.Regular.trash.rawValue)
@@ -270,13 +270,13 @@ private extension EventDetailsView {
             Image(systemName: Icons.Regular.pencil.rawValue)
         }
     }
-    
+
     func refreshAction() {
         isCreatingComment = false
         editComment = nil
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
-    
+
     func askForInfo(refresh: Bool = false) async {
         if isLoading || event.isFull, !refresh { return }
         if !refresh { isLoading = true }
@@ -325,7 +325,7 @@ private extension EventDetailsView {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
-    
+
     func reportPhoto() {
         let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
         feedbackSender.sendFeedback(
