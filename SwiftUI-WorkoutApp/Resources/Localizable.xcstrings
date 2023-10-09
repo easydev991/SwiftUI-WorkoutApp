@@ -323,7 +323,7 @@
               "zero" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "0 journals"
+                  "value" : ""
                 }
               }
             }
@@ -364,8 +364,8 @@
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 дневников"
+                  "state" : "new",
+                  "value" : ""
                 }
               }
             }
