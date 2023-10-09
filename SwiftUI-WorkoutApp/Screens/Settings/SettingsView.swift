@@ -43,18 +43,8 @@ struct SettingsView: View {
                 .padding()
             }
             .background(Color.swBackground)
-            .navigationTitle(mode.title)
+            .navigationTitle("Настройки")
             .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-}
-
-private extension SettingsView {
-    enum Mode: CaseIterable {
-        case authorized, incognito
-
-        var title: LocalizedStringKey {
-            self == .authorized ? "Настройки" : "Информация"
         }
     }
 }
@@ -84,10 +74,6 @@ private extension SettingsView {
 }
 
 private extension SettingsView {
-    var mode: Mode {
-        defaults.isAuthorized ? .authorized : .incognito
-    }
-
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
