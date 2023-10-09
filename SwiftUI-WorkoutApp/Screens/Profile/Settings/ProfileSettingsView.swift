@@ -42,7 +42,10 @@ struct ProfileSettingsView: View {
                 }
                 dividerView
                 SectionView(header: "Поддержать проект", mode: .regular) {
-                    workoutShopButton
+                    VStack(spacing: 4) {
+                        workoutShopButton
+                        workoutProfileButton
+                    }
                 }
                 dividerView
                 SectionView(header: "Поддержать разработчика", mode: .regular) {
@@ -88,7 +91,8 @@ private extension ProfileSettingsView.Mode {
 private extension ProfileSettingsView {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
-        static let workoutShop = URL(string: "https://workoutshop.ru")!
+        static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
+        static let workoutProfile = URL(string: "https://boosty.to/swrussia")!
         static let developerProfile = URL(string: "https://boosty.to/oleg991")!
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
@@ -236,6 +240,15 @@ private extension ProfileSettingsView {
         Link(destination: Links.workoutShop) {
             ListRowView(
                 leadingContent: .text("Магазин WORKOUT"),
+                trailingContent: .chevron
+            )
+        }
+    }
+
+    var workoutProfileButton: some View {
+        Link(destination: Links.workoutProfile) {
+            ListRowView(
+                leadingContent: .text("Street Workout на boosty"),
                 trailingContent: .chevron
             )
         }
