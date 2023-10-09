@@ -672,6 +672,17 @@
         }
       }
     },
+    "Street Workout на boosty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Street Workout (boosty)"
+          }
+        }
+      }
+    },
     "usersCount" : {
       "localizations" : {
         "en" : {
