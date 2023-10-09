@@ -191,7 +191,6 @@ private extension JournalsListView {
                     newJournalTitle = ""
                     isCreatingJournal.toggle()
                     defaults.setUserNeedUpdate(true)
-                    let userID = (defaults.mainUserInfo?.userID).valueOrZero
                     await askForJournals(refresh: true)
                 }
             } catch {
