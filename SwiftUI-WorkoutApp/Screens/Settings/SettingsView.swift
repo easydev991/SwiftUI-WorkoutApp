@@ -6,7 +6,6 @@ import SWModels
 /// Экран с настройками профиля основного пользователя
 struct SettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var showLogoutDialog = false
     private let feedbackSender: FeedbackSender = FeedbackSenderImp()
 
     var body: some View {
@@ -40,8 +39,6 @@ struct SettingsView: View {
                     SectionView(header: "Поддержать разработчика", mode: .regular) {
                         developerProfileButton
                     }
-                    dividerView
-                    logoutButton
                 }
                 .padding()
             }
@@ -140,23 +137,6 @@ private extension SettingsView {
                 leadingContent: .text("Язык"),
                 trailingContent: .textWithChevron(defaults.appLanguage.rawValue)
             )
-        }
-    }
-
-    var logoutButton: some View {
-        Button {
-            showLogoutDialog.toggle()
-        } label: {
-            ListRowView(leadingContent: .text("Выйти из профиля"))
-        }
-        .confirmationDialog(
-            .init(Constants.Alert.logout),
-            isPresented: $showLogoutDialog,
-            titleVisibility: .visible
-        ) {
-            Button("Выйти", role: .destructive) {
-                defaults.triggerLogout()
-            }
         }
     }
 

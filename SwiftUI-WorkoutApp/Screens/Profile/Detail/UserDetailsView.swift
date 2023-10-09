@@ -12,6 +12,7 @@ struct UserDetailsView: View {
     @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
     @State private var showAlertMessage = false
+    @State private var showLogoutDialog = false
     @State private var showBlacklistConfirmation = false
     @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
@@ -48,6 +49,7 @@ struct UserDetailsView: View {
                     blacklistButtonIfNeeded
                     journalsButtonIfNeeded
                 }
+                logoutButtonIfNeeded
             }
             .padding(.horizontal)
         }
@@ -233,6 +235,25 @@ private extension UserDetailsView {
                     trailingContent: .textWithChevron(user.journalsCountString)
                 )
             }
+        }
+    }
+    
+    @ViewBuilder
+    var logoutButtonIfNeeded: some View {
+        if isMainUser {
+            Button("Выйти") { showLogoutDialog = true }
+                .foregroundStyle(Color.swSmallElements)
+                .padding(.top, 36)
+                .padding(.bottom, 20)
+                .confirmationDialog(
+                    .init(Constants.Alert.logout),
+                    isPresented: $showLogoutDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button("Выйти", role: .destructive) {
+                        defaults.triggerLogout()
+                    }
+                }
         }
     }
 
