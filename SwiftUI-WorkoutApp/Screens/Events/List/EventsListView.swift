@@ -142,8 +142,6 @@ private extension EventsListView {
                     EventFormView(for: .regularCreate, refreshClbk: refreshAction)
                 }
             }
-        } else {
-            IncognitoNavbarInfoButton()
         }
     }
 

@@ -61,7 +61,6 @@ struct UserDetailsView: View {
                 Group {
                     if isMainUser {
                         searchUsersButton
-                        settingsButton
                     } else {
                         blockUserButton
                     }
@@ -244,7 +243,7 @@ private extension UserDetailsView {
     }
 
     var settingsButton: some View {
-        NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
+        NavigationLink(destination: SettingsView()) {
             Image(systemName: Icons.Regular.gearshape.rawValue)
         }
     }

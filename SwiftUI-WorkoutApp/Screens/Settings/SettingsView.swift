@@ -4,91 +4,85 @@ import SwiftUI
 import SWModels
 
 /// Экран с настройками профиля основного пользователя
-struct ProfileSettingsView: View {
+struct SettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var showLogoutDialog = false
-    private let feedbackSender: FeedbackSender
-    private let mode: Mode
-
-    init(mode: Mode, feedbackSender: FeedbackSender = FeedbackSenderImp()) {
-        self.mode = mode
-        self.feedbackSender = feedbackSender
-    }
+    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                SectionView(header: "Профиль", mode: .regular) {
-                    VStack(spacing: 0) {
-                        switch mode {
-                        case .authorized:
-                            changePasswordButton
-                        case .incognito:
-                            authorizeView
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 0) {
+                    SectionView(header: "Профиль", mode: .regular) {
+                        VStack(spacing: 0) {
+                            switch mode {
+                            case .authorized:
+                                changePasswordButton
+                            case .incognito:
+                                authorizeView
+                            }
+                            appThemeButton
+                            languagePicker
                         }
-                        appThemeButton
-                        languagePicker
                     }
-                }
-                dividerView
-                SectionView(header: "О приложении", mode: .regular) {
-                    VStack(spacing: 4) {
-                        feedbackButton
-                        rateAppButton
-                        userAgreementButton
-                        officialSiteButton
-                        appVersionView
+                    dividerView
+                    SectionView(header: "О приложении", mode: .regular) {
+                        VStack(spacing: 4) {
+                            feedbackButton
+                            rateAppButton
+                            userAgreementButton
+                            officialSiteButton
+                            appVersionView
+                        }
                     }
-                }
-                dividerView
-                SectionView(header: "Поддержать проект", mode: .regular) {
-                    VStack(spacing: 4) {
-                        workoutShopButton
-                        workoutProfileButton
+                    dividerView
+                    SectionView(header: "Поддержать проект", mode: .regular) {
+                        VStack(spacing: 4) {
+                            workoutShopButton
+                            workoutProfileButton
+                        }
                     }
+                    dividerView
+                    SectionView(header: "Поддержать разработчика", mode: .regular) {
+                        developerProfileButton
+                    }
+                    dividerView
+                    logoutButton
                 }
-                dividerView
-                SectionView(header: "Поддержать разработчика", mode: .regular) {
-                    developerProfileButton
-                }
-                dividerView
-                logoutButton
+                .padding()
             }
-            .padding()
+            .background(Color.swBackground)
+            .navigationTitle(mode.title)
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .background(Color.swBackground)
-        .navigationTitle(mode.title)
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-extension ProfileSettingsView {
+private extension SettingsView {
     enum Mode: CaseIterable {
         case authorized, incognito
-    }
-}
 
-private extension ProfileSettingsView.Mode {
-    var title: LocalizedStringKey {
-        self == .authorized ? "Настройки" : "Информация"
-    }
+        var title: LocalizedStringKey {
+            self == .authorized ? "Настройки" : "Информация"
+        }
 
-    @ViewBuilder
-    var profileSectionFooter: some View {
-        switch self {
-        case .authorized:
-            EmptyView()
-        case .incognito:
-            Text(.init(Constants.registrationInfoText))
-                .font(.subheadline)
-                .foregroundColor(.swSmallElements)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        @ViewBuilder
+        var profileSectionFooter: some View {
+            switch self {
+            case .authorized:
+                EmptyView()
+            case .incognito:
+                Text(.init(Constants.registrationInfoText))
+                    .font(.subheadline)
+                    .foregroundColor(.swSmallElements)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
     }
 }
 
-private extension ProfileSettingsView {
+private extension SettingsView {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
@@ -112,7 +106,11 @@ private extension ProfileSettingsView {
     }
 }
 
-private extension ProfileSettingsView {
+private extension SettingsView {
+    var mode: Mode {
+        defaults.isAuthorized ? .authorized : .incognito
+    }
+
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
@@ -266,11 +264,8 @@ private extension ProfileSettingsView {
 
 #if DEBUG
 #Preview {
-    ForEach(ProfileSettingsView.Mode.allCases, id: \.self) { mode in
-        NavigationView {
-            ProfileSettingsView(mode: mode)
-        }
-        .previewDisplayName(mode == .authorized ? "Авторизованный" : "Инкогнито")
+    NavigationView {
+        SettingsView()
     }
     .environmentObject(DefaultsService())
 }
