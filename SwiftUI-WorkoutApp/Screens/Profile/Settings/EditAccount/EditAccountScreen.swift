@@ -2,13 +2,19 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран для изменения личных данных пользователя
 struct EditAccountScreen: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = EditAccountViewModel()
+    @State private var userForm = MainUserForm.emptyValue
+    /// Ранее сохраненная форма с данными пользователя
+    @State private var oldUserForm = MainUserForm.emptyValue
+    /// Все доступные страны и города
+    @State private var locations = Locations(countries: [])
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var editUserTask: Task<Void, Never>?
@@ -32,15 +38,13 @@ struct EditAccountScreen: View {
             saveChangesButton
         }
         .padding([.horizontal, .bottom])
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { viewModel.clearErrorMessage() }
+            Button("Ok") { alertMessage = "" }
         }
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.isProfileSaved, perform: close)
-        .onAppear { viewModel.updateForm(with: defaults) }
-        .onDisappear(perform: cancelTask)
+        .onAppear(perform: prepareLocationsAndUserForm)
+        .onDisappear { editUserTask?.cancel() }
         .navigationTitle("Изменить профиль")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -53,8 +57,8 @@ private extension EditAccountScreen {
 
     var loginField: some View {
         SWTextField(
-            placeholder: viewModel.userForm.placeholder(.userName),
-            text: $viewModel.userForm.userName,
+            placeholder: userForm.placeholder(.userName),
+            text: $userForm.userName,
             isFocused: focus == .login
         )
         .focused($focus, equals: .login)
@@ -62,8 +66,8 @@ private extension EditAccountScreen {
 
     var emailField: some View {
         SWTextField(
-            placeholder: viewModel.userForm.placeholder(.email),
-            text: $viewModel.userForm.email,
+            placeholder: userForm.placeholder(.email),
+            text: $userForm.email,
             isFocused: focus == .email
         )
         .focused($focus, equals: .email)
@@ -71,16 +75,18 @@ private extension EditAccountScreen {
 
     var nameField: some View {
         SWTextField(
-            placeholder: viewModel.userForm.placeholder(.fullname),
-            text: $viewModel.userForm.fullName,
+            placeholder: userForm.placeholder(.fullname),
+            text: $userForm.fullName,
             isFocused: focus == .fullName
         )
         .focused($focus, equals: .fullName)
     }
 
+    var currentGender: Gender { .init(userForm.genderCode) ?? .unspecified }
+
     var genderPicker: some View {
         Menu {
-            Picker("", selection: $viewModel.userForm.genderCode) {
+            Picker("", selection: $userForm.genderCode) {
                 ForEach(Gender.possibleGenders, id: \.code) {
                     Text(.init($0.rawValue))
                 }
@@ -89,9 +95,9 @@ private extension EditAccountScreen {
             ListRowView(
                 leadingContent: .iconWithText(
                     .personQuestion,
-                    viewModel.userForm.placeholder(.gender)
+                    userForm.placeholder(.gender)
                 ),
-                trailingContent: .text(.init(viewModel.currentGender.rawValue))
+                trailingContent: .text(.init(currentGender.rawValue))
             )
         }
     }
@@ -100,8 +106,8 @@ private extension EditAccountScreen {
         HStack(spacing: 12) {
             ListRowView.LeadingContent.makeIconView(with: Icons.Regular.calendar)
             DatePicker(
-                .init(viewModel.userForm.placeholder(.birthDate)),
-                selection: $viewModel.userForm.birthDate,
+                .init(userForm.placeholder(.birthDate)),
+                selection: $userForm.birthDate,
                 in: ...Constants.minUserAge,
                 displayedComponents: .date
             )
@@ -113,17 +119,17 @@ private extension EditAccountScreen {
         NavigationLink {
             ItemListScreen(
                 mode: .country,
-                allItems: viewModel.countries.map(\.name),
-                selectedItem: viewModel.userForm.country.name,
-                didSelectItem: { viewModel.selectCountry(name: $0) }
+                allItems: locations.countries.map(\.name),
+                selectedItem: userForm.country.name,
+                didSelectItem: selectCountry
             )
         } label: {
             ListRowView(
                 leadingContent: .iconWithText(
                     .globe,
-                    viewModel.userForm.placeholder(.country)
+                    userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(.init(viewModel.userForm.country.name))
+                trailingContent: .textWithChevron(.init(userForm.country.name))
             )
         }
         .padding(.bottom, 6)
@@ -133,17 +139,17 @@ private extension EditAccountScreen {
         NavigationLink {
             ItemListScreen(
                 mode: .city,
-                allItems: viewModel.cities.map(\.name),
-                selectedItem: viewModel.userForm.city.name,
-                didSelectItem: { viewModel.selectCity(name: $0) }
+                allItems: locations.cities.map(\.name),
+                selectedItem: userForm.city.name,
+                didSelectItem: selectCity
             )
         } label: {
             ListRowView(
                 leadingContent: .iconWithText(
                     .signPost,
-                    viewModel.userForm.placeholder(.city)
+                    userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(.init(viewModel.userForm.city.name))
+                trailingContent: .textWithChevron(.init(userForm.city.name))
             )
         }
     }
@@ -152,25 +158,90 @@ private extension EditAccountScreen {
         Button("Сохранить", action: saveChangesAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(
-                !viewModel.canSaveChanges || !network.isConnected
+                !userForm.isReadyToSave(comparedTo: oldUserForm)
+                    || !network.isConnected
             )
     }
 
+    func prepareLocationsAndUserForm() {
+        guard locations.isEmpty else { return }
+        do {
+            locations = try .init()
+            if let userInfo = defaults.mainUserInfo {
+                oldUserForm = .init(userInfo)
+                oldUserForm.country = locations.countries
+                    .first(where: { $0.id == userForm.country.id }) ?? .defaultCountry
+                oldUserForm.city = locations.cities
+                    .first(where: { $0.id == userForm.city.id }) ?? .defaultCity
+                userForm = oldUserForm
+            }
+        } catch {
+            setupErrorAlert(with: error.localizedDescription)
+        }
+    }
+
+    func selectCountry(name countryName: String) {
+        let newCountry = locations.countries
+            .first(where: { $0.name == countryName }) ?? .defaultCountry
+        userForm.country = newCountry
+        if !newCountry.cities.contains(where: { $0 == userForm.city }),
+           let firstCity = newCountry.cities.first {
+            userForm.city = firstCity
+            locations.cities = newCountry.cities
+        }
+    }
+
+    func selectCity(name cityName: String) {
+        userForm.city = locations.cities
+            .first(where: { $0.name == cityName }) ?? .defaultCity
+    }
+
     func saveChangesAction() {
-        editUserTask = Task { await viewModel.saveChangesAction(with: defaults) }
+        isLoading = true
+        editUserTask = Task {
+            do {
+                let userID = (defaults.mainUserInfo?.userID).valueOrZero
+                if try await SWClient(with: defaults).editUser(userID, model: userForm) {
+                    dismiss()
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
+        }
     }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
+}
 
-    func close(_ shouldClose: Bool) {
-        if shouldClose { dismiss() }
-    }
+private extension EditAccountScreen {
+    struct Locations {
+        /// Все доступные страны
+        var countries: [Country]
+        /// Все доступные города
+        var cities: [City]
 
-    func cancelTask() {
-        editUserTask?.cancel()
+        init(countries: [Country]) {
+            self.countries = countries
+            self.cities = countries.flatMap(\.cities)
+        }
+
+        /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
+        init() throws {
+            let allCountries = try Bundle.main.decodeJson(
+                [Country].self,
+                fileName: "countries",
+                extension: "json"
+            )
+            self.init(countries: allCountries)
+        }
+
+        var isEmpty: Bool {
+            countries.isEmpty && cities.isEmpty
+        }
     }
 }
 

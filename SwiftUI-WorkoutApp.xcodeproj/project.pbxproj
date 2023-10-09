@@ -9,10 +9,7 @@
 /* Begin PBXBuildFile section */
 		670431512964544D0090CAC3 /* FeedbackSender in Frameworks */ = {isa = PBXBuildFile; productRef = 670431502964544D0090CAC3 /* FeedbackSender */; };
 		6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */; };
-		6705E7F2283B880A00DABCC8 /* JournalSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7F1283B880A00DABCC8 /* JournalSettingsViewModel.swift */; };
 		670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */; };
-		670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670F16C72826D1090069D80A /* UsersListViewModel.swift */; };
-		67138D792971CA7A00BBF450 /* MessagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D782971CA7A00BBF450 /* MessagingViewModel.swift */; };
 		67138D7D2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */; };
 		67138D87297311BD00BBF450 /* WorkoutAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */; };
 		67138D90297323AE00BBF450 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D8F297323AE00BBF450 /* SnapshotHelper.swift */; };
@@ -23,7 +20,6 @@
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
 		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
 		67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */; };
-		67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordView.swift */; };
 		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
@@ -32,8 +28,6 @@
 		67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515698283FEC3100501346 /* PickedImagesGrid.swift */; };
 		6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */; };
 		6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */; };
-		6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */; };
-		6758B92C281D9283001D83D8 /* EventFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758B92B281D9283001D83D8 /* EventFormViewModel.swift */; };
 		675A370A2854810B00DAE071 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 675A37092854810B00DAE071 /* Utils */; };
 		675E5618297D21D400B4981A /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675E5617297D21D400B4981A /* Array+.swift */; };
 		675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* TextEntryView.swift */; };
@@ -42,14 +36,10 @@
 		675EC65F2815532800C2E229 /* EventFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC65E2815532800C2E229 /* EventFormView.swift */; };
 		675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */; };
 		67627750283A3A54009C203F /* JournalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762774F283A3A54009C203F /* JournalsListView.swift */; };
-		67627752283A4089009C203F /* JournalsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627751283A4089009C203F /* JournalsListViewModel.swift */; };
 		67627755283A4C77009C203F /* JournalEntriesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627754283A4C77009C203F /* JournalEntriesList.swift */; };
-		67627757283A4CBB009C203F /* JournalEntriesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627756283A4CBB009C203F /* JournalEntriesListViewModel.swift */; };
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
-		676B3AFA283507E900DB4ADA /* EventDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B3AF9283507E900DB4ADA /* EventDetailsViewModel.swift */; };
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
-		67891E36283E945100B10802 /* SportsGroundFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E35283E945100B10802 /* SportsGroundFormViewModel.swift */; };
 		67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* SportsGroundFormView.swift */; };
 		678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
@@ -76,23 +66,17 @@
 		67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371702A63FF6F000FF143 /* AppThemeScreen.swift */; };
 		67B371732A640079000FF143 /* AppThemeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371722A640079000FF143 /* AppThemeService.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
-		67B78714281D74F3008B104F /* EditAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78713281D74F3008B104F /* EditAccountViewModel.swift */; };
 		67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */; };
-		67B7871C281D8A49008B104F /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B7871B281D8A49008B104F /* UserDetailsViewModel.swift */; };
 		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
 		67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */; };
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D3297BE872009380DF /* DateFormatterService */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
-		67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916822838E2520098D3CB /* DialogListViewModel.swift */; };
 		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
-		67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916872838F4C40098D3CB /* DialogViewModel.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageView.swift */; };
-		67DD1120282C3CE400E3917C /* TextEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */; };
 		67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */; };
 		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
-		67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64A283379D9008A7968 /* EventsListViewModel.swift */; };
 		67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64E28338A2E008A7968 /* EventDetailsView.swift */; };
 		67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */ = {isa = PBXBuildFile; productRef = 67FE5584297BF82000DC52BF /* ShortAddressService */; };
 /* End PBXBuildFile section */
@@ -116,10 +100,7 @@
 
 /* Begin PBXFileReference section */
 		6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalSettingsView.swift; sourceTree = "<group>"; };
-		6705E7F1283B880A00DABCC8 /* JournalSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalSettingsViewModel.swift; sourceTree = "<group>"; };
 		670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
-		670F16C72826D1090069D80A /* UsersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListViewModel.swift; sourceTree = "<group>"; };
-		67138D782971CA7A00BBF450 /* MessagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingViewModel.swift; sourceTree = "<group>"; };
 		67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoNavbarInfoButton.swift; sourceTree = "<group>"; };
 		67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutAppUITests.swift; sourceTree = "<group>"; };
@@ -131,7 +112,6 @@
 		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
 		6734D39229BC693D0000B5B1 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = "SwiftUI-WorkoutApp/DesignSystem"; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsListView.swift; sourceTree = "<group>"; };
-		67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundListViewModel.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* SportsGroundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailView.swift; sourceTree = "<group>"; };
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
@@ -141,8 +121,6 @@
 		67515698283FEC3100501346 /* PickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedImagesGrid.swift; sourceTree = "<group>"; };
 		6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Identifiable.swift"; sourceTree = "<group>"; };
 		6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
-		6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailViewModel.swift; sourceTree = "<group>"; };
-		6758B92B281D9283001D83D8 /* EventFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFormViewModel.swift; sourceTree = "<group>"; };
 		675A3707285480E600DAE071 /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utils; path = "SwiftUI-WorkoutApp/Utils"; sourceTree = "<group>"; };
 		675E5617297D21D400B4981A /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		675EC64E2814126800C2E229 /* TextEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryView.swift; sourceTree = "<group>"; };
@@ -152,14 +130,10 @@
 		675EC65E2815532800C2E229 /* EventFormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventFormView.swift; sourceTree = "<group>"; };
 		675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSnapshotView.swift; sourceTree = "<group>"; };
 		6762774F283A3A54009C203F /* JournalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsListView.swift; sourceTree = "<group>"; };
-		67627751283A4089009C203F /* JournalsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsListViewModel.swift; sourceTree = "<group>"; };
 		67627754283A4C77009C203F /* JournalEntriesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesList.swift; sourceTree = "<group>"; };
-		67627756283A4CBB009C203F /* JournalEntriesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesListViewModel.swift; sourceTree = "<group>"; };
 		6762775A283A87AD009C203F /* JournalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCell.swift; sourceTree = "<group>"; };
 		6766A035284603CA0033F1E8 /* TabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModel.swift; sourceTree = "<group>"; };
-		676B3AF9283507E900DB4ADA /* EventDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsViewModel.swift; sourceTree = "<group>"; };
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
-		67891E35283E945100B10802 /* SportsGroundFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormViewModel.swift; sourceTree = "<group>"; };
 		67891E37283E947B00B10802 /* SportsGroundFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormView.swift; sourceTree = "<group>"; };
 		678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWNetworkClient; path = "SwiftUI-WorkoutApp/SWNetworkClient"; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -187,21 +161,15 @@
 		67B371702A63FF6F000FF143 /* AppThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeScreen.swift; sourceTree = "<group>"; };
 		67B371722A640079000FF143 /* AppThemeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeService.swift; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
-		67B78713281D74F3008B104F /* EditAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountViewModel.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapViewModel.swift; sourceTree = "<group>"; };
-		67B7871B281D8A49008B104F /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundLocationInfo.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
 		67CB32D2297BE737009380DF /* DateFormatterService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DateFormatterService; path = "SwiftUI-WorkoutApp/DateFormatterService"; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
-		67D916822838E2520098D3CB /* DialogListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListViewModel.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
-		67D916872838F4C40098D3CB /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
-		67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryViewModel.swift; sourceTree = "<group>"; };
 		67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailScreen.swift; sourceTree = "<group>"; };
-		67FBF64A283379D9008A7968 /* EventsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListViewModel.swift; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
 		67FE5583297BF78500DC52BF /* ShortAddressService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ShortAddressService; path = "SwiftUI-WorkoutApp/ShortAddressService"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -244,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */,
-				6705E7F1283B880A00DABCC8 /* JournalSettingsViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -286,8 +253,8 @@
 			isa = PBXGroup;
 			children = (
 				6798AA54280AF46300DB76F1 /* DialogsScreen.swift */,
-				67D9167F2838E2240098D3CB /* DialogList */,
-				67D916842838EC960098D3CB /* DialogView */,
+				67D916802838E2460098D3CB /* DialogListView.swift */,
+				67D916852838F0DD0098D3CB /* DialogView.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -362,7 +329,6 @@
 			isa = PBXGroup;
 			children = (
 				675EC64E2814126800C2E229 /* TextEntryView.swift */,
-				67DD111F282C3CE400E3917C /* TextEntryViewModel.swift */,
 			);
 			path = TextEntry;
 			sourceTree = "<group>";
@@ -387,7 +353,6 @@
 			isa = PBXGroup;
 			children = (
 				6762774F283A3A54009C203F /* JournalsListView.swift */,
-				67627751283A4089009C203F /* JournalsListViewModel.swift */,
 			);
 			path = JournalsList;
 			sourceTree = "<group>";
@@ -396,7 +361,6 @@
 			isa = PBXGroup;
 			children = (
 				67627754283A4C77009C203F /* JournalEntriesList.swift */,
-				67627756283A4CBB009C203F /* JournalEntriesListViewModel.swift */,
 			);
 			path = EntriesList;
 			sourceTree = "<group>";
@@ -405,7 +369,6 @@
 			isa = PBXGroup;
 			children = (
 				675EC6562815433600C2E229 /* UsersListView.swift */,
-				670F16C72826D1090069D80A /* UsersListViewModel.swift */,
 			);
 			path = UsersList;
 			sourceTree = "<group>";
@@ -414,7 +377,6 @@
 			isa = PBXGroup;
 			children = (
 				67FBF64E28338A2E008A7968 /* EventDetailsView.swift */,
-				676B3AF9283507E900DB4ADA /* EventDetailsViewModel.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -423,7 +385,6 @@
 			isa = PBXGroup;
 			children = (
 				67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */,
-				67419AD0282E70F9004F5339 /* SportsGroundListViewModel.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -442,7 +403,6 @@
 			isa = PBXGroup;
 			children = (
 				6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */,
-				67B78713281D74F3008B104F /* EditAccountViewModel.swift */,
 			);
 			path = EditAccount;
 			sourceTree = "<group>";
@@ -451,7 +411,6 @@
 			isa = PBXGroup;
 			children = (
 				67891E37283E947B00B10802 /* SportsGroundFormView.swift */,
-				67891E35283E945100B10802 /* SportsGroundFormViewModel.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -585,7 +544,6 @@
 			isa = PBXGroup;
 			children = (
 				67D9169528396C1E0098D3CB /* SendMessageView.swift */,
-				67138D782971CA7A00BBF450 /* MessagingViewModel.swift */,
 			);
 			path = SendMessage;
 			sourceTree = "<group>";
@@ -629,7 +587,6 @@
 			isa = PBXGroup;
 			children = (
 				6747575828128603002F0A24 /* SportsGroundDetailView.swift */,
-				6758B929281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -638,34 +595,14 @@
 			isa = PBXGroup;
 			children = (
 				6798AA67280B23B700DB76F1 /* UserDetailsView.swift */,
-				67B7871B281D8A49008B104F /* UserDetailsViewModel.swift */,
 			);
 			path = Detail;
-			sourceTree = "<group>";
-		};
-		67D9167F2838E2240098D3CB /* DialogList */ = {
-			isa = PBXGroup;
-			children = (
-				67D916802838E2460098D3CB /* DialogListView.swift */,
-				67D916822838E2520098D3CB /* DialogListViewModel.swift */,
-			);
-			path = DialogList;
-			sourceTree = "<group>";
-		};
-		67D916842838EC960098D3CB /* DialogView */ = {
-			isa = PBXGroup;
-			children = (
-				67D916852838F0DD0098D3CB /* DialogView.swift */,
-				67D916872838F4C40098D3CB /* DialogViewModel.swift */,
-			);
-			path = DialogView;
 			sourceTree = "<group>";
 		};
 		67FBF64C283389F6008A7968 /* List */ = {
 			isa = PBXGroup;
 			children = (
 				6798AA52280AF43900DB76F1 /* EventsListView.swift */,
-				67FBF64A283379D9008A7968 /* EventsListViewModel.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -674,7 +611,6 @@
 			isa = PBXGroup;
 			children = (
 				675EC65E2815532800C2E229 /* EventFormView.swift */,
-				6758B92B281D9283001D83D8 /* EventFormViewModel.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -852,15 +788,12 @@
 			files = (
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
 				67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */,
-				67138D792971CA7A00BBF450 /* MessagingViewModel.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */,
 				67B371732A640079000FF143 /* AppThemeService.swift in Sources */,
-				67FBF64B283379D9008A7968 /* EventsListViewModel.swift in Sources */,
 				67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */,
 				67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */,
 				67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */,
-				67D916882838F4C40098D3CB /* DialogViewModel.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */,
 				67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */,
@@ -869,46 +802,33 @@
 				671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */,
 				6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */,
 				679F3B072969D4E200BB3590 /* IncognitoUserButton.swift in Sources */,
-				67419AD1282E70F9004F5339 /* SportsGroundListViewModel.swift in Sources */,
 				675EC653281445E500C2E229 /* MapViewUI.swift in Sources */,
 				6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */,
-				67DD1120282C3CE400E3917C /* TextEntryViewModel.swift in Sources */,
 				67138D7D2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift in Sources */,
 				67B78712281D654C008B104F /* DefaultsService.swift in Sources */,
 				67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
-				67D916832838E2520098D3CB /* DialogListViewModel.swift in Sources */,
-				67B7871C281D8A49008B104F /* UserDetailsViewModel.swift in Sources */,
 				6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */,
 				674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */,
 				6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */,
 				67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */,
-				676B3AFA283507E900DB4ADA /* EventDetailsViewModel.swift in Sources */,
-				6758B92C281D9283001D83D8 /* EventFormViewModel.swift in Sources */,
-				6705E7F2283B880A00DABCC8 /* JournalSettingsViewModel.swift in Sources */,
 				675E5618297D21D400B4981A /* Array+.swift in Sources */,
-				67891E36283E945100B10802 /* SportsGroundFormViewModel.swift in Sources */,
 				67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */,
 				6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */,
 				67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */,
 				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
-				67627752283A4089009C203F /* JournalsListViewModel.swift in Sources */,
 				67627750283A3A54009C203F /* JournalsListView.swift in Sources */,
 				67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
-				67627757283A4CBB009C203F /* JournalEntriesListViewModel.swift in Sources */,
-				670F16C82826D1090069D80A /* UsersListViewModel.swift in Sources */,
 				6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */,
 				6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
-				6758B92A281D8FD7001D83D8 /* SportsGroundDetailViewModel.swift in Sources */,
 				67D916812838E2460098D3CB /* DialogListView.swift in Sources */,
 				6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */,
 				670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */,
-				67B78714281D74F3008B104F /* EditAccountViewModel.swift in Sources */,
 				6762775B283A87AD009C203F /* JournalCell.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* EditAccountScreen.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
@@ -1158,7 +1078,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1176,7 +1096,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.3.3;
+				MARKETING_VERSION = 3.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1194,7 +1114,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1212,7 +1132,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.3.3;
+				MARKETING_VERSION = 3.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

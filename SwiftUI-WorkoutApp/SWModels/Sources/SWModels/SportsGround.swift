@@ -199,15 +199,21 @@ public struct CommentResponse: Codable, Identifiable, Hashable {
 }
 
 public extension SportsGround {
+    var hasPhotos: Bool { !photos.isEmpty }
+
     var photos: [Photo] {
         get { photosOptional ?? [] }
         set { photosOptional = newValue }
     }
 
+    var hasComments: Bool { !comments.isEmpty }
+
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
     }
+
+    var hasParticipants: Bool { !participants.isEmpty }
 
     /// Пользователи, которые тренируются на этой площадке
     var participants: [UserResponse] {

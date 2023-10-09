@@ -1,5 +1,5 @@
-import UIKit
 import SWModels
+import UIKit
 
 enum AppThemeService {
     /// Задает выбранную тему для приложения

@@ -1,17 +1,19 @@
 import DesignSystem
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран со списком площадок
 struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = SportsGroundListViewModel()
-    @State private var updateGroundsTask: Task<Void, Never>?
+    @State private var grounds = [SportsGround]()
+    @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     /// Площадка для мероприятия
     @Binding private var groundInfo: SportsGround
+    @State private var updateGroundsTask: Task<Void, Never>?
     private let mode: Mode
 
     init(
@@ -25,47 +27,23 @@ struct SportsGroundsListView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.list) { ground in
-                    switch mode {
-                    case .event:
-                        Button {
-                            groundInfo = ground
-                            dismiss()
-                        } label: {
-                            SportsGroundRowView(
-                                imageURL: ground.previewImageURL,
-                                title: ground.longTitle,
-                                address: ground.address,
-                                usersTrainHereText: ground.usersTrainHereText
-                            )
-                        }
+                ForEach(grounds) { ground in
+                    makeItemView(for: ground)
                         .accessibilityIdentifier("SportsGroundViewCell")
-                    default:
-                        NavigationLink {
-                            SportsGroundDetailView(
-                                for: ground,
-                                onDeletion: updateDeleted
-                            )
-                        } label: {
-                            SportsGroundRowView(
-                                imageURL: ground.previewImageURL,
-                                title: ground.longTitle,
-                                address: ground.address,
-                                usersTrainHereText: ground.usersTrainHereText
-                            )
-                        }
-                        .accessibilityIdentifier("SportsGroundViewCell")
-                    }
                 }
             }
             .padding([.top, .horizontal])
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-        .onChange(of: viewModel.list, perform: dismissIfEmpty)
+        .onChange(of: grounds) { list in
+            if list.isEmpty {
+                defaults.setUserNeedUpdate(true)
+                dismiss()
+            }
+        }
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { errorTitle = "" }
         }
         .task { await askForGrounds() }
         .refreshable { await askForGrounds(refresh: true) }
@@ -76,7 +54,7 @@ struct SportsGroundsListView: View {
         }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onDisappear(perform: cancelTask)
+        .onDisappear { updateGroundsTask?.cancel() }
     }
 }
 
@@ -109,36 +87,76 @@ private extension SportsGroundsListView {
             } label: {
                 Image(systemName: Icons.Regular.refresh.rawValue)
             }
-            .disabled(viewModel.isLoading)
+            .disabled(isLoading)
+        }
+    }
+
+    @ViewBuilder
+    func makeItemView(for ground: SportsGround) -> some View {
+        switch mode {
+        case .event:
+            Button {
+                groundInfo = ground
+                dismiss()
+            } label: {
+                SportsGroundRowView(
+                    imageURL: ground.previewImageURL,
+                    title: ground.longTitle,
+                    address: ground.address,
+                    usersTrainHereText: ground.usersTrainHereText
+                )
+            }
+        default:
+            NavigationLink {
+                SportsGroundDetailView(
+                    ground: ground,
+                    onDeletion: { id in
+                        grounds.removeAll(where: { $0.id == id })
+                    }
+                )
+            } label: {
+                SportsGroundRowView(
+                    imageURL: ground.previewImageURL,
+                    title: ground.longTitle,
+                    address: ground.address,
+                    usersTrainHereText: ground.usersTrainHereText
+                )
+            }
         }
     }
 
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeSportsGroundsFor(mode, refresh: refresh, with: defaults)
+        if isLoading { return }
+        do {
+            switch mode {
+            case let .usedBy(userID), let .event(userID):
+                let isMainUser = userID == defaults.mainUserInfo?.userID
+                let needUpdate = grounds.isEmpty || refresh
+                if isMainUser {
+                    if !needUpdate, !defaults.needUpdateUser { return }
+                    try await makeList(for: userID, isMainUser, refresh)
+                } else {
+                    if !needUpdate { return }
+                    try await makeList(for: userID, isMainUser, refresh)
+                }
+            case let .added(list):
+                grounds = list
+            }
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
-    func updateDeleted(deletedGroundId: Int) {
-        viewModel.deleteSportsGround(id: deletedGroundId)
+    func makeList(for userID: Int, _ isMainUser: Bool, _ isRefreshing: Bool) async throws {
+        if !isRefreshing { isLoading.toggle() }
+        if isMainUser { defaults.setUserNeedUpdate(false) }
+        grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
     }
 
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
-    }
-
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
-
-    func dismissIfEmpty(list: [SportsGround]) {
-        if list.isEmpty {
-            defaults.setUserNeedUpdate(true)
-            dismiss()
-        }
-    }
-
-    func cancelTask() {
-        updateGroundsTask?.cancel()
     }
 }
 

@@ -13,8 +13,6 @@ public struct SWClient {
     ///
     /// Базовая аутентификация не нужна для запросов:
     /// - `getUpdatedSportsGrounds`
-    /// - `getSportsGround`
-    /// - `getEvents`
     /// - `registration`
     /// - `resetPassword`
     let needAuth: Bool
@@ -467,7 +465,11 @@ public struct SWClient {
         return result
     }
 
+    #warning("Запрос не используется")
     /// Запрашивает дневник пользователя
+    ///
+    /// После обновления настроек дневника при помощи метода `editJournalSettings` нет смысла делать этот запрос, т.к. актуальные данные уже
+    /// есть на экране
     /// - Parameters:
     ///   - userID: `id` пользователя
     ///   - journalID: `id` выбранного дневника

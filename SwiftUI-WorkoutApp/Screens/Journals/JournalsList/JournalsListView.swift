@@ -2,12 +2,15 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Список дневников
 struct JournalsListView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = JournalsListViewModel()
+    @State private var journals = [JournalResponse]()
+    @State private var newJournalTitle = ""
+    @State private var isLoading = false
     @State private var isCreatingJournal = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -17,24 +20,18 @@ struct JournalsListView: View {
     @State private var updateListTask: Task<Void, Never>?
     @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalTask: Task<Void, Never>?
-    private let userID: Int
-
-    init(for userID: Int) {
-        self.userID = userID
-    }
+    let userID: Int
 
     var body: some View {
         journalsList
             .overlay { emptyContentView }
-            .loadingOverlay(if: viewModel.isLoading)
+            .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
             .confirmationDialog(
                 .init(Constants.Alert.deleteJournal),
                 isPresented: $showDeleteDialog,
                 titleVisibility: .visible
             ) { deleteJournalButton }
-            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: viewModel.isJournalCreated, perform: closeSheet)
             .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
             .alert(errorTitle, isPresented: $showErrorAlert) {
                 Button("Ok", action: closeAlert)
@@ -63,7 +60,7 @@ private extension JournalsListView {
             Image(systemName: Icons.Regular.refresh.rawValue)
         }
         .opacity(refreshButtonOpacity)
-        .disabled(viewModel.isLoading)
+        .disabled(isLoading)
     }
 
     var refreshButtonOpacity: CGFloat {
@@ -93,9 +90,9 @@ private extension JournalsListView {
     var journalsList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach($viewModel.list) { $journal in
+                ForEach(journals) { journal in
                     NavigationLink {
-                        JournalEntriesList(for: userID, in: $journal)
+                        JournalEntriesList(for: userID, in: journal)
                     } label: {
                         JournalCell(
                             model: .init(journalResponse: journal),
@@ -116,7 +113,7 @@ private extension JournalsListView {
     }
 
     var showEmptyView: Bool {
-        viewModel.list.isEmpty && isMainUser && !viewModel.isLoading
+        journals.isEmpty && isMainUser && !isLoading
     }
 
     var isMainUser: Bool {
@@ -131,9 +128,9 @@ private extension JournalsListView {
         SendMessageView(
             header: "Новый дневник",
             placeholder: "Создай первую запись в дневнике",
-            text: $viewModel.newJournalTitle,
-            isLoading: viewModel.isLoading,
-            isSendButtonDisabled: !viewModel.canSaveNewJournal,
+            text: $newJournalTitle,
+            isLoading: isLoading,
+            isSendButtonDisabled: !canSaveNewJournal,
             sendAction: saveNewJournal,
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
@@ -141,10 +138,22 @@ private extension JournalsListView {
         )
     }
 
+    var canSaveNewJournal: Bool { !isLoading && !newJournalTitle.isEmpty }
+
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             deleteJournalTask = Task {
-                await viewModel.delete(journalID: journalIdToDelete, with: defaults)
+                guard let journalID = journalIdToDelete, !isLoading else { return }
+                isLoading = true
+                do {
+                    if try await SWClient(with: defaults).deleteJournal(journalID: journalID) {
+                        journals.removeAll(where: { $0.id == journalID })
+                        defaults.setUserNeedUpdate(true)
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                }
+                isLoading = false
             }
         } label: {
             Text("Удалить")
@@ -164,18 +173,38 @@ private extension JournalsListView {
     }
 
     func askForJournals(refresh: Bool = false) async {
-        await viewModel.makeItems(for: userID, refresh: refresh, with: defaults)
+        if isLoading || !journals.isEmpty, !refresh { return }
+        if !refresh { isLoading = true }
+        do {
+            journals = try await SWClient(with: defaults).getJournals(for: userID)
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
 
     func saveNewJournal() {
+        isLoading = true
         saveJournalTask = Task {
-            await viewModel.createJournal(with: defaults)
+            do {
+                if try await SWClient(with: defaults).createJournal(with: newJournalTitle) {
+                    newJournalTitle = ""
+                    isCreatingJournal.toggle()
+                    defaults.setUserNeedUpdate(true)
+                    let userID = (defaults.mainUserInfo?.userID).valueOrZero
+                    await askForJournals(refresh: true)
+                }
+            } catch {
+                setupErrorAlert(with: ErrorFilter.message(from: error))
+            }
+            isLoading = false
         }
     }
 
-    func update(journalID: Int) {
-        updateListTask = Task {
-            await viewModel.update(journalID: journalID, with: defaults)
+    func update(journal: JournalResponse) {
+        journalToEdit = nil
+        if let index = journals.firstIndex(where: { $0.id == journal.id }) {
+            journals[index] = journal
         }
     }
 
@@ -184,21 +213,12 @@ private extension JournalsListView {
         showDeleteDialog.toggle()
     }
 
-    func closeSheet(isSuccess: Bool) {
-        if isSuccess {
-            isCreatingJournal.toggle()
-            defaults.setUserNeedUpdate(true)
-        }
-    }
-
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { errorTitle = "" }
 
     func cancelTasks() {
         [saveJournalTask, deleteJournalTask, updateListTask].forEach { $0?.cancel() }
@@ -207,7 +227,7 @@ private extension JournalsListView {
 
 #if DEBUG
 #Preview {
-    JournalsListView(for: .previewUserID)
+    JournalsListView(userID: .previewUserID)
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }

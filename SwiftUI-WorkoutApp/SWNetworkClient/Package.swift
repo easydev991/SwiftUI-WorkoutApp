@@ -10,7 +10,7 @@ let package = Package(
         .library(
             name: "SWNetworkClient",
             targets: ["SWNetworkClient"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../SWModels")

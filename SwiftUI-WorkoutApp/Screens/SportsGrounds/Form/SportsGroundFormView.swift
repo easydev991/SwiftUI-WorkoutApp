@@ -4,33 +4,39 @@ import ImagePicker
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWNetworkClient
 
 /// Экран с формой для создания/изменения площадки
 struct SportsGroundFormView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel: SportsGroundFormViewModel
+    @State private var isLoading = false
+    @State private var groundForm: SportsGroundForm
+    @State private var newImages = [UIImage]()
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showImagePicker = false
     @State private var saveGroundTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
+    private let oldGroundForm: SportsGroundForm
+    private let mode: Mode
     private let refreshClbk: () -> Void
 
     init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
+        self.mode = mode
         switch mode {
         case let .createNew(address, coordinate, cityID):
-            _viewModel = StateObject(
-                wrappedValue: .init(
-                    address,
-                    coordinate.latitude,
-                    coordinate.longitude,
-                    cityID
-                )
+            self.oldGroundForm = .init(
+                address: address,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                cityID: cityID
             )
+            _groundForm = .init(initialValue: oldGroundForm)
         case let .editExisting(ground):
-            _viewModel = StateObject(wrappedValue: .init(with: ground))
+            self.oldGroundForm = .init(ground)
+            _groundForm = .init(initialValue: oldGroundForm)
         }
         self.refreshClbk = refreshClbk
     }
@@ -48,14 +54,12 @@ struct SportsGroundFormView: View {
             }
             .padding([.horizontal, .bottom])
         }
-        .loadingOverlay(if: viewModel.isLoading)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
         .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { alertMessage = "" }
         }
-        .onChange(of: viewModel.isSuccess, perform: dismiss)
-        .onDisappear(perform: cancelTask)
+        .onDisappear { saveGroundTask?.cancel() }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -69,6 +73,13 @@ extension SportsGroundFormView {
             cityID: Int
         )
         case editExisting(SportsGround)
+
+        var groundID: Int? {
+            switch self {
+            case .createNew: nil
+            case let .editExisting(ground): ground.id
+            }
+        }
     }
 }
 
@@ -77,7 +88,7 @@ private extension SportsGroundFormView {
         SectionView(header: "Адрес", mode: .regular) {
             SWTextField(
                 placeholder: "Адрес площадки",
-                text: $viewModel.groundForm.address,
+                text: $groundForm.address,
                 isFocused: isFocused
             )
             .focused($isFocused)
@@ -87,7 +98,7 @@ private extension SportsGroundFormView {
 
     var typePicker: some View {
         Menu {
-            Picker("", selection: $viewModel.groundForm.typeID) {
+            Picker("", selection: $groundForm.typeID) {
                 ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
                     Text(.init(SportsGroundGrade(id: $0).rawValue))
                 }
@@ -95,14 +106,14 @@ private extension SportsGroundFormView {
         } label: {
             ListRowView(
                 leadingContent: .text("Тип площадки"),
-                trailingContent: .text(.init(viewModel.groundForm.gradeString))
+                trailingContent: .text(.init(groundForm.gradeString))
             )
         }
     }
 
     var sizePicker: some View {
         Menu {
-            Picker("", selection: $viewModel.groundForm.sizeID) {
+            Picker("", selection: $groundForm.sizeID) {
                 ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
                     Text(.init(SportsGroundSize(id: $0).rawValue))
                 }
@@ -110,17 +121,21 @@ private extension SportsGroundFormView {
         } label: {
             ListRowView(
                 leadingContent: .text("Размер площадки"),
-                trailingContent: .text(.init(viewModel.groundForm.sizeString))
+                trailingContent: .text(.init(groundForm.sizeString))
             )
         }
     }
 
     var pickedImagesGrid: some View {
         PickedImagesGrid(
-            images: $viewModel.newImages,
+            images: $newImages,
             showImagePicker: $showImagePicker,
-            selectionLimit: viewModel.imagesLimit,
-            processExtraImages: { viewModel.deleteExtraImagesIfNeeded() }
+            selectionLimit: imagesLimit,
+            processExtraImages: {
+                while imagesLimit < 0 {
+                    newImages.removeLast()
+                }
+            }
         )
         .padding(.top, 22)
         .padding(.bottom, 42)
@@ -135,31 +150,36 @@ private extension SportsGroundFormView {
         Button("Сохранить") {
             isFocused = false
             saveGroundTask = Task {
-                await viewModel.saveGround(with: defaults)
+                isLoading = true
+                groundForm.newMediaFiles = newImages.toMediaFiles
+                do {
+                    let newGround = try await SWClient(with: defaults)
+                        .saveSportsGround(id: mode.groundID, form: groundForm)
+                    if newGround.id != 0 {
+                        dismiss()
+                        refreshClbk()
+                    }
+                } catch {
+                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                }
+                isLoading = false
             }
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(
-            !viewModel.isFormReady || !network.isConnected
-        )
+        .disabled(!isFormReady || !network.isConnected)
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
+    var isFormReady: Bool {
+        mode.groundID == nil
+            ? groundForm.isReadyToCreate && !newImages.isEmpty
+            : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
     }
 
-    func dismiss(isSuccess: Bool) {
-        if isSuccess {
-            dismiss()
-            refreshClbk()
-            if viewModel.isNewSportsGround {
-                defaults.setUserNeedUpdate(true)
-            }
-        }
-    }
-
-    func cancelTask() {
-        saveGroundTask?.cancel()
+    /// Сколько еще фотографий можно добавить
+    var imagesLimit: Int {
+        mode.groundID == nil
+            ? Constants.photosLimit - newImages.count
+            : Constants.photosLimit - newImages.count - groundForm.photosCount
     }
 }
 

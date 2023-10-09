@@ -1,7 +1,7 @@
 import DesignSystem
 import NetworkStatus
-import SWNetworkClient
 import SwiftUI
+import SWNetworkClient
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
