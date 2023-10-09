@@ -27,6 +27,7 @@ struct EditAccountScreen: View {
                     loginField.padding(.top)
                     emailField
                     nameField
+                    changePasswordButton
                 }
                 .padding(.bottom, 12)
                 genderPicker
@@ -80,6 +81,12 @@ private extension EditAccountScreen {
             isFocused: focus == .fullName
         )
         .focused($focus, equals: .fullName)
+    }
+
+    var changePasswordButton: some View {
+        NavigationLink(destination: ChangePasswordView()) {
+            ListRowView(leadingContent: .iconWithText(.key, "Изменить пароль"), trailingContent: .chevron)
+        }
     }
 
     var currentGender: Gender { .init(userForm.genderCode) ?? .unspecified }

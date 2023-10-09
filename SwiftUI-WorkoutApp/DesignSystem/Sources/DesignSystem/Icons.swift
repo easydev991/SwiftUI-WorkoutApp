@@ -38,6 +38,7 @@ public enum Icons {
         case addPerson = "person.crop.circle.badge.plus"
         case deletePerson = "person.crop.circle.badge.minus"
         case signPost = "signpost.right"
+        case key = "key.fill"
         case envelope
         case globe = "globe.europe.africa"
         case person = "person.fill"

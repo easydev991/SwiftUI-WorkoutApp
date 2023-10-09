@@ -13,14 +13,8 @@ struct SettingsView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 0) {
-                    SectionView(header: "Профиль", mode: .regular) {
+                    SectionView(header: "Внешний вид", mode: .regular) {
                         VStack(spacing: 0) {
-                            switch mode {
-                            case .authorized:
-                                changePasswordButton
-                            case .incognito:
-                                authorizeView
-                            }
                             appThemeButton
                             languagePicker
                         }
@@ -65,20 +59,6 @@ private extension SettingsView {
         var title: LocalizedStringKey {
             self == .authorized ? "Настройки" : "Информация"
         }
-
-        @ViewBuilder
-        var profileSectionFooter: some View {
-            switch self {
-            case .authorized:
-                EmptyView()
-            case .incognito:
-                Text(.init(Constants.registrationInfoText))
-                    .font(.subheadline)
-                    .foregroundColor(.swSmallElements)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
     }
 }
 
@@ -118,15 +98,23 @@ private extension SettingsView {
             .padding(.horizontal, -16)
     }
 
-    var changePasswordButton: some View {
-        NavigationLink(destination: ChangePasswordView()) {
-            ListRowView(leadingContent: .text("Изменить пароль"), trailingContent: .chevron)
-        }
-        .padding(.bottom, 4)
-    }
-
     var appThemeButton: some View {
-        NavigationLink(destination: AppThemeScreen()) {
+        Menu {
+            Picker(
+                "",
+                selection: .init(
+                    get: { defaults.appTheme },
+                    set: {
+                        defaults.setAppTheme($0)
+                        AppThemeService.set($0)
+                    }
+                )
+            ) {
+                ForEach(AppColorTheme.allCases) {
+                    Text(.init($0.rawValue)).tag($0)
+                }
+            }
+        } label: {
             ListRowView(
                 leadingContent: .text("Тема приложения"),
                 trailingContent: .textWithChevron(defaults.appTheme.rawValue)
@@ -139,12 +127,12 @@ private extension SettingsView {
             Picker(
                 "",
                 selection: .init(
-                    get: { defaults.appLanguage.rawValue },
+                    get: { defaults.appLanguage },
                     set: { defaults.setAppLanguage($0) }
                 )
             ) {
-                ForEach(AppLanguage.allCases.map(\.rawValue), id: \.self) {
-                    Text(.init($0))
+                ForEach(AppLanguage.allCases, id: \.self) {
+                    Text(.init($0.rawValue)).tag($0)
                 }
             }
         } label: {
@@ -170,19 +158,6 @@ private extension SettingsView {
                 defaults.triggerLogout()
             }
         }
-    }
-
-    var authorizeView: some View {
-        VStack(spacing: 0) {
-            NavigationLink(destination: LoginView()) {
-                ListRowView(
-                    leadingContent: .text("Авторизация"),
-                    trailingContent: .chevron
-                )
-            }
-            mode.profileSectionFooter
-        }
-        .padding(.bottom, 14)
     }
 
     var feedbackButton: some View {
