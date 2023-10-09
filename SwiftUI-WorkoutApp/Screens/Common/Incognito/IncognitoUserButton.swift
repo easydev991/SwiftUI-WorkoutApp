@@ -3,7 +3,7 @@ import SwiftUI
 
 struct IncognitoUserButton: View {
     @State private var isLinkActive = false
-    let mode: IncognitoUserButton.Mode
+    var mode = IncognitoUserButton.Mode.authorize
 
     var body: some View {
         NavigationLink(mode.title, destination: mode.destination, isActive: $isLinkActive)

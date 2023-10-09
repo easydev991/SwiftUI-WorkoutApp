@@ -53,6 +53,10 @@ public extension MainUserForm {
         case gender = "Пол"
     }
 
+    var genderString: String {
+        (Gender(genderCode) ?? .unspecified).rawValue
+    }
+
     func placeholder(_ element: Placeholder) -> String {
         element.rawValue
     }

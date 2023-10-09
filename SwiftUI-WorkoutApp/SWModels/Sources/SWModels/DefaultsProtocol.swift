@@ -13,7 +13,7 @@ public protocol DefaultsProtocol: AnyObject {
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
     var unreadMessagesCount: Int { get }
-    func setAppLanguage(_ language: String)
+    func setAppLanguage(_ language: AppLanguage)
     func setAppTheme(_ theme: AppColorTheme)
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData

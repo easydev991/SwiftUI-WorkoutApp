@@ -323,7 +323,7 @@
               "zero" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "0 journals"
+                  "value" : ""
                 }
               }
             }
@@ -364,8 +364,8 @@
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 дневников"
+                  "state" : "new",
+                  "value" : ""
                 }
               }
             }
@@ -680,6 +680,12 @@
             "state" : "translated",
             "value" : "Street Workout (boosty)"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Street Workout на boosty"
+          }
         }
       }
     },
@@ -918,6 +924,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Версия"
+          }
+        }
+      }
+    },
+    "Внешний вид" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внешний вид"
           }
         }
       }
@@ -3627,6 +3650,7 @@
       }
     },
     "Тема приложения" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

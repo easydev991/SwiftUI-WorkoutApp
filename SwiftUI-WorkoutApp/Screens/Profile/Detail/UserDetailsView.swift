@@ -12,6 +12,7 @@ struct UserDetailsView: View {
     @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
     @State private var showAlertMessage = false
+    @State private var showLogoutDialog = false
     @State private var showBlacklistConfirmation = false
     @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
@@ -41,7 +42,14 @@ struct UserDetailsView: View {
                 if !isMainUser {
                     communicationSection
                 }
-                socialInfoSection
+                VStack(spacing: 12) {
+                    usesSportsGroundsIfNeeded
+                    addedSportsGroundsIfNeeded
+                    friendsButtonIfNeeded
+                    blacklistButtonIfNeeded
+                    journalsButtonIfNeeded
+                }
+                logoutButtonIfNeeded
             }
             .padding(.horizontal)
         }
@@ -61,7 +69,6 @@ struct UserDetailsView: View {
                 Group {
                     if isMainUser {
                         searchUsersButton
-                        settingsButton
                     } else {
                         blockUserButton
                     }
@@ -158,80 +165,95 @@ private extension UserDetailsView {
         socialActions.isFriendRequestSent = isSent
     }
 
-    var socialInfoSection: some View {
-        VStack(spacing: 12) {
-            if user.usesSportsGrounds > .zero {
-                usesSportsGroundsButton
-            }
-            if !user.addedSportsGrounds.isEmpty {
-                addedSportsGroundsButton
-            }
-            if user.friendsCount > .zero || (isMainUser && friendRequestsCount > .zero) {
-                friendsButton
-            }
-            if !defaults.blacklistedUsers.isEmpty, isMainUser {
-                blacklistButton
-            }
-            if user.journalsCount > .zero, !isMainUser {
-                journalsButton
-            }
-        }
-    }
-
-    var usesSportsGroundsButton: some View {
-        NavigationLink {
-            SportsGroundsListView(for: .usedBy(userID: user.id))
-        } label: {
-            FormRowView(
-                title: "Где тренируется",
-                trailingContent: .textWithChevron(user.usesSportsGroundsCountString)
-            )
-        }
-        .accessibilityIdentifier("usesSportsGroundsButton")
-    }
-
-    var addedSportsGroundsButton: some View {
-        NavigationLink {
-            SportsGroundsListView(for: .added(list: user.addedSportsGrounds))
-        } label: {
-            FormRowView(
-                title: "Добавил площадки",
-                trailingContent: .textWithChevron(user.addedSportsGroundsCountString)
-            )
-        }
-    }
-
-    var friendsButton: some View {
-        NavigationLink(destination: UsersListView(mode: .friends(userID: user.id))) {
-            FormRowView(
-                title: "Друзья",
-                trailingContent: .textWithBadgeAndChevron(
-                    user.friendsCountString,
-                    friendRequestsCount
+    @ViewBuilder
+    var usesSportsGroundsIfNeeded: some View {
+        if user.hasUsedGrounds {
+            NavigationLink {
+                SportsGroundsListView(for: .usedBy(userID: user.id))
+            } label: {
+                FormRowView(
+                    title: "Где тренируется",
+                    trailingContent: .textWithChevron(user.usesSportsGroundsCountString)
                 )
-            )
+            }
+            .accessibilityIdentifier("usesSportsGroundsButton")
         }
     }
 
-    var blacklistButton: some View {
-        NavigationLink(destination: UsersListView(mode: .blacklist)) {
-            FormRowView(
-                title: "Черный список",
-                trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
-            )
+    @ViewBuilder
+    var addedSportsGroundsIfNeeded: some View {
+        if user.hasAddedGrounds {
+            NavigationLink {
+                SportsGroundsListView(for: .added(list: user.addedSportsGrounds))
+            } label: {
+                FormRowView(
+                    title: "Добавил площадки",
+                    trailingContent: .textWithChevron(user.addedSportsGroundsCountString)
+                )
+            }
         }
     }
 
-    var journalsButton: some View {
-        NavigationLink {
-            JournalsListView(userID: user.id)
-                .navigationTitle("Дневники")
-                .navigationBarTitleDisplayMode(.inline)
-        } label: {
-            FormRowView(
-                title: "Дневники",
-                trailingContent: .textWithChevron(user.journalsCountString)
-            )
+    @ViewBuilder
+    var friendsButtonIfNeeded: some View {
+        let friendRequestsCount = defaults.friendRequestsList.count
+        if user.hasFriends || (isMainUser && friendRequestsCount > .zero) {
+            NavigationLink(destination: UsersListView(mode: .friends(userID: user.id))) {
+                FormRowView(
+                    title: "Друзья",
+                    trailingContent: .textWithBadgeAndChevron(
+                        user.friendsCountString,
+                        friendRequestsCount
+                    )
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    var blacklistButtonIfNeeded: some View {
+        if isMainUser, !defaults.blacklistedUsers.isEmpty {
+            NavigationLink(destination: UsersListView(mode: .blacklist)) {
+                FormRowView(
+                    title: "Черный список",
+                    trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    var journalsButtonIfNeeded: some View {
+        if isMainUser || user.hasJournals {
+            NavigationLink {
+                JournalsListView(userID: user.id)
+                    .navigationTitle("Дневники")
+                    .navigationBarTitleDisplayMode(.inline)
+            } label: {
+                FormRowView(
+                    title: "Дневники",
+                    trailingContent: .textWithChevron(user.journalsCountString)
+                )
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var logoutButtonIfNeeded: some View {
+        if isMainUser {
+            Button("Выйти") { showLogoutDialog = true }
+                .foregroundStyle(Color.swSmallElements)
+                .padding(.top, 36)
+                .padding(.bottom, 20)
+                .confirmationDialog(
+                    .init(Constants.Alert.logout),
+                    isPresented: $showLogoutDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button("Выйти", role: .destructive) {
+                        defaults.triggerLogout()
+                    }
+                }
         }
     }
 
@@ -244,7 +266,7 @@ private extension UserDetailsView {
     }
 
     var settingsButton: some View {
-        NavigationLink(destination: ProfileSettingsView(mode: .authorized)) {
+        NavigationLink(destination: SettingsView()) {
             Image(systemName: Icons.Regular.gearshape.rawValue)
         }
     }
@@ -359,10 +381,6 @@ private extension UserDetailsView {
     }
 
     func closeAlert() { alertMessage = "" }
-
-    var friendRequestsCount: Int {
-        defaults.friendRequestsList.count
-    }
 
     var isMainUser: Bool {
         user.id == defaults.mainUserInfo?.userID

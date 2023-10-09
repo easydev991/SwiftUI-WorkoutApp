@@ -200,8 +200,6 @@ private extension SportsGroundsMapView {
                     )
                 }
             }
-        } else {
-            IncognitoNavbarInfoButton()
         }
     }
 

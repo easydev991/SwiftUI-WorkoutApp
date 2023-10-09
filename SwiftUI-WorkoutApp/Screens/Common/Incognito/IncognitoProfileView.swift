@@ -7,15 +7,10 @@ struct IncognitoProfileView: View {
     var body: some View {
         VStack(spacing: 16) {
             authInvitation
-            IncognitoUserButton(mode: .authorize)
+            IncognitoUserButton()
             registrationInfo
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                IncognitoNavbarInfoButton()
-            }
-        }
         .padding()
         .background(Color.swBackground)
     }

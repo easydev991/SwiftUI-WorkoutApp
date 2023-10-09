@@ -12,8 +12,8 @@ public enum Icons {
     public enum Tabbar: String, CaseIterable {
         case events = "person.3"
         case messages = "message"
-        case journals = "list.bullet.circle"
         case profile = "person"
+        case settings = "gearshape"
     }
 
     /// Названия остальных иконок
@@ -38,6 +38,7 @@ public enum Icons {
         case addPerson = "person.crop.circle.badge.plus"
         case deletePerson = "person.crop.circle.badge.minus"
         case signPost = "signpost.right"
+        case key = "key.fill"
         case envelope
         case globe = "globe.europe.africa"
         case person = "person.fill"

@@ -10,9 +10,9 @@ public struct UserModel: Identifiable, Hashable {
     public let age: Int
     public let countryID: Int
     public let cityID: Int
-    public let usesSportsGrounds: Int
+    private let usesSportsGrounds: Int
     public let addedSportsGrounds: [SportsGround]
-    public let friendsCount, journalsCount: Int
+    private let friendsCount, journalsCount: Int
 
     public init(_ user: UserResponse?) {
         if let user {
@@ -90,6 +90,15 @@ public extension UserModel {
         )
     }
 
+    var hasJournals: Bool { journalsCount > 0 }
+    
+    var hasFriends: Bool { friendsCount > 0 }
+    
+    var hasAddedGrounds: Bool { !addedSportsGrounds.isEmpty }
+    
+    /// Тренируется на каких-нибудь площадках
+    var hasUsedGrounds: Bool { usesSportsGrounds > 0 }
+    
     var journalsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("journalsCount", comment: ""),

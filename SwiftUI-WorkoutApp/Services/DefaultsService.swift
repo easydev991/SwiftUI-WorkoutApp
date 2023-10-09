@@ -87,8 +87,8 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         }
     }
 
-    func setAppLanguage(_ language: String) {
-        appLanguage = .init(rawValue: language) ?? .rus
+    func setAppLanguage(_ language: AppLanguage) {
+        appLanguage = language
     }
 
     func setAppTheme(_ theme: AppColorTheme) {

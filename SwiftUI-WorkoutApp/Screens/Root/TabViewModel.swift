@@ -9,7 +9,7 @@ final class TabViewModel: ObservableObject {
 
 extension TabViewModel {
     enum Tab: Int, Hashable, CaseIterable {
-        case map = 0, events, messages, journal, profile
+        case map = 0, events, messages, profile, settings
 
         private var title: LocalizedStringKey {
             switch self {
@@ -19,10 +19,10 @@ extension TabViewModel {
                 "Мероприятия"
             case .messages:
                 "Сообщения"
-            case .journal:
-                "Дневники"
             case .profile:
                 "Профиль"
+            case .settings:
+                "Настройки"
             }
         }
 
@@ -35,10 +35,10 @@ extension TabViewModel {
                 Image(systemName: Icons.Tabbar.events.rawValue)
             case .messages:
                 Image(systemName: Icons.Tabbar.messages.rawValue)
-            case .journal:
-                Image(systemName: Icons.Tabbar.journals.rawValue)
             case .profile:
                 Image(systemName: Icons.Tabbar.profile.rawValue)
+            case .settings:
+                Image(systemName: Icons.Tabbar.settings.rawValue)
             }
         }
 
@@ -59,10 +59,10 @@ extension TabViewModel {
                 EventsListView()
             case .messages:
                 DialogsScreen()
-            case .journal:
-                JournalsScreen()
             case .profile:
                 ProfileScreen()
+            case .settings:
+                SettingsView()
             }
         }
     }

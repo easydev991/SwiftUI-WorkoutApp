@@ -9,8 +9,7 @@
 /* Begin PBXBuildFile section */
 		670431512964544D0090CAC3 /* FeedbackSender in Frameworks */ = {isa = PBXBuildFile; productRef = 670431502964544D0090CAC3 /* FeedbackSender */; };
 		6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */; };
-		670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */; };
-		67138D7D2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */; };
+		670CA19E280E8F09003914A3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* SettingsView.swift */; };
 		67138D87297311BD00BBF450 /* WorkoutAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */; };
 		67138D90297323AE00BBF450 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D8F297323AE00BBF450 /* SnapshotHelper.swift */; };
 		67138D922974851F00BBF450 /* XCUIElement+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D912974851F00BBF450 /* XCUIElement+.swift */; };
@@ -49,7 +48,6 @@
 		6798AA4C280AF1C200DB76F1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */; };
 		6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA52280AF43900DB76F1 /* EventsListView.swift */; };
 		6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA54280AF46300DB76F1 /* DialogsScreen.swift */; };
-		6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */; };
 		6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */; };
 		6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */; };
 		6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */; };
@@ -63,7 +61,6 @@
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
 		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
-		67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371702A63FF6F000FF143 /* AppThemeScreen.swift */; };
 		67B371732A640079000FF143 /* AppThemeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371722A640079000FF143 /* AppThemeService.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
 		67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */; };
@@ -100,8 +97,7 @@
 
 /* Begin PBXFileReference section */
 		6705E7ED283B703400DABCC8 /* JournalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalSettingsView.swift; sourceTree = "<group>"; };
-		670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
-		67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoNavbarInfoButton.swift; sourceTree = "<group>"; };
+		670CA19D280E8F09003914A3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutAppUITests.swift; sourceTree = "<group>"; };
 		67138D8F297323AE00BBF450 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
@@ -144,7 +140,6 @@
 		6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6798AA52280AF43900DB76F1 /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
 		6798AA54280AF46300DB76F1 /* DialogsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogsScreen.swift; sourceTree = "<group>"; };
-		6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsScreen.swift; sourceTree = "<group>"; };
 		6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapView.swift; sourceTree = "<group>"; };
 		6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoProfileView.swift; sourceTree = "<group>"; };
@@ -158,7 +153,6 @@
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
-		67B371702A63FF6F000FF143 /* AppThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeScreen.swift; sourceTree = "<group>"; };
 		67B371722A640079000FF143 /* AppThemeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeService.swift; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapViewModel.swift; sourceTree = "<group>"; };
@@ -240,7 +234,6 @@
 		67419AD4282E8E6F004F5339 /* Journals */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA56280AF48C00DB76F1 /* JournalsScreen.swift */,
 				6762775A283A87AD009C203F /* JournalCell.swift */,
 				6762774E283A3A3B009C203F /* JournalsList */,
 				67627753283A4C2F009C203F /* EntriesList */,
@@ -279,10 +272,7 @@
 		67419AD8282E8E9E004F5339 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				6747575528113419002F0A24 /* ChangePasswordView.swift */,
-				67B371702A63FF6F000FF143 /* AppThemeScreen.swift */,
-				6770A8352834D7B50006B672 /* EditAccount */,
-				670CA19D280E8F09003914A3 /* ProfileSettingsView.swift */,
+				670CA19D280E8F09003914A3 /* SettingsView.swift */,
 				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
 			);
 			path = Settings;
@@ -403,6 +393,7 @@
 			isa = PBXGroup;
 			children = (
 				6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */,
+				6747575528113419002F0A24 /* ChangePasswordView.swift */,
 			);
 			path = EditAccount;
 			sourceTree = "<group>";
@@ -471,8 +462,8 @@
 				67475757281285E5002F0A24 /* SportsGrounds */,
 				671D7DED28210D820068E728 /* Events */,
 				67419AD5282E8E7C004F5339 /* Messages */,
-				67419AD4282E8E6F004F5339 /* Journals */,
 				6798AA69280B23BF00DB76F1 /* Profile */,
+				67419AD8282E8E9E004F5339 /* Settings */,
 				6798AA6A280B277600DB76F1 /* Common */,
 			);
 			path = Screens;
@@ -505,11 +496,11 @@
 		6798AA69280B23BF00DB76F1 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				67419AD4282E8E6F004F5339 /* Journals */,
 				6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */,
-				6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */,
+				6770A8352834D7B50006B672 /* EditAccount */,
 				67D9167A2838D2150098D3CB /* Detail */,
 				67419AD9282E8EBA004F5339 /* FriendRequests */,
-				67419AD8282E8E9E004F5339 /* Settings */,
 				67419AD7282E8E95004F5339 /* SearchUsers */,
 			);
 			path = Profile;
@@ -518,7 +509,7 @@
 		6798AA6A280B277600DB76F1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				679F3B0A2969DF3E00BB3590 /* IncognitoButtons */,
+				679F3B0A2969DF3E00BB3590 /* Incognito */,
 				679F3AF8296802BA00BB3590 /* SendMessage */,
 				679F3AF72968029900BB3590 /* SportsGroundLocation */,
 				67C87FD4284388EF00D6377D /* PhotoSection */,
@@ -548,13 +539,13 @@
 			path = SendMessage;
 			sourceTree = "<group>";
 		};
-		679F3B0A2969DF3E00BB3590 /* IncognitoButtons */ = {
+		679F3B0A2969DF3E00BB3590 /* Incognito */ = {
 			isa = PBXGroup;
 			children = (
+				6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */,
 				679F3B062969D4E200BB3590 /* IncognitoUserButton.swift */,
-				67138D7C2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift */,
 			);
-			path = IncognitoButtons;
+			path = Incognito;
 			sourceTree = "<group>";
 		};
 		67A9C90628427DDD005D6A36 /* Filter */ = {
@@ -805,7 +796,6 @@
 				675EC653281445E500C2E229 /* MapViewUI.swift in Sources */,
 				6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */,
-				67138D7D2972E86C00BBF450 /* IncognitoNavbarInfoButton.swift in Sources */,
 				67B78712281D654C008B104F /* DefaultsService.swift in Sources */,
 				67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
@@ -818,17 +808,15 @@
 				675E5618297D21D400B4981A /* Array+.swift in Sources */,
 				67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */,
 				6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */,
-				67B371712A63FF6F000FF143 /* AppThemeScreen.swift in Sources */,
 				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
 				67627750283A3A54009C203F /* JournalsListView.swift in Sources */,
 				67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
 				6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */,
-				6798AA57280AF48C00DB76F1 /* JournalsScreen.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
 				67D916812838E2460098D3CB /* DialogListView.swift in Sources */,
 				6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */,
-				670CA19E280E8F09003914A3 /* ProfileSettingsView.swift in Sources */,
+				670CA19E280E8F09003914A3 /* SettingsView.swift in Sources */,
 				6762775B283A87AD009C203F /* JournalCell.swift in Sources */,
 				6798AA84280C0F7D00DB76F1 /* EditAccountScreen.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
@@ -1078,7 +1066,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1114,7 +1102,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
