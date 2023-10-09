@@ -7,7 +7,7 @@ devices([
 ])
 
 # A list of languages which should be used. See https://docs.fastlane.tools/actions/snapshot/#available-language-codes
-languages(["ru"])
+languages(["ru", "en-US"])
 
 # By default, the latest version should be used automatically. If you want to change it, do it here. 
 # ios_version("15")
