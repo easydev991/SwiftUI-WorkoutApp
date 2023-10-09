@@ -89,8 +89,6 @@ private extension EditAccountScreen {
         }
     }
 
-    var currentGender: Gender { .init(userForm.genderCode) ?? .unspecified }
-
     var genderPicker: some View {
         Menu {
             Picker("", selection: $userForm.genderCode) {
@@ -104,7 +102,7 @@ private extension EditAccountScreen {
                     .personQuestion,
                     userForm.placeholder(.gender)
                 ),
-                trailingContent: .text(.init(currentGender.rawValue))
+                trailingContent: .textWithChevron(.init(userForm.genderString))
             )
         }
     }
