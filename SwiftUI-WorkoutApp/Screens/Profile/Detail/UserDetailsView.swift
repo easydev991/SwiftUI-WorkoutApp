@@ -171,7 +171,7 @@ private extension UserDetailsView {
             if !defaults.blacklistedUsers.isEmpty, isMainUser {
                 blacklistButton
             }
-            if user.journalsCount > .zero, !isMainUser {
+            if user.journalsCount > .zero {
                 journalsButton
             }
         }
