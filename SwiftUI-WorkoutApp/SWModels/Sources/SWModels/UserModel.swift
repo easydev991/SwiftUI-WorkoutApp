@@ -91,14 +91,14 @@ public extension UserModel {
     }
 
     var hasJournals: Bool { journalsCount > 0 }
-    
+
     var hasFriends: Bool { friendsCount > 0 }
-    
+
     var hasAddedGrounds: Bool { !addedSportsGrounds.isEmpty }
-    
+
     /// Тренируется на каких-нибудь площадках
     var hasUsedGrounds: Bool { usesSportsGrounds > 0 }
-    
+
     var journalsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("journalsCount", comment: ""),
