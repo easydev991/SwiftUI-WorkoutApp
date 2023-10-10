@@ -60,9 +60,9 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
 ### Скриншоты  
 1. Генерируем скриншоты при помощи `Fastlane` ([документация](https://docs.fastlane.tools/getting-started/ios/setup/))
 2. Настройки для генерации скриншотов находятся в файле [Snapfile](./fastlane/Snapfile) ([документация](https://docs.fastlane.tools/actions/snapshot/))
-3. Генерация скриншотов выполняется командой в папке с проектом 
+3. Генерация скриншотов выполняется командой в папке с проектом (команда может меняться в зависимости от способа установки `Ruby`/`fastlane`)
 ```shell
-fastlane screenshots
+rbenv exec fastlane snapshot
 ```
 4. Готовые скриншоты сохраняются в папке [screenshots/ru](./screenshots/ru)
 
