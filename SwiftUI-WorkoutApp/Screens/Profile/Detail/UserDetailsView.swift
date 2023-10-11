@@ -237,7 +237,7 @@ private extension UserDetailsView {
             }
         }
     }
-    
+
     @ViewBuilder
     var logoutButtonIfNeeded: some View {
         if isMainUser {
