@@ -158,7 +158,10 @@ public struct Photo: Codable, Identifiable, Equatable {
     public let stringURL: String?
 
     public var imageURL: URL? {
-        .init(string: stringURL.valueOrEmpty)
+        guard let stringURL,
+              let queryAllowedString = stringURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else { return nil }
+        return .init(string: queryAllowedString)
     }
 
     public enum CodingKeys: String, CodingKey {
