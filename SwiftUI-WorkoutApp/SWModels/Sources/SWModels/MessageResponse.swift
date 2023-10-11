@@ -16,7 +16,7 @@ public struct MessageResponse: Codable, Identifiable, Hashable {
 
 public extension MessageResponse {
     var imageURL: URL? {
-        .init(string: imageStringURL.valueOrEmpty)
+        imageStringURL.queryAllowedURL
     }
 
     var formattedMessage: String {

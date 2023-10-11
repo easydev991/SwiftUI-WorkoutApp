@@ -54,7 +54,7 @@ public struct JournalResponse: Codable, Identifiable, Equatable {
 
 public extension JournalResponse {
     var imageURL: URL? {
-        .init(string: lastMessageImage.valueOrEmpty)
+        lastMessageImage.queryAllowedURL
     }
 
     var title: String {

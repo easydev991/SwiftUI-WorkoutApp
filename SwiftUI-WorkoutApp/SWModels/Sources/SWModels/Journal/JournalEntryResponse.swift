@@ -40,7 +40,7 @@ public struct JournalEntryResponse: Codable, Identifiable {
 
 public extension JournalEntryResponse {
     var imageURL: URL? {
-        .init(string: authorImage.valueOrEmpty)
+        authorImage.queryAllowedURL
     }
 
     var formattedMessage: String {

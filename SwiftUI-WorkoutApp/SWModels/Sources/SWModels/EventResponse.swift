@@ -173,7 +173,7 @@ public extension EventResponse {
     }
 
     var previewImageURL: URL? {
-        .init(string: previewImageStringURL.valueOrEmpty)
+        previewImageStringURL.queryAllowedURL
     }
 
     var eventDateString: String {
