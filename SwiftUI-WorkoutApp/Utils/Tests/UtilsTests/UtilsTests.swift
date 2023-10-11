@@ -40,7 +40,7 @@ final class UtilsTests: XCTestCase {
         let newString = string.capitalizingFirstLetter
         XCTAssertEqual(newString, "Test string")
     }
-    
+
     func testQueryAllowedURL() {
         let urlString: String? = "https://workout.su/uploads/userfiles/св3.jpg"
         let resultURL = urlString.queryAllowedURL

@@ -2,6 +2,7 @@ import Combine
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
+import SWFileManager
 import SWModels
 import SWNetworkClient
 
@@ -25,6 +26,8 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var userCityID = Int.zero
     /// Дефолтный список площадок, загруженный из `json`-файла
     private var defaultList = [SportsGround]()
+    /// Хранилище файла с площадками
+    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
@@ -231,14 +234,19 @@ private extension SportsGroundsMapViewModel {
     /// Заполняем дефолтный список площадок контентом из `json`-файла
     func fillDefaultList() {
         do {
-            let oldGrounds = try Bundle.main.decodeJson(
-                [SportsGround].self,
-                fileName: "oldSportsGrounds",
-                extension: "json"
-            )
-            defaultList = oldGrounds
+            let savedGrounds: [SportsGround]
+            if swStorage.documentExists {
+                savedGrounds = try swStorage.get()
+            } else {
+                savedGrounds = try Bundle.main.decodeJson(
+                    [SportsGround].self,
+                    fileName: "oldSportsGrounds",
+                    extension: "json"
+                )
+            }
+            defaultList = savedGrounds
         } catch {
-            errorMessage = ErrorFilter.message(from: error)
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -250,6 +258,11 @@ private extension SportsGroundsMapViewModel {
             } else {
                 defaultList.append(ground)
             }
+        }
+        do {
+            try swStorage.save(defaultList)
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 
