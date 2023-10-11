@@ -66,7 +66,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     public var previewImageURL: URL? {
-        .init(string: preview.valueOrEmpty)
+        preview.queryAllowedURL
     }
 
     public enum CodingKeys: String, CodingKey {
@@ -158,7 +158,7 @@ public struct Photo: Codable, Identifiable, Equatable {
     public let stringURL: String?
 
     public var imageURL: URL? {
-        .init(string: stringURL.valueOrEmpty)
+        stringURL.queryAllowedURL
     }
 
     public enum CodingKeys: String, CodingKey {

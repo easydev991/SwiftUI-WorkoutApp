@@ -46,7 +46,7 @@ public struct DialogResponse: Codable, Identifiable {
 
 public extension DialogResponse {
     var anotherUserImageURL: URL? {
-        .init(string: anotherUserImageStringURL.valueOrEmpty)
+        anotherUserImageStringURL.queryAllowedURL
     }
 
     var lastMessageFormatted: String {

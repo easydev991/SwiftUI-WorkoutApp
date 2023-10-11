@@ -73,7 +73,7 @@ public extension UserResponse {
     }
 
     var avatarURL: URL? {
-        .init(string: imageStringURL.valueOrEmpty)
+        imageStringURL.queryAllowedURL
     }
 
     var gender: String {

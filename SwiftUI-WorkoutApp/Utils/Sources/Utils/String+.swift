@@ -1,3 +1,5 @@
+import Foundation
+
 public extension String {
     @available(*, deprecated, message: "Нужно корректно парсить HTML")
     var withoutHTML: String {
@@ -17,5 +19,14 @@ public extension String {
     /// Без пробелов
     var withoutSpaces: Self {
         replacingOccurrences(of: " ", with: "")
+    }
+}
+
+public extension String? {
+    /// `URL` без кириллицы
+    var queryAllowedURL: URL? {
+        guard let percentEncoded = self?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else { return nil }
+        return .init(string: percentEncoded)
     }
 }
