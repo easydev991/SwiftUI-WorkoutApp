@@ -49,6 +49,20 @@ public enum DateFormatterService {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.date(from: string ?? "") ?? .now
     }
+
+    /// Считает количество дней между двумя датами
+    /// - Parameters:
+    ///   - date1: Дата 1
+    ///   - date2: Дата 2
+    /// - Returns: Количество дней между датами
+    public static func days(from serverStringDate1: String, to date2: Date) -> Int {
+        let date1 = Self.dateFromString(serverStringDate1, format: .serverDateTimeSec)
+        return Self.days(from: date1, to: date2)
+    }
+
+    static func days(from date1: Date, to date2: Date) -> Int {
+        Calendar.current.dateComponents([.day], from: date1, to: date2).day ?? 0
+    }
 }
 
 public extension DateFormatterService {
