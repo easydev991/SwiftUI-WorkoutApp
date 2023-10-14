@@ -59,20 +59,25 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading || !defaultList.isEmpty, !refresh { return }
         if defaultList.isEmpty {
             fillDefaultList()
-            applyFilter(with: defaults.mainUserInfo)
-            return
+            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
+            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
+                await makeGrounds(refresh: true, with: defaults)
+            } else {
+                applyFilter(with: defaults.mainUserInfo)
+            }
+        } else {
+            isLoading.toggle()
+            do {
+                let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+                    from: defaults.lastGroundsUpdateDateString
+                )
+                updateDefaultList(with: updatedGrounds, defaults: defaults)
+                applyFilter(with: defaults.mainUserInfo)
+            } catch {
+                errorMessage = ErrorFilter.message(from: error)
+            }
+            isLoading.toggle()
         }
-        isLoading.toggle()
-        do {
-            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: defaults.lastGroundsUpdateDateString
-            )
-            updateDefaultList(with: updatedGrounds, defaults: defaults)
-            applyFilter(with: defaults.mainUserInfo)
-        } catch {
-            errorMessage = ErrorFilter.message(from: error)
-        }
-        isLoading.toggle()
     }
 
     /// Проверяем недавние обновления списка площадок
