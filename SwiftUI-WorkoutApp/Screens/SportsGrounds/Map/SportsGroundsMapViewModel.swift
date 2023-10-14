@@ -8,11 +8,6 @@ import SWNetworkClient
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
-    /// Дата предыдущего ручного обновления справочника площадок
-    ///
-    /// - При обновлении справочника вручную необходимо обновить тут дату
-    /// - Неудобно, зато спасаемся от постоянных ошибок 500 на сервере
-    private let previousManualUpdateDateString = "2023-01-12T00:00:00"
     /// Менеджер локации
     private let manager = CLLocationManager()
     private let urlOpener: URLOpener = URLOpenerImp()
@@ -70,9 +65,9 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         isLoading.toggle()
         do {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: previousManualUpdateDateString
+                from: defaults.lastGroundsUpdateDateString
             )
-            updateDefaultList(with: updatedGrounds)
+            updateDefaultList(with: updatedGrounds, defaults: defaults)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
             errorMessage = ErrorFilter.message(from: error)
@@ -90,7 +85,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
-            updateDefaultList(with: updatedGrounds)
+            updateDefaultList(with: updatedGrounds, defaults: defaults)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
             errorMessage = ErrorFilter.message(from: error)
@@ -251,7 +246,7 @@ private extension SportsGroundsMapViewModel {
     }
 
     /// Обновляем дефолтный список площадок
-    func updateDefaultList(with updatedList: [SportsGround]) {
+    func updateDefaultList(with updatedList: [SportsGround], defaults: DefaultsProtocol) {
         updatedList.forEach { ground in
             if let index = defaultList.firstIndex(where: { $0.id == ground.id }) {
                 defaultList[index] = ground
@@ -261,6 +256,7 @@ private extension SportsGroundsMapViewModel {
         }
         do {
             try swStorage.save(defaultList)
+            defaults.didUpdateGrounds()
         } catch {
             errorMessage = error.localizedDescription
         }
