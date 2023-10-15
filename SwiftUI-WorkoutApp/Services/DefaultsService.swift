@@ -1,3 +1,4 @@
+import DateFormatterService
 import SwiftUI
 import SWModels
 
@@ -43,6 +44,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
     private(set) var unreadMessagesCount = 0
+
+    @AppStorage(Key.lastGroundsUpdateDateString.rawValue)
+    private(set) var lastGroundsUpdateDateString = "2023-01-12T00:00:00"
 
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
@@ -149,6 +153,11 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         unreadMessagesCount = count
     }
 
+    func didUpdateGrounds() {
+        // Как и в методе `checkForRecentUpdates`, ставим дату с запасом в 5 минут
+        lastGroundsUpdateDateString = DateFormatterService.fiveMinutesAgoDateString
+    }
+
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
@@ -168,6 +177,7 @@ private extension DefaultsService {
     enum Key: String {
         case isUserAuthorized, hasSportsGrounds, appTheme, appLanguage,
              authData, userInfo, friends, friendRequests, blacklist,
-             hasJournals, needUpdateUser, hasFriends, unreadMessagesCount
+             hasJournals, needUpdateUser, hasFriends, unreadMessagesCount,
+             lastGroundsUpdateDateString
     }
 }

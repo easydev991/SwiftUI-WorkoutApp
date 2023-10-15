@@ -2,16 +2,12 @@ import Combine
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
+import SWFileManager
 import SWModels
 import SWNetworkClient
 
 @MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
-    /// Дата предыдущего ручного обновления справочника площадок
-    ///
-    /// - При обновлении справочника вручную необходимо обновить тут дату
-    /// - Неудобно, зато спасаемся от постоянных ошибок 500 на сервере
-    private let previousManualUpdateDateString = "2023-01-12T00:00:00"
     /// Менеджер локации
     private let manager = CLLocationManager()
     private let urlOpener: URLOpener = URLOpenerImp()
@@ -25,6 +21,8 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var userCityID = Int.zero
     /// Дефолтный список площадок, загруженный из `json`-файла
     private var defaultList = [SportsGround]()
+    /// Хранилище файла с площадками
+    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
@@ -61,20 +59,25 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         if isLoading || !defaultList.isEmpty, !refresh { return }
         if defaultList.isEmpty {
             fillDefaultList()
-            applyFilter(with: defaults.mainUserInfo)
-            return
+            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
+            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
+                await makeGrounds(refresh: true, with: defaults)
+            } else {
+                applyFilter(with: defaults.mainUserInfo)
+            }
+        } else {
+            isLoading.toggle()
+            do {
+                let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+                    from: defaults.lastGroundsUpdateDateString
+                )
+                updateDefaultList(with: updatedGrounds, defaults: defaults)
+                applyFilter(with: defaults.mainUserInfo)
+            } catch {
+                errorMessage = ErrorFilter.message(from: error)
+            }
+            isLoading.toggle()
         }
-        isLoading.toggle()
-        do {
-            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: previousManualUpdateDateString
-            )
-            updateDefaultList(with: updatedGrounds)
-            applyFilter(with: defaults.mainUserInfo)
-        } catch {
-            errorMessage = ErrorFilter.message(from: error)
-        }
-        isLoading.toggle()
     }
 
     /// Проверяем недавние обновления списка площадок
@@ -87,7 +90,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
-            updateDefaultList(with: updatedGrounds)
+            updateDefaultList(with: updatedGrounds, defaults: defaults)
             applyFilter(with: defaults.mainUserInfo)
         } catch {
             errorMessage = ErrorFilter.message(from: error)
@@ -231,25 +234,36 @@ private extension SportsGroundsMapViewModel {
     /// Заполняем дефолтный список площадок контентом из `json`-файла
     func fillDefaultList() {
         do {
-            let oldGrounds = try Bundle.main.decodeJson(
-                [SportsGround].self,
-                fileName: "oldSportsGrounds",
-                extension: "json"
-            )
-            defaultList = oldGrounds
+            let savedGrounds: [SportsGround]
+            if swStorage.documentExists {
+                savedGrounds = try swStorage.get()
+            } else {
+                savedGrounds = try Bundle.main.decodeJson(
+                    [SportsGround].self,
+                    fileName: "oldSportsGrounds",
+                    extension: "json"
+                )
+            }
+            defaultList = savedGrounds
         } catch {
-            errorMessage = ErrorFilter.message(from: error)
+            errorMessage = error.localizedDescription
         }
     }
 
     /// Обновляем дефолтный список площадок
-    func updateDefaultList(with updatedList: [SportsGround]) {
+    func updateDefaultList(with updatedList: [SportsGround], defaults: DefaultsProtocol) {
         updatedList.forEach { ground in
             if let index = defaultList.firstIndex(where: { $0.id == ground.id }) {
                 defaultList[index] = ground
             } else {
                 defaultList.append(ground)
             }
+        }
+        do {
+            try swStorage.save(defaultList)
+            defaults.didUpdateGrounds()
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

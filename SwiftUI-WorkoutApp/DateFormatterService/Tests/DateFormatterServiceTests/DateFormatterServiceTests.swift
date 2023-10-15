@@ -29,4 +29,12 @@ final class DateFormatterServiceTests: XCTestCase {
         let expectedDate = Date(timeIntervalSinceReferenceDate: -264744000.0)
         XCTAssertEqual(formattedResult, expectedDate)
     }
+
+    func testDays() {
+        let firstDateString = "2023-01-12T00:00:00"
+        let secondDateComponents = DateComponents(year: 2023, month: 10, day: 14)
+        let secondDate = Calendar.current.date(from: secondDateComponents)!
+        let daysBetween = DateFormatterService.days(from: firstDateString, to: secondDate)
+        XCTAssertEqual(daysBetween, 275)
+    }
 }
