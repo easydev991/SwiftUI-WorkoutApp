@@ -65,12 +65,10 @@ private extension EventsListView {
         } label: {
             Image(systemName: Icons.Regular.refresh.rawValue)
         }
-        .opacity(refreshButtonOpacity)
+        .opacity(
+            showEmptyView && !DeviceOSVersionChecker.iOS16Available ? 1 : 0
+        )
         .disabled(isLoading)
-    }
-
-    var refreshButtonOpacity: CGFloat {
-        showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
     }
 
     var segmentedControl: some View {
