@@ -77,7 +77,7 @@ struct PickedImagesGrid: View {
             ImagePicker(
                 pickedImages: $images,
                 selectionLimit: selectionLimit,
-                compressionQuality: .zero
+                compressionQuality: 0
             )
         }
     }

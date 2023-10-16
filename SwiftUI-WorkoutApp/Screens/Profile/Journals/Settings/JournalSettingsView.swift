@@ -28,7 +28,7 @@ struct JournalSettingsView: View {
     }
 
     var body: some View {
-        ContentInSheet(title: "Настройки дневника", spacing: .zero) {
+        ContentInSheet(title: "Настройки дневника", spacing: 0) {
             VStack(spacing: 22) {
                 journalTitleTextField
                 visibilitySettings

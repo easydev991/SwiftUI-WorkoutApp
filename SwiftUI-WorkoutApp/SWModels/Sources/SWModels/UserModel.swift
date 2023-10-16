@@ -38,13 +38,13 @@ public struct UserModel: Identifiable, Hashable {
             imageURL: dialog.anotherUserImageURL,
             name: dialog.anotherUserName.valueOrEmpty,
             gender: "",
-            age: .zero,
-            countryID: .zero,
-            cityID: .zero,
-            usesSportsGrounds: .zero,
+            age: 0,
+            countryID: 0,
+            cityID: 0,
+            usesSportsGrounds: 0,
             addedSportsGrounds: [],
-            friendsCount: .zero,
-            journalsCount: .zero
+            friendsCount: 0,
+            journalsCount: 0
         )
     }
 
@@ -134,17 +134,17 @@ public extension UserModel {
 
     static var emptyValue: UserModel {
         .init(
-            id: .zero,
+            id: 0,
             imageURL: nil,
             name: "",
             gender: "",
-            age: .zero,
-            countryID: .zero,
-            cityID: .zero,
-            usesSportsGrounds: .zero,
+            age: 0,
+            countryID: 0,
+            cityID: 0,
+            usesSportsGrounds: 0,
             addedSportsGrounds: [],
-            friendsCount: .zero,
-            journalsCount: .zero
+            friendsCount: 0,
+            journalsCount: 0
         )
     }
 }

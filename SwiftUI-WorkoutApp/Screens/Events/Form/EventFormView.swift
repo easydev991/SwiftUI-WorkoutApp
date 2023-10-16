@@ -128,7 +128,7 @@ private extension EventFormView {
             }
         }
         .sheet(isPresented: $showGroundPicker) {
-            ContentInSheet(title: "Выбери площадку", spacing: .zero) {
+            ContentInSheet(title: "Выбери площадку", spacing: 0) {
                 SportsGroundsListView(
                     // `canShowGroundPicker` проверяет на существование `userID`
                     // поэтому тут смело делаем force unwrap

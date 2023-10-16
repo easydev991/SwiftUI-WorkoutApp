@@ -2,6 +2,9 @@ import DesignSystem
 import NetworkStatus
 import SwiftUI
 import SWModels
+import SWFileManager
+import DateFormatterService
+import SWNetworkClient
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
@@ -9,18 +12,31 @@ struct SportsGroundsMapView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var presentation = Presentation.map
+    @State private var isLoading = false
+    @State private var needUpdateAnnotations = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showFilters = false
     @State private var showDetailsView = false
     @State private var showGroundCreationSheet = false
+    @State private var selectedGround: SportsGround?
+    @State private var filter = SportsGroundFilterView.Model()
+    @State private var allSportsGrounds = [SportsGround]()
+    private var filteredGrounds: [SportsGround] {
+        allSportsGrounds.filter { ground in
+            filter.size.map(\.code).contains(ground.sizeID)
+            && filter.grade.map(\.code).contains(ground.typeID)
+        }
+    }
+    /// Хранилище файла с площадками
+    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
 
     var body: some View {
         NavigationView {
             VStack {
                 segmentedControl
                 groundsContent
-                    .loadingOverlay(if: viewModel.isLoading)
+                    .loadingOverlay(if: isLoading)
             }
             .background(Color.swBackground)
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
@@ -38,16 +54,20 @@ struct SportsGroundsMapView: View {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Group {
                         filterButton
-                        refreshButton
+                        Button {
+                            Task { await askForGrounds(refresh: true) }
+                        } label: {
+                            Image(systemName: Icons.Regular.refresh.rawValue)
+                        }
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(isLoading)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(viewModel.sportsGrounds.count))")
-            .navigationBarTitleDisplayMode(navigationTitleDisplayMode)
+            .navigationTitle("Площадки (\(filteredGrounds.count))")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
     }
@@ -71,13 +91,7 @@ private extension SportsGroundsMapView {
             )
         }
         .sheet(isPresented: $showFilters) {
-            SportsGroundFilterView(filter: $viewModel.filter)
-        }
-    }
-
-    var refreshButton: some View {
-        Button(action: refreshAction) {
-            Image(systemName: Icons.Regular.refresh.rawValue)
+            SportsGroundFilterView(filter: $filter)
         }
     }
 
@@ -98,7 +112,7 @@ private extension SportsGroundsMapView {
         case .list:
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(viewModel.sportsGrounds) { ground in
+                    ForEach(filteredGrounds) { ground in
                         NavigationLink {
                             SportsGroundDetailView(
                                 ground: ground,
@@ -122,10 +136,13 @@ private extension SportsGroundsMapView {
                 "SportsGroundsMapView",
                 viewModel.region,
                 viewModel.ignoreUserLocation,
-                viewModel.sportsGrounds,
-                $viewModel.needUpdateAnnotations,
+                filteredGrounds,
+                $needUpdateAnnotations,
                 $viewModel.needUpdateRegion,
-                openDetailsClbk: openDetailsView
+                openDetailsClbk: { ground in
+                    selectedGround = ground
+                    showDetailsView.toggle()
+                }
             )
             .opacity(viewModel.shouldHideMap ? 0 : 1)
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
@@ -135,48 +152,87 @@ private extension SportsGroundsMapView {
                         onDeletion: updateDeleted
                     )
                 } label: { EmptyView() }
-                locationSettingsReminder
+                LocationSettingReminderView(
+                    message: viewModel.locationErrorMessage,
+                    isHidden: !viewModel.ignoreUserLocation
+                )
             }
         }
     }
 
-    var navigationTitleDisplayMode: NavigationBarItem.TitleDisplayMode {
-        switch presentation {
-        case .list: .inline
-        case .map: viewModel.shouldHideMap ? .large : .inline
-        }
-    }
-
-    var locationSettingsReminder: some View {
-        VStack(spacing: 12) {
-            Text(.init(viewModel.locationErrorMessage))
-                .foregroundColor(.swMainText)
-                .frame(maxWidth: .infinity)
-                .multilineTextAlignment(.center)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 30)
-                .background {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .foregroundColor(.swBackground)
-                        .withShadow()
-                }
-            Button("Открыть настройки") {
-                viewModel.openAppSettings()
-            }
-            .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        }
-        .padding(.horizontal)
-        .padding(.bottom, 32)
-        .opacity(viewModel.ignoreUserLocation ? 1 : 0)
-        .animation(.easeInOut, value: viewModel.ignoreUserLocation)
-    }
-
+    /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
-        await viewModel.makeGrounds(refresh: refresh, with: defaults)
+        if isLoading || allSportsGrounds.isEmpty, !refresh { return }
+        guard !allSportsGrounds.isEmpty else {
+            // Заполняем дефолтный список площадок контентом из `json`-файла
+            do {
+                let savedGrounds: [SportsGround]
+                if swStorage.documentExists {
+                    savedGrounds = try swStorage.get()
+                } else {
+                    savedGrounds = try Bundle.main.decodeJson(
+                        [SportsGround].self,
+                        fileName: "oldSportsGrounds",
+                        extension: "json"
+                    )
+                }
+                allSportsGrounds = savedGrounds
+            } catch {
+                setupErrorAlert(with: error.localizedDescription)
+            }
+            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
+            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
+                await askForGrounds(refresh: true)
+            } else {
+                needUpdateAnnotations = true
+            }
+            return
+        }
+        isLoading = true
+        do {
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+                from: defaults.lastGroundsUpdateDateString
+            )
+            // Обновляем дефолтный список площадок
+            updateDefaultList(with: updatedGrounds)
+            needUpdateAnnotations = true
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
     }
-
-    func refreshAction() {
-        Task { await askForGrounds(refresh: true) }
+    
+    /// Проверяем недавние обновления списка площадок
+    ///
+    /// Запрашиваем обновление за прошедшие 5 минут
+    func checkForRecentUpdates() async {
+        isLoading = true
+        do {
+            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+                from: DateFormatterService.fiveMinutesAgoDateString
+            )
+            updateDefaultList(with: updatedGrounds)
+            needUpdateAnnotations = true
+        } catch {
+            setupErrorAlert(with: ErrorFilter.message(from: error))
+        }
+        isLoading = false
+    }
+    
+    func updateDefaultList(with updatedGrounds: [SportsGround]) {
+        updatedGrounds.forEach { ground in
+            if let index = allSportsGrounds.firstIndex(where: { $0.id == ground.id }) {
+                allSportsGrounds[index] = ground
+            } else {
+                allSportsGrounds.append(ground)
+            }
+        }
+        do {
+            try swStorage.save(allSportsGrounds)
+            defaults.didUpdateGrounds()
+        } catch {
+            setupErrorAlert(with: error.localizedDescription)
+        }
     }
 
     @ViewBuilder
@@ -187,35 +243,34 @@ private extension SportsGroundsMapView {
             } label: {
                 Image(systemName: Icons.Regular.plus.rawValue)
             }
-            .opacity(viewModel.isLoading ? 0 : 1)
+            .opacity(isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
             .sheet(isPresented: $showGroundCreationSheet) {
-                ContentInSheet(title: "Новая площадка", spacing: .zero) {
+                ContentInSheet(title: "Новая площадка", spacing: 0) {
                     SportsGroundFormView(
                         .createNew(
                             address: viewModel.addressString,
                             coordinate: viewModel.region.center,
                             cityID: defaults.mainUserCityID
                         ),
-                        refreshClbk: getNewSportsGround
+                        refreshClbk: {
+                            defaults.setUserNeedUpdate(true)
+                            Task {
+                                await checkForRecentUpdates()
+                            }
+                        }
                     )
                 }
             }
         }
     }
 
-    func openDetailsView(_ ground: SportsGround) {
-        viewModel.selectedGround = ground
-        showDetailsView.toggle()
-    }
-
-    func getNewSportsGround() {
-        defaults.setUserNeedUpdate(true)
-        Task { await viewModel.checkForRecentUpdates(with: defaults) }
-    }
-
+    /// Удаляет площадку с указанным идентификатором из списка
+    ///
+    /// Используется при ручном удалении площадки с детального экрана площадки
     func updateDeleted(groundID: Int) {
-        viewModel.deleteSportsGroundFromList(with: groundID)
+        allSportsGrounds.removeAll(where: { $0.id == groundID })
+        needUpdateAnnotations.toggle()
     }
 
     func updateUserCountryAndCity(with info: UserResponse?) {
@@ -227,9 +282,7 @@ private extension SportsGroundsMapView {
         alertMessage = message
     }
 
-    func closeAlert() {
-        viewModel.clearErrorMessage()
-    }
+    func closeAlert() { viewModel.clearErrorMessage() }
 }
 
 #if DEBUG

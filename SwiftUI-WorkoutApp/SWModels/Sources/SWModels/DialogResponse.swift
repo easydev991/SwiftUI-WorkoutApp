@@ -71,7 +71,7 @@ public extension DialogResponse {
 
     static var emptyValue: DialogResponse {
         .init(
-            id: .zero,
+            id: 0,
             anotherUserImageStringURL: nil,
             anotherUserName: nil,
             lastMessageText: nil,

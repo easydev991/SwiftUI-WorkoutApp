@@ -68,7 +68,7 @@ private extension MapSnapshotView {
                         annotation: ground, reuseIdentifier: nil
                     )
                     annotationView.contentMode = .scaleAspectFit
-                    annotationView.bounds = .init(x: .zero, y: .zero, width: 40, height: 40)
+                    annotationView.bounds = .init(x: 0, y: 0, width: 40, height: 40)
                     let viewBounds = annotationView.bounds
                     annotationView.drawHierarchy(
                         in: .init(

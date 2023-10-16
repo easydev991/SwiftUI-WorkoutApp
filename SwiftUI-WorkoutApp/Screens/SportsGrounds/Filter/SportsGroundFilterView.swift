@@ -13,7 +13,7 @@ struct SportsGroundFilterView: View {
     }
 
     var body: some View {
-        ContentInSheet(title: "Фильтр площадок", spacing: .zero) {
+        ContentInSheet(title: "Фильтр площадок", spacing: 0) {
             ScrollView {
                 VStack(spacing: 32) {
                     SectionView(header: "Размер", mode: .card()) {
