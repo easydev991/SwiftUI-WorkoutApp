@@ -21,7 +21,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published private(set) var region = MKCoordinateRegion()
     @Published private(set) var ignoreUserLocation = false
     @Published var needUpdateRegion = false
-    @Published var selectedGround = SportsGround.emptyValue
     /// Идентификатор страны пользователя
     private var userCountryID = 0
     /// Идентификатор города пользователя
@@ -135,6 +134,6 @@ private extension SportsGroundsMapViewModel {
             center: .init(latitude: coordinates.0, longitude: coordinates.1),
             span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
-        needUpdateRegion.toggle()
+        needUpdateRegion = true
     }
 }

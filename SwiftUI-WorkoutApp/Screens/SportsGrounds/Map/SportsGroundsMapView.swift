@@ -19,7 +19,7 @@ struct SportsGroundsMapView: View {
     @State private var showFilters = false
     @State private var showDetailsView = false
     @State private var showGroundCreationSheet = false
-    @State private var selectedGround: SportsGround?
+    @State private var selectedGround = SportsGround.emptyValue
     @State private var filter = SportsGroundFilterView.Model()
     @State private var allSportsGrounds = [SportsGround]()
     private var filteredGrounds: [SportsGround] {
@@ -32,12 +32,13 @@ struct SportsGroundsMapView: View {
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
 
     var body: some View {
-        NavigationView {
+        _ = Self._printChanges()
+        return NavigationView {
             VStack {
                 segmentedControl
                 groundsContent
-                    .loadingOverlay(if: isLoading)
             }
+            .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
             .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
             .onChange(of: defaults.mainUserInfo, perform: updateUserCountryAndCity)
@@ -45,10 +46,6 @@ struct SportsGroundsMapView: View {
                 Button("Ok", action: closeAlert)
             }
             .task { await askForGrounds() }
-            .onAppear {
-                viewModel.onAppearAction()
-                updateUserCountryAndCity(with: defaults.mainUserInfo)
-            }
             .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
@@ -145,10 +142,14 @@ private extension SportsGroundsMapView {
                 }
             )
             .opacity(viewModel.shouldHideMap ? 0 : 1)
+            .onAppear {
+                viewModel.onAppearAction()
+                updateUserCountryAndCity(with: defaults.mainUserInfo)
+            }
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
-                        ground: viewModel.selectedGround,
+                        ground: selectedGround,
                         onDeletion: updateDeleted
                     )
                 } label: { EmptyView() }
@@ -162,7 +163,7 @@ private extension SportsGroundsMapView {
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
-        if isLoading || allSportsGrounds.isEmpty, !refresh { return }
+        #warning("Не вызывать при возврате с детального экрана площадки")
         guard !allSportsGrounds.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
