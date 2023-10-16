@@ -60,7 +60,10 @@ extension SportsGroundFilterView {
         var onlyMyCity = true
         var currentCity: String?
         
-        var isEdited: Bool { self != Model() }
+        var isEdited: Bool {
+            size.count < SportsGroundSize.allCases.count
+            || grade.count < SportsGroundGrade.allCases.count
+        }
     }
 }
 
