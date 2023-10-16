@@ -26,7 +26,8 @@ public enum Icons {
         case exclamationArrowCircle = "exclamationmark.arrow.circlepath"
         case xmarkCircle = "xmark.circle"
         case xmark
-        case filter = "line.3.horizontal.decrease.circle"
+        case filterOff = "line.3.horizontal.decrease.circle"
+        case filterOn = "line.3.horizontal.decrease.circle.fill"
         case magnifyingglass
         case trash
         case pencil
