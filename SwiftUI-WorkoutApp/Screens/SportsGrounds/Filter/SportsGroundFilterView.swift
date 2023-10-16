@@ -4,13 +4,12 @@ import SwiftUI
 import SWModels
 
 struct SportsGroundFilterView: View {
-    @EnvironmentObject private var defaults: DefaultsService
     @Binding private var filter: Model
-    private let defaultFilter: Model
+    private let allSizes = SportsGroundSize.allCases
+    private let allGrades = SportsGroundGrade.allCases
 
-    init(filter: Binding<Model>, currentCity: String?) {
+    init(filter: Binding<Model>) {
         self._filter = filter
-        self.defaultFilter = .init(currentCity: currentCity)
     }
 
     var body: some View {
@@ -19,9 +18,9 @@ struct SportsGroundFilterView: View {
                 VStack(spacing: 32) {
                     SectionView(header: "Размер", mode: .card()) {
                         VStack(spacing: 0) {
-                            ForEach(Array(zip(defaultFilter.size.indices, defaultFilter.size)), id: \.0) { index, groundSize in
+                            ForEach(Array(zip(allSizes.indices, allSizes)), id: \.0) { index, groundSize in
                                 buttonFor(groundSize)
-                                    .withDivider(if: index != defaultFilter.size.endIndex - 1)
+                                    .withDivider(if: index != allSizes.endIndex - 1)
                             }
                         }
                     }
@@ -30,19 +29,10 @@ struct SportsGroundFilterView: View {
                         mode: .card()
                     ) {
                         VStack(spacing: 0) {
-                            ForEach(Array(zip(defaultFilter.grade.indices, defaultFilter.grade)), id: \.0) { index, groundGrade in
+                            ForEach(Array(zip(allGrades.indices, allGrades)), id: \.0) { index, groundGrade in
                                 buttonFor(groundGrade)
-                                    .withDivider(if: index != defaultFilter.grade.endIndex - 1)
+                                    .withDivider(if: index != allGrades.endIndex - 1)
                             }
-                        }
-                    }
-                    if defaults.isAuthorized {
-                        SectionView(
-                            header: "Расположение",
-                            footer: .init(footerCityText),
-                            mode: .card()
-                        ) {
-                            buttonForMyCity
                         }
                     }
                     resetFilterButton
@@ -57,8 +47,6 @@ extension SportsGroundFilterView {
     struct Model: Equatable {
         var size = SportsGroundSize.allCases
         var grade = SportsGroundGrade.allCases
-        var onlyMyCity = true
-        var currentCity: String?
 
         var isEdited: Bool {
             size.count < SportsGroundSize.allCases.count
@@ -100,56 +88,17 @@ private extension SportsGroundFilterView {
         }
     }
 
-    var buttonForMyCity: some View {
-        Button {
-            filter.onlyMyCity.toggle()
-        } label: {
-            TextWithCheckmarkRowView(
-                text: "Только для моего города",
-                isChecked: filter.onlyMyCity == defaultFilter.onlyMyCity
-            )
-        }
-    }
-
     var resetFilterButton: some View {
         Button("Сбросить фильтры") {
-            filter = defaultFilter
+            filter = .init()
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(!canResetFilter)
-    }
-
-    var footerCityText: String {
-        var resultString = ""
-        let currentCity = filter.currentCity
-        let userProfileCity = ShortAddressService(defaults.mainUserCountryID, defaults.mainUserCityID).cityName
-        if let userProfileCity {
-            resultString += String(format: NSLocalizedString("Твой город в профиле: %@", comment: ""), userProfileCity)
-        }
-        if let currentCity, currentCity != userProfileCity {
-            resultString += "\n"
-            resultString += String(format: NSLocalizedString("Текущий город: %@", comment: ""), currentCity)
-        }
-        return resultString
-    }
-
-    var canResetFilter: Bool {
-        let isGroundFilterDifferent =
-            filter.size.count != defaultFilter.size.count
-                || filter.grade.count != defaultFilter.grade.count
-        let isCityFilterDifferent = defaults.isAuthorized
-            ? filter.onlyMyCity != defaultFilter.onlyMyCity
-            : false
-        return isGroundFilterDifferent || isCityFilterDifferent
+        .disabled(!filter.isEdited)
     }
 }
 
 #if DEBUG
 #Preview {
-    SportsGroundFilterView(
-        filter: .constant(.init()),
-        currentCity: "Moscow"
-    )
-    .environmentObject(DefaultsService())
+    SportsGroundFilterView(filter: .constant(.init()))
 }
 #endif

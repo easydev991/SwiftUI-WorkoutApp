@@ -44,7 +44,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 guard let self else { return }
-                applyFilter(userCountryID, userCityID)
+                self.applyFilter()
             }
         self.locationErrorCancellable = $locationErrorMessage
             .removeDuplicates()
@@ -63,7 +63,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
             if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
                 await makeGrounds(refresh: true, with: defaults)
             } else {
-                applyFilter(with: defaults.mainUserInfo)
+                applyFilter()
             }
         } else {
             isLoading.toggle()
@@ -72,7 +72,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
                     from: defaults.lastGroundsUpdateDateString
                 )
                 updateDefaultList(with: updatedGrounds, defaults: defaults)
-                applyFilter(with: defaults.mainUserInfo)
+                applyFilter()
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
             }
@@ -91,7 +91,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
             updateDefaultList(with: updatedGrounds, defaults: defaults)
-            applyFilter(with: defaults.mainUserInfo)
+            applyFilter()
         } catch {
             errorMessage = ErrorFilter.message(from: error)
         }
@@ -108,7 +108,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
 
     func updateUserCountryAndCity(with info: UserResponse?) {
         guard let countryID = info?.countryID, let cityID = info?.cityID else {
-            filter.onlyMyCity = false
             return
         }
         userCountryID = countryID
@@ -148,10 +147,9 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
                 guard let self else { return }
                 if let target = places?.first {
-                    filter.currentCity = target.locality
                     addressString = target.thoroughfare.valueOrEmpty
-                        + " "
-                        + target.subThoroughfare.valueOrEmpty
+                    + " "
+                    + target.subThoroughfare.valueOrEmpty
                 }
             }
             let needUpdateMap = !isRegionSet
@@ -159,7 +157,7 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
                 center: location.coordinate,
                 span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
-            if needUpdateMap { needUpdateRegion.toggle() }
+            if needUpdateMap { needUpdateRegion = true }
         }
     }
 
@@ -198,37 +196,13 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
 }
 
 private extension SportsGroundsMapViewModel {
-    func applyFilter(with userInfo: UserResponse?) {
-        applyFilter(userInfo?.countryID, userInfo?.cityID)
-    }
-
     /// Применяем фильтры к `defaultList` и выводим итоговый список в `sportsGrounds`
-    func applyFilter(_ countryID: Int?, _ cityID: Int?) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self else { return }
-            var result = [SportsGround]()
-            result = defaultList.filter { ground in
-                self.filter.size.map(\.code).contains(ground.sizeID)
-                    && self.filter.grade.map(\.code).contains(ground.typeID)
-            }
-            guard let countryID, countryID != .zero,
-                  let cityID, cityID != .zero,
-                  filter.onlyMyCity
-            else {
-                DispatchQueue.main.async {
-                    self.sportsGrounds = result
-                    self.needUpdateAnnotations.toggle()
-                }
-                return
-            }
-            DispatchQueue.main.async {
-                self.sportsGrounds = result.filter {
-                    $0.countryID == countryID
-                        && $0.cityID == cityID
-                }
-                self.needUpdateAnnotations.toggle()
-            }
+    func applyFilter() {
+        sportsGrounds = defaultList.filter { ground in
+            return filter.size.map(\.code).contains(ground.sizeID)
+                && filter.grade.map(\.code).contains(ground.typeID)
         }
+        needUpdateAnnotations = true
     }
 
     /// Заполняем дефолтный список площадок контентом из `json`-файла

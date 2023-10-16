@@ -71,10 +71,7 @@ private extension SportsGroundsMapView {
             )
         }
         .sheet(isPresented: $showFilters) {
-            SportsGroundFilterView(
-                filter: $viewModel.filter,
-                currentCity: viewModel.filter.currentCity
-            )
+            SportsGroundFilterView(filter: $viewModel.filter)
         }
     }
 
