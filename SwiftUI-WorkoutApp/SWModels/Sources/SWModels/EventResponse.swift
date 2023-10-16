@@ -138,9 +138,7 @@ public extension EventResponse {
 
     var formattedDescription: String {
         get {
-            eventDescription.valueOrEmpty
-                .withoutHTML
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+            eventDescription.valueOrEmpty.withoutHTML
         }
         set { eventDescription = newValue }
     }

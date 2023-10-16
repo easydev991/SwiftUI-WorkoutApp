@@ -175,9 +175,9 @@ private extension EditAccountScreen {
             if let userInfo = defaults.mainUserInfo {
                 oldUserForm = .init(userInfo)
                 oldUserForm.country = locations.countries
-                    .first(where: { $0.id == userForm.country.id }) ?? .defaultCountry
+                    .first(where: { $0.id == oldUserForm.country.id }) ?? .defaultCountry
                 oldUserForm.city = locations.cities
-                    .first(where: { $0.id == userForm.city.id }) ?? .defaultCity
+                    .first(where: { $0.id == oldUserForm.city.id }) ?? .defaultCity
                 userForm = oldUserForm
             }
         } catch {
