@@ -66,8 +66,8 @@ private extension SportsGroundsMapView {
         } label: {
             Image(
                 systemName: viewModel.filter.isEdited
-                ? Icons.Regular.filterOn.rawValue
-                : Icons.Regular.filterOff.rawValue
+                    ? Icons.Regular.filterOn.rawValue
+                    : Icons.Regular.filterOff.rawValue
             )
         }
         .sheet(isPresented: $showFilters) {

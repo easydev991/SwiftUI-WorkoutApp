@@ -59,10 +59,10 @@ extension SportsGroundFilterView {
         var grade = SportsGroundGrade.allCases
         var onlyMyCity = true
         var currentCity: String?
-        
+
         var isEdited: Bool {
             size.count < SportsGroundSize.allCases.count
-            || grade.count < SportsGroundGrade.allCases.count
+                || grade.count < SportsGroundGrade.allCases.count
         }
     }
 }

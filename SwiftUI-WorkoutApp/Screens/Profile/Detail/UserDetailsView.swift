@@ -43,11 +43,11 @@ struct UserDetailsView: View {
                     communicationSection
                 }
                 VStack(spacing: 12) {
+                    friendsButtonIfNeeded
                     usesSportsGroundsIfNeeded
                     addedSportsGroundsIfNeeded
-                    friendsButtonIfNeeded
-                    blacklistButtonIfNeeded
                     journalsButtonIfNeeded
+                    blacklistButtonIfNeeded
                 }
                 logoutButtonIfNeeded
             }
@@ -305,6 +305,7 @@ private extension UserDetailsView {
                         setupResponseAlert(with: "Пользователь удален из черного списка")
                         socialActions.blacklist = .add
                     }
+                    defaults.setUserNeedUpdate(true)
                 }
             } catch {
                 setupResponseAlert(with: ErrorFilter.message(from: error))
@@ -322,10 +323,9 @@ private extension UserDetailsView {
                 user = .init(mainUserInfo)
             } else {
                 await makeUserInfo()
-                await makeBlacklistAndFriedRequests()
             }
         } else {
-            if user.isFull, !refresh {
+            if !refresh, user.isFull {
                 isLoading = false
                 return
             }
@@ -353,8 +353,14 @@ private extension UserDetailsView {
 
     func makeUserInfo() async {
         do {
-            let info = try await SWClient(with: defaults).getUserByID(user.id)
-            user = .init(info)
+            let client = SWClient(with: defaults)
+            async let info = client.getUserByID(user.id)
+            if isMainUser {
+                async let friendRequests: () = client.getFriendRequests()
+                async let blacklist: () = client.getBlacklist()
+                _ = try await (friendRequests, blacklist)
+            }
+            user = try await .init(info)
         } catch {
             setupResponseAlert(with: ErrorFilter.message(from: error))
         }
@@ -384,12 +390,6 @@ private extension UserDetailsView {
 
     var isMainUser: Bool {
         user.id == defaults.mainUserInfo?.userID
-    }
-
-    func makeBlacklistAndFriedRequests() async {
-        let apiService = SWClient(with: defaults)
-        try? await apiService.getFriendRequests()
-        try? await apiService.getBlacklist()
     }
 
     func cancelTasks() {
