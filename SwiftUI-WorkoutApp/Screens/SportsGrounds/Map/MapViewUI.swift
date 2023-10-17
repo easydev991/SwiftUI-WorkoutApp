@@ -4,7 +4,7 @@ import SWModels
 
 struct MapViewUI: UIViewRepresentable {
     /// Уникальный идентификатор карты, чтобы не плодить дубли
-    private let viewKey: String
+    private let viewKey = "SportsGroundsMapView"
     private let region: MKCoordinateRegion
     private let ignoreUserLocation: Bool
     private let annotations: [SportsGround]
@@ -14,7 +14,6 @@ struct MapViewUI: UIViewRepresentable {
     let openSelected: (SportsGround) -> Void
 
     init(
-        _ key: String,
         _ region: MKCoordinateRegion,
         _ ignoreUserLocation: Bool,
         _ pins: [SportsGround],
@@ -22,7 +21,6 @@ struct MapViewUI: UIViewRepresentable {
         _ needUpdateRegion: Binding<Bool>,
         openDetailsClbk: @escaping (SportsGround) -> Void
     ) {
-        self.viewKey = key
         self.region = region
         self.ignoreUserLocation = ignoreUserLocation
         self.annotations = pins
@@ -35,21 +33,26 @@ struct MapViewUI: UIViewRepresentable {
         let mapView: MKMapView
         if let storedView = MapViewUI.mapViewStore[viewKey] {
             storedView.delegate = context.coordinator
+            #warning("При первом использовании сохраненной карты она исчезает, разобраться")
+            // При переключении между экранами снова появляется
             mapView = storedView
         } else {
             let newView = MKMapView(frame: .zero)
             newView.delegate = context.coordinator
-            MapViewUI.mapViewStore[viewKey] = newView
             mapView = newView
         }
         mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
         mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
         addTrackingButton(to: mapView)
+        if MapViewUI.mapViewStore[viewKey] == nil {
+            MapViewUI.mapViewStore[viewKey] = mapView
+        }
         return mapView
     }
 
     func updateUIView(_ mapView: MKMapView, context _: Context) {
+        #warning("Обновляется слишком часто, разобраться с этим")
         if needUpdateAnnotations {
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotations(annotations)

@@ -40,13 +40,13 @@ struct SportsGroundsMapView: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
-            .onChange(of: viewModel.errorMessage, perform: setupErrorAlert)
-            .onChange(of: defaults.mainUserInfo, perform: updateUserCountryAndCity)
+            .onChange(of: defaults.mainUserCityID) { _ in
+                viewModel.updateUserCountryAndCity(with: defaults.mainUserInfo)
+            }
             .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button("Ok", action: closeAlert)
+                Button("Ok") { alertMessage = "" }
             }
             .task { await askForGrounds() }
-            .onDisappear { viewModel.onDisappearAction() }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Group {
@@ -130,7 +130,6 @@ private extension SportsGroundsMapView {
             }
         case .map:
             MapViewUI(
-                "SportsGroundsMapView",
                 viewModel.region,
                 viewModel.ignoreUserLocation,
                 filteredGrounds,
@@ -142,10 +141,6 @@ private extension SportsGroundsMapView {
                 }
             )
             .opacity(viewModel.shouldHideMap ? 0 : 1)
-            .onAppear {
-                viewModel.onAppearAction()
-                updateUserCountryAndCity(with: defaults.mainUserInfo)
-            }
             .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
@@ -195,9 +190,7 @@ private extension SportsGroundsMapView {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: defaults.lastGroundsUpdateDateString
             )
-            // Обновляем дефолтный список площадок
             updateDefaultList(with: updatedGrounds)
-            needUpdateAnnotations = true
         } catch {
             setupErrorAlert(with: ErrorFilter.message(from: error))
         }
@@ -208,20 +201,22 @@ private extension SportsGroundsMapView {
     ///
     /// Запрашиваем обновление за прошедшие 5 минут
     func checkForRecentUpdates() async {
+        defaults.setUserNeedUpdate(true)
         isLoading = true
         do {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
                 from: DateFormatterService.fiveMinutesAgoDateString
             )
             updateDefaultList(with: updatedGrounds)
-            needUpdateAnnotations = true
         } catch {
             setupErrorAlert(with: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
     
+    /// Обновляем дефолтный список площадок
     func updateDefaultList(with updatedGrounds: [SportsGround]) {
+        guard !updatedGrounds.isEmpty else { return }
         updatedGrounds.forEach { ground in
             if let index = allSportsGrounds.firstIndex(where: { $0.id == ground.id }) {
                 allSportsGrounds[index] = ground
@@ -229,6 +224,12 @@ private extension SportsGroundsMapView {
                 allSportsGrounds.append(ground)
             }
         }
+        saveGroundsInMemory()
+        needUpdateAnnotations = true
+    }
+    
+    /// Сохраняем площадки в памяти
+    func saveGroundsInMemory() {
         do {
             try swStorage.save(allSportsGrounds)
             defaults.didUpdateGrounds()
@@ -256,7 +257,6 @@ private extension SportsGroundsMapView {
                             cityID: defaults.mainUserCityID
                         ),
                         refreshClbk: {
-                            defaults.setUserNeedUpdate(true)
                             Task {
                                 await checkForRecentUpdates()
                             }
@@ -272,19 +272,14 @@ private extension SportsGroundsMapView {
     /// Используется при ручном удалении площадки с детального экрана площадки
     func updateDeleted(groundID: Int) {
         allSportsGrounds.removeAll(where: { $0.id == groundID })
-        needUpdateAnnotations.toggle()
+        saveGroundsInMemory()
+        needUpdateAnnotations = true
     }
-
-    func updateUserCountryAndCity(with info: UserResponse?) {
-        viewModel.updateUserCountryAndCity(with: info)
-    }
-
+    
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
-
-    func closeAlert() { viewModel.clearErrorMessage() }
 }
 
 #if DEBUG

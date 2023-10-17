@@ -14,8 +14,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private var filterCancellable: AnyCancellable?
     /// Держит обновление ошибки определения геолокации
     private var locationErrorCancellable: AnyCancellable?
-    @Published private(set) var isLoading = false
-    @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
     @Published private(set) var addressString = ""
     @Published private(set) var region = MKCoordinateRegion()
@@ -46,14 +44,6 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         userCountryID = countryID
         userCityID = cityID
     }
-
-    /// Запускаем обновление локации пользователя
-    func onAppearAction() { manager.startUpdatingLocation() }
-
-    /// Отключаем обновление локации пользователя
-    func onDisappearAction() { manager.stopUpdatingLocation() }
-
-    func clearErrorMessage() { errorMessage = "" }
 }
 
 extension SportsGroundsMapViewModel {
