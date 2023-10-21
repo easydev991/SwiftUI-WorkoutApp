@@ -82,7 +82,7 @@ private extension SportsGroundsMapView {
             showFilters.toggle()
         } label: {
             Image(
-                systemName: viewModel.filter.isEdited
+                systemName: filter.isEdited
                     ? Icons.Regular.filterOn.rawValue
                     : Icons.Regular.filterOff.rawValue
             )
