@@ -3,69 +3,102 @@ import SwiftUI
 import SWModels
 
 struct MapViewUI: UIViewRepresentable {
-    /// Уникальный идентификатор карты, чтобы не плодить дубли
-    private let viewKey = "SportsGroundsMapView"
-    private let region: MKCoordinateRegion
-    private let ignoreUserLocation: Bool
-    private let annotations: [SportsGround]
-    @Binding private var needUpdateAnnotations: Bool
-    @Binding private var needUpdateRegion: Bool
-    private static var mapViewStore = [String: MKMapView]()
+    private static var storedMapView: MKMapView?
+    let region: MKCoordinateRegion
+    let ignoreUserLocation: Bool
+    let annotations: [SportsGround]
     let openSelected: (SportsGround) -> Void
 
-    init(
-        _ region: MKCoordinateRegion,
-        _ ignoreUserLocation: Bool,
-        _ pins: [SportsGround],
-        _ needUpdatePins: Binding<Bool>,
-        _ needUpdateRegion: Binding<Bool>,
-        openDetailsClbk: @escaping (SportsGround) -> Void
-    ) {
-        self.region = region
-        self.ignoreUserLocation = ignoreUserLocation
-        self.annotations = pins
-        self._needUpdateAnnotations = needUpdatePins
-        self._needUpdateRegion = needUpdateRegion
-        self.openSelected = openDetailsClbk
-    }
-
     func makeUIView(context: Context) -> MKMapView {
-        let mapView: MKMapView
-        if let storedView = MapViewUI.mapViewStore[viewKey] {
-            storedView.delegate = context.coordinator
-            #warning("При первом использовании сохраненной карты она исчезает, разобраться")
-            // При переключении между экранами снова появляется
-            mapView = storedView
+        let view = if let storedView = MapViewUI.storedMapView {
+            storedView
         } else {
-            let newView = MKMapView(frame: .zero)
-            newView.delegate = context.coordinator
-            mapView = newView
+            MKMapView()
         }
-        mapView.setRegion(region, animated: true)
-        mapView.showsUserLocation = true
-        mapView.cameraZoomRange = .init(maxCenterCoordinateDistance: 500000)
-        addTrackingButton(to: mapView)
-        if MapViewUI.mapViewStore[viewKey] == nil {
-            MapViewUI.mapViewStore[viewKey] = mapView
+        view.delegate = context.coordinator
+        view.showsUserLocation = true
+        view.cameraZoomRange = .init(maxCenterCoordinateDistance: 5000000)
+        addTrackingButton(to: view)
+        if MapViewUI.storedMapView == nil {
+            MapViewUI.storedMapView = view
         }
-        return mapView
+        return view
     }
 
-    func updateUIView(_ mapView: MKMapView, context _: Context) {
-        #warning("Обновляется слишком часто, разобраться с этим")
-        if needUpdateAnnotations {
-            mapView.removeAnnotations(mapView.annotations)
-            mapView.addAnnotations(annotations)
-            Task { @MainActor in needUpdateAnnotations.toggle() }
-        }
-        if needUpdateRegion {
-            mapView.setRegion(region, animated: false)
-            Task { @MainActor in needUpdateRegion.toggle() }
-        }
+    func updateUIView(_ mapView: MKMapView, context: Context) {
         setTrackingButtonHidden(ignoreUserLocation, on: mapView)
+        context.coordinator.updateIfNeeded(mapView, with: annotations, in: region)
     }
 
-    func makeCoordinator() -> MapCoordinator { .init(self) }
+    func makeCoordinator() -> Coordinator { .init(self) }
+}
+
+extension MapViewUI {
+    final class Coordinator: NSObject, MKMapViewDelegate {
+        private let annotationID = "SportsGround"
+        private let clusterID = "Cluster"
+        private let parent: MapViewUI
+
+        init(_ parent: MapViewUI) { self.parent = parent }
+
+        func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
+            if view.annotation is SportsGround {
+                view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            }
+        }
+
+        /// Обновляет карту, если это необходимо
+        /// - Parameters:
+        ///   - mapView: Карта, которую нужно обновить
+        ///   - annotations: Актуальные точки
+        ///   - region: Актуальный регион
+        func updateIfNeeded(
+            _ mapView: MKMapView,
+            with annotations: [SportsGround],
+            in region: MKCoordinateRegion
+        ) {
+            if mapView.region.center.latitude != region.center.latitude,
+               mapView.region.center.longitude != region.center.longitude {
+                mapView.setRegion(region, animated: true)
+            }
+            let mapAnnotations = mapView.annotations
+            if annotations.isEmpty, mapAnnotations.isEmpty {
+                // Нет точек на карте, ничего не делаем
+                return
+            }
+            let filteredMapAnnotations = mapAnnotations.filter { $0 is SportsGround }
+            if annotations.count != filteredMapAnnotations.count {
+                if !mapAnnotations.isEmpty {
+                    mapView.removeAnnotations(mapAnnotations)
+                }
+                mapView.addAnnotations(annotations)
+            }
+        }
+
+        func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
+            if let ground = view.annotation as? SportsGround { parent.openSelected(ground) }
+        }
+
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            let view: MKMarkerAnnotationView
+            switch annotation {
+            case is MKClusterAnnotation:
+                view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterID) as? MKMarkerAnnotationView
+                    ?? .init(annotation: annotation, reuseIdentifier: clusterID)
+                view.markerTintColor = .orange
+            case is SportsGround:
+                view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationID) as? MKMarkerAnnotationView
+                    ?? .init(annotation: annotation, reuseIdentifier: annotationID)
+                view.canShowCallout = true
+                view.clusteringIdentifier = clusterID
+                view.markerTintColor = .red
+                view.titleVisibility = .visible
+                view.subtitleVisibility = .adaptive
+            default: return nil
+            }
+            return view
+        }
+    }
 }
 
 private extension MapViewUI {
@@ -86,52 +119,11 @@ private extension MapViewUI {
         ])
     }
 
-    func setTrackingButtonHidden(_ isHidden: Bool, on mapView: MKMapView) {
+    func setTrackingButtonHidden(_ newValue: Bool, on mapView: MKMapView) {
         guard let trackingButton = mapView.subviews.first(where: { $0 is MKUserTrackingButton }) else { return }
-        if isHidden && trackingButton.isHidden || !isHidden && !trackingButton.isHidden { return }
-        trackingButton.isHidden = isHidden
-    }
-}
-
-final class MapCoordinator: NSObject, MKMapViewDelegate {
-    private let annotationIdentifier = "SportsGround"
-    private let clusterIdentifier = "Cluster"
-    private let parent: MapViewUI
-
-    init(_ parent: MapViewUI) { self.parent = parent }
-
-    func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
-        if view.annotation is SportsGround {
-            let button = UIButton(type: .detailDisclosure)
-            view.rightCalloutAccessoryView = button
-        }
-    }
-
-    func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
-        if let place = view.annotation as? SportsGround { parent.openSelected(place) }
-    }
-
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        switch annotation {
-        case is MKClusterAnnotation:
-            let view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterIdentifier) as? MKMarkerAnnotationView
-                ?? .init(annotation: annotation, reuseIdentifier: clusterIdentifier)
-            view.canShowCallout = true
-            view.markerTintColor = .orange
-            view.titleVisibility = .visible
-            return view
-        case is SportsGround:
-            let view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? MKMarkerAnnotationView
-                ?? .init(annotation: annotation, reuseIdentifier: annotationIdentifier)
-            view.canShowCallout = true
-            view.glyphImage = .init(systemName: "mappin")
-            view.clusteringIdentifier = clusterIdentifier
-            view.markerTintColor = .red
-            view.titleVisibility = .visible
-            view.subtitleVisibility = .adaptive
-            return view
-        default:
-            return nil
+        switch (newValue, trackingButton.isHidden) {
+        case (true, true), (false, false): break
+        default: trackingButton.isHidden = newValue
         }
     }
 }

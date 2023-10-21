@@ -10,15 +10,10 @@ import SWNetworkClient
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     /// Менеджер локации
     private let manager = CLLocationManager()
-    /// Держит обновление фильтра площадок
-    private var filterCancellable: AnyCancellable?
-    /// Держит обновление ошибки определения геолокации
-    private var locationErrorCancellable: AnyCancellable?
     @Published private(set) var locationErrorMessage = ""
     @Published private(set) var addressString = ""
     @Published private(set) var region = MKCoordinateRegion()
     @Published private(set) var ignoreUserLocation = false
-    @Published var needUpdateRegion = false
     /// Идентификатор страны пользователя
     private var userCountryID = 0
     /// Идентификатор города пользователя
@@ -29,14 +24,8 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
-        self.locationErrorCancellable = $locationErrorMessage
-            .removeDuplicates()
-            .filter { !$0.isEmpty }
-            .sink { [weak self] _ in
-                self?.setupDefaultLocation()
-            }
     }
-    
+
     func updateUserCountryAndCity(with info: UserResponse?) {
         guard let countryID = info?.countryID, let cityID = info?.cityID else {
             return
@@ -62,19 +51,18 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
-                guard let self else { return }
-                if let target = places?.first {
-                    addressString = target.thoroughfare.valueOrEmpty
-                    + " "
-                    + target.subThoroughfare.valueOrEmpty
+                guard let self, let target = places?.first else { return }
+                let street = target.thoroughfare.valueOrEmpty
+                if let house = target.subThoroughfare {
+                    addressString = street + " " + house
+                } else {
+                    addressString = street
                 }
             }
-            let needUpdateMap = !isRegionSet
             region = .init(
                 center: location.coordinate,
                 span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
-            if needUpdateMap { needUpdateRegion = true }
         }
     }
 
@@ -85,45 +73,34 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationErrorMessage = ""
             ignoreUserLocation = false
-            region = .init()
             manager.requestLocation()
-        case .restricted:
+        case .restricted, .denied:
             if !ignoreUserLocation {
                 setupDefaultLocation(permissionDenied: true)
             }
-        case .denied:
-            if !ignoreUserLocation {
-                setupDefaultLocation()
-            }
-        @unknown default: break
         }
     }
 
-    func locationManager(
-        _: CLLocationManager,
-        didFailWithError error: Error
-    ) {
+    func locationManager(_: CLLocationManager, didFailWithError _: Error) {
         if !ignoreUserLocation, !isRegionSet {
-            setupDefaultLocation()
+            setupDefaultLocation(permissionDenied: false)
         }
-        #if DEBUG
-        print("--- locationManager didFailWithError: \(error.localizedDescription)")
-        #endif
     }
 }
 
 private extension SportsGroundsMapViewModel {
-    func setupDefaultLocation(permissionDenied: Bool = false) {
-        ignoreUserLocation = true
+    func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Constants.Alert.locationPermissionDenied
             : Constants.Alert.needLocationPermission
         let coordinates = ShortAddressService(userCountryID, userCityID).coordinates
-        guard coordinates != (.zero, .zero) else { return }
+        guard coordinates != (.zero, .zero) else {
+            ignoreUserLocation = true
+            return
+        }
         region = .init(
             center: .init(latitude: coordinates.0, longitude: coordinates.1),
             span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
-        needUpdateRegion = true
     }
 }

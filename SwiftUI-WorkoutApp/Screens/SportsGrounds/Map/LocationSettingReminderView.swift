@@ -1,12 +1,5 @@
-//
-//  LocationSettingReminderView.swift
-//  SwiftUI-WorkoutApp
-//
-//  Created by Oleg991 on 16.10.2023.
-//
-
-import SwiftUI
 import DesignSystem
+import SwiftUI
 import SWModels
 
 /// Отображает текст с ошибкой определения геолокации пользователя
@@ -15,7 +8,7 @@ struct LocationSettingReminderView: View {
     private let settingsStringURL = UIApplication.openSettingsURLString
     let message: String
     let isHidden: Bool
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Text(.init(message))

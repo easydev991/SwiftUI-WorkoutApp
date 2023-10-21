@@ -1,9 +1,9 @@
+import DateFormatterService
 import DesignSystem
 import NetworkStatus
+import SWFileManager
 import SwiftUI
 import SWModels
-import SWFileManager
-import DateFormatterService
 import SWNetworkClient
 
 /// Экран с картой и площадками
@@ -13,7 +13,6 @@ struct SportsGroundsMapView: View {
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var presentation = Presentation.map
     @State private var isLoading = false
-    @State private var needUpdateAnnotations = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showFilters = false
@@ -25,9 +24,10 @@ struct SportsGroundsMapView: View {
     private var filteredGrounds: [SportsGround] {
         allSportsGrounds.filter { ground in
             filter.size.map(\.code).contains(ground.sizeID)
-            && filter.grade.map(\.code).contains(ground.typeID)
+                && filter.grade.map(\.code).contains(ground.typeID)
         }
     }
+
     /// Хранилище файла с площадками
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
 
@@ -130,14 +130,12 @@ private extension SportsGroundsMapView {
             }
         case .map:
             MapViewUI(
-                viewModel.region,
-                viewModel.ignoreUserLocation,
-                filteredGrounds,
-                $needUpdateAnnotations,
-                $viewModel.needUpdateRegion,
-                openDetailsClbk: { ground in
+                region: viewModel.region,
+                ignoreUserLocation: viewModel.ignoreUserLocation,
+                annotations: filteredGrounds,
+                openSelected: { ground in
                     selectedGround = ground
-                    showDetailsView.toggle()
+                    showDetailsView = true
                 }
             )
             .opacity(viewModel.shouldHideMap ? 0 : 1)
@@ -159,7 +157,7 @@ private extension SportsGroundsMapView {
     /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
         #warning("Поправить исчезновение карты после refresh")
-        if !filteredGrounds.isEmpty && !refresh { return }
+        if !filteredGrounds.isEmpty, !refresh { return }
         guard !allSportsGrounds.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
@@ -180,8 +178,6 @@ private extension SportsGroundsMapView {
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
             if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
                 await askForGrounds(refresh: true)
-            } else {
-                needUpdateAnnotations = true
             }
             return
         }
@@ -196,7 +192,7 @@ private extension SportsGroundsMapView {
         }
         isLoading = false
     }
-    
+
     /// Проверяем недавние обновления списка площадок
     ///
     /// Запрашиваем обновление за прошедшие 5 минут
@@ -213,7 +209,7 @@ private extension SportsGroundsMapView {
         }
         isLoading = false
     }
-    
+
     /// Обновляем дефолтный список площадок
     func updateDefaultList(with updatedGrounds: [SportsGround]) {
         guard !updatedGrounds.isEmpty else { return }
@@ -225,9 +221,8 @@ private extension SportsGroundsMapView {
             }
         }
         saveGroundsInMemory()
-        needUpdateAnnotations = true
     }
-    
+
     /// Сохраняем площадки в памяти
     func saveGroundsInMemory() {
         do {
@@ -273,9 +268,8 @@ private extension SportsGroundsMapView {
     func updateDeleted(groundID: Int) {
         allSportsGrounds.removeAll(where: { $0.id == groundID })
         saveGroundsInMemory()
-        needUpdateAnnotations = true
     }
-    
+
     func setupErrorAlert(with message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
