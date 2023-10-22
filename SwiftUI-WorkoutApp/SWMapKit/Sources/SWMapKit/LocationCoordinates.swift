@@ -10,11 +10,6 @@ public struct LocationCoordinates {
         self.lon = Double(regionCenter.longitude).rounded()
     }
 
-    /// Установлены ли координаты локации
-    var isSpecified: Bool {
-        lat != 0 && lon != 0
-    }
-
     /// Отличаются ли координаты от другой модели
     public func differs(from model: Self) -> Bool {
         lat != model.lat && lon != model.lon
