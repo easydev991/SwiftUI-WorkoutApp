@@ -14,10 +14,8 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published private(set) var addressString = ""
     @Published private(set) var region = MKCoordinateRegion()
     @Published private(set) var ignoreUserLocation = false
-    /// Идентификатор страны пользователя
-    private var userCountryID = 0
-    /// Идентификатор города пользователя
-    private var userCityID = 0
+    /// Координаты города в профиле пользователя
+    private var userCoordinates: (Double, Double) = (0, 0)
 
     override init() {
         super.init()
@@ -30,8 +28,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
         guard let countryID = info?.countryID, let cityID = info?.cityID else {
             return
         }
-        userCountryID = countryID
-        userCityID = cityID
+        userCoordinates = ShortAddressService(countryID, cityID).coordinates
     }
 }
 
@@ -93,13 +90,12 @@ private extension SportsGroundsMapViewModel {
         locationErrorMessage = permissionDenied
             ? Constants.Alert.locationPermissionDenied
             : Constants.Alert.needLocationPermission
-        let coordinates = ShortAddressService(userCountryID, userCityID).coordinates
-        guard coordinates != (.zero, .zero) else {
+        guard userCoordinates != (0, 0) else {
             ignoreUserLocation = true
             return
         }
         region = .init(
-            center: .init(latitude: coordinates.0, longitude: coordinates.1),
+            center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
             span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
     }
