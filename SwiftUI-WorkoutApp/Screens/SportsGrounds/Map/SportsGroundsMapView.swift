@@ -32,8 +32,7 @@ struct SportsGroundsMapView: View {
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
 
     var body: some View {
-        _ = Self._printChanges()
-        return NavigationView {
+        NavigationView {
             VStack {
                 segmentedControl
                 groundsContent
