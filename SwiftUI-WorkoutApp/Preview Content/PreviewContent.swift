@@ -145,8 +145,8 @@ extension JournalResponse {
 extension JournalEntryResponse {
     static var preview: JournalEntryResponse {
         .init(
-            id: .zero,
-            journalID: .zero,
+            id: 0,
+            journalID: 0,
             authorID: 10367,
             authorName: "ninenineone",
             message: "Test text",

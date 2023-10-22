@@ -136,7 +136,7 @@ private extension EventsListView {
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {
-                ContentInSheet(title: "Новое мероприятие", spacing: .zero) {
+                ContentInSheet(title: "Новое мероприятие", spacing: 0) {
                     EventFormView(for: .regularCreate, refreshClbk: refreshAction)
                 }
             }

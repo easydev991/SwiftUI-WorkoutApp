@@ -147,8 +147,8 @@ public extension EventResponse {
         get {
             .init(
                 id: sportsGroundID.valueOrZero,
-                typeID: .zero,
-                sizeID: .zero,
+                typeID: 0,
+                sizeID: 0,
                 address: fullAddress,
                 author: author,
                 cityID: cityID,
@@ -225,7 +225,7 @@ public extension EventResponse {
 
     static var emptyValue: EventResponse {
         .init(
-            id: .zero,
+            id: 0,
             title: nil,
             eventDescription: nil,
             fullAddress: nil,

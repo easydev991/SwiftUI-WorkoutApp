@@ -150,7 +150,7 @@ private extension TextEntryView {
 
 #if DEBUG
 #Preview {
-    TextEntryView(mode: .newForGround(id: .zero), refreshClbk: {})
+    TextEntryView(mode: .newForGround(id: 0), refreshClbk: {})
         .environmentObject(DefaultsService())
 }
 #endif

@@ -4,18 +4,15 @@ import SWModels
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {
-    private let urlOpener: URLOpener
     private let address: String
     private let appleMapsURL: URL?
     @Binding private var ground: SportsGround
 
     init(
-        urlOpener: URLOpener = URLOpenerImp(),
         ground: Binding<SportsGround>,
         address: String,
         appleMapsURL: URL?
     ) {
-        self.urlOpener = urlOpener
         self._ground = ground
         self.address = address
         self.appleMapsURL = appleMapsURL
@@ -33,7 +30,7 @@ struct SportsGroundLocationInfo: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             if let url = appleMapsURL {
                 Button {
-                    urlOpener.open(url)
+                    URLOpener.open(url)
                 } label: {
                     Text("Построить маршрут")
                 }

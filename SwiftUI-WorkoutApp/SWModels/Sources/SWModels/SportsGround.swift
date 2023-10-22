@@ -131,8 +131,8 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public convenience init(id: Int) {
         self.init(
             id: id,
-            typeID: .zero,
-            sizeID: .zero,
+            typeID: 0,
+            sizeID: 0,
             address: nil,
             author: nil,
             cityID: nil,
@@ -242,9 +242,9 @@ public extension SportsGround {
 
     static var emptyValue: SportsGround {
         .init(
-            id: .zero,
-            typeID: .zero,
-            sizeID: .zero,
+            id: 0,
+            typeID: 0,
+            sizeID: 0,
             address: nil,
             author: .emptyValue,
             cityID: nil,
@@ -257,7 +257,7 @@ public extension SportsGround {
             name: nil,
             photosOptional: [],
             preview: nil,
-            usersTrainHereCount: .zero,
+            usersTrainHereCount: 0,
             commentsOptional: nil,
             usersTrainHere: [],
             trainHere: nil

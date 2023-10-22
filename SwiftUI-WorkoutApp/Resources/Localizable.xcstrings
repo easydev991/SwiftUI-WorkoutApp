@@ -3599,40 +3599,6 @@
         }
       }
     },
-    "Твой город в профиле: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The city in your profile is %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Твой город в профиле: %@"
-          }
-        }
-      }
-    },
-    "Текущий город: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Current city: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Текущий город: %@"
-          }
-        }
-      }
-    },
     "Текущий пароль" : {
       "localizations" : {
         "en" : {
@@ -3729,23 +3695,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тип площадки"
-          }
-        }
-      }
-    },
-    "Только для моего города" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Only in my city"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Только для моего города"
           }
         }
       }

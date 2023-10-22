@@ -5,14 +5,13 @@ struct LoadingOverlayModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         ZStack {
+            content
+                .opacity(isLoading ? 0.5 : 1)
+                .disabled(isLoading)
             if isLoading {
-                content.opacity(0.5)
                 LoadingIndicator()
-            } else {
-                content
             }
         }
-        .disabled(isLoading)
         .animation(.default, value: isLoading)
     }
 }

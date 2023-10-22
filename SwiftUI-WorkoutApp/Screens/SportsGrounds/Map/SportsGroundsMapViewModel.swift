@@ -1,8 +1,8 @@
-import Combine
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
 import SWFileManager
+import SWMapKit
 import SWModels
 import SWNetworkClient
 
@@ -10,124 +10,26 @@ import SWNetworkClient
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     /// Менеджер локации
     private let manager = CLLocationManager()
-    private let urlOpener: URLOpener = URLOpenerImp()
-    /// Держит обновление фильтра площадок
-    private var filterCancellable: AnyCancellable?
-    /// Держит обновление ошибки определения геолокации
-    private var locationErrorCancellable: AnyCancellable?
-    /// Идентификатор страны пользователя
-    private var userCountryID = Int.zero
-    /// Идентификатор города пользователя
-    private var userCityID = Int.zero
-    /// Дефолтный список площадок, загруженный из `json`-файла
-    private var defaultList = [SportsGround]()
-    /// Хранилище файла с площадками
-    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
-    @Published private(set) var isLoading = false
-    @Published private(set) var errorMessage = ""
     @Published private(set) var locationErrorMessage = ""
     @Published private(set) var addressString = ""
     @Published private(set) var region = MKCoordinateRegion()
     @Published private(set) var ignoreUserLocation = false
-    @Published var needUpdateAnnotations = false
-    @Published var needUpdateRegion = false
-    @Published var sportsGrounds = [SportsGround]()
-    @Published var selectedGround = SportsGround.emptyValue
-    @Published var filter = SportsGroundFilterView.Model()
+    /// Координаты города в профиле авторизованного пользователя
+    private var userCoordinates: (Double, Double) = (0, 0)
 
     override init() {
         super.init()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
-        self.filterCancellable = $filter
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                guard let self else { return }
-                applyFilter(userCountryID, userCityID)
-            }
-        self.locationErrorCancellable = $locationErrorMessage
-            .removeDuplicates()
-            .filter { !$0.isEmpty }
-            .sink { [weak self] _ in
-                self?.setupDefaultLocation()
-            }
-    }
-
-    /// Заполняем/обновляем дефолтный список площадок
-    func makeGrounds(refresh: Bool, with defaults: DefaultsProtocol) async {
-        if isLoading || !defaultList.isEmpty, !refresh { return }
-        if defaultList.isEmpty {
-            fillDefaultList()
-            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
-                await makeGrounds(refresh: true, with: defaults)
-            } else {
-                applyFilter(with: defaults.mainUserInfo)
-            }
-        } else {
-            isLoading.toggle()
-            do {
-                let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                    from: defaults.lastGroundsUpdateDateString
-                )
-                updateDefaultList(with: updatedGrounds, defaults: defaults)
-                applyFilter(with: defaults.mainUserInfo)
-            } catch {
-                errorMessage = ErrorFilter.message(from: error)
-            }
-            isLoading.toggle()
-        }
-    }
-
-    /// Проверяем недавние обновления списка площадок
-    ///
-    /// Запрашиваем обновление за прошедшие 5 минут
-    func checkForRecentUpdates(with defaults: DefaultsProtocol) async {
-        if isLoading { return }
-        isLoading.toggle()
-        do {
-            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: DateFormatterService.fiveMinutesAgoDateString
-            )
-            updateDefaultList(with: updatedGrounds, defaults: defaults)
-            applyFilter(with: defaults.mainUserInfo)
-        } catch {
-            errorMessage = ErrorFilter.message(from: error)
-        }
-        isLoading.toggle()
-    }
-
-    /// Удаляет площадку с указанным идентификатором из списка
-    ///
-    /// Используется при ручном удалении площадки с детального экрана площадки
-    func deleteSportsGroundFromList(with groundID: Int) {
-        sportsGrounds.removeAll(where: { $0.id == groundID })
-        needUpdateAnnotations.toggle()
     }
 
     func updateUserCountryAndCity(with info: UserResponse?) {
         guard let countryID = info?.countryID, let cityID = info?.cityID else {
-            filter.onlyMyCity = false
             return
         }
-        userCountryID = countryID
-        userCityID = cityID
+        userCoordinates = ShortAddressService(countryID, cityID).coordinates
     }
-
-    func openAppSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            urlOpener.open(url)
-        }
-    }
-
-    /// Запускаем обновление локации пользователя
-    func onAppearAction() { manager.startUpdatingLocation() }
-
-    /// Отключаем обновление локации пользователя
-    func onDisappearAction() { manager.stopUpdatingLocation() }
-
-    func clearErrorMessage() { errorMessage = "" }
 }
 
 extension SportsGroundsMapViewModel {
@@ -144,22 +46,17 @@ extension SportsGroundsMapViewModel {
 
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
-                guard let self else { return }
-                if let target = places?.first {
-                    filter.currentCity = target.locality
-                    addressString = target.thoroughfare.valueOrEmpty
-                        + " "
-                        + target.subThoroughfare.valueOrEmpty
-                }
-            }
-            let needUpdateMap = !isRegionSet
-            region = .init(
-                center: location.coordinate,
-                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-            )
-            if needUpdateMap { needUpdateRegion.toggle() }
+        guard let location = locations.last else { return }
+        let oldCoordinates = LocationCoordinates(region.center)
+        let newCoordinates = LocationCoordinates(location.coordinate)
+        guard oldCoordinates.differs(from: newCoordinates) else { return }
+        region = .init(
+            center: location.coordinate,
+            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+            guard let self, let target = places?.first else { return }
+            PlacemarkFormatter(placemark: target).updateIfNeeded(&addressString)
         }
     }
 
@@ -170,114 +67,33 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationErrorMessage = ""
             ignoreUserLocation = false
-            region = .init()
             manager.requestLocation()
-        case .restricted:
+        case .restricted, .denied:
             if !ignoreUserLocation {
                 setupDefaultLocation(permissionDenied: true)
             }
-        case .denied:
-            if !ignoreUserLocation {
-                setupDefaultLocation()
-            }
-        @unknown default: break
         }
     }
 
-    func locationManager(
-        _: CLLocationManager,
-        didFailWithError error: Error
-    ) {
+    func locationManager(_: CLLocationManager, didFailWithError _: Error) {
         if !ignoreUserLocation, !isRegionSet {
-            setupDefaultLocation()
+            setupDefaultLocation(permissionDenied: false)
         }
-        #if DEBUG
-        print("--- locationManager didFailWithError: \(error.localizedDescription)")
-        #endif
     }
 }
 
 private extension SportsGroundsMapViewModel {
-    func applyFilter(with userInfo: UserResponse?) {
-        applyFilter(userInfo?.countryID, userInfo?.cityID)
-    }
-
-    /// Применяем фильтры к `defaultList` и выводим итоговый список в `sportsGrounds`
-    func applyFilter(_ countryID: Int?, _ cityID: Int?) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self else { return }
-            var result = [SportsGround]()
-            result = defaultList.filter { ground in
-                self.filter.size.map(\.code).contains(ground.sizeID)
-                    && self.filter.grade.map(\.code).contains(ground.typeID)
-            }
-            guard let countryID, countryID != .zero,
-                  let cityID, cityID != .zero,
-                  filter.onlyMyCity
-            else {
-                DispatchQueue.main.async {
-                    self.sportsGrounds = result
-                    self.needUpdateAnnotations.toggle()
-                }
-                return
-            }
-            DispatchQueue.main.async {
-                self.sportsGrounds = result.filter {
-                    $0.countryID == countryID
-                        && $0.cityID == cityID
-                }
-                self.needUpdateAnnotations.toggle()
-            }
-        }
-    }
-
-    /// Заполняем дефолтный список площадок контентом из `json`-файла
-    func fillDefaultList() {
-        do {
-            let savedGrounds: [SportsGround]
-            if swStorage.documentExists {
-                savedGrounds = try swStorage.get()
-            } else {
-                savedGrounds = try Bundle.main.decodeJson(
-                    [SportsGround].self,
-                    fileName: "oldSportsGrounds",
-                    extension: "json"
-                )
-            }
-            defaultList = savedGrounds
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    /// Обновляем дефолтный список площадок
-    func updateDefaultList(with updatedList: [SportsGround], defaults: DefaultsProtocol) {
-        updatedList.forEach { ground in
-            if let index = defaultList.firstIndex(where: { $0.id == ground.id }) {
-                defaultList[index] = ground
-            } else {
-                defaultList.append(ground)
-            }
-        }
-        do {
-            try swStorage.save(defaultList)
-            defaults.didUpdateGrounds()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    func setupDefaultLocation(permissionDenied: Bool = false) {
-        ignoreUserLocation = true
+    func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Constants.Alert.locationPermissionDenied
             : Constants.Alert.needLocationPermission
-        let coordinates = ShortAddressService(userCountryID, userCityID).coordinates
-        guard coordinates != (.zero, .zero) else { return }
+        guard userCoordinates != (0, 0) else {
+            ignoreUserLocation = true
+            return
+        }
         region = .init(
-            center: .init(latitude: coordinates.0, longitude: coordinates.1),
+            center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
             span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
-        needUpdateRegion.toggle()
     }
 }
