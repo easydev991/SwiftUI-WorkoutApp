@@ -158,7 +158,6 @@ private extension SportsGroundsMapView {
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
-        #warning("Поправить исчезновение карты после refresh")
         if !filteredGrounds.isEmpty, !refresh { return }
         guard !allSportsGrounds.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
