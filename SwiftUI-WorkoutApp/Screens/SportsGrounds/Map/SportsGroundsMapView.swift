@@ -3,6 +3,7 @@ import DesignSystem
 import NetworkStatus
 import SWFileManager
 import SwiftUI
+import SWMapKit
 import SWModels
 import SWNetworkClient
 

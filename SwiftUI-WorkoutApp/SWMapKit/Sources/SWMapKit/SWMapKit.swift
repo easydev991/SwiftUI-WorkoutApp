@@ -1,7 +1,8 @@
 import MapKit
 import SwiftUI
 
-struct MKMapViewRepresentable: UIViewRepresentable {
+/// `MKMapView` в обертке для `SwiftUI` с базовыми настройками
+public struct MKMapViewRepresentable: UIViewRepresentable {
     private static var storedMapView: MKMapView?
     private let region: MKCoordinateRegion
     private let cameraZoomRange: MKMapView.CameraZoomRange?
@@ -10,7 +11,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
     private let annotations: [any MKAnnotation]
     private let markerColors: MarkerColors
     private let didSelect: (any MKAnnotation) -> Void
-    
+
     /// Инициализатор
     /// - Parameters:
     ///   - region: Регион для отображения
@@ -20,7 +21,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
     ///   - annotations: Массив аннотаций (точек) для отображения на карте
     ///   - markerColors: Цвета для маркеров аннотаций, по умолчанию `orange` для кластера и `red` для обычной аннотации
     ///   - didSelect: Возвращает аннотацию, чью карточку с информацией нажал пользователь
-    init(
+    public init(
         region: MKCoordinateRegion,
         cameraZoomRange: MKMapView.CameraZoomRange? = .init(
             minCenterCoordinateDistance: 500,
@@ -41,7 +42,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
         self.didSelect = didSelect
     }
 
-    func makeUIView(context: Context) -> MKMapView {
+    public func makeUIView(context: Context) -> MKMapView {
         let view = if let storedView = MKMapViewRepresentable.storedMapView {
             storedView
         } else {
@@ -58,15 +59,15 @@ struct MKMapViewRepresentable: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ mapView: MKMapView, context: Context) {
+    public func updateUIView(_ mapView: MKMapView, context: Context) {
         setTrackingButton(hideTrackingButton, on: mapView)
         context.coordinator.updateIfNeeded(mapView, with: annotations, in: region)
     }
 
-    func makeCoordinator() -> Coordinator { .init(self) }
+    public func makeCoordinator() -> Coordinator { .init(self) }
 }
 
-extension MKMapViewRepresentable {
+public extension MKMapViewRepresentable {
     final class Coordinator: NSObject, MKMapViewDelegate {
         private let annotationID = "RegularAnnotation"
         private let clusterID = "Cluster"
@@ -74,7 +75,7 @@ extension MKMapViewRepresentable {
 
         init(_ parent: MKMapViewRepresentable) { self.parent = parent }
 
-        func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
+        public func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
             switch view.annotation {
             case is MKClusterAnnotation, is MKUserLocation: break
             default:
@@ -112,11 +113,11 @@ extension MKMapViewRepresentable {
             }
         }
 
-        func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
+        public func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
             if let annotation = view.annotation { parent.didSelect(annotation) }
         }
 
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             let view: MKMarkerAnnotationView
             switch annotation {
             case is MKUserLocation: return nil
@@ -138,14 +139,14 @@ extension MKMapViewRepresentable {
     }
 }
 
-extension MKMapViewRepresentable {
+public extension MKMapViewRepresentable {
     struct MarkerColors {
         /// Цвет маркера для кластера
         let cluster: UIColor
         /// Цвет маркера для обычной аннотации
         let regular: UIColor
-        
-        init(cluster: UIColor = .orange, regular: UIColor = .red) {
+
+        public init(cluster: UIColor = .orange, regular: UIColor = .red) {
             self.cluster = cluster
             self.regular = regular
         }
