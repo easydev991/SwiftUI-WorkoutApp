@@ -129,13 +129,15 @@ private extension SportsGroundsMapView {
                 .padding([.top, .horizontal])
             }
         case .map:
-            MapViewUI(
+            MKMapViewRepresentable(
                 region: viewModel.region,
-                ignoreUserLocation: viewModel.ignoreUserLocation,
+                hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredGrounds,
-                openSelected: { ground in
-                    selectedGround = ground
-                    showDetailsView = true
+                openSelected: { annotation in
+                    if let ground = filteredGrounds.first(where: { $0 === annotation }) {
+                        selectedGround = ground
+                        showDetailsView = true
+                    }
                 }
             )
             .opacity(viewModel.shouldHideMap ? 0 : 1)
