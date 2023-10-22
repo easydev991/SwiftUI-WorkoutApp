@@ -133,7 +133,7 @@ private extension SportsGroundsMapView {
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredGrounds,
-                openSelected: { annotation in
+                didSelect: { annotation in
                     if let ground = filteredGrounds.first(where: { $0 === annotation }) {
                         selectedGround = ground
                         showDetailsView = true

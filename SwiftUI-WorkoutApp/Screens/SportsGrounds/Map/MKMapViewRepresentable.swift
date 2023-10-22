@@ -9,7 +9,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
     private let showsUserLocation: Bool
     private let annotations: [any MKAnnotation]
     private let markerColors: MarkerColors
-    private let openSelected: (any MKAnnotation) -> Void
+    private let didSelect: (any MKAnnotation) -> Void
     
     /// Инициализатор
     /// - Parameters:
@@ -19,7 +19,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
     ///   - showsUserLocation: Нужно ли показывать текущую локацию пользователя, по умолчанию `true`
     ///   - annotations: Массив аннотаций (точек) для отображения на карте
     ///   - markerColors: Цвета для маркеров аннотаций, по умолчанию `orange` для кластера и `red` для обычной аннотации
-    ///   - openSelected: Возвращает аннотацию, чью карточку с информацией нажал пользователь
+    ///   - didSelect: Возвращает аннотацию, чью карточку с информацией нажал пользователь
     init(
         region: MKCoordinateRegion,
         cameraZoomRange: MKMapView.CameraZoomRange? = .init(
@@ -30,7 +30,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
         showsUserLocation: Bool = true,
         annotations: [any MKAnnotation],
         markerColors: MarkerColors = .init(),
-        openSelected: @escaping (any MKAnnotation) -> Void
+        didSelect: @escaping (any MKAnnotation) -> Void
     ) {
         self.region = region
         self.cameraZoomRange = cameraZoomRange
@@ -38,7 +38,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
         self.showsUserLocation = showsUserLocation
         self.annotations = annotations
         self.markerColors = markerColors
-        self.openSelected = openSelected
+        self.didSelect = didSelect
     }
 
     func makeUIView(context: Context) -> MKMapView {
@@ -68,7 +68,7 @@ struct MKMapViewRepresentable: UIViewRepresentable {
 
 extension MKMapViewRepresentable {
     final class Coordinator: NSObject, MKMapViewDelegate {
-        private let annotationID = "SingleAnnotation"
+        private let annotationID = "RegularAnnotation"
         private let clusterID = "Cluster"
         private let parent: MKMapViewRepresentable
 
@@ -113,7 +113,7 @@ extension MKMapViewRepresentable {
         }
 
         func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
-            if let annotation = view.annotation { parent.openSelected(annotation) }
+            if let annotation = view.annotation { parent.didSelect(annotation) }
         }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
