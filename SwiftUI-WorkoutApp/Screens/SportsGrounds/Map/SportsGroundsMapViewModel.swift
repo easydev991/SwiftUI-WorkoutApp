@@ -1,8 +1,8 @@
-import Combine
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
 import SWFileManager
+import SWMapKit
 import SWModels
 import SWNetworkClient
 
@@ -14,7 +14,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     @Published private(set) var addressString = ""
     @Published private(set) var region = MKCoordinateRegion()
     @Published private(set) var ignoreUserLocation = false
-    /// Координаты города в профиле пользователя
+    /// Координаты города в профиле авторизованного пользователя
     private var userCoordinates: (Double, Double) = (0, 0)
 
     override init() {
@@ -46,20 +46,17 @@ extension SportsGroundsMapViewModel {
 
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
-                guard let self, let target = places?.first else { return }
-                let street = target.thoroughfare.valueOrEmpty
-                if let house = target.subThoroughfare {
-                    addressString = street + " " + house
-                } else {
-                    addressString = street
-                }
-            }
-            region = .init(
-                center: location.coordinate,
-                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-            )
+        guard let location = locations.last else { return }
+        let oldCoordinates = LocationCoordinates(region.center)
+        let newCoordinates = LocationCoordinates(location.coordinate)
+        guard oldCoordinates.differs(from: newCoordinates) else { return }
+        region = .init(
+            center: location.coordinate,
+            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+            guard let self, let target = places?.first else { return }
+            PlacemarkFormatter(placemark: target).updateIfNeeded(&addressString)
         }
     }
 

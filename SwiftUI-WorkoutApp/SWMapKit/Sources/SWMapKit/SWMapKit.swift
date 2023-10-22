@@ -59,9 +59,12 @@ public struct MKMapViewRepresentable: UIViewRepresentable {
         return view
     }
 
-    public func updateUIView(_ mapView: MKMapView, context: Context) {
+    public func updateUIView(_ mapView: MKMapView, context _: Context) {
         setTrackingButton(hideTrackingButton, on: mapView)
-        context.coordinator.updateIfNeeded(mapView, with: annotations, in: region)
+        RegionOrganizer(old: mapView.region, new: region)
+            .updateRegionIfNeeded(for: mapView)
+        AnnotationsOrganizer(old: mapView.annotations, new: annotations)
+            .updateAnnotationsIfNeeded(for: mapView)
     }
 
     public func makeCoordinator() -> Coordinator { .init(self) }
@@ -80,36 +83,6 @@ public extension MKMapViewRepresentable {
             case is MKClusterAnnotation, is MKUserLocation: break
             default:
                 view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-            }
-        }
-
-        /// Обновляет карту, если это необходимо
-        /// - Parameters:
-        ///   - mapView: Карта, которую нужно обновить
-        ///   - annotations: Актуальные точки
-        ///   - region: Актуальный регион
-        func updateIfNeeded(
-            _ mapView: MKMapView,
-            with annotations: [any MKAnnotation],
-            in region: MKCoordinateRegion
-        ) {
-            if mapView.region.center.latitude != region.center.latitude,
-               mapView.region.center.longitude != region.center.longitude {
-                mapView.setRegion(region, animated: true)
-            }
-            let mapAnnotations = mapView.annotations
-            if annotations.isEmpty, mapAnnotations.isEmpty {
-                // Нет точек на карте, ничего не делаем
-                return
-            }
-            let filteredMapAnnotations = mapAnnotations.filter {
-                type(of: $0) != MKClusterAnnotation.self && type(of: $0) != MKUserLocation.self
-            }
-            if annotations.count != filteredMapAnnotations.count {
-                if !mapAnnotations.isEmpty {
-                    mapView.removeAnnotations(mapAnnotations)
-                }
-                mapView.addAnnotations(annotations)
             }
         }
 
