@@ -65,6 +65,9 @@ public struct MKMapViewRepresentable: UIViewRepresentable {
             .updateRegionIfNeeded(for: mapView)
         AnnotationsOrganizer(old: mapView.annotations, new: annotations)
             .updateAnnotationsIfNeeded(for: mapView)
+        if mapView.showsUserLocation != showsUserLocation {
+            mapView.showsUserLocation = showsUserLocation
+        }
     }
 
     public func makeCoordinator() -> Coordinator { .init(self) }

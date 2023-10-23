@@ -47,13 +47,15 @@ extension SportsGroundsMapViewModel {
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        if !isRegionSet {
+            region = .init(
+                center: location.coordinate,
+                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+        }
         let oldCoordinates = LocationCoordinates(region.center)
         let newCoordinates = LocationCoordinates(location.coordinate)
         guard oldCoordinates.differs(from: newCoordinates) else { return }
-        region = .init(
-            center: location.coordinate,
-            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        )
         CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
             guard let self, let target = places?.first else { return }
             PlacemarkFormatter(placemark: target).updateIfNeeded(&addressString)
