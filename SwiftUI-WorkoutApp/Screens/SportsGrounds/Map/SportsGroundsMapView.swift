@@ -1,7 +1,7 @@
 import DateFormatterService
 import DesignSystem
 import NetworkStatus
-import SWFileManager
+import FileManager991
 import SwiftUI
 import SWMapKit
 import SWModels
@@ -30,7 +30,7 @@ struct SportsGroundsMapView: View {
     }
 
     /// Хранилище файла с площадками
-    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
+    private let swStorage = FileManager991(fileName: "SportsGrounds.json")
 
     var body: some View {
         NavigationView {
