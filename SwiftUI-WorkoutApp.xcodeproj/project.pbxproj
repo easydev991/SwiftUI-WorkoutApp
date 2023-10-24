@@ -70,11 +70,11 @@
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D3297BE872009380DF /* DateFormatterService */; };
+		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
 		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageView.swift */; };
 		67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */; };
-		67EC6A062ADAF2980087496D /* SWFileManager in Frameworks */ = {isa = PBXBuildFile; productRef = 67EC6A052ADAF2980087496D /* SWFileManager */; };
 		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
 		67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64E28338A2E008A7968 /* EventDetailsView.swift */; };
 		67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */ = {isa = PBXBuildFile; productRef = 67FE5584297BF82000DC52BF /* ShortAddressService */; };
@@ -167,7 +167,6 @@
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
 		67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailScreen.swift; sourceTree = "<group>"; };
-		67EC6A042ADAF2840087496D /* SWFileManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWFileManager; path = "SwiftUI-WorkoutApp/SWFileManager"; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
 		67FE5583297BF78500DC52BF /* ShortAddressService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ShortAddressService; path = "SwiftUI-WorkoutApp/ShortAddressService"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -196,9 +195,9 @@
 				678670A12AE5721000E551D1 /* SWMapKit in Frameworks */,
 				67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */,
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
-				67EC6A062ADAF2980087496D /* SWFileManager in Frameworks */,
 				67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */,
 				6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */,
+				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
 				675A370A2854810B00DAE071 /* Utils in Frameworks */,
 				67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */,
@@ -416,7 +415,6 @@
 			isa = PBXGroup;
 			children = (
 				6786709F2AE5718700E551D1 /* SWMapKit */,
-				67EC6A042ADAF2840087496D /* SWFileManager */,
 				678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */,
 				6734D39229BC693D0000B5B1 /* DesignSystem */,
 				671CD13729A28CB800645678 /* SWModels */,
@@ -676,8 +674,8 @@
 				671CD13829A2904200645678 /* SWModels */,
 				6734D39329BC69580000B5B1 /* DesignSystem */,
 				678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */,
-				67EC6A052ADAF2980087496D /* SWFileManager */,
 				678670A02AE5721000E551D1 /* SWMapKit */,
+				67D67DE12AE84D9700F7A8B0 /* FileManager991 */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -720,6 +718,7 @@
 				6704314F2964544D0090CAC3 /* XCRemoteSwiftPackageReference "FeedbackSender" */,
 				67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */,
 				67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */,
+				67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */,
 			);
 			productRefGroup = 6798AA3B280AEDC900DB76F1 /* Products */;
 			projectDirPath = "";
@@ -1094,8 +1093,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				MARKETING_VERSION = 3.4.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1130,8 +1129,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				MARKETING_VERSION = 3.4.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1200,6 +1199,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OlegEremenko991/FileManager991";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/OlegEremenko991/ImagePicker";
@@ -1245,9 +1252,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = DateFormatterService;
 		};
-		67EC6A052ADAF2980087496D /* SWFileManager */ = {
+		67D67DE12AE84D9700F7A8B0 /* FileManager991 */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = SWFileManager;
+			package = 67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */;
+			productName = FileManager991;
 		};
 		67F9534E2964A5700077DFDC /* ImagePicker */ = {
 			isa = XCSwiftPackageProductDependency;

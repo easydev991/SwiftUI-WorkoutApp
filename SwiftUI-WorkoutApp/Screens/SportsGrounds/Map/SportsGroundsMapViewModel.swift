@@ -1,7 +1,6 @@
 import DateFormatterService
 import MapKit.MKGeometry
 import ShortAddressService
-import SWFileManager
 import SWMapKit
 import SWModels
 import SWNetworkClient

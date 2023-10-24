@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "filemanager991",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/FileManager991",
+      "state" : {
+        "revision" : "a38b182671ed73139d76082ecd776981065e4cc1",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "imagepicker",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/ImagePicker",
