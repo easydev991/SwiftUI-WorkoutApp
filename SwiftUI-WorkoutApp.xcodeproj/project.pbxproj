@@ -17,7 +17,6 @@
 		671CD13929A2904200645678 /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 671CD13829A2904200645678 /* SWModels */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		672F2BE32832BC7C0000A193 /* oldEvents.json in Resources */ = {isa = PBXBuildFile; fileRef = 672F2BE22832BC7C0000A193 /* oldEvents.json */; };
-		6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6734D39329BC69580000B5B1 /* DesignSystem */; };
 		67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordView.swift */; };
 		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
@@ -71,6 +70,7 @@
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D3297BE872009380DF /* DateFormatterService */; };
 		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
+		67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE42AE8526600F7A8B0 /* SWDesignSystem */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
 		67D916862838F0DD0098D3CB /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogView.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageView.swift */; };
@@ -108,7 +108,6 @@
 		671CD13729A28CB800645678 /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWModels; path = "SwiftUI-WorkoutApp/SWModels"; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		672F2BE22832BC7C0000A193 /* oldEvents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldEvents.json; sourceTree = "<group>"; };
-		6734D39229BC693D0000B5B1 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = "SwiftUI-WorkoutApp/DesignSystem"; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsListView.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* SportsGroundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailView.swift; sourceTree = "<group>"; };
@@ -193,10 +192,10 @@
 				678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */,
 				670431512964544D0090CAC3 /* FeedbackSender in Frameworks */,
 				678670A12AE5721000E551D1 /* SWMapKit in Frameworks */,
+				67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */,
 				67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */,
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
 				67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */,
-				6734D39429BC69580000B5B1 /* DesignSystem in Frameworks */,
 				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
 				675A370A2854810B00DAE071 /* Utils in Frameworks */,
@@ -416,7 +415,6 @@
 			children = (
 				6786709F2AE5718700E551D1 /* SWMapKit */,
 				678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */,
-				6734D39229BC693D0000B5B1 /* DesignSystem */,
 				671CD13729A28CB800645678 /* SWModels */,
 				67FE5583297BF78500DC52BF /* ShortAddressService */,
 				67CB32D2297BE737009380DF /* DateFormatterService */,
@@ -672,10 +670,10 @@
 				67CB32D3297BE872009380DF /* DateFormatterService */,
 				67FE5584297BF82000DC52BF /* ShortAddressService */,
 				671CD13829A2904200645678 /* SWModels */,
-				6734D39329BC69580000B5B1 /* DesignSystem */,
 				678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */,
 				678670A02AE5721000E551D1 /* SWMapKit */,
 				67D67DE12AE84D9700F7A8B0 /* FileManager991 */,
+				67D67DE42AE8526600F7A8B0 /* SWDesignSystem */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -719,6 +717,7 @@
 				67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */,
 				67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */,
 				67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */,
+				67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */,
 			);
 			productRefGroup = 6798AA3B280AEDC900DB76F1 /* Products */;
 			projectDirPath = "";
@@ -1207,6 +1206,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OlegEremenko991/SWDesignSystem";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/OlegEremenko991/ImagePicker";
@@ -1226,10 +1233,6 @@
 		671CD13829A2904200645678 /* SWModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWModels;
-		};
-		6734D39329BC69580000B5B1 /* DesignSystem */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DesignSystem;
 		};
 		675A37092854810B00DAE071 /* Utils */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1256,6 +1259,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */;
 			productName = FileManager991;
+		};
+		67D67DE42AE8526600F7A8B0 /* SWDesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */;
+			productName = SWDesignSystem;
 		};
 		67F9534E2964A5700077DFDC /* ImagePicker */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,7 +1,7 @@
 import CoreLocation.CLLocation
-import DesignSystem
 import ImagePicker
 import NetworkStatus
+import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient

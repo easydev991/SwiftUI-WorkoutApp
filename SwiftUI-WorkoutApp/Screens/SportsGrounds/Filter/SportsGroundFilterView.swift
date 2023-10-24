@@ -1,5 +1,5 @@
-import DesignSystem
 import ShortAddressService
+import SWDesignSystem
 import SwiftUI
 import SWModels
 

@@ -1,7 +1,7 @@
 import DateFormatterService
-import DesignSystem
-import NetworkStatus
 import FileManager991
+import NetworkStatus
+import SWDesignSystem
 import SwiftUI
 import SWMapKit
 import SWModels

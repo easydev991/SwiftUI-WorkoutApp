@@ -1,5 +1,5 @@
-import DesignSystem
 import NetworkStatus
+import SWDesignSystem
 import SwiftUI
 
 /// Универсальный экран для отправки текста на сервер

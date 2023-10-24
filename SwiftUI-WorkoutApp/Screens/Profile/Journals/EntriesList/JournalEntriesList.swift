@@ -1,6 +1,6 @@
-import DesignSystem
 import FeedbackSender
 import NetworkStatus
+import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient

@@ -1,5 +1,5 @@
-import DesignSystem
 import MapKit
+import SWDesignSystem
 import SwiftUI
 import SWModels
 
