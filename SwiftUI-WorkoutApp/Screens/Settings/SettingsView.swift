@@ -1,5 +1,5 @@
-import DesignSystem
 import FeedbackSender
+import SWDesignSystem
 import SwiftUI
 import SWModels
 

@@ -1,5 +1,5 @@
-import DesignSystem
 import ImagePicker
+import SWDesignSystem
 import SwiftUI
 
 struct PickedImagesGrid: View {

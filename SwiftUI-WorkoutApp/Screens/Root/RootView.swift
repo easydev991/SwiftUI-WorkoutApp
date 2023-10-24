@@ -1,4 +1,4 @@
-import DesignSystem
+import SWDesignSystem
 import SwiftUI
 
 struct RootView: View {
