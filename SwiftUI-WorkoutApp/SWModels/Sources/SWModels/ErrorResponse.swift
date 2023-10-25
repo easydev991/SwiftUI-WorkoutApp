@@ -5,10 +5,10 @@ public struct ErrorResponse: Codable {
     public let type: String?
 
     public var realCode: Int {
-        if let code, code != .zero {
+        if let code, code != 0 {
             code
         } else {
-            status.valueOrZero
+            status ?? 0
         }
     }
 }

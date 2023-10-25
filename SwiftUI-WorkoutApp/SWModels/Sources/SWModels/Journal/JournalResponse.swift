@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Модель с информацией о дневнике
 public struct JournalResponse: Codable, Identifiable, Equatable {
@@ -58,12 +58,12 @@ public extension JournalResponse {
     }
 
     var title: String {
-        get { titleOptional.valueOrEmpty }
+        get { titleOptional ?? "" }
         set { titleOptional = newValue }
     }
 
     var formattedLastMessage: String {
-        lastMessageText.valueOrEmpty.withoutHTML
+        (lastMessageText ?? "").withoutHTML
     }
 
     var lastMessageDateString: String {
@@ -71,12 +71,12 @@ public extension JournalResponse {
     }
 
     var viewAccessType: JournalAccess {
-        get { .init(viewAccess.valueOrZero) }
+        get { .init(viewAccess ?? 0) }
         set { viewAccess = newValue.rawValue }
     }
 
     var commentAccessType: JournalAccess {
-        get { .init(commentAccess.valueOrZero) }
+        get { .init(commentAccess ?? 0) }
         set { commentAccess = newValue.rawValue }
     }
 }

@@ -1,11 +1,11 @@
-import DateFormatterService
 import FileManager991
+import MapView991
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
-import SWMapKit
 import SWModels
 import SWNetworkClient
+import Utils
 
 /// Экран с картой и площадками
 struct SportsGroundsMapView: View {
@@ -129,7 +129,7 @@ private extension SportsGroundsMapView {
                 .padding([.top, .horizontal])
             }
         case .map:
-            MKMapViewRepresentable(
+            MapView991(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredGrounds,

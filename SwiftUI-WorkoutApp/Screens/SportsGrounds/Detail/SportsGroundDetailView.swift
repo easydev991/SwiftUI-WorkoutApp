@@ -95,15 +95,17 @@ private extension SportsGroundDetailView {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(ground.shortTitle)
-                    .font(.title.bold())
+                    .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.swMainText)
-                Spacer()
-                Text(ground.subtitle.valueOrEmpty)
-                    .foregroundColor(.swSmallElements)
+                if let subtitle = ground.subtitle, !subtitle.isEmpty {
+                    Text(subtitle)
+                        .foregroundColor(.swSmallElements)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
             }
             SportsGroundLocationInfo(
                 ground: $ground,
-                address: ground.address.valueOrEmpty,
+                address: ground.address ?? "",
                 appleMapsURL: ground.appleMapsURL
             )
             if defaults.isAuthorized {

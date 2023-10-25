@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Модель с информацией о диалоге
 public struct DialogResponse: Codable, Identifiable {
@@ -50,7 +50,7 @@ public extension DialogResponse {
     }
 
     var lastMessageFormatted: String {
-        lastMessageText.valueOrEmpty.withoutHTML
+        (lastMessageText ?? "").withoutHTML
     }
 
     var lastMessageDateString: String {
@@ -65,7 +65,7 @@ public extension DialogResponse {
     }
 
     var unreadMessagesCount: Int {
-        get { unreadCountOptional.valueOrZero }
+        get { unreadCountOptional ?? 0 }
         set { unreadCountOptional = newValue }
     }
 

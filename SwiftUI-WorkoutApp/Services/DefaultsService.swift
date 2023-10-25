@@ -1,6 +1,6 @@
-import DateFormatterService
 import SwiftUI
 import SWModels
+import Utils
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
@@ -53,11 +53,11 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     var mainUserCountryID: Int {
-        (mainUserInfo?.countryID).valueOrZero
+        mainUserInfo?.countryID ?? 0
     }
 
     var mainUserCityID: Int {
-        (mainUserInfo?.cityID).valueOrZero
+        mainUserInfo?.cityID ?? 0
     }
 
     var blacklistedUsers: [UserResponse] {
@@ -112,9 +112,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func saveUserInfo(_ info: UserResponse) throws {
-        hasFriends = info.friendsCount.valueOrZero != .zero
-        setHasSportsGrounds(info.usedSportsGroundsCount != .zero)
-        setHasJournals(info.journalsCount.valueOrZero != .zero)
+        hasFriends = info.friendsCount ?? 0 != 0
+        setHasSportsGrounds(info.usedSportsGroundsCount != 0)
+        setHasJournals(info.journalsCount ?? 0 != 0)
         if !isAuthorized { isAuthorized = true }
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)

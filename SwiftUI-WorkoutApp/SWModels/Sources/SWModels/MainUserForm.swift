@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Форма для отправки при регистрации или изменении данных профиля
 public struct MainUserForm: Codable, Equatable {
@@ -30,14 +30,14 @@ public struct MainUserForm: Codable, Equatable {
     }
 
     public init(_ user: UserResponse) {
-        self.userName = user.userName.valueOrEmpty
-        self.fullName = user.fullName.valueOrEmpty
-        self.email = user.email.valueOrEmpty
+        self.userName = user.userName ?? ""
+        self.fullName = user.fullName ?? ""
+        self.email = user.email ?? ""
         self.password = ""
         self.birthDate = user.birthDate
-        self.country = .init(cities: [], id: user.countryID.valueOrZero.description, name: "")
-        self.city = .init(id: user.cityID.valueOrZero.description)
-        self.genderCode = user.genderCode.valueOrZero
+        self.country = .init(cities: [], id: (user.countryID ?? 0).description, name: "")
+        self.city = .init(id: (user.cityID ?? 0).description)
+        self.genderCode = user.genderCode ?? 0
     }
 }
 

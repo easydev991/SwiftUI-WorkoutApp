@@ -70,7 +70,6 @@ public extension DateFormatterService {
         case isoShortDate = "yyyy-MM-dd"
         case serverDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss"
         case isoDateTimeSec = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        case fullDateMediumTime = "dd.MM.yyyy, HH:mm"
         case dayMonthMediumTime = "d MMM, HH:mm"
         case dayMonthYear = "d MMM yyyy"
         case dayMonth = "d MMM"

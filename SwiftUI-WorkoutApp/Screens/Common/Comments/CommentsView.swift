@@ -20,7 +20,7 @@ struct CommentsView: View {
                     ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
                         CommentRowView(
                             avatarURL: comment.user?.avatarURL,
-                            userName: (comment.user?.userName).valueOrEmpty,
+                            userName: comment.user?.userName ?? "",
                             dateText: comment.formattedDateString,
                             bodyText: comment.formattedBody,
                             isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,

@@ -1,5 +1,5 @@
 import Foundation
-import ShortAddressService
+import Utils
 
 /// Упрощенная модель данных пользователя
 public struct UserModel: Identifiable, Hashable {
@@ -16,17 +16,17 @@ public struct UserModel: Identifiable, Hashable {
 
     public init(_ user: UserResponse?) {
         if let user {
-            self.id = user.userID.valueOrZero
+            self.id = user.userID ?? 0
             self.imageURL = user.avatarURL
-            self.name = user.userName.valueOrEmpty
+            self.name = user.userName ?? ""
             self.gender = "\(user.gender), "
             self.age = user.age
-            self.countryID = user.countryID.valueOrZero
-            self.cityID = user.cityID.valueOrZero
+            self.countryID = user.countryID ?? 0
+            self.cityID = user.cityID ?? 0
             self.usesSportsGrounds = user.usedSportsGroundsCount
             self.addedSportsGrounds = user.addedSportsGrounds ?? []
-            self.friendsCount = user.friendsCount.valueOrZero
-            self.journalsCount = user.journalsCount.valueOrZero
+            self.friendsCount = user.friendsCount ?? 0
+            self.journalsCount = user.journalsCount ?? 0
         } else {
             self = .emptyValue
         }
@@ -34,9 +34,9 @@ public struct UserModel: Identifiable, Hashable {
 
     public init(from dialog: DialogResponse) {
         self.init(
-            id: dialog.anotherUserID.valueOrZero,
+            id: dialog.anotherUserID ?? 0,
             imageURL: dialog.anotherUserImageURL,
-            name: dialog.anotherUserName.valueOrEmpty,
+            name: dialog.anotherUserName ?? "",
             gender: "",
             age: 0,
             countryID: 0,

@@ -37,6 +37,15 @@
       }
     },
     {
+      "identity" : "mapview991",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegEremenko991/MapView991",
+      "state" : {
+        "revision" : "e006bdd1f01909bcdd100ec05129bf95d04f052e",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "networkstatus",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/NetworkStatus",

@@ -113,7 +113,7 @@ private extension DialogListView {
         DialogRowView(
             model: .init(
                 avatarURL: model.anotherUserImageURL,
-                authorName: model.anotherUserName.valueOrEmpty,
+                authorName: model.anotherUserName ?? "",
                 dateText: model.lastMessageDateString,
                 messageText: model.lastMessageFormatted,
                 unreadCount: model.unreadMessagesCount

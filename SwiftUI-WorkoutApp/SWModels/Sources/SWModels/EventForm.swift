@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Форма для отправки создании/изменении мероприятия
 public struct EventForm: Codable {
@@ -10,11 +10,11 @@ public struct EventForm: Codable {
     public var newMediaFiles = [MediaFile]()
 
     public init(_ event: EventResponse?) {
-        self.title = (event?.formattedTitle).valueOrEmpty
-        self.description = (event?.formattedDescription).valueOrEmpty
+        self.title = event?.formattedTitle ?? ""
+        self.description = event?.formattedDescription ?? ""
         self.date = DateFormatterService.dateFromIsoString(event?.beginDate)
         self.sportsGround = event?.sportsGround ?? .emptyValue
-        self.photosCount = (event?.photos.count).valueOrZero
+        self.photosCount = event?.photos.count ?? 0
     }
 }
 
@@ -29,11 +29,11 @@ public extension EventForm {
     }
 
     var countryID: Int {
-        sportsGround.countryID.valueOrZero
+        sportsGround.countryID ?? 0
     }
 
     var cityID: Int {
-        sportsGround.cityID.valueOrZero
+        sportsGround.cityID ?? 0
     }
 
     /// Готовность формы к созданию нового мероприятия

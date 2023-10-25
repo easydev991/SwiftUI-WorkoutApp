@@ -7,19 +7,10 @@ let package = Package(
     name: "SWModels",
     platforms: [.iOS(.v15)],
     products: [
-        .library(
-            name: "SWModels",
-            targets: ["SWModels"]
-        )
+        .library(name: "SWModels", targets: ["SWModels"])
     ],
-    dependencies: [
-        .package(path: "../Utils"),
-        .package(path: "../ShortAddressService")
-    ],
+    dependencies: [.package(path: "../Utils")],
     targets: [
-        .target(
-            name: "SWModels",
-            dependencies: ["Utils", "ShortAddressService"]
-        )
+        .target(name: "SWModels", dependencies: ["Utils"])
     ]
 )
