@@ -1,5 +1,4 @@
 import Foundation
-import Utils
 
 public protocol ShortAddressProtocol {
     /// Адрес в формате "Страна, Город"

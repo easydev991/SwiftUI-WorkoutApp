@@ -64,7 +64,7 @@ extension SWClient {
             throw handleError(from: data, response: response)
         }
         #if DEBUG
-        print("--- ✅ Получили JSON по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
+        print("--- ✅ Получили JSON по запросу: ", (response?.url?.absoluteString) ?? "")
         print(data.prettyJson)
         do {
             _ = try JSONDecoder().decode(type, from: data)
@@ -80,8 +80,8 @@ extension SWClient {
     func handle(_ response: URLResponse?) async throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
         #if DEBUG
-        print("--- ✅ Получили статус по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
-        print(responseCode.valueOrZero)
+        print("--- ✅ Получили статус по запросу: ", response?.url?.absoluteString ?? "")
+        print(responseCode ?? 0)
         print("🏁")
         #endif
         guard responseCode == successCode else {
@@ -100,7 +100,7 @@ extension SWClient {
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, response: URLResponse?) -> APIError {
         #if DEBUG
-        print("--- ⛔️ JSON с ошибкой по запросу: ", (response?.url?.absoluteString).valueOrEmpty)
+        print("--- ⛔️ JSON с ошибкой по запросу: ", response?.url?.absoluteString ?? "")
         print(data.prettyJson)
         print("🏁")
         #endif

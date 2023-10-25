@@ -25,7 +25,7 @@ public struct JournalCommonInfo {
         self.id = journalEntryResponse.id
         self.authorID = journalEntryResponse.authorID
         self.imageURL = journalEntryResponse.imageURL
-        self.entryTitle = journalEntryResponse.authorName.valueOrEmpty
+        self.entryTitle = journalEntryResponse.authorName ?? ""
         self.entryDateString = journalEntryResponse.messageDateString
         self.formattedMessage = journalEntryResponse.formattedMessage
     }

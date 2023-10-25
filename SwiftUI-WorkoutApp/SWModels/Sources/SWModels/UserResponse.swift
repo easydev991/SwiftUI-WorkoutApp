@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Модель данных пользователя со всеми доступными свойствами
 public struct UserResponse: Codable, Hashable {
@@ -65,7 +65,7 @@ public struct UserResponse: Codable, Hashable {
 
 public extension UserResponse {
     var age: Int {
-        Calendar.current.dateComponents([.year], from: birthDate, to: .now).year.valueOrZero
+        Calendar.current.dateComponents([.year], from: birthDate, to: .now).year ?? 0
     }
 
     var birthDate: Date {
@@ -77,15 +77,18 @@ public extension UserResponse {
     }
 
     var gender: String {
-        NSLocalizedString((Gender(genderCode.valueOrZero)?.description).valueOrEmpty, comment: "")
+        guard let genderCode, let gender = Gender(genderCode) else { return "" }
+        return NSLocalizedString(gender.description, comment: "")
     }
 
     var friendRequestsCount: Int {
-        Int(friendRequestsCountString.valueOrEmpty).valueOrZero
+        guard let friendRequestsCountString else { return 0 }
+        return Int(friendRequestsCountString) ?? 0
     }
 
     var usedSportsGroundsCount: Int {
-        Int(sportsGroundsCountString.valueOrEmpty).valueOrZero
+        guard let sportsGroundsCountString else { return 0 }
+        return Int(sportsGroundsCountString) ?? 0
     }
 
     var regForm: MainUserForm {

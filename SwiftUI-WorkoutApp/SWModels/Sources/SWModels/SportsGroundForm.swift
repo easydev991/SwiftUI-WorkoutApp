@@ -10,10 +10,10 @@ public struct SportsGroundForm: Codable {
     public var newMediaFiles = [MediaFile]()
 
     public init(_ sportsGround: SportsGround) {
-        self.address = sportsGround.address.valueOrEmpty
+        self.address = sportsGround.address ?? ""
         self.latitude = sportsGround.latitude
         self.longitude = sportsGround.longitude
-        self.cityID = sportsGround.cityID.valueOrZero
+        self.cityID = sportsGround.cityID ?? 0
         self.typeID = sportsGround.typeID
         self.sizeID = sportsGround.sizeID
         self.photosCount = sportsGround.photos.count
@@ -38,12 +38,12 @@ public struct SportsGroundForm: Codable {
 public extension SportsGroundForm {
     var gradeString: String {
         get { SportsGroundGrade(id: typeID).rawValue }
-        set { typeID = Int(newValue).valueOrZero }
+        set { typeID = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
         get { SportsGroundSize(id: sizeID).rawValue }
-        set { sizeID = Int(newValue).valueOrZero }
+        set { sizeID = Int(newValue) ?? 0 }
     }
 
     /// Готовность формы к созданию новой площадки

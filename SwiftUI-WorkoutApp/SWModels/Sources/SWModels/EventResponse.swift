@@ -1,6 +1,5 @@
-import DateFormatterService
 import Foundation
-import ShortAddressService
+import Utils
 
 /// Модель со всей информацией о мероприятии
 public struct EventResponse: Codable, Identifiable {
@@ -110,7 +109,8 @@ extension EventResponse: Equatable {
 public extension EventResponse {
     var formattedTitle: String {
         get {
-            title.valueOrEmpty
+            guard let title else { return "" }
+            return title
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .capitalizingFirstLetter
         }
@@ -138,7 +138,7 @@ public extension EventResponse {
 
     var formattedDescription: String {
         get {
-            eventDescription.valueOrEmpty.withoutHTML
+            (eventDescription ?? "").withoutHTML
         }
         set { eventDescription = newValue }
     }
@@ -146,7 +146,7 @@ public extension EventResponse {
     var sportsGround: SportsGround {
         get {
             .init(
-                id: sportsGroundID.valueOrZero,
+                id: sportsGroundID ?? 0,
                 typeID: 0,
                 sizeID: 0,
                 address: fullAddress,
@@ -156,8 +156,8 @@ public extension EventResponse {
                 countryID: countryID,
                 createDate: nil,
                 modifyDate: nil,
-                latitude: latitude.valueOrEmpty,
-                longitude: longitude.valueOrEmpty,
+                latitude: latitude ?? "",
+                longitude: longitude ?? "",
                 name: nil,
                 photosOptional: nil,
                 preview: nil,
@@ -209,18 +209,18 @@ public extension EventResponse {
 
     /// Пользователь участвует в этом мероприятии
     var trainHere: Bool {
-        get { trainHereOptional.isTrue }
+        get { trainHereOptional ?? false }
         set { trainHereOptional = newValue }
     }
 
     var authorID: Int {
-        (author?.userID).valueOrZero
+        author?.userID ?? 0
     }
 
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
-        participantsCount.valueOrZero > .zero && !participants.isEmpty
-            || commentsCount.valueOrZero > .zero && !comments.isEmpty
+        participantsCount ?? 0 > 0 && !participants.isEmpty
+            || commentsCount ?? 0 > 0 && !comments.isEmpty
     }
 
     static var emptyValue: EventResponse {

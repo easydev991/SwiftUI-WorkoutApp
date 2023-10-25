@@ -205,7 +205,7 @@ private extension EditAccountScreen {
         isLoading = true
         editUserTask = Task {
             do {
-                let userID = (defaults.mainUserInfo?.userID).valueOrZero
+                let userID = defaults.mainUserInfo?.userID ?? 0
                 if try await SWClient(with: defaults).editUser(userID, model: userForm) {
                     dismiss()
                 }

@@ -152,7 +152,7 @@ private extension EventDetailsView {
                     )
                 }
             }
-            if event.isCurrent.isTrue {
+            if event.isCurrent ?? false {
                 FormRowView(
                     title: "Пойду на мероприятие",
                     trailingContent: .toggle(
@@ -356,7 +356,7 @@ private extension EventDetailsView {
 
     var showParticipantSection: Bool {
         if defaults.isAuthorized {
-            event.hasParticipants || event.isCurrent.isTrue
+            event.hasParticipants || event.isCurrent ?? false
         } else {
             false
         }

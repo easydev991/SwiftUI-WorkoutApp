@@ -72,7 +72,7 @@ struct DialogView: View {
                 anotherUserProfileButton
             }
         }
-        .navigationTitle(dialog.anotherUserName.valueOrEmpty)
+        .navigationTitle(dialog.anotherUserName ?? "")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -153,7 +153,7 @@ private extension DialogView {
     func markAsRead() async {
         guard dialog.hasUnreadMessages else { return }
         do {
-            let userID = dialog.anotherUserID.valueOrZero
+            let userID = dialog.anotherUserID ?? 0
             if try await SWClient(with: defaults).markAsRead(from: userID) {
                 markedAsReadClbk(dialog)
             }
@@ -178,7 +178,7 @@ private extension DialogView {
             if isLoading { return }
             isLoading = true
             do {
-                let userID = dialog.anotherUserID.valueOrZero
+                let userID = dialog.anotherUserID ?? 0
                 if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {
                     newMessage = ""
                     await askForMessages(refresh: true)

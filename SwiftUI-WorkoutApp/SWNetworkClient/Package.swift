@@ -7,18 +7,10 @@ let package = Package(
     name: "SWNetworkClient",
     platforms: [.iOS(.v15)],
     products: [
-        .library(
-            name: "SWNetworkClient",
-            targets: ["SWNetworkClient"]
-        )
+        .library(name: "SWNetworkClient", targets: ["SWNetworkClient"])
     ],
-    dependencies: [
-        .package(path: "../SWModels")
-    ],
+    dependencies: [.package(path: "../SWModels")],
     targets: [
-        .target(
-            name: "SWNetworkClient",
-            dependencies: ["SWModels"]
-        )
+        .target(name: "SWNetworkClient", dependencies: ["SWModels"])
     ]
 )

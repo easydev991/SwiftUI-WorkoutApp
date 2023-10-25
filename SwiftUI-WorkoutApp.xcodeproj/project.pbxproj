@@ -22,7 +22,6 @@
 		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
 		674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0622282A9896007E75C6 /* SearchUsersView.swift */; };
-		675083AD297C0A60008D8C52 /* ShortAddressServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675083AC297C0A60008D8C52 /* ShortAddressServiceTests.swift */; };
 		67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515698283FEC3100501346 /* PickedImagesGrid.swift */; };
 		6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */; };
 		6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */; };
@@ -38,7 +37,6 @@
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
-		678670A12AE5721000E551D1 /* SWMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 678670A02AE5721000E551D1 /* SWMapKit */; };
 		67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* SportsGroundFormView.swift */; };
 		678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
@@ -68,7 +66,7 @@
 		67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */; };
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
-		67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D3297BE872009380DF /* DateFormatterService */; };
+		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
 		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
 		67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE42AE8526600F7A8B0 /* SWDesignSystem */; };
 		67D916812838E2460098D3CB /* DialogListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogListView.swift */; };
@@ -77,7 +75,6 @@
 		67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */; };
 		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
 		67FBF64F28338A2E008A7968 /* EventDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64E28338A2E008A7968 /* EventDetailsView.swift */; };
-		67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */ = {isa = PBXBuildFile; productRef = 67FE5584297BF82000DC52BF /* ShortAddressService */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,7 +111,6 @@
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
 		674D0622282A9896007E75C6 /* SearchUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersView.swift; sourceTree = "<group>"; };
 		675083AA297C0A60008D8C52 /* WorkoutAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		675083AC297C0A60008D8C52 /* ShortAddressServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortAddressServiceTests.swift; sourceTree = "<group>"; };
 		67515698283FEC3100501346 /* PickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedImagesGrid.swift; sourceTree = "<group>"; };
 		6758463A2965B0F6000BA5E0 /* UIImage+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Identifiable.swift"; sourceTree = "<group>"; };
 		6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
@@ -131,7 +127,6 @@
 		6762775A283A87AD009C203F /* JournalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCell.swift; sourceTree = "<group>"; };
 		6766A035284603CA0033F1E8 /* TabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModel.swift; sourceTree = "<group>"; };
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
-		6786709F2AE5718700E551D1 /* SWMapKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWMapKit; path = "SwiftUI-WorkoutApp/SWMapKit"; sourceTree = "<group>"; };
 		67891E37283E947B00B10802 /* SportsGroundFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormView.swift; sourceTree = "<group>"; };
 		678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWNetworkClient; path = "SwiftUI-WorkoutApp/SWNetworkClient"; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,13 +156,11 @@
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundLocationInfo.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
-		67CB32D2297BE737009380DF /* DateFormatterService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DateFormatterService; path = "SwiftUI-WorkoutApp/DateFormatterService"; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
 		67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailScreen.swift; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsView.swift; sourceTree = "<group>"; };
-		67FE5583297BF78500DC52BF /* ShortAddressService */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ShortAddressService; path = "SwiftUI-WorkoutApp/ShortAddressService"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,11 +184,9 @@
 			files = (
 				678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */,
 				670431512964544D0090CAC3 /* FeedbackSender in Frameworks */,
-				678670A12AE5721000E551D1 /* SWMapKit in Frameworks */,
 				67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */,
-				67FE5585297BF82000DC52BF /* ShortAddressService in Frameworks */,
+				67D322972AE993F90045B92F /* MapView991 in Frameworks */,
 				671CD13929A2904200645678 /* SWModels in Frameworks */,
-				67CB32D4297BE872009380DF /* DateFormatterService in Frameworks */,
 				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
 				675A370A2854810B00DAE071 /* Utils in Frameworks */,
@@ -305,7 +296,6 @@
 		675083AB297C0A60008D8C52 /* WorkoutAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				675083AC297C0A60008D8C52 /* ShortAddressServiceTests.swift */,
 			);
 			path = WorkoutAppTests;
 			sourceTree = "<group>";
@@ -413,11 +403,8 @@
 		6798AA31280AEDC900DB76F1 = {
 			isa = PBXGroup;
 			children = (
-				6786709F2AE5718700E551D1 /* SWMapKit */,
 				678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */,
 				671CD13729A28CB800645678 /* SWModels */,
-				67FE5583297BF78500DC52BF /* ShortAddressService */,
-				67CB32D2297BE737009380DF /* DateFormatterService */,
 				675A3707285480E600DAE071 /* Utils */,
 				6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */,
 				67138D85297311BD00BBF450 /* WorkoutAppUITests */,
@@ -667,13 +654,11 @@
 				670431502964544D0090CAC3 /* FeedbackSender */,
 				67F9534E2964A5700077DFDC /* ImagePicker */,
 				67CB32D0297BE0F8009380DF /* NetworkStatus */,
-				67CB32D3297BE872009380DF /* DateFormatterService */,
-				67FE5584297BF82000DC52BF /* ShortAddressService */,
 				671CD13829A2904200645678 /* SWModels */,
 				678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */,
-				678670A02AE5721000E551D1 /* SWMapKit */,
 				67D67DE12AE84D9700F7A8B0 /* FileManager991 */,
 				67D67DE42AE8526600F7A8B0 /* SWDesignSystem */,
+				67D322962AE993F90045B92F /* MapView991 */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -718,6 +703,7 @@
 				67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */,
 				67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */,
 				67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */,
+				67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */,
 			);
 			productRefGroup = 6798AA3B280AEDC900DB76F1 /* Products */;
 			projectDirPath = "";
@@ -777,7 +763,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				675083AD297C0A60008D8C52 /* ShortAddressServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1198,6 +1183,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OlegEremenko991/MapView991";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/OlegEremenko991/FileManager991";
@@ -1238,10 +1231,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Utils;
 		};
-		678670A02AE5721000E551D1 /* SWMapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SWMapKit;
-		};
 		678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWNetworkClient;
@@ -1251,9 +1240,10 @@
 			package = 67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */;
 			productName = NetworkStatus;
 		};
-		67CB32D3297BE872009380DF /* DateFormatterService */ = {
+		67D322962AE993F90045B92F /* MapView991 */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = DateFormatterService;
+			package = 67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */;
+			productName = MapView991;
 		};
 		67D67DE12AE84D9700F7A8B0 /* FileManager991 */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1269,10 +1259,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */;
 			productName = ImagePicker;
-		};
-		67FE5584297BF82000DC52BF /* ShortAddressService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ShortAddressService;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

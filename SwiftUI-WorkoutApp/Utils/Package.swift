@@ -7,20 +7,10 @@ let package = Package(
     name: "Utils",
     platforms: [.iOS(.v15)],
     products: [
-        .library(
-            name: "Utils",
-            targets: ["Utils"]
-        )
+        .library(name: "Utils", targets: ["Utils"])
     ],
-    dependencies: [],
     targets: [
-        .target(
-            name: "Utils",
-            dependencies: []
-        ),
-        .testTarget(
-            name: "UtilsTests",
-            dependencies: ["Utils"]
-        )
+        .target(name: "Utils", dependencies: []),
+        .testTarget(name: "UtilsTests", dependencies: ["Utils"])
     ]
 )

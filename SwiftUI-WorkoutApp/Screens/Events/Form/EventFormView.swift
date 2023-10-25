@@ -114,7 +114,7 @@ private extension EventFormView {
                 .disabled(!canShowGroundPicker)
             case let .createForSelected(ground):
                 ListRowView(
-                    leadingContent: .text(ground.name.valueOrEmpty),
+                    leadingContent: .text(ground.name ?? ""),
                     trailingContent: .empty
                 )
             case let .editExisting(event):

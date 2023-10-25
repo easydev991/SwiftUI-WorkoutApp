@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Модель с информацией о записи в дневнике
 public struct JournalEntryResponse: Codable, Identifiable {
@@ -44,7 +44,7 @@ public extension JournalEntryResponse {
     }
 
     var formattedMessage: String {
-        message.valueOrEmpty.withoutHTML
+        (message ?? "").withoutHTML
     }
 
     var messageDateString: String {

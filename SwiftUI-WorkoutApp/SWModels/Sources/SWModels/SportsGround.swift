@@ -1,6 +1,6 @@
-import DateFormatterService
 import Foundation
 import MapKit.MKGeometry
+import Utils
 
 /// Модель данных спортивной площадки
 public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
@@ -17,7 +17,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public var usersTrainHereText: String {
         String.localizedStringWithFormat(
             NSLocalizedString("peopleTrainHere", comment: ""),
-            usersTrainHereCount.valueOrZero
+            usersTrainHereCount ?? 0
         )
     }
 
@@ -34,15 +34,16 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     public var shortTitle: String { "№ \(id)" }
     /// shortTitle + subtitle
     public var longTitle: String {
-        shortTitle + " " + subtitle.valueOrEmpty
+        guard let subtitle else { return shortTitle }
+        return shortTitle + " " + subtitle
     }
 
     public var authorID: Int {
-        (author?.userID).valueOrZero
+        author?.userID ?? 0
     }
 
     public var authorName: String {
-        (author?.userName).valueOrEmpty
+        author?.userName ?? ""
     }
 
     public var coordinate: CLLocationCoordinate2D {
@@ -178,7 +179,7 @@ public struct CommentResponse: Codable, Identifiable, Hashable {
     public let user: UserResponse?
 
     public var formattedBody: String {
-        body.valueOrEmpty.withoutHTML
+        (body ?? "").withoutHTML
     }
 
     public enum CodingKeys: String, CodingKey {
@@ -230,14 +231,14 @@ public extension SportsGround {
 
     /// Пользователь тренируется на этой площадке
     var trainHere: Bool {
-        get { trainHereOptional.isTrue }
+        get { trainHereOptional ?? false }
         set { trainHereOptional = newValue }
     }
 
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
     var isFull: Bool {
-        usersTrainHereCount.valueOrZero > .zero && !participants.isEmpty
-            || commentsCount.valueOrZero > .zero && !comments.isEmpty
+        usersTrainHereCount ?? 0 > 0 && !participants.isEmpty
+            || commentsCount ?? 0 > 0 && !comments.isEmpty
     }
 
     static var emptyValue: SportsGround {

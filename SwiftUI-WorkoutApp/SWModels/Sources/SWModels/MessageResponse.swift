@@ -1,5 +1,5 @@
-import DateFormatterService
 import Foundation
+import Utils
 
 /// Модель сообщения в диалоге
 public struct MessageResponse: Codable, Identifiable, Hashable {
@@ -20,7 +20,7 @@ public extension MessageResponse {
     }
 
     var formattedMessage: String {
-        message.valueOrEmpty.withoutHTML
+        (message ?? "").withoutHTML
     }
 
     var messageDateString: String {
