@@ -406,8 +406,8 @@ private extension SWClient.Endpoint {
     var headers: [String: String] {
         switch self {
         case .createSportsGround, .editSportsGround, .createEvent, .editEvent:
-            return HTTPHeader.withMultipartFormData
-        default: return [:]
+            HTTPHeader.withMultipartFormData
+        default: [:]
         }
     }
 
