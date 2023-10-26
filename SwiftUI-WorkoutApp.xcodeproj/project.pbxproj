@@ -293,13 +293,6 @@
 			path = SportsGrounds;
 			sourceTree = "<group>";
 		};
-		675083AB297C0A60008D8C52 /* WorkoutAppTests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = WorkoutAppTests;
-			sourceTree = "<group>";
-		};
 		67515697283FEC0B00501346 /* ImagePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -408,7 +401,6 @@
 				675A3707285480E600DAE071 /* Utils */,
 				6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */,
 				67138D85297311BD00BBF450 /* WorkoutAppUITests */,
-				675083AB297C0A60008D8C52 /* WorkoutAppTests */,
 				6798AA3B280AEDC900DB76F1 /* Products */,
 				675A37082854810B00DAE071 /* Frameworks */,
 			);

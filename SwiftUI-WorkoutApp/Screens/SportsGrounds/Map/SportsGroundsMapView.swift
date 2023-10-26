@@ -162,11 +162,10 @@ private extension SportsGroundsMapView {
         guard !allSportsGrounds.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
-                let savedGrounds: [SportsGround]
-                if swStorage.documentExists {
-                    savedGrounds = try swStorage.get()
+                let savedGrounds: [SportsGround] = if swStorage.documentExists {
+                    try swStorage.get()
                 } else {
-                    savedGrounds = try Bundle.main.decodeJson(
+                    try Bundle.main.decodeJson(
                         [SportsGround].self,
                         fileName: "oldSportsGrounds",
                         extension: "json"

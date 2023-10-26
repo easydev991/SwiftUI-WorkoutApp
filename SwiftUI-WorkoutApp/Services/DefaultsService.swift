@@ -62,9 +62,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var blacklistedUsers: [UserResponse] {
         if let array = try? JSONDecoder().decode([UserResponse].self, from: blacklist) {
-            return array
+            array
         } else {
-            return []
+            []
         }
     }
 
@@ -77,17 +77,17 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var friendsIdsList: [Int] {
         if let array = try? JSONDecoder().decode([Int].self, from: friendsIds) {
-            return array
+            array
         } else {
-            return []
+            []
         }
     }
 
     var friendRequestsList: [UserResponse] {
         if let list = try? JSONDecoder().decode([UserResponse].self, from: friendRequests) {
-            return list
+            list
         } else {
-            return []
+            []
         }
     }
 
