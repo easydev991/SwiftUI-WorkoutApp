@@ -72,6 +72,10 @@ extension SWClient {
         // MARK: Найти пользователей по логину
         /// **GET** ${API}/users/search?name=<user>
         case findUsers(with: String)
+        
+        // MARK: Получить список стран/городов
+        /// **GET** ${API}/countries
+        case getCountries
 
         // MARK: Получить список всех площадок
         /// **GET** ${API}/areas?fields=short
@@ -289,6 +293,8 @@ private extension SWClient.Endpoint {
             "/blacklist/\(userID)"
         case let .findUsers(name):
             "/users/search?name=\(name)"
+        case .getCountries:
+            "/countries"
         case .getAllSportsGrounds:
             "/areas?fields=short"
         case let .getUpdatedSportsGrounds(date):
@@ -380,7 +386,7 @@ private extension SWClient.Endpoint {
              .getFutureEvents, .getPastEvents, .getEvent,
              .getDialogs, .getMessages, .getJournals,
              .getJournal, .getJournalEntries,
-             .getUpdatedSportsGrounds:
+             .getUpdatedSportsGrounds, .getCountries:
             .get
         case .declineFriendRequest, .deleteFriend, .deleteFromBlacklist,
              .deleteGroundComment, .deleteTrainHere,
@@ -467,7 +473,7 @@ private extension SWClient.Endpoint {
              .getSportsGround, .deleteGroundComment, .getSportsGroundsForUser,
              .postTrainHere, .deleteTrainHere, .deleteUser,
              .getFutureEvents, .getPastEvents, .getEvent,
-             .postGoToEvent, .deleteGoToEvent,
+             .postGoToEvent, .deleteGoToEvent, .getCountries,
              .deleteEventComment, .deleteEvent, .getDialogs,
              .getMessages, .deleteDialog, .getJournals,
              .getJournal, .getJournalEntries, .deleteEntry,
