@@ -1,7 +1,9 @@
+import FileManager991
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWNetworkClient
+import Utils
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
@@ -9,7 +11,10 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
+    @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
+    /// Хранилище справочника со странами/городами
+    private let swStorage = FileManager991(fileName: "CountriesAndCities.json")
 
     init() {
         setupAppearance()
@@ -31,6 +36,7 @@ struct SwiftUI_WorkoutAppApp: App {
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
+                updateCountriesIfNeeded()
                 socialUpdateTask = Task {
                     let isUpdated = await SWClient(with: defaults)
                         .getSocialUpdates(userID: defaults.mainUserInfo?.userID)
@@ -39,6 +45,19 @@ struct SwiftUI_WorkoutAppApp: App {
             default:
                 socialUpdateTask?.cancel()
                 defaults.setUserNeedUpdate(true)
+            }
+        }
+    }
+
+    private func updateCountriesIfNeeded() {
+        guard DateFormatterService.days(from: defaults.lastCountriesUpdateDate, to: .now) > 30 else { return }
+        countriesUpdateTask = Task {
+            do {
+                let countries = try await SWClient(with: defaults).getCountries()
+                // TODO: сохранить справочник в json
+                defaults.didUpdateCountries()
+            } catch {
+                // TODO: взять справочник из бандла
             }
         }
     }

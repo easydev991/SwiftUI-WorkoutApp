@@ -47,7 +47,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.lastGroundsUpdateDateString.rawValue)
     private(set) var lastGroundsUpdateDateString = "2023-01-12T00:00:00"
-    
+
     @AppStorage(Key.lastCountriesUpdateDate.rawValue)
     private(set) var lastCountriesUpdateDate = Date(timeIntervalSince1970: 1673470800.0)
 
@@ -160,7 +160,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         // Как и в методе `checkForRecentUpdates`, ставим дату с запасом в 5 минут
         lastGroundsUpdateDateString = DateFormatterService.fiveMinutesAgoDateString
     }
-    
+
     func didUpdateCountries() {
         lastCountriesUpdateDate = .now
     }

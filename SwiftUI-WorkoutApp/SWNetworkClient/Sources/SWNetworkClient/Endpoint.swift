@@ -72,7 +72,7 @@ extension SWClient {
         // MARK: Найти пользователей по логину
         /// **GET** ${API}/users/search?name=<user>
         case findUsers(with: String)
-        
+
         // MARK: Получить список стран/городов
         /// **GET** ${API}/countries
         case getCountries
