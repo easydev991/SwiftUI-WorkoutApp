@@ -18,6 +18,8 @@ public protocol DefaultsProtocol: AnyObject {
     /// - При обновлении справочника вручную необходимо обновить тут дату
     /// - Неудобно, зато спасаемся от ошибок 500 при запросе слишком старых данных
     var lastGroundsUpdateDateString: String { get }
+    /// Дефолтная дата - предыдущее ручное обновление файла `countries.json`
+    var lastCountriesUpdateDate: Date { get }
     func setAppLanguage(_ language: AppLanguage)
     func setAppTheme(_ theme: AppColorTheme)
     func saveAuthData(_ info: AuthData) throws
@@ -25,6 +27,8 @@ public protocol DefaultsProtocol: AnyObject {
     func setUserNeedUpdate(_ newValue: Bool)
     /// Обновляет `lastGroundsUpdateDateString`
     func didUpdateGrounds()
+    /// Обновляет `lastCountriesUpdateDate`
+    func didUpdateCountries()
     func saveUserInfo(_ info: UserResponse) throws
     func saveFriendsIds(_ ids: [Int]) throws
     func saveFriendRequests(_ array: [UserResponse]) throws
@@ -33,4 +37,14 @@ public protocol DefaultsProtocol: AnyObject {
     func setHasJournals(_ hasJournals: Bool)
     func setHasSportsGrounds(_ isAddedGround: Bool)
     func triggerLogout()
+}
+
+extension Date: RawRepresentable {
+    public var rawValue: String {
+        timeIntervalSinceReferenceDate.description
+    }
+
+    public init?(rawValue: String) {
+        self = Date(timeIntervalSinceReferenceDate: Double(rawValue) ?? 0.0)
+    }
 }

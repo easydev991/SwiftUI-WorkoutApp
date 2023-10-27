@@ -1,7 +1,9 @@
+import FileManager991
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWNetworkClient
+import Utils
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
@@ -9,7 +11,9 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
+    @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
+    private let countriesStorage = SWAddress()
 
     init() {
         setupAppearance()
@@ -31,14 +35,25 @@ struct SwiftUI_WorkoutAppApp: App {
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
+                updateCountriesIfNeeded()
                 socialUpdateTask = Task {
                     let isUpdated = await SWClient(with: defaults)
                         .getSocialUpdates(userID: defaults.mainUserInfo?.userID)
                     defaults.setUserNeedUpdate(!isUpdated)
                 }
             default:
-                socialUpdateTask?.cancel()
+                [socialUpdateTask, countriesUpdateTask].forEach { $0?.cancel() }
                 defaults.setUserNeedUpdate(true)
+            }
+        }
+    }
+
+    private func updateCountriesIfNeeded() {
+        guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate) else { return }
+        countriesUpdateTask = Task {
+            if let countries = try? await SWClient(with: defaults).getCountries(),
+               countriesStorage.save(countries) {
+                defaults.didUpdateCountries()
             }
         }
     }

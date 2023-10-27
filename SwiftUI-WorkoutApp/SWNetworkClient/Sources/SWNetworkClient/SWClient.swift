@@ -233,6 +233,12 @@ public struct SWClient {
         return try await makeResult([UserResponse].self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
+    /// Загружает справочник стран/городов
+    /// - Returns: Справочник стран/городов
+    public func getCountries() async throws -> [Country] {
+        try await makeResult([Country].self, for: Endpoint.getCountries.urlRequest(with: baseUrlString))
+    }
+
     /// Загружает список всех площадок
     ///
     /// Пока не используется, потому что:

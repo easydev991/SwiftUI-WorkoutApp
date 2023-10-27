@@ -194,7 +194,7 @@ private extension SportsGroundDetailView {
                         .init(
                             imageURL: userModel.imageURL,
                             name: userModel.name,
-                            address: userModel.shortAddress
+                            address: SWAddress(userModel.countryID, userModel.cityID).address
                         )
                     )
                 )

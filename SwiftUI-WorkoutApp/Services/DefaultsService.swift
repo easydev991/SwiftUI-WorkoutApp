@@ -48,6 +48,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.lastGroundsUpdateDateString.rawValue)
     private(set) var lastGroundsUpdateDateString = "2023-01-12T00:00:00"
 
+    @AppStorage(Key.lastCountriesUpdateDate.rawValue)
+    private(set) var lastCountriesUpdateDate = Date(timeIntervalSince1970: 1673470800.0)
+
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
@@ -158,6 +161,10 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         lastGroundsUpdateDateString = DateFormatterService.fiveMinutesAgoDateString
     }
 
+    func didUpdateCountries() {
+        lastCountriesUpdateDate = .now
+    }
+
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
@@ -178,6 +185,6 @@ private extension DefaultsService {
         case isUserAuthorized, hasSportsGrounds, appTheme, appLanguage,
              authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends, unreadMessagesCount,
-             lastGroundsUpdateDateString
+             lastGroundsUpdateDateString, lastCountriesUpdateDate
     }
 }

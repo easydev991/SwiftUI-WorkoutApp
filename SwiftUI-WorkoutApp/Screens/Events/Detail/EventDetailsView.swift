@@ -92,7 +92,8 @@ struct EventDetailsView: View {
 
 private extension EventDetailsView {
     var headerAndMapSection: some View {
-        VStack(spacing: 0) {
+        let shortAddress = SWAddress(event.countryID, event.cityID)?.address ?? ""
+        return VStack(spacing: 0) {
             Group {
                 Text(event.formattedTitle)
                     .font(.title.bold())
@@ -113,14 +114,14 @@ private extension EventDetailsView {
                 HStack {
                     Text("Где").font(.headline)
                     Spacer()
-                    Text(event.shortAddress)
+                    Text(shortAddress)
                 }
                 .padding(.bottom, 22)
             }
             .foregroundColor(.swMainText)
             SportsGroundLocationInfo(
                 ground: $event.sportsGround,
-                address: event.fullAddress ?? event.shortAddress,
+                address: event.fullAddress ?? shortAddress,
                 appleMapsURL: event.sportsGround.appleMapsURL
             )
         }
@@ -208,7 +209,7 @@ private extension EventDetailsView {
                         .init(
                             imageURL: userModel.imageURL,
                             name: userModel.name,
-                            address: userModel.shortAddress
+                            address: SWAddress(userModel.countryID, userModel.cityID).address
                         )
                     )
                 )

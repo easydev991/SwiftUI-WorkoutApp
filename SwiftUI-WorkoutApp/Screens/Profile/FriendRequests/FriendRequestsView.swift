@@ -16,7 +16,7 @@ struct FriendRequestsView: View {
                             .init(
                                 imageURL: item.imageURL,
                                 name: item.name,
-                                address: item.shortAddress
+                                address: SWAddress(item.countryID, item.cityID).address
                             ),
                             .init(
                                 accept: { action(item.id, true) },

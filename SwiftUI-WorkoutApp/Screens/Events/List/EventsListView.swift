@@ -105,13 +105,13 @@ private extension EventsListView {
     var eventsList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(selectedEventType == .future ? $futureEvents : $pastEvents) { $event in
+                ForEach(selectedEventType == .future ? futureEvents : pastEvents) { event in
                     NavigationLink(destination: EventDetailsView(event: event, onDeletion: removeEvent)) {
                         EventRowView(
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,
                             dateTimeText: event.eventDateString,
-                            locationText: event.cityName
+                            locationText: SWAddress(event.countryID, event.cityID)?.cityName
                         )
                     }
                     .accessibilityIdentifier("EventViewCell")

@@ -120,10 +120,6 @@ public extension UserModel {
         )
     }
 
-    var shortAddress: String {
-        ShortAddressService(countryID, cityID).address
-    }
-
     var isFull: Bool {
         id != .zero
             && imageURL != nil

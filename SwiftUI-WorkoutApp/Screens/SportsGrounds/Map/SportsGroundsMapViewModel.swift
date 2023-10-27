@@ -23,10 +23,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 
     func updateUserCountryAndCity(with info: UserResponse?) {
-        guard let countryID = info?.countryID, let cityID = info?.cityID else {
-            return
-        }
-        userCoordinates = ShortAddressService(countryID, cityID).coordinates
+        userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
     }
 }
 
@@ -56,7 +53,7 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         guard oldCoordinates.differs(from: newCoordinates) else { return }
         CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
             guard let self, let target = places?.first else { return }
-            PlacemarkFormatter(placemark: target).updateIfNeeded(&addressString)
+            SWAddress.updateIfNeeded(&addressString, placemark: target)
         }
     }
 
