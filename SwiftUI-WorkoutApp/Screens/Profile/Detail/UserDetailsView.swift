@@ -145,6 +145,7 @@ private extension UserDetailsView {
                 socialActions.blacklist.rawValue,
                 systemImage: Icons.Regular.exclamation.rawValue
             )
+            .symbolVariant(socialActions.blacklist == .remove ? .fill : .none)
         }
         .confirmationDialog(
             .init(socialActions.blacklist.dialogTitle),
@@ -297,6 +298,7 @@ private extension UserDetailsView {
                 if try await SWClient(with: defaults).blacklistAction(
                     userID: user.id, option: socialActions.blacklist
                 ) {
+                    #warning("Обновить список заблокированных пользователей в defaults")
                     switch socialActions.blacklist {
                     case .add:
                         setupResponseAlert(with: "Пользователь добавлен в черный список")
@@ -327,9 +329,9 @@ private extension UserDetailsView {
         } else {
             if !refresh, user.isFull {
                 isLoading = false
-                return
+            } else {
+                await makeUserInfo()
             }
-            await makeUserInfo()
             let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
             socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
             let isPersonBlocked = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
