@@ -127,7 +127,7 @@ private extension UsersListView {
                 .init(
                     imageURL: model.imageURL,
                     name: model.name,
-                    address: model.shortAddress
+                    address: SWAddress(model.countryID, model.cityID).address
                 )
             )
         )

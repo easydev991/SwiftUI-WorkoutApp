@@ -117,21 +117,6 @@ public extension EventResponse {
         set { title = newValue }
     }
 
-    var shortAddress: String {
-        if let countryID, let cityID {
-            ShortAddressService(countryID, cityID).address
-        } else {
-            "Не указан"
-        }
-    }
-
-    var cityName: String? {
-        if let countryID, let cityID {
-            return ShortAddressService(countryID, cityID).cityName
-        }
-        return nil
-    }
-
     var hasDescription: Bool {
         !formattedDescription.isEmpty
     }

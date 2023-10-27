@@ -236,11 +236,7 @@ private extension EditAccountScreen {
 
         /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
         init() throws {
-            let allCountries = try Bundle.main.decodeJson(
-                [Country].self,
-                fileName: "countries",
-                extension: "json"
-            )
+            let allCountries = try SWAddress().countries()
             self.init(countries: allCountries)
         }
 

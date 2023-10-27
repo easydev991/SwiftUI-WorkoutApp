@@ -13,8 +13,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var network = NetworkStatus()
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
-    /// Хранилище справочника со странами/городами
-    private let swStorage = FileManager991(fileName: "CountriesAndCities.json")
+    private let countriesStorage = SWAddress()
 
     init() {
         setupAppearance()
@@ -43,21 +42,18 @@ struct SwiftUI_WorkoutAppApp: App {
                     defaults.setUserNeedUpdate(!isUpdated)
                 }
             default:
-                socialUpdateTask?.cancel()
+                [socialUpdateTask, countriesUpdateTask].forEach { $0?.cancel() }
                 defaults.setUserNeedUpdate(true)
             }
         }
     }
 
     private func updateCountriesIfNeeded() {
-        guard DateFormatterService.days(from: defaults.lastCountriesUpdateDate, to: .now) > 30 else { return }
+        guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate) else { return }
         countriesUpdateTask = Task {
-            do {
-                let countries = try await SWClient(with: defaults).getCountries()
-                // TODO: сохранить справочник в json
+            if let countries = try? await SWClient(with: defaults).getCountries(),
+               countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
-            } catch {
-                // TODO: взять справочник из бандла
             }
         }
     }

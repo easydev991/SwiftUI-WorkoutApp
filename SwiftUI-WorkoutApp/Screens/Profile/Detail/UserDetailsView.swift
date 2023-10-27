@@ -100,7 +100,7 @@ private extension UserDetailsView {
             imageURL: user.imageURL,
             login: user.name,
             genderWithAge: user.genderWithAge,
-            countryAndCity: user.shortAddress
+            countryAndCity: SWAddress(user.countryID, user.cityID).address
         )
         .padding(24)
     }
