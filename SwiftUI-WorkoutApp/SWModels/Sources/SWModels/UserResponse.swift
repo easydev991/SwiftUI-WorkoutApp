@@ -152,6 +152,16 @@ public extension UserResponse {
             "Сообщение"
         }
     }
+    
+    /// Добавил(-а) площадки
+    var addedGroundsString: String {
+        switch Gender(genderCode ?? 0) {
+        case .male, .unspecified, .none:
+            "Добавил площадки"
+        case .female:
+            "Добавила площадки"
+        }
+    }
 
     /// Достаточно ли данных для отображения профиля пользователя
     ///

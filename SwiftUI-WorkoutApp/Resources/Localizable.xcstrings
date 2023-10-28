@@ -1313,6 +1313,17 @@
         }
       }
     },
+    "Добавила площадки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added sports grounds"
+          }
+        }
+      }
+    },
     "Добавить" : {
       "comment" : "Принять заявку на добавление в друзья",
       "extractionState" : "manual",
