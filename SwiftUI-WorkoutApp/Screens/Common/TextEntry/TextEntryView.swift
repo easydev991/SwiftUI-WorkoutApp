@@ -35,7 +35,7 @@ struct TextEntryView: View {
             sendAction: sendAction,
             showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
-            dismissError: { setupErrorAlert(with: "") }
+            dismissError: { setupErrorAlert("") }
         )
         .onAppear {
             if let oldEntry = oldEntryText {
@@ -127,13 +127,13 @@ private extension TextEntryView {
                 }
                 if isSuccess { refreshClbk() }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         errorTitle = message
         showErrorAlert = !message.isEmpty
     }

@@ -282,7 +282,7 @@ private extension UserDetailsView {
                     }
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -297,15 +297,15 @@ private extension UserDetailsView {
                 ) {
                     switch socialActions.blacklist {
                     case .add:
-                        setupResponseAlert(with: "Пользователь добавлен в черный список")
+                        setupResponseAlert("Пользователь добавлен в черный список")
                         socialActions.blacklist = .remove
                     case .remove:
-                        setupResponseAlert(with: "Пользователь удален из черного списка")
+                        setupResponseAlert("Пользователь удален из черного списка")
                         socialActions.blacklist = .add
                     }
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -359,7 +359,7 @@ private extension UserDetailsView {
             }
             user = try await info
         } catch {
-            setupResponseAlert(with: ErrorFilter.message(from: error))
+            setupResponseAlert(ErrorFilter.message(from: error))
         }
     }
 
@@ -372,13 +372,13 @@ private extension UserDetailsView {
                     messagingModel.recipient = nil
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
     }
 
-    func setupResponseAlert(with message: String) {
+    func setupResponseAlert(_ message: String) {
         showAlertMessage = !message.isEmpty
         alertMessage = message
     }

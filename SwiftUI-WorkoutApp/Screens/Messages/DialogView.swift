@@ -158,7 +158,7 @@ private extension DialogView {
                 markedAsReadClbk(dialog)
             }
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
     }
 
@@ -168,7 +168,7 @@ private extension DialogView {
         do {
             messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -184,13 +184,13 @@ private extension DialogView {
                     await askForMessages(refresh: true)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

@@ -111,7 +111,7 @@ private extension SearchUsersView {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -142,7 +142,7 @@ private extension SearchUsersView {
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorMessage = message
     }

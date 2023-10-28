@@ -143,7 +143,7 @@ private extension SportsGroundsListView {
                 grounds = list
             }
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -154,7 +154,7 @@ private extension SportsGroundsListView {
         grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

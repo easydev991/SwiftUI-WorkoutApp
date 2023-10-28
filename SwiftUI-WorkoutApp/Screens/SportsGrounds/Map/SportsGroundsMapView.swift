@@ -173,7 +173,7 @@ private extension SportsGroundsMapView {
                 }
                 allSportsGrounds = savedGrounds
             } catch {
-                setupErrorAlert(with: error.localizedDescription)
+                setupErrorAlert(error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
             if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
@@ -188,7 +188,7 @@ private extension SportsGroundsMapView {
             )
             updateDefaultList(with: updatedGrounds)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -205,7 +205,7 @@ private extension SportsGroundsMapView {
             )
             updateDefaultList(with: updatedGrounds)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -229,7 +229,7 @@ private extension SportsGroundsMapView {
             try swStorage.save(allSportsGrounds)
             defaults.didUpdateGrounds()
         } catch {
-            setupErrorAlert(with: error.localizedDescription)
+            setupErrorAlert(error.localizedDescription)
         }
     }
 
@@ -270,7 +270,7 @@ private extension SportsGroundsMapView {
         saveGroundsInMemory()
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }

@@ -191,7 +191,7 @@ private extension EventFormView {
                         dismiss()
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -213,7 +213,7 @@ private extension EventFormView {
             : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }

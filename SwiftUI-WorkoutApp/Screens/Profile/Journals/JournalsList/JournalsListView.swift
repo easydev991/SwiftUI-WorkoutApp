@@ -151,7 +151,7 @@ private extension JournalsListView {
                         defaults.setUserNeedUpdate(true)
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -178,7 +178,7 @@ private extension JournalsListView {
         do {
             journals = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -194,7 +194,7 @@ private extension JournalsListView {
                     await askForJournals(refresh: true)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -212,7 +212,7 @@ private extension JournalsListView {
         showDeleteDialog.toggle()
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

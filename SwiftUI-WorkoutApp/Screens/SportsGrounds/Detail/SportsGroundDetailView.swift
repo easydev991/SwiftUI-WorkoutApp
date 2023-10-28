@@ -177,7 +177,7 @@ private extension SportsGroundDetailView {
                         ground.trainHere = oldValue
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                     ground.trainHere = oldValue
                 }
                 isLoading = false
@@ -261,7 +261,7 @@ private extension SportsGroundDetailView {
                             onDeletion(ground.id)
                         }
                     } catch {
-                        setupErrorAlert(with: ErrorFilter.message(from: error))
+                        setupErrorAlert(ErrorFilter.message(from: error))
                     }
                     isLoading = false
                 }
@@ -290,7 +290,7 @@ private extension SportsGroundDetailView {
             ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getSportsGround(id: ground.id)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -304,7 +304,7 @@ private extension SportsGroundDetailView {
                     ground.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -321,13 +321,13 @@ private extension SportsGroundDetailView {
                     ground.photos.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }

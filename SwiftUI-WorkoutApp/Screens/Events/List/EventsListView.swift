@@ -171,7 +171,7 @@ private extension EventsListView {
             if selectedEventType == .past {
                 setupOldEventsFromBundle()
             }
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -185,7 +185,7 @@ private extension EventsListView {
         pastEvents.removeAll(where: { $0.id == id })
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
@@ -199,7 +199,7 @@ private extension EventsListView {
             )
             pastEvents = oldEvents
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
     }
 }

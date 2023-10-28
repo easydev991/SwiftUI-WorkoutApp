@@ -159,7 +159,7 @@ private extension JournalEntriesList {
             entries = try await SWClient(with: defaults)
                 .getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -177,7 +177,7 @@ private extension JournalEntriesList {
                         entries.removeAll(where: { $0.id == entryID })
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -186,7 +186,7 @@ private extension JournalEntriesList {
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

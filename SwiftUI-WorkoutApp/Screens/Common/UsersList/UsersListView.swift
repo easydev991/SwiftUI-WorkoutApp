@@ -153,7 +153,7 @@ private extension UsersListView {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -189,7 +189,7 @@ private extension UsersListView {
                 users = defaults.blacklistedUsers
             }
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         if !refresh { isLoading = false }
     }
@@ -204,13 +204,13 @@ private extension UsersListView {
                     defaults.setUserNeedUpdate(true)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

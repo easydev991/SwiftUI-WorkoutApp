@@ -181,7 +181,7 @@ private extension EditAccountScreen {
                 userForm = oldUserForm
             }
         } catch {
-            setupErrorAlert(with: error.localizedDescription)
+            setupErrorAlert(error.localizedDescription)
         }
     }
 
@@ -210,13 +210,13 @@ private extension EditAccountScreen {
                     dismiss()
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }

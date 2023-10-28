@@ -170,7 +170,7 @@ private extension DialogListView {
             let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -190,13 +190,13 @@ private extension DialogListView {
                     dialogs.remove(at: index)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

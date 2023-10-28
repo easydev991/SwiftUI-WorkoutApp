@@ -160,7 +160,7 @@ private extension ChangePasswordView {
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
     }
 
