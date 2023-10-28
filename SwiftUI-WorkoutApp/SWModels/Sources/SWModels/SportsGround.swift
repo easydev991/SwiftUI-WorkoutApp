@@ -39,7 +39,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 
     public var authorID: Int {
-        author?.userID ?? 0
+        author?.id ?? 0
     }
 
     public var authorName: String {

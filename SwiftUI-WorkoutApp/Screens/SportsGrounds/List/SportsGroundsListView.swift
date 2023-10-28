@@ -130,7 +130,7 @@ private extension SportsGroundsListView {
         do {
             switch mode {
             case let .usedBy(userID), let .event(userID):
-                let isMainUser = userID == defaults.mainUserInfo?.userID
+                let isMainUser = userID == defaults.mainUserInfo?.id
                 let needUpdate = grounds.isEmpty || refresh
                 if isMainUser {
                     if !needUpdate, !defaults.needUpdateUser { return }

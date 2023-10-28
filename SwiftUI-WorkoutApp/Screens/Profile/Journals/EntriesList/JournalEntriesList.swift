@@ -45,8 +45,8 @@ struct JournalEntriesList: View {
                             }
                         ),
                         isNetworkConnected: network.isConnected,
-                        mainUserID: defaults.mainUserInfo?.userID,
-                        isJournalOwner: userID == defaults.mainUserInfo?.userID
+                        mainUserID: defaults.mainUserInfo?.id,
+                        isJournalOwner: userID == defaults.mainUserInfo?.id
                     )
                 }
             }
@@ -107,7 +107,7 @@ private extension JournalEntriesList {
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: userID,
             journalCommentAccess: currentJournal.commentAccessType,
-            mainUserId: defaults.mainUserInfo?.userID,
+            mainUserId: defaults.mainUserInfo?.id,
             mainUserFriendsIds: defaults.friendsIdsList
         )
         if canCreateEntry {

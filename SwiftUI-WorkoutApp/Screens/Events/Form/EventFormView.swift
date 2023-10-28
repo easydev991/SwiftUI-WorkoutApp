@@ -132,7 +132,7 @@ private extension EventFormView {
                 SportsGroundsListView(
                     // `canShowGroundPicker` проверяет на существование `userID`
                     // поэтому тут смело делаем force unwrap
-                    for: .event(userID: defaults.mainUserInfo!.userID!),
+                    for: .event(userID: defaults.mainUserInfo!.id),
                     ground: $eventForm.sportsGround
                 )
             }
@@ -222,7 +222,7 @@ private extension EventFormView {
     var canShowGroundPicker: Bool {
         guard network.isConnected,
               let userInfo = defaults.mainUserInfo,
-              userInfo.userID != nil
+              userInfo.id != nil
         else { return false }
         switch mode {
         case .regularCreate:

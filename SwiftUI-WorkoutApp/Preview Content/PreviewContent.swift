@@ -53,13 +53,13 @@ extension SportsGround {
 extension UserResponse {
     static var preview: UserResponse {
         .init(
+            id: 24798,
             userName: "Kahar",
             fullName: "",
             email: "test@mail.ru",
             imageStringURL: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg",
             birthDateIsoString: "1990-11-25",
             createdIsoDateTimeSec: nil,
-            userID: 24798,
             cityID: 1,
             countryID: 17,
             genderCode: 1,
@@ -70,10 +70,6 @@ extension UserResponse {
             addedSportsGrounds: nil
         )
     }
-}
-
-extension UserModel {
-    static var preview: UserModel { .init(.preview) }
 }
 
 extension EventResponse {

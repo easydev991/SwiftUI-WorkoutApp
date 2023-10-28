@@ -30,7 +30,7 @@ struct DialogView: View {
                     LazyVStack(spacing: 6) {
                         ForEach(messages) { message in
                             ChatBubbleRowView(
-                                messageType: message.userID == defaults.mainUserInfo?.userID
+                                messageType: message.id == defaults.mainUserInfo?.id
                                     ? .sent
                                     : .incoming,
                                 message: message.formattedMessage,

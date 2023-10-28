@@ -1,7 +1,7 @@
 /// Модель для отправки сообщения
 public struct MessagingModel {
     /// Получатель сообщения
-    public var recipient: UserModel?
+    public var recipient: UserResponse?
     /// Статус отправки сообщения
     public var isLoading: Bool
     /// Текст сообщения
@@ -15,7 +15,7 @@ public struct MessagingModel {
     ///   - isLoading: Статус отправки сообщения
     ///   - message: Текст сообщения
     public init(
-        recipient: UserModel? = nil,
+        recipient: UserResponse? = nil,
         isLoading: Bool = false,
         message: String = ""
     ) {
