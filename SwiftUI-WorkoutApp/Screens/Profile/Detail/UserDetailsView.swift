@@ -37,6 +37,7 @@ struct UserDetailsView: View {
                 }
                 if !isMainUser {
                     communicationSection
+                        .disabled(socialActions.isBlacklisted)
                 }
                 VStack(spacing: 12) {
                     friendsButtonIfNeeded
@@ -141,7 +142,7 @@ private extension UserDetailsView {
                 socialActions.blacklist.rawValue,
                 systemImage: Icons.Regular.exclamation.rawValue
             )
-            .symbolVariant(socialActions.blacklist == .remove ? .fill : .none)
+            .symbolVariant(socialActions.isBlacklisted ? .fill : .none)
         }
         .confirmationDialog(
             .init(socialActions.blacklist.dialogTitle),
@@ -398,6 +399,7 @@ private extension UserDetailsView {
         var friend = FriendAction.sendFriendRequest
         var isFriendRequestSent = false
         var blacklist = BlacklistOption.add
+        var isBlacklisted: Bool { blacklist == .remove }
     }
 }
 
