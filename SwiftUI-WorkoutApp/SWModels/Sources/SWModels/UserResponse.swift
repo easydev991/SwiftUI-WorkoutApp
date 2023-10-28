@@ -64,7 +64,7 @@ public struct UserResponse: Codable, Identifiable, Hashable {
         self.sportsGroundsCountString = sportsGroundsCountString
         self.addedSportsGrounds = addedSportsGrounds
     }
-    
+
     public init(dialog: DialogResponse) {
         self.init(
             id: dialog.id,
@@ -86,17 +86,17 @@ public extension UserResponse {
     var avatarURL: URL? {
         imageStringURL.queryAllowedURL
     }
-    
+
     var genderWithAge: String {
         let localizedAgeString = String.localizedStringWithFormat(
             NSLocalizedString("ageInYears", comment: ""),
             age
         )
         return genderString.isEmpty
-        ? localizedAgeString
-        : genderString + ", " + localizedAgeString
+            ? localizedAgeString
+            : genderString + ", " + localizedAgeString
     }
-    
+
     var friendsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("friendsCount", comment: ""),
@@ -108,9 +108,9 @@ public extension UserResponse {
         guard let sportsGroundsCountString else { return 0 }
         return Int(sportsGroundsCountString) ?? 0
     }
-    
+
     var hasJournals: Bool { journalsCount ?? 0 > 0 }
-    
+
     var journalsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("journalsCount", comment: ""),
@@ -126,7 +126,7 @@ public extension UserResponse {
         }
         return true
     }
-    
+
     var addedSportsGroundsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("groundsCount", comment: ""),
@@ -136,14 +136,14 @@ public extension UserResponse {
 
     /// Тренируется на каких-нибудь площадках
     var hasUsedGrounds: Bool { usedSportsGroundsCount > 0 }
-    
+
     var usesSportsGroundsCountString: String {
         String.localizedStringWithFormat(
             NSLocalizedString("groundsCount", comment: ""),
             usedSportsGroundsCount
         )
     }
-    
+
     /// Заголовок для экрана отправки сообщения
     var messageFor: String {
         if let userName {
@@ -158,12 +158,12 @@ public extension UserResponse {
     /// Если данных недостаточно, загружаем данные с сервера
     var isFull: Bool {
         id != 0
-        && avatarURL != nil
-        && userName != ""
-        && age != 0
-        && countryID != 0
+            && avatarURL != nil
+            && userName != ""
+            && age != 0
+            && countryID != 0
     }
-    
+
     static var emptyValue: UserResponse {
         .init(
             id: 0,

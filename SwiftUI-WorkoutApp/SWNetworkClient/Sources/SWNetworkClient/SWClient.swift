@@ -214,15 +214,19 @@ public struct SWClient {
     }
 
     /// Добавляет или убирает пользователя из черного списка
+    ///
+    /// В случае успеха обновляет черный список в `defaults`
     /// - Parameters:
-    ///   - userID: `id` пользователя, к которому применяется действие
+    ///   - user: Пользователь, к которому применяется действие
     ///   - option: вид действия - добавить/убрать из черного списка
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func blacklistAction(userID: Int, option: BlacklistOption) async throws -> Bool {
+    public func blacklistAction(user: UserResponse, option: BlacklistOption) async throws -> Bool {
         let endpoint: Endpoint = option == .add
-            ? .addToBlacklist(userID)
-            : .deleteFromBlacklist(userID)
-        return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
+            ? .addToBlacklist(user.id)
+            : .deleteFromBlacklist(user.id)
+        let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
+        await defaults.updateBlacklist(option: option, user: user)
+        return isSuccess
     }
 
     /// Ищет пользователей, чей логин содержит указанный текст

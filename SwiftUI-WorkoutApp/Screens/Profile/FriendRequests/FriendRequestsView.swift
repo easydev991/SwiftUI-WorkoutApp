@@ -6,7 +6,7 @@ import SWModels
 struct FriendRequestsView: View {
     let friendRequests: [UserResponse]
     let action: (_ userID: Int, _ accept: Bool) -> Void
-    
+
     private var listItems: [(Int, UserResponse)] {
         Array(zip(friendRequests.indices, friendRequests))
     }

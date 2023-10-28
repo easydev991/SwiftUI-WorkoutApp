@@ -292,9 +292,8 @@ private extension UserDetailsView {
         blacklistUserTask = Task {
             do {
                 if try await SWClient(with: defaults).blacklistAction(
-                    userID: user.id, option: socialActions.blacklist
+                    user: user, option: socialActions.blacklist
                 ) {
-                    #warning("Обновить список заблокированных пользователей в defaults")
                     switch socialActions.blacklist {
                     case .add:
                         setupResponseAlert(with: "Пользователь добавлен в черный список")
@@ -303,7 +302,6 @@ private extension UserDetailsView {
                         setupResponseAlert(with: "Пользователь удален из черного списка")
                         socialActions.blacklist = .add
                     }
-                    defaults.setUserNeedUpdate(true)
                 }
             } catch {
                 setupResponseAlert(with: ErrorFilter.message(from: error))
