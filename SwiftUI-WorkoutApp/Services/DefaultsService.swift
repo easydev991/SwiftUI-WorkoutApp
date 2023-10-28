@@ -136,6 +136,17 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         blacklist = try JSONEncoder().encode(array)
     }
 
+    func updateBlacklist(option: BlacklistOption, user: UserResponse) {
+        var newList = blacklistedUsers
+        switch option {
+        case .add:
+            newList.append(user)
+        case .remove:
+            newList.removeAll(where: { $0.id == user.id })
+        }
+        try? saveBlacklist(newList)
+    }
+
     func setHasJournals(_ hasJournals: Bool) {
         self.hasJournals = hasJournals
     }

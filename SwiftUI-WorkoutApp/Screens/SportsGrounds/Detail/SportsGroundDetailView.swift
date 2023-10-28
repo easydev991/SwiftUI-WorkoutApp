@@ -170,14 +170,14 @@ private extension SportsGroundDetailView {
                         if newValue, let userInfo = defaults.mainUserInfo {
                             ground.participants.append(userInfo)
                         } else {
-                            ground.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
+                            ground.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                         }
                         defaults.setUserNeedUpdate(true)
                     } else {
                         ground.trainHere = oldValue
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                     ground.trainHere = oldValue
                 }
                 isLoading = false
@@ -186,15 +186,15 @@ private extension SportsGroundDetailView {
     }
 
     var authorSection: some View {
-        let userModel = UserModel(ground.author)
+        let user = ground.author
         return SectionView(headerWithPadding: "Добавил", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: ground.author)) {
+            NavigationLink(destination: UserDetailsView(for: user)) {
                 UserRowView(
                     mode: .regular(
                         .init(
-                            imageURL: userModel.imageURL,
-                            name: userModel.name,
-                            address: SWAddress(userModel.countryID, userModel.cityID).address
+                            imageURL: user?.avatarURL,
+                            name: user?.userName ?? "",
+                            address: SWAddress(user?.countryID, user?.cityID)?.address ?? ""
                         )
                     )
                 )
@@ -261,7 +261,7 @@ private extension SportsGroundDetailView {
                             onDeletion(ground.id)
                         }
                     } catch {
-                        setupErrorAlert(with: ErrorFilter.message(from: error))
+                        setupErrorAlert(ErrorFilter.message(from: error))
                     }
                     isLoading = false
                 }
@@ -290,7 +290,7 @@ private extension SportsGroundDetailView {
             ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getSportsGround(id: ground.id)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -304,7 +304,7 @@ private extension SportsGroundDetailView {
                     ground.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -321,13 +321,13 @@ private extension SportsGroundDetailView {
                     ground.photos.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
@@ -356,7 +356,7 @@ private extension SportsGroundDetailView {
 
     var isGroundAuthor: Bool {
         defaults.isAuthorized
-            ? ground.authorID == defaults.mainUserInfo?.userID
+            ? ground.authorID == defaults.mainUserInfo?.id
             : false
     }
 

@@ -132,7 +132,7 @@ private extension EventFormView {
                 SportsGroundsListView(
                     // `canShowGroundPicker` проверяет на существование `userID`
                     // поэтому тут смело делаем force unwrap
-                    for: .event(userID: defaults.mainUserInfo!.userID!),
+                    for: .event(userID: defaults.mainUserInfo!.id),
                     ground: $eventForm.sportsGround
                 )
             }
@@ -191,7 +191,7 @@ private extension EventFormView {
                         dismiss()
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -213,7 +213,7 @@ private extension EventFormView {
             : Constants.photosLimit - newImages.count - eventForm.photosCount
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
@@ -222,7 +222,7 @@ private extension EventFormView {
     var canShowGroundPicker: Bool {
         guard network.isConnected,
               let userInfo = defaults.mainUserInfo,
-              userInfo.userID != nil
+              userInfo.id != nil
         else { return false }
         switch mode {
         case .regularCreate:

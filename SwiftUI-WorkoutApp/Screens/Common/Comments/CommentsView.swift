@@ -23,7 +23,7 @@ struct CommentsView: View {
                             userName: comment.user?.userName ?? "",
                             dateText: comment.formattedDateString,
                             bodyText: comment.formattedBody,
-                            isCommentByMainUser: comment.user?.userID == defaults.mainUserInfo?.userID,
+                            isCommentByMainUser: comment.user?.id == defaults.mainUserInfo?.id,
                             isNetworkConnected: network.isConnected,
                             reportAction: { reportClbk(comment) },
                             editAction: { editClbk(comment) },

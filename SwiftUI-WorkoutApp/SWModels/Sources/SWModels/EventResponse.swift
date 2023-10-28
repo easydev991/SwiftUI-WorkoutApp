@@ -199,7 +199,7 @@ public extension EventResponse {
     }
 
     var authorID: Int {
-        author?.userID ?? 0
+        author?.id ?? 0
     }
 
     /// `true` - сервер прислал всю информацию о площадке, `false` - не всю

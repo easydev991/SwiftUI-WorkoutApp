@@ -62,7 +62,7 @@ private extension DialogListView {
 
     var friendListButton: some View {
         NavigationLink(isActive: $openFriendList) {
-            if hasFriends, let mainUserID = defaults.mainUserInfo?.userID {
+            if hasFriends, let mainUserID = defaults.mainUserInfo?.id {
                 UsersListView(mode: .friendsForChat(userID: mainUserID))
             } else {
                 SearchUsersView(mode: .chat)
@@ -170,7 +170,7 @@ private extension DialogListView {
             let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -190,13 +190,13 @@ private extension DialogListView {
                     dialogs.remove(at: index)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

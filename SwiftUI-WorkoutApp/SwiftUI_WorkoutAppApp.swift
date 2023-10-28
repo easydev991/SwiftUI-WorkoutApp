@@ -38,7 +38,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 updateCountriesIfNeeded()
                 socialUpdateTask = Task {
                     let isUpdated = await SWClient(with: defaults)
-                        .getSocialUpdates(userID: defaults.mainUserInfo?.userID)
+                        .getSocialUpdates(userID: defaults.mainUserInfo?.id)
                     defaults.setUserNeedUpdate(!isUpdated)
                 }
             default:

@@ -97,7 +97,7 @@ public struct SWClient {
     public func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID)
         let result = try await makeResult(UserResponse.self, for: endpoint.urlRequest(with: baseUrlString))
-        let mainUserID = await defaults.mainUserInfo?.userID
+        let mainUserID = await defaults.mainUserInfo?.id
         if loginFlow || userID == mainUserID {
             try await defaults.saveUserInfo(result)
         }
@@ -155,8 +155,8 @@ public struct SWClient {
     public func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id)
         let result = try await makeResult([UserResponse].self, for: endpoint.urlRequest(with: baseUrlString))
-        if await id == defaults.mainUserInfo?.userID {
-            try await defaults.saveFriendsIds(result.compactMap(\.userID))
+        if await id == defaults.mainUserInfo?.id {
+            try await defaults.saveFriendsIds(result.map(\.id))
         }
         return result
     }
@@ -188,7 +188,7 @@ public struct SWClient {
             : .declineFriendRequest(from: userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
         if isSuccess {
-            if let mainUserID = await defaults.mainUserInfo?.userID, accept {
+            if let mainUserID = await defaults.mainUserInfo?.id, accept {
                 try await getFriendsForUser(id: mainUserID)
             }
             try await getFriendRequests()
@@ -206,7 +206,7 @@ public struct SWClient {
             ? .sendFriendRequest(to: userID)
             : .deleteFriend(userID)
         let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
-        if let mainUserID = await defaults.mainUserInfo?.userID,
+        if let mainUserID = await defaults.mainUserInfo?.id,
            isSuccess, option == .removeFriend {
             try await getFriendsForUser(id: mainUserID)
         }
@@ -214,15 +214,19 @@ public struct SWClient {
     }
 
     /// Добавляет или убирает пользователя из черного списка
+    ///
+    /// В случае успеха обновляет черный список в `defaults`
     /// - Parameters:
-    ///   - userID: `id` пользователя, к которому применяется действие
+    ///   - user: Пользователь, к которому применяется действие
     ///   - option: вид действия - добавить/убрать из черного списка
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func blacklistAction(userID: Int, option: BlacklistOption) async throws -> Bool {
+    public func blacklistAction(user: UserResponse, option: BlacklistOption) async throws -> Bool {
         let endpoint: Endpoint = option == .add
-            ? .addToBlacklist(userID)
-            : .deleteFromBlacklist(userID)
-        return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
+            ? .addToBlacklist(user.id)
+            : .deleteFromBlacklist(user.id)
+        let isSuccess = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
+        await defaults.updateBlacklist(option: option, user: user)
+        return isSuccess
     }
 
     /// Ищет пользователей, чей логин содержит указанный текст
@@ -465,7 +469,7 @@ public struct SWClient {
     public func getJournals(for userID: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userID: userID)
         let result = try await makeResult([JournalResponse].self, for: endpoint.urlRequest(with: baseUrlString))
-        if await userID == defaults.mainUserInfo?.userID {
+        if await userID == defaults.mainUserInfo?.id {
             await defaults.setHasJournals(!result.isEmpty)
         }
         return result
@@ -498,7 +502,7 @@ public struct SWClient {
         viewAccess: JournalAccess,
         commentAccess: JournalAccess
     ) async throws -> Bool {
-        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+        guard let mainUserID = await defaults.mainUserInfo?.id else {
             throw APIError.invalidUserID
         }
         let endpoint = Endpoint.editJournalSettings(
@@ -515,7 +519,7 @@ public struct SWClient {
     /// - Parameter title: название дневника
     /// - Returns: `true` в случае успеха, `false` при ошибках
     public func createJournal(with title: String) async throws -> Bool {
-        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+        guard let mainUserID = await defaults.mainUserInfo?.id else {
             throw APIError.invalidUserID
         }
         let endpoint = Endpoint.createJournal(userID: mainUserID, title: title)
@@ -538,7 +542,7 @@ public struct SWClient {
     ///   - journalID: `id` дневника для удаления
     /// - Returns: `true` в случае успеха, `false` при ошибках
     public func deleteJournal(journalID: Int) async throws -> Bool {
-        guard let mainUserID = await defaults.mainUserInfo?.userID else {
+        guard let mainUserID = await defaults.mainUserInfo?.id else {
             throw APIError.invalidUserID
         }
         let endpoint = Endpoint.deleteJournal(userID: mainUserID, journalID: journalID)

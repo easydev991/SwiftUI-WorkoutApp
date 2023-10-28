@@ -101,8 +101,8 @@ private extension JournalsListView {
                                 deleteClbk: { initiateDeletion(for: journal.id) }
                             ),
                             isNetworkConnected: network.isConnected,
-                            mainUserID: defaults.mainUserInfo?.userID,
-                            isJournalOwner: journal.ownerID == defaults.mainUserInfo?.userID
+                            mainUserID: defaults.mainUserInfo?.id,
+                            isJournalOwner: journal.ownerID == defaults.mainUserInfo?.id
                         )
                     }
                 }
@@ -117,7 +117,7 @@ private extension JournalsListView {
     }
 
     var isMainUser: Bool {
-        userID == defaults.mainUserInfo?.userID
+        userID == defaults.mainUserInfo?.id
     }
 
     var showAddJournalButton: Bool {
@@ -151,7 +151,7 @@ private extension JournalsListView {
                         defaults.setUserNeedUpdate(true)
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -178,7 +178,7 @@ private extension JournalsListView {
         do {
             journals = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -194,7 +194,7 @@ private extension JournalsListView {
                     await askForJournals(refresh: true)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -212,7 +212,7 @@ private extension JournalsListView {
         showDeleteDialog.toggle()
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

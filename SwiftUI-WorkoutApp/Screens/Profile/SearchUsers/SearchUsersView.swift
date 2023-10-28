@@ -7,7 +7,7 @@ import SWNetworkClient
 struct SearchUsersView: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messagingModel = MessagingModel()
-    @State private var users = [UserModel]()
+    @State private var users = [UserResponse]()
     @State private var isLoading = false
     @State private var query = ""
     @State private var showErrorAlert = false
@@ -22,7 +22,7 @@ struct SearchUsersView: View {
                 LazyVStack(spacing: 12) {
                     ForEach(users) { model in
                         listItem(for: model)
-                            .disabled(model.id == defaults.mainUserInfo?.userID)
+                            .disabled(model.id == defaults.mainUserInfo?.id)
                             .accessibilityIdentifier("UserViewCell")
                     }
                 }
@@ -64,10 +64,10 @@ extension SearchUsersView {
 
 private extension SearchUsersView {
     @ViewBuilder
-    func listItem(for model: UserModel) -> some View {
+    func listItem(for model: UserResponse) -> some View {
         switch mode {
         case .regular:
-            NavigationLink(destination: UserDetailsView(from: model)) {
+            NavigationLink(destination: UserDetailsView(for: model)) {
                 userRowView(with: model)
             }
         case .chat:
@@ -79,21 +79,21 @@ private extension SearchUsersView {
         }
     }
 
-    func userRowView(with model: UserModel) -> some View {
+    func userRowView(with model: UserResponse) -> some View {
         UserRowView(
             mode: .regular(
                 .init(
-                    imageURL: model.imageURL,
-                    name: model.name,
-                    address: SWAddress(model.countryID, model.cityID).address
+                    imageURL: model.avatarURL,
+                    name: model.userName ?? "",
+                    address: SWAddress(model.countryID, model.cityID)?.address ?? ""
                 )
             )
         )
     }
 
-    func messageSheet(for recipient: UserModel) -> some View {
+    func messageSheet(for recipient: UserResponse) -> some View {
         SendMessageView(
-            header: "Сообщение для \(recipient.name)",
+            header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
@@ -111,7 +111,7 @@ private extension SearchUsersView {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -129,10 +129,10 @@ private extension SearchUsersView {
         isLoading.toggle()
         searchTask = Task {
             do {
-                let result = try await SWClient(with: defaults)
+                let foundUsers = try await SWClient(with: defaults)
                     .findUsers(with: query.withoutSpaces)
-                users = result.map(UserModel.init)
-                if users.isEmpty {
+                users = foundUsers
+                if foundUsers.isEmpty {
                     errorMessage = "Не удалось найти такого пользователя"
                 }
             } catch {
@@ -142,7 +142,7 @@ private extension SearchUsersView {
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorMessage = message
     }

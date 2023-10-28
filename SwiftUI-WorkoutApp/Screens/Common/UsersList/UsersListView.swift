@@ -8,8 +8,8 @@ import SWNetworkClient
 struct UsersListView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var users = [UserModel]()
-    @State private var friendRequests = [UserModel]()
+    @State private var users = [UserResponse]()
+    @State private var friendRequests = [UserResponse]()
     @State private var isLoading = false
     @State private var messagingModel = MessagingModel()
     @State private var showErrorAlert = false
@@ -29,7 +29,7 @@ struct UsersListView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(users) { item in
                             listItem(for: item)
-                                .disabled(item.id == defaults.mainUserInfo?.userID)
+                                .disabled(item.id == defaults.mainUserInfo?.id)
                         }
                     }
                 }
@@ -103,7 +103,7 @@ private extension UsersListView {
     }
 
     @ViewBuilder
-    func listItem(for model: UserModel) -> some View {
+    func listItem(for model: UserResponse) -> some View {
         switch mode {
         case .friendsForChat:
             Button {
@@ -113,7 +113,7 @@ private extension UsersListView {
             }
         case .friends, .eventParticipants, .groundParticipants, .blacklist:
             NavigationLink {
-                UserDetailsView(from: model)
+                UserDetailsView(for: model)
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
                 userRowView(with: model)
@@ -121,21 +121,21 @@ private extension UsersListView {
         }
     }
 
-    func userRowView(with model: UserModel) -> some View {
+    func userRowView(with model: UserResponse) -> some View {
         UserRowView(
             mode: .regular(
                 .init(
-                    imageURL: model.imageURL,
-                    name: model.name,
-                    address: SWAddress(model.countryID, model.cityID).address
+                    imageURL: model.avatarURL,
+                    name: model.userName ?? "",
+                    address: SWAddress(model.countryID, model.cityID)?.address ?? ""
                 )
             )
         )
     }
 
-    func messageSheet(for recipient: UserModel) -> some View {
+    func messageSheet(for recipient: UserResponse) -> some View {
         SendMessageView(
-            header: "Сообщение для \(recipient.name)",
+            header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
@@ -153,7 +153,7 @@ private extension UsersListView {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -172,25 +172,24 @@ private extension UsersListView {
             switch mode {
             case let .friends(userID), let .friendsForChat(userID):
                 if !refresh { isLoading = true }
-                if userID == defaults.mainUserInfo?.userID {
+                if userID == defaults.mainUserInfo?.id {
                     if defaults.friendRequestsList.isEmpty || refresh {
                         try? await SWClient(with: defaults).getFriendRequests()
                     }
-                    friendRequests = defaults.friendRequestsList.map(UserModel.init)
+                    friendRequests = defaults.friendRequestsList
                 }
-                let friends = try await SWClient(with: defaults).getFriendsForUser(id: userID)
-                users = friends.map(UserModel.init)
+                users = try await SWClient(with: defaults).getFriendsForUser(id: userID)
             case let .eventParticipants(list), let .groundParticipants(list):
-                users = list.map(UserModel.init)
+                users = list
             case .blacklist:
                 if !refresh { isLoading = true }
                 if defaults.blacklistedUsers.isEmpty {
                     try await SWClient(with: defaults).getBlacklist()
                 }
-                users = defaults.blacklistedUsers.map(UserModel.init)
+                users = defaults.blacklistedUsers
             }
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         if !refresh { isLoading = false }
     }
@@ -201,17 +200,17 @@ private extension UsersListView {
         friendRequestTask = Task {
             do {
                 if try await SWClient(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
-                    friendRequests = defaults.friendRequestsList.map(UserModel.init)
+                    friendRequests = defaults.friendRequestsList
                     defaults.setUserNeedUpdate(true)
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }

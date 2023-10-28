@@ -18,18 +18,14 @@ struct UserDetailsView: View {
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var blacklistUserTask: Task<Void, Never>?
-    @State private var user: UserModel
+    @State private var user: UserResponse
 
     init(for user: UserResponse?) {
-        _user = .init(initialValue: .init(user))
-    }
-
-    init(from model: UserModel) {
-        _user = .init(initialValue: model)
+        _user = .init(initialValue: user ?? .emptyValue)
     }
 
     init(from dialog: DialogResponse) {
-        _user = .init(initialValue: .init(from: dialog))
+        _user = .init(initialValue: .init(dialog: dialog))
     }
 
     var body: some View {
@@ -41,6 +37,7 @@ struct UserDetailsView: View {
                 }
                 if !isMainUser {
                     communicationSection
+                        .disabled(socialActions.isBlacklisted)
                 }
                 VStack(spacing: 12) {
                     friendsButtonIfNeeded
@@ -97,10 +94,10 @@ private extension UserDetailsView {
 
     var userInfoSection: some View {
         ProfileView(
-            imageURL: user.imageURL,
-            login: user.name,
+            imageURL: user.avatarURL,
+            login: user.userName ?? "",
             genderWithAge: user.genderWithAge,
-            countryAndCity: SWAddress(user.countryID, user.cityID).address
+            countryAndCity: SWAddress(user.countryID, user.cityID)?.address ?? ""
         )
         .padding(24)
     }
@@ -145,6 +142,7 @@ private extension UserDetailsView {
                 socialActions.blacklist.rawValue,
                 systemImage: Icons.Regular.exclamation.rawValue
             )
+            .symbolVariant(socialActions.isBlacklisted ? .fill : .none)
         }
         .confirmationDialog(
             .init(socialActions.blacklist.dialogTitle),
@@ -184,7 +182,7 @@ private extension UserDetailsView {
     var addedSportsGroundsIfNeeded: some View {
         if user.hasAddedGrounds {
             NavigationLink {
-                SportsGroundsListView(for: .added(list: user.addedSportsGrounds))
+                SportsGroundsListView(for: .added(list: user.addedSportsGrounds ?? []))
             } label: {
                 FormRowView(
                     title: "Добавил площадки",
@@ -284,7 +282,7 @@ private extension UserDetailsView {
                     }
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -295,20 +293,19 @@ private extension UserDetailsView {
         blacklistUserTask = Task {
             do {
                 if try await SWClient(with: defaults).blacklistAction(
-                    userID: user.id, option: socialActions.blacklist
+                    user: user, option: socialActions.blacklist
                 ) {
                     switch socialActions.blacklist {
                     case .add:
-                        setupResponseAlert(with: "Пользователь добавлен в черный список")
+                        setupResponseAlert("Пользователь добавлен в черный список")
                         socialActions.blacklist = .remove
                     case .remove:
-                        setupResponseAlert(with: "Пользователь удален из черного списка")
+                        setupResponseAlert("Пользователь удален из черного списка")
                         socialActions.blacklist = .add
                     }
-                    defaults.setUserNeedUpdate(true)
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -320,27 +317,27 @@ private extension UserDetailsView {
         if isMainUser {
             if !refresh, !defaults.needUpdateUser,
                let mainUserInfo = defaults.mainUserInfo {
-                user = .init(mainUserInfo)
+                user = mainUserInfo
             } else {
                 await makeUserInfo()
             }
         } else {
             if !refresh, user.isFull {
                 isLoading = false
-                return
+            } else {
+                await makeUserInfo()
             }
-            await makeUserInfo()
             let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
             socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
-            let isPersonBlocked = defaults.blacklistedUsers.compactMap(\.userID).contains(user.id)
+            let isPersonBlocked = defaults.blacklistedUsers.map(\.id).contains(user.id)
             socialActions.blacklist = isPersonBlocked ? .remove : .add
         }
         isLoading = false
     }
 
-    func messageSheet(for recipient: UserModel) -> some View {
+    func messageSheet(for recipient: UserResponse) -> some View {
         SendMessageView(
-            header: "Сообщение для \(recipient.name)",
+            header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
@@ -360,9 +357,9 @@ private extension UserDetailsView {
                 async let blacklist: () = client.getBlacklist()
                 _ = try await (friendRequests, blacklist)
             }
-            user = try await .init(info)
+            user = try await info
         } catch {
-            setupResponseAlert(with: ErrorFilter.message(from: error))
+            setupResponseAlert(ErrorFilter.message(from: error))
         }
     }
 
@@ -375,13 +372,13 @@ private extension UserDetailsView {
                     messagingModel.recipient = nil
                 }
             } catch {
-                setupResponseAlert(with: ErrorFilter.message(from: error))
+                setupResponseAlert(ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
     }
 
-    func setupResponseAlert(with message: String) {
+    func setupResponseAlert(_ message: String) {
         showAlertMessage = !message.isEmpty
         alertMessage = message
     }
@@ -389,7 +386,7 @@ private extension UserDetailsView {
     func closeAlert() { alertMessage = "" }
 
     var isMainUser: Bool {
-        user.id == defaults.mainUserInfo?.userID
+        user.id == defaults.mainUserInfo?.id
     }
 
     func cancelTasks() {
@@ -402,6 +399,7 @@ private extension UserDetailsView {
         var friend = FriendAction.sendFriendRequest
         var isFriendRequestSent = false
         var blacklist = BlacklistOption.add
+        var isBlacklisted: Bool { blacklist == .remove }
     }
 }
 

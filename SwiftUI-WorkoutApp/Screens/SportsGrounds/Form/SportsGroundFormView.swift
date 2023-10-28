@@ -141,7 +141,7 @@ private extension SportsGroundFormView {
         .padding(.bottom, 42)
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
@@ -160,7 +160,7 @@ private extension SportsGroundFormView {
                         refreshClbk()
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }

@@ -186,13 +186,13 @@ private extension EventDetailsView {
                         if newValue, let userInfo = defaults.mainUserInfo {
                             event.participants.append(userInfo)
                         } else {
-                            event.participants.removeAll(where: { $0.userID == defaults.mainUserInfo?.userID })
+                            event.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                         }
                     } else {
                         event.trainHere = oldValue
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                     event.trainHere = oldValue
                 }
                 isLoading = false
@@ -201,15 +201,15 @@ private extension EventDetailsView {
     }
 
     var authorSection: some View {
-        let userModel = UserModel(event.author)
+        let user = event.author
         return SectionView(headerWithPadding: "Организатор", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: event.author)) {
+            NavigationLink(destination: UserDetailsView(for: user)) {
                 UserRowView(
                     mode: .regular(
                         .init(
-                            imageURL: userModel.imageURL,
-                            name: userModel.name,
-                            address: SWAddress(userModel.countryID, userModel.cityID).address
+                            imageURL: user?.avatarURL,
+                            name: user?.userName ?? "",
+                            address: SWAddress(user?.countryID, user?.cityID)?.address ?? ""
                         )
                     )
                 )
@@ -256,7 +256,7 @@ private extension EventDetailsView {
                             onDeletion(event.id)
                         }
                     } catch {
-                        setupErrorAlert(with: ErrorFilter.message(from: error))
+                        setupErrorAlert(ErrorFilter.message(from: error))
                     }
                     isLoading = false
                 }
@@ -285,7 +285,7 @@ private extension EventDetailsView {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getEvent(by: event.id)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -299,7 +299,7 @@ private extension EventDetailsView {
                     event.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -316,13 +316,13 @@ private extension EventDetailsView {
                     event.photos.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(with: ErrorFilter.message(from: error))
+                setupErrorAlert(ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
     }
@@ -351,7 +351,7 @@ private extension EventDetailsView {
 
     var isEventAuthor: Bool {
         defaults.isAuthorized
-            ? event.authorID == defaults.mainUserInfo?.userID
+            ? event.authorID == defaults.mainUserInfo?.id
             : false
     }
 

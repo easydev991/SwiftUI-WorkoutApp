@@ -45,8 +45,8 @@ struct JournalEntriesList: View {
                             }
                         ),
                         isNetworkConnected: network.isConnected,
-                        mainUserID: defaults.mainUserInfo?.userID,
-                        isJournalOwner: userID == defaults.mainUserInfo?.userID
+                        mainUserID: defaults.mainUserInfo?.id,
+                        isJournalOwner: userID == defaults.mainUserInfo?.id
                     )
                 }
             }
@@ -107,7 +107,7 @@ private extension JournalEntriesList {
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: userID,
             journalCommentAccess: currentJournal.commentAccessType,
-            mainUserId: defaults.mainUserInfo?.userID,
+            mainUserId: defaults.mainUserInfo?.id,
             mainUserFriendsIds: defaults.friendsIdsList
         )
         if canCreateEntry {
@@ -159,7 +159,7 @@ private extension JournalEntriesList {
             entries = try await SWClient(with: defaults)
                 .getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            setupErrorAlert(with: ErrorFilter.message(from: error))
+            setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -177,7 +177,7 @@ private extension JournalEntriesList {
                         entries.removeAll(where: { $0.id == entryID })
                     }
                 } catch {
-                    setupErrorAlert(with: ErrorFilter.message(from: error))
+                    setupErrorAlert(ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -186,7 +186,7 @@ private extension JournalEntriesList {
         }
     }
 
-    func setupErrorAlert(with message: String) {
+    func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         errorTitle = message
     }
