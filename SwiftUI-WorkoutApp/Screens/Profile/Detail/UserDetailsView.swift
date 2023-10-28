@@ -185,7 +185,7 @@ private extension UserDetailsView {
                 SportsGroundsListView(for: .added(list: user.addedSportsGrounds ?? []))
             } label: {
                 FormRowView(
-                    title: "Добавил площадки",
+                    title: user.addedGroundsString,
                     trailingContent: .textWithChevron(user.addedSportsGroundsCountString)
                 )
             }
