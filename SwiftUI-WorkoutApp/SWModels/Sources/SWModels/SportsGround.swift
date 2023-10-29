@@ -240,13 +240,13 @@ public extension SportsGround {
         usersTrainHereCount ?? 0 > 0 && !participants.isEmpty
             || commentsCount ?? 0 > 0 && !comments.isEmpty
     }
-    
+
     /// Описание для `ShareLink`
     var shareLinkDescription: String {
         guard let address else { return longTitle }
         return [longTitle, address].joined(separator: "\n")
     }
-    
+
     /// Ссылка на площадку для `ShareLink`
     var shareLinkURL: URL? {
         URL(string: "https://workout.su/areas/\(id)")

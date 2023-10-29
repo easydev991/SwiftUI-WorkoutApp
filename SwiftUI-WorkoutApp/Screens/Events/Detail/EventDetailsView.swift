@@ -128,7 +128,7 @@ private extension EventDetailsView {
         }
         .disabled(isLoading || !network.isConnected)
     }
-    
+
     var headerAndMapSection: some View {
         let shortAddress = SWAddress(event.countryID, event.cityID)?.address ?? ""
         return VStack(spacing: 0) {
@@ -286,7 +286,7 @@ private extension EventDetailsView {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
-    
+
     @ViewBuilder
     var shareButton: some View {
         if #available(iOS 16.0, *), let url = event.shareLinkURL {
