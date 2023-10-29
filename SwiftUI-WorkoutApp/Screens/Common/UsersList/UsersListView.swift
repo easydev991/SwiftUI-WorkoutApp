@@ -195,7 +195,6 @@ private extension UsersListView {
     }
 
     func respondToFriendRequest(from userID: Int, accept: Bool) {
-        if isLoading { return }
         isLoading = true
         friendRequestTask = Task {
             do {

@@ -174,9 +174,8 @@ private extension DialogView {
     }
 
     func sendMessage() {
+        isLoading = true
         sendMessageTask = Task(priority: .userInitiated) {
-            if isLoading { return }
-            isLoading = true
             do {
                 let userID = dialog.anotherUserID ?? 0
                 if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {

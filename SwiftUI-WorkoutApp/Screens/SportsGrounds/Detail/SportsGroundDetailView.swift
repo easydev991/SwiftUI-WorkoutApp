@@ -158,7 +158,6 @@ private extension SportsGroundDetailView {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
-            if isLoading { return }
             let oldValue = ground.trainHere
             ground.trainHere = newValue
             isLoading = true
@@ -296,7 +295,6 @@ private extension SportsGroundDetailView {
     }
 
     func deleteComment(with id: Int) {
-        if isLoading { return }
         isLoading = true
         deleteCommentTask = Task {
             do {
@@ -311,7 +309,6 @@ private extension SportsGroundDetailView {
     }
 
     func deletePhoto(with id: Int) {
-        if isLoading { return }
         isLoading = true
         deletePhotoTask = Task {
             do {
