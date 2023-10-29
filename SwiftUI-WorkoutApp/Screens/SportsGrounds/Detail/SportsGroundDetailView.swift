@@ -14,6 +14,7 @@ struct SportsGroundDetailView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
+    @State private var isEditingGround = false
     @State private var editComment: CommentResponse?
     @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
@@ -48,6 +49,13 @@ struct SportsGroundDetailView: View {
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
+        .background {
+            NavigationLink(isActive: $isEditingGround) {
+                SportsGroundFormView(.editExisting(ground), refreshClbk: refreshAction)
+            } label: {
+                EmptyView()
+            }
+        }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editComment) {
@@ -74,14 +82,9 @@ struct SportsGroundDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isGroundAuthor {
-                    Group {
-                        deleteButton
-                        editGroundButton
-                    }
-                    .disabled(isLoading || !network.isConnected)
+                    toolbarMenuButton
                 } else {
                     feedbackButton
-                        .disabled(isLoading)
                 }
                 shareButton
             }
@@ -92,6 +95,40 @@ struct SportsGroundDetailView: View {
 }
 
 private extension SportsGroundDetailView {
+    var toolbarMenuButton: some View {
+        Menu {
+            Group {
+                editGroundButton
+                deleteButton
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .symbolVariant(.circle)
+        }
+        .confirmationDialog(
+            .init(Constants.Alert.deleteGround),
+            isPresented: $dialogs.showDelete,
+            titleVisibility: .visible
+        ) {
+            Button("Удалить", role: .destructive) {
+                isLoading = true
+                deleteGroundTask = Task {
+                    do {
+                        if try await SWClient(with: defaults).delete(groundID: ground.id) {
+                            defaults.setUserNeedUpdate(true)
+                            dismiss()
+                            onDeletion(ground.id)
+                        }
+                    } catch {
+                        setupErrorAlert(ErrorFilter.message(from: error))
+                    }
+                    isLoading = false
+                }
+            }
+        }
+        .disabled(isLoading || !network.isConnected)
+    }
+    
     var headerAndMapSection: some View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
@@ -254,37 +291,14 @@ private extension SportsGroundDetailView {
     }
 
     var deleteButton: some View {
-        Button(action: { dialogs.showDelete = true }) {
-            Icons.Regular.trash.view
-        }
-        .confirmationDialog(
-            .init(Constants.Alert.deleteGround),
-            isPresented: $dialogs.showDelete,
-            titleVisibility: .visible
-        ) {
-            Button("Удалить", role: .destructive) {
-                isLoading = true
-                deleteGroundTask = Task {
-                    do {
-                        if try await SWClient(with: defaults).delete(groundID: ground.id) {
-                            defaults.setUserNeedUpdate(true)
-                            dismiss()
-                            onDeletion(ground.id)
-                        }
-                    } catch {
-                        setupErrorAlert(ErrorFilter.message(from: error))
-                    }
-                    isLoading = false
-                }
-            }
+        Button(role: .destructive, action: { dialogs.showDelete = true }) {
+            Label("Удалить", systemImage: Icons.Regular.trash.rawValue)
         }
     }
 
     var editGroundButton: some View {
-        NavigationLink {
-            SportsGroundFormView(.editExisting(ground), refreshClbk: refreshAction)
-        } label: {
-            Icons.Regular.pencil.view
+        Button { isEditingGround = true } label: {
+            Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
 

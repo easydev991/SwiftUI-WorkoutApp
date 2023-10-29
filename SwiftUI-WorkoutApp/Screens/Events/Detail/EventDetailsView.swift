@@ -14,6 +14,7 @@ struct EventDetailsView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
+    @State private var isEditingEvent = false
     @State private var showDeleteDialog = false
     @State private var editComment: CommentResponse?
     @State private var goingToEventTask: Task<Void, Never>?
@@ -51,6 +52,13 @@ struct EventDetailsView: View {
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
+        .background {
+            NavigationLink(isActive: $isEditingEvent) {
+                EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
+            } label: {
+                EmptyView()
+            }
+        }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editComment) {
@@ -77,11 +85,7 @@ struct EventDetailsView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEventAuthor {
-                    Group {
-                        deleteButton
-                        editEventButton
-                    }
-                    .disabled(isLoading || !network.isConnected)
+                    toolbarMenuButton
                 }
                 shareButton
             }
@@ -92,6 +96,39 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
+    var toolbarMenuButton: some View {
+        Menu {
+            Group {
+                editEventButton
+                deleteButton
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .symbolVariant(.circle)
+        }
+        .confirmationDialog(
+            .init(Constants.Alert.deleteEvent),
+            isPresented: $showDeleteDialog,
+            titleVisibility: .visible
+        ) {
+            Button("Удалить", role: .destructive) {
+                isLoading = true
+                deleteEventTask = Task {
+                    do {
+                        if try await SWClient(with: defaults).delete(eventID: event.id) {
+                            dismiss()
+                            onDeletion(event.id)
+                        }
+                    } catch {
+                        setupErrorAlert(ErrorFilter.message(from: error))
+                    }
+                    isLoading = false
+                }
+            }
+        }
+        .disabled(isLoading || !network.isConnected)
+    }
+    
     var headerAndMapSection: some View {
         let shortAddress = SWAddress(event.countryID, event.cityID)?.address ?? ""
         return VStack(spacing: 0) {
@@ -239,36 +276,14 @@ private extension EventDetailsView {
     }
 
     var deleteButton: some View {
-        Button(action: { showDeleteDialog = true }) {
-            Icons.Regular.trash.view
-        }
-        .confirmationDialog(
-            .init(Constants.Alert.deleteEvent),
-            isPresented: $showDeleteDialog,
-            titleVisibility: .visible
-        ) {
-            Button("Удалить", role: .destructive) {
-                isLoading = true
-                deleteEventTask = Task {
-                    do {
-                        if try await SWClient(with: defaults).delete(eventID: event.id) {
-                            dismiss()
-                            onDeletion(event.id)
-                        }
-                    } catch {
-                        setupErrorAlert(ErrorFilter.message(from: error))
-                    }
-                    isLoading = false
-                }
-            }
+        Button(role: .destructive, action: { showDeleteDialog = true }) {
+            Label("Удалить", systemImage: Icons.Regular.trash.rawValue)
         }
     }
 
     var editEventButton: some View {
-        NavigationLink {
-            EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
-        } label: {
-            Icons.Regular.pencil.view
+        Button { isEditingEvent = true } label: {
+            Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
     
