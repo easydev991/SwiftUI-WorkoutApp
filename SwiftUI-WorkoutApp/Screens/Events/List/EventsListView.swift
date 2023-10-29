@@ -63,7 +63,7 @@ private extension EventsListView {
         Button {
             eventsTask = Task { await askForEvents(refresh: true) }
         } label: {
-            Image(systemName: Icons.Regular.refresh.rawValue)
+            Icons.Regular.refresh.view
         }
         .opacity(
             showEmptyView && !DeviceOSVersionChecker.iOS16Available ? 1 : 0
@@ -132,7 +132,7 @@ private extension EventsListView {
                     showEventCreationRule.toggle()
                 }
             } label: {
-                Image(systemName: Icons.Regular.plus.rawValue)
+                Icons.Regular.plus.view
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {

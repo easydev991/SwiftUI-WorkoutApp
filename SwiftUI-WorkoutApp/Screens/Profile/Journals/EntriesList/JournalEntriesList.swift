@@ -96,7 +96,7 @@ private extension JournalEntriesList {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button(action: updateEntries) {
-                Image(systemName: Icons.Regular.refresh.rawValue)
+                Icons.Regular.refresh.view
             }
             .disabled(isLoading)
         }
@@ -112,7 +112,7 @@ private extension JournalEntriesList {
         )
         if canCreateEntry {
             Button { showCreateEntrySheet = true } label: {
-                Image(systemName: Icons.Regular.plus.rawValue)
+                Icons.Regular.plus.view
             }
             .disabled(isLoading || !network.isConnected)
             .sheet(isPresented: $showCreateEntrySheet) {

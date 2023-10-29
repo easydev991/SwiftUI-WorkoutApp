@@ -71,7 +71,7 @@ private extension PhotoDetailScreen {
         Button {
             showDeleteDialog = true
         } label: {
-            Image(systemName: Icons.Regular.trash.rawValue)
+            Icons.Regular.trash.view
         }
         .confirmationDialog(
             .init(DialogOption.delete.title),
@@ -91,7 +91,7 @@ private extension PhotoDetailScreen {
         Button {
             showReportDialog = true
         } label: {
-            Image(systemName: Icons.Regular.exclamation.rawValue)
+            Icons.Regular.exclamation.view
         }
         .confirmationDialog(
             .init(DialogOption.report.title),

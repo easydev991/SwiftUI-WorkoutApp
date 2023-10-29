@@ -22,7 +22,7 @@ struct EmptyContentView: View {
                 }
             } else {
                 titleText("Нет соединения с сетью")
-                Image(systemName: Icons.Regular.noSignal.rawValue)
+                Icons.Regular.noSignal.view
                     .font(.system(size: 60))
             }
             hintTextIfAvailable
