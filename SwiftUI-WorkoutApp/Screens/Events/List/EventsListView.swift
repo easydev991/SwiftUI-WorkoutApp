@@ -18,6 +18,7 @@ struct EventsListView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
+    private let pastEventStorage = PastEventStorage()
 
     var body: some View {
         NavigationView {
@@ -137,7 +138,12 @@ private extension EventsListView {
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {
                 ContentInSheet(title: "Новое мероприятие", spacing: 0) {
-                    EventFormView(for: .regularCreate, refreshClbk: refreshAction)
+                    EventFormView(
+                        for: .regularCreate,
+                        refreshClbk: {
+                            eventsTask = Task { await askForEvents(refresh: true) }
+                        }
+                    )
                 }
             }
         }
@@ -165,19 +171,17 @@ private extension EventsListView {
                 .getEvents(of: selectedEventType)
             switch selectedEventType {
             case .future: futureEvents = list
-            case .past: pastEvents = list
+            case .past:
+                pastEventStorage.saveIfNeeded(list)
+                pastEvents = list
             }
         } catch {
             if selectedEventType == .past {
-                setupOldEventsFromBundle()
+                pastEventStorage.loadIfNeeded(&pastEvents)
             }
             setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
-    }
-
-    func refreshAction() {
-        eventsTask = Task { await askForEvents(refresh: true) }
     }
 
     func removeEvent(with id: Int) {
@@ -188,19 +192,6 @@ private extension EventsListView {
     func setupErrorAlert(_ message: String) {
         showErrorAlert = !message.isEmpty
         alertMessage = message
-    }
-
-    func setupOldEventsFromBundle() {
-        do {
-            let oldEvents = try Bundle.main.decodeJson(
-                [EventResponse].self,
-                fileName: "oldEvents",
-                extension: "json"
-            )
-            pastEvents = oldEvents
-        } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
-        }
     }
 }
 

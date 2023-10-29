@@ -128,7 +128,7 @@ private extension SportsGroundDetailView {
         }
         .disabled(isLoading || !network.isConnected)
     }
-    
+
     var headerAndMapSection: some View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
@@ -278,7 +278,7 @@ private extension SportsGroundDetailView {
             }
         }
     }
-    
+
     @ViewBuilder
     var shareButton: some View {
         if #available(iOS 16.0, *), let url = ground.shareLinkURL {

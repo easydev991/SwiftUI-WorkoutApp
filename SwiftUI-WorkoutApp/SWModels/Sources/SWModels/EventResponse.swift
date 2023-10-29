@@ -207,7 +207,7 @@ public extension EventResponse {
         participantsCount ?? 0 > 0 && !participants.isEmpty
             || commentsCount ?? 0 > 0 && !comments.isEmpty
     }
-    
+
     /// Описание для `ShareLink`
     var shareLinkDescription: String {
         guard let fullAddress else {
@@ -215,7 +215,7 @@ public extension EventResponse {
         }
         return [formattedTitle, eventDateString, fullAddress].joined(separator: "\n")
     }
-    
+
     /// Ссылка на мероприятие для `ShareLink`
     var shareLinkURL: URL? {
         URL(string: "https://workout.su/trainings/\(id)")
