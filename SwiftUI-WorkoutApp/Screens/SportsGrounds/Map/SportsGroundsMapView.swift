@@ -81,11 +81,8 @@ private extension SportsGroundsMapView {
         Button {
             showFilters.toggle()
         } label: {
-            Image(
-                systemName: filter.isEdited
-                    ? Icons.Regular.filterOn.rawValue
-                    : Icons.Regular.filterOff.rawValue
-            )
+            Image(systemName: Icons.Regular.filter.rawValue)
+                .symbolVariant(filter.isEdited ? .fill : .none)
         }
         .sheet(isPresented: $showFilters) {
             SportsGroundFilterView(filter: $filter)
