@@ -14,7 +14,7 @@ struct PickedImageView: View {
                     Label("На весь экран", systemImage: "eye")
                 }
                 Button(role: .destructive, action: { action(.deleteImage) }) {
-                    Label("Удалить", systemImage: "trash")
+                    Label("Удалить", systemImage: Icons.Regular.trash.rawValue)
                 }
             } label: {
                 Image(uiImage: uiImage)
@@ -27,7 +27,7 @@ struct PickedImageView: View {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .foregroundColor(.swAddPhotoButton)
                     .overlay {
-                        Image(systemName: "plus")
+                        Icons.Regular.plus.view
                             .foregroundColor(.swSmallElements)
                     }
                     .scaledToFill()
