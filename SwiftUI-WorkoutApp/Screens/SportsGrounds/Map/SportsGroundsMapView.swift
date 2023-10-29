@@ -54,7 +54,7 @@ struct SportsGroundsMapView: View {
                         Button {
                             Task { await askForGrounds(refresh: true) }
                         } label: {
-                            Image(systemName: Icons.Regular.refresh.rawValue)
+                            Icons.Regular.refresh.view
                         }
                     }
                     .disabled(isLoading)
@@ -81,7 +81,7 @@ private extension SportsGroundsMapView {
         Button {
             showFilters.toggle()
         } label: {
-            Image(systemName: Icons.Regular.filter.rawValue)
+            Icons.Regular.filter.view
                 .symbolVariant(filter.isEdited ? .fill : .none)
         }
         .sheet(isPresented: $showFilters) {
@@ -236,7 +236,7 @@ private extension SportsGroundsMapView {
             Button {
                 showGroundCreationSheet.toggle()
             } label: {
-                Image(systemName: Icons.Regular.plus.rawValue)
+                Icons.Regular.plus.view
             }
             .opacity(isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)

@@ -86,7 +86,7 @@ private extension UserDetailsView {
             Button {
                 Task { await askForUserInfo(refresh: true) }
             } label: {
-                Image(systemName: Icons.Regular.refresh.rawValue)
+                Icons.Regular.refresh.view
             }
             .disabled(isLoading)
         }
@@ -257,7 +257,7 @@ private extension UserDetailsView {
 
     var searchUsersButton: some View {
         NavigationLink(destination: SearchUsersView()) {
-            Image(systemName: Icons.Regular.magnifyingglass.rawValue)
+            Icons.Regular.magnifyingglass.view
         }
         .disabled(!network.isConnected)
         .accessibilityIdentifier("searchUsersButton")
@@ -265,7 +265,7 @@ private extension UserDetailsView {
 
     var settingsButton: some View {
         NavigationLink(destination: SettingsView()) {
-            Image(systemName: Icons.Regular.gearshape.rawValue)
+            Icons.Regular.gearshape.view
         }
     }
 

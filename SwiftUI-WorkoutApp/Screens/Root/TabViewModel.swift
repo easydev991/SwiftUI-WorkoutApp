@@ -32,13 +32,13 @@ extension TabViewModel {
             case .map:
                 Image.sportsGroundIcon
             case .events:
-                Image(systemName: Icons.Tabbar.events.rawValue)
+                Icons.Tabbar.events.view
             case .messages:
-                Image(systemName: Icons.Tabbar.messages.rawValue)
+                Icons.Tabbar.messages.view
             case .profile:
-                Image(systemName: Icons.Tabbar.profile.rawValue)
+                Icons.Tabbar.profile.view
             case .settings:
-                Image(systemName: Icons.Tabbar.settings.rawValue)
+                Icons.Tabbar.settings.view
             }
         }
 

@@ -239,7 +239,7 @@ private extension EventDetailsView {
 
     var deleteButton: some View {
         Button(action: { showDeleteDialog = true }) {
-            Image(systemName: Icons.Regular.trash.rawValue)
+            Icons.Regular.trash.view
         }
         .confirmationDialog(
             .init(Constants.Alert.deleteEvent),
@@ -267,7 +267,7 @@ private extension EventDetailsView {
         NavigationLink {
             EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
         } label: {
-            Image(systemName: Icons.Regular.pencil.rawValue)
+            Icons.Regular.pencil.view
         }
     }
 

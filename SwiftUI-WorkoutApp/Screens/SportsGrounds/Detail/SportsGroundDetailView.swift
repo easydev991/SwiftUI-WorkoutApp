@@ -224,7 +224,7 @@ private extension SportsGroundDetailView {
 
     var feedbackButton: some View {
         Button(action: { dialogs.showFeedback.toggle() }) {
-            Image(systemName: Icons.Regular.exclamationArrowCircle.rawValue)
+            Icons.Regular.exclamationArrowCircle.view
         }
         .confirmationDialog(
             .init(Constants.Alert.groundFeedback),
@@ -243,7 +243,7 @@ private extension SportsGroundDetailView {
 
     var deleteButton: some View {
         Button(action: { dialogs.showDelete = true }) {
-            Image(systemName: Icons.Regular.trash.rawValue)
+            Icons.Regular.trash.view
         }
         .confirmationDialog(
             .init(Constants.Alert.deleteGround),
@@ -272,7 +272,7 @@ private extension SportsGroundDetailView {
         NavigationLink {
             SportsGroundFormView(.editExisting(ground), refreshClbk: refreshAction)
         } label: {
-            Image(systemName: Icons.Regular.pencil.rawValue)
+            Icons.Regular.pencil.view
         }
     }
 
