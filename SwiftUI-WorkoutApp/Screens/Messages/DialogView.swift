@@ -30,7 +30,7 @@ struct DialogView: View {
                     LazyVStack(spacing: 6) {
                         ForEach(messages) { message in
                             ChatBubbleRowView(
-                                messageType: message.id == defaults.mainUserInfo?.id
+                                messageType: message.userID == defaults.mainUserInfo?.id
                                     ? .sent
                                     : .incoming,
                                 message: message.formattedMessage,
@@ -174,9 +174,8 @@ private extension DialogView {
     }
 
     func sendMessage() {
+        isLoading = true
         sendMessageTask = Task(priority: .userInitiated) {
-            if isLoading { return }
-            isLoading = true
             do {
                 let userID = dialog.anotherUserID ?? 0
                 if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {

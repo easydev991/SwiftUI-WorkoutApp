@@ -152,7 +152,7 @@ public extension UserResponse {
             "Сообщение"
         }
     }
-    
+
     /// Добавил(-а) площадки
     var addedGroundsString: String {
         switch Gender(genderCode ?? 0) {

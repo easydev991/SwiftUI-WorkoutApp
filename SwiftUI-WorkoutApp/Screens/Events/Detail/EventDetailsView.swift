@@ -174,7 +174,6 @@ private extension EventDetailsView {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
-            if isLoading { return }
             let oldValue = event.trainHere
             event.trainHere = newValue
             isLoading = true
@@ -291,7 +290,6 @@ private extension EventDetailsView {
     }
 
     func deleteComment(with id: Int) {
-        if isLoading { return }
         isLoading = true
         deleteCommentTask = Task {
             do {
@@ -306,7 +304,6 @@ private extension EventDetailsView {
     }
 
     func deletePhoto(with id: Int) {
-        if isLoading { return }
         isLoading = true
         deletePhotoTask = Task {
             do {

@@ -125,8 +125,7 @@ private extension SearchUsersView {
     }
 
     func search() {
-        if isLoading { return }
-        isLoading.toggle()
+        isLoading = true
         searchTask = Task {
             do {
                 let foundUsers = try await SWClient(with: defaults)
@@ -138,7 +137,7 @@ private extension SearchUsersView {
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
             }
-            isLoading.toggle()
+            isLoading = false
         }
     }
 
