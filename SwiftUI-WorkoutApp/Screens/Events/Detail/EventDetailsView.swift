@@ -83,6 +83,7 @@ struct EventDetailsView: View {
                     }
                     .disabled(isLoading || !network.isConnected)
                 }
+                shareButton
             }
         }
         .navigationTitle("Мероприятие")
@@ -268,6 +269,17 @@ private extension EventDetailsView {
             EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
         } label: {
             Icons.Regular.pencil.view
+        }
+    }
+    
+    @ViewBuilder
+    var shareButton: some View {
+        if #available(iOS 16.0, *), let url = event.shareLinkURL {
+            ShareLink(
+                item: url,
+                subject: Text("Мероприятие"),
+                message: Text(event.shareLinkDescription)
+            )
         }
     }
 

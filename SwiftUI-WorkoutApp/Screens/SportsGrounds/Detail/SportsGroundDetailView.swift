@@ -83,6 +83,7 @@ struct SportsGroundDetailView: View {
                     feedbackButton
                         .disabled(isLoading)
                 }
+                shareButton
             }
         }
         .navigationTitle("Площадка")
@@ -238,6 +239,17 @@ private extension SportsGroundDetailView {
                     recipients: Constants.feedbackRecipient
                 )
             }
+        }
+    }
+    
+    @ViewBuilder
+    var shareButton: some View {
+        if #available(iOS 16.0, *), let url = ground.shareLinkURL {
+            ShareLink(
+                item: url,
+                subject: Text("Площадка"),
+                message: Text(ground.shareLinkDescription)
+            )
         }
     }
 
