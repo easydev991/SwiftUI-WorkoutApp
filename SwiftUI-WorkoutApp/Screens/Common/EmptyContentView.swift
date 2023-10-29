@@ -22,7 +22,7 @@ struct EmptyContentView: View {
                 }
             } else {
                 titleText("Нет соединения с сетью")
-                Image(systemName: "wifi.exclamationmark")
+                Image(systemName: Icons.Regular.noSignal.rawValue)
                     .font(.system(size: 60))
             }
             hintTextIfAvailable
