@@ -1321,6 +1321,12 @@
             "state" : "translated",
             "value" : "Added sports grounds"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавила площадки"
+          }
         }
       }
     },
@@ -2988,6 +2994,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск пользователей"
+          }
+        }
+      }
+    },
+    "Пойду на мероприятие" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I am participating"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пойду на мероприятие"
           }
         }
       }
