@@ -129,7 +129,7 @@ extension SWAddress {
             )
         }
     }
-    
+
     /// Возвращает сохраненный в памяти список всех городов
     func cities() throws -> [City] {
         try countries().flatMap(\.cities)

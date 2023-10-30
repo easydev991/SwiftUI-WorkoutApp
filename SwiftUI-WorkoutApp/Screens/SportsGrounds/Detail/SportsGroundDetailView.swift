@@ -102,7 +102,7 @@ private extension SportsGroundDetailView {
                 deleteButton
             }
         } label: {
-            Image(systemName: "ellipsis")
+            Icons.Regular.ellipsis.view
                 .symbolVariant(.circle)
         }
         .confirmationDialog(

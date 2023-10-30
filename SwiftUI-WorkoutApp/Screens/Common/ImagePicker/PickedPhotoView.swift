@@ -11,7 +11,7 @@ struct PickedImageView: View {
         case let .image(uiImage):
             Menu {
                 Button(action: { action(.showDetailImage(uiImage)) }) {
-                    Label("На весь экран", systemImage: "eye")
+                    Label("На весь экран", systemImage: Icons.Regular.eye.rawValue)
                 }
                 Button(role: .destructive, action: { action(.deleteImage) }) {
                     Label("Удалить", systemImage: Icons.Regular.trash.rawValue)

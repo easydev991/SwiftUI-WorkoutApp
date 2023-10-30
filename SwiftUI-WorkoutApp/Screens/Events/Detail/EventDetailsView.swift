@@ -103,7 +103,7 @@ private extension EventDetailsView {
                 deleteButton
             }
         } label: {
-            Image(systemName: "ellipsis")
+            Icons.Regular.ellipsis.view
                 .symbolVariant(.circle)
         }
         .confirmationDialog(

@@ -19,6 +19,7 @@ struct SportsGroundsMapView: View {
     @State private var showFilters = false
     @State private var showDetailsView = false
     @State private var showGroundCreationSheet = false
+    @State private var showSearchCity = false
     @State private var selectedGround = SportsGround.emptyValue
     @State private var filter = SportsGroundFilterView.Model()
     @State private var allSportsGrounds = [SportsGround]()
@@ -30,6 +31,7 @@ struct SportsGroundsMapView: View {
                 && filter.grade.map(\.code).contains(ground.typeID)
         }
     }
+
     private var filteredListGrounds: [SportsGround] {
         if let selectedCity {
             filteredMapGrounds.filter { $0.cityID == Int(selectedCity.id) }
@@ -43,7 +45,7 @@ struct SportsGroundsMapView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 12) {
                 segmentedControl
                 groundsContent
             }
@@ -85,7 +87,7 @@ private extension SportsGroundsMapView {
         case map = "Карта"
         case list = "Список"
     }
-    
+
     var currentGroundsCount: Int {
         switch presentation {
         case .map: filteredMapGrounds.count
@@ -120,10 +122,21 @@ private extension SportsGroundsMapView {
     var groundsContent: some View {
         switch presentation {
         case .list:
-            VStack {
+            VStack(spacing: 16) {
                 if let storedCities = try? SWAddress().cities() {
-                    HStack {
-                        NavigationLink {
+                    SWTextFieldSearchButton(
+                        selectedCity == nil ? "Выбери город" : "\(selectedCity!.name)",
+                        showClearButton: selectedCity != nil,
+                        mainAction: {
+                            showSearchCity = true
+                        },
+                        clearAction: {
+                            selectedCity = nil
+                        }
+                    )
+                    .padding(.horizontal)
+                    .sheet(isPresented: $showSearchCity) {
+                        NavigationView {
                             ItemListScreen(
                                 mode: .city,
                                 allItems: storedCities.map(\.name),
@@ -132,15 +145,22 @@ private extension SportsGroundsMapView {
                                     selectedCity = storedCities.first(where: { $0.name == cityName })
                                 }
                             )
-                        } label: {
-                            Text(selectedCity == nil ? "Выбери город" : "Город: \(selectedCity!.name)")
-                        }
-                        .buttonStyle(SWButtonStyle(mode: selectedCity == nil ? .tinted : .filled, size: .small))
-                        if selectedCity != nil {
-                            Button("X") { selectedCity = nil }
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button {
+                                        showSearchCity = false
+                                    } label: {
+                                        Image(systemName: Icons.Regular.xmark.rawValue)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 20)
+                                            .foregroundColor(.swAccent)
+                                            .symbolVariant(.circle)
+                                    }
+                                }
+                            }
                         }
                     }
-                    .padding(.horizontal)
                 }
                 ScrollView {
                     LazyVStack(spacing: 12) {
