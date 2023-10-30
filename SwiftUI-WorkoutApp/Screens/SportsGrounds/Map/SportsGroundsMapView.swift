@@ -19,13 +19,24 @@ struct SportsGroundsMapView: View {
     @State private var showFilters = false
     @State private var showDetailsView = false
     @State private var showGroundCreationSheet = false
+    @State private var showSearchCity = false
     @State private var selectedGround = SportsGround.emptyValue
     @State private var filter = SportsGroundFilterView.Model()
     @State private var allSportsGrounds = [SportsGround]()
-    private var filteredGrounds: [SportsGround] {
+    /// Город для фильтра списка площадок
+    @State private var selectedCity: City?
+    private var filteredMapGrounds: [SportsGround] {
         allSportsGrounds.filter { ground in
             filter.size.map(\.code).contains(ground.sizeID)
                 && filter.grade.map(\.code).contains(ground.typeID)
+        }
+    }
+
+    private var filteredListGrounds: [SportsGround] {
+        if let selectedCity {
+            filteredMapGrounds.filter { $0.cityID == Int(selectedCity.id) }
+        } else {
+            filteredMapGrounds
         }
     }
 
@@ -34,7 +45,7 @@ struct SportsGroundsMapView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 12) {
                 segmentedControl
                 groundsContent
             }
@@ -63,7 +74,7 @@ struct SportsGroundsMapView: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(filteredGrounds.count))")
+            .navigationTitle("Площадки (\(currentGroundsCount))")
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -75,6 +86,13 @@ private extension SportsGroundsMapView {
     enum Presentation: String, CaseIterable, Equatable {
         case map = "Карта"
         case list = "Список"
+    }
+
+    var currentGroundsCount: Int {
+        switch presentation {
+        case .map: filteredMapGrounds.count
+        case .list: filteredListGrounds.count
+        }
     }
 
     var filterButton: some View {
@@ -104,34 +122,75 @@ private extension SportsGroundsMapView {
     var groundsContent: some View {
         switch presentation {
         case .list:
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(filteredGrounds) { ground in
-                        NavigationLink {
-                            SportsGroundDetailView(
-                                ground: ground,
-                                onDeletion: updateDeleted
-                            )
-                        } label: {
-                            SportsGroundRowView(
-                                imageURL: ground.previewImageURL,
-                                title: ground.longTitle,
-                                address: ground.address,
-                                usersTrainHereText: ground.usersTrainHereText
-                            )
+            VStack(spacing: 16) {
+                if let storedCities = try? SWAddress().cities() {
+                    SWTextFieldSearchButton(
+                        selectedCity == nil ? "Выбери город" : "\(selectedCity!.name)",
+                        showClearButton: selectedCity != nil,
+                        mainAction: {
+                            showSearchCity = true
+                        },
+                        clearAction: {
+                            selectedCity = nil
                         }
-                        .accessibilityIdentifier("SportsGroundViewCell")
+                    )
+                    .padding(.horizontal)
+                    .sheet(isPresented: $showSearchCity) {
+                        NavigationView {
+                            ItemListScreen(
+                                mode: .city,
+                                allItems: storedCities.map(\.name),
+                                selectedItem: selectedCity?.name ?? "",
+                                didSelectItem: { cityName in
+                                    selectedCity = storedCities.first(where: { $0.name == cityName })
+                                }
+                            )
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button {
+                                        showSearchCity = false
+                                    } label: {
+                                        Image(systemName: Icons.Regular.xmark.rawValue)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 20)
+                                            .foregroundColor(.swAccent)
+                                            .symbolVariant(.circle)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                .padding([.top, .horizontal])
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(filteredListGrounds) { ground in
+                            NavigationLink {
+                                SportsGroundDetailView(
+                                    ground: ground,
+                                    onDeletion: updateDeleted
+                                )
+                            } label: {
+                                SportsGroundRowView(
+                                    imageURL: ground.previewImageURL,
+                                    title: ground.longTitle,
+                                    address: ground.address,
+                                    usersTrainHereText: ground.usersTrainHereText
+                                )
+                            }
+                            .accessibilityIdentifier("SportsGroundViewCell")
+                        }
+                    }
+                    .padding(.horizontal)
+                }
             }
         case .map:
             MapView991(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredGrounds,
+                annotations: filteredMapGrounds,
                 didSelect: { annotation in
-                    if let ground = filteredGrounds.first(where: { $0 === annotation }) {
+                    if let ground = filteredMapGrounds.first(where: { $0 === annotation }) {
                         selectedGround = ground
                         showDetailsView = true
                     }
@@ -155,7 +214,7 @@ private extension SportsGroundsMapView {
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
-        if !filteredGrounds.isEmpty, !refresh { return }
+        if !filteredMapGrounds.isEmpty, !refresh { return }
         guard !allSportsGrounds.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {

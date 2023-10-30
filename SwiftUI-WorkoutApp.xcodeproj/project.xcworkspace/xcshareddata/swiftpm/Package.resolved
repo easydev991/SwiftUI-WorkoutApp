@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/SWDesignSystem",
       "state" : {
-        "revision" : "f80dd3b22272a035feca57ed35e1ec2d14f673c9",
-        "version" : "1.1.0"
+        "revision" : "685a3e6ac38763c2edf16fd6d0419410449bbf2a",
+        "version" : "1.2.0"
       }
     }
   ],

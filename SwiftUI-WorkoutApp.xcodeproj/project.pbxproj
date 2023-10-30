@@ -1200,7 +1200,7 @@
 			repositoryURL = "https://github.com/OlegEremenko991/SWDesignSystem";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.2.0;
 			};
 		};
 		67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */ = {
