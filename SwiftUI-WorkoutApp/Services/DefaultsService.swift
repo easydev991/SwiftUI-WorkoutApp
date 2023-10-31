@@ -12,8 +12,8 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     @AppStorage(Key.appLanguage.rawValue)
     private(set) var appLanguage = AppLanguage(
-        rawValue: Locale.current.languageCode ?? "ru"
-    ) ?? .rus
+        rawValue: Locale.current.languageCode ?? "en"
+    ) ?? .eng
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system

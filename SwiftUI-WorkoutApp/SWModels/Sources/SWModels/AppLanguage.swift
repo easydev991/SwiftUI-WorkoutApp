@@ -5,9 +5,9 @@ public enum AppLanguage: String, CaseIterable {
 
     public init?(rawValue: String) {
         switch rawValue {
-        case "Русский", "Russian":
+        case "Русский", "Russian", "ru":
             self = .rus
-        case "Английский", "English":
+        case "Английский", "English", "en":
             self = .eng
         default: return nil
         }
