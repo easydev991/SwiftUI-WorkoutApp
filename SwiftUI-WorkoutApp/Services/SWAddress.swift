@@ -120,9 +120,9 @@ extension SWAddress {
     /// Возвращает сохраненный в памяти справочник стран/городов
     func countries() throws -> [Country] {
         if storage.documentExists {
-            return try storage.get()
+            try storage.get()
         } else {
-            return try Bundle.main.decodeJson(
+            try Bundle.main.decodeJson(
                 [Country].self,
                 fileName: "countries",
                 extension: "json"
