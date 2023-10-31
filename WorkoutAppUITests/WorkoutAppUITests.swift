@@ -58,13 +58,22 @@ private extension WorkoutAppUITests {
         static let usernameForSearch = "Ninenineone"
     }
 
-    var grantLocationAccessButton: XCUIElement { springBoard.alerts.firstMatch.buttons["При использовании"] }
-    var pasteButton: XCUIElement { app.menuItems["Вставить"] }
-    var tabbar: XCUIElement { app.tabBars["Панель вкладок"] }
+    var grantLocationAccessButton: XCUIElement {
+        let rusButton = springBoard.alerts.firstMatch.buttons["При использовании"]
+        let enButton = springBoard.alerts.firstMatch.buttons["Allow While Using App"]
+        return rusButton.exists ? rusButton : enButton
+    }
+
+    var tabbar: XCUIElement {
+        let rusButton = app.tabBars["Панель вкладок"]
+        let enButton = app.tabBars["Tab Bar"]
+        return rusButton.exists ? rusButton : enButton
+    }
+
     var sportsGroundListPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Список"] }
-    var profileTabButton: XCUIElement { tabbar.buttons["Профиль"] }
-    var eventsTabButton: XCUIElement { tabbar.buttons["Мероприятия"] }
-    var authorizeButton: XCUIElement { app.buttons["Авторизация"] }
+    var profileTabButton: XCUIElement { tabbar.buttons["profile"] }
+    var eventsTabButton: XCUIElement { tabbar.buttons["events"] }
+    var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
     var loginField: XCUIElement { app.textFields["loginField"] }
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
     var loginButton: XCUIElement { app.buttons["loginButton"] }
