@@ -11,6 +11,16 @@ extension TabViewModel {
     enum Tab: Int, Hashable, CaseIterable {
         case map = 0, events, messages, profile, settings
 
+        private var accessibilityId: String {
+            switch self {
+            case .map: "map"
+            case .events: "events"
+            case .messages: "messages"
+            case .profile: "profile"
+            case .settings: "settings"
+            }
+        }
+
         private var title: LocalizedStringKey {
             switch self {
             case .map:
@@ -48,6 +58,7 @@ extension TabViewModel {
                 icon: { icon }
             )
             .environment(\.symbolVariants, .none)
+            .accessibilityIdentifier(accessibilityId)
         }
 
         @ViewBuilder

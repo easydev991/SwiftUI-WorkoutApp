@@ -68,7 +68,7 @@ rbenv exec fastlane snapshot
 
 | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
 | --- | --- | --- | --- | --- |
-| <img src="./screenshots/ru/iPhone 13 Pro Max-1-sportsGroundsList.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-2-sportsGroundDetails.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-3-pastEvents.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-4-eventDetails.png"> | <img src="./screenshots/ru/iPhone 13 Pro Max-5-profile.png"> |
+| <img src="./screenshots/ru-RU/iPhone 13 Pro Max-1-sportsGroundsList.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-2-sportsGroundDetails.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-3-pastEvents.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-4-eventDetails.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-5-profile.png"> |
 
 #### Модели девайсов, используемые для скриншотов
 - 6.5 дюйма: iPhone 13 Pro Max
