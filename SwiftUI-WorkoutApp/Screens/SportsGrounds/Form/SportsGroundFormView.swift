@@ -139,6 +139,9 @@ private extension SportsGroundFormView {
         )
         .padding(.top, 22)
         .padding(.bottom, 42)
+        .onChange(of: newImages) { images in
+            groundForm.newMediaFiles = images.toMediaFiles
+        }
     }
 
     func setupErrorAlert(_ message: String) {
@@ -151,7 +154,6 @@ private extension SportsGroundFormView {
             isFocused = false
             saveGroundTask = Task {
                 isLoading = true
-                groundForm.newMediaFiles = newImages.toMediaFiles
                 do {
                     let newGround = try await SWClient(with: defaults)
                         .saveSportsGround(id: mode.groundID, form: groundForm)
