@@ -3,7 +3,6 @@ import PDFKit
 import SwiftUI
 
 struct ImageDetailView: UIViewRepresentable {
-    @Environment(\.colorScheme) private var colorScheme
     let image: UIImage
 
     func makeUIView(context _: Context) -> PDFView {
@@ -12,12 +11,11 @@ struct ImageDetailView: UIViewRepresentable {
         guard let page = PDFPage(image: image) else { return view }
         view.document?.insert(page, at: 0)
         view.autoScales = true
+        view.backgroundColor = .init(.swBackground)
         return view
     }
 
-    func updateUIView(_ view: PDFView, context _: Context) {
-        view.backgroundColor = .init(.swBackground)
-    }
+    func updateUIView(_: PDFView, context _: Context) {}
 }
 
 #if DEBUG

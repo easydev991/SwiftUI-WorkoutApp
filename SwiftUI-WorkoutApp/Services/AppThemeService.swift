@@ -9,7 +9,7 @@ enum AppThemeService {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
+            .last(where: \.isKeyWindow)
         keyWindow?.overrideUserInterfaceStyle = switch newTheme {
         case .dark:
             .dark
