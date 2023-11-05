@@ -222,12 +222,12 @@ private extension SportsGroundsMapView {
                 setupErrorAlert(error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
+            if groundsManager.needUpdateDefaultList {
                 await askForGrounds(refresh: true)
             }
             return
         }
-        await getUpdatedGrounds(from: defaults.lastGroundsUpdateDateString)
+        await getUpdatedGrounds(from: groundsManager.lastGroundsUpdateDateString)
     }
 
     func deleteGround(with id: Int) {

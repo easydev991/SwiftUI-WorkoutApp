@@ -13,11 +13,6 @@ public protocol DefaultsProtocol: AnyObject {
     var friendsIdsList: [Int] { get }
     var blacklistedUsers: [UserResponse] { get }
     var unreadMessagesCount: Int { get }
-    /// Дефолтная дата - предыдущее ручное обновление файла `oldSportsGrounds.json`
-    ///
-    /// - При обновлении справочника вручную необходимо обновить тут дату
-    /// - Неудобно, зато спасаемся от ошибок 500 при запросе слишком старых данных
-    var lastGroundsUpdateDateString: String { get }
     /// Дефолтная дата - предыдущее ручное обновление файла `countries.json`
     var lastCountriesUpdateDate: Date { get }
     func setAppLanguage(_ language: AppLanguage)
@@ -25,8 +20,6 @@ public protocol DefaultsProtocol: AnyObject {
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
-    /// Обновляет `lastGroundsUpdateDateString`
-    func didUpdateGrounds()
     /// Обновляет `lastCountriesUpdateDate`
     func didUpdateCountries()
     func saveUserInfo(_ info: UserResponse) throws
