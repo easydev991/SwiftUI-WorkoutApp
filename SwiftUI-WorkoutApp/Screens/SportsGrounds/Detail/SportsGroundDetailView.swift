@@ -42,9 +42,7 @@ struct SportsGroundDetailView: View {
                     )
                 }
                 authorSection
-                if ground.hasComments {
-                    commentsSection
-                }
+                commentsSection
             }
             .padding(.top, 8)
             .padding([.horizontal, .bottom])

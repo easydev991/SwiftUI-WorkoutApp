@@ -15,21 +15,23 @@ struct CommentsView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            SectionView(headerWithPadding: "Комментарии", mode: .card()) {
-                LazyVStack(spacing: 0) {
-                    ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
-                        CommentRowView(
-                            avatarURL: comment.user?.avatarURL,
-                            userName: comment.user?.userName ?? "",
-                            dateText: comment.formattedDateString,
-                            bodyText: comment.formattedBody,
-                            isCommentByMainUser: comment.user?.id == defaults.mainUserInfo?.id,
-                            isNetworkConnected: network.isConnected,
-                            reportAction: { reportClbk(comment) },
-                            editAction: { editClbk(comment) },
-                            deleteAction: { deleteClbk(comment.id) }
-                        )
-                        .withDivider(if: index != items.endIndex - 1)
+            if !items.isEmpty {
+                SectionView(headerWithPadding: "Комментарии", mode: .card()) {
+                    LazyVStack(spacing: 0) {
+                        ForEach(Array(zip(items.indices, items)), id: \.0) { index, comment in
+                            CommentRowView(
+                                avatarURL: comment.user?.avatarURL,
+                                userName: comment.user?.userName ?? "",
+                                dateText: comment.formattedDateString,
+                                bodyText: comment.formattedBody,
+                                isCommentByMainUser: comment.user?.id == defaults.mainUserInfo?.id,
+                                isNetworkConnected: network.isConnected,
+                                reportAction: { reportClbk(comment) },
+                                editAction: { editClbk(comment) },
+                                deleteAction: { deleteClbk(comment.id) }
+                            )
+                            .withDivider(if: index != items.endIndex - 1)
+                        }
                     }
                 }
             }
