@@ -31,7 +31,7 @@ public struct SportsGroundForm: Codable {
         self.cityID = cityID
         self.typeID = SportsGroundGrade.soviet.code
         self.sizeID = SportsGroundSize.small.code
-        self.photosCount = .zero
+        self.photosCount = 0
     }
 }
 
@@ -46,17 +46,23 @@ public extension SportsGroundForm {
         set { sizeID = Int(newValue) ?? 0 }
     }
 
+    /// Сколько еще фотографий можно добавить с учетом имеющихся
+    var imagesLimit: Int {
+        Constants.photosLimit - newMediaFiles.count - photosCount
+    }
+
     /// Готовность формы к созданию новой площадки
     var isReadyToCreate: Bool {
         !address.isEmpty
             && !latitude.isEmpty
             && !longitude.isEmpty
             && cityID != .zero
+            && !newMediaFiles.isEmpty
     }
 
     /// Готовность формы к отправке обновлений по площадке
     func isReadyToUpdate(old: SportsGroundForm) -> Bool {
-        isReadyToCreate && (self != old)
+        isReadyToCreate && self != old
     }
 }
 
@@ -68,5 +74,6 @@ extension SportsGroundForm: Equatable {
             && lhs.cityID == rhs.cityID
             && lhs.typeID == rhs.typeID
             && lhs.sizeID == rhs.sizeID
+            && lhs.newMediaFiles == rhs.newMediaFiles
     }
 }
