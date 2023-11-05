@@ -7,6 +7,7 @@ import SWNetworkClient
 struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var groundsManager: SportsGroundsManager
     @State private var grounds = [SportsGround]()
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -46,7 +47,7 @@ struct SportsGroundsListView: View {
             Button("Ok") { errorTitle = "" }
         }
         .task { await askForGrounds() }
-        .refreshable { 
+        .refreshable {
             guard mode.canRefreshList else { return }
             await askForGrounds(refresh: true)
         }
@@ -66,7 +67,7 @@ extension SportsGroundsListView {
         case usedBy(userID: Int)
         case event(userID: Int)
         case added(list: [SportsGround])
-        
+
         var canRefreshList: Bool {
             switch self {
             case .added: false
@@ -119,16 +120,14 @@ private extension SportsGroundsListView {
             NavigationLink {
                 SportsGroundDetailView(
                     ground: ground,
-                    onDeletion: { id in
-                        grounds.removeAll(where: { $0.id == id })
-                    }
+                    onDeletion: deleteGround
                 )
             } label: { label }
         case .added:
             NavigationLink {
                 SportsGroundDetailView(
                     ground: ground,
-                    onDeletion: { _ in dismiss() }
+                    onDeletion: deleteGround
                 )
             } label: { label }
         }
@@ -161,6 +160,18 @@ private extension SportsGroundsListView {
         if !isRefreshing { isLoading.toggle() }
         if isMainUser { defaults.setUserNeedUpdate(false) }
         grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
+    }
+
+    func deleteGround(with id: Int) {
+        grounds.removeAll(where: { $0.id == id })
+        do {
+            try groundsManager.deleteGround(with: id)
+            if !mode.canRefreshList {
+                dismiss()
+            }
+        } catch {
+            setupErrorAlert(error.localizedDescription)
+        }
     }
 
     func setupErrorAlert(_ message: String) {
