@@ -303,7 +303,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if isLoading || event.isFull, !refresh { return }
+        if event.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)

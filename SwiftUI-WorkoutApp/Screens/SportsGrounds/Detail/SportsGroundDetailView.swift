@@ -307,7 +307,7 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if isLoading || ground.isFull, !refresh { return }
+        if ground.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
             ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)

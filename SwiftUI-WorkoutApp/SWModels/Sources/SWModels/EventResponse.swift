@@ -196,10 +196,11 @@ public extension EventResponse {
         author?.id ?? 0
     }
 
-    /// `true` - сервер прислал всю информацию о площадке, `false` - не всю
+    /// `true` - сервер прислал всю информацию о мероприятии, `false` - не всю
     var isFull: Bool {
-        participantsCount ?? 0 > 0 && !participants.isEmpty
-            || commentsCount ?? 0 > 0 && !comments.isEmpty
+        let needUpdateParticipants = participantsCount ?? 0 > 0 && participants.isEmpty
+        let needUpdateComments = commentsCount ?? 0 > 0 && comments.isEmpty
+        return !needUpdateParticipants && !needUpdateComments
     }
 
     /// Описание для `ShareLink`
