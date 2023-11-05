@@ -11,6 +11,7 @@ import Utils
 struct SportsGroundsMapView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var groundsManager: SportsGroundsManager
     @StateObject private var viewModel = SportsGroundsMapViewModel()
     @State private var presentation = Presentation.map
     @State private var isLoading = false
@@ -22,16 +23,17 @@ struct SportsGroundsMapView: View {
     @State private var showSearchCity = false
     @State private var selectedGround = SportsGround.emptyValue
     @State private var filter = SportsGroundFilterView.Model()
-    @State private var allSportsGrounds = [SportsGround]()
     /// Город для фильтра списка площадок
     @State private var selectedCity: City?
+    /// Отфильтрованные площадки для вкладки "Карта"
     private var filteredMapGrounds: [SportsGround] {
-        allSportsGrounds.filter { ground in
+        groundsManager.fullList.filter { ground in
             filter.size.map(\.code).contains(ground.sizeID)
                 && filter.grade.map(\.code).contains(ground.typeID)
         }
     }
 
+    /// Отфильтрованные по выбранному городу площадки для вкладки "Список"
     private var filteredListGrounds: [SportsGround] {
         if let selectedCity {
             filteredMapGrounds.filter { $0.cityID == Int(selectedCity.id) }
@@ -39,9 +41,6 @@ struct SportsGroundsMapView: View {
             filteredMapGrounds
         }
     }
-
-    /// Хранилище файла с площадками
-    private let swStorage = FileManager991(fileName: "SportsGrounds.json")
 
     var body: some View {
         NavigationView {
@@ -168,7 +167,7 @@ private extension SportsGroundsMapView {
                             NavigationLink {
                                 SportsGroundDetailView(
                                     ground: ground,
-                                    onDeletion: updateDeleted
+                                    onDeletion: deleteGround
                                 )
                             } label: {
                                 SportsGroundRowView(
@@ -201,7 +200,7 @@ private extension SportsGroundsMapView {
                 NavigationLink(isActive: $showDetailsView) {
                     SportsGroundDetailView(
                         ground: selectedGround,
-                        onDeletion: updateDeleted
+                        onDeletion: deleteGround
                     )
                 } label: { EmptyView() }
                 LocationSettingReminderView(
@@ -215,38 +214,28 @@ private extension SportsGroundsMapView {
     /// Заполняем/обновляем дефолтный список площадок
     func askForGrounds(refresh: Bool = false) async {
         if !filteredMapGrounds.isEmpty, !refresh { return }
-        guard !allSportsGrounds.isEmpty else {
+        guard !groundsManager.fullList.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
-                let savedGrounds: [SportsGround] = if swStorage.documentExists {
-                    try swStorage.get()
-                } else {
-                    try Bundle.main.decodeJson(
-                        [SportsGround].self,
-                        fileName: "oldSportsGrounds",
-                        extension: "json"
-                    )
-                }
-                allSportsGrounds = savedGrounds
+                try groundsManager.makeDefaultList()
             } catch {
                 setupErrorAlert(error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-            if DateFormatterService.days(from: defaults.lastGroundsUpdateDateString, to: .now) > 1 {
+            if groundsManager.needUpdateDefaultList {
                 await askForGrounds(refresh: true)
             }
             return
         }
-        isLoading = true
+        await getUpdatedGrounds(from: groundsManager.lastGroundsUpdateDateString)
+    }
+
+    func deleteGround(with id: Int) {
         do {
-            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: defaults.lastGroundsUpdateDateString
-            )
-            updateDefaultList(with: updatedGrounds)
+            try groundsManager.deleteGround(with: id)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            setupErrorAlert(error.localizedDescription)
         }
-        isLoading = false
     }
 
     /// Проверяем недавние обновления списка площадок
@@ -254,39 +243,20 @@ private extension SportsGroundsMapView {
     /// Запрашиваем обновление за прошедшие 5 минут
     func checkForRecentUpdates() async {
         defaults.setUserNeedUpdate(true)
+        await getUpdatedGrounds(from: DateFormatterService.fiveMinutesAgoDateString)
+    }
+
+    func getUpdatedGrounds(from dateString: String) async {
         isLoading = true
         do {
             let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
-                from: DateFormatterService.fiveMinutesAgoDateString
+                from: dateString
             )
-            updateDefaultList(with: updatedGrounds)
+            try groundsManager.updateDefaultList(with: updatedGrounds)
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }
         isLoading = false
-    }
-
-    /// Обновляем дефолтный список площадок
-    func updateDefaultList(with updatedGrounds: [SportsGround]) {
-        guard !updatedGrounds.isEmpty else { return }
-        updatedGrounds.forEach { ground in
-            if let index = allSportsGrounds.firstIndex(where: { $0.id == ground.id }) {
-                allSportsGrounds[index] = ground
-            } else {
-                allSportsGrounds.append(ground)
-            }
-        }
-        saveGroundsInMemory()
-    }
-
-    /// Сохраняем площадки в памяти
-    func saveGroundsInMemory() {
-        do {
-            try swStorage.save(allSportsGrounds)
-            defaults.didUpdateGrounds()
-        } catch {
-            setupErrorAlert(error.localizedDescription)
-        }
     }
 
     @ViewBuilder
@@ -316,14 +286,6 @@ private extension SportsGroundsMapView {
                 }
             }
         }
-    }
-
-    /// Удаляет площадку с указанным идентификатором из списка
-    ///
-    /// Используется при ручном удалении площадки с детального экрана площадки
-    func updateDeleted(groundID: Int) {
-        allSportsGrounds.removeAll(where: { $0.id == groundID })
-        saveGroundsInMemory()
     }
 
     func setupErrorAlert(_ message: String) {

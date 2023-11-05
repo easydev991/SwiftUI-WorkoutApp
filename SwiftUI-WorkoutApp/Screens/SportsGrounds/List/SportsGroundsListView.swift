@@ -7,6 +7,7 @@ import SWNetworkClient
 struct SportsGroundsListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var groundsManager: SportsGroundsManager
     @State private var grounds = [SportsGround]()
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -46,7 +47,10 @@ struct SportsGroundsListView: View {
             Button("Ok") { errorTitle = "" }
         }
         .task { await askForGrounds() }
-        .refreshable { await askForGrounds(refresh: true) }
+        .refreshable {
+            guard mode.canRefreshList else { return }
+            await askForGrounds(refresh: true)
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 refreshButtonIfNeeded
@@ -63,6 +67,13 @@ extension SportsGroundsListView {
         case usedBy(userID: Int)
         case event(userID: Int)
         case added(list: [SportsGround])
+
+        var canRefreshList: Bool {
+            switch self {
+            case .added: false
+            case .usedBy, .event: true
+            }
+        }
     }
 }
 
@@ -93,35 +104,32 @@ private extension SportsGroundsListView {
 
     @ViewBuilder
     func makeItemView(for ground: SportsGround) -> some View {
+        let label = SportsGroundRowView(
+            imageURL: ground.previewImageURL,
+            title: ground.longTitle,
+            address: ground.address,
+            usersTrainHereText: ground.usersTrainHereText
+        )
         switch mode {
         case .event:
             Button {
                 groundInfo = ground
                 dismiss()
-            } label: {
-                SportsGroundRowView(
-                    imageURL: ground.previewImageURL,
-                    title: ground.longTitle,
-                    address: ground.address,
-                    usersTrainHereText: ground.usersTrainHereText
-                )
-            }
-        default:
+            } label: { label }
+        case .usedBy:
             NavigationLink {
                 SportsGroundDetailView(
                     ground: ground,
-                    onDeletion: { id in
-                        grounds.removeAll(where: { $0.id == id })
-                    }
+                    onDeletion: deleteGround
                 )
-            } label: {
-                SportsGroundRowView(
-                    imageURL: ground.previewImageURL,
-                    title: ground.longTitle,
-                    address: ground.address,
-                    usersTrainHereText: ground.usersTrainHereText
+            } label: { label }
+        case .added:
+            NavigationLink {
+                SportsGroundDetailView(
+                    ground: ground,
+                    onDeletion: deleteGround
                 )
-            }
+            } label: { label }
         }
     }
 
@@ -152,6 +160,18 @@ private extension SportsGroundsListView {
         if !isRefreshing { isLoading.toggle() }
         if isMainUser { defaults.setUserNeedUpdate(false) }
         grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
+    }
+
+    func deleteGround(with id: Int) {
+        grounds.removeAll(where: { $0.id == id })
+        do {
+            try groundsManager.deleteGround(with: id)
+            if !mode.canRefreshList {
+                dismiss()
+            }
+        } catch {
+            setupErrorAlert(error.localizedDescription)
+        }
     }
 
     func setupErrorAlert(_ message: String) {

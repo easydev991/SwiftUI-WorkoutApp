@@ -66,6 +66,7 @@
 		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
 		67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */; };
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
+		67BD2D012AF7D21B00F44064 /* SportsGroundsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
 		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
@@ -158,6 +159,7 @@
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundLocationInfo.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
+		67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsManager.swift; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				67B371722A640079000FF143 /* AppThemeService.swift */,
 				67551C352AEC338600084A35 /* SWAddress.swift */,
 				67A4710C2AEED8F8004D341D /* PastEventStorage.swift */,
+				67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -786,6 +789,7 @@
 				67B78712281D654C008B104F /* DefaultsService.swift in Sources */,
 				67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
+				67BD2D012AF7D21B00F44064 /* SportsGroundsManager.swift in Sources */,
 				6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */,
@@ -1055,7 +1059,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1091,7 +1095,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

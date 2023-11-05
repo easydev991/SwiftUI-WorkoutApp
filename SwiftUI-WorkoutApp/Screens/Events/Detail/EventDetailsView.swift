@@ -45,9 +45,7 @@ struct EventDetailsView: View {
                     descriptionSection
                 }
                 authorSection
-                if event.hasComments {
-                    commentsSection
-                }
+                commentsSection
             }
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
@@ -305,7 +303,7 @@ private extension EventDetailsView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if isLoading || event.isFull, !refresh { return }
+        if event.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
