@@ -62,7 +62,8 @@ public extension SportsGroundForm {
 
     /// Готовность формы к отправке обновлений по площадке
     func isReadyToUpdate(old: SportsGroundForm) -> Bool {
-        isReadyToCreate && self != old
+        let canSaveUpdated = [address, latitude, longitude].allSatisfy { !$0.isEmpty }
+        return canSaveUpdated && self != old
     }
 }
 
