@@ -130,9 +130,9 @@ private extension SportsGroundFormView {
         PickedImagesGrid(
             images: $newImages,
             showImagePicker: $showImagePicker,
-            selectionLimit: imagesLimit,
+            selectionLimit: groundForm.imagesLimit,
             processExtraImages: {
-                while imagesLimit < 0 {
+                while groundForm.imagesLimit < 0 {
                     newImages.removeLast()
                 }
             }
@@ -173,15 +173,8 @@ private extension SportsGroundFormView {
 
     var isFormReady: Bool {
         mode.groundID == nil
-            ? groundForm.isReadyToCreate && !newImages.isEmpty
-            : groundForm.isReadyToUpdate(old: oldGroundForm) || !newImages.isEmpty
-    }
-
-    /// Сколько еще фотографий можно добавить
-    var imagesLimit: Int {
-        mode.groundID == nil
-            ? Constants.photosLimit - newImages.count
-            : Constants.photosLimit - newImages.count - groundForm.photosCount
+            ? groundForm.isReadyToCreate
+            : groundForm.isReadyToUpdate(old: oldGroundForm)
     }
 }
 

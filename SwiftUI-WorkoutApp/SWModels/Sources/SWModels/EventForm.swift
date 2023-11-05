@@ -36,6 +36,11 @@ public extension EventForm {
         sportsGround.cityID ?? 0
     }
 
+    /// Сколько еще фотографий можно добавить с учетом имеющихся
+    var imagesLimit: Int {
+        Constants.photosLimit - newMediaFiles.count - photosCount
+    }
+
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
         !title.isEmpty
@@ -57,5 +62,6 @@ extension EventForm: Equatable {
             && lhs.description == rhs.description
             && lhs.sportsGround.id == rhs.sportsGround.id
             && lhs.date == rhs.date
+            && lhs.newMediaFiles == rhs.newMediaFiles
     }
 }

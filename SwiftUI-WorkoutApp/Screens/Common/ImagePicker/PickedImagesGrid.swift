@@ -93,7 +93,7 @@ private extension PickedImagesGrid {
 
     var subtitle: String {
         if images.isEmpty {
-            String(format: NSLocalizedString("Добавьте фотографии, максимум %lld", comment: ""), selectionLimit)
+            String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)
         } else {
             selectionLimit > 0
                 ? String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)

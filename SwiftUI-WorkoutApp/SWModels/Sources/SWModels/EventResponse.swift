@@ -2,7 +2,7 @@ import Foundation
 import Utils
 
 /// Модель со всей информацией о мероприятии
-public struct EventResponse: Codable, Identifiable {
+public struct EventResponse: Codable, Identifiable, Equatable {
     public let id: Int
     /// Название мероприятия
     public var title: String?
@@ -97,12 +97,6 @@ public struct EventResponse: Codable, Identifiable {
         self.authorName = authorName
         self.author = author
         self.trainHereOptional = trainHereOptional
-    }
-}
-
-extension EventResponse: Equatable {
-    public static func == (lhs: EventResponse, rhs: EventResponse) -> Bool {
-        lhs.id == rhs.id
     }
 }
 

@@ -168,13 +168,16 @@ private extension EventFormView {
         PickedImagesGrid(
             images: $newImages,
             showImagePicker: $showImagePicker,
-            selectionLimit: imagesLimit,
+            selectionLimit: eventForm.imagesLimit,
             processExtraImages: {
-                while imagesLimit < 0 {
+                while eventForm.imagesLimit < 0 {
                     newImages.removeLast()
                 }
             }
         )
+        .onChange(of: newImages) { images in
+            eventForm.newMediaFiles = images.toMediaFiles
+        }
     }
 
     var saveButton: some View {
@@ -182,7 +185,6 @@ private extension EventFormView {
             focus = nil
             isLoading = true
             saveEventTask = Task {
-                eventForm.newMediaFiles = newImages.toMediaFiles
                 do {
                     let savedEvent = try await SWClient(with: defaults)
                         .saveEvent(id: mode.eventID, form: eventForm)
@@ -204,13 +206,7 @@ private extension EventFormView {
     var isFormReady: Bool {
         mode.eventID == nil
             ? eventForm.isReadyToCreate
-            : eventForm.isReadyToUpdate(old: oldEventForm) || !newImages.isEmpty
-    }
-
-    var imagesLimit: Int {
-        mode.eventID == nil
-            ? Constants.photosLimit - newImages.count
-            : Constants.photosLimit - newImages.count - eventForm.photosCount
+            : eventForm.isReadyToUpdate(old: oldEventForm)
     }
 
     func setupErrorAlert(_ message: String) {
@@ -220,10 +216,7 @@ private extension EventFormView {
 
     /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
     var canShowGroundPicker: Bool {
-        guard network.isConnected,
-              let userInfo = defaults.mainUserInfo,
-              userInfo.id != nil
-        else { return false }
+        guard network.isConnected, let userInfo = defaults.mainUserInfo else { return false }
         switch mode {
         case .regularCreate:
             return true

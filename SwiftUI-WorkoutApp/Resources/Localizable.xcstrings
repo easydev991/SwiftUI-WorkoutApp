@@ -1432,7 +1432,7 @@
         }
       }
     },
-    "Добавьте фотографии, максимум %lld" : {
+    "Добавьте фото, максимум %lld" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1444,7 +1444,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавьте фотографии, максимум %lld"
+            "value" : "Добавьте фото, максимум %lld"
           }
         }
       }
