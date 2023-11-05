@@ -46,7 +46,10 @@ struct SportsGroundsListView: View {
             Button("Ok") { errorTitle = "" }
         }
         .task { await askForGrounds() }
-        .refreshable { await askForGrounds(refresh: true) }
+        .refreshable { 
+            guard mode.canRefreshList else { return }
+            await askForGrounds(refresh: true)
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 refreshButtonIfNeeded
@@ -63,6 +66,13 @@ extension SportsGroundsListView {
         case usedBy(userID: Int)
         case event(userID: Int)
         case added(list: [SportsGround])
+        
+        var canRefreshList: Bool {
+            switch self {
+            case .added: false
+            case .usedBy, .event: true
+            }
+        }
     }
 }
 
@@ -93,20 +103,19 @@ private extension SportsGroundsListView {
 
     @ViewBuilder
     func makeItemView(for ground: SportsGround) -> some View {
+        let label = SportsGroundRowView(
+            imageURL: ground.previewImageURL,
+            title: ground.longTitle,
+            address: ground.address,
+            usersTrainHereText: ground.usersTrainHereText
+        )
         switch mode {
         case .event:
             Button {
                 groundInfo = ground
                 dismiss()
-            } label: {
-                SportsGroundRowView(
-                    imageURL: ground.previewImageURL,
-                    title: ground.longTitle,
-                    address: ground.address,
-                    usersTrainHereText: ground.usersTrainHereText
-                )
-            }
-        default:
+            } label: { label }
+        case .usedBy:
             NavigationLink {
                 SportsGroundDetailView(
                     ground: ground,
@@ -114,14 +123,14 @@ private extension SportsGroundsListView {
                         grounds.removeAll(where: { $0.id == id })
                     }
                 )
-            } label: {
-                SportsGroundRowView(
-                    imageURL: ground.previewImageURL,
-                    title: ground.longTitle,
-                    address: ground.address,
-                    usersTrainHereText: ground.usersTrainHereText
+            } label: { label }
+        case .added:
+            NavigationLink {
+                SportsGroundDetailView(
+                    ground: ground,
+                    onDeletion: { _ in dismiss() }
                 )
-            }
+            } label: { label }
         }
     }
 
