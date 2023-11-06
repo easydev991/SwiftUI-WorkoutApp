@@ -240,10 +240,10 @@ public extension SportsGround {
         let needUpdateParticipants = usersTrainHereCount ?? 0 > 0 && participants.isEmpty
         let needUpdateComments = commentsCount ?? 0 > 0 && comments.isEmpty
         return createDate != nil
-        && author != nil
-        && !photos.isEmpty
-        && !needUpdateParticipants
-        && !needUpdateComments
+            && author != nil
+            && !photos.isEmpty
+            && !needUpdateParticipants
+            && !needUpdateComments
     }
 
     /// Описание для `ShareLink`
