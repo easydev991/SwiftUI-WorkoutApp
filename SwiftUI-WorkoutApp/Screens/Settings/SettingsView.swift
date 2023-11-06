@@ -25,19 +25,13 @@ struct SettingsView: View {
                             rateAppButton
                             userAgreementButton
                             officialSiteButton
+                            developerProfileButton
                             appVersionView
                         }
                     }
                     dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
-                        VStack(spacing: 4) {
-                            workoutShopButton
-                            workoutProfileButton
-                        }
-                    }
-                    dividerView
-                    SectionView(header: "Поддержать разработчика", mode: .regular) {
-                        developerProfileButton
+                        workoutShopButton
                     }
                 }
                 .padding()
@@ -53,8 +47,7 @@ private extension SettingsView {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
-        static let workoutProfile = URL(string: "https://boosty.to/swrussia")!
-        static let developerProfile = URL(string: "https://boosty.to/oleg991")!
+        static let developerBlog = URL(string: "https://t.me/easy_dev991")!
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
     }
@@ -184,19 +177,10 @@ private extension SettingsView {
         }
     }
 
-    var workoutProfileButton: some View {
-        Link(destination: Links.workoutProfile) {
-            ListRowView(
-                leadingContent: .text("Street Workout на boosty"),
-                trailingContent: .chevron
-            )
-        }
-    }
-
     var developerProfileButton: some View {
-        Link(destination: Links.developerProfile) {
+        Link(destination: Links.developerBlog) {
             ListRowView(
-                leadingContent: .text("Oleg991 на boosty"),
+                leadingContent: .text("Разработчик приложения"),
                 trailingContent: .chevron
             )
         }

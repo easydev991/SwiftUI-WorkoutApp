@@ -3216,6 +3216,23 @@
         }
       }
     },
+    "Разработчик приложения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App developer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разработчик приложения"
+          }
+        }
+      }
+    },
     "Расположение" : {
       "extractionState" : "manual",
       "localizations" : {
