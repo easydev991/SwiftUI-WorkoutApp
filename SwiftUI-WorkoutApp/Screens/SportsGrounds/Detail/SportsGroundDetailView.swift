@@ -10,6 +10,7 @@ struct SportsGroundDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var groundsManager: SportsGroundsManager
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
@@ -118,7 +119,7 @@ private extension SportsGroundDetailView {
                             onDeletion(ground.id)
                         }
                     } catch {
-                        setupErrorAlert(ErrorFilter.message(from: error))
+                        process(error)
                     }
                     isLoading = false
                 }
@@ -212,7 +213,7 @@ private extension SportsGroundDetailView {
                         ground.trainHere = oldValue
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    process(error)
                     ground.trainHere = oldValue
                 }
                 isLoading = false
@@ -313,7 +314,7 @@ private extension SportsGroundDetailView {
             ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getSportsGround(id: ground.id)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            process(error)
         }
         isLoading = false
     }
@@ -326,7 +327,7 @@ private extension SportsGroundDetailView {
                     ground.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                process(error)
             }
             isLoading = false
         }
@@ -342,7 +343,7 @@ private extension SportsGroundDetailView {
                     ground.photos.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                process(error)
             }
             isLoading = false
         }
@@ -390,6 +391,17 @@ private extension SportsGroundDetailView {
             deleteGroundTask
         ].forEach { $0?.cancel() }
     }
+    
+    func process(_ error: Error) {
+        if error.localizedDescription.contains("404") {
+            // Похоже, был запрос данных о несуществующей площадке
+            // Удаляем её из памяти и закрываем экран
+            try? groundsManager.deleteGround(with: ground.id)
+            dismiss()
+        } else {
+            setupErrorAlert(ErrorFilter.message(from: error))
+        }
+    }
 }
 
 private extension SportsGroundDetailView {
@@ -418,5 +430,6 @@ private extension SportsGroundDetailView {
     SportsGroundDetailView(ground: .preview, onDeletion: { _ in })
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
+        .environmentObject(SportsGroundsManager())
 }
 #endif
