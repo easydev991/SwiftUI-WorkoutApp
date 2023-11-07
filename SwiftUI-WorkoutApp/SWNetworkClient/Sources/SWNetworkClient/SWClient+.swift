@@ -100,14 +100,20 @@ extension SWClient {
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, response: URLResponse?) -> APIError {
         #if DEBUG
-        print("--- ⛔️ JSON с ошибкой по запросу: ", response?.url?.absoluteString ?? "")
+        let errorCode = (response as? HTTPURLResponse)?.statusCode
+        let errorCodeMessage = if let errorCode {
+            "Код ошибки \(errorCode)"
+        } else {
+            "Ошибка!"
+        }
+        print("--- ⛔️ \(errorCodeMessage)\nJSON с ошибкой по запросу: ", response?.url?.absoluteString ?? "")
         print(data.prettyJson)
         print("🏁")
         #endif
         if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-            return APIError(errorInfo)
+            return APIError(errorInfo, errorCode)
         } else {
-            return APIError(with: (response as? HTTPURLResponse)?.statusCode)
+            return APIError(with: errorCode)
         }
     }
 }

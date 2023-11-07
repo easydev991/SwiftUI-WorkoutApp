@@ -184,5 +184,6 @@ private extension SportsGroundsListView {
 #Preview {
     SportsGroundsListView(for: .usedBy(userID: .previewUserID))
         .environmentObject(DefaultsService())
+        .environmentObject(SportsGroundsManager())
 }
 #endif

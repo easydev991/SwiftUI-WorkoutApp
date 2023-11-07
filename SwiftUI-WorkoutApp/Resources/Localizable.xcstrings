@@ -2298,6 +2298,23 @@
         }
       }
     },
+    "Неизвестная ошибка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неизвестная ошибка"
+          }
+        }
+      }
+    },
     "Некорректное имя пользователя или пароль" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3346,23 +3363,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Светлая тема"
-          }
-        }
-      }
-    },
-    "Сервер не отвечает" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server is not responding"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сервер не отвечает"
           }
         }
       }

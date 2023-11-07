@@ -299,5 +299,6 @@ private extension SportsGroundsMapView {
     SportsGroundsMapView()
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
+        .environmentObject(SportsGroundsManager())
 }
 #endif
