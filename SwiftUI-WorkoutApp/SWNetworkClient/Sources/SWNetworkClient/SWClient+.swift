@@ -99,8 +99,8 @@ extension SWClient {
     ///   - response: ответ сервера
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, response: URLResponse?) -> APIError {
-        #if DEBUG
         let errorCode = (response as? HTTPURLResponse)?.statusCode
+        #if DEBUG
         let errorCodeMessage = if let errorCode {
             "Код ошибки \(errorCode)"
         } else {
