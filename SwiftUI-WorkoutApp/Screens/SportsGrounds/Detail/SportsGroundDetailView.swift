@@ -132,7 +132,7 @@ private extension SportsGroundDetailView {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(ground.shortTitle)
-                    .font(.system(size: 22, weight: .bold))
+                    .font(.title2.weight(.semibold))
                     .foregroundColor(.swMainText)
                 if let subtitle = ground.subtitle, !subtitle.isEmpty {
                     Text(subtitle)

@@ -132,7 +132,7 @@ private extension EventDetailsView {
         return VStack(spacing: 0) {
             Group {
                 Text(event.formattedTitle)
-                    .font(.title.bold())
+                    .font(.title2.weight(.semibold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 SWDivider()
                     .padding(.top, 12)
