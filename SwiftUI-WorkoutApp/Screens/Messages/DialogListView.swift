@@ -69,6 +69,7 @@ private extension DialogListView {
             }
         } label: {
             Icons.Regular.plus.view
+                .symbolVariant(.circle)
         }
         .opacity(hasFriends || !dialogs.isEmpty ? 1 : 0)
         .disabled(!network.isConnected)

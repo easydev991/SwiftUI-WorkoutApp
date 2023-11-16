@@ -70,6 +70,7 @@ private extension JournalsListView {
     var addJournalButton: some View {
         Button(action: showNewJournalSheet) {
             Icons.Regular.plus.view
+                .symbolVariant(.circle)
         }
         .opacity(showAddJournalButton ? 1 : 0)
         .disabled(!network.isConnected)
