@@ -134,6 +134,7 @@ private extension EventsListView {
                 }
             } label: {
                 Icons.Regular.plus.view
+                    .symbolVariant(.circle)
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {

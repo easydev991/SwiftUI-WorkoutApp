@@ -113,6 +113,7 @@ private extension JournalEntriesList {
         if canCreateEntry {
             Button { showCreateEntrySheet = true } label: {
                 Icons.Regular.plus.view
+                    .symbolVariant(.circle)
             }
             .disabled(isLoading || !network.isConnected)
             .sheet(isPresented: $showCreateEntrySheet) {

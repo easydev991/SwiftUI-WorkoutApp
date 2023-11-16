@@ -266,6 +266,7 @@ private extension SportsGroundsMapView {
                 showGroundCreationSheet.toggle()
             } label: {
                 Icons.Regular.plus.view
+                    .symbolVariant(.circle)
             }
             .opacity(isLoading ? 0 : 1)
             .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
