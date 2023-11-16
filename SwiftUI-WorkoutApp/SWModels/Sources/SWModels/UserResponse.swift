@@ -67,7 +67,7 @@ public struct UserResponse: Codable, Identifiable, Hashable {
 
     public init(dialog: DialogResponse) {
         self.init(
-            id: dialog.id,
+            id: dialog.anotherUserID ?? 0,
             userName: dialog.anotherUserName,
             imageStringURL: dialog.anotherUserImageURL?.absoluteString
         )
