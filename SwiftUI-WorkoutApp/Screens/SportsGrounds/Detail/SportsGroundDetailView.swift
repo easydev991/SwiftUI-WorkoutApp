@@ -391,7 +391,7 @@ private extension SportsGroundDetailView {
             deleteGroundTask
         ].forEach { $0?.cancel() }
     }
-    
+
     func process(_ error: Error) {
         if error.localizedDescription.contains("404") {
             // Похоже, был запрос данных о несуществующей площадке

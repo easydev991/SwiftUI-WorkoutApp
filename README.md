@@ -64,7 +64,7 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
 ```shell
 rbenv exec fastlane snapshot
 ```
-4. Готовые скриншоты сохраняются в папке [screenshots/ru](./screenshots/ru)
+4. Готовые скриншоты сохраняются в папке [screenshots](./screenshots)
 
 | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
 | --- | --- | --- | --- | --- |
@@ -77,7 +77,7 @@ rbenv exec fastlane snapshot
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем [swiftformat (0.52.8)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.52.10)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 
