@@ -75,7 +75,7 @@ struct UserDetailsView: View {
         }
         .onDisappear(perform: cancelTasks)
         .task(priority: .userInitiated) { await askForUserInfo() }
-        .navigationTitle(isMainUser ? "" : "Профиль")
+        .navigationTitle("Профиль")
     }
 }
 
