@@ -634,7 +634,7 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%d фотография"
+                  "value" : "%d фотографии"
                 }
               },
               "many" : {
