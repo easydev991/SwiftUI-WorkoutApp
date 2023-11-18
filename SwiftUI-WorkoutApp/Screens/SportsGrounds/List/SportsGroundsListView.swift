@@ -14,6 +14,8 @@ struct SportsGroundsListView: View {
     @State private var errorTitle = ""
     /// Площадка для мероприятия
     @Binding private var groundInfo: SportsGround
+    /// Площадка для открытия детального экрана
+    @State private var selectedGround: SportsGround?
     @State private var updateGroundsTask: Task<Void, Never>?
     private let mode: Mode
 
@@ -29,14 +31,37 @@ struct SportsGroundsListView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(grounds) { ground in
-                    makeItemView(for: ground)
-                        .accessibilityIdentifier("SportsGroundViewCell")
+                    Button {
+                        switch mode {
+                        case .event:
+                            groundInfo = ground
+                            dismiss()
+                        case .usedBy, .added:
+                            selectedGround = ground
+                        }
+                    } label: {
+                        SportsGroundRowView(
+                            imageURL: ground.previewImageURL,
+                            title: ground.longTitle,
+                            address: ground.address,
+                            usersTrainHereText: ground.usersTrainHereText
+                        )
+                    }
+                    .accessibilityIdentifier("SportsGroundViewCell")
                 }
             }
             .padding([.top, .horizontal])
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
+        .sheet(item: $selectedGround) { ground in
+            NavigationView {
+                SportsGroundDetailView(
+                    ground: ground,
+                    onDeletion: deleteGround
+                )
+            }
+        }
         .onChange(of: grounds) { list in
             if list.isEmpty {
                 defaults.setUserNeedUpdate(true)
@@ -102,37 +127,6 @@ private extension SportsGroundsListView {
         }
     }
 
-    @ViewBuilder
-    func makeItemView(for ground: SportsGround) -> some View {
-        let label = SportsGroundRowView(
-            imageURL: ground.previewImageURL,
-            title: ground.longTitle,
-            address: ground.address,
-            usersTrainHereText: ground.usersTrainHereText
-        )
-        switch mode {
-        case .event:
-            Button {
-                groundInfo = ground
-                dismiss()
-            } label: { label }
-        case .usedBy:
-            NavigationLink {
-                SportsGroundDetailView(
-                    ground: ground,
-                    onDeletion: deleteGround
-                )
-            } label: { label }
-        case .added:
-            NavigationLink {
-                SportsGroundDetailView(
-                    ground: ground,
-                    onDeletion: deleteGround
-                )
-            } label: { label }
-        }
-    }
-
     func askForGrounds(refresh: Bool = false) async {
         if isLoading { return }
         do {
@@ -163,6 +157,7 @@ private extension SportsGroundsListView {
     }
 
     func deleteGround(with id: Int) {
+        selectedGround = nil
         grounds.removeAll(where: { $0.id == id })
         do {
             try groundsManager.deleteGround(with: id)

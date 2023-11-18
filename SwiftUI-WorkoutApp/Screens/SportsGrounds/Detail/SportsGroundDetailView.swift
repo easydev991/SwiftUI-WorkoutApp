@@ -79,6 +79,9 @@ struct SportsGroundDetailView: View {
         }
         .onDisappear(perform: cancelTasks)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Закрыть") { dismiss() }
+            }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isGroundAuthor {
                     toolbarMenuButton
@@ -115,7 +118,6 @@ private extension SportsGroundDetailView {
                     do {
                         if try await SWClient(with: defaults).delete(groundID: ground.id) {
                             defaults.setUserNeedUpdate(true)
-                            dismiss()
                             onDeletion(ground.id)
                         }
                     } catch {
