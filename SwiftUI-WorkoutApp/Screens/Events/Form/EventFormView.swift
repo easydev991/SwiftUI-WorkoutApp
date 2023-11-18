@@ -63,6 +63,7 @@ struct EventFormView: View {
         .onDisappear { saveEventTask?.cancel() }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled(isLoading)
     }
 }
 
