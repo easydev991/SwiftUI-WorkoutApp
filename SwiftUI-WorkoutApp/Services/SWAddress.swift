@@ -81,27 +81,31 @@ extension SWAddress {
 }
 
 extension SWAddress {
-    /// Улица и номер дома
-    static func streetAndHouse(for placemark: CLPlacemark) -> String? {
-        guard let street = placemark.thoroughfare, street.isEmpty else { return nil }
-        return if let house = placemark.subThoroughfare {
-            street + " " + house
-        } else {
-            street
-        }
+    /// Полный адрес местоположения
+    static func fullAddress(for placemark: CLPlacemark) -> String? {
+        let country = placemark.country
+        let countryRegion = placemark.administrativeArea
+        let countryRegionInfo = placemark.subAdministrativeArea
+        let city = placemark.locality
+        let cityDistrict = placemark.subLocality
+        let street = placemark.thoroughfare
+        let houseNumber = placemark.subThoroughfare
+        let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
+            .compactMap { $0 }
+            .joined(separator: ", ")
+        return fullAddress.isEmpty ? nil : fullAddress
     }
 
     /// Обновляет старый адрес, если нужно
     ///
     /// - Новый адрес должен отличаться от старого
-    /// - Адрес включает название улицы и номер дома, например "Яблочная 46"
+    /// - Адрес включает все доступные данные, полученные из `placemark`
     /// - Адрес используется при создании новой площадки
     static func updateIfNeeded(_ oldAddress: inout String, placemark: CLPlacemark) {
-        if let streetAndHouse = streetAndHouse(for: placemark), streetAndHouse != oldAddress {
-            oldAddress = streetAndHouse
+        if let fullAddress = fullAddress(for: placemark), fullAddress != oldAddress {
+            oldAddress = fullAddress
             #if DEBUG
-            print("Город: \(placemark.locality ?? "неизвестный")")
-            print("Улица и номер дома: \(oldAddress)")
+            print("Адрес: ", fullAddress)
             #endif
         }
     }
