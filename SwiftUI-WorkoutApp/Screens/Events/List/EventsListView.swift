@@ -12,7 +12,10 @@ struct EventsListView: View {
     @State private var futureEvents = [EventResponse]()
     @State private var pastEvents = [EventResponse]()
     @State private var isLoading = false
+    /// Выбранная вкладка с типом мероприятий
     @State private var selectedEventType = EventType.future
+    /// Мероприятие для открытия детального экрана
+    @State private var selectedEvent: EventResponse?
     @State private var showEventCreationSheet = false
     @State private var showEventCreationRule = false
     @State private var showErrorAlert = false
@@ -40,6 +43,9 @@ struct EventsListView: View {
             }
             .onChange(of: selectedEventType) { _ in
                 eventsTask = Task { await askForEvents() }
+            }
+            .onChange(of: defaults.isAuthorized) { isAuth in
+                if !isAuth { selectedEvent = nil }
             }
             .refreshable { await askForEvents(refresh: true) }
             .toolbar {
@@ -107,7 +113,9 @@ private extension EventsListView {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(selectedEventType == .future ? futureEvents : pastEvents) { event in
-                    NavigationLink(destination: EventDetailsView(event: event, onDeletion: removeEvent)) {
+                    Button {
+                        selectedEvent = event
+                    } label: {
                         EventRowView(
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,
@@ -121,6 +129,11 @@ private extension EventsListView {
             .padding([.top, .horizontal])
         }
         .opacity(isLoading ? 0 : 1)
+        .sheet(item: $selectedEvent) { event in
+            NavigationView {
+                EventDetailsView(event: event, onDeletion: removeEvent)
+            }
+        }
     }
 
     @ViewBuilder
@@ -186,6 +199,7 @@ private extension EventsListView {
     }
 
     func removeEvent(with id: Int) {
+        selectedEvent = nil
         futureEvents.removeAll(where: { $0.id == id })
         pastEvents.removeAll(where: { $0.id == id })
     }

@@ -141,7 +141,7 @@ private extension SportsGroundDetailView {
                 }
             }
             SportsGroundLocationInfo(
-                ground: $ground,
+                ground: ground,
                 address: ground.address ?? "",
                 appleMapsURL: ground.appleMapsURL
             )
