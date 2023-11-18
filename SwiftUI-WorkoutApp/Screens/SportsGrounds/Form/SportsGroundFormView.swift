@@ -62,6 +62,7 @@ struct SportsGroundFormView: View {
         .onDisappear { saveGroundTask?.cancel() }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled(isLoading)
     }
 }
 
@@ -152,8 +153,8 @@ private extension SportsGroundFormView {
     var saveButton: some View {
         Button("Сохранить") {
             isFocused = false
+            isLoading = true
             saveGroundTask = Task {
-                isLoading = true
                 do {
                     let newGround = try await SWClient(with: defaults)
                         .saveSportsGround(id: mode.groundID, form: groundForm)
