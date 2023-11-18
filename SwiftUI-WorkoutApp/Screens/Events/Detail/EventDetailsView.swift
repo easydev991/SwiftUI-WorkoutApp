@@ -76,11 +76,11 @@ struct EventDetailsView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok") { alertMessage = "" }
         }
-        .onChange(of: defaults.isAuthorized) { isAuth in
-            if !isAuth { dismiss() }
-        }
         .onDisappear(perform: cancelTasks)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Закрыть") { dismiss() }
+            }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEventAuthor {
                     toolbarMenuButton
@@ -114,7 +114,6 @@ private extension EventDetailsView {
                 deleteEventTask = Task {
                     do {
                         if try await SWClient(with: defaults).delete(eventID: event.id) {
-                            dismiss()
                             onDeletion(event.id)
                         }
                     } catch {
@@ -156,7 +155,7 @@ private extension EventDetailsView {
             }
             .foregroundColor(.swMainText)
             SportsGroundLocationInfo(
-                ground: $event.sportsGround,
+                ground: event.sportsGround,
                 address: event.fullAddress ?? shortAddress,
                 appleMapsURL: event.sportsGround.appleMapsURL
             )

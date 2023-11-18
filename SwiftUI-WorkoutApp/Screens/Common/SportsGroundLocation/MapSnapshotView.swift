@@ -5,7 +5,7 @@ import SWModels
 
 /// Снапшот карты
 struct MapSnapshotView: View {
-    @Binding var ground: SportsGround
+    let ground: SportsGround
     @State private var snapshotImage: UIImage? = nil
 
     var body: some View {
@@ -92,6 +92,6 @@ private extension MapSnapshotView {
 
 #if DEBUG
 #Preview {
-    MapSnapshotView(ground: .constant(.emptyValue))
+    MapSnapshotView(ground: .emptyValue)
 }
 #endif
