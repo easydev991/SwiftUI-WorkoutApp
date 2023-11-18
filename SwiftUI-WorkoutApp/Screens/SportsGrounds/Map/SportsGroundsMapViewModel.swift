@@ -50,7 +50,7 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
         }
         let oldCoordinates = LocationCoordinates(region.center)
         let newCoordinates = LocationCoordinates(location.coordinate)
-        guard oldCoordinates.differs(from: newCoordinates) else { return }
+        guard oldCoordinates.differs(from: newCoordinates) || addressString.isEmpty else { return }
         CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
             guard let self, let target = places?.first else { return }
             SWAddress.updateIfNeeded(&addressString, placemark: target)
