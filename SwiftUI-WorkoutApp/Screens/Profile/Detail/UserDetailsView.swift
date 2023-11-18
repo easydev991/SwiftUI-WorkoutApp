@@ -14,6 +14,7 @@ struct UserDetailsView: View {
     @State private var showAlertMessage = false
     @State private var showLogoutDialog = false
     @State private var showBlacklistConfirmation = false
+    @State private var showSearchUsersScreen = false
     @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
@@ -256,11 +257,18 @@ private extension UserDetailsView {
     }
 
     var searchUsersButton: some View {
-        NavigationLink(destination: SearchUsersView()) {
+        Button {
+            showSearchUsersScreen = true
+        } label: {
             Icons.Regular.magnifyingglass.view
         }
         .disabled(!network.isConnected)
         .accessibilityIdentifier("searchUsersButton")
+        .sheet(isPresented: $showSearchUsersScreen) {
+            NavigationView {
+                SearchUsersView()
+            }
+        }
     }
 
     var settingsButton: some View {

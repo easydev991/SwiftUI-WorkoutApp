@@ -5,6 +5,7 @@ import SWNetworkClient
 
 /// Экран для поиска других пользователей
 struct SearchUsersView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messagingModel = MessagingModel()
     @State private var users = [UserResponse]()
@@ -38,6 +39,11 @@ struct SearchUsersView: View {
         .onSubmit(of: .search, search)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Закрыть") { dismiss() }
+            }
+        }
         .sheet(
             item: $messagingModel.recipient,
             onDismiss: { endMessaging() },
