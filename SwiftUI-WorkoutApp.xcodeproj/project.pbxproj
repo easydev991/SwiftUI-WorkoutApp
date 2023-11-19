@@ -1172,7 +1172,7 @@
 			repositoryURL = "https://github.com/OlegEremenko991/FeedbackSender";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.0.3;
 			};
 		};
 		67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */ = {
