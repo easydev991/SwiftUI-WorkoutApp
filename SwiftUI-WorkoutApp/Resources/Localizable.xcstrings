@@ -17,6 +17,9 @@
         }
       }
     },
+    "%@" : {
+
+    },
     "ageInYears" : {
       "extractionState" : "manual",
       "localizations" : {

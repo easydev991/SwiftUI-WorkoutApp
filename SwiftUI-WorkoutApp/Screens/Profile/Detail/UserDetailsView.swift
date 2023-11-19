@@ -5,6 +5,7 @@ import SWModels
 import SWNetworkClient
 
 /// Экран с детальной информацией профиля
+@MainActor
 struct UserDetailsView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
@@ -35,19 +36,17 @@ struct UserDetailsView: View {
                 userInfoSection
                 if isMainUser {
                     editProfileButton
-                }
-                if !isMainUser {
+                } else {
                     communicationSection
-                        .disabled(socialActions.isBlacklisted)
                 }
                 VStack(spacing: 12) {
                     friendsButtonIfNeeded
                     usesSportsGroundsIfNeeded
                     addedSportsGroundsIfNeeded
                     journalsButtonIfNeeded
-                    blacklistButtonIfNeeded
+                    if isMainUser { blacklistButtonIfNeeded }
                 }
-                logoutButtonIfNeeded
+                if isMainUser { logoutButton }
             }
             .padding(.horizontal)
         }
@@ -133,6 +132,7 @@ private extension UserDetailsView {
                 }
         }
         .padding(.bottom, 24)
+        .disabled(socialActions.isBlacklisted)
     }
 
     var blockUserButton: some View {
@@ -211,7 +211,7 @@ private extension UserDetailsView {
 
     @ViewBuilder
     var blacklistButtonIfNeeded: some View {
-        if isMainUser, !defaults.blacklistedUsers.isEmpty {
+        if !defaults.blacklistedUsers.isEmpty {
             NavigationLink(destination: UsersListView(mode: .blacklist)) {
                 FormRowView(
                     title: "Черный список",
@@ -238,22 +238,20 @@ private extension UserDetailsView {
     }
 
     @ViewBuilder
-    var logoutButtonIfNeeded: some View {
-        if isMainUser {
-            Button("Выйти") { showLogoutDialog = true }
-                .foregroundStyle(Color.swSmallElements)
-                .padding(.top, 36)
-                .padding(.bottom, 20)
-                .confirmationDialog(
-                    .init(Constants.Alert.logout),
-                    isPresented: $showLogoutDialog,
-                    titleVisibility: .visible
-                ) {
-                    Button("Выйти", role: .destructive) {
-                        defaults.triggerLogout()
-                    }
+    var logoutButton: some View {
+        Button("Выйти") { showLogoutDialog = true }
+            .foregroundStyle(Color.swSmallElements)
+            .padding(.top, 36)
+            .padding(.bottom, 20)
+            .confirmationDialog(
+                .init(Constants.Alert.logout),
+                isPresented: $showLogoutDialog,
+                titleVisibility: .visible
+            ) {
+                Button("Выйти", role: .destructive) {
+                    defaults.triggerLogout()
                 }
-        }
+            }
     }
 
     var searchUsersButton: some View {
