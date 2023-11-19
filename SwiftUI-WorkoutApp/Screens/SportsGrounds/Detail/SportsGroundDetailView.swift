@@ -81,6 +81,7 @@ struct SportsGroundDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Закрыть") { dismiss() }
+                    .accessibilityIdentifier("closeModalPageButton")
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isGroundAuthor {
