@@ -3,7 +3,7 @@ import MapKit.MKGeometry
 import Utils
 
 /// Модель данных спортивной площадки
-public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
+public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, Sendable {
     public let id, typeID, sizeID: Int
     public let address: String?
     public let author: UserResponse?
@@ -154,7 +154,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable {
     }
 }
 
-public struct Photo: Codable, Identifiable, Equatable {
+public struct Photo: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     public let stringURL: String?
 
@@ -173,7 +173,7 @@ public struct Photo: Codable, Identifiable, Equatable {
     }
 }
 
-public struct CommentResponse: Codable, Identifiable, Hashable {
+public struct CommentResponse: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let body, date: String?
     public let user: UserResponse?

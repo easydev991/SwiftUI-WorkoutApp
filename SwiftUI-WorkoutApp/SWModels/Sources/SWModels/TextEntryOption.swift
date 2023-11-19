@@ -1,4 +1,4 @@
-public enum TextEntryOption {
+public enum TextEntryOption: Sendable {
     /// Комментарий к площадке
     case ground(id: Int)
     /// Комментарий к мероприятию

@@ -1,4 +1,4 @@
-public enum BlacklistOption: String {
+public enum BlacklistOption: String, Sendable {
     case add = "Заблокировать"
     case remove = "Разблокировать"
 }

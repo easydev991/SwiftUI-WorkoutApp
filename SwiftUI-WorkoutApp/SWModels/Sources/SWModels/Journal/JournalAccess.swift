@@ -1,4 +1,4 @@
-public enum JournalAccess: Int, CaseIterable, CustomStringConvertible {
+public enum JournalAccess: Int, CaseIterable, CustomStringConvertible, Sendable {
     case all = 0
     case friends = 1
     case nobody = 2

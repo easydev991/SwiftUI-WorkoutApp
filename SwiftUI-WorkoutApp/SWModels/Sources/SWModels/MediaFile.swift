@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MediaFile: Codable, Equatable {
+public struct MediaFile: Codable, Equatable, Sendable {
     public let key: String
     public let filename: String
     public let data: Data

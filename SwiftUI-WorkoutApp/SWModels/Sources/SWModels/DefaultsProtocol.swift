@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol DefaultsProtocol: AnyObject {
+public protocol DefaultsProtocol: AnyObject, Sendable {
     var appLanguage: AppLanguage { get }
     var appTheme: AppColorTheme { get }
     var mainUserInfo: UserResponse? { get }

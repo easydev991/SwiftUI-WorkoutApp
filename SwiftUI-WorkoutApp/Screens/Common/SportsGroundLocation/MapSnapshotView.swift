@@ -38,6 +38,7 @@ private extension MapSnapshotView {
         }
     }
 
+    @MainActor
     func generateSnapshot(for size: CGSize) {
         if snapshotImage != nil
             || ground.coordinate.latitude == .zero

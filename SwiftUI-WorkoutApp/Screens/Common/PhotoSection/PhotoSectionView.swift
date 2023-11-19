@@ -4,6 +4,8 @@ import SWModels
 
 /// Галерея с фотографиями
 struct PhotoSectionView: View {
+    @MainActor
+    private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     private let photos: [Photo]
     /// `true` - есть доступ на удаление фото, `false` - нет доступа
     ///
@@ -11,8 +13,6 @@ struct PhotoSectionView: View {
     private let canDelete: Bool
     private let reportPhotoClbk: () -> Void
     private let deletePhotoClbk: (Int) -> Void
-    private let screenWidth = UIScreen.main.bounds.size.width
-
     @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
 
     init(
