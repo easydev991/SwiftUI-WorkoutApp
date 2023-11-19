@@ -7,6 +7,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>maps</string>
+		<string>mailto</string>
 	</array>
 </dict>
 </plist>
