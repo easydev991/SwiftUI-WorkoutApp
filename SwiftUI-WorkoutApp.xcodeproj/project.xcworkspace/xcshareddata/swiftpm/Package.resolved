@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/FeedbackSender",
       "state" : {
-        "revision" : "106d7e5c459d8ea0d622b4630110726552280345",
-        "version" : "1.0.2"
+        "revision" : "6b8d695f0a4e8596fd99cf5fb650c3affb30528c",
+        "version" : "1.0.3"
       }
     },
     {
