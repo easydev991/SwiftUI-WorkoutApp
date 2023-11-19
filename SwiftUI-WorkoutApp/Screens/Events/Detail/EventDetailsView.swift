@@ -89,6 +89,7 @@ private extension EventDetailsView {
             case .editComment: 2
             }
         }
+
         case newComment
         case editComment(CommentResponse)
     }
@@ -294,7 +295,7 @@ private extension EventDetailsView {
             )
         }
     }
-    
+
     @ViewBuilder
     func makeSheetContent(for item: SheetItem) -> some View {
         switch item {

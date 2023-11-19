@@ -37,6 +37,18 @@ extension XCTestCase {
         }
         waitAndTapOrFail(element: element)
     }
+
+    /// Иногда сервер очень долго отвечает, поэтому ждем
+    func waitForServerResponse(_ timeout: UInt32 = 5) {
+        sleep(timeout)
+    }
+
+    /// Свайп вниз для закрытия модального окна
+    func swipeDownToClosePage(element: XCUIElement) {
+        let start = element.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let finish = element.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 30))
+        start.press(forDuration: 0.5, thenDragTo: finish)
+    }
 }
 
 extension XCTestCase {
