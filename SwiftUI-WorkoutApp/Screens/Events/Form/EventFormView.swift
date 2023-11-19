@@ -88,7 +88,7 @@ extension EventFormView {
                 nil
             }
         }
-        
+
         var groundID: Int? {
             switch self {
             case let .createForSelected(groundID, _): groundID
@@ -96,7 +96,7 @@ extension EventFormView {
             case .regularCreate: nil
             }
         }
-        
+
         var groundName: String? {
             switch self {
             case let .createForSelected(_, groundName): groundName
@@ -104,7 +104,7 @@ extension EventFormView {
             case .regularCreate: nil
             }
         }
-        
+
         var title: LocalizedStringKey {
             switch self {
             case .regularCreate, .createForSelected: "Новое мероприятие"
@@ -149,7 +149,7 @@ private extension EventFormView {
             }
         }
     }
-    
+
     /// Площадки, где тренируется пользователь
     ///
     /// `canShowGroundPicker` проверяет на существование `userID`

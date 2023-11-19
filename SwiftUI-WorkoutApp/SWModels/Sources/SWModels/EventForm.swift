@@ -19,7 +19,7 @@ public struct EventForm: Codable, Sendable, Equatable {
         self.sportsGroundID = event?.sportsGroundID ?? 0
         self.photosCount = event?.photos.count ?? 0
     }
-    
+
     public init(_ groundID: Int, _ groundName: String) {
         self.title = ""
         self.description = ""

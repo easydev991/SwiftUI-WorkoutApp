@@ -24,7 +24,7 @@ final class WorkoutAppUITests: XCTestCase {
         waitAndTapOrFail(element: sportsGroundListPickerButton)
         app.swipeUp(velocity: .slow)
         snapshot("1-sportsGroundsList", timeWaitingForIdle: 5)
-        
+
         waitAndTapOrFail(timeout: 5, element: profileTabButton)
         waitAndTapOrFail(element: authorizeButton)
         waitAndTapOrFail(element: loginField)
@@ -40,26 +40,21 @@ final class WorkoutAppUITests: XCTestCase {
         waitAndTapOrFail(timeout: 10, element: firstFoundUserCell)
         waitForServerResponse()
         snapshot("5-profile", timeWaitingForIdle: 10)
-        
+
         swipeToFind(element: usesSportsGroundsButton, in: app)
         waitAndTapOrFail(timeout: 10, element: firstSportsGroundCell)
         snapshot("2-sportsGroundDetails", timeWaitingForIdle: 10)
-        
+
         waitAndTapOrFail(timeout: 5, element: closeButton)
-        app.navigationBars.firstMatch.swipeDown()
+        swipeDownToClosePage(element: whereTrainsText)
         waitAndTapOrFail(timeout: 10, element: eventsTabButton)
         waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
         waitForServerResponse()
         snapshot("3-pastEvents", timeWaitingForIdle: 10)
-        
+
         waitAndTapOrFail(timeout: 10, element: firstEventViewCell)
         waitForServerResponse()
         snapshot("4-eventDetails", timeWaitingForIdle: 10)
-    }
-    
-    /// Иногда сервер очень долго отвечает, поэтому ждем
-    private func waitForServerResponse(_ timeout: UInt32 = 5) {
-        sleep(timeout)
     }
 }
 
@@ -79,6 +74,13 @@ private extension WorkoutAppUITests {
     var tabbar: XCUIElement {
         let rusButton = app.tabBars["Панель вкладок"]
         let enButton = app.tabBars["Tab Bar"]
+        return rusButton.exists ? rusButton : enButton
+    }
+
+    /// Текст в навбаре модального окна
+    var whereTrainsText: XCUIElement {
+        let rusButton = app.staticTexts["Где тренируется"]
+        let enButton = app.staticTexts["Where trains"]
         return rusButton.exists ? rusButton : enButton
     }
 
