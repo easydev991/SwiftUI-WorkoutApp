@@ -2,7 +2,7 @@ import Foundation
 import Utils
 
 /// Форма для отправки создании/изменении мероприятия
-public struct EventForm: Codable {
+public struct EventForm: Codable, Sendable {
     public var title, description: String
     public var date: Date
     public var sportsGround: SportsGround

@@ -2,7 +2,7 @@ import Foundation
 import Utils
 
 /// Модель с информацией о дневнике
-public struct JournalResponse: Codable, Identifiable, Equatable {
+public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     public var titleOptional, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText, ownerName: String?
     public let itemsCount, ownerID: Int?

@@ -5,6 +5,7 @@ enum AppThemeService {
     /// Задает выбранную тему для приложения
     ///
     /// - Parameter newTheme: Новая тема
+    @MainActor
     static func set(_ newTheme: AppColorTheme) {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }

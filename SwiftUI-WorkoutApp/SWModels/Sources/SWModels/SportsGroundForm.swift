@@ -1,5 +1,5 @@
 /// Форма для отправки при создании/изменении площадки
-public struct SportsGroundForm: Codable {
+public struct SportsGroundForm: Codable, Sendable {
     public var address: String
     public var latitude: String
     public var longitude: String

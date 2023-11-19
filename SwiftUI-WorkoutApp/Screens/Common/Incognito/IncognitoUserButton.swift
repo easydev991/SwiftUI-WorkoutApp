@@ -33,7 +33,7 @@ private extension IncognitoUserButton.Mode {
         }
     }
 
-    @ViewBuilder
+    @MainActor @ViewBuilder
     var destination: some View {
         switch self {
         case .register: EmptyView()

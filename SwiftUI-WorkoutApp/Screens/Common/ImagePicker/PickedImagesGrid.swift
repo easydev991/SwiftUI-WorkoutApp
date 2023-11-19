@@ -3,7 +3,8 @@ import SWDesignSystem
 import SwiftUI
 
 struct PickedImagesGrid: View {
-    private let screenWidth = UIScreen.main.bounds.size.width
+    @MainActor
+    private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     private var imagesArray: [PickedImageView.Model] {
         var realImages: [PickedImageView.Model] = images.map {
             .image($0)
@@ -32,7 +33,8 @@ struct PickedImagesGrid: View {
                 LazyVGrid(
                     columns: .init(
                         repeating: .init(
-                            .flexible(minimum: screenWidth * 0.287), spacing: 11
+                            .flexible(minimum: screenWidth * 0.287),
+                            spacing: 11
                         ),
                         count: 3
                     ),

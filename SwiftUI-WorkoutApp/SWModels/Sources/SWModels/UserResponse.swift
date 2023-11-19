@@ -2,7 +2,7 @@ import Foundation
 import Utils
 
 /// Модель данных пользователя со всеми доступными свойствами
-public struct UserResponse: Codable, Identifiable, Hashable {
+public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let userName, fullName, email, imageStringURL: String?
     public let cityID, countryID, genderCode, friendsCount, journalsCount: Int?

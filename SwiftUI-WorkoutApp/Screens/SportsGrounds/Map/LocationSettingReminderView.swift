@@ -5,7 +5,6 @@ import SWModels
 /// Отображает текст с ошибкой определения геолокации пользователя
 /// и кнопку для перехода в настройки приложения
 struct LocationSettingReminderView: View {
-    private let settingsStringURL = UIApplication.openSettingsURLString
     let message: String
     let isHidden: Bool
 
@@ -23,7 +22,7 @@ struct LocationSettingReminderView: View {
                         .withShadow()
                 }
             Button("Открыть настройки") {
-                URLOpener.open(URL(string: settingsStringURL))
+                URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         }

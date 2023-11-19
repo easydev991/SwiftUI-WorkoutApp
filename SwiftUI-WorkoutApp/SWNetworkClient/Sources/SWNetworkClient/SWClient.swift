@@ -2,7 +2,7 @@ import Foundation
 import SWModels
 
 /// Сервис для обращений к серверу
-public struct SWClient {
+public struct SWClient: Sendable {
     /// Сервис, отвечающий за обновление `UserDefaults`
     let defaults: DefaultsProtocol
     /// Базовый `url` сервера

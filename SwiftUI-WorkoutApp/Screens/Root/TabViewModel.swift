@@ -61,7 +61,7 @@ extension TabViewModel {
             .accessibilityIdentifier(accessibilityId)
         }
 
-        @ViewBuilder
+        @MainActor @ViewBuilder
         var screen: some View {
             switch self {
             case .map:

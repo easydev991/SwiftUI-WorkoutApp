@@ -1,4 +1,4 @@
-public struct City: Codable, Identifiable, Hashable {
+public struct City: Codable, Identifiable, Hashable, Sendable {
     public let id, name, lat, lon: String
 
     public init(id: String) {
