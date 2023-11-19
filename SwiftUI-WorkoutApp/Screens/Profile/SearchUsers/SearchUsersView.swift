@@ -42,6 +42,7 @@ struct SearchUsersView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Закрыть") { dismiss() }
+                    .accessibilityIdentifier("closeModalPageButton")
             }
         }
         .sheet(

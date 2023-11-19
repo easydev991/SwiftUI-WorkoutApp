@@ -2,7 +2,7 @@ import Foundation
 import Utils
 
 /// Модель сообщения в диалоге
-public struct MessageResponse: Codable, Identifiable, Hashable {
+public struct MessageResponse: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let userID: Int?
     public let message, name, created, imageStringURL: String?

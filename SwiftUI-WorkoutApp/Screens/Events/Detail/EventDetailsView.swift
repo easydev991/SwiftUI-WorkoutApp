@@ -80,6 +80,7 @@ struct EventDetailsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Закрыть") { dismiss() }
+                    .accessibilityIdentifier("closeModalPageButton")
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEventAuthor {
