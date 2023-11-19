@@ -13,10 +13,9 @@ struct EventDetailsView: View {
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var isCreatingComment = false
     @State private var isEditingEvent = false
     @State private var showDeleteDialog = false
-    @State private var editComment: CommentResponse?
+    @State private var sheetItem: SheetItem?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
@@ -52,25 +51,14 @@ struct EventDetailsView: View {
         }
         .background {
             NavigationLink(isActive: $isEditingEvent) {
-                EventFormView(for: .editExisting(event), refreshClbk: refreshAction)
+                EventFormView(mode: .editExisting(event), refreshClbk: refreshAction)
             } label: {
                 EmptyView()
             }
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .sheet(item: $editComment) {
-            TextEntryView(
-                mode: .editEvent(
-                    .init(
-                        parentObjectID: event.id,
-                        entryID: $0.id,
-                        oldEntry: $0.formattedBody
-                    )
-                ),
-                refreshClbk: refreshAction
-            )
-        }
+        .sheet(item: $sheetItem, content: makeSheetContent)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -79,8 +67,7 @@ struct EventDetailsView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Закрыть") { dismiss() }
-                    .accessibilityIdentifier("closeModalPageButton")
+                CloseButton(mode: .text) { dismiss() }
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEventAuthor {
@@ -91,6 +78,19 @@ struct EventDetailsView: View {
         }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private extension EventDetailsView {
+    enum SheetItem: Identifiable, Equatable {
+        var id: Int {
+            switch self {
+            case .newComment: 1
+            case .editComment: 2
+            }
+        }
+        case newComment
+        case editComment(CommentResponse)
     }
 }
 
@@ -262,15 +262,14 @@ private extension EventDetailsView {
             items: event.comments,
             reportClbk: reportComment,
             deleteClbk: deleteComment,
-            editClbk: { editComment = $0 },
-            isCreatingComment: $isCreatingComment
-        )
-        .sheet(isPresented: $isCreatingComment) {
-            TextEntryView(
-                mode: .newForEvent(id: event.id),
-                refreshClbk: refreshAction
+            editClbk: { sheetItem = .editComment($0) },
+            isCreatingComment: .init(
+                get: { sheetItem == .newComment },
+                set: { newValue in
+                    sheetItem = newValue ? .newComment : nil
+                }
             )
-        }
+        )
     }
 
     var deleteButton: some View {
@@ -295,10 +294,31 @@ private extension EventDetailsView {
             )
         }
     }
+    
+    @ViewBuilder
+    func makeSheetContent(for item: SheetItem) -> some View {
+        switch item {
+        case let .editComment(comment):
+            TextEntryView(
+                mode: .editEvent(
+                    .init(
+                        parentObjectID: event.id,
+                        entryID: comment.id,
+                        oldEntry: comment.formattedBody
+                    )
+                ),
+                refreshClbk: refreshAction
+            )
+        case .newComment:
+            TextEntryView(
+                mode: .newForEvent(id: event.id),
+                refreshClbk: refreshAction
+            )
+        }
+    }
 
     func refreshAction() {
-        isCreatingComment = false
-        editComment = nil
+        sheetItem = nil
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 

@@ -41,8 +41,7 @@ struct SearchUsersView: View {
         .background(Color.swBackground)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Закрыть") { dismiss() }
-                    .accessibilityIdentifier("closeModalPageButton")
+                CloseButton(mode: .text) { dismiss() }
             }
         }
         .sheet(

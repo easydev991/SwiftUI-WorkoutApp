@@ -1016,22 +1016,6 @@
         }
       }
     },
-    "Выбери площадку" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select the ground"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбери площадку"
-          }
-        }
-      }
-    },
     "Выбери страну" : {
       "extractionState" : "manual",
       "localizations" : {

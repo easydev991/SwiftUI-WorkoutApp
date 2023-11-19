@@ -168,7 +168,7 @@ private extension UserDetailsView {
     var usesSportsGroundsIfNeeded: some View {
         if user.hasUsedGrounds {
             NavigationLink {
-                SportsGroundsListView(for: .usedBy(userID: user.id))
+                SportsGroundsListView(mode: .usedBy(userID: user.id))
             } label: {
                 FormRowView(
                     title: "Где тренируется",
@@ -183,7 +183,7 @@ private extension UserDetailsView {
     var addedSportsGroundsIfNeeded: some View {
         if user.hasAddedGrounds {
             NavigationLink {
-                SportsGroundsListView(for: .added(list: user.addedSportsGrounds ?? []))
+                SportsGroundsListView(mode: .added(list: user.addedSportsGrounds ?? []))
             } label: {
                 FormRowView(
                     title: user.addedGroundsString,

@@ -12,20 +12,10 @@ struct SportsGroundsListView: View {
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
-    /// Площадка для мероприятия
-    @Binding private var groundInfo: SportsGround
     /// Площадка для открытия детального экрана
     @State private var selectedGround: SportsGround?
     @State private var updateGroundsTask: Task<Void, Never>?
-    private let mode: Mode
-
-    init(
-        for mode: Mode,
-        ground: Binding<SportsGround> = .constant(.emptyValue)
-    ) {
-        self.mode = mode
-        _groundInfo = ground
-    }
+    let mode: Mode
 
     var body: some View {
         ScrollView {
@@ -33,8 +23,8 @@ struct SportsGroundsListView: View {
                 ForEach(grounds) { ground in
                     Button {
                         switch mode {
-                        case .event:
-                            groundInfo = ground
+                        case let .event(_, callBack):
+                            callBack(ground.id, ground.name ?? ground.longTitle)
                             dismiss()
                         case .usedBy, .added:
                             selectedGround = ground
@@ -90,7 +80,7 @@ struct SportsGroundsListView: View {
 extension SportsGroundsListView {
     enum Mode {
         case usedBy(userID: Int)
-        case event(userID: Int)
+        case event(userID: Int, didSelectGround: (_ id: Int, _ name: String) -> Void)
         case added(list: [SportsGround])
 
         var canRefreshList: Bool {
@@ -131,7 +121,7 @@ private extension SportsGroundsListView {
         if isLoading { return }
         do {
             switch mode {
-            case let .usedBy(userID), let .event(userID):
+            case let .usedBy(userID), let .event(userID, _):
                 let isMainUser = userID == defaults.mainUserInfo?.id
                 let needUpdate = grounds.isEmpty || refresh
                 if isMainUser {
@@ -177,7 +167,7 @@ private extension SportsGroundsListView {
 
 #if DEBUG
 #Preview {
-    SportsGroundsListView(for: .usedBy(userID: .previewUserID))
+    SportsGroundsListView(mode: .usedBy(userID: .previewUserID))
         .environmentObject(DefaultsService())
         .environmentObject(SportsGroundsManager())
 }
