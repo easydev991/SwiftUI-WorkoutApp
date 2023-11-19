@@ -151,13 +151,18 @@ private extension EventsListView {
             }
             .disabled(!network.isConnected)
             .sheet(isPresented: $showEventCreationSheet) {
-                ContentInSheet(title: "Новое мероприятие", spacing: 0) {
+                NavigationView {
                     EventFormView(
-                        for: .regularCreate,
+                        mode: .regularCreate,
                         refreshClbk: {
                             eventsTask = Task { await askForEvents(refresh: true) }
                         }
                     )
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            CloseButton(mode: .xmark) { showEventCreationSheet = false }
+                        }
+                    }
                 }
             }
         }

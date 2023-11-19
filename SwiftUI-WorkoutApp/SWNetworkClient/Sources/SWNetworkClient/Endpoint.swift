@@ -538,7 +538,7 @@ private extension SWClient.Endpoint {
                     .title: form.title,
                     .description: form.description,
                     .date: form.dateIsoString,
-                    .areaID: form.sportsGround.id.description
+                    .areaID: form.sportsGroundID.description
                 ],
                 with: form.newMediaFiles
             )

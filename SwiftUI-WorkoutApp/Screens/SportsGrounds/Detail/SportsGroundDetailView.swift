@@ -80,8 +80,7 @@ struct SportsGroundDetailView: View {
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Закрыть") { dismiss() }
-                    .accessibilityIdentifier("closeModalPageButton")
+                CloseButton(mode: .text) { dismiss() }
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isGroundAuthor {
@@ -150,7 +149,7 @@ private extension SportsGroundDetailView {
             )
             if defaults.isAuthorized {
                 NavigationLink {
-                    EventFormView(for: .createForSelected(ground))
+                    EventFormView(mode: .createForSelected(ground.id, ground.longTitle))
                 } label: {
                     Text("Создать мероприятие")
                 }

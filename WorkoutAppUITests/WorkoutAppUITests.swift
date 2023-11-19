@@ -45,7 +45,7 @@ final class WorkoutAppUITests: XCTestCase {
         waitAndTapOrFail(timeout: 10, element: firstSportsGroundCell)
         snapshot("2-sportsGroundDetails", timeWaitingForIdle: 10)
         
-        waitAndTapOrFail(timeout: 5, element: closeModalPageButton)
+        waitAndTapOrFail(timeout: 5, element: closeButton)
         app.navigationBars.firstMatch.swipeDown()
         waitAndTapOrFail(timeout: 10, element: eventsTabButton)
         waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
@@ -90,7 +90,7 @@ private extension WorkoutAppUITests {
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
     var loginButton: XCUIElement { app.buttons["loginButton"] }
     var searchUsersButton: XCUIElement { app.buttons["searchUsersButton"] }
-    var closeModalPageButton: XCUIElement { app.buttons["closeModalPageButton"] }
+    var closeButton: XCUIElement { app.buttons["closeButton"] }
     var searchUserField: XCUIElement { app.searchFields.firstMatch }
     var keyboardSearchButton: XCUIElement { app.keyboards.buttons["Search"] }
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }

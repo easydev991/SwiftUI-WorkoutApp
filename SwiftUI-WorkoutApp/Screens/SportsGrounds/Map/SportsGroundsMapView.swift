@@ -282,15 +282,7 @@ private extension SportsGroundsMapView {
                 )
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            sheetItem = nil
-                        } label: {
-                            Image(systemName: Icons.Regular.xmark.rawValue)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20)
-                                .symbolVariant(.circle)
-                        }
+                        CloseButton(mode: .xmark) { sheetItem = nil }
                     }
                 }
             }

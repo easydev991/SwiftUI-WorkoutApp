@@ -10,13 +10,12 @@ struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var eventForm: EventForm
+    @State private var eventForm = EventForm.emptyValue
     @State private var newImages = [UIImage]()
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showImagePicker = false
-    @State private var showGroundPicker = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
     private let oldEventForm: EventForm
@@ -26,20 +25,16 @@ struct EventFormView: View {
         byAdding: .year, value: 1, to: .now
     ) ?? .now
 
-    init(for mode: Mode, refreshClbk: (() -> Void)? = nil) {
+    init(mode: Mode, refreshClbk: (() -> Void)? = nil) {
         self.mode = mode
         self.refreshClbk = refreshClbk
         switch mode {
         case let .editExisting(event):
             self.oldEventForm = .init(event)
-            _eventForm = .init(initialValue: oldEventForm)
-        case let .createForSelected(ground):
-            self.oldEventForm = .emptyValue
-            _eventForm = .init(initialValue: oldEventForm)
-            eventForm.sportsGround = ground
+        case let .createForSelected(groundID, groundName):
+            self.oldEventForm = .init(groundID, groundName)
         case .regularCreate:
-            self.oldEventForm = .init(nil)
-            _eventForm = .init(initialValue: oldEventForm)
+            self.oldEventForm = .emptyValue
         }
     }
 
@@ -60,8 +55,18 @@ struct EventFormView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok") { alertMessage = "" }
         }
+        .onAppear {
+            guard !eventForm.isReadyToCreate else { return }
+            eventForm = oldEventForm
+            if let groundID = mode.groundID {
+                eventForm.sportsGroundID = groundID
+            }
+            if let groundName = mode.groundName {
+                eventForm.sportsGroundName = groundName
+            }
+        }
         .onDisappear { saveEventTask?.cancel() }
-        .navigationTitle("Мероприятие")
+        .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(isLoading)
     }
@@ -72,7 +77,7 @@ extension EventFormView {
         /// Для экрана "Мероприятия"
         case regularCreate
         /// Для детальной страницы площадки
-        case createForSelected(SportsGround)
+        case createForSelected(_ groundID: Int, _ groundName: String)
         /// Для редактирования мероприятия
         case editExisting(EventResponse)
 
@@ -81,6 +86,29 @@ extension EventFormView {
                 eventResponse.id
             } else {
                 nil
+            }
+        }
+        
+        var groundID: Int? {
+            switch self {
+            case let .createForSelected(groundID, _): groundID
+            case let .editExisting(event): event.sportsGround.id
+            case .regularCreate: nil
+            }
+        }
+        
+        var groundName: String? {
+            switch self {
+            case let .createForSelected(_, groundName): groundName
+            case let .editExisting(event): event.sportsGround.name ?? event.sportsGround.longTitle
+            case .regularCreate: nil
+            }
+        }
+        
+        var title: LocalizedStringKey {
+            switch self {
+            case .regularCreate, .createForSelected: "Новое мероприятие"
+            case .editExisting: "Мероприятие"
             }
         }
     }
@@ -105,39 +133,36 @@ private extension EventFormView {
     var sportsGroundSection: some View {
         SectionView(header: "Площадка", mode: .regular) {
             switch mode {
-            case .regularCreate:
-                Button { showGroundPicker = true } label: {
+            case .regularCreate, .editExisting:
+                NavigationLink(destination: userGroundsScreen) {
                     ListRowView(
-                        leadingContent: .text(eventForm.sportsGround.name ?? "Выбрать площадку"),
+                        leadingContent: .text(eventForm.sportsGroundName),
                         trailingContent: .chevron
                     )
                 }
                 .disabled(!canShowGroundPicker)
-            case let .createForSelected(ground):
+            case let .createForSelected(_, groundName):
                 ListRowView(
-                    leadingContent: .text(ground.name ?? ""),
+                    leadingContent: .text(groundName),
                     trailingContent: .empty
                 )
-            case let .editExisting(event):
-                Button { showGroundPicker = true } label: {
-                    ListRowView(
-                        leadingContent: .text(event.sportsGround.longTitle),
-                        trailingContent: .chevron
-                    )
+            }
+        }
+    }
+    
+    /// Площадки, где тренируется пользователь
+    ///
+    /// `canShowGroundPicker` проверяет на существование `userID`
+    var userGroundsScreen: some View {
+        SportsGroundsListView(
+            mode: .event(
+                userID: defaults.mainUserInfo?.id ?? 0,
+                didSelectGround: { id, name in
+                    eventForm.sportsGroundID = id
+                    eventForm.sportsGroundName = name
                 }
-                .disabled(!canShowGroundPicker)
-            }
-        }
-        .sheet(isPresented: $showGroundPicker) {
-            ContentInSheet(title: "Выбери площадку", spacing: 0) {
-                SportsGroundsListView(
-                    // `canShowGroundPicker` проверяет на существование `userID`
-                    // поэтому тут смело делаем force unwrap
-                    for: .event(userID: defaults.mainUserInfo!.id),
-                    ground: $eventForm.sportsGround
-                )
-            }
-        }
+            )
+        )
     }
 
     var datePickerSection: some View {
@@ -205,9 +230,10 @@ private extension EventFormView {
     }
 
     var isFormReady: Bool {
-        mode.eventID == nil
-            ? eventForm.isReadyToCreate
-            : eventForm.isReadyToUpdate(old: oldEventForm)
+        switch mode {
+        case .regularCreate, .createForSelected: eventForm.isReadyToCreate
+        case .editExisting: eventForm.isReadyToUpdate(old: oldEventForm)
+        }
     }
 
     func setupErrorAlert(_ message: String) {
@@ -231,7 +257,7 @@ private extension EventFormView {
 
 #if DEBUG
 #Preview {
-    EventFormView(for: .regularCreate, refreshClbk: {})
+    EventFormView(mode: .regularCreate, refreshClbk: {})
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }

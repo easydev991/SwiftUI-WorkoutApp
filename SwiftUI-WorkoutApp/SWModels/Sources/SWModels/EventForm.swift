@@ -2,10 +2,11 @@ import Foundation
 import Utils
 
 /// Форма для отправки создании/изменении мероприятия
-public struct EventForm: Codable, Sendable {
+public struct EventForm: Codable, Sendable, Equatable {
     public var title, description: String
     public var date: Date
-    public var sportsGround: SportsGround
+    public var sportsGroundID: Int
+    public var sportsGroundName: String
     public let photosCount: Int
     public var newMediaFiles = [MediaFile]()
 
@@ -13,8 +14,19 @@ public struct EventForm: Codable, Sendable {
         self.title = event?.formattedTitle ?? ""
         self.description = event?.formattedDescription ?? ""
         self.date = DateFormatterService.dateFromIsoString(event?.beginDate)
-        self.sportsGround = event?.sportsGround ?? .emptyValue
+        let groundName = event?.sportsGround.name ?? event?.sportsGround.longTitle
+        self.sportsGroundName = groundName ?? "Выбрать площадку"
+        self.sportsGroundID = event?.sportsGroundID ?? 0
         self.photosCount = event?.photos.count ?? 0
+    }
+    
+    public init(_ groundID: Int, _ groundName: String) {
+        self.title = ""
+        self.description = ""
+        self.date = .now
+        self.sportsGroundID = groundID
+        self.sportsGroundName = groundName
+        self.photosCount = 0
     }
 }
 
@@ -28,14 +40,6 @@ public extension EventForm {
         )
     }
 
-    var countryID: Int {
-        sportsGround.countryID ?? 0
-    }
-
-    var cityID: Int {
-        sportsGround.cityID ?? 0
-    }
-
     /// Сколько еще фотографий можно добавить с учетом имеющихся
     var imagesLimit: Int {
         Constants.photosLimit - newMediaFiles.count - photosCount
@@ -43,25 +47,13 @@ public extension EventForm {
 
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
-        !title.isEmpty
-            && !description.isEmpty
-            && sportsGround.id != .zero
+        !title.isEmpty && !description.isEmpty && sportsGroundID != .zero
     }
 
     /// Готовность формы к отправке обновлений по мероприятию
     func isReadyToUpdate(old: EventForm) -> Bool {
-        isReadyToCreate && self != old
+        self != old
     }
 
     static var emptyValue: Self { .init(nil) }
-}
-
-extension EventForm: Equatable {
-    public static func == (lhs: EventForm, rhs: EventForm) -> Bool {
-        lhs.title == rhs.title
-            && lhs.description == rhs.description
-            && lhs.sportsGround.id == rhs.sportsGround.id
-            && lhs.date == rhs.date
-            && lhs.newMediaFiles == rhs.newMediaFiles
-    }
 }
