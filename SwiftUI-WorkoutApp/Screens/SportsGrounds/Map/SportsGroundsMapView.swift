@@ -289,7 +289,6 @@ private extension SportsGroundsMapView {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 20)
-                                .foregroundColor(.swAccent)
                                 .symbolVariant(.circle)
                         }
                     }

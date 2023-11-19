@@ -29,7 +29,6 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(network)
                 .environmentObject(defaults)
                 .environmentObject(groundsManager)
-                .accentColor(.swAccent)
                 .onAppear {
                     AppThemeService.set(defaults.appTheme)
                 }
