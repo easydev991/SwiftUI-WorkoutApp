@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "feedbacksender",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/OlegEremenko991/FeedbackSender",
-      "state" : {
-        "revision" : "6b8d695f0a4e8596fd99cf5fb650c3affb30528c",
-        "version" : "1.0.3"
-      }
-    },
-    {
       "identity" : "filemanager991",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/FileManager991",

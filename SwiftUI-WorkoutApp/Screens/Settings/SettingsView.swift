@@ -1,4 +1,3 @@
-import FeedbackSender
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,6 @@ import SWModels
 /// Экран с настройками профиля основного пользователя
 struct SettingsView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
 
     var body: some View {
         NavigationView {
@@ -121,7 +119,7 @@ private extension SettingsView {
 
     var feedbackButton: some View {
         Button {
-            feedbackSender.sendFeedback(
+            FeedbackSender.sendFeedback(
                 subject: Feedback.subject,
                 messageBody: Feedback.body,
                 recipients: Constants.feedbackRecipient

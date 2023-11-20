@@ -1,4 +1,3 @@
-import FeedbackSender
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
@@ -21,7 +20,6 @@ struct EventDetailsView: View {
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
     @State var event: EventResponse
     let onDeletion: (Int) -> Void
 
@@ -372,7 +370,7 @@ private extension EventDetailsView {
 
     func reportPhoto() {
         let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
-        feedbackSender.sendFeedback(
+        FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
             recipients: Constants.feedbackRecipient
@@ -385,7 +383,7 @@ private extension EventDetailsView {
             author: comment.user?.userName ?? "неизвестен",
             commentText: comment.formattedBody
         )
-        feedbackSender.sendFeedback(
+        FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
             recipients: Constants.feedbackRecipient

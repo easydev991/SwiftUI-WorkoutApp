@@ -1,4 +1,3 @@
-import FeedbackSender
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
@@ -23,7 +22,6 @@ struct SportsGroundDetailView: View {
     @State private var deleteGroundTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    private let feedbackSender: FeedbackSender = FeedbackSenderImp()
     @State var ground: SportsGround
     let onDeletion: (Int) -> Void
 
@@ -271,7 +269,7 @@ private extension SportsGroundDetailView {
             titleVisibility: .visible
         ) {
             Button("Написать письмо") {
-                feedbackSender.sendFeedback(
+                FeedbackSender.sendFeedback(
                     subject: Feedback.makeSubject(for: ground.shortTitle),
                     messageBody: Feedback.body,
                     recipients: Constants.feedbackRecipient
@@ -358,7 +356,7 @@ private extension SportsGroundDetailView {
 
     func reportPhoto() {
         let complaint = Complaint.groundPhoto(groundTitle: ground.shortTitle)
-        feedbackSender.sendFeedback(
+        FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
             recipients: Constants.feedbackRecipient
@@ -371,7 +369,7 @@ private extension SportsGroundDetailView {
             author: comment.user?.userName ?? "неизвестен",
             commentText: comment.formattedBody
         )
-        feedbackSender.sendFeedback(
+        FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
             recipients: Constants.feedbackRecipient

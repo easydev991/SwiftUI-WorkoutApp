@@ -1,4 +1,3 @@
-import FeedbackSender
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
@@ -7,7 +6,6 @@ import SWNetworkClient
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
-    private let feedbackSender: FeedbackSender
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @State private var entries = [JournalEntryResponse]()
@@ -26,7 +24,6 @@ struct JournalEntriesList: View {
     init(for userID: Int, in journal: JournalResponse) {
         self.userID = userID
         self.currentJournal = journal
-        self.feedbackSender = FeedbackSenderImp()
     }
 
     var body: some View {
@@ -140,7 +137,7 @@ private extension JournalEntriesList {
             author: entry.authorName ?? "неизвестен",
             entryText: entry.formattedMessage
         )
-        feedbackSender.sendFeedback(
+        FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
             recipients: Constants.feedbackRecipient
