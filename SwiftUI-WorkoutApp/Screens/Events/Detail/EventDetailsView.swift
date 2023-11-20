@@ -155,7 +155,10 @@ private extension EventDetailsView {
             }
             .foregroundColor(.swMainText)
             SportsGroundLocationInfo(
-                ground: event.sportsGround,
+                snapshotModel: .init(
+                    latitude: event.sportsGround.coordinate.latitude,
+                    longitude: event.sportsGround.coordinate.longitude
+                ),
                 address: event.fullAddress ?? shortAddress,
                 appleMapsURL: event.sportsGround.appleMapsURL
             )

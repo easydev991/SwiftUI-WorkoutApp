@@ -141,7 +141,10 @@ private extension SportsGroundDetailView {
                 }
             }
             SportsGroundLocationInfo(
-                ground: ground,
+                snapshotModel: .init(
+                    latitude: ground.coordinate.latitude,
+                    longitude: ground.coordinate.longitude
+                ),
                 address: ground.address ?? "",
                 appleMapsURL: ground.appleMapsURL
             )

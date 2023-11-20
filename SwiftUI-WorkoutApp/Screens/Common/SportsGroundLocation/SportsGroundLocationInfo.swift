@@ -4,13 +4,13 @@ import SWModels
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {
-    let ground: SportsGround
+    let snapshotModel: MapSnapshotView.Model
     let address: String
     let appleMapsURL: URL?
 
     var body: some View {
         VStack(spacing: 12) {
-            MapSnapshotView(ground: ground)
+            MapSnapshotView(model: snapshotModel)
                 .frame(height: 153)
                 .cornerRadius(8)
             if !address.isEmpty {
@@ -35,7 +35,10 @@ struct SportsGroundLocationInfo: View {
 #if DEBUG
 #Preview {
     SportsGroundLocationInfo(
-        ground: .preview,
+        snapshotModel: .init(
+            latitude: SportsGround.preview.coordinate.latitude,
+            longitude: SportsGround.preview.coordinate.longitude
+        ),
         address: "Краснодар, ул. Восточно-кругликовская",
         appleMapsURL: .init(string: "maps://?saddr=&daddr=55.72681766162947,37.50063106774381")
     )

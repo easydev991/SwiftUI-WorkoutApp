@@ -2,6 +2,7 @@ import Foundation
 import MapKit.MKGeometry
 import Utils
 
+#warning("Переделать на структуру с вычисляемой аннотацией")
 /// Модель данных спортивной площадки
 public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, Sendable {
     public let id, typeID, sizeID: Int
