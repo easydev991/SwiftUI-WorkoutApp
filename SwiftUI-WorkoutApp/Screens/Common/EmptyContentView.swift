@@ -21,9 +21,13 @@ struct EmptyContentView: View {
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
             } else {
+                #warning("Перенести в дизайн-систему")
+                Image(systemName: "wifi.slash")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .foregroundStyle(.accent)
                 titleText("Нет соединения с сетью")
-                Icons.Regular.noSignal.view
-                    .font(.system(size: 60))
             }
             hintTextIfAvailable
         }
