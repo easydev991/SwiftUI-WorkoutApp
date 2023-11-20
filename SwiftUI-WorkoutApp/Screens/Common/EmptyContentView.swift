@@ -21,8 +21,7 @@ struct EmptyContentView: View {
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
             } else {
-                #warning("Перенести в дизайн-систему")
-                Image(systemName: "wifi.slash")
+                Icons.Regular.noSignal.imageView
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
