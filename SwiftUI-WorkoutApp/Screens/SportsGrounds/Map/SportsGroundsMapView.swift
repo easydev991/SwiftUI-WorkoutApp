@@ -170,9 +170,11 @@ private extension SportsGroundsMapView {
             MapView991(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredMapGrounds,
+                annotations: filteredMapGrounds.map(\.annotation),
                 didSelect: { annotation in
-                    if let ground = filteredMapGrounds.first(where: { $0 === annotation }) {
+                    if let ground = filteredMapGrounds.first(
+                        where: { $0.annotation.title == annotation.title }
+                    ) {
                         sheetItem = .groundDetails(ground)
                     }
                 }

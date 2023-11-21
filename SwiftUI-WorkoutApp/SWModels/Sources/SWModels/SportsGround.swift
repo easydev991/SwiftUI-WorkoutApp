@@ -3,7 +3,7 @@ import MapKit.MKGeometry
 import Utils
 
 /// Модель данных спортивной площадки
-public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, Sendable {
+public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
     public let id, typeID, sizeID: Int
     public let address: String?
     public let author: UserResponse?
@@ -20,7 +20,6 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, 
             usersTrainHereCount ?? 0
         )
     }
-
     public var commentsOptional: [CommentResponse]?
     public var usersTrainHere: [UserResponse]?
     public var trainHereOptional: Bool?
@@ -45,23 +44,24 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, 
     public var authorName: String {
         author?.userName ?? ""
     }
-
+    
     public var coordinate: CLLocationCoordinate2D {
         .init(
-            latitude: .init(Double(latitude) ?? .zero),
-            longitude: .init(Double(longitude) ?? .zero)
+            latitude: .init(Double(latitude) ?? 0),
+            longitude: .init(Double(longitude) ?? 0)
         )
     }
 
-    private let regionRadius: CLLocationDistance = 1000
-    public var region: MKCoordinateRegion {
-        .init(
-            center: coordinate,
-            latitudinalMeters: regionRadius,
-            longitudinalMeters: regionRadius
+    /// Точка для карты
+    public var annotation: MKAnnotation {
+        GroundAnnotation(
+            coordinate: coordinate,
+            title: title,
+            subtitle: subtitle
         )
     }
 
+    /// Ссылка на координаты в стандартном приложении "Карты"
     public var appleMapsURL: URL? {
         .init(string: "maps://?saddr=&daddr=\(coordinate.latitude),\(coordinate.longitude)")
     }
@@ -129,7 +129,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, 
         self.trainHereOptional = trainHere
     }
 
-    public convenience init(id: Int) {
+    public init(id: Int) {
         self.init(
             id: id,
             typeID: 0,
@@ -154,7 +154,7 @@ public final class SportsGround: NSObject, Codable, MKAnnotation, Identifiable, 
     }
 }
 
-public struct Photo: Codable, Identifiable, Equatable, Sendable {
+public struct Photo: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let stringURL: String?
 
@@ -279,5 +279,30 @@ public extension SportsGround {
             usersTrainHere: [],
             trainHere: nil
         )
+    }
+}
+
+public final class GroundAnnotation: NSObject, MKAnnotation {
+    public let coordinate: CLLocationCoordinate2D
+    public let title: String?
+    public let subtitle: String?
+    
+    private let regionRadius: CLLocationDistance = 1000
+    public var region: MKCoordinateRegion {
+        .init(
+            center: coordinate,
+            latitudinalMeters: regionRadius,
+            longitudinalMeters: regionRadius
+        )
+    }
+    
+    public init(
+        coordinate: CLLocationCoordinate2D,
+        title: String?,
+        subtitle: String?
+    ) {
+        self.coordinate = coordinate
+        self.title = title
+        self.subtitle = subtitle
     }
 }

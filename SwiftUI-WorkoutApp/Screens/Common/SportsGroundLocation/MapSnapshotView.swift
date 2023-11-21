@@ -5,19 +5,31 @@ import SWModels
 
 /// Снапшот карты
 struct MapSnapshotView: View {
-    let ground: SportsGround
-    @State private var snapshotImage: UIImage? = nil
+    let mapModel: MapModel
+    let size: CGSize
+    @State private var snapshotImage: UIImage?
 
     var body: some View {
-        GeometryReader { geometry in
-            contentView
-                .animation(.easeInOut, value: snapshotImage)
-                .onAppear {
-                    generateSnapshot(for: geometry.size)
-                }
-                .onChange(of: ground) { _ in
-                    generateSnapshot(for: geometry.size)
-                }
+        contentView
+            .animation(.easeInOut, value: snapshotImage)
+            .onAppear(perform: generateSnapshot)
+            .onChange(of: mapModel) { _ in
+                generateSnapshot()
+            }
+    }
+}
+
+extension MapSnapshotView {
+    struct MapModel: Equatable {
+        let latitude: Double
+        let longitude: Double
+        
+        var coordinate: CLLocationCoordinate2D {
+            .init(latitude: latitude, longitude: longitude)
+        }
+        
+        var isComplete: Bool {
+            latitude != 0 && longitude != 0
         }
     }
 }
@@ -27,35 +39,29 @@ private extension MapSnapshotView {
         ZStack {
             if let image = snapshotImage {
                 Image(uiImage: image)
+                    .transition(.scale)
+            } else {
+                Image.defaultWorkout
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: size.width, height: size.height)
+                    .background(.black)
+                    .cornerRadius(12)
+                    .transition(.opacity.combined(with: .scale))
             }
-            Image.defaultWorkout
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(12)
-                .opacity(snapshotImage == nil ? 1 : 0)
         }
     }
 
     @MainActor
-    func generateSnapshot(for size: CGSize) {
-        if snapshotImage != nil
-            || ground.coordinate.latitude == .zero
-            || ground.coordinate.longitude == .zero {
-            return
-        }
-        snapshotImage = nil
-        let spanDelta: CLLocationDegrees = 0.002
-        let region = MKCoordinateRegion(
-            center: ground.coordinate,
-            span: .init(
-                latitudeDelta: spanDelta,
-                longitudeDelta: spanDelta
-            )
-        )
+    func generateSnapshot() {
+        guard mapModel.isComplete else { return }
+        let regionRadius: CLLocationDistance = 1000
         let options = MKMapSnapshotter.Options()
-        options.region = region
+        options.region = .init(
+            center: mapModel.coordinate,
+            latitudinalMeters: regionRadius,
+            longitudinalMeters: regionRadius
+        )
         options.size = .init(width: size.width, height: size.height)
         options.pointOfInterestFilter = .excludingAll
 
@@ -64,9 +70,10 @@ private extension MapSnapshotView {
             if let snapshot {
                 let image = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
-                    let point = snapshot.point(for: ground.coordinate)
+                    let point = snapshot.point(for: mapModel.coordinate)
                     let annotationView = MKMarkerAnnotationView(
-                        annotation: ground, reuseIdentifier: nil
+                        annotation: nil,
+                        reuseIdentifier: nil
                     )
                     annotationView.contentMode = .scaleAspectFit
                     annotationView.bounds = .init(x: 0, y: 0, width: 40, height: 40)
@@ -83,8 +90,9 @@ private extension MapSnapshotView {
                 }
                 snapshotImage = image
             } else {
+                snapshotImage = nil
                 #if DEBUG
-                print("--- Error with snapshot: ", error?.localizedDescription ?? "")
+                print("--- Ошибка при создании снапшота карты: ", error?.localizedDescription ?? "")
                 #endif
             }
         }
@@ -93,6 +101,14 @@ private extension MapSnapshotView {
 
 #if DEBUG
 #Preview {
-    MapSnapshotView(ground: .emptyValue)
+    VStack {
+        MapSnapshotView(
+            mapModel: .init(
+                latitude: 55.687001,
+                longitude: 37.504467
+            ),
+            size: .init(width: 350, height: 150)
+        )
+    }
 }
 #endif
