@@ -4,15 +4,22 @@ import SWModels
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
 struct SportsGroundLocationInfo: View {
-    let snapshotModel: MapSnapshotView.Model
+    @MainActor
+    private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
+    let snapshotModel: MapSnapshotView.MapModel
     let address: String
     let appleMapsURL: URL?
 
     var body: some View {
         VStack(spacing: 12) {
-            MapSnapshotView(model: snapshotModel)
-                .frame(height: 153)
-                .cornerRadius(8)
+            MapSnapshotView(
+                mapModel: snapshotModel,
+                size: .init(
+                    width: screenWidth - 24 - 32, // 2 * 12 и 2 * 16 - отступы по бокам в фигме
+                    height: 153
+                )
+            )
+            .cornerRadius(8)
             if !address.isEmpty {
                 Text(address)
                     .font(.headline)

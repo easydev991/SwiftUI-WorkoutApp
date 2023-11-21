@@ -132,7 +132,6 @@ private extension SportsGroundsListView {
                     try await makeList(for: userID, isMainUser, refresh)
                 }
             case let .added(list):
-                #warning("Починить загрузку данных, чтобы снапшот корректно создавался")
                 grounds = list
             }
         } catch {
