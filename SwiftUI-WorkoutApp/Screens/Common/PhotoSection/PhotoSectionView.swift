@@ -63,7 +63,10 @@ struct PhotoSectionView: View {
                     model: model,
                     canDelete: canDelete,
                     reportPhotoClbk: reportPhotoClbk,
-                    deletePhotoClbk: deletePhotoClbk
+                    deletePhotoClbk: {
+                        fullscreenImageInfo = nil
+                        deletePhotoClbk($0)
+                    }
                 )
             }
         }
