@@ -14,7 +14,9 @@ extension SWClient {
         case customError(code: Int, message: String)
 
         init(_ error: ErrorResponse, _ code: Int?) {
-            if let message = error.message {
+            if code == 401 {
+                self = .invalidCredentials
+            } else if let message = error.message {
                 self = .customError(code: code ?? 404, message: message)
             } else if let array = error.errors {
                 let message = array.joined(separator: ",\n")
