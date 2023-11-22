@@ -35,7 +35,7 @@ struct SportsGroundDetailView: View {
                 if ground.hasPhotos {
                     PhotoSectionView(
                         with: ground.photos,
-                        canDelete: isGroundAuthor,
+                        canDelete: canDeletePhoto,
                         reportClbk: reportPhoto,
                         deleteClbk: deletePhoto
                     )
@@ -383,6 +383,10 @@ private extension SportsGroundDetailView {
         defaults.isAuthorized
             ? ground.authorID == defaults.mainUserInfo?.id
             : false
+    }
+    
+    var canDeletePhoto: Bool {
+        isGroundAuthor && ground.photos.count > 1
     }
 
     func cancelTasks() {
