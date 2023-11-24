@@ -3,8 +3,8 @@ import SwiftUI
 import SWModels
 
 /// Галерея с фотографиями
+@MainActor
 struct PhotoSectionView: View {
-    @MainActor
     private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     private let photos: [Photo]
     /// `true` - есть доступ на удаление фото, `false` - нет доступа
@@ -29,31 +29,14 @@ struct PhotoSectionView: View {
 
     var body: some View {
         SectionView(headerWithPadding: "Фотографии", mode: .regular) {
-            LazyVGrid(
-                columns: .init(
-                    repeating: .init(
-                        .flexible(minimum: screenWidth * 0.282),
-                        spacing: 2
-                    ),
-                    count: columns
-                ),
-                spacing: 2
-            ) {
-                ForEach(photos) { photo in
-                    if columns == 1 {
-                        makeCell(with: photo)
-                            .frame(height: 172)
-                    } else {
-                        GeometryReader { geo in
-                            makeCell(with: photo)
-                                .frame(height: geo.size.width)
-                        }
-                        .clipped()
-                        .aspectRatio(1, contentMode: .fit)
-                        .cornerRadius(4)
-                    }
+            ZStack {
+                if columns == 1 {
+                    makeSingleView(with: photos[0])
+                } else {
+                    gridView
                 }
             }
+            .animation(.default, value: photos.count == 1)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .insideCardBackground()
             .fullScreenCover(item: $fullscreenImageInfo) {
@@ -82,15 +65,39 @@ private extension PhotoSectionView {
         default: 3
         }
     }
-
-    func makeCell(with photo: Photo) -> some View {
-        ResizableCachedImage(
-            url: photo.imageURL,
-            didTapImage: { uiImage in
-                fullscreenImageInfo = .init(uiImage: uiImage, id: photo.id)
+    
+    var gridView: some View {
+        LazyVGrid(
+            columns: .init(
+                repeating: .init(
+                    .flexible(minimum: screenWidth * 0.282),
+                    spacing: 2
+                ),
+                count: columns
+            ),
+            spacing: 2
+        ) {
+            ForEach(photos) { photo in
+                makeSingleView(with: photo)
+                    .cornerRadius(4)
             }
-        )
-        .scaledToFill()
+        }
+    }
+
+    func makeSingleView(with photo: Photo) -> some View {
+        GeometryReader { geo in
+            ResizableCachedImage(
+                url: photo.imageURL,
+                didTapImage: { uiImage in
+                    fullscreenImageInfo = .init(uiImage: uiImage, id: photo.id)
+                }
+            )
+            .scaledToFill()
+            .frame(height: geo.size.width)
+            .clipped()
+            .contentShape(.rect)
+        }
+        .scaledToFit()
     }
 }
 
