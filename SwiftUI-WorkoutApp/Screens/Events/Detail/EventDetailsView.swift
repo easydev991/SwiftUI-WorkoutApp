@@ -12,7 +12,6 @@ struct EventDetailsView: View {
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var isEditingEvent = false
     @State private var showDeleteDialog = false
     @State private var sheetItem: SheetItem?
     @State private var goingToEventTask: Task<Void, Never>?
@@ -20,6 +19,11 @@ struct EventDetailsView: View {
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
+    /// Мероприятие для редактирования
+    ///
+    /// Задаем при нажатии на кнопку редактирования,
+    /// чтобы в нем были актуальные данные
+    @State private var eventToEdit: EventResponse?
     @State var event: EventResponse
     let onDeletion: (Int) -> Void
 
@@ -48,11 +52,10 @@ struct EventDetailsView: View {
             .padding([.horizontal, .bottom])
         }
         .background {
-            NavigationLink(isActive: $isEditingEvent) {
-                EventFormView(mode: .editExisting(event), refreshClbk: refreshAction)
-            } label: {
-                EmptyView()
-            }
+            NavigationLink(
+                destination: lazyDestination,
+                isActive: $eventToEdit.mappedToBool()
+            )
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
@@ -281,8 +284,15 @@ private extension EventDetailsView {
     }
 
     var editEventButton: some View {
-        Button { isEditingEvent = true } label: {
+        Button { eventToEdit = event } label: {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
+        }
+    }
+    
+    @ViewBuilder
+    var lazyDestination: some View {
+        if let eventToEdit {
+            EventFormView(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
         }
     }
 
@@ -330,6 +340,7 @@ private extension EventDetailsView {
         do {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getEvent(by: event.id)
+            print("EventForm: Загрузили event: \(event)")
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }
