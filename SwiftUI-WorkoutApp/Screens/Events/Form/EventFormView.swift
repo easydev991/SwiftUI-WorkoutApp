@@ -10,7 +10,7 @@ struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var eventForm = EventForm.emptyValue
+    @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -36,6 +36,7 @@ struct EventFormView: View {
         case .regularCreate:
             self.oldEventForm = .emptyValue
         }
+        self._eventForm = .init(initialValue: oldEventForm)
     }
 
     var body: some View {
@@ -54,16 +55,6 @@ struct EventFormView: View {
         .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok") { alertMessage = "" }
-        }
-        .onAppear {
-            guard !eventForm.isReadyToCreate else { return }
-            eventForm = oldEventForm
-            if let groundID = mode.groundID {
-                eventForm.sportsGroundID = groundID
-            }
-            if let groundName = mode.groundName {
-                eventForm.sportsGroundName = groundName
-            }
         }
         .onDisappear { saveEventTask?.cancel() }
         .navigationTitle(mode.title)
@@ -86,22 +77,6 @@ extension EventFormView {
                 eventResponse.id
             } else {
                 nil
-            }
-        }
-
-        var groundID: Int? {
-            switch self {
-            case let .createForSelected(groundID, _): groundID
-            case let .editExisting(event): event.sportsGround.id
-            case .regularCreate: nil
-            }
-        }
-
-        var groundName: String? {
-            switch self {
-            case let .createForSelected(_, groundName): groundName
-            case let .editExisting(event): event.sportsGround.name ?? event.sportsGround.longTitle
-            case .regularCreate: nil
             }
         }
 

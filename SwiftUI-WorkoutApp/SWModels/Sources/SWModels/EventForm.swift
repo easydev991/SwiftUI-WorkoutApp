@@ -8,25 +8,47 @@ public struct EventForm: Codable, Sendable, Equatable {
     public var sportsGroundID: Int
     public var sportsGroundName: String
     public let photosCount: Int
-    public var newMediaFiles = [MediaFile]()
+    public var newMediaFiles: [MediaFile]
 
-    public init(_ event: EventResponse?) {
-        self.title = event?.formattedTitle ?? ""
-        self.description = event?.formattedDescription ?? ""
-        self.date = DateFormatterService.dateFromIsoString(event?.beginDate)
-        let groundName = event?.sportsGround.name ?? event?.sportsGround.longTitle
-        self.sportsGroundName = groundName ?? "Выбрать площадку"
-        self.sportsGroundID = event?.sportsGroundID ?? 0
-        self.photosCount = event?.photos.count ?? 0
+    /// Основной инициализатор
+    public init(
+        title: String = "",
+        description: String = "",
+        date: Date = .now,
+        sportsGroundID: Int = 0,
+        sportsGroundName: String? = nil,
+        photosCount: Int = 0,
+        newMediaFiles: [MediaFile] = []
+    ) {
+        self.title = title
+        self.description = description
+        self.date = date
+        self.sportsGroundID = sportsGroundID
+        self.sportsGroundName = sportsGroundName ?? "Выбрать площадку"
+        self.photosCount = photosCount
+        self.newMediaFiles = newMediaFiles
     }
-
+    
+    /// Инициализатор для создания формы на основе существующего мероприятия
+    public init(_ event: EventResponse?) {
+        let ground = event?.sportsGround
+        let groundID = ground?.id ?? event?.sportsGroundID
+        let groundName = ground?.name ?? ground?.longTitle ?? ground?.title
+        self.init(
+            title: event?.formattedTitle ?? "",
+            description: event?.formattedDescription ?? "",
+            date: DateFormatterService.dateFromIsoString(event?.beginDate),
+            sportsGroundID: groundID ?? 0,
+            sportsGroundName: groundName ?? "Выбрать площадку",
+            photosCount: event?.photos.count ?? 0
+        )
+    }
+    
     public init(_ groundID: Int, _ groundName: String) {
-        self.title = ""
-        self.description = ""
-        self.date = .now
-        self.sportsGroundID = groundID
-        self.sportsGroundName = groundName
-        self.photosCount = 0
+        self.init(
+            sportsGroundID: groundID,
+            sportsGroundName: groundName
+        )
     }
 }
 
