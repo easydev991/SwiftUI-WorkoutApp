@@ -84,6 +84,9 @@ private extension PhotoSectionView {
         }
     }
 
+    /// Картинка после применения `clipped` и `contentShape`
+    /// все еще перекрывает другие UI-элементы и не дает их нажимать,
+    /// поэтому используем `GeometryReader` + `scaledToFit`
     func makeSingleView(with photo: Photo) -> some View {
         GeometryReader { geo in
             ResizableCachedImage(
