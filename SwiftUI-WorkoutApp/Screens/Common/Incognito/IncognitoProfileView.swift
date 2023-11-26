@@ -50,6 +50,5 @@ private extension IncognitoProfileView {
 #if DEBUG
 #Preview {
     IncognitoProfileView()
-        .previewLayout(.sizeThatFits)
 }
 #endif

@@ -79,6 +79,5 @@ private extension JournalCell {
         mainUserID: nil,
         isJournalOwner: true
     )
-    .previewLayout(.sizeThatFits)
 }
 #endif
