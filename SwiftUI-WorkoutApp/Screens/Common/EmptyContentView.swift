@@ -112,6 +112,5 @@ private extension EmptyContentView.Mode {
             action: {}
         )
     }
-    .previewLayout(.sizeThatFits)
 }
 #endif

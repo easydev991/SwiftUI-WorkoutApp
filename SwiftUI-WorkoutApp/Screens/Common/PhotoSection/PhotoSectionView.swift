@@ -116,6 +116,5 @@ private extension PhotoSectionView {
         .padding()
         .background(Color.swBackground)
     }
-    .previewLayout(.sizeThatFits)
 }
 #endif

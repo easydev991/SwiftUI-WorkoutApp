@@ -34,14 +34,13 @@ struct LoginView: View {
         .padding(.top, 22)
         .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
+        .interactiveDismissDisabled(isLoading)
         .background(Color.swBackground)
         .onChange(of: credentials) { _ in errorMessage = "" }
         .alert(.init(Constants.Alert.resetSuccessful), isPresented: $showResetSuccessfulAlert) {
             Button("Ok") { showResetSuccessfulAlert = false }
         }
         .onDisappear(perform: cancelTasks)
-        .navigationTitle("Авторизация")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -109,7 +108,7 @@ private extension LoginView {
     }
 
     var forgotPasswordButton: some View {
-        Button("Забыли пароль?", action: forgotPasswordAction)
+        Button("Восстановить пароль", action: forgotPasswordAction)
             .tint(.swMainText)
             .alert(.init(Constants.Alert.forgotPassword), isPresented: $showResetInfoAlert) {
                 Button("Ok") { showResetInfoAlert = false }

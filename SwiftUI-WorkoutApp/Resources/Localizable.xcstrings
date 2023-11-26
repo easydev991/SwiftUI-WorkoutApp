@@ -1552,18 +1552,18 @@
         }
       }
     },
-    "Забыли пароль?" : {
+    "Восстановить пароль" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forgot your password?"
+            "value" : "Restore your password"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Забыли пароль?"
+            "value" : "Восстановить пароль"
           }
         }
       }

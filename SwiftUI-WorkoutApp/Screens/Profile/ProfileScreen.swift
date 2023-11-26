@@ -1,3 +1,4 @@
+import SWDesignSystem
 import SwiftUI
 
 /// Экран профиля пользователя
@@ -9,16 +10,16 @@ struct ProfileScreen: View {
             ZStack {
                 if defaults.isAuthorized {
                     UserDetailsView(for: defaults.mainUserInfo)
-                        .navigationBarTitleDisplayMode(.inline)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
                 } else {
                     IncognitoProfileView()
-                        .navigationTitle("Профиль")
-                        .navigationBarTitleDisplayMode(.large)
                 }
             }
+            .background(Color.swBackground)
+            .navigationTitle("Профиль")
+            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
         .navigationViewStyle(.stack)
-        .ignoresSafeArea()
     }
 }
 
