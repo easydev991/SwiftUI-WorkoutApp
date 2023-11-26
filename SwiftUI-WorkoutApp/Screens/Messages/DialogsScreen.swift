@@ -1,3 +1,4 @@
+import SWDesignSystem
 import SwiftUI
 
 /// Экран с диалогами
@@ -6,26 +7,19 @@ struct DialogsScreen: View {
 
     var body: some View {
         NavigationView {
-            contentView
-                .navigationTitle("Сообщения")
-                .navigationBarTitleDisplayMode(titleDisplayMode)
+            ZStack {
+                if defaults.isAuthorized {
+                    DialogListView()
+                } else {
+                    IncognitoProfileView()
+                }
+            }
+            .background(Color.swBackground)
+            .animation(nil)
+            .navigationTitle("Сообщения")
+            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
         .navigationViewStyle(.stack)
-    }
-}
-
-private extension DialogsScreen {
-    var titleDisplayMode: NavigationBarItem.TitleDisplayMode {
-        defaults.isAuthorized ? .inline : .large
-    }
-
-    @ViewBuilder
-    var contentView: some View {
-        if defaults.isAuthorized {
-            DialogListView()
-        } else {
-            IncognitoProfileView()
-        }
     }
 }
 
