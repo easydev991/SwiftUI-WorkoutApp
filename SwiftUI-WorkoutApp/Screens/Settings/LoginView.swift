@@ -108,7 +108,7 @@ private extension LoginView {
     }
 
     var forgotPasswordButton: some View {
-        Button("Забыли пароль?", action: forgotPasswordAction)
+        Button("Восстановить пароль", action: forgotPasswordAction)
             .tint(.swMainText)
             .alert(.init(Constants.Alert.forgotPassword), isPresented: $showResetInfoAlert) {
                 Button("Ok") { showResetInfoAlert = false }
