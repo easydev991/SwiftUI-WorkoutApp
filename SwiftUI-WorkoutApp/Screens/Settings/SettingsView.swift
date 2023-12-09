@@ -31,6 +31,15 @@ struct SettingsView: View {
                     SectionView(header: "Поддержать проект", mode: .regular) {
                         workoutShopButton
                     }
+                    #if DEBUG
+                    dividerView
+                    NavigationLink(destination: LoggerScreen()) {
+                        ListRowView(
+                            leadingContent: .text("Логи"),
+                            trailingContent: .chevron
+                        )
+                    }
+                    #endif
                 }
                 .padding()
             }
