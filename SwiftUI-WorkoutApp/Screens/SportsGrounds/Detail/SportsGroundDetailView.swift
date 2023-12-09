@@ -383,7 +383,7 @@ private extension SportsGroundDetailView {
             ? ground.authorID == defaults.mainUserInfo?.id
             : false
     }
-    
+
     var canDeletePhoto: Bool {
         isGroundAuthor && ground.photos.count > 1
     }

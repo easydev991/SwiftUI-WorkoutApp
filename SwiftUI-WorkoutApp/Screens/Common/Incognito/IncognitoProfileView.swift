@@ -5,7 +5,7 @@ import SWModels
 /// Заглушка для неавторизованного пользователя
 struct IncognitoProfileView: View {
     @State private var showAuthScreen = false
-    
+
     var body: some View {
         VStack(spacing: 16) {
             authInvitation
@@ -30,7 +30,7 @@ private extension IncognitoProfileView {
             .foregroundColor(.swMainText)
             .padding(.bottom, 6)
     }
-    
+
     var goToLoginButton: some View {
         Button("Авторизация") {
             showAuthScreen = true

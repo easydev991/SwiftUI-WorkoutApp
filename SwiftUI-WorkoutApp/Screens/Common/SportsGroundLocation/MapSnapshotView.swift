@@ -24,11 +24,11 @@ extension MapSnapshotView {
     struct MapModel: Equatable {
         let latitude: Double
         let longitude: Double
-        
+
         var coordinate: CLLocationCoordinate2D {
             .init(latitude: latitude, longitude: longitude)
         }
-        
+
         var isComplete: Bool {
             latitude != 0 && longitude != 0
         }

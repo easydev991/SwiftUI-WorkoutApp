@@ -65,7 +65,7 @@ private extension PhotoSectionView {
         default: 3
         }
     }
-    
+
     var gridView: some View {
         LazyVGrid(
             columns: .init(

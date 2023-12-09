@@ -288,7 +288,7 @@ private extension EventDetailsView {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
-    
+
     @ViewBuilder
     var lazyDestination: some View {
         if let eventToEdit {
