@@ -340,7 +340,6 @@ private extension EventDetailsView {
         do {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getEvent(by: event.id)
-            print("EventForm: Загрузили event: \(event)")
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }

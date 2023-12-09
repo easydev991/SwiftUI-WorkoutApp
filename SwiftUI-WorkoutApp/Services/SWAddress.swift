@@ -1,8 +1,11 @@
 import CoreLocation
 import FileManager991
 import Foundation
+import OSLog
 import SWModels
 import Utils
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
 
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
@@ -63,7 +66,12 @@ extension SWAddress {
 
     /// Название города
     var cityName: String? {
-        try? city(with: cityID, in: countryID)?.name
+        do {
+            return try city(with: cityID, in: countryID)?.name
+        } catch {
+            logger.error("Не смогли получить название города, ошибка: \(error)")
+            return nil
+        }
     }
 
     /// Сохраняет список стран/городов в памяти девайса
@@ -73,8 +81,10 @@ extension SWAddress {
     func save(_ countries: [Country]) -> Bool {
         do {
             try storage.save(countries)
+            logger.info("✅ Успешно сохранили список стран")
             return true
         } catch {
+            logger.error("⛔️ Не смогли сохранить список стран, ошибка: \(error)")
             return false
         }
     }
@@ -105,7 +115,7 @@ extension SWAddress {
         if let fullAddress = fullAddress(for: placemark), fullAddress != oldAddress {
             oldAddress = fullAddress
             #if DEBUG
-            print("Адрес: ", fullAddress)
+            logger.info("Местоположение пользователя: \(fullAddress)")
             #endif
         }
     }
