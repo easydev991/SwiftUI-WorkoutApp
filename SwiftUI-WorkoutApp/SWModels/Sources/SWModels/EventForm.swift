@@ -28,7 +28,7 @@ public struct EventForm: Codable, Sendable, Equatable {
         self.photosCount = photosCount
         self.newMediaFiles = newMediaFiles
     }
-    
+
     /// Инициализатор для создания формы на основе существующего мероприятия
     public init(_ event: EventResponse?) {
         let ground = event?.sportsGround
@@ -43,7 +43,7 @@ public struct EventForm: Codable, Sendable, Equatable {
             photosCount: event?.photos.count ?? 0
         )
     }
-    
+
     public init(_ groundID: Int, _ groundName: String) {
         self.init(
             sportsGroundID: groundID,

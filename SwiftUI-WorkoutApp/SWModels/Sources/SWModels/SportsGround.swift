@@ -20,6 +20,7 @@ public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
             usersTrainHereCount ?? 0
         )
     }
+
     public var commentsOptional: [CommentResponse]?
     public var usersTrainHere: [UserResponse]?
     public var trainHereOptional: Bool?
@@ -44,7 +45,7 @@ public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
     public var authorName: String {
         author?.userName ?? ""
     }
-    
+
     public var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? 0),
@@ -286,7 +287,7 @@ public final class GroundAnnotation: NSObject, MKAnnotation {
     public let coordinate: CLLocationCoordinate2D
     public let title: String?
     public let subtitle: String?
-    
+
     private let regionRadius: CLLocationDistance = 1000
     public var region: MKCoordinateRegion {
         .init(
@@ -295,7 +296,7 @@ public final class GroundAnnotation: NSObject, MKAnnotation {
             longitudinalMeters: regionRadius
         )
     }
-    
+
     public init(
         coordinate: CLLocationCoordinate2D,
         title: String?,

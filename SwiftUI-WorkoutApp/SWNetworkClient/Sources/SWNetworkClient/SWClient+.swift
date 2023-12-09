@@ -1,5 +1,8 @@
 import Foundation
+import OSLog
 import SWModels
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWClient")
 
 extension SWClient {
     private var successCode: Int { 200 }
@@ -64,14 +67,14 @@ extension SWClient {
             throw handleError(from: data, response: response)
         }
         #if DEBUG
-        print("--- ✅ Получили JSON по запросу: ", (response?.url?.absoluteString) ?? "")
-        print(data.prettyJson)
+        let urlString = response?.url?.absoluteString ?? "unknown"
+        logger.info("✅ Получили JSON по запросу: \(urlString)")
+        logger.debug("\(data.prettyJson)")
         do {
             _ = try JSONDecoder().decode(type, from: data)
         } catch {
-            print("--- ⛔️ Ошибка декодирования: \(error)")
+            logger.error("⛔️ Ошибка декодирования: \(error)")
         }
-        print("🏁")
         #endif
         return try JSONDecoder().decode(type, from: data)
     }
@@ -80,9 +83,8 @@ extension SWClient {
     func handle(_ response: URLResponse?) async throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
         #if DEBUG
-        print("--- ✅ Получили статус по запросу: ", response?.url?.absoluteString ?? "")
-        print(responseCode ?? 0)
-        print("🏁")
+        let urlString = response?.url?.absoluteString ?? "unknown"
+        logger.info("✅ Получили статус \(responseCode ?? 0) по запросу: \(urlString)")
         #endif
         guard responseCode == successCode else {
             if canForceLogout, responseCode == forceLogoutCode {
@@ -106,9 +108,9 @@ extension SWClient {
         } else {
             "Ошибка!"
         }
-        print("--- ⛔️ \(errorCodeMessage)\nJSON с ошибкой по запросу: ", response?.url?.absoluteString ?? "")
-        print(data.prettyJson)
-        print("🏁")
+        let urlString = response?.url?.absoluteString ?? "unknown"
+        logger.error("⛔️ \(errorCodeMessage)\nJSON с ошибкой по запросу: \(urlString)")
+        logger.debug("\(data.prettyJson)")
         #endif
         if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
             return APIError(errorInfo, errorCode)

@@ -1,4 +1,5 @@
 import MapKit
+import OSLog
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -23,11 +24,11 @@ extension MapSnapshotView {
     struct MapModel: Equatable {
         let latitude: Double
         let longitude: Double
-        
+
         var coordinate: CLLocationCoordinate2D {
             .init(latitude: latitude, longitude: longitude)
         }
-        
+
         var isComplete: Bool {
             latitude != 0 && longitude != 0
         }
@@ -92,7 +93,8 @@ private extension MapSnapshotView {
             } else {
                 snapshotImage = nil
                 #if DEBUG
-                print("--- Ошибка при создании снапшота карты: ", error?.localizedDescription ?? "")
+                let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MapSnapshotView")
+                logger.error("Ошибка при создании снапшота карты: \(error)")
                 #endif
             }
         }

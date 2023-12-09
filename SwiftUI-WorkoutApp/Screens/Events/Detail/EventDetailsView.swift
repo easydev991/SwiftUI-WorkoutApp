@@ -288,7 +288,7 @@ private extension EventDetailsView {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
-    
+
     @ViewBuilder
     var lazyDestination: some View {
         if let eventToEdit {
@@ -340,7 +340,6 @@ private extension EventDetailsView {
         do {
             event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
                 .getEvent(by: event.id)
-            print("EventForm: Загрузили event: \(event)")
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension Binding<Bool> {
-    init<Wrapped>(bindingOptional: Binding<Wrapped?>) {
+    init(bindingOptional: Binding<(some Any)?>) {
         self.init(
             get: { bindingOptional.wrappedValue != nil },
             set: { newValue in
