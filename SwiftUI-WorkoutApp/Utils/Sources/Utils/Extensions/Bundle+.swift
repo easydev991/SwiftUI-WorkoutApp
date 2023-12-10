@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 public extension Bundle {
     func decodeJson<T: Decodable>(
@@ -8,18 +9,22 @@ public extension Bundle {
         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate,
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
     ) throws -> T {
+        let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Bundle + decodeJson")
         guard let url = url(forResource: fileName, withExtension: ext) else {
-            throw BundleError.cannotLoad(fileName)
+            let error = BundleError.cannotLoad(fileName)
+            logger.error("\(error.localizedDescription, privacy: .public)")
+            throw error
         }
         do {
             let jsonData = try Data(contentsOf: url)
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = dateDecodingStrategy
             decoder.keyDecodingStrategy = keyDecodingStrategy
-            let result = try decoder.decode(type, from: jsonData)
-            return result
+            return try decoder.decode(type, from: jsonData)
         } catch {
-            throw BundleError.decodingError(error)
+            let prettyError = BundleError.decodingError(error)
+            logger.error("\(prettyError.localizedDescription, privacy: .public)")
+            throw prettyError
         }
     }
 

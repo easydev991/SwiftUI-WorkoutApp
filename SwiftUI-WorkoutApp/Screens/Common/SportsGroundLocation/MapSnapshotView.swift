@@ -92,10 +92,8 @@ private extension MapSnapshotView {
                 snapshotImage = image
             } else {
                 snapshotImage = nil
-                #if DEBUG
                 let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MapSnapshotView")
-                logger.error("Ошибка при создании снапшота карты: \(error)")
-                #endif
+                logger.error("Ошибка при создании снапшота карты: \(error, privacy: .public)")
             }
         }
     }

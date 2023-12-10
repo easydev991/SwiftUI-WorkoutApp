@@ -1,8 +1,5 @@
 import Foundation
-import OSLog
 import SWModels
-
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWClient")
 
 extension SWClient {
     private var successCode: Int { 200 }
@@ -21,7 +18,16 @@ extension SWClient {
     ///   - request: запрос, по которому нужно обратиться
     /// - Returns: Вся информация по запрошенному типу
     func makeResult<T: Decodable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
-        guard let request = await finalRequest(request) else { throw APIError.badRequest }
+        guard let request = await finalRequest(request) else {
+            let apiError = APIError.badRequest
+            logger.error(
+                """
+                \(apiError.localizedDescription, privacy: .public)
+                \nURL запроса: \(request?.url?.absoluteString ?? "-", privacy: .public)
+                """
+            )
+            throw apiError
+        }
         let (data, response) = try await urlSession.data(for: request)
         return try await handle(type, data, response)
     }
@@ -31,7 +37,14 @@ extension SWClient {
     /// - Returns: Статус действия
     func makeStatus(for request: URLRequest?) async throws -> Bool {
         guard let request = await finalRequest(request) else {
-            throw APIError.badRequest
+            let apiError = APIError.badRequest
+            logger.error(
+                """
+                \(apiError.localizedDescription, privacy: .public)
+                \nURL запроса: \(request?.url?.absoluteString ?? "-", privacy: .public)
+                """
+            )
+            throw apiError
         }
         let response = try await urlSession.data(for: request).1
         return try await handle(response)
@@ -56,8 +69,16 @@ extension SWClient {
 
     /// Обрабатывает ответ сервера и возвращает данные в нужном формате
     func handle<T: Decodable>(_ type: T.Type, _ data: Data?, _ response: URLResponse?) async throws -> T {
+        let urlString = response?.url?.absoluteString ?? "-"
         guard let data, !data.isEmpty else {
-            throw APIError.noData
+            let apiError = APIError.noData
+            logger.error(
+                """
+                \(apiError.localizedDescription, privacy: .public)
+                \nURL запроса: \(urlString, privacy: .public)
+                """
+            )
+            throw apiError
         }
         let responseCode = (response as? HTTPURLResponse)?.statusCode
         guard responseCode == successCode else {
@@ -66,31 +87,51 @@ extension SWClient {
             }
             throw handleError(from: data, response: response)
         }
-        #if DEBUG
-        let urlString = response?.url?.absoluteString ?? "unknown"
-        logger.info("✅ Получили JSON по запросу: \(urlString)")
-        logger.debug("\(data.prettyJson)")
         do {
-            _ = try JSONDecoder().decode(type, from: data)
+            logger.debug(
+                """
+                Обработали ответ сервера
+                \nURL запроса: \(urlString, privacy: .public)
+                \nJSON в ответе: \(data.prettyJson, privacy: .public)
+                """
+            )
+            return try JSONDecoder().decode(type, from: data)
         } catch {
-            logger.error("⛔️ Ошибка декодирования: \(error)")
+            logger.error(
+                """
+                Ошибка декодирования: \(error.localizedDescription, privacy: .public)
+                \nURL запроса: \(urlString, privacy: .public)
+                \nJSON в ответе: \(data.prettyJson, privacy: .public)
+                """
+            )
+            throw error
         }
-        #endif
-        return try JSONDecoder().decode(type, from: data)
     }
 
     /// Обрабатывает ответ сервера, в котором важен только статус
     func handle(_ response: URLResponse?) async throws -> Bool {
         let responseCode = (response as? HTTPURLResponse)?.statusCode
-        #if DEBUG
-        let urlString = response?.url?.absoluteString ?? "unknown"
-        logger.info("✅ Получили статус \(responseCode ?? 0) по запросу: \(urlString)")
-        #endif
+        let urlString = response?.url?.absoluteString ?? "-"
+        logger.debug(
+            """
+            Обработали ответ сервера
+            \nURL запроса: \(urlString, privacy: .public)
+            \nСтатус в ответе: \(responseCode ?? 0, privacy: .public)
+            """
+        )
         guard responseCode == successCode else {
             if canForceLogout, responseCode == forceLogoutCode {
                 await defaults.triggerLogout()
             }
-            throw APIError(with: responseCode)
+            let apiError = APIError(with: responseCode)
+            logger.error(
+                """
+                Ошибка обработки ответа сервера: \(apiError.localizedDescription, privacy: .public)
+                \nURL запроса: \(urlString, privacy: .public)
+                \nСтатус в ответе: \(responseCode ?? 0, privacy: .public)
+                """
+            )
+            throw apiError
         }
         return true
     }
@@ -102,20 +143,31 @@ extension SWClient {
     /// - Returns: Готовая к выводу ошибка `APIError`
     func handleError(from data: Data, response: URLResponse?) -> APIError {
         let errorCode = (response as? HTTPURLResponse)?.statusCode
-        #if DEBUG
-        let errorCodeMessage = if let errorCode {
-            "Код ошибки \(errorCode)"
-        } else {
-            "Ошибка!"
-        }
-        let urlString = response?.url?.absoluteString ?? "unknown"
-        logger.error("⛔️ \(errorCodeMessage)\nJSON с ошибкой по запросу: \(urlString)")
-        logger.debug("\(data.prettyJson)")
-        #endif
-        if let errorInfo = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-            return APIError(errorInfo, errorCode)
-        } else {
-            return APIError(with: errorCode)
+        let urlString = response?.url?.absoluteString ?? "-"
+        do {
+            let errorInfo = try JSONDecoder().decode(ErrorResponse.self, from: data)
+            let apiError = APIError(errorInfo, errorCode)
+            logger.debug(
+                """
+                Обработали ошибку в ответе
+                \nКод ошибки: \(errorCode ?? 0, privacy: .public)
+                \nURL запроса: \(urlString, privacy: .public)
+                \nJSON с ошибкой: \(data.prettyJson, privacy: .public)
+                \nПреобразованная ошибка: \(apiError.localizedDescription, privacy: .public)
+                """
+            )
+            return apiError
+        } catch {
+            let apiError = APIError(with: errorCode)
+            logger.error(
+                """
+                Ошибка декодирования: \(error.localizedDescription, privacy: .public)
+                \nURL запроса: \(urlString, privacy: .public)
+                \nJSON с ошибкой: \(data.prettyJson, privacy: .public)
+                \nПреобразованная ошибка: \(apiError.localizedDescription, privacy: .public)
+                """
+            )
+            return apiError
         }
     }
 }

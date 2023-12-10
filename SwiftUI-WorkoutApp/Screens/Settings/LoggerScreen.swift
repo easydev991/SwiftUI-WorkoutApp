@@ -1,11 +1,10 @@
 #if DEBUG
-import Foundation
 import OSLog
 import SWDesignSystem
 import SwiftUI
 
 private final class LogStore: ObservableObject {
-    private static let logger = Logger(
+    private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: LogStore.self)
     )
@@ -40,13 +39,15 @@ private final class LogStore: ObservableObject {
                         message: $0.composedMessage
                     )
                 }
+            let uniqueCategories = Array(Set(entries.map(\.category)))
+            let uniqueLevels = Array(Set(entries.map(\.level)))
             await MainActor.run {
-                categories = Array(Set(entries.map(\.category)))
-                levels = Array(Set(entries.map(\.level)))
+                categories = uniqueCategories
+                levels = uniqueLevels
                 state = .ready(entries)
             }
         } catch {
-            Self.logger.warning("\(error.localizedDescription, privacy: .public)")
+            logger.error("\(error.localizedDescription, privacy: .public)")
             await MainActor.run { state = .empty }
         }
     }
@@ -114,6 +115,32 @@ struct LoggerScreen: View {
     }
 
     var body: some View {
+        contentView
+            .animation(.default, value: logStore.state)
+            .loadingOverlay(if: logStore.state.isLoading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationTitle("Логи")
+            .background(Color.swBackground)
+            .task { await logStore.getLogs() }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showFilter = true
+                    } label: {
+                        Icons.Regular.filter.view
+                            .symbolVariant(isFilterOn ? .fill : .none)
+                    }
+                    .disabled(logStore.state.isLoading)
+                }
+            }
+            .sheet(isPresented: $showFilter) {
+                ContentInSheet(title: "Фильтр логов", spacing: 0) {
+                    filterView
+                }
+            }
+    }
+    
+    private var contentView: some View {
         ZStack {
             switch logStore.state {
             case .empty:
@@ -143,28 +170,6 @@ struct LoggerScreen: View {
                         .padding([.top, .horizontal])
                     }
                 }
-            }
-        }
-        .animation(.default, value: logStore.state)
-        .loadingOverlay(if: logStore.state.isLoading)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("Логи")
-        .background(Color.swBackground)
-        .task { await logStore.getLogs() }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showFilter = true
-                } label: {
-                    Icons.Regular.filter.view
-                        .symbolVariant(isFilterOn ? .fill : .none)
-                }
-                .disabled(logStore.state.isLoading)
-            }
-        }
-        .sheet(isPresented: $showFilter) {
-            ContentInSheet(title: "Фильтр логов", spacing: 0) {
-                filterView
             }
         }
     }
