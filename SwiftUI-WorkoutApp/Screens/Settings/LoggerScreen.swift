@@ -139,7 +139,7 @@ struct LoggerScreen: View {
                 }
             }
     }
-    
+
     private var contentView: some View {
         ZStack {
             switch logStore.state {
