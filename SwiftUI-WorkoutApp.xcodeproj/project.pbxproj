@@ -275,7 +275,7 @@
 		67419AD8282E8E9E004F5339 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				674E704F2B24F032008AE9D0 /* Logger */,
+				674E704D2B24D382008AE9D0 /* LoggerScreen.swift */,
 				670CA19D280E8F09003914A3 /* SettingsView.swift */,
 				6798AA72280B43FE00DB76F1 /* LoginView.swift */,
 			);
@@ -300,14 +300,6 @@
 				6770A8322834D3810006B672 /* List */,
 			);
 			path = SportsGrounds;
-			sourceTree = "<group>";
-		};
-		674E704F2B24F032008AE9D0 /* Logger */ = {
-			isa = PBXGroup;
-			children = (
-				674E704D2B24D382008AE9D0 /* LoggerScreen.swift */,
-			);
-			path = Logger;
 			sourceTree = "<group>";
 		};
 		67515697283FEC0B00501346 /* ImagePicker */ = {

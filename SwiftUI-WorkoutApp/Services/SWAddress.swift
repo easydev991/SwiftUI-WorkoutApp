@@ -69,7 +69,7 @@ extension SWAddress {
         do {
             return try city(with: cityID, in: countryID)?.name
         } catch {
-            logger.error("Не смогли получить название города, ошибка: \(error)")
+            logger.error("Не смогли получить название города, \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
@@ -81,10 +81,10 @@ extension SWAddress {
     func save(_ countries: [Country]) -> Bool {
         do {
             try storage.save(countries)
-            logger.info("✅ Успешно сохранили список стран")
+            logger.debug("Успешно сохранили список стран в количестве \(countries.count, privacy: .public) шт.")
             return true
         } catch {
-            logger.error("⛔️ Не смогли сохранить список стран, ошибка: \(error)")
+            logger.error("Не смогли сохранить список стран, \(error.localizedDescription, privacy: .public)")
             return false
         }
     }
@@ -114,9 +114,7 @@ extension SWAddress {
     static func updateIfNeeded(_ oldAddress: inout String, placemark: CLPlacemark) {
         if let fullAddress = fullAddress(for: placemark), fullAddress != oldAddress {
             oldAddress = fullAddress
-            #if DEBUG
-            logger.info("Местоположение пользователя: \(fullAddress)")
-            #endif
+            logger.debug("Местоположение пользователя: \(fullAddress, privacy: .public)")
         }
     }
 }

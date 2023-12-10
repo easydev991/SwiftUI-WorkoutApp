@@ -5,6 +5,12 @@ import Foundation
 /// Заменяет `catch CancellationError { break }`
 public enum ErrorFilter {
     public static func message(from error: Error) -> String {
-        (error as NSError).code == -999 ? "" : error.localizedDescription
+        let errorCode = (error as NSError).code
+        if errorCode == -999 {
+            logger.debug("Отфильтровали ошибку с кодом -999")
+            return ""
+        } else {
+            return error.localizedDescription
+        }
     }
 }

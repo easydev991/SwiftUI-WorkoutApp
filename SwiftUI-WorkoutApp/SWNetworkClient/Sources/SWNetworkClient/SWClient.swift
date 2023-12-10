@@ -1,5 +1,8 @@
 import Foundation
+import OSLog
 import SWModels
+
+let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWClient")
 
 /// Сервис для обращений к серверу
 public struct SWClient: Sendable {

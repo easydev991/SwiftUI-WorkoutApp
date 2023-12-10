@@ -1,4 +1,5 @@
 import NetworkStatus
+import OSLog
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,6 +7,7 @@ import SWNetworkClient
 
 /// Экран с детальной информацией о площадке
 struct SportsGroundDetailView: View {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SportsGroundDetailView")
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
@@ -400,8 +402,13 @@ private extension SportsGroundDetailView {
 
     func process(_ error: Error) {
         if error.localizedDescription.contains("404") {
-            // Похоже, был запрос данных о несуществующей площадке.
-            // Удаляем её из памяти и закрываем экран
+            logger.debug(
+                """
+                Похоже, был запрос данных о несуществующей площадке
+                id площадки: \(ground.id, privacy: .public)
+                Удаляем ее из памяти и закрываем экран
+                """
+            )
             onDeletion(ground.id)
         } else {
             setupErrorAlert(ErrorFilter.message(from: error))
