@@ -28,13 +28,13 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - defaults: Сервис, отвечающий за обновление `UserDefaults`
     ///   - baseUrlString: Базовый `url` сервера. По умолчанию `https://workout.su/api/v3`
-    ///   - timeoutInterval: Время таймаута для `URLSession`. По умолчанию `15`
+    ///   - timeoutInterval: Время таймаута для `URLSession`. По умолчанию `30`
     ///   - needAuth: Необходимость базовой аутентификации. По умолчанию `true`
     ///   - canForceLogout: Доступность принудительной деавторизации. По умолчанию `true`
     public init(
         with defaults: DefaultsProtocol,
         baseUrlString: String = "https://workout.su/api/v3",
-        timeoutInterval: TimeInterval = 15,
+        timeoutInterval: TimeInterval = 30,
         needAuth: Bool = true,
         canForceLogout: Bool = true
     ) {
