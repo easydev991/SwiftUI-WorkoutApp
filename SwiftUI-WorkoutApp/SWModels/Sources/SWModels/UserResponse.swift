@@ -9,9 +9,7 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
     public let addedSportsGrounds: [SportsGround]?
     /// Пример: "1990-11-25"
     let birthDateIsoString: String?
-    /// Пример: "2013-01-16T03:35:54+04:00"
-    let createdIsoDateTimeSec: String?
-    let friendRequestsCountString, sportsGroundsCountString: String? // "0"
+    let sportsGroundsCountString: String? // "0"
 
     public enum CodingKeys: String, CodingKey {
         case id
@@ -21,10 +19,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         case countryID = "country_id"
         case genderCode = "gender"
         case birthDateIsoString = "birth_date"
-        case createdIsoDateTimeSec = "create_date"
         case fullName = "fullname"
         case friendsCount = "friend_count"
-        case friendRequestsCountString = "friend_request_count"
         case sportsGroundsCountString = "area_count"
         case journalsCount = "journal_count"
         case addedSportsGrounds = "added_areas"
@@ -38,13 +34,11 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         email: String? = nil,
         imageStringURL: String? = nil,
         birthDateIsoString: String? = nil,
-        createdIsoDateTimeSec: String? = nil,
         cityID: Int? = nil,
         countryID: Int? = nil,
         genderCode: Int? = nil,
         friendsCount: Int? = nil,
         journalsCount: Int? = nil,
-        friendRequestsCountString: String? = nil,
         sportsGroundsCountString: String? = nil,
         addedSportsGrounds: [SportsGround]? = nil
     ) {
@@ -54,13 +48,11 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         self.email = email
         self.imageStringURL = imageStringURL
         self.birthDateIsoString = birthDateIsoString
-        self.createdIsoDateTimeSec = createdIsoDateTimeSec
         self.cityID = cityID
         self.countryID = countryID
         self.genderCode = genderCode
         self.friendsCount = friendsCount
         self.journalsCount = journalsCount
-        self.friendRequestsCountString = friendRequestsCountString
         self.sportsGroundsCountString = sportsGroundsCountString
         self.addedSportsGrounds = addedSportsGrounds
     }
@@ -182,13 +174,11 @@ public extension UserResponse {
             email: nil,
             imageStringURL: nil,
             birthDateIsoString: nil,
-            createdIsoDateTimeSec: nil,
             cityID: nil,
             countryID: nil,
             genderCode: nil,
             friendsCount: nil,
             journalsCount: nil,
-            friendRequestsCountString: nil,
             sportsGroundsCountString: nil,
             addedSportsGrounds: nil
         )

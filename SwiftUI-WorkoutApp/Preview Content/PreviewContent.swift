@@ -59,13 +59,11 @@ extension UserResponse {
             email: "test@mail.ru",
             imageStringURL: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg",
             birthDateIsoString: "1990-11-25",
-            createdIsoDateTimeSec: nil,
             cityID: 1,
             countryID: 17,
             genderCode: 1,
             friendsCount: 5,
             journalsCount: 2,
-            friendRequestsCountString: "3",
             sportsGroundsCountString: "4",
             addedSportsGrounds: nil
         )
@@ -79,8 +77,6 @@ extension EventResponse {
             title: "Открытая тренировка участников SOTKA и воркаутеров #2 в 2022 году",
             eventDescription: "!!! ВРЕМЯ ТРЕНИРОВКИ - 12:00",
             fullAddress: nil,
-            createDate: "2022-10-16T09:00:00+00:00",
-            modifyDate: "2022-10-16T09:00:00+00:00",
             beginDate: "2022-10-16T09:00:00+00:00",
             countryID: 17,
             cityID: 1,
@@ -113,8 +109,7 @@ extension DialogResponse {
             lastMessageText: "Ошибка 500 это про пустые ответы? Я написал серверным.",
             lastMessageDate: "2022-05-14T17:35:45+00:00",
             anotherUserID: 30,
-            unreadCountOptional: 5,
-            createdDate: "2022-04-25T18:47:46+00:00"
+            unreadCountOptional: 5
         )
     }
 }

@@ -10,7 +10,6 @@ public struct DialogResponse: Codable, Identifiable, Sendable {
     public let lastMessageDate: String?
     public let anotherUserID: Int?
     public var unreadCountOptional: Int?
-    public let createdDate: String?
 
     public enum CodingKeys: String, CodingKey {
         case id = "dialog_id"
@@ -20,7 +19,6 @@ public struct DialogResponse: Codable, Identifiable, Sendable {
         case anotherUserName = "name"
         case unreadCountOptional = "count"
         case anotherUserImageStringURL = "image"
-        case createdDate = "created"
     }
 
     public init(
@@ -30,8 +28,7 @@ public struct DialogResponse: Codable, Identifiable, Sendable {
         lastMessageText: String? = nil,
         lastMessageDate: String? = nil,
         anotherUserID: Int? = nil,
-        unreadCountOptional: Int? = nil,
-        createdDate: String? = nil
+        unreadCountOptional: Int? = nil
     ) {
         self.id = id
         self.anotherUserImageStringURL = anotherUserImageStringURL
@@ -40,7 +37,6 @@ public struct DialogResponse: Codable, Identifiable, Sendable {
         self.lastMessageDate = lastMessageDate
         self.anotherUserID = anotherUserID
         self.unreadCountOptional = unreadCountOptional
-        self.createdDate = createdDate
     }
 }
 
@@ -76,8 +72,7 @@ public extension DialogResponse {
             anotherUserName: nil,
             lastMessageText: nil,
             lastMessageDate: nil,
-            anotherUserID: nil,
-            createdDate: nil
+            anotherUserID: nil
         )
     }
 }

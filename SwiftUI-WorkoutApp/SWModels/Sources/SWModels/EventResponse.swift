@@ -7,7 +7,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
     /// Название мероприятия
     public var title: String?
     public var eventDescription: String?
-    public let fullAddress, createDate, modifyDate: String?
+    public let fullAddress: String?
     public var beginDate: String?
     public var countryID, cityID: Int?
     public let commentsCount: Int?
@@ -36,8 +36,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         case fullAddress = "address"
         case previewImageStringURL = "preview"
         case eventDescription = "description"
-        case createDate = "create_date"
-        case modifyDate = "modify_date"
         case beginDate = "begin_date"
         case countryID = "country_id"
         case cityID = "city_id"
@@ -56,8 +54,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         title: String? = nil,
         eventDescription: String? = nil,
         fullAddress: String? = nil,
-        createDate: String? = nil,
-        modifyDate: String? = nil,
         beginDate: String? = nil,
         countryID: Int? = nil,
         cityID: Int? = nil,
@@ -79,8 +75,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         self.title = title
         self.eventDescription = eventDescription
         self.fullAddress = fullAddress
-        self.createDate = createDate
-        self.modifyDate = modifyDate
         self.beginDate = beginDate
         self.countryID = countryID
         self.cityID = cityID
@@ -222,8 +216,6 @@ public extension EventResponse {
             title: nil,
             eventDescription: nil,
             fullAddress: nil,
-            createDate: nil,
-            modifyDate: nil,
             beginDate: nil,
             countryID: nil,
             cityID: nil,
