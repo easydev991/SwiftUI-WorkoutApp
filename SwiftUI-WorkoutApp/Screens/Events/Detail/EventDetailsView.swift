@@ -38,8 +38,8 @@ struct EventDetailsView: View {
                     PhotoSectionView(
                         with: event.photos,
                         canDelete: isEventAuthor,
-                        reportClbk: reportPhoto,
-                        deleteClbk: deletePhoto
+                        reportClbk: { reportPhoto() },
+                        deleteClbk: { deletePhoto(id: $0) }
                     )
                 }
                 if event.hasDescription {
@@ -200,7 +200,7 @@ private extension EventDetailsView {
                     trailingContent: .toggle(
                         .init(
                             get: { event.trainHere },
-                            set: changeTrainHereStatus
+                            set: { changeTrainHereStatus(newValue: $0) }
                         )
                     )
                 )
@@ -360,7 +360,7 @@ private extension EventDetailsView {
         }
     }
 
-    func deletePhoto(with id: Int) {
+    func deletePhoto(id: Int) {
         isLoading = true
         deletePhotoTask = Task {
             do {

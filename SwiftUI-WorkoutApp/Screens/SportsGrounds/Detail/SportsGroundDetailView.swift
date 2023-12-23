@@ -37,8 +37,8 @@ struct SportsGroundDetailView: View {
                     PhotoSectionView(
                         with: ground.photos,
                         canDelete: canDeletePhoto,
-                        reportClbk: reportPhoto,
-                        deleteClbk: deletePhoto
+                        reportClbk: { reportPhoto() },
+                        deleteClbk: { deletePhoto(id: $0) }
                     )
                 }
                 authorSection
@@ -49,7 +49,7 @@ struct SportsGroundDetailView: View {
         }
         .background {
             NavigationLink(isActive: $isEditingGround) {
-                SportsGroundFormView(.editExisting(ground), refreshClbk: refreshAction)
+                SportsGroundFormView(.editExisting(ground)) { refreshAction() }
             } label: {
                 EmptyView()
             }
@@ -65,7 +65,7 @@ struct SportsGroundDetailView: View {
                         oldEntry: $0.formattedBody
                     )
                 ),
-                refreshClbk: refreshAction
+                refreshClbk: { refreshAction() }
             )
         }
         .task { await askForInfo() }
@@ -185,7 +185,7 @@ private extension SportsGroundDetailView {
                 trailingContent: .toggle(
                     .init(
                         get: { ground.trainHere },
-                        set: changeTrainHereStatus
+                        set: { changeTrainHereStatus(newValue: $0) }
                     )
                 )
             )
@@ -256,10 +256,7 @@ private extension SportsGroundDetailView {
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
-            TextEntryView(
-                mode: .newForGround(id: ground.id),
-                refreshClbk: refreshAction
-            )
+            TextEntryView(mode: .newForGround(id: ground.id)) { refreshAction() }
         }
     }
 
@@ -337,7 +334,7 @@ private extension SportsGroundDetailView {
         }
     }
 
-    func deletePhoto(with id: Int) {
+    func deletePhoto(id: Int) {
         isLoading = true
         deletePhotoTask = Task {
             do {

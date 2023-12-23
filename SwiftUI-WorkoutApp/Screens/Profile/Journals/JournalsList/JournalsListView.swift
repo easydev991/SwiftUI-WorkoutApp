@@ -34,7 +34,7 @@ struct JournalsListView: View {
             ) { deleteJournalButton }
             .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
             .alert(errorTitle, isPresented: $showErrorAlert) {
-                Button("Ok", action: closeAlert)
+                Button("Ok") { closeAlert() }
             }
             .task { await askForJournals() }
             .refreshable { await askForJournals(refresh: true) }

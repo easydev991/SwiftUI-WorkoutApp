@@ -126,7 +126,7 @@ private extension DialogView {
                 )
                 .background(Color.swBackground)
                 .animation(.default, value: isMessageBarFocused)
-            SendChatMessageButton(action: sendMessage)
+            SendChatMessageButton { sendMessage() }
                 .disabled(isSendButtonDisabled)
         }
         .padding()

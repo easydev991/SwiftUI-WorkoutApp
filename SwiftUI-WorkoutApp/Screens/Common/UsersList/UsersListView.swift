@@ -46,7 +46,7 @@ struct UsersListView: View {
         .background(Color.swBackground)
         .disabled(!network.isConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { closeAlert() }
         }
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }

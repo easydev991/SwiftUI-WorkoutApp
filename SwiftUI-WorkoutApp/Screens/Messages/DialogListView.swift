@@ -102,7 +102,7 @@ private extension DialogListView {
                         .listRowBackground(Color.swBackground)
                         .listRowSeparator(.hidden)
                 }
-                .onDelete(perform: initiateDeletion)
+                .onDelete { initiateDeletion(at: $0) }
             }
             .listStyle(.plain)
             .opacity(dialogs.isEmpty ? 0 : 1)
@@ -122,7 +122,7 @@ private extension DialogListView {
         )
         .background {
             NavigationLink {
-                DialogView(dialog: model, markedAsReadClbk: markAsRead)
+                DialogView(dialog: model) { markAsRead($0) }
             } label: {
                 EmptyView()
             }
