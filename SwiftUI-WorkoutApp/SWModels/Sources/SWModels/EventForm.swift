@@ -69,12 +69,13 @@ public extension EventForm {
 
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
-        !title.isEmpty && !description.isEmpty && sportsGroundID != .zero
+        !title.isEmpty && !description.isEmpty && sportsGroundID != 0
     }
 
     /// Готовность формы к отправке обновлений по мероприятию
     func isReadyToUpdate(old: EventForm) -> Bool {
-        self != old
+        let isNewFormNotEmpty = !title.isEmpty && !description.isEmpty
+        return isNewFormNotEmpty && self != old
     }
 
     static var emptyValue: Self { .init(nil) }
