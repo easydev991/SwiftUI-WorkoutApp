@@ -1,9 +1,9 @@
 import MapKit.MKGeometry
 import MapView991
+import OSLog
 import SWModels
 import SWNetworkClient
 import Utils
-import OSLog
 
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     private let logger = Logger(
@@ -44,7 +44,7 @@ extension SportsGroundsMapViewModel {
 }
 
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         if !isRegionSet {
             region = .init(

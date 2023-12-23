@@ -12,9 +12,7 @@ public extension String {
     }
 
     /// Количество символов без учета пробелов
-    var trueCount: Int {
-        replacingOccurrences(of: " ", with: "").count
-    }
+    var trueCount: Int { withoutSpaces.count }
 
     /// Без пробелов
     var withoutSpaces: Self {
@@ -25,8 +23,14 @@ public extension String {
 public extension String? {
     /// `URL` без кириллицы
     var queryAllowedURL: URL? {
-        guard let percentEncoded = self?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        else { return nil }
-        return .init(string: percentEncoded)
+        guard let self else { return nil }
+        if #available(iOS 17.0, *) {
+            return .init(string: self, encodingInvalidCharacters: true)
+        } else {
+            guard let percentEncoded = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                  let result = URL(string: percentEncoded)
+            else { return nil }
+            return result
+        }
     }
 }

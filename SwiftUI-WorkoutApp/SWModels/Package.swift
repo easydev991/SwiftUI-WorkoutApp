@@ -11,6 +11,7 @@ let package = Package(
     ],
     dependencies: [.package(path: "../Utils")],
     targets: [
-        .target(name: "SWModels", dependencies: ["Utils"])
+        .target(name: "SWModels", dependencies: ["Utils"]),
+        .testTarget(name: "SWModelsTest", dependencies: ["SWModels"])
     ]
 )

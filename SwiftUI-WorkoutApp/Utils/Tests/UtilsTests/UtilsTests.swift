@@ -8,6 +8,22 @@ final class UtilsTests: XCTestCase {
         XCTAssertEqual(cleanString, "Строка с тегами html.")
     }
 
+    func testTrueCountIsOne() {
+        let testString = " 1"
+        XCTAssertEqual(testString.trueCount, 1)
+    }
+
+    func testTrueCountIsZero() {
+        let testString = " "
+        XCTAssertEqual(testString.trueCount, 0)
+    }
+
+    func testWithoutSpaces() {
+        let stringWithSpaces = "Hello World from workout"
+        let cleanString = stringWithSpaces.withoutSpaces
+        XCTAssertEqual(cleanString, "HelloWorldfromworkout")
+    }
+
     func testCapitalizingFirstLetter() {
         let string = "test string"
         let newString = string.capitalizingFirstLetter
@@ -18,6 +34,18 @@ final class UtilsTests: XCTestCase {
         let urlString: String? = "https://workout.su/uploads/userfiles/св3.jpg"
         let resultURL = urlString.queryAllowedURL
         XCTAssertEqual(resultURL, URL(string: "https://workout.su/uploads/userfiles/%D1%81%D0%B23.jpg"))
+    }
+
+    func testPrettyJson() {
+        struct TestModel: Codable { let property: String }
+        let data = try! JSONEncoder().encode(TestModel(property: "property"))
+        let prettyJson = data.prettyJson
+        let expectedResult = """
+        {
+          "property" : "property"
+        }
+        """
+        XCTAssertEqual(prettyJson, expectedResult)
     }
 
     func testReadableDate() {
@@ -48,7 +76,7 @@ final class UtilsTests: XCTestCase {
         XCTAssertEqual(formattedResult, expectedDate)
     }
 
-    func testDays() {
+    func testDaysBetween() {
         let firstDateString = "2023-01-12T00:00:00"
         let secondDateComponents = DateComponents(year: 2023, month: 10, day: 14)
         let secondDate = Calendar.current.date(from: secondDateComponents)!

@@ -2,6 +2,7 @@ import FileManager991
 import NetworkStatus
 import SWDesignSystem
 import SwiftUI
+import SWModels
 import SWNetworkClient
 import Utils
 
@@ -72,8 +73,9 @@ private extension SwiftUI_WorkoutAppApp {
         }
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
-        #warning("Убрать при переходе на iOS 16")
-        UITextView.appearance().backgroundColor = .clear
+        if !DeviceOSVersionChecker.iOS16Available {
+            UITextView.appearance().backgroundColor = .clear
+        }
     }
 
     func prepareForUITestIfNeeded() {

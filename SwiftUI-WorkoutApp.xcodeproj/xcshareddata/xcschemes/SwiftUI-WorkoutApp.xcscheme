@@ -29,6 +29,12 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       language = "ru"
       region = "RU">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:SwiftUI-WorkoutApp/SwiftUI-WorkoutApp.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO"

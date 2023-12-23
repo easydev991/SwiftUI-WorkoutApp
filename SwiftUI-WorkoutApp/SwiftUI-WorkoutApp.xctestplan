@@ -1,0 +1,58 @@
+{
+  "configurations" : [
+    {
+      "id" : "7388A88C-99E6-4A94-9A1E-700B6D92BECD",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:SwiftUI-WorkoutApp\/SWModels",
+          "identifier" : "SWModelsTest",
+          "name" : "SWModelsTest"
+        },
+        {
+          "containerPath" : "container:SwiftUI-WorkoutApp\/Utils",
+          "identifier" : "UtilsTests",
+          "name" : "UtilsTests"
+        }
+      ]
+    },
+    "environmentVariableEntries" : [
+      {
+        "enabled" : false,
+        "key" : "OS_ACTIVITY_MODE",
+        "value" : "$(DEBUG_ACTIVITY_MODE)"
+      }
+    ],
+    "language" : "ru",
+    "region" : "RU",
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SwiftUI-WorkoutApp.xcodeproj",
+      "identifier" : "6798AA39280AEDC900DB76F1",
+      "name" : "SwiftUI-WorkoutApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Utils",
+        "identifier" : "UtilsTests",
+        "name" : "UtilsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/SWModels",
+        "identifier" : "SWModelsTest",
+        "name" : "SWModelsTest"
+      }
+    }
+  ],
+  "version" : 1
+}
