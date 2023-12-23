@@ -53,7 +53,7 @@ struct SportsGroundsMapView: View {
                 Button("Ok") { alertMessage = "" }
             }
             .task { await askForGrounds() }
-            .sheet(item: $sheetItem, content: makeContentView)
+            .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Group {
@@ -208,7 +208,7 @@ private extension SportsGroundsMapView {
         await getUpdatedGrounds(from: groundsManager.lastGroundsUpdateDateString)
     }
 
-    func deleteGround(with id: Int) {
+    func deleteGround(id: Int) {
         sheetItem = nil
         do {
             try groundsManager.deleteGround(with: id)
@@ -290,10 +290,7 @@ private extension SportsGroundsMapView {
             }
         case let .groundDetails(ground):
             NavigationView {
-                SportsGroundDetailView(
-                    ground: ground,
-                    onDeletion: deleteGround
-                )
+                SportsGroundDetailView(ground: ground) { deleteGround(id: $0) }
             }
         }
     }

@@ -15,7 +15,7 @@ struct DialogsScreen: View {
                 }
             }
             .background(Color.swBackground)
-            .animation(nil)
+            .transaction { $0.animation = nil }
             .navigationTitle("Сообщения")
             .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }

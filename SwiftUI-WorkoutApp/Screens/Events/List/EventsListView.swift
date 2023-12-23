@@ -33,7 +33,7 @@ struct EventsListView: View {
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
             .alert("Необходимо выбрать площадку", isPresented: $showEventCreationRule) {
-                Button("Перейти на карту", action: goToMap)
+                Button("Перейти на карту") { goToMap() }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
                 Text(.init(Constants.Alert.eventCreationRule))
@@ -131,7 +131,7 @@ private extension EventsListView {
         .opacity(isLoading ? 0 : 1)
         .sheet(item: $selectedEvent) { event in
             NavigationView {
-                EventDetailsView(event: event, onDeletion: removeEvent)
+                EventDetailsView(event: event) { removeEvent(id: $0) }
             }
         }
     }
@@ -203,7 +203,7 @@ private extension EventsListView {
         isLoading = false
     }
 
-    func removeEvent(with id: Int) {
+    func removeEvent(id: Int) {
         selectedEvent = nil
         futureEvents.removeAll(where: { $0.id == id })
         pastEvents.removeAll(where: { $0.id == id })

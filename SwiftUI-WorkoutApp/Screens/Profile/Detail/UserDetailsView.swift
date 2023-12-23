@@ -55,7 +55,7 @@ struct UserDetailsView: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .alert(alertMessage, isPresented: $showAlertMessage) {
-            Button("Ok", action: closeAlert)
+            Button("Ok") { closeAlert() }
         }
         .refreshable { await askForUserInfo(refresh: true) }
         .toolbar {
@@ -112,12 +112,10 @@ private extension UserDetailsView {
 
     var communicationSection: some View {
         VStack(spacing: 12) {
-            Button("Сообщение") {
-                messagingModel.recipient = user
-            }
-            .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
-            .sheet(item: $messagingModel.recipient, content: messageSheet)
-            Button(.init(socialActions.friend.rawValue), action: performFriendAction)
+            Button("Сообщение") { messagingModel.recipient = user }
+                .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
+                .sheet(item: $messagingModel.recipient) { messageSheet(for: $0) }
+            Button(.init(socialActions.friend.rawValue)) { performFriendAction() }
                 .buttonStyle(
                     SWButtonStyle(
                         icon: socialActions.friend == .removeFriend
@@ -152,9 +150,8 @@ private extension UserDetailsView {
         ) {
             Button(
                 .init(socialActions.blacklist.rawValue),
-                role: .destructive,
-                action: performBlacklistAction
-            )
+                role: .destructive
+            ) { performBlacklistAction() }
         } message: {
             Text(.init(socialActions.blacklist.dialogMessage))
         }

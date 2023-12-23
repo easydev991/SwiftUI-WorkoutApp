@@ -46,10 +46,7 @@ struct SportsGroundsListView: View {
         .background(Color.swBackground)
         .sheet(item: $selectedGround) { ground in
             NavigationView {
-                SportsGroundDetailView(
-                    ground: ground,
-                    onDeletion: deleteGround
-                )
+                SportsGroundDetailView(ground: ground) { deleteGround(id: $0) }
             }
         }
         .onChange(of: grounds) { list in
@@ -146,7 +143,7 @@ private extension SportsGroundsListView {
         grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
     }
 
-    func deleteGround(with id: Int) {
+    func deleteGround(id: Int) {
         selectedGround = nil
         grounds.removeAll(where: { $0.id == id })
         do {

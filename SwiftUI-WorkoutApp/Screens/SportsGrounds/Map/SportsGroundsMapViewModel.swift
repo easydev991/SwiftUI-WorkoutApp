@@ -3,9 +3,13 @@ import MapView991
 import SWModels
 import SWNetworkClient
 import Utils
+import OSLog
 
-@MainActor
 final class SportsGroundsMapViewModel: NSObject, ObservableObject {
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: SportsGroundsMapViewModel.self)
+    )
     /// Менеджер локации
     private let manager = CLLocationManager()
     @Published private(set) var locationErrorMessage = ""
@@ -40,7 +44,7 @@ extension SportsGroundsMapViewModel {
 }
 
 extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
-    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         if !isRegionSet {
             region = .init(
@@ -69,6 +73,10 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
             if !ignoreUserLocation {
                 setupDefaultLocation(permissionDenied: true)
             }
+        @unknown default:
+            let message = "Не обработан новый кейс `authorizationStatus`"
+            logger.error("\(message, privacy: .public)")
+            assertionFailure(message)
         }
     }
 

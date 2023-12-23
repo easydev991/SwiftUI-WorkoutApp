@@ -126,7 +126,7 @@ private extension EditAccountScreen {
                 mode: .country,
                 allItems: locations.countries.map(\.name),
                 selectedItem: userForm.country.name,
-                didSelectItem: selectCountry
+                didSelectItem: { selectCountry(name: $0) }
             )
         } label: {
             ListRowView(
@@ -146,7 +146,7 @@ private extension EditAccountScreen {
                 mode: .city,
                 allItems: locations.cities.map(\.name),
                 selectedItem: userForm.city.name,
-                didSelectItem: selectCity
+                didSelectItem: { selectCity(name: $0) }
             )
         } label: {
             ListRowView(

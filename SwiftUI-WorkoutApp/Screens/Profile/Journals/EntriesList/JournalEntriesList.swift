@@ -61,7 +61,7 @@ struct JournalEntriesList: View {
                         oldEntry: $0.formattedMessage
                     )
                 ),
-                refreshClbk: updateEntries
+                refreshClbk: { updateEntries() }
             )
         }
         .confirmationDialog(
@@ -119,7 +119,7 @@ private extension JournalEntriesList {
                         ownerId: userID,
                         journalId: currentJournal.id
                     ),
-                    refreshClbk: updateEntries
+                    refreshClbk: { updateEntries() }
                 )
             }
         }
