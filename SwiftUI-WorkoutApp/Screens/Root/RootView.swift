@@ -1,3 +1,4 @@
+import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 
@@ -23,5 +24,7 @@ struct RootView: View {
     RootView()
         .environmentObject(DefaultsService())
         .environmentObject(TabViewModel())
+        .environmentObject(SportsGroundsManager())
+        .environmentObject(NetworkStatus())
 }
 #endif
