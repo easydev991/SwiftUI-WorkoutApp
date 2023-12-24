@@ -31,12 +31,18 @@
       }
     ],
     "language" : "ru",
+    "locationScenario" : {
+      "identifier" : "Moscow, Russia",
+      "referenceType" : "built-in"
+    },
     "region" : "RU",
     "targetForVariableExpansion" : {
       "containerPath" : "container:SwiftUI-WorkoutApp.xcodeproj",
       "identifier" : "6798AA39280AEDC900DB76F1",
       "name" : "SwiftUI-WorkoutApp"
-    }
+    },
+    "threadSanitizerEnabled" : true,
+    "undefinedBehaviorSanitizerEnabled" : true
   },
   "testTargets" : [
     {
