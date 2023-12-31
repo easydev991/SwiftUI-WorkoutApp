@@ -1,4 +1,4 @@
-public enum SportsGroundGrade: String, CaseIterable {
+public enum ParkGrade: String, CaseIterable {
     case soviet = "Советская"
     case modern = "Современная"
     case collars = "Хомуты"

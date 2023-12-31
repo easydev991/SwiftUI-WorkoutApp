@@ -69,7 +69,7 @@ extension UsersListView {
         /// Участники мероприятия
         case eventParticipants(list: [UserResponse])
         /// Тренирующиеся на площадке
-        case groundParticipants(list: [UserResponse])
+        case parkParticipants(list: [UserResponse])
         /// Черный список основного пользователя
         case blacklist
     }
@@ -82,7 +82,7 @@ private extension UsersListView.Mode {
             "Друзья"
         case .eventParticipants:
             "Участники мероприятия"
-        case .groundParticipants:
+        case .parkParticipants:
             "Здесь тренируются"
         case .blacklist:
             "Черный список"
@@ -111,7 +111,7 @@ private extension UsersListView {
             } label: {
                 userRowView(with: model)
             }
-        case .friends, .eventParticipants, .groundParticipants, .blacklist:
+        case .friends, .eventParticipants, .parkParticipants, .blacklist:
             NavigationLink {
                 UserDetailsView(for: model)
                     .navigationBarTitleDisplayMode(.inline)
@@ -179,7 +179,7 @@ private extension UsersListView {
                     friendRequests = defaults.friendRequestsList
                 }
                 users = try await SWClient(with: defaults).getFriendsForUser(id: userID)
-            case let .eventParticipants(list), let .groundParticipants(list):
+            case let .eventParticipants(list), let .parkParticipants(list):
                 users = list
             case .blacklist:
                 if !refresh { isLoading = true }

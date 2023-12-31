@@ -1,5 +1,5 @@
 public enum PhotoContainer: Sendable {
-    case event(Input), sportsGround(Input)
+    case event(Input), park(Input)
 
     public struct Input: Sendable {
         public let containerID, photoID: Int

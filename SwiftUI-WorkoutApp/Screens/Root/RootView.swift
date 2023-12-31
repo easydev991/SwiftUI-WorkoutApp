@@ -24,7 +24,7 @@ struct RootView: View {
     RootView()
         .environmentObject(DefaultsService())
         .environmentObject(TabViewModel())
-        .environmentObject(SportsGroundsManager())
+        .environmentObject(ParksManager())
         .environmentObject(NetworkStatus())
 }
 #endif

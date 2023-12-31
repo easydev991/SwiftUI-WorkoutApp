@@ -13,7 +13,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
     public let commentsCount: Int?
     public var commentsOptional: [CommentResponse]?
     public let previewImageStringURL: String?
-    public var sportsGroundID: Int?
+    public var parkID: Int?
     public let latitude, longitude: String?
     /// Количество участников
     public let participantsCount: Int?
@@ -40,7 +40,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         case countryID = "country_id"
         case cityID = "city_id"
         case commentsCount = "comment_count"
-        case sportsGroundID = "area_id"
+        case parkID = "area_id"
         case participantsCount = "user_count"
         case isCurrent = "is_current"
         case photosOptional = "photos"
@@ -60,7 +60,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         commentsCount: Int? = nil,
         commentsOptional: [CommentResponse]? = nil,
         previewImageStringURL: String? = nil,
-        sportsGroundID: Int? = nil,
+        parkID: Int? = nil,
         latitude: String? = nil,
         longitude: String? = nil,
         participantsCount: Int? = nil,
@@ -81,7 +81,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         self.commentsCount = commentsCount
         self.commentsOptional = commentsOptional
         self.previewImageStringURL = previewImageStringURL
-        self.sportsGroundID = sportsGroundID
+        self.parkID = parkID
         self.latitude = latitude
         self.longitude = longitude
         self.participantsCount = participantsCount
@@ -116,10 +116,10 @@ public extension EventResponse {
         set { eventDescription = newValue }
     }
 
-    var sportsGround: SportsGround {
+    var park: Park {
         get {
             .init(
-                id: sportsGroundID ?? 0,
+                id: parkID ?? 0,
                 typeID: 0,
                 sizeID: 0,
                 address: fullAddress,
@@ -222,7 +222,7 @@ public extension EventResponse {
             commentsCount: nil,
             commentsOptional: nil,
             previewImageStringURL: nil,
-            sportsGroundID: nil,
+            parkID: nil,
             latitude: nil,
             longitude: nil,
             participantsCount: nil,

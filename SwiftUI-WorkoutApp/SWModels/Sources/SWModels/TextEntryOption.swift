@@ -1,6 +1,6 @@
 public enum TextEntryOption: Sendable {
     /// Комментарий к площадке
-    case ground(id: Int)
+    case park(id: Int)
     /// Комментарий к мероприятию
     case event(id: Int)
     /// Запись в дневнике

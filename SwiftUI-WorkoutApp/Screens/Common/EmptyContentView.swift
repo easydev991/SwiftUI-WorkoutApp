@@ -8,7 +8,7 @@ struct EmptyContentView: View {
     let mode: Mode
     let isAuthorized: Bool
     let hasFriends: Bool
-    let hasSportsGrounds: Bool
+    let hasParks: Bool
     let isNetworkConnected: Bool
     let action: () -> Void
 
@@ -56,7 +56,7 @@ private extension EmptyContentView {
     var actionButtonTitle: LocalizedStringKey {
         switch mode {
         case .events:
-            hasSportsGrounds && isAuthorized
+            hasParks && isAuthorized
                 ? "Создать мероприятие"
                 : "Выбрать площадку"
         case .dialogs:
@@ -66,7 +66,7 @@ private extension EmptyContentView {
     }
 
     var isHintAvailable: Bool {
-        mode == .events && isAuthorized && !hasSportsGrounds
+        mode == .events && isAuthorized && !hasParks
     }
 }
 
@@ -97,7 +97,7 @@ private extension EmptyContentView.Mode {
                 mode: mode,
                 isAuthorized: true,
                 hasFriends: true,
-                hasSportsGrounds: true,
+                hasParks: true,
                 isNetworkConnected: true,
                 action: {}
             )
@@ -107,7 +107,7 @@ private extension EmptyContentView.Mode {
             mode: .dialogs,
             isAuthorized: true,
             hasFriends: true,
-            hasSportsGrounds: true,
+            hasParks: true,
             isNetworkConnected: false,
             action: {}
         )

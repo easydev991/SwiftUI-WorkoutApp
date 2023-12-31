@@ -5,10 +5,10 @@ import SWModels
 import SWNetworkClient
 import Utils
 
-final class SportsGroundsMapViewModel: NSObject, ObservableObject {
+final class ParksMapViewModel: NSObject, ObservableObject {
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: SportsGroundsMapViewModel.self)
+        category: String(describing: ParksMapViewModel.self)
     )
     /// Менеджер локации
     private let manager = CLLocationManager()
@@ -31,7 +31,7 @@ final class SportsGroundsMapViewModel: NSObject, ObservableObject {
     }
 }
 
-extension SportsGroundsMapViewModel {
+extension ParksMapViewModel {
     /// `true` - регион пользователя установлен, `false` - не установлен
     var isRegionSet: Bool {
         region.center.latitude != .zero && region.center.longitude != .zero
@@ -43,7 +43,7 @@ extension SportsGroundsMapViewModel {
     }
 }
 
-extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
+extension ParksMapViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         if !isRegionSet {
@@ -87,7 +87,7 @@ extension SportsGroundsMapViewModel: CLLocationManagerDelegate {
     }
 }
 
-private extension SportsGroundsMapViewModel {
+private extension ParksMapViewModel {
     func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Constants.Alert.locationPermissionDenied

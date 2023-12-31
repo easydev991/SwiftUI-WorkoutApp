@@ -12,7 +12,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
-    @StateObject private var groundsManager = SportsGroundsManager()
+    @StateObject private var parksManager = ParksManager()
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
@@ -29,7 +29,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
-                .environmentObject(groundsManager)
+                .environmentObject(parksManager)
                 .onAppear {
                     AppThemeService.set(defaults.appTheme)
                 }

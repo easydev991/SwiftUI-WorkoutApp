@@ -16,9 +16,9 @@
 		671CD13929A2904200645678 /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 671CD13829A2904200645678 /* SWModels */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		674023402B0BC01600A7311A /* FeedbackSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6740233F2B0BC01600A7311A /* FeedbackSender.swift */; };
-		67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */; };
+		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordView.swift */; };
-		6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* SportsGroundDetailView.swift */; };
+		6747575928128603002F0A24 /* ParkDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* ParkDetailScreen.swift */; };
 		674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D061A28280A63007E75C6 /* FriendRequestsView.swift */; };
 		674D0623282A9896007E75C6 /* SearchUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674D0622282A9896007E75C6 /* SearchUsersView.swift */; };
 		674DF03E2B11254D00828016 /* Binding+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674DF03D2B11254D00828016 /* Binding+.swift */; };
@@ -40,7 +40,7 @@
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
-		67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* SportsGroundFormView.swift */; };
+		67891E38283E947B00B10802 /* ParkFormScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* ParkFormScreen.swift */; };
 		678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
 		6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3F280AEDC900DB76F1 /* RootView.swift */; };
@@ -49,26 +49,26 @@
 		6798AA4C280AF1C200DB76F1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */; };
 		6798AA53280AF43900DB76F1 /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA52280AF43900DB76F1 /* EventsListView.swift */; };
 		6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA54280AF46300DB76F1 /* DialogsScreen.swift */; };
-		6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */; };
+		6798AA59280AF4B100DB76F1 /* ParksMapScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA58280AF4B100DB76F1 /* ParksMapScreen.swift */; };
 		6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */; };
 		6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */; };
 		6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA67280B23B700DB76F1 /* UserDetailsView.swift */; };
 		6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA72280B43FE00DB76F1 /* LoginView.swift */; };
 		6798AA79280BE8E200DB76F1 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA75280BE8E200DB76F1 /* countries.json */; };
-		6798AA7B280BE8E200DB76F1 /* oldSportsGrounds.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */; };
+		6798AA7B280BE8E200DB76F1 /* oldParks.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldParks.json */; };
 		6798AA84280C0F7D00DB76F1 /* EditAccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */; };
 		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A4710C2AEED8F8004D341D /* PastEventStorage.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
-		67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */; };
+		67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */; };
 		67B371732A640079000FF143 /* AppThemeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B371722A640079000FF143 /* AppThemeService.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
-		67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */; };
+		67B78716281D8006008B104F /* ParksMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* ParksMapViewModel.swift */; };
 		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
-		67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */; };
+		67BAF3F6283620ED00DB40D9 /* ParkLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */; };
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
-		67BD2D012AF7D21B00F44064 /* SportsGroundsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */; };
+		67BD2D012AF7D21B00F44064 /* ParksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD2D002AF7D21B00F44064 /* ParksManager.swift */; };
 		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
 		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
@@ -102,9 +102,9 @@
 		671CD13729A28CB800645678 /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWModels; path = "SwiftUI-WorkoutApp/SWModels"; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		6740233F2B0BC01600A7311A /* FeedbackSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSender.swift; sourceTree = "<group>"; };
-		67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsListView.swift; sourceTree = "<group>"; };
+		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
-		6747575828128603002F0A24 /* SportsGroundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundDetailView.swift; sourceTree = "<group>"; };
+		6747575828128603002F0A24 /* ParkDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkDetailScreen.swift; sourceTree = "<group>"; };
 		674D061A28280A63007E75C6 /* FriendRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestsView.swift; sourceTree = "<group>"; };
 		674D0622282A9896007E75C6 /* SearchUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUsersView.swift; sourceTree = "<group>"; };
 		674DF03D2B11254D00828016 /* Binding+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+.swift"; sourceTree = "<group>"; };
@@ -128,7 +128,7 @@
 		6766A035284603CA0033F1E8 /* TabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModel.swift; sourceTree = "<group>"; };
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
 		677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SwiftUI-WorkoutApp.xctestplan"; sourceTree = "<group>"; };
-		67891E37283E947B00B10802 /* SportsGroundFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFormView.swift; sourceTree = "<group>"; };
+		67891E37283E947B00B10802 /* ParkFormScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFormScreen.swift; sourceTree = "<group>"; };
 		678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWNetworkClient; path = "SwiftUI-WorkoutApp/SWNetworkClient"; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_WorkoutAppApp.swift; sourceTree = "<group>"; };
@@ -138,26 +138,26 @@
 		6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6798AA52280AF43900DB76F1 /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
 		6798AA54280AF46300DB76F1 /* DialogsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogsScreen.swift; sourceTree = "<group>"; };
-		6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapView.swift; sourceTree = "<group>"; };
+		6798AA58280AF4B100DB76F1 /* ParksMapScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksMapScreen.swift; sourceTree = "<group>"; };
 		6798AA5A280AF4C700DB76F1 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoProfileView.swift; sourceTree = "<group>"; };
 		6798AA67280B23B700DB76F1 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
 		6798AA72280B43FE00DB76F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6798AA75280BE8E200DB76F1 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
-		6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldSportsGrounds.json; sourceTree = "<group>"; };
+		6798AA77280BE8E200DB76F1 /* oldParks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldParks.json; sourceTree = "<group>"; };
 		6798AA83280C0F7D00DB76F1 /* EditAccountScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountScreen.swift; sourceTree = "<group>"; };
 		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A4710C2AEED8F8004D341D /* PastEventStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEventStorage.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundFilterView.swift; sourceTree = "<group>"; };
+		67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFilterScreen.swift; sourceTree = "<group>"; };
 		67B371722A640079000FF143 /* AppThemeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeService.swift; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
-		67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsMapViewModel.swift; sourceTree = "<group>"; };
+		67B78715281D8006008B104F /* ParksMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksMapViewModel.swift; sourceTree = "<group>"; };
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
-		67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundLocationInfo.swift; sourceTree = "<group>"; };
+		67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkLocationInfoView.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
-		67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsGroundsManager.swift; sourceTree = "<group>"; };
+		67BD2D002AF7D21B00F44064 /* ParksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksManager.swift; sourceTree = "<group>"; };
 		67D916802838E2460098D3CB /* DialogListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogListView.swift; sourceTree = "<group>"; };
 		67D916852838F0DD0098D3CB /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageView.swift; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 			path = FriendRequests;
 			sourceTree = "<group>";
 		};
-		67475757281285E5002F0A24 /* SportsGrounds */ = {
+		67475757281285E5002F0A24 /* Parks */ = {
 			isa = PBXGroup;
 			children = (
 				67A9C90628427DDD005D6A36 /* Filter */,
@@ -285,7 +285,7 @@
 				67D916792838D18C0098D3CB /* Detail */,
 				6770A8322834D3810006B672 /* List */,
 			);
-			path = SportsGrounds;
+			path = Parks;
 			sourceTree = "<group>";
 		};
 		67515697283FEC0B00501346 /* ImagePicker */ = {
@@ -358,7 +358,7 @@
 		6770A8322834D3810006B672 /* List */ = {
 			isa = PBXGroup;
 			children = (
-				67419ACE282E70B9004F5339 /* SportsGroundsListView.swift */,
+				67419ACE282E70B9004F5339 /* ParksListScreen.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -366,8 +366,8 @@
 		6770A8342834D3B60006B672 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				6798AA58280AF4B100DB76F1 /* SportsGroundsMapView.swift */,
-				67B78715281D8006008B104F /* SportsGroundsMapViewModel.swift */,
+				6798AA58280AF4B100DB76F1 /* ParksMapScreen.swift */,
+				67B78715281D8006008B104F /* ParksMapViewModel.swift */,
 				675FB8DA2ADDB87200C9671F /* LocationSettingReminderView.swift */,
 			);
 			path = Map;
@@ -385,7 +385,7 @@
 		67891E34283E93ED00B10802 /* Form */ = {
 			isa = PBXGroup;
 			children = (
-				67891E37283E947B00B10802 /* SportsGroundFormView.swift */,
+				67891E37283E947B00B10802 /* ParkFormScreen.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -439,7 +439,7 @@
 			isa = PBXGroup;
 			children = (
 				67419AD6282E8E84004F5339 /* Root */,
-				67475757281285E5002F0A24 /* SportsGrounds */,
+				67475757281285E5002F0A24 /* Parks */,
 				671D7DED28210D820068E728 /* Events */,
 				67419AD5282E8E7C004F5339 /* Messages */,
 				6798AA69280B23BF00DB76F1 /* Profile */,
@@ -454,7 +454,7 @@
 			children = (
 				675EC65528153B8200C2E229 /* Info.plist */,
 				6798AA75280BE8E200DB76F1 /* countries.json */,
-				6798AA77280BE8E200DB76F1 /* oldSportsGrounds.json */,
+				6798AA77280BE8E200DB76F1 /* oldParks.json */,
 				6798AA4B280AF1C200DB76F1 /* LaunchScreen.storyboard */,
 				6798AA41280AEDCA00DB76F1 /* Assets.xcassets */,
 				67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */,
@@ -470,7 +470,7 @@
 				67B371722A640079000FF143 /* AppThemeService.swift */,
 				67551C352AEC338600084A35 /* SWAddress.swift */,
 				67A4710C2AEED8F8004D341D /* PastEventStorage.swift */,
-				67BD2D002AF7D21B00F44064 /* SportsGroundsManager.swift */,
+				67BD2D002AF7D21B00F44064 /* ParksManager.swift */,
 				6740233F2B0BC01600A7311A /* FeedbackSender.swift */,
 			);
 			path = Services;
@@ -494,7 +494,7 @@
 			children = (
 				679F3B0A2969DF3E00BB3590 /* Incognito */,
 				679F3AF8296802BA00BB3590 /* SendMessage */,
-				679F3AF72968029900BB3590 /* SportsGroundLocation */,
+				679F3AF72968029900BB3590 /* ParkLocation */,
 				67C87FD4284388EF00D6377D /* PhotoSection */,
 				6751569D28423B3700501346 /* TextEntry */,
 				67515697283FEC0B00501346 /* ImagePicker */,
@@ -505,13 +505,13 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		679F3AF72968029900BB3590 /* SportsGroundLocation */ = {
+		679F3AF72968029900BB3590 /* ParkLocation */ = {
 			isa = PBXGroup;
 			children = (
 				675EC6622815AA4A00C2E229 /* MapSnapshotView.swift */,
-				67BAF3F5283620ED00DB40D9 /* SportsGroundLocationInfo.swift */,
+				67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */,
 			);
-			path = SportsGroundLocation;
+			path = ParkLocation;
 			sourceTree = "<group>";
 		};
 		679F3AF8296802BA00BB3590 /* SendMessage */ = {
@@ -533,7 +533,7 @@
 		67A9C90628427DDD005D6A36 /* Filter */ = {
 			isa = PBXGroup;
 			children = (
-				67A9C90728427DEA005D6A36 /* SportsGroundFilterView.swift */,
+				67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -559,7 +559,7 @@
 		67D916792838D18C0098D3CB /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				6747575828128603002F0A24 /* SportsGroundDetailView.swift */,
+				6747575828128603002F0A24 /* ParkDetailScreen.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -695,7 +695,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6798AA4C280AF1C200DB76F1 /* LaunchScreen.storyboard in Resources */,
-				6798AA7B280BE8E200DB76F1 /* oldSportsGrounds.json in Resources */,
+				6798AA7B280BE8E200DB76F1 /* oldParks.json in Resources */,
 				6798AA45280AEDCA00DB76F1 /* Preview Assets.xcassets in Resources */,
 				6798AA79280BE8E200DB76F1 /* countries.json in Resources */,
 				6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */,
@@ -723,7 +723,7 @@
 			files = (
 				674023402B0BC01600A7311A /* FeedbackSender.swift in Sources */,
 				6798AA5B280AF4C700DB76F1 /* ProfileScreen.swift in Sources */,
-				67A9C90828427DEA005D6A36 /* SportsGroundFilterView.swift in Sources */,
+				67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */,
 				6798AA55280AF46300DB76F1 /* DialogsScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */,
 				67B371732A640079000FF143 /* AppThemeService.swift in Sources */,
@@ -732,20 +732,20 @@
 				67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */,
-				67BAF3F6283620ED00DB40D9 /* SportsGroundLocationInfo.swift in Sources */,
+				67BAF3F6283620ED00DB40D9 /* ParkLocationInfoView.swift in Sources */,
 				67627755283A4C77009C203F /* JournalEntriesList.swift in Sources */,
 				674E704E2B24D382008AE9D0 /* LoggerScreen.swift in Sources */,
-				67B78716281D8006008B104F /* SportsGroundsMapViewModel.swift in Sources */,
+				67B78716281D8006008B104F /* ParksMapViewModel.swift in Sources */,
 				671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */,
 				6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */,
 				67551C362AEC338600084A35 /* SWAddress.swift in Sources */,
-				6798AA59280AF4B100DB76F1 /* SportsGroundsMapView.swift in Sources */,
+				6798AA59280AF4B100DB76F1 /* ParksMapScreen.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */,
 				67B78712281D654C008B104F /* DefaultsService.swift in Sources */,
-				67419ACF282E70B9004F5339 /* SportsGroundsListView.swift in Sources */,
+				67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
 				674DF0402B11257D00828016 /* NavigationLink+.swift in Sources */,
-				67BD2D012AF7D21B00F44064 /* SportsGroundsManager.swift in Sources */,
+				67BD2D012AF7D21B00F44064 /* ParksManager.swift in Sources */,
 				6705E7EE283B703400DABCC8 /* JournalSettingsView.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */,
@@ -760,7 +760,7 @@
 				6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */,
 				67D916862838F0DD0098D3CB /* DialogView.swift in Sources */,
 				67627750283A3A54009C203F /* JournalsListView.swift in Sources */,
-				67891E38283E947B00B10802 /* SportsGroundFormView.swift in Sources */,
+				67891E38283E947B00B10802 /* ParkFormScreen.swift in Sources */,
 				674D061B28280A63007E75C6 /* FriendRequestsView.swift in Sources */,
 				6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */,
 				675EC6632815AA4A00C2E229 /* MapSnapshotView.swift in Sources */,
@@ -772,7 +772,7 @@
 				6798AA73280B43FE00DB76F1 /* LoginView.swift in Sources */,
 				6758463B2965B0F6000BA5E0 /* UIImage+Identifiable.swift in Sources */,
 				67D9169628396C1E0098D3CB /* SendMessageView.swift in Sources */,
-				6747575928128603002F0A24 /* SportsGroundDetailView.swift in Sources */,
+				6747575928128603002F0A24 /* ParkDetailScreen.swift in Sources */,
 				675EC6572815433600C2E229 /* UsersListView.swift in Sources */,
 				675EC65F2815532800C2E229 /* EventFormView.swift in Sources */,
 			);

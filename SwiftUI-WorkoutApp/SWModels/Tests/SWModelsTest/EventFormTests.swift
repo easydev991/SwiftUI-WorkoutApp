@@ -17,8 +17,8 @@ final class EventFormTests: XCTestCase {
         XCTAssertFalse(form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_sportsGroundID() {
-        let form = makeForm(sportsGroundID: 0)
+    func testIsNotReadyToCreate_parkID() {
+        let form = makeForm(parkID: 0)
         XCTAssertFalse(form.isReadyToCreate)
     }
 
@@ -73,14 +73,14 @@ final class EventFormTests: XCTestCase {
         XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_sportsGroundID() {
-        let oldForm = makeForm(sportsGroundID: 123)
+    func testIsReadyToUpdate_parkID() {
+        let oldForm = makeForm(parkID: 123)
         let newForm = makeForm()
         XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_sportsGroundName() {
-        let oldForm = makeForm(sportsGroundName: "old")
+    func testIsReadyToUpdate_parkName() {
+        let oldForm = makeForm(parkName: "old")
         let newForm = makeForm()
         XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
     }
@@ -101,8 +101,8 @@ private extension EventFormTests {
         title: String = "title",
         description: String = "description",
         date: Date = .now,
-        sportsGroundID: Int = 1,
-        sportsGroundName: String = "Площадка № 1",
+        parkID: Int = 1,
+        parkName: String = "Площадка № 1",
         photosCount: Int = 0,
         newMediaFiles: [MediaFile] = []
     ) -> EventForm {
@@ -110,8 +110,8 @@ private extension EventFormTests {
             title: title,
             description: description,
             date: date,
-            sportsGroundID: sportsGroundID,
-            sportsGroundName: sportsGroundName,
+            parkID: parkID,
+            parkName: parkName,
             photosCount: photosCount,
             newMediaFiles: newMediaFiles
         )

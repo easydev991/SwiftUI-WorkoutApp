@@ -9,14 +9,14 @@ public struct ParkForm: Codable, Sendable {
     public let photosCount: Int
     public var newMediaFiles = [MediaFile]()
 
-    public init(_ sportsGround: SportsGround) {
-        self.address = sportsGround.address ?? ""
-        self.latitude = sportsGround.latitude
-        self.longitude = sportsGround.longitude
-        self.cityID = sportsGround.cityID ?? 0
-        self.typeID = sportsGround.typeID
-        self.sizeID = sportsGround.sizeID
-        self.photosCount = sportsGround.photos.count
+    public init(_ park: Park) {
+        self.address = park.address ?? ""
+        self.latitude = park.latitude
+        self.longitude = park.longitude
+        self.cityID = park.cityID ?? 0
+        self.typeID = park.typeID
+        self.sizeID = park.sizeID
+        self.photosCount = park.photos.count
     }
 
     public init(
@@ -29,20 +29,20 @@ public struct ParkForm: Codable, Sendable {
         self.latitude = latitude.description
         self.longitude = longitude.description
         self.cityID = cityID
-        self.typeID = SportsGroundGrade.soviet.code
-        self.sizeID = SportsGroundSize.small.code
+        self.typeID = ParkGrade.soviet.code
+        self.sizeID = ParkSize.small.code
         self.photosCount = 0
     }
 }
 
 public extension ParkForm {
     var gradeString: String {
-        get { SportsGroundGrade(id: typeID).rawValue }
+        get { ParkGrade(id: typeID).rawValue }
         set { typeID = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
-        get { SportsGroundSize(id: sizeID).rawValue }
+        get { ParkSize(id: sizeID).rawValue }
         set { sizeID = Int(newValue) ?? 0 }
     }
 

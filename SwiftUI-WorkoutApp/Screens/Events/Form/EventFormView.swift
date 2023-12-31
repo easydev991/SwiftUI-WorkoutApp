@@ -31,8 +31,8 @@ struct EventFormView: View {
         switch mode {
         case let .editExisting(event):
             self.oldEventForm = .init(event)
-        case let .createForSelected(groundID, groundName):
-            self.oldEventForm = .init(groundID, groundName)
+        case let .createForSelected(parkID, parkName):
+            self.oldEventForm = .init(parkID, parkName)
         case .regularCreate:
             self.oldEventForm = .emptyValue
         }
@@ -44,7 +44,7 @@ struct EventFormView: View {
             VStack(spacing: 16) {
                 eventNameSection
                 descriptionSection
-                sportsGroundSection
+                parkSection
                 datePickerSection
                 pickedImagesGrid
                 saveButton
@@ -68,7 +68,7 @@ extension EventFormView {
         /// Для экрана "Мероприятия"
         case regularCreate
         /// Для детальной страницы площадки
-        case createForSelected(_ groundID: Int, _ groundName: String)
+        case createForSelected(_ parkID: Int, _ parkName: String)
         /// Для редактирования мероприятия
         case editExisting(EventResponse)
 
@@ -105,20 +105,20 @@ private extension EventFormView {
         }
     }
 
-    var sportsGroundSection: some View {
+    var parkSection: some View {
         SectionView(header: "Площадка", mode: .regular) {
             switch mode {
             case .regularCreate, .editExisting:
-                NavigationLink(destination: userGroundsScreen) {
+                NavigationLink(destination: userParksScreen) {
                     ListRowView(
-                        leadingContent: .text(eventForm.sportsGroundName),
+                        leadingContent: .text(eventForm.parkName),
                         trailingContent: .chevron
                     )
                 }
-                .disabled(!canShowGroundPicker)
-            case let .createForSelected(_, groundName):
+                .disabled(!canShowParkPicker)
+            case let .createForSelected(_, parkName):
                 ListRowView(
-                    leadingContent: .text(groundName),
+                    leadingContent: .text(parkName),
                     trailingContent: .empty
                 )
             }
@@ -127,14 +127,14 @@ private extension EventFormView {
 
     /// Площадки, где тренируется пользователь
     ///
-    /// `canShowGroundPicker` проверяет на существование `userID`
-    var userGroundsScreen: some View {
-        SportsGroundsListView(
+    /// `canShowParkPicker` проверяет на существование `userID`
+    var userParksScreen: some View {
+        ParksListScreen(
             mode: .event(
                 userID: defaults.mainUserInfo?.id ?? 0,
-                didSelectGround: { id, name in
-                    eventForm.sportsGroundID = id
-                    eventForm.sportsGroundName = name
+                didSelectPark: { id, name in
+                    eventForm.parkID = id
+                    eventForm.parkName = name
                 }
             )
         )
@@ -217,13 +217,13 @@ private extension EventFormView {
     }
 
     /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
-    var canShowGroundPicker: Bool {
+    var canShowParkPicker: Bool {
         guard network.isConnected, let userInfo = defaults.mainUserInfo else { return false }
         switch mode {
         case .regularCreate:
             return true
         case .editExisting:
-            return userInfo.usedSportsGroundsCount > 1
+            return userInfo.usedParksCount > 1
         case .createForSelected:
             return false
         }

@@ -1,4 +1,4 @@
-public enum SportsGroundSize: String, CaseIterable {
+public enum ParkSize: String, CaseIterable {
     case small = "Маленькая"
     case medium = "Средняя"
     case large = "Большая"

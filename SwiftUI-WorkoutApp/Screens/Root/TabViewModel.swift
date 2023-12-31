@@ -65,7 +65,7 @@ extension TabViewModel {
         var screen: some View {
             switch self {
             case .map:
-                SportsGroundsMapView()
+                ParksMapScreen()
             case .events:
                 EventsListView()
             case .messages:

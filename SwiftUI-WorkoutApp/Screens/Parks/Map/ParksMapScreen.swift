@@ -8,33 +8,33 @@ import SWNetworkClient
 import Utils
 
 /// Экран с картой и площадками
-struct SportsGroundsMapView: View {
+struct ParksMapScreen: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var groundsManager: SportsGroundsManager
-    @StateObject private var viewModel = SportsGroundsMapViewModel()
+    @EnvironmentObject private var parksManager: ParksManager
+    @StateObject private var viewModel = ParksMapViewModel()
     @State private var presentation = Presentation.map
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var sheetItem: SheetItem?
-    @State private var filter = SportsGroundFilterView.Model()
+    @State private var filter = ParkFilterScreen.Model()
     /// Город для фильтра списка площадок
     @State private var selectedCity: City?
     /// Отфильтрованные площадки для вкладки "Карта"
-    private var filteredMapGrounds: [SportsGround] {
-        groundsManager.fullList.filter { ground in
-            filter.size.map(\.code).contains(ground.sizeID)
-                && filter.grade.map(\.code).contains(ground.typeID)
+    private var filteredMapParks: [Park] {
+        parksManager.fullList.filter { park in
+            filter.size.map(\.code).contains(park.sizeID)
+                && filter.grade.map(\.code).contains(park.typeID)
         }
     }
 
     /// Отфильтрованные по выбранному городу площадки для вкладки "Список"
-    private var filteredListGrounds: [SportsGround] {
+    private var filteredListParks: [Park] {
         if let selectedCity {
-            filteredMapGrounds.filter { $0.cityID == Int(selectedCity.id) }
+            filteredMapParks.filter { $0.cityID == Int(selectedCity.id) }
         } else {
-            filteredMapGrounds
+            filteredMapParks
         }
     }
 
@@ -42,7 +42,7 @@ struct SportsGroundsMapView: View {
         NavigationView {
             VStack(spacing: 12) {
                 segmentedControl
-                groundsContent
+                parksContent
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
@@ -52,14 +52,14 @@ struct SportsGroundsMapView: View {
             .alert(alertMessage, isPresented: $showErrorAlert) {
                 Button("Ok") { alertMessage = "" }
             }
-            .task { await askForGrounds() }
+            .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     Group {
                         filterButton
                         Button {
-                            Task { await askForGrounds(refresh: true) }
+                            Task { await askForParks(refresh: true) }
                         } label: {
                             Icons.Regular.refresh.view
                         }
@@ -70,21 +70,21 @@ struct SportsGroundsMapView: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(currentGroundsCount))")
+            .navigationTitle("Площадки (\(currentParksCount))")
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
     }
 }
 
-private extension SportsGroundsMapView {
+private extension ParksMapScreen {
     enum SheetItem: Identifiable {
         var id: String {
             switch self {
             case .filters: "filters"
             case .searchCity: "searchCity"
-            case .createNewGround: "createNewGround"
-            case let .groundDetails(sportsGround): sportsGround.longTitle
+            case .createNewPark: "createNewPark"
+            case let .parkDetails(park): park.longTitle
             }
         }
 
@@ -93,23 +93,23 @@ private extension SportsGroundsMapView {
         /// Поиск города в списке городов
         case searchCity([City])
         /// Создание новой площадки
-        case createNewGround
+        case createNewPark
         /// Площадка для открытия детального экрана
-        case groundDetails(SportsGround)
+        case parkDetails(Park)
     }
 }
 
-private extension SportsGroundsMapView {
+private extension ParksMapScreen {
     /// Вариант отображения площадок на экране
     enum Presentation: String, CaseIterable, Equatable {
         case map = "Карта"
         case list = "Список"
     }
 
-    var currentGroundsCount: Int {
+    var currentParksCount: Int {
         switch presentation {
-        case .map: filteredMapGrounds.count
-        case .list: filteredListGrounds.count
+        case .map: filteredMapParks.count
+        case .list: filteredListParks.count
         }
     }
 
@@ -134,7 +134,7 @@ private extension SportsGroundsMapView {
     }
 
     @ViewBuilder
-    var groundsContent: some View {
+    var parksContent: some View {
         switch presentation {
         case .list:
             VStack(spacing: 16) {
@@ -149,18 +149,18 @@ private extension SportsGroundsMapView {
                 }
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(filteredListGrounds) { ground in
+                        ForEach(filteredListParks) { park in
                             Button {
-                                sheetItem = .groundDetails(ground)
+                                sheetItem = .parkDetails(park)
                             } label: {
                                 SportsGroundRowView(
-                                    imageURL: ground.previewImageURL,
-                                    title: ground.longTitle,
-                                    address: ground.address,
-                                    usersTrainHereText: ground.usersTrainHereText
+                                    imageURL: park.previewImageURL,
+                                    title: park.longTitle,
+                                    address: park.address,
+                                    usersTrainHereText: park.usersTrainHereText
                                 )
                             }
-                            .accessibilityIdentifier("SportsGroundViewCell")
+                            .accessibilityIdentifier("ParkViewCell")
                         }
                     }
                     .padding(.horizontal)
@@ -170,12 +170,12 @@ private extension SportsGroundsMapView {
             MapView991(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredMapGrounds.map(\.annotation),
+                annotations: filteredMapParks.map(\.annotation),
                 didSelect: { annotation in
-                    if let ground = filteredMapGrounds.first(
+                    if let park = filteredMapParks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
-                        sheetItem = .groundDetails(ground)
+                        sheetItem = .parkDetails(park)
                     }
                 }
             )
@@ -190,28 +190,28 @@ private extension SportsGroundsMapView {
     }
 
     /// Заполняем/обновляем дефолтный список площадок
-    func askForGrounds(refresh: Bool = false) async {
-        if !filteredMapGrounds.isEmpty, !refresh { return }
-        guard !groundsManager.fullList.isEmpty else {
+    func askForParks(refresh: Bool = false) async {
+        if !filteredMapParks.isEmpty, !refresh { return }
+        guard !parksManager.fullList.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
-                try groundsManager.makeDefaultList()
+                try parksManager.makeDefaultList()
             } catch {
                 setupErrorAlert(error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-            if groundsManager.needUpdateDefaultList {
-                await askForGrounds(refresh: true)
+            if parksManager.needUpdateDefaultList {
+                await askForParks(refresh: true)
             }
             return
         }
-        await getUpdatedGrounds(from: groundsManager.lastGroundsUpdateDateString)
+        await getUpdatedParks(from: parksManager.lastParksUpdateDateString)
     }
 
-    func deleteGround(id: Int) {
+    func deletePark(id: Int) {
         sheetItem = nil
         do {
-            try groundsManager.deleteGround(with: id)
+            try parksManager.deletePark(with: id)
         } catch {
             setupErrorAlert(error.localizedDescription)
         }
@@ -222,16 +222,16 @@ private extension SportsGroundsMapView {
     /// Запрашиваем обновление за прошедшие 5 минут
     func checkForRecentUpdates() async {
         defaults.setUserNeedUpdate(true)
-        await getUpdatedGrounds(from: DateFormatterService.fiveMinutesAgoDateString)
+        await getUpdatedParks(from: DateFormatterService.fiveMinutesAgoDateString)
     }
 
-    func getUpdatedGrounds(from dateString: String) async {
+    func getUpdatedParks(from dateString: String) async {
         isLoading = true
         do {
-            let updatedGrounds = try await SWClient(with: defaults, needAuth: false).getUpdatedSportsGrounds(
+            let updatedParks = try await SWClient(with: defaults, needAuth: false).getUpdatedParks(
                 from: dateString
             )
-            try groundsManager.updateDefaultList(with: updatedGrounds)
+            try parksManager.updateDefaultList(with: updatedParks)
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }
@@ -242,7 +242,7 @@ private extension SportsGroundsMapView {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
-                sheetItem = .createNewGround
+                sheetItem = .createNewPark
             } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
@@ -256,10 +256,10 @@ private extension SportsGroundsMapView {
     func makeContentView(for item: SheetItem) -> some View {
         switch item {
         case .filters:
-            SportsGroundFilterView(filter: $filter)
-        case .createNewGround:
+            ParkFilterScreen(filter: $filter)
+        case .createNewPark:
             ContentInSheet(title: "Новая площадка", spacing: 0) {
-                SportsGroundFormView(
+                ParkFormScreen(
                     .createNew(
                         address: viewModel.addressString,
                         coordinate: viewModel.region.center,
@@ -288,9 +288,9 @@ private extension SportsGroundsMapView {
                     }
                 }
             }
-        case let .groundDetails(ground):
+        case let .parkDetails(park):
             NavigationView {
-                SportsGroundDetailView(ground: ground) { deleteGround(id: $0) }
+                ParkDetailScreen(park: park) { deletePark(id: $0) }
             }
         }
     }
@@ -303,9 +303,9 @@ private extension SportsGroundsMapView {
 
 #if DEBUG
 #Preview {
-    SportsGroundsMapView()
+    ParksMapScreen()
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
-        .environmentObject(SportsGroundsManager())
+        .environmentObject(ParksManager())
 }
 #endif

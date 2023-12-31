@@ -3,7 +3,7 @@ import SwiftUI
 import SWModels
 
 /// Содержит снапшот карты, адрес и ссылку на построение маршрута в `Apple Maps`
-struct SportsGroundLocationInfo: View {
+struct ParkLocationInfoView: View {
     @MainActor
     private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     let snapshotModel: MapSnapshotView.MapModel
@@ -41,10 +41,10 @@ struct SportsGroundLocationInfo: View {
 
 #if DEBUG
 #Preview {
-    SportsGroundLocationInfo(
+    ParkLocationInfoView(
         snapshotModel: .init(
-            latitude: SportsGround.preview.coordinate.latitude,
-            longitude: SportsGround.preview.coordinate.longitude
+            latitude: Park.preview.coordinate.latitude,
+            longitude: Park.preview.coordinate.longitude
         ),
         address: "Краснодар, ул. Восточно-кругликовская",
         appleMapsURL: .init(string: "maps://?saddr=&daddr=55.72681766162947,37.50063106774381")

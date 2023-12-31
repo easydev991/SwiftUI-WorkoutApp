@@ -94,7 +94,7 @@ private extension EventsListView {
             mode: .events,
             isAuthorized: defaults.isAuthorized,
             hasFriends: defaults.hasFriends,
-            hasSportsGrounds: defaults.hasSportsGrounds,
+            hasParks: defaults.hasParks,
             isNetworkConnected: network.isConnected,
             action: {
                 if canAddEvent {
@@ -140,7 +140,7 @@ private extension EventsListView {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
-                if defaults.hasSportsGrounds {
+                if defaults.hasParks {
                     showEventCreationSheet.toggle()
                 } else {
                     showEventCreationRule.toggle()
@@ -170,7 +170,7 @@ private extension EventsListView {
 
     /// Необходимо быть авторизованным и иметь сохраненные площадки, чтобы была возможность создавать мероприятия
     var canAddEvent: Bool {
-        defaults.hasSportsGrounds && defaults.isAuthorized
+        defaults.hasParks && defaults.isAuthorized
     }
 
     var showEmptyView: Bool {

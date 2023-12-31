@@ -29,7 +29,7 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     func saveBlacklist(_ array: [UserResponse]) throws
     func updateBlacklist(option: BlacklistOption, user: UserResponse)
     func setHasJournals(_ hasJournals: Bool)
-    func setHasSportsGrounds(_ isAddedGround: Bool)
+    func setHasParks(_ isAddedPark: Bool)
     func triggerLogout()
 }
 

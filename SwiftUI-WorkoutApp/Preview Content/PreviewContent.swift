@@ -24,8 +24,8 @@ extension CommentResponse {
     }
 }
 
-extension SportsGround {
-    static var preview: SportsGround {
+extension Park {
+    static var preview: Park {
         .init(
             id: 3,
             typeID: 6,
@@ -64,8 +64,8 @@ extension UserResponse {
             genderCode: 1,
             friendsCount: 5,
             journalsCount: 2,
-            sportsGroundsCountString: "4",
-            addedSportsGrounds: nil
+            parksCountString: "4",
+            addedParks: nil
         )
     }
 }
@@ -82,7 +82,7 @@ extension EventResponse {
             cityID: 1,
             commentsCount: 2,
             previewImageStringURL: "https://workout.su/thumbs/6_100x100_FFFFFF//uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg",
-            sportsGroundID: 5464,
+            parkID: 5464,
             latitude: "55.72681766162947",
             longitude: "37.50063106774381",
             participantsCount: 3,
