@@ -97,11 +97,11 @@ extension SWClient {
 
         // MARK: Добавить новую спортплощадку
         /// **POST** ${API}/areas
-        case createSportsGround(form: SportsGroundForm)
+        case createSportsGround(form: ParkForm)
 
         // MARK: Изменить выбранную спортплощадку
         /// **POST** ${API}/areas/<id>
-        case editSportsGround(id: Int, form: SportsGroundForm)
+        case editSportsGround(id: Int, form: ParkForm)
 
         // MARK: Удалить площадку
         /// **DELETE** ${API}/areas/<id>

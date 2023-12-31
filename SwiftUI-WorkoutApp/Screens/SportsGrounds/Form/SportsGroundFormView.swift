@@ -12,14 +12,14 @@ struct SportsGroundFormView: View {
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
-    @State private var groundForm: SportsGroundForm
+    @State private var groundForm: ParkForm
     @State private var newImages = [UIImage]()
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showImagePicker = false
     @State private var saveGroundTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
-    private let oldGroundForm: SportsGroundForm
+    private let oldGroundForm: ParkForm
     private let mode: Mode
     private let refreshClbk: () -> Void
 

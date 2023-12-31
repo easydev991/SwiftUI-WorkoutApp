@@ -1,5 +1,5 @@
 /// Форма для отправки при создании/изменении площадки
-public struct SportsGroundForm: Codable, Sendable {
+public struct ParkForm: Codable, Sendable {
     public var address: String
     public var latitude: String
     public var longitude: String
@@ -35,7 +35,7 @@ public struct SportsGroundForm: Codable, Sendable {
     }
 }
 
-public extension SportsGroundForm {
+public extension ParkForm {
     var gradeString: String {
         get { SportsGroundGrade(id: typeID).rawValue }
         set { typeID = Int(newValue) ?? 0 }
@@ -61,14 +61,14 @@ public extension SportsGroundForm {
     }
 
     /// Готовность формы к отправке обновлений по площадке
-    func isReadyToUpdate(old: SportsGroundForm) -> Bool {
+    func isReadyToUpdate(old: ParkForm) -> Bool {
         let canSaveUpdated = [address, latitude, longitude].allSatisfy { !$0.isEmpty }
         return canSaveUpdated && self != old
     }
 }
 
-extension SportsGroundForm: Equatable {
-    public static func == (lhs: SportsGroundForm, rhs: SportsGroundForm) -> Bool {
+extension ParkForm: Equatable {
+    public static func == (lhs: ParkForm, rhs: ParkForm) -> Bool {
         lhs.address == rhs.address
             && lhs.latitude == rhs.latitude
             && lhs.longitude == rhs.longitude

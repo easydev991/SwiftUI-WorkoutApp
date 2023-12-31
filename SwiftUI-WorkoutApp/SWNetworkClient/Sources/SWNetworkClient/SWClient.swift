@@ -279,7 +279,7 @@ public struct SWClient: Sendable {
     ///   - id: `id` площадки
     ///   - form: форма с данными о площадке
     /// - Returns: Обновленная информация о площадке `SportsGround`, но с ошибками, поэтому обрабатываем `SportsGroundResult`
-    public func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
+    public func saveSportsGround(id: Int?, form: ParkForm) async throws -> SportsGroundResult {
         let endpoint = if let id {
             Endpoint.editSportsGround(id: id, form: form)
         } else {

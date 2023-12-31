@@ -97,7 +97,7 @@ final class SportsGroundFormTests: XCTestCase {
 }
 
 private extension SportsGroundFormTests {
-    var emptyForm: SportsGroundForm { .init(.emptyValue) }
+    var emptyForm: ParkForm { .init(.emptyValue) }
 
     func makeForm(
         address: String = "address",
@@ -108,7 +108,7 @@ private extension SportsGroundFormTests {
         sizeID: Int = 1,
         photosCount _: Int = 1,
         newMediaFiles: [MediaFile] = [.init(imageData: .init(), forKey: "1")]
-    ) -> SportsGroundForm {
+    ) -> ParkForm {
         let ground = SportsGround(
             id: 1,
             typeID: typeID,
@@ -130,7 +130,7 @@ private extension SportsGroundFormTests {
             usersTrainHere: nil,
             trainHere: nil
         )
-        var form = SportsGroundForm(ground)
+        var form = ParkForm(ground)
         form.newMediaFiles = newMediaFiles
         return form
     }
