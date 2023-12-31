@@ -23,7 +23,7 @@ struct ParkLocationInfoView: View {
             if !address.isEmpty {
                 Text(address)
                     .font(.headline)
-                    .foregroundColor(.swMainText)
+                    .foregroundStyle(Color.swMainText)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }

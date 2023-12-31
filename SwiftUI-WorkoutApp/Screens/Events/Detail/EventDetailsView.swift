@@ -156,7 +156,7 @@ private extension EventDetailsView {
                 }
                 .padding(.bottom, 22)
             }
-            .foregroundColor(.swMainText)
+            .foregroundStyle(Color.swMainText)
             ParkLocationInfoView(
                 snapshotModel: .init(
                     latitude: event.park.coordinate.latitude,
@@ -172,7 +172,7 @@ private extension EventDetailsView {
     var descriptionSection: some View {
         SectionView(headerWithPadding: "Описание", mode: .card(padding: 12)) {
             Text(.init(event.formattedDescription))
-                .foregroundColor(.swMainText)
+                .foregroundStyle(Color.swMainText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
                 .tint(.blue)

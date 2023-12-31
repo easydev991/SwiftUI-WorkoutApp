@@ -27,7 +27,7 @@ private extension IncognitoProfileView {
     var authInvitation: some View {
         Text(.init(Constants.authInvitationText))
             .multilineTextAlignment(.center)
-            .foregroundColor(.swMainText)
+            .foregroundStyle(Color.swMainText)
             .padding(.bottom, 6)
     }
 
@@ -43,7 +43,7 @@ private extension IncognitoProfileView {
         Text(.init(Constants.registrationInfoText))
             .font(.footnote.weight(.medium))
             .multilineTextAlignment(.center)
-            .foregroundColor(.swMainText)
+            .foregroundStyle(Color.swMainText)
     }
 }
 

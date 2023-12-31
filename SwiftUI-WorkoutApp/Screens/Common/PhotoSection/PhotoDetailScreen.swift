@@ -53,7 +53,7 @@ private extension PhotoDetailScreen {
             .padding(.horizontal)
             Text("Фото")
                 .font(.headline)
-                .foregroundColor(.swMainText)
+                .foregroundStyle(Color.swMainText)
         }
         .padding(.vertical)
     }

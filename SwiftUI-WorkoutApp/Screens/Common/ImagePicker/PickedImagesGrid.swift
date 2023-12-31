@@ -28,7 +28,7 @@ struct PickedImagesGrid: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundColor(.swMainText)
+                    .foregroundStyle(Color.swMainText)
                     .multilineTextAlignment(.leading)
                 LazyVGrid(
                     columns: .init(
