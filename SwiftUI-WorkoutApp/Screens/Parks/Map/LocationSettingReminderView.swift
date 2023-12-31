@@ -11,14 +11,14 @@ struct LocationSettingReminderView: View {
     var body: some View {
         VStack(spacing: 12) {
             Text(.init(message))
-                .foregroundColor(.swMainText)
+                .foregroundStyle(Color.swMainText)
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 30)
                 .background {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .foregroundColor(.swBackground)
+                        .fill(Color.swBackground)
                         .withShadow()
                 }
             Button("Открыть настройки") {

@@ -25,10 +25,10 @@ struct PickedImageView: View {
         case .addImageButton:
             Button(action: { action(.addImage) }) {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .foregroundColor(.swAddPhotoButton)
+                    .fill(Color.swAddPhotoButton)
                     .overlay {
                         Icons.Regular.plus.view
-                            .foregroundColor(.swSmallElements)
+                            .foregroundStyle(Color.swSmallElements)
                     }
                     .scaledToFill()
                     .frame(height: height)

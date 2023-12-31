@@ -134,10 +134,10 @@ private extension ParkDetailScreen {
             HStack(alignment: .firstTextBaseline) {
                 Text(park.shortTitle)
                     .font(.title2.weight(.semibold))
-                    .foregroundColor(.swMainText)
+                    .foregroundStyle(Color.swMainText)
                 if let subtitle = park.subtitle, !subtitle.isEmpty {
                     Text(subtitle)
-                        .foregroundColor(.swSmallElements)
+                        .foregroundStyle(Color.swSmallElements)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
