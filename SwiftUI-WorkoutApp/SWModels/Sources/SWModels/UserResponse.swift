@@ -6,10 +6,10 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let userName, fullName, email, imageStringURL: String?
     public let cityID, countryID, genderCode, friendsCount, journalsCount: Int?
-    public let addedSportsGrounds: [SportsGround]?
+    public let addedParks: [Park]?
     /// Пример: "1990-11-25"
     let birthDateIsoString: String?
-    let sportsGroundsCountString: String? // "0"
+    let parksCountString: String? // "0"
 
     public enum CodingKeys: String, CodingKey {
         case id
@@ -21,9 +21,9 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         case birthDateIsoString = "birth_date"
         case fullName = "fullname"
         case friendsCount = "friend_count"
-        case sportsGroundsCountString = "area_count"
+        case parksCountString = "area_count"
         case journalsCount = "journal_count"
-        case addedSportsGrounds = "added_areas"
+        case addedParks = "added_areas"
         case email
     }
 
@@ -39,8 +39,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         genderCode: Int? = nil,
         friendsCount: Int? = nil,
         journalsCount: Int? = nil,
-        sportsGroundsCountString: String? = nil,
-        addedSportsGrounds: [SportsGround]? = nil
+        parksCountString: String? = nil,
+        addedParks: [Park]? = nil
     ) {
         self.id = id
         self.userName = userName
@@ -53,8 +53,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         self.genderCode = genderCode
         self.friendsCount = friendsCount
         self.journalsCount = journalsCount
-        self.sportsGroundsCountString = sportsGroundsCountString
-        self.addedSportsGrounds = addedSportsGrounds
+        self.parksCountString = parksCountString
+        self.addedParks = addedParks
     }
 
     public init(dialog: DialogResponse) {
@@ -96,9 +96,9 @@ public extension UserResponse {
         )
     }
 
-    var usedSportsGroundsCount: Int {
-        guard let sportsGroundsCountString else { return 0 }
-        return Int(sportsGroundsCountString) ?? 0
+    var usedParksCount: Int {
+        guard let parksCountString else { return 0 }
+        return Int(parksCountString) ?? 0
     }
 
     var hasJournals: Bool { journalsCount ?? 0 > 0 }
@@ -112,27 +112,27 @@ public extension UserResponse {
 
     var hasFriends: Bool { friendsCount ?? 0 > 0 }
 
-    var hasAddedGrounds: Bool {
-        guard let addedSportsGrounds, !addedSportsGrounds.isEmpty else {
+    var hasAddedParks: Bool {
+        guard let addedParks, !addedParks.isEmpty else {
             return false
         }
         return true
     }
 
-    var addedSportsGroundsCountString: String {
+    var addedParksCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("groundsCount", comment: ""),
-            addedSportsGrounds?.count ?? 0
+            NSLocalizedString("parksCount", comment: ""),
+            addedParks?.count ?? 0
         )
     }
 
     /// Тренируется на каких-нибудь площадках
-    var hasUsedGrounds: Bool { usedSportsGroundsCount > 0 }
+    var hasUsedParks: Bool { usedParksCount > 0 }
 
-    var usesSportsGroundsCountString: String {
+    var usesParksCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("groundsCount", comment: ""),
-            usedSportsGroundsCount
+            NSLocalizedString("parksCount", comment: ""),
+            usedParksCount
         )
     }
 
@@ -146,7 +146,7 @@ public extension UserResponse {
     }
 
     /// Добавил(-а) площадки
-    var addedGroundsString: String {
+    var addedParksString: String {
         switch Gender(genderCode ?? 0) {
         case .male, .unspecified, .none:
             "Добавил площадки"
@@ -179,8 +179,8 @@ public extension UserResponse {
             genderCode: nil,
             friendsCount: nil,
             journalsCount: nil,
-            sportsGroundsCountString: nil,
-            addedSportsGrounds: nil
+            parksCountString: nil,
+            addedParks: nil
         )
     }
 }

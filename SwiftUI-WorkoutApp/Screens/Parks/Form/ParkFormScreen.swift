@@ -7,19 +7,19 @@ import SWModels
 import SWNetworkClient
 
 /// Экран с формой для создания/изменения площадки
-struct SportsGroundFormView: View {
+struct ParkFormScreen: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
-    @State private var groundForm: SportsGroundForm
+    @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showImagePicker = false
-    @State private var saveGroundTask: Task<Void, Never>?
+    @State private var saveParkTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
-    private let oldGroundForm: SportsGroundForm
+    private let oldParkForm: ParkForm
     private let mode: Mode
     private let refreshClbk: () -> Void
 
@@ -27,16 +27,16 @@ struct SportsGroundFormView: View {
         self.mode = mode
         switch mode {
         case let .createNew(address, coordinate, cityID):
-            self.oldGroundForm = .init(
+            self.oldParkForm = .init(
                 address: address,
                 latitude: coordinate.latitude,
                 longitude: coordinate.longitude,
                 cityID: cityID
             )
-            _groundForm = .init(initialValue: oldGroundForm)
-        case let .editExisting(ground):
-            self.oldGroundForm = .init(ground)
-            _groundForm = .init(initialValue: oldGroundForm)
+            _parkForm = .init(initialValue: oldParkForm)
+        case let .editExisting(park):
+            self.oldParkForm = .init(park)
+            _parkForm = .init(initialValue: oldParkForm)
         }
         self.refreshClbk = refreshClbk
     }
@@ -59,37 +59,37 @@ struct SportsGroundFormView: View {
         .alert(alertMessage, isPresented: $showErrorAlert) {
             Button("Ok") { alertMessage = "" }
         }
-        .onDisappear { saveGroundTask?.cancel() }
+        .onDisappear { saveParkTask?.cancel() }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(isLoading)
     }
 }
 
-extension SportsGroundFormView {
+extension ParkFormScreen {
     enum Mode {
         case createNew(
             address: String,
             coordinate: CLLocationCoordinate2D,
             cityID: Int
         )
-        case editExisting(SportsGround)
+        case editExisting(Park)
 
-        var groundID: Int? {
+        var parkID: Int? {
             switch self {
             case .createNew: nil
-            case let .editExisting(ground): ground.id
+            case let .editExisting(park): park.id
             }
         }
     }
 }
 
-private extension SportsGroundFormView {
+private extension ParkFormScreen {
     var addressSection: some View {
         SectionView(header: "Адрес", mode: .regular) {
             SWTextField(
                 placeholder: "Адрес площадки",
-                text: $groundForm.address,
+                text: $parkForm.address,
                 isFocused: isFocused
             )
             .focused($isFocused)
@@ -99,30 +99,30 @@ private extension SportsGroundFormView {
 
     var typePicker: some View {
         Menu {
-            Picker("", selection: $groundForm.typeID) {
-                ForEach(SportsGroundGrade.allCases.map(\.code), id: \.self) {
-                    Text(.init(SportsGroundGrade(id: $0).rawValue))
+            Picker("", selection: $parkForm.typeID) {
+                ForEach(ParkGrade.allCases.map(\.code), id: \.self) {
+                    Text(.init(ParkGrade(id: $0).rawValue))
                 }
             }
         } label: {
             ListRowView(
                 leadingContent: .text("Тип площадки"),
-                trailingContent: .textWithChevron(.init(groundForm.gradeString))
+                trailingContent: .textWithChevron(.init(parkForm.gradeString))
             )
         }
     }
 
     var sizePicker: some View {
         Menu {
-            Picker("", selection: $groundForm.sizeID) {
-                ForEach(SportsGroundSize.allCases.map(\.code), id: \.self) {
-                    Text(.init(SportsGroundSize(id: $0).rawValue))
+            Picker("", selection: $parkForm.sizeID) {
+                ForEach(ParkSize.allCases.map(\.code), id: \.self) {
+                    Text(.init(ParkSize(id: $0).rawValue))
                 }
             }
         } label: {
             ListRowView(
                 leadingContent: .text("Размер площадки"),
-                trailingContent: .textWithChevron(.init(groundForm.sizeString))
+                trailingContent: .textWithChevron(.init(parkForm.sizeString))
             )
         }
     }
@@ -131,9 +131,9 @@ private extension SportsGroundFormView {
         PickedImagesGrid(
             images: $newImages,
             showImagePicker: $showImagePicker,
-            selectionLimit: groundForm.imagesLimit,
+            selectionLimit: parkForm.imagesLimit,
             processExtraImages: {
-                while groundForm.imagesLimit < 0 {
+                while parkForm.imagesLimit < 0 {
                     newImages.removeLast()
                 }
             }
@@ -141,7 +141,7 @@ private extension SportsGroundFormView {
         .padding(.top, 22)
         .padding(.bottom, 42)
         .onChange(of: newImages) { images in
-            groundForm.newMediaFiles = images.toMediaFiles
+            parkForm.newMediaFiles = images.toMediaFiles
         }
     }
 
@@ -154,11 +154,11 @@ private extension SportsGroundFormView {
         Button("Сохранить") {
             isFocused = false
             isLoading = true
-            saveGroundTask = Task {
+            saveParkTask = Task {
                 do {
-                    let newGround = try await SWClient(with: defaults)
-                        .saveSportsGround(id: mode.groundID, form: groundForm)
-                    if newGround.id != 0 {
+                    let newPark = try await SWClient(with: defaults)
+                        .savePark(id: mode.parkID, form: parkForm)
+                    if newPark.id != 0 {
                         dismiss()
                         refreshClbk()
                     }
@@ -173,15 +173,15 @@ private extension SportsGroundFormView {
     }
 
     var isFormReady: Bool {
-        mode.groundID == nil
-            ? groundForm.isReadyToCreate
-            : groundForm.isReadyToUpdate(old: oldGroundForm)
+        mode.parkID == nil
+            ? parkForm.isReadyToCreate
+            : parkForm.isReadyToUpdate(old: oldParkForm)
     }
 }
 
 #if DEBUG
 #Preview {
-    SportsGroundFormView(.editExisting(.preview), refreshClbk: {})
+    ParkFormScreen(.editExisting(.preview), refreshClbk: {})
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }

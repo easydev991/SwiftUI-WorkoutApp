@@ -1,5 +1,5 @@
 /// Форма для отправки при создании/изменении площадки
-public struct SportsGroundForm: Codable, Sendable {
+public struct ParkForm: Codable, Sendable {
     public var address: String
     public var latitude: String
     public var longitude: String
@@ -9,14 +9,14 @@ public struct SportsGroundForm: Codable, Sendable {
     public let photosCount: Int
     public var newMediaFiles = [MediaFile]()
 
-    public init(_ sportsGround: SportsGround) {
-        self.address = sportsGround.address ?? ""
-        self.latitude = sportsGround.latitude
-        self.longitude = sportsGround.longitude
-        self.cityID = sportsGround.cityID ?? 0
-        self.typeID = sportsGround.typeID
-        self.sizeID = sportsGround.sizeID
-        self.photosCount = sportsGround.photos.count
+    public init(_ park: Park) {
+        self.address = park.address ?? ""
+        self.latitude = park.latitude
+        self.longitude = park.longitude
+        self.cityID = park.cityID ?? 0
+        self.typeID = park.typeID
+        self.sizeID = park.sizeID
+        self.photosCount = park.photos.count
     }
 
     public init(
@@ -29,20 +29,20 @@ public struct SportsGroundForm: Codable, Sendable {
         self.latitude = latitude.description
         self.longitude = longitude.description
         self.cityID = cityID
-        self.typeID = SportsGroundGrade.soviet.code
-        self.sizeID = SportsGroundSize.small.code
+        self.typeID = ParkGrade.soviet.code
+        self.sizeID = ParkSize.small.code
         self.photosCount = 0
     }
 }
 
-public extension SportsGroundForm {
+public extension ParkForm {
     var gradeString: String {
-        get { SportsGroundGrade(id: typeID).rawValue }
+        get { ParkGrade(id: typeID).rawValue }
         set { typeID = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
-        get { SportsGroundSize(id: sizeID).rawValue }
+        get { ParkSize(id: sizeID).rawValue }
         set { sizeID = Int(newValue) ?? 0 }
     }
 
@@ -61,14 +61,14 @@ public extension SportsGroundForm {
     }
 
     /// Готовность формы к отправке обновлений по площадке
-    func isReadyToUpdate(old: SportsGroundForm) -> Bool {
+    func isReadyToUpdate(old: ParkForm) -> Bool {
         let canSaveUpdated = [address, latitude, longitude].allSatisfy { !$0.isEmpty }
         return canSaveUpdated && self != old
     }
 }
 
-extension SportsGroundForm: Equatable {
-    public static func == (lhs: SportsGroundForm, rhs: SportsGroundForm) -> Bool {
+extension ParkForm: Equatable {
+    public static func == (lhs: ParkForm, rhs: ParkForm) -> Bool {
         lhs.address == rhs.address
             && lhs.latitude == rhs.latitude
             && lhs.longitude == rhs.longitude

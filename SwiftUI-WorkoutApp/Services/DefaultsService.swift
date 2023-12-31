@@ -33,8 +33,8 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.blacklist.rawValue)
     private var blacklist = Data()
 
-    @AppStorage(Key.hasSportsGrounds.rawValue)
-    private(set) var hasSportsGrounds = false
+    @AppStorage(Key.hasParks.rawValue)
+    private(set) var hasParks = false
 
     @AppStorage(Key.hasJournals.rawValue)
     private(set) var hasJournals = false
@@ -113,7 +113,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     func saveUserInfo(_ info: UserResponse) throws {
         hasFriends = info.friendsCount ?? 0 != 0
-        setHasSportsGrounds(info.usedSportsGroundsCount != 0)
+        setHasParks(info.usedParksCount != 0)
         setHasJournals(info.journalsCount ?? 0 != 0)
         if !isAuthorized { isAuthorized = true }
         userInfo = try JSONEncoder().encode(info)
@@ -148,15 +148,15 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         self.hasJournals = hasJournals
     }
 
-    func setHasSportsGrounds(_ isAddedGround: Bool) {
-        switch (hasSportsGrounds, isAddedGround) {
+    func setHasParks(_ isAddedPark: Bool) {
+        switch (hasParks, isAddedPark) {
         case (true, true), (false, false): break
         case (true, false):
-            if mainUserInfo?.usedSportsGroundsCount == 1 {
-                hasSportsGrounds = false
+            if mainUserInfo?.usedParksCount == 1 {
+                hasParks = false
             }
         case (false, true):
-            hasSportsGrounds = true
+            hasParks = true
         }
     }
 
@@ -172,7 +172,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         authData = .init()
         userInfo = .init()
         isAuthorized = false
-        hasSportsGrounds = false
+        hasParks = false
         try? saveFriendsIds([])
         try? saveFriendRequests([])
         try? saveBlacklist([])
@@ -185,9 +185,10 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, hasSportsGrounds, appTheme, appLanguage,
+        case isUserAuthorized, appTheme, appLanguage,
              authData, userInfo, friends, friendRequests, blacklist,
              hasJournals, needUpdateUser, hasFriends, unreadMessagesCount,
-             lastGroundsUpdateDateString, lastCountriesUpdateDate
+             lastCountriesUpdateDate
+        case hasParks = "hasSportsGrounds"
     }
 }

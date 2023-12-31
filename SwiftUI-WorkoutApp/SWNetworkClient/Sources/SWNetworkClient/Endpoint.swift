@@ -81,11 +81,11 @@ extension SWClient {
         /// **GET** ${API}/areas?fields=short
         ///
         /// Возвращает список с кратким набором полей, т.к. при запросе всех данных сервер не справляется с нагрузкой
-        case getAllSportsGrounds
+        case getAllParks
 
         // MARK: Получить список площадок, обновленных после указанной даты
         /// **GET** ${API}/areas/last/<date>
-        case getUpdatedSportsGrounds(from: String)
+        case getUpdatedParks(from: String)
 
         // MARK: Получить выбранную площадку:
         /// **GET** ${API}/areas/<id>
@@ -93,43 +93,43 @@ extension SWClient {
         /// - Работает и с аутентификацией, и без
         /// - Для авторизованного пользователя нужно делать запрос с токеном,
         /// чтобы получить корректные данные (тренируется ли на площадке)
-        case getSportsGround(id: Int)
+        case getPark(id: Int)
 
         // MARK: Добавить новую спортплощадку
         /// **POST** ${API}/areas
-        case createSportsGround(form: SportsGroundForm)
+        case createPark(form: ParkForm)
 
         // MARK: Изменить выбранную спортплощадку
         /// **POST** ${API}/areas/<id>
-        case editSportsGround(id: Int, form: SportsGroundForm)
+        case editPark(id: Int, form: ParkForm)
 
         // MARK: Удалить площадку
         /// **DELETE** ${API}/areas/<id>
-        case deleteSportsGround(_ groundID: Int)
+        case deletePark(_ parkID: Int)
 
         // MARK: Добавить комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments
-        case addCommentToSportsGround(groundID: Int, comment: String)
+        case addCommentToPark(parkID: Int, comment: String)
 
         // MARK: Изменить свой комментарий для площадки
         /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
-        case editGroundComment(groundID: Int, commentID: Int, newComment: String)
+        case editParkComment(parkID: Int, commentID: Int, newComment: String)
 
         // MARK: Удалить свой комментарий для площадки
         /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
-        case deleteGroundComment(_ groundID: Int, commentID: Int)
+        case deleteParkComment(_ parkID: Int, commentID: Int)
 
         // MARK: Получить список площадок, где тренируется пользователь
         /// **GET** ${API}/users/<user_id>/areas
-        case getSportsGroundsForUser(_ userID: Int)
+        case getParksForUser(_ userID: Int)
 
         // MARK: Сообщить, что пользователь тренируется на площадке
         /// **POST** ${API}/areas/<area_id>/train
-        case postTrainHere(_ groundID: Int)
+        case postTrainHere(_ parkID: Int)
 
         // MARK: Сообщить, что пользователь не тренируется на площадке
         /// **DELETE** ${API}/areas/<area_id>/train
-        case deleteTrainHere(_ groundID: Int)
+        case deleteTrainHere(_ parkID: Int)
 
         // MARK: Получить список предстоящих мероприятий
         /// **GET** ${API}/trainings/current
@@ -245,7 +245,7 @@ extension SWClient {
 
         // MARK: Удалить фото площадки
         /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
-        case deleteGroundPhoto(groundID: Int, photoID: Int)
+        case deleteParkPhoto(parkID: Int, photoID: Int)
 
         /// Создает `URLRequest` с использованием базового `url`
         func urlRequest(with baseUrlString: String) -> URLRequest? {
@@ -295,26 +295,26 @@ private extension SWClient.Endpoint {
             "/users/search?name=\(name)"
         case .getCountries:
             "/countries"
-        case .getAllSportsGrounds:
+        case .getAllParks:
             "/areas?fields=short"
-        case let .getUpdatedSportsGrounds(date):
+        case let .getUpdatedParks(date):
             "/areas/last/\(date)"
-        case .createSportsGround:
+        case .createPark:
             "/areas"
-        case let .getSportsGround(id),
-             let .editSportsGround(id, _),
-             let .deleteSportsGround(id):
+        case let .getPark(id),
+             let .editPark(id, _),
+             let .deletePark(id):
             "/areas/\(id)"
-        case let .addCommentToSportsGround(groundID, _):
-            "/areas/\(groundID)/comments"
-        case let .editGroundComment(groundID, commentID, _):
-            "/areas/\(groundID)/comments/\(commentID)"
-        case let .deleteGroundComment(groundID, commentID):
-            "/areas/\(groundID)/comments/\(commentID)"
-        case let .getSportsGroundsForUser(userID):
+        case let .addCommentToPark(parkID, _):
+            "/areas/\(parkID)/comments"
+        case let .editParkComment(parkID, commentID, _):
+            "/areas/\(parkID)/comments/\(commentID)"
+        case let .deleteParkComment(parkID, commentID):
+            "/areas/\(parkID)/comments/\(commentID)"
+        case let .getParksForUser(userID):
             "/users/\(userID)/areas"
-        case let .postTrainHere(groundID), let .deleteTrainHere(groundID):
-            "/areas/\(groundID)/train"
+        case let .postTrainHere(parkID), let .deleteTrainHere(parkID):
+            "/areas/\(parkID)/train"
         case .getFutureEvents:
             "/trainings/current"
         case .getPastEvents:
@@ -358,8 +358,8 @@ private extension SWClient.Endpoint {
             "/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
         case let .deleteEventPhoto(eventID, photoID):
             "/trainings/\(eventID)/photos/\(photoID)"
-        case let .deleteGroundPhoto(groundID, photoID):
-            "/areas/\(groundID)/photos/\(photoID)"
+        case let .deleteParkPhoto(parkID, photoID):
+            "/areas/\(parkID)/photos/\(photoID)"
         }
     }
 
@@ -374,27 +374,27 @@ private extension SWClient.Endpoint {
         switch self {
         case .registration, .login, .editUser, .resetPassword,
              .changePassword, .acceptFriendRequest, .sendFriendRequest,
-             .addCommentToSportsGround, .editGroundComment, .postTrainHere,
+             .addCommentToPark, .editParkComment, .postTrainHere,
              .createEvent, .editEvent, .postGoToEvent, .addToBlacklist,
              .addCommentToEvent, .editEventComment, .sendMessageTo,
              .createJournal, .markAsRead, .saveJournalEntry,
-             .createSportsGround, .editSportsGround:
+             .createPark, .editPark:
             .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
-             .getAllSportsGrounds, .getSportsGround,
-             .findUsers, .getSportsGroundsForUser, .getBlacklist,
+             .getAllParks, .getPark,
+             .findUsers, .getParksForUser, .getBlacklist,
              .getFutureEvents, .getPastEvents, .getEvent,
              .getDialogs, .getMessages, .getJournals,
              .getJournal, .getJournalEntries,
-             .getUpdatedSportsGrounds, .getCountries:
+             .getUpdatedParks, .getCountries:
             .get
         case .declineFriendRequest, .deleteFriend, .deleteFromBlacklist,
-             .deleteGroundComment, .deleteTrainHere,
+             .deleteParkComment, .deleteTrainHere,
              .deleteUser, .deleteGoToEvent,
              .deleteEventComment, .deleteEvent,
              .deleteDialog, .deleteJournal,
-             .deleteEntry, .deleteSportsGround,
-             .deleteEventPhoto, .deleteGroundPhoto:
+             .deleteEntry, .deletePark,
+             .deleteEventPhoto, .deleteParkPhoto:
             .delete
         case .editJournalSettings, .editEntry:
             .put
@@ -411,7 +411,7 @@ private extension SWClient.Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case .createSportsGround, .editSportsGround, .createEvent, .editEvent:
+        case .createPark, .editPark, .createEvent, .editEvent:
             HTTPHeader.withMultipartFormData
         default: [:]
         }
@@ -470,16 +470,16 @@ private extension SWClient.Endpoint {
              .acceptFriendRequest, .declineFriendRequest, .findUsers,
              .sendFriendRequest, .deleteFriend, .getBlacklist,
              .addToBlacklist, .deleteFromBlacklist,
-             .getSportsGround, .deleteGroundComment, .getSportsGroundsForUser,
+             .getPark, .deleteParkComment, .getParksForUser,
              .postTrainHere, .deleteTrainHere, .deleteUser,
              .getFutureEvents, .getPastEvents, .getEvent,
              .postGoToEvent, .deleteGoToEvent, .getCountries,
              .deleteEventComment, .deleteEvent, .getDialogs,
              .getMessages, .deleteDialog, .getJournals,
              .getJournal, .getJournalEntries, .deleteEntry,
-             .deleteJournal, .getAllSportsGrounds,
-             .getUpdatedSportsGrounds, .deleteSportsGround,
-             .deleteEventPhoto, .deleteGroundPhoto:
+             .deleteJournal, .getAllParks,
+             .getUpdatedParks, .deletePark,
+             .deleteEventPhoto, .deleteParkPhoto:
             return nil
         case let .registration(form):
             return Parameter.makeBody(
@@ -510,9 +510,9 @@ private extension SWClient.Endpoint {
             return Parameter.makeBody(from: [.usernameOrEmail: login])
         case let .changePassword(current, new):
             return Parameter.makeBody(from: [.password: current, .newPassword: new])
-        case let .addCommentToSportsGround(_, comment),
+        case let .addCommentToPark(_, comment),
              let .addCommentToEvent(_, comment),
-             let .editGroundComment(_, _, comment),
+             let .editParkComment(_, _, comment),
              let .editEventComment(_, _, comment):
             return Parameter.makeBody(from: [.comment: comment])
         case let .sendMessageTo(message, _):
@@ -538,12 +538,12 @@ private extension SWClient.Endpoint {
                     .title: form.title,
                     .description: form.description,
                     .date: form.dateIsoString,
-                    .areaID: form.sportsGroundID.description
+                    .areaID: form.parkID.description
                 ],
                 with: form.newMediaFiles
             )
             return params
-        case let .createSportsGround(form), let .editSportsGround(_, form):
+        case let .createPark(form), let .editPark(_, form):
             return Parameter.makeBodyWithMultipartForm(
                 from: [
                     .address: form.address,

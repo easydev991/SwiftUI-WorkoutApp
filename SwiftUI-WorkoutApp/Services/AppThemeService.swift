@@ -12,12 +12,9 @@ enum AppThemeService {
             .flatMap(\.windows)
             .last(where: \.isKeyWindow)
         keyWindow?.overrideUserInterfaceStyle = switch newTheme {
-        case .dark:
-            .dark
-        case .light:
-            .light
-        case .system:
-            .unspecified
+        case .dark: .dark
+        case .light: .light
+        case .system: .unspecified
         }
     }
 }

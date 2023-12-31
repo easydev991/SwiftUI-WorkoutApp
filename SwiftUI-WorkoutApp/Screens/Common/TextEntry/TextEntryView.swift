@@ -17,7 +17,7 @@ struct TextEntryView: View {
         self.mode = mode
         self.refreshClbk = refreshClbk
         switch mode {
-        case let .editGround(info),
+        case let .editPark(info),
              let .editEvent(info),
              let .editJournalEntry(_, info):
             self.oldEntryText = info.oldEntry
@@ -48,10 +48,10 @@ struct TextEntryView: View {
 
 extension TextEntryView {
     enum Mode {
-        case newForGround(id: Int)
+        case newForPark(id: Int)
         case newForEvent(id: Int)
         case newForJournal(ownerId: Int, journalId: Int)
-        case editGround(EditInfo)
+        case editPark(EditInfo)
         case editEvent(EditInfo)
         case editJournalEntry(ownerId: Int, editInfo: EditInfo)
 
@@ -65,9 +65,9 @@ extension TextEntryView {
 private extension TextEntryView.Mode {
     var headerTitle: LocalizedStringKey {
         switch self {
-        case .newForEvent, .newForGround:
+        case .newForEvent, .newForPark:
             "Новый комментарий"
-        case .editEvent, .editGround:
+        case .editEvent, .editPark:
             "Изменить комментарий"
         case .newForJournal:
             "Новая запись"
@@ -93,9 +93,9 @@ private extension TextEntryView {
             do {
                 let client = SWClient(with: defaults)
                 let isSuccess: Bool = switch mode {
-                case let .newForGround(id):
+                case let .newForPark(id):
                     try await client.addNewEntry(
-                        to: .ground(id: id), entryText: entryText
+                        to: .park(id: id), entryText: entryText
                     )
                 case let .newForEvent(id):
                     try await client.addNewEntry(
@@ -106,9 +106,9 @@ private extension TextEntryView {
                         to: .journal(ownerId: ownerId, journalId: journalId),
                         entryText: entryText
                     )
-                case let .editGround(info):
+                case let .editPark(info):
                     try await client.editEntry(
-                        for: .ground(id: info.parentObjectID),
+                        for: .park(id: info.parentObjectID),
                         entryID: info.entryID,
                         newEntryText: entryText
                     )
@@ -140,9 +140,9 @@ private extension TextEntryView {
 
     var canSend: Bool {
         switch mode {
-        case .newForGround, .newForEvent, .newForJournal:
+        case .newForPark, .newForEvent, .newForJournal:
             !entryText.isEmpty
-        case .editGround, .editEvent, .editJournalEntry:
+        case .editPark, .editEvent, .editJournalEntry:
             entryText != oldEntryText
         }
     }
@@ -150,7 +150,7 @@ private extension TextEntryView {
 
 #if DEBUG
 #Preview {
-    TextEntryView(mode: .newForGround(id: 0), refreshClbk: {})
+    TextEntryView(mode: .newForPark(id: 0), refreshClbk: {})
         .environmentObject(DefaultsService())
 }
 #endif

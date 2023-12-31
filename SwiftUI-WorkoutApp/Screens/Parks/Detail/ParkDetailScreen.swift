@@ -6,8 +6,8 @@ import SWModels
 import SWNetworkClient
 
 /// Экран с детальной информацией о площадке
-struct SportsGroundDetailView: View {
-    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SportsGroundDetailView")
+struct ParkDetailScreen: View {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ParkDetailScreen")
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var network: NetworkStatus
     @EnvironmentObject private var defaults: DefaultsService
@@ -15,15 +15,15 @@ struct SportsGroundDetailView: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var isCreatingComment = false
-    @State private var isEditingGround = false
+    @State private var isEditingPark = false
     @State private var editComment: CommentResponse?
     @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
-    @State private var deleteGroundTask: Task<Void, Never>?
+    @State private var deleteParkTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    @State var ground: SportsGround
+    @State var park: Park
     let onDeletion: (Int) -> Void
 
     var body: some View {
@@ -33,9 +33,9 @@ struct SportsGroundDetailView: View {
                 if defaults.isAuthorized {
                     participantsAndEventSection
                 }
-                if ground.hasPhotos {
+                if park.hasPhotos {
                     PhotoSectionView(
-                        with: ground.photos,
+                        with: park.photos,
                         canDelete: canDeletePhoto,
                         reportClbk: { reportPhoto() },
                         deleteClbk: { deletePhoto(id: $0) }
@@ -48,8 +48,8 @@ struct SportsGroundDetailView: View {
             .padding([.horizontal, .bottom])
         }
         .background {
-            NavigationLink(isActive: $isEditingGround) {
-                SportsGroundFormView(.editExisting(ground)) { refreshAction() }
+            NavigationLink(isActive: $isEditingPark) {
+                ParkFormScreen(.editExisting(park)) { refreshAction() }
             } label: {
                 EmptyView()
             }
@@ -58,9 +58,9 @@ struct SportsGroundDetailView: View {
         .background(Color.swBackground)
         .sheet(item: $editComment) {
             TextEntryView(
-                mode: .editGround(
+                mode: .editPark(
                     .init(
-                        parentObjectID: ground.id,
+                        parentObjectID: park.id,
                         entryID: $0.id,
                         oldEntry: $0.formattedBody
                     )
@@ -82,7 +82,7 @@ struct SportsGroundDetailView: View {
                 CloseButton(mode: .text) { dismiss() }
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if isGroundAuthor {
+                if isParkAuthor {
                     toolbarMenuButton
                 } else {
                     feedbackButton
@@ -95,11 +95,11 @@ struct SportsGroundDetailView: View {
     }
 }
 
-private extension SportsGroundDetailView {
+private extension ParkDetailScreen {
     var toolbarMenuButton: some View {
         Menu {
             Group {
-                editGroundButton
+                editParkButton
                 deleteButton
             }
         } label: {
@@ -107,17 +107,17 @@ private extension SportsGroundDetailView {
                 .symbolVariant(.circle)
         }
         .confirmationDialog(
-            .init(Constants.Alert.deleteGround),
+            .init(Constants.Alert.deletePark),
             isPresented: $dialogs.showDelete,
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
                 isLoading = true
-                deleteGroundTask = Task {
+                deleteParkTask = Task {
                     do {
-                        if try await SWClient(with: defaults).delete(groundID: ground.id) {
+                        if try await SWClient(with: defaults).delete(parkID: park.id) {
                             defaults.setUserNeedUpdate(true)
-                            onDeletion(ground.id)
+                            onDeletion(park.id)
                         }
                     } catch {
                         process(error)
@@ -132,26 +132,26 @@ private extension SportsGroundDetailView {
     var headerAndMapSection: some View {
         VStack(spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text(ground.shortTitle)
+                Text(park.shortTitle)
                     .font(.title2.weight(.semibold))
                     .foregroundColor(.swMainText)
-                if let subtitle = ground.subtitle, !subtitle.isEmpty {
+                if let subtitle = park.subtitle, !subtitle.isEmpty {
                     Text(subtitle)
                         .foregroundColor(.swSmallElements)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
-            SportsGroundLocationInfo(
+            ParkLocationInfoView(
                 snapshotModel: .init(
-                    latitude: ground.coordinate.latitude,
-                    longitude: ground.coordinate.longitude
+                    latitude: park.coordinate.latitude,
+                    longitude: park.coordinate.longitude
                 ),
-                address: ground.address ?? "",
-                appleMapsURL: ground.appleMapsURL
+                address: park.address ?? "",
+                appleMapsURL: park.appleMapsURL
             )
             if defaults.isAuthorized {
                 NavigationLink {
-                    EventFormView(mode: .createForSelected(ground.id, ground.longTitle))
+                    EventFormView(mode: .createForSelected(park.id, park.longTitle))
                 } label: {
                     Text("Создать мероприятие")
                 }
@@ -164,18 +164,18 @@ private extension SportsGroundDetailView {
 
     var participantsAndEventSection: some View {
         Group {
-            if ground.hasParticipants {
+            if park.hasParticipants {
                 NavigationLink {
                     UsersListView(
-                        mode: .groundParticipants(
-                            list: ground.participants
+                        mode: .parkParticipants(
+                            list: park.participants
                         )
                     )
                 } label: {
                     FormRowView(
                         title: "Здесь тренируются",
                         trailingContent: .textWithChevron(
-                            ground.participantsCountString
+                            park.participantsCountString
                         )
                     )
                 }
@@ -184,7 +184,7 @@ private extension SportsGroundDetailView {
                 title: "Тренируюсь здесь",
                 trailingContent: .toggle(
                     .init(
-                        get: { ground.trainHere },
+                        get: { park.trainHere },
                         set: { changeTrainHereStatus(newValue: $0) }
                     )
                 )
@@ -194,31 +194,31 @@ private extension SportsGroundDetailView {
     }
 
     func changeTrainHereStatus(newValue: Bool) {
-        let oldValue = ground.trainHere
+        let oldValue = park.trainHere
         switch (oldValue, newValue) {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
-            let oldValue = ground.trainHere
-            ground.trainHere = newValue
+            let oldValue = park.trainHere
+            park.trainHere = newValue
             isLoading = true
             changeTrainHereTask = Task {
                 do {
-                    if try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: ground.id) {
+                    if try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: park.id) {
                         // Чтобы не делать лишнее обновление данных площадки,
                         // локально изменяем список тренирующихся
                         if newValue, let userInfo = defaults.mainUserInfo {
-                            ground.participants.append(userInfo)
+                            park.participants.append(userInfo)
                         } else {
-                            ground.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
+                            park.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                         }
                         defaults.setUserNeedUpdate(true)
                     } else {
-                        ground.trainHere = oldValue
+                        park.trainHere = oldValue
                     }
                 } catch {
                     process(error)
-                    ground.trainHere = oldValue
+                    park.trainHere = oldValue
                 }
                 isLoading = false
             }
@@ -226,7 +226,7 @@ private extension SportsGroundDetailView {
     }
 
     var authorSection: some View {
-        let user = ground.author
+        let user = park.author
         return SectionView(headerWithPadding: "Добавил", mode: .regular) {
             NavigationLink(destination: UserDetailsView(for: user)) {
                 UserRowView(
@@ -241,7 +241,7 @@ private extension SportsGroundDetailView {
             }
             .disabled(
                 !defaults.isAuthorized
-                    || isGroundAuthor
+                    || isParkAuthor
                     || !network.isConnected
             )
         }
@@ -249,14 +249,14 @@ private extension SportsGroundDetailView {
 
     var commentsSection: some View {
         CommentsView(
-            items: ground.comments,
+            items: park.comments,
             reportClbk: reportComment,
             deleteClbk: deleteComment,
             editClbk: { editComment = $0 },
             isCreatingComment: $isCreatingComment
         )
         .sheet(isPresented: $isCreatingComment) {
-            TextEntryView(mode: .newForGround(id: ground.id)) { refreshAction() }
+            TextEntryView(mode: .newForPark(id: park.id)) { refreshAction() }
         }
     }
 
@@ -265,13 +265,13 @@ private extension SportsGroundDetailView {
             Icons.Regular.exclamationArrowCircle.view
         }
         .confirmationDialog(
-            .init(Constants.Alert.groundFeedback),
+            .init(Constants.Alert.parkFeedback),
             isPresented: $dialogs.showFeedback,
             titleVisibility: .visible
         ) {
             Button("Написать письмо") {
                 FeedbackSender.sendFeedback(
-                    subject: Feedback.makeSubject(for: ground.shortTitle),
+                    subject: Feedback.makeSubject(for: park.shortTitle),
                     messageBody: Feedback.body,
                     recipients: Constants.feedbackRecipient
                 )
@@ -281,11 +281,11 @@ private extension SportsGroundDetailView {
 
     @ViewBuilder
     var shareButton: some View {
-        if #available(iOS 16.0, *), let url = ground.shareLinkURL {
+        if #available(iOS 16.0, *), let url = park.shareLinkURL {
             ShareLink(
                 item: url,
                 subject: Text("Площадка"),
-                message: Text(ground.shareLinkDescription)
+                message: Text(park.shareLinkDescription)
             )
         }
     }
@@ -296,8 +296,8 @@ private extension SportsGroundDetailView {
         }
     }
 
-    var editGroundButton: some View {
-        Button { isEditingGround = true } label: {
+    var editParkButton: some View {
+        Button { isEditingPark = true } label: {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
@@ -309,11 +309,11 @@ private extension SportsGroundDetailView {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if ground.isFull, !refresh { return }
+        if park.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
-            ground = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
-                .getSportsGround(id: ground.id)
+            park = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
+                .getPark(id: park.id)
         } catch {
             process(error)
         }
@@ -324,8 +324,8 @@ private extension SportsGroundDetailView {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                if try await SWClient(with: defaults).deleteEntry(from: .ground(id: ground.id), entryID: id) {
-                    ground.comments.removeAll(where: { $0.id == id })
+                if try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryID: id) {
+                    park.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
                 process(error)
@@ -339,9 +339,9 @@ private extension SportsGroundDetailView {
         deletePhotoTask = Task {
             do {
                 if try await SWClient(with: defaults).deletePhoto(
-                    from: .sportsGround(.init(containerID: ground.id, photoID: id))
+                    from: .park(.init(containerID: park.id, photoID: id))
                 ) {
-                    ground.photos.removeAll(where: { $0.id == id })
+                    park.photos.removeAll(where: { $0.id == id })
                 }
             } catch {
                 process(error)
@@ -356,7 +356,7 @@ private extension SportsGroundDetailView {
     }
 
     func reportPhoto() {
-        let complaint = Complaint.groundPhoto(groundTitle: ground.shortTitle)
+        let complaint = Complaint.parkPhoto(parkTitle: park.shortTitle)
         FeedbackSender.sendFeedback(
             subject: complaint.subject,
             messageBody: complaint.body,
@@ -365,8 +365,8 @@ private extension SportsGroundDetailView {
     }
 
     func reportComment(_ comment: CommentResponse) {
-        let complaint = Complaint.groundComment(
-            groundTitle: ground.shortTitle,
+        let complaint = Complaint.parkComment(
+            parkTitle: park.shortTitle,
             author: comment.user?.userName ?? "неизвестен",
             commentText: comment.formattedBody
         )
@@ -377,14 +377,14 @@ private extension SportsGroundDetailView {
         )
     }
 
-    var isGroundAuthor: Bool {
+    var isParkAuthor: Bool {
         defaults.isAuthorized
-            ? ground.authorID == defaults.mainUserInfo?.id
+            ? park.authorID == defaults.mainUserInfo?.id
             : false
     }
 
     var canDeletePhoto: Bool {
-        isGroundAuthor && ground.photos.count > 1
+        isParkAuthor && park.photos.count > 1
     }
 
     func cancelTasks() {
@@ -393,7 +393,7 @@ private extension SportsGroundDetailView {
             deleteCommentTask,
             changeTrainHereTask,
             deletePhotoTask,
-            deleteGroundTask
+            deleteParkTask
         ].forEach { $0?.cancel() }
     }
 
@@ -402,18 +402,18 @@ private extension SportsGroundDetailView {
             logger.debug(
                 """
                 Похоже, был запрос данных о несуществующей площадке
-                id площадки: \(ground.id, privacy: .public)
+                id площадки: \(park.id, privacy: .public)
                 Удаляем ее из памяти и закрываем экран
                 """
             )
-            onDeletion(ground.id)
+            onDeletion(park.id)
         } else {
             setupErrorAlert(ErrorFilter.message(from: error))
         }
     }
 }
 
-private extension SportsGroundDetailView {
+private extension ParkDetailScreen {
     /// Содержит переключатели для диалогов на экране
     struct ConfirmationDialogs {
         /// Спросить об удалении площадки
@@ -423,8 +423,8 @@ private extension SportsGroundDetailView {
     }
 
     enum Feedback {
-        static func makeSubject(for groundNumber: String) -> String {
-            "\(ProcessInfo.processInfo.processName): Обновление площадки \(groundNumber)"
+        static func makeSubject(for parkNumber: String) -> String {
+            "\(ProcessInfo.processInfo.processName): Обновление площадки \(parkNumber)"
         }
 
         static let body = """
@@ -436,7 +436,7 @@ private extension SportsGroundDetailView {
 
 #if DEBUG
 #Preview {
-    SportsGroundDetailView(ground: .preview, onDeletion: { _ in })
+    ParkDetailScreen(park: .preview, onDeletion: { _ in })
         .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }

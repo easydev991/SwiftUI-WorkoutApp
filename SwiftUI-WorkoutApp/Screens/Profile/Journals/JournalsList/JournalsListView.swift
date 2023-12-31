@@ -81,7 +81,7 @@ private extension JournalsListView {
             mode: .journals,
             isAuthorized: defaults.isAuthorized,
             hasFriends: defaults.hasFriends,
-            hasSportsGrounds: defaults.hasSportsGrounds,
+            hasParks: defaults.hasParks,
             isNetworkConnected: network.isConnected,
             action: showNewJournalSheet
         )

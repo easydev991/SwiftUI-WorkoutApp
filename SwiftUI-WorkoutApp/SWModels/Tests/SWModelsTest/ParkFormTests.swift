@@ -1,7 +1,7 @@
 @testable import SWModels
 import XCTest
 
-final class SportsGroundFormTests: XCTestCase {
+final class ParkFormTests: XCTestCase {
     func testIsNotReadyToCreate_empty() {
         let form = emptyForm
         XCTAssertFalse(form.isReadyToCreate)
@@ -96,8 +96,8 @@ final class SportsGroundFormTests: XCTestCase {
     }
 }
 
-private extension SportsGroundFormTests {
-    var emptyForm: SportsGroundForm { .init(.emptyValue) }
+private extension ParkFormTests {
+    var emptyForm: ParkForm { .init(.emptyValue) }
 
     func makeForm(
         address: String = "address",
@@ -108,8 +108,8 @@ private extension SportsGroundFormTests {
         sizeID: Int = 1,
         photosCount _: Int = 1,
         newMediaFiles: [MediaFile] = [.init(imageData: .init(), forKey: "1")]
-    ) -> SportsGroundForm {
-        let ground = SportsGround(
+    ) -> ParkForm {
+        let park = Park(
             id: 1,
             typeID: typeID,
             sizeID: sizeID,
@@ -130,7 +130,7 @@ private extension SportsGroundFormTests {
             usersTrainHere: nil,
             trainHere: nil
         )
-        var form = SportsGroundForm(ground)
+        var form = ParkForm(park)
         form.newMediaFiles = newMediaFiles
         return form
     }

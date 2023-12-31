@@ -15,7 +15,7 @@ public struct SWClient: Sendable {
     /// `true` - нужна базовая аутентификация, `false` - не нужна
     ///
     /// Базовая аутентификация не нужна для запросов:
-    /// - `getUpdatedSportsGrounds`
+    /// - `getUpdatedParks`
     /// - `registration`
     /// - `resetPassword`
     let needAuth: Bool
@@ -252,25 +252,25 @@ public struct SWClient: Sendable {
     /// - сервер очень часто возвращает ошибку `500` при запросе всех площадок
     /// - справочник площадок хранится в `json`-файле и обновляется вручную
     /// - Returns: Список всех площадок
-    public func getAllSportsGrounds() async throws -> [SportsGround] {
-        try await makeResult([SportsGround].self, for: Endpoint.getAllSportsGrounds.urlRequest(with: baseUrlString))
+    public func getAllParks() async throws -> [Park] {
+        try await makeResult([Park].self, for: Endpoint.getAllParks.urlRequest(with: baseUrlString))
     }
 
     /// Загружает список всех площадок, обновленных после указанной даты
     /// - Parameter stringDate: дата отсечки для поиска обновленных площадок
     /// - Returns: Список обновленных площадок
-    public func getUpdatedSportsGrounds(from stringDate: String) async throws -> [SportsGround] {
-        let endpoint = Endpoint.getUpdatedSportsGrounds(from: stringDate)
-        return try await makeResult([SportsGround].self, for: endpoint.urlRequest(with: baseUrlString))
+    public func getUpdatedParks(from stringDate: String) async throws -> [Park] {
+        let endpoint = Endpoint.getUpdatedParks(from: stringDate)
+        return try await makeResult([Park].self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
-    public func getSportsGround(id: Int) async throws -> SportsGround {
+    public func getPark(id: Int) async throws -> Park {
         try await makeResult(
-            SportsGround.self,
-            for: Endpoint.getSportsGround(id: id).urlRequest(with: baseUrlString)
+            Park.self,
+            for: Endpoint.getPark(id: id).urlRequest(with: baseUrlString)
         )
     }
 
@@ -278,14 +278,14 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` площадки
     ///   - form: форма с данными о площадке
-    /// - Returns: Обновленная информация о площадке `SportsGround`, но с ошибками, поэтому обрабатываем `SportsGroundResult`
-    public func saveSportsGround(id: Int?, form: SportsGroundForm) async throws -> SportsGroundResult {
+    /// - Returns: Обновленная информация о площадке `Park`, но с ошибками, поэтому обрабатываем `ParkResult`
+    public func savePark(id: Int?, form: ParkForm) async throws -> ParkResult {
         let endpoint = if let id {
-            Endpoint.editSportsGround(id: id, form: form)
+            Endpoint.editPark(id: id, form: form)
         } else {
-            Endpoint.createSportsGround(form: form)
+            Endpoint.createPark(form: form)
         }
-        return try await makeResult(SportsGroundResult.self, for: endpoint.urlRequest(with: baseUrlString))
+        return try await makeResult(ParkResult.self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
     /// Добавить комментарий для площадки
@@ -295,8 +295,8 @@ public struct SWClient: Sendable {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     public func addNewEntry(to option: TextEntryOption, entryText: String) async throws -> Bool {
         let endpoint: Endpoint = switch option {
-        case let .ground(id):
-            .addCommentToSportsGround(groundID: id, comment: entryText)
+        case let .park(id):
+            .addCommentToPark(parkID: id, comment: entryText)
         case let .event(id):
             .addCommentToEvent(eventID: id, comment: entryText)
         case let .journal(ownerId, journalId):
@@ -313,9 +313,9 @@ public struct SWClient: Sendable {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     public func editEntry(for option: TextEntryOption, entryID: Int, newEntryText: String) async throws -> Bool {
         let endpoint: Endpoint = switch option {
-        case let .ground(id):
-            .editGroundComment(
-                groundID: id,
+        case let .park(id):
+            .editParkComment(
+                parkID: id,
                 commentID: entryID,
                 newComment: newEntryText
             )
@@ -343,8 +343,8 @@ public struct SWClient: Sendable {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     public func deleteEntry(from option: TextEntryOption, entryID: Int) async throws -> Bool {
         let endpoint: Endpoint = switch option {
-        case let .ground(id):
-            .deleteGroundComment(id, commentID: entryID)
+        case let .park(id):
+            .deleteParkComment(id, commentID: entryID)
         case let .event(id):
             .deleteEventComment(id, commentID: entryID)
         case let .journal(ownerId, journalId):
@@ -356,20 +356,20 @@ public struct SWClient: Sendable {
     /// Получить список площадок, где тренируется пользователь
     /// - Parameter userID: `id` пользователя
     /// - Returns: Список площадок, где тренируется пользователь
-    public func getSportsGroundsForUser(_ userID: Int) async throws -> [SportsGround] {
-        let endpoint = Endpoint.getSportsGroundsForUser(userID)
-        return try await makeResult([SportsGround].self, for: endpoint.urlRequest(with: baseUrlString))
+    public func getParksForUser(_ userID: Int) async throws -> [Park] {
+        let endpoint = Endpoint.getParksForUser(userID)
+        return try await makeResult([Park].self, for: endpoint.urlRequest(with: baseUrlString))
     }
 
     /// Изменить статус "тренируюсь здесь" для площадки
     /// - Parameters:
     ///   - trainHere: `true` - тренируюсь здесь, `false` - не тренируюсь здесь
-    ///   - groundID: `id` площадки
+    ///   - parkID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func changeTrainHereStatus(_ trainHere: Bool, for groundID: Int) async throws -> Bool {
-        let endpoint: Endpoint = trainHere ? .postTrainHere(groundID) : .deleteTrainHere(groundID)
+    public func changeTrainHereStatus(_ trainHere: Bool, for parkID: Int) async throws -> Bool {
+        let endpoint: Endpoint = trainHere ? .postTrainHere(parkID) : .deleteTrainHere(parkID)
         let isOk = try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
-        await defaults.setHasSportsGrounds(trainHere)
+        await defaults.setHasParks(trainHere)
         return isOk
     }
 
@@ -423,10 +423,10 @@ public struct SWClient: Sendable {
     }
 
     /// Удалить площадку
-    /// - Parameter groundID: `id` площадки
+    /// - Parameter parkID: `id` площадки
     /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func delete(groundID: Int) async throws -> Bool {
-        try await makeStatus(for: Endpoint.deleteSportsGround(groundID).urlRequest(with: baseUrlString))
+    public func delete(parkID: Int) async throws -> Bool {
+        try await makeStatus(for: Endpoint.deletePark(parkID).urlRequest(with: baseUrlString))
     }
 
     /// Запрашивает список диалогов для текущего пользователя
@@ -559,9 +559,9 @@ public struct SWClient: Sendable {
                 eventID: input.containerID,
                 photoID: input.photoID
             )
-        case let .sportsGround(input):
-            .deleteGroundPhoto(
-                groundID: input.containerID,
+        case let .park(input):
+            .deleteParkPhoto(
+                parkID: input.containerID,
                 photoID: input.photoID
             )
         }

@@ -157,13 +157,13 @@ private extension EventDetailsView {
                 .padding(.bottom, 22)
             }
             .foregroundColor(.swMainText)
-            SportsGroundLocationInfo(
+            ParkLocationInfoView(
                 snapshotModel: .init(
-                    latitude: event.sportsGround.coordinate.latitude,
-                    longitude: event.sportsGround.coordinate.longitude
+                    latitude: event.park.coordinate.latitude,
+                    longitude: event.park.coordinate.longitude
                 ),
                 address: event.fullAddress ?? shortAddress,
-                appleMapsURL: event.sportsGround.appleMapsURL
+                appleMapsURL: event.park.appleMapsURL
             )
         }
         .insideCardBackground()

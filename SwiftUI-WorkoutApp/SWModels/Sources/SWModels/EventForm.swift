@@ -5,8 +5,8 @@ import Utils
 public struct EventForm: Codable, Sendable, Equatable {
     public var title, description: String
     public var date: Date
-    public var sportsGroundID: Int
-    public var sportsGroundName: String
+    public var parkID: Int
+    public var parkName: String
     public let photosCount: Int
     public var newMediaFiles: [MediaFile]
 
@@ -15,39 +15,39 @@ public struct EventForm: Codable, Sendable, Equatable {
         title: String = "",
         description: String = "",
         date: Date = .now,
-        sportsGroundID: Int = 0,
-        sportsGroundName: String? = nil,
+        parkID: Int = 0,
+        parkName: String? = nil,
         photosCount: Int = 0,
         newMediaFiles: [MediaFile] = []
     ) {
         self.title = title
         self.description = description
         self.date = date
-        self.sportsGroundID = sportsGroundID
-        self.sportsGroundName = sportsGroundName ?? "Выбрать площадку"
+        self.parkID = parkID
+        self.parkName = parkName ?? "Выбрать площадку"
         self.photosCount = photosCount
         self.newMediaFiles = newMediaFiles
     }
 
     /// Инициализатор для создания формы на основе существующего мероприятия
     public init(_ event: EventResponse?) {
-        let ground = event?.sportsGround
-        let groundID = ground?.id ?? event?.sportsGroundID
-        let groundName = ground?.name ?? ground?.longTitle ?? ground?.title
+        let park = event?.park
+        let parkID = park?.id ?? event?.parkID
+        let parkName = park?.longTitle ?? park?.title
         self.init(
             title: event?.formattedTitle ?? "",
             description: event?.formattedDescription ?? "",
             date: DateFormatterService.dateFromIsoString(event?.beginDate),
-            sportsGroundID: groundID ?? 0,
-            sportsGroundName: groundName ?? "Выбрать площадку",
+            parkID: parkID ?? 0,
+            parkName: parkName ?? "Выбрать площадку",
             photosCount: event?.photos.count ?? 0
         )
     }
 
-    public init(_ groundID: Int, _ groundName: String) {
+    public init(_ parkID: Int, _ parkName: String) {
         self.init(
-            sportsGroundID: groundID,
-            sportsGroundName: groundName
+            parkID: parkID,
+            parkName: parkName
         )
     }
 }
@@ -69,7 +69,7 @@ public extension EventForm {
 
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
-        !title.isEmpty && !description.isEmpty && sportsGroundID != 0
+        !title.isEmpty && !description.isEmpty && parkID != 0
     }
 
     /// Готовность формы к отправке обновлений по мероприятию

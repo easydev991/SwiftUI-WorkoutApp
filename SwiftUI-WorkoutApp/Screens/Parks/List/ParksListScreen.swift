@@ -4,52 +4,52 @@ import SWModels
 import SWNetworkClient
 
 /// Экран со списком площадок
-struct SportsGroundsListView: View {
+struct ParksListScreen: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var groundsManager: SportsGroundsManager
-    @State private var grounds = [SportsGround]()
+    @EnvironmentObject private var parksManager: ParksManager
+    @State private var parks = [Park]()
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
     /// Площадка для открытия детального экрана
-    @State private var selectedGround: SportsGround?
-    @State private var updateGroundsTask: Task<Void, Never>?
+    @State private var selectedPark: Park?
+    @State private var updateParksTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(grounds) { ground in
+                ForEach(parks) { park in
                     Button {
                         switch mode {
                         case let .event(_, callBack):
-                            callBack(ground.id, ground.name ?? ground.longTitle)
+                            callBack(park.id, park.name ?? park.longTitle)
                             dismiss()
                         case .usedBy, .added:
-                            selectedGround = ground
+                            selectedPark = park
                         }
                     } label: {
-                        SportsGroundRowView(
-                            imageURL: ground.previewImageURL,
-                            title: ground.longTitle,
-                            address: ground.address,
-                            usersTrainHereText: ground.usersTrainHereText
+                        ParkRowView(
+                            imageURL: park.previewImageURL,
+                            title: park.longTitle,
+                            address: park.address,
+                            usersTrainHereText: park.usersTrainHereText
                         )
                     }
-                    .accessibilityIdentifier("SportsGroundViewCell")
+                    .accessibilityIdentifier("ParkViewCell")
                 }
             }
             .padding([.top, .horizontal])
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .sheet(item: $selectedGround) { ground in
+        .sheet(item: $selectedPark) { park in
             NavigationView {
-                SportsGroundDetailView(ground: ground) { deleteGround(id: $0) }
+                ParkDetailScreen(park: park) { deletePark(id: $0) }
             }
         }
-        .onChange(of: grounds) { list in
+        .onChange(of: parks) { list in
             if list.isEmpty {
                 defaults.setUserNeedUpdate(true)
                 dismiss()
@@ -58,10 +58,10 @@ struct SportsGroundsListView: View {
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok") { errorTitle = "" }
         }
-        .task { await askForGrounds() }
+        .task { await askForParks() }
         .refreshable {
             guard mode.canRefreshList else { return }
-            await askForGrounds(refresh: true)
+            await askForParks(refresh: true)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -70,15 +70,15 @@ struct SportsGroundsListView: View {
         }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onDisappear { updateGroundsTask?.cancel() }
+        .onDisappear { updateParksTask?.cancel() }
     }
 }
 
-extension SportsGroundsListView {
+extension ParksListScreen {
     enum Mode {
         case usedBy(userID: Int)
-        case event(userID: Int, didSelectGround: (_ id: Int, _ name: String) -> Void)
-        case added(list: [SportsGround])
+        case event(userID: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
+        case added(list: [Park])
 
         var canRefreshList: Bool {
             switch self {
@@ -89,7 +89,7 @@ extension SportsGroundsListView {
     }
 }
 
-private extension SportsGroundsListView.Mode {
+private extension ParksListScreen.Mode {
     var title: LocalizedStringKey {
         switch self {
         case .usedBy: "Где тренируется"
@@ -99,13 +99,13 @@ private extension SportsGroundsListView.Mode {
     }
 }
 
-private extension SportsGroundsListView {
+private extension ParksListScreen {
     @ViewBuilder
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button {
-                updateGroundsTask = Task {
-                    await askForGrounds(refresh: true)
+                updateParksTask = Task {
+                    await askForParks(refresh: true)
                 }
             } label: {
                 Icons.Regular.refresh.view
@@ -114,13 +114,13 @@ private extension SportsGroundsListView {
         }
     }
 
-    func askForGrounds(refresh: Bool = false) async {
+    func askForParks(refresh: Bool = false) async {
         if isLoading { return }
         do {
             switch mode {
             case let .usedBy(userID), let .event(userID, _):
                 let isMainUser = userID == defaults.mainUserInfo?.id
-                let needUpdate = grounds.isEmpty || refresh
+                let needUpdate = parks.isEmpty || refresh
                 if isMainUser {
                     if !needUpdate, !defaults.needUpdateUser { return }
                     try await makeList(for: userID, isMainUser, refresh)
@@ -129,7 +129,7 @@ private extension SportsGroundsListView {
                     try await makeList(for: userID, isMainUser, refresh)
                 }
             case let .added(list):
-                grounds = list
+                parks = list
             }
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
@@ -140,14 +140,14 @@ private extension SportsGroundsListView {
     func makeList(for userID: Int, _ isMainUser: Bool, _ isRefreshing: Bool) async throws {
         if !isRefreshing { isLoading.toggle() }
         if isMainUser { defaults.setUserNeedUpdate(false) }
-        grounds = try await SWClient(with: defaults).getSportsGroundsForUser(userID)
+        parks = try await SWClient(with: defaults).getParksForUser(userID)
     }
 
-    func deleteGround(id: Int) {
-        selectedGround = nil
-        grounds.removeAll(where: { $0.id == id })
+    func deletePark(id: Int) {
+        selectedPark = nil
+        parks.removeAll(where: { $0.id == id })
         do {
-            try groundsManager.deleteGround(with: id)
+            try parksManager.deletePark(with: id)
             if !mode.canRefreshList {
                 dismiss()
             }
@@ -164,8 +164,8 @@ private extension SportsGroundsListView {
 
 #if DEBUG
 #Preview {
-    SportsGroundsListView(mode: .usedBy(userID: .previewUserID))
+    ParksListScreen(mode: .usedBy(userID: .previewUserID))
         .environmentObject(DefaultsService())
-        .environmentObject(SportsGroundsManager())
+        .environmentObject(ParksManager())
 }
 #endif

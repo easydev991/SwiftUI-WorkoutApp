@@ -18,7 +18,20 @@
       }
     },
     "%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "ageInYears" : {
       "extractionState" : "manual",
@@ -198,95 +211,6 @@
         }
       }
     },
-    "groundsCount" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d grounds"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d grounds"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d ground"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d grounds"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d grounds"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 grounds"
-                }
-              }
-            }
-          }
-        },
-        "ru" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d площадки"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d площадок"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d площадка"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d площадок"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%d площадки"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "0 площадок"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "journalsCount" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -405,6 +329,95 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oleg991 на boosty"
+          }
+        }
+      }
+    },
+    "parksCount" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d parks"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d parks"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d park"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d parks"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d parks"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "0 parks"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d площадки"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d площадок"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d площадка"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d площадок"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d площадки"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "0 площадок"
+                }
+              }
+            }
           }
         }
       }
@@ -835,7 +848,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports ground address"
+            "value" : "Park address"
           }
         },
         "ru" : {
@@ -915,6 +928,7 @@
       }
     },
     "Версия" : {
+      "comment" : "Версия приложения",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1055,7 +1069,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a sports ground"
+            "value" : "Select a park"
           }
         },
         "ru" : {
@@ -1305,7 +1319,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added sports grounds"
+            "value" : "Added parks"
           }
         },
         "ru" : {
@@ -1322,7 +1336,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added sports grounds"
+            "value" : "Added parks"
           }
         },
         "ru" : {
@@ -1390,7 +1404,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added sports grounds"
+            "value" : "Added parks"
           }
         },
         "ru" : {
@@ -1569,7 +1583,14 @@
       }
     },
     "Загружаем логи..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading logs..."
+          }
+        }
+      }
     },
     "Закрыть" : {
       "localizations" : {
@@ -1873,7 +1894,14 @@
       }
     },
     "Категория" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
     },
     "Когда" : {
       "localizations" : {
@@ -1957,7 +1985,14 @@
       }
     },
     "Логи" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logs"
+          }
+        }
+      }
     },
     "Логин" : {
       "extractionState" : "manual",
@@ -1994,7 +2029,14 @@
       }
     },
     "Логов пока нет" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No logs yet"
+          }
+        }
+      }
     },
     "Магазин WORKOUT" : {
       "extractionState" : "manual",
@@ -2353,7 +2395,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a sports ground first"
+            "value" : "Select a park first"
           }
         },
         "ru" : {
@@ -2436,7 +2478,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New sports ground"
+            "value" : "New park"
           }
         },
         "ru" : {
@@ -2459,23 +2501,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новое мероприятие"
-          }
-        }
-      }
-    },
-    "Новое сообщение" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New message"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Новое сообщение"
           }
         }
       }
@@ -2553,7 +2578,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Should we update any information about this sports ground?"
+            "value" : "Should we update any information about this park?"
           }
         },
         "ru" : {
@@ -2837,7 +2862,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports ground"
+            "value" : "Park"
           }
         },
         "ru" : {
@@ -2854,7 +2879,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports ground № %lld"
+            "value" : "Park № %lld"
           }
         },
         "ru" : {
@@ -2870,7 +2895,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports grounds"
+            "value" : "Parks"
           }
         },
         "ru" : {
@@ -2886,7 +2911,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports grounds (%lld)"
+            "value" : "Parks (%lld)"
           }
         },
         "ru" : {
@@ -3221,7 +3246,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports ground size"
+            "value" : "Park size"
           }
         },
         "ru" : {
@@ -3334,7 +3359,14 @@
       }
     },
     "С такими фильтрами логов нет" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No logs for specified filter"
+          }
+        }
+      }
     },
     "Сбросить фильтры" : {
       "localizations" : {
@@ -3641,7 +3673,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your sports grounds"
+            "value" : "Your parks"
           }
         },
         "ru" : {
@@ -3741,7 +3773,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports ground type"
+            "value" : "Park type"
           }
         },
         "ru" : {
@@ -3893,7 +3925,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete the sports ground?"
+            "value" : "Delete the park?"
           }
         },
         "ru" : {
@@ -3922,7 +3954,14 @@
       }
     },
     "Уровень" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level"
+          }
+        }
+      }
     },
     "Участники" : {
       "extractionState" : "manual",
@@ -3959,7 +3998,14 @@
       }
     },
     "Фильтр логов" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter logs"
+          }
+        }
+      }
     },
     "Фильтр площадок" : {
       "extractionState" : "manual",
@@ -3967,7 +4013,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sports grounds filter"
+            "value" : "Parks filter"
           }
         },
         "ru" : {
@@ -4068,7 +4114,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To create an event, you need to specify at least one sports ground where you train"
+            "value" : "To create an event, you need to specify at least one park where you train"
           }
         },
         "ru" : {

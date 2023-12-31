@@ -40,7 +40,7 @@ extension TabViewModel {
         private var icon: some View {
             switch self {
             case .map:
-                Image.sportsGroundIcon
+                Image.parkTabIcon
             case .events:
                 Icons.Tabbar.events.view
             case .messages:
@@ -65,7 +65,7 @@ extension TabViewModel {
         var screen: some View {
             switch self {
             case .map:
-                SportsGroundsMapView()
+                ParksMapScreen()
             case .events:
                 EventsListView()
             case .messages:

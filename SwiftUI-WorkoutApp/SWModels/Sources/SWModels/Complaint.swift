@@ -6,8 +6,8 @@ public enum Complaint {
 
     case eventPhoto(eventTitle: String)
     case eventComment(eventTitle: String, author: String, commentText: String)
-    case groundPhoto(groundTitle: String)
-    case groundComment(groundTitle: String, author: String, commentText: String)
+    case parkPhoto(parkTitle: String)
+    case parkComment(parkTitle: String, author: String, commentText: String)
     case journalEntry(author: String, entryText: String)
 
     public var subject: String {
@@ -16,9 +16,9 @@ public enum Complaint {
             Complaint.subjectFirstPart + "фото к мероприятию"
         case .eventComment:
             Complaint.subjectFirstPart + "комментарий к мероприятию"
-        case .groundPhoto:
+        case .parkPhoto:
             Complaint.subjectFirstPart + "фото к площадке"
-        case .groundComment:
+        case .parkComment:
             Complaint.subjectFirstPart + "комментарий к площадке"
         case .journalEntry:
             Complaint.subjectFirstPart + "запись в дневнике"
@@ -35,11 +35,11 @@ public enum Complaint {
             - Автор комментария: \(author)
             - Текст комментария: \(commentText)
             """
-        case let .groundPhoto(groundTitle):
-            "Наименование площадки: \(groundTitle)"
-        case let .groundComment(groundTitle, author, commentText):
+        case let .parkPhoto(parkTitle):
+            "Наименование площадки: \(parkTitle)"
+        case let .parkComment(parkTitle, author, commentText):
             """
-            - Наименование площадки: \(groundTitle)
+            - Наименование площадки: \(parkTitle)
             - Автор комментария: \(author)
             - Текст комментария: \(commentText)
             """

@@ -41,8 +41,8 @@ struct UserDetailsView: View {
                 }
                 VStack(spacing: 12) {
                     friendsButtonIfNeeded
-                    usesSportsGroundsIfNeeded
-                    addedSportsGroundsIfNeeded
+                    usesParksIfNeeded
+                    addedParksIfNeeded
                     journalsButtonIfNeeded
                     if isMainUser { blacklistButtonIfNeeded }
                 }
@@ -162,29 +162,29 @@ private extension UserDetailsView {
     }
 
     @ViewBuilder
-    var usesSportsGroundsIfNeeded: some View {
-        if user.hasUsedGrounds {
+    var usesParksIfNeeded: some View {
+        if user.hasUsedParks {
             NavigationLink {
-                SportsGroundsListView(mode: .usedBy(userID: user.id))
+                ParksListScreen(mode: .usedBy(userID: user.id))
             } label: {
                 FormRowView(
                     title: "Где тренируется",
-                    trailingContent: .textWithChevron(user.usesSportsGroundsCountString)
+                    trailingContent: .textWithChevron(user.usesParksCountString)
                 )
             }
-            .accessibilityIdentifier("usesSportsGroundsButton")
+            .accessibilityIdentifier("usesParksButton")
         }
     }
 
     @ViewBuilder
-    var addedSportsGroundsIfNeeded: some View {
-        if user.hasAddedGrounds {
+    var addedParksIfNeeded: some View {
+        if user.hasAddedParks {
             NavigationLink {
-                SportsGroundsListView(mode: .added(list: user.addedSportsGrounds ?? []))
+                ParksListScreen(mode: .added(list: user.addedParks ?? []))
             } label: {
                 FormRowView(
-                    title: user.addedGroundsString,
-                    trailingContent: .textWithChevron(user.addedSportsGroundsCountString)
+                    title: user.addedParksString,
+                    trailingContent: .textWithChevron(user.addedParksCountString)
                 )
             }
         }

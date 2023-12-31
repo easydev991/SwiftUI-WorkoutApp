@@ -3,7 +3,7 @@ import MapKit.MKGeometry
 import Utils
 
 /// Модель данных спортивной площадки
-public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
+public struct Park: Codable, Identifiable, Hashable, Sendable {
     public let id, typeID, sizeID: Int
     public let address: String?
     public let author: UserResponse?
@@ -26,8 +26,8 @@ public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
     public var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String? {
-        let grade = NSLocalizedString(SportsGroundGrade(id: typeID).rawValue, comment: "")
-        let size = NSLocalizedString(SportsGroundSize(id: sizeID).rawValue, comment: "")
+        let grade = NSLocalizedString(ParkGrade(id: typeID).rawValue, comment: "")
+        let size = NSLocalizedString(ParkSize(id: sizeID).rawValue, comment: "")
         return grade + " / " + size
     }
 
@@ -55,7 +55,7 @@ public struct SportsGround: Codable, Identifiable, Hashable, Sendable {
 
     /// Точка для карты
     public var annotation: MKAnnotation {
-        GroundAnnotation(
+        ParkAnnotation(
             coordinate: coordinate,
             title: title,
             subtitle: subtitle
@@ -200,7 +200,7 @@ public struct CommentResponse: Codable, Identifiable, Hashable, Sendable {
     }
 }
 
-public extension SportsGround {
+public extension Park {
     var hasPhotos: Bool { !photos.isEmpty }
 
     var photos: [Photo] {
@@ -258,7 +258,7 @@ public extension SportsGround {
         URL(string: "https://workout.su/areas/\(id)")
     }
 
-    static var emptyValue: SportsGround {
+    static var emptyValue: Park {
         .init(
             id: 0,
             typeID: 0,
@@ -283,7 +283,7 @@ public extension SportsGround {
     }
 }
 
-public final class GroundAnnotation: NSObject, MKAnnotation {
+public final class ParkAnnotation: NSObject, MKAnnotation {
     public let coordinate: CLLocationCoordinate2D
     public let title: String?
     public let subtitle: String?
