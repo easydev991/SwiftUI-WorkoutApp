@@ -30,7 +30,7 @@ struct ParksListScreen: View {
                             selectedPark = park
                         }
                     } label: {
-                        SportsGroundRowView(
+                        ParkRowView(
                             imageURL: park.previewImageURL,
                             title: park.longTitle,
                             address: park.address,

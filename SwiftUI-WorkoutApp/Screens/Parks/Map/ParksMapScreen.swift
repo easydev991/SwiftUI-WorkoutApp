@@ -153,7 +153,7 @@ private extension ParksMapScreen {
                             Button {
                                 sheetItem = .parkDetails(park)
                             } label: {
-                                SportsGroundRowView(
+                                ParkRowView(
                                     imageURL: park.previewImageURL,
                                     title: park.longTitle,
                                     address: park.address,
