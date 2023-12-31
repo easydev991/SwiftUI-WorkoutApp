@@ -18,7 +18,20 @@
       }
     },
     "%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "ageInYears" : {
       "extractionState" : "manual",
@@ -915,6 +928,7 @@
       }
     },
     "Версия" : {
+      "comment" : "Версия приложения",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1569,7 +1583,14 @@
       }
     },
     "Загружаем логи..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading logs..."
+          }
+        }
+      }
     },
     "Закрыть" : {
       "localizations" : {
@@ -1873,7 +1894,14 @@
       }
     },
     "Категория" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
     },
     "Когда" : {
       "localizations" : {
@@ -1957,7 +1985,14 @@
       }
     },
     "Логи" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logs"
+          }
+        }
+      }
     },
     "Логин" : {
       "extractionState" : "manual",
@@ -1994,7 +2029,14 @@
       }
     },
     "Логов пока нет" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No logs yet"
+          }
+        }
+      }
     },
     "Магазин WORKOUT" : {
       "extractionState" : "manual",
@@ -2459,23 +2501,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новое мероприятие"
-          }
-        }
-      }
-    },
-    "Новое сообщение" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New message"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Новое сообщение"
           }
         }
       }
@@ -3334,7 +3359,14 @@
       }
     },
     "С такими фильтрами логов нет" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No logs for specified filter"
+          }
+        }
+      }
     },
     "Сбросить фильтры" : {
       "localizations" : {
@@ -3922,7 +3954,14 @@
       }
     },
     "Уровень" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level"
+          }
+        }
+      }
     },
     "Участники" : {
       "extractionState" : "manual",
@@ -3959,7 +3998,14 @@
       }
     },
     "Фильтр логов" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter logs"
+          }
+        }
+      }
     },
     "Фильтр площадок" : {
       "extractionState" : "manual",
