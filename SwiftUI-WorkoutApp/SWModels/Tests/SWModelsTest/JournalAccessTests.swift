@@ -5,7 +5,6 @@ final class JournalAccessTests: XCTestCase {
     private let mainUserFriendsIds = [2, 3, 4, 5, 6]
 
     func testCannotCreateEntry_nobodyCan() {
-        let access = JournalAccess.nobody
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: 2,
             journalCommentAccess: .nobody,
@@ -16,7 +15,6 @@ final class JournalAccessTests: XCTestCase {
     }
 
     func testCannotCreateEntry_onlyFriendsCan() {
-        let access = JournalAccess.friends
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: 7,
             journalCommentAccess: .friends,
@@ -27,10 +25,9 @@ final class JournalAccessTests: XCTestCase {
     }
 
     func testCannotCreateEntry_onlyAuthorizedCan() {
-        let access = JournalAccess.all
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: 123,
-            journalCommentAccess: .friends,
+            journalCommentAccess: .all,
             mainUserId: nil,
             mainUserFriendsIds: mainUserFriendsIds
         )
@@ -38,7 +35,6 @@ final class JournalAccessTests: XCTestCase {
     }
 
     func testCanCreateEntry_isFriend() {
-        let access = JournalAccess.friends
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: 2,
             journalCommentAccess: .friends,
@@ -49,7 +45,6 @@ final class JournalAccessTests: XCTestCase {
     }
 
     func testCanCreateEntry_allAuthorizedCan() {
-        let access = JournalAccess.all
         let canCreateEntry = JournalAccess.canCreateEntry(
             journalOwnerId: 123,
             journalCommentAccess: .all,
