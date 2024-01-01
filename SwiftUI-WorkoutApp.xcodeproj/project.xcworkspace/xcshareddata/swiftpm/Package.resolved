@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/NetworkStatus",
       "state" : {
-        "revision" : "984f816f89b23d77cc90f16162370df666c8ed4d",
-        "version" : "1.0.0"
+        "revision" : "e112cc3496f0ea63c3b3d9a65fb7fd941b046bce",
+        "version" : "1.1.0"
       }
     },
     {
