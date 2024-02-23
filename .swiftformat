@@ -76,7 +76,6 @@ unusedArguments, \
 preferKeyPath
 
 --disable preferForLoop, \
-isEmpty, \
 markTypes, \
 organizeDeclarations, \
 numberFormatting, \
