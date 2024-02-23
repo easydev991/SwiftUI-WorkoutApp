@@ -11,9 +11,9 @@ cd SwiftUI-WorkoutApp
 ```shell
 git config core.hooksPath .githooks
 ```
-4. Дать разрешение на запуск хука `pre-commit`
+4. Дать разрешение на запуск хука `pre-push`
 ```shell
-chmod +x SwiftUI-WorkoutApp/githooks/pre-commit
+chmod +x SwiftUI-WorkoutApp/githooks/pre-push
 ```
 5. Открыть проект в `Xcode` и дождаться загрузки зависимостей
 6. Проект готов к работе!
@@ -77,13 +77,13 @@ rbenv exec fastlane snapshot
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем [swiftformat (0.52.11)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.53.2)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 
 #### Как это работает
-1. Перед каждым коммитом должен выполняться хук, проверяющий необходимость форматирования кода
-2. При нарушении правил форматирования кода, гит выдаст ошибку и напишет команду, которую нужно выполнить для запуска swiftformat
+1. Перед каждым пушом должен выполняться хук, проверяющий необходимость форматирования кода
+2. При нарушении правил форматирования кода, гит выдаст ошибку и напишет команду, которую нужно выполнить для запуска `swiftformat`
 
 #### Как обновить `swiftformat`
 1. Переходим на [страницу с релизами](https://github.com/nicklockwood/SwiftFormat/releases)
