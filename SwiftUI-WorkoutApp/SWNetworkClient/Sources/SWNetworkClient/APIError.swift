@@ -44,7 +44,7 @@ extension SWClient {
             case .unknown:
                 "Неизвестная ошибка"
             case .badRequest:
-                return "Запрос содержит ошибку"
+                "Запрос содержит ошибку"
             case .invalidCredentials:
                 "Некорректное имя пользователя или пароль"
             case .notFound:
