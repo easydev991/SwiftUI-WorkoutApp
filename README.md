@@ -9,7 +9,7 @@ cd SwiftUI-WorkoutApp
 ```
 3. Настроить адрес папки с хуками `SwiftUI-WorkoutApp/githooks`
 ```shell
-git config core.hooksPath .githooks
+git -C /*путь_к_репозиторию*/ config core.hooksPath ./githooks
 ```
 4. Дать разрешение на запуск хука `pre-push`
 ```shell
