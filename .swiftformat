@@ -75,12 +75,12 @@ spaceInsideParens, \
 unusedArguments, \
 preferKeyPath
 
---disable isEmpty, \
+--disable preferForLoop, \
+isEmpty, \
 markTypes, \
 organizeDeclarations, \
 numberFormatting, \
 sortDeclarations, \
-sortedSwitchCases, \
 wrapMultilineStatementBraces
 
 # Exclude

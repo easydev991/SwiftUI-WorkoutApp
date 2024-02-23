@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-##!/bin/sh
-# Usage: ./githooks/pre-commit
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
@@ -13,13 +11,13 @@ SCRIPTDIR=$(dirname "$0")
 SWIFTFORMATDIR="$(dirname "$SCRIPTDIR")"
 
 if ! $SWIFTFORMATDIR/swiftformat . --lint; then
-  # Need to run swiftformat .
+  # Нужно выполнить форматирование
   echo ""
   echo "Похоже есть код, который нужно отформатировать."
   echo "Запусти в терминале из папки с проектом файл swiftformat с точкой после пробела:"
   echo "$SWIFTFORMATDIR/swiftformat ."
   exit 1
 else
-  # Format is OK
+  # Формат кода соответствует правилам
   exit 0
 fi
