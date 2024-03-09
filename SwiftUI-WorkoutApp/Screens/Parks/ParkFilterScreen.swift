@@ -49,8 +49,7 @@ extension ParkFilterScreen {
         var grade = ParkGrade.allCases
 
         var isEdited: Bool {
-            size.count < ParkSize.allCases.count
-                || grade.count < ParkGrade.allCases.count
+            size.count < ParkSize.allCases.count || grade.count < ParkGrade.allCases.count
         }
     }
 }
