@@ -1,6 +1,7 @@
 import XCTest
 
 extension XCTestCase {
+    @MainActor
     @discardableResult
     func waitAndTap(timeout: TimeInterval, element: XCUIElement) -> Bool {
         let isElementFound = element.waitForExistence(timeout: timeout)
@@ -8,12 +9,14 @@ extension XCTestCase {
         return isElementFound
     }
 
+    @MainActor
     func waitAndTapOrFail(timeout: TimeInterval = 3, element: XCUIElement) {
         if !waitAndTap(timeout: timeout, element: element) {
             XCTFail("Не нашли элемент \(element)")
         }
     }
 
+    @MainActor
     func waitAndPressOrFail(timeout: TimeInterval = 3, pressDuration: TimeInterval = 1.1, element: XCUIElement) {
         if element.waitForExistence(timeout: timeout) {
             element.press(forDuration: pressDuration)
@@ -22,6 +25,7 @@ extension XCTestCase {
         }
     }
 
+    @MainActor
     func swipeToFind(element: XCUIElement, in app: XCUIApplication, direction: SwipeDirection = .up) {
         while !element.isVisibleOnScreen {
             switch direction {
@@ -44,6 +48,7 @@ extension XCTestCase {
     }
 
     /// Свайп вниз для закрытия модального окна
+    @MainActor
     func swipeDownToClosePage(element: XCUIElement) {
         let start = element.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         let finish = element.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 30))
