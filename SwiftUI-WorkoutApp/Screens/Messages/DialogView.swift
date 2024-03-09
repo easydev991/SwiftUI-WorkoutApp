@@ -95,7 +95,7 @@ private extension DialogView {
     var isToolbarItemDisabled: Bool {
         isLoading || !network.isConnected
     }
-    
+
     func makeScrollView(with proxy: ScrollViewProxy) -> some View {
         ScrollView {
             LazyVStack(spacing: 6) {
