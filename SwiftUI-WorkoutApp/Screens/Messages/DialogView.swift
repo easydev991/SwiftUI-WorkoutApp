@@ -24,34 +24,19 @@ struct DialogView: View {
     let markedAsReadClbk: (DialogResponse) -> Void
 
     var body: some View {
-        ScrollViewReader { scrollView in
+        ScrollViewReader { proxy in
             VStack {
-                ScrollView {
-                    LazyVStack(spacing: 6) {
-                        ForEach(messages) { message in
-                            ChatBubbleRowView(
-                                messageType: message.userID == defaults.mainUserInfo?.id
-                                    ? .sent
-                                    : .incoming,
-                                message: message.formattedMessage,
-                                messageTime: message.messageDateString
-                            )
-                        }
-                    }
-                    .padding(.horizontal)
-                    .id(chatScrollView)
-                    .onChange(of: messages) { _ in
-                        withAnimation {
-                            scrollView.scrollTo(chatScrollView, anchor: .bottom)
-                        }
-                    }
+                if #available(iOS 16, *) {
+                    makeScrollView(with: proxy)
+                        .scrollDismissesKeyboard(.interactively)
+                } else {
+                    makeScrollView(with: proxy)
+                        .simultaneousGesture(
+                            DragGesture().onChanged { _ in
+                                isMessageBarFocused = false
+                            }
+                        )
                 }
-                .simultaneousGesture(
-                    DragGesture().onChanged { _ in
-                        #warning("В iOS 16 заменить на .scrollDismissesKeyboard(.interactively)")
-                        isMessageBarFocused = false
-                    }
-                )
                 sendMessageBar
             }
         }
@@ -109,6 +94,29 @@ private extension DialogView {
 
     var isToolbarItemDisabled: Bool {
         isLoading || !network.isConnected
+    }
+    
+    func makeScrollView(with proxy: ScrollViewProxy) -> some View {
+        ScrollView {
+            LazyVStack(spacing: 6) {
+                ForEach(messages) { message in
+                    ChatBubbleRowView(
+                        messageType: message.userID == defaults.mainUserInfo?.id
+                            ? .sent
+                            : .incoming,
+                        message: message.formattedMessage,
+                        messageTime: message.messageDateString
+                    )
+                }
+            }
+            .padding(.horizontal)
+            .id(chatScrollView)
+            .onChange(of: messages) { _ in
+                withAnimation {
+                    proxy.scrollTo(chatScrollView, anchor: .bottom)
+                }
+            }
+        }
     }
 
     var sendMessageBar: some View {

@@ -38,7 +38,3 @@ public enum Gender: String, CaseIterable, CustomStringConvertible, Codable {
         }
     }
 }
-
-public extension Gender {
-    static let possibleGenders = [Gender.male, Gender.female]
-}

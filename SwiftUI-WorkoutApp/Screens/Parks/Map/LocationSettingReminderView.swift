@@ -33,9 +33,11 @@ struct LocationSettingReminderView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     LocationSettingReminderView(
         message: Constants.Alert.needLocationPermission,
         isHidden: false
     )
 }
+#endif

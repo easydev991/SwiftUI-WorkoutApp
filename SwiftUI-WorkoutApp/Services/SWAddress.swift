@@ -5,10 +5,9 @@ import OSLog
 import SWModels
 import Utils
 
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
-
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
     private let storage = FileManager991(fileName: "CountriesAndCities.json")
     private let countryID: Int
     private let cityID: Int
@@ -86,35 +85,6 @@ extension SWAddress {
         } catch {
             logger.error("Не смогли сохранить список стран, \(error.localizedDescription, privacy: .public)")
             return false
-        }
-    }
-}
-
-extension SWAddress {
-    /// Полный адрес местоположения
-    static func fullAddress(for placemark: CLPlacemark) -> String? {
-        let country = placemark.country
-        let countryRegion = placemark.administrativeArea
-        let countryRegionInfo = placemark.subAdministrativeArea
-        let city = placemark.locality
-        let cityDistrict = placemark.subLocality
-        let street = placemark.thoroughfare
-        let houseNumber = placemark.subThoroughfare
-        let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
-            .compactMap { $0 }
-            .joined(separator: ", ")
-        return fullAddress.isEmpty ? nil : fullAddress
-    }
-
-    /// Обновляет старый адрес, если нужно
-    ///
-    /// - Новый адрес должен отличаться от старого
-    /// - Адрес включает все доступные данные, полученные из `placemark`
-    /// - Адрес используется при создании новой площадки
-    static func updateIfNeeded(_ oldAddress: inout String, placemark: CLPlacemark) {
-        if let fullAddress = fullAddress(for: placemark), fullAddress != oldAddress {
-            oldAddress = fullAddress
-            logger.debug("Местоположение пользователя: \(fullAddress, privacy: .public)")
         }
     }
 }
