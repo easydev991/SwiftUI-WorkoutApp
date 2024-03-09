@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/CachedAsyncImage991",
       "state" : {
-        "revision" : "db996671b7b0cc3466f3a6b867bed02baeb7f428",
-        "version" : "1.0.8"
+        "revision" : "e308c3519417eba297c26b1d7c41eae20ccbf0e1",
+        "version" : "1.1.0"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/SWDesignSystem",
       "state" : {
-        "revision" : "6ab96d03010c98d07dffa1df01a536bd1bc67132",
-        "version" : "1.7.1"
+        "revision" : "185fa4c9f9d725f621f8d51db50293bb304dbdf3",
+        "version" : "1.8.0"
       }
     }
   ],

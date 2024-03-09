@@ -1,7 +1,7 @@
 import Foundation
 
 public extension String {
-    @available(*, deprecated, message: "Нужно корректно парсить HTML")
+    @available(*, deprecated, message: "Доработать парсинг HTML")
     var withoutHTML: String {
         replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
             .trimmingCharacters(in: .whitespacesAndNewlines)

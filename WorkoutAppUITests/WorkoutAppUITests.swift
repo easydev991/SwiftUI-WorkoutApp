@@ -1,9 +1,10 @@
 import XCTest
 
 final class WorkoutAppUITests: XCTestCase {
-    private let springBoard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+    @MainActor private let springBoard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
     private var app: XCUIApplication!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
@@ -13,12 +14,14 @@ final class WorkoutAppUITests: XCTestCase {
         app.launch()
     }
 
+    @MainActor
     override func tearDown() {
         super.tearDown()
         app.launchArguments.removeAll()
         app = nil
     }
 
+    @MainActor
     func testMakeScreenshots() {
         waitAndTap(timeout: 5, element: grantLocationAccessButton)
         waitAndTapOrFail(element: parksListPickerButton)
@@ -58,6 +61,7 @@ final class WorkoutAppUITests: XCTestCase {
     }
 }
 
+@MainActor
 private extension WorkoutAppUITests {
     enum Constants {
         static let login = "testuserapple"

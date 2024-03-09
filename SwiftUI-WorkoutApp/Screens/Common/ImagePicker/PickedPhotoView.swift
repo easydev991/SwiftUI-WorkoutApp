@@ -53,9 +53,11 @@ extension PickedImageView {
     }
 }
 
+#if DEBUG
 #Preview {
     VStack(spacing: 12) {
         PickedImageView(model: .addImageButton, height: 100, action: { _ in })
         PickedImageView(model: .image(.init()), height: 100, action: { _ in })
     }
 }
+#endif

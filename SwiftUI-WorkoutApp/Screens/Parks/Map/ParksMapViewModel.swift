@@ -57,7 +57,7 @@ extension ParksMapViewModel: CLLocationManagerDelegate {
         guard oldCoordinates.differs(from: newCoordinates) || addressString.isEmpty else { return }
         CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
             guard let self, let target = places?.first else { return }
-            SWAddress.updateIfNeeded(&addressString, placemark: target)
+            updateAddressIfNeeded(placemark: target)
         }
     }
 
@@ -100,5 +100,30 @@ private extension ParksMapViewModel {
             center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
             span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
+    }
+
+    /// Обновляет старый адрес, если нужно
+    ///
+    /// - Новый адрес должен отличаться от старого
+    /// - Адрес включает все доступные данные, полученные из `placemark`
+    /// - Адрес используется при создании новой площадки
+    func updateAddressIfNeeded(placemark: CLPlacemark) {
+        let fullAddress: String? = {
+            let country = placemark.country
+            let countryRegion = placemark.administrativeArea
+            let countryRegionInfo = placemark.subAdministrativeArea
+            let city = placemark.locality
+            let cityDistrict = placemark.subLocality
+            let street = placemark.thoroughfare
+            let houseNumber = placemark.subThoroughfare
+            let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
+                .compactMap { $0 }
+                .joined(separator: ", ")
+            return fullAddress.isEmpty ? nil : fullAddress
+        }()
+        if let fullAddress, fullAddress != addressString {
+            addressString = fullAddress
+            logger.debug("Местоположение пользователя: \(fullAddress, privacy: .public)")
+        }
     }
 }

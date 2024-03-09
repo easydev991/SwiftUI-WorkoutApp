@@ -3,7 +3,7 @@ import OSLog
 import SWDesignSystem
 import SwiftUI
 
-private final class LogStore: ObservableObject {
+private final class LogStore: ObservableObject, @unchecked Sendable {
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: LogStore.self)

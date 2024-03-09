@@ -92,7 +92,7 @@ private extension EditAccountScreen {
     var genderPicker: some View {
         Menu {
             Picker("", selection: $userForm.genderCode) {
-                ForEach(Gender.possibleGenders, id: \.code) {
+                ForEach([Gender.male, Gender.female], id: \.code) {
                     Text(.init($0.rawValue))
                 }
             }
