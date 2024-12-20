@@ -2956,6 +2956,17 @@
         }
       }
     },
+    "Поделиться приложением" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share the app"
+          }
+        }
+      }
+    },
     "Подтверждение пароля" : {
       "localizations" : {
         "en" : {

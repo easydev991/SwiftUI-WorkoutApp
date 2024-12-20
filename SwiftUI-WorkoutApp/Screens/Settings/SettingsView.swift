@@ -24,6 +24,7 @@ struct SettingsView: View {
                             userAgreementButton
                             officialSiteButton
                             developerProfileButton
+                            shareAppButton
                             appVersionView
                         }
                     }
@@ -57,6 +58,7 @@ private extension SettingsView {
         static let developerBlog = URL(string: "https://t.me/easy_dev991")!
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
+        static let appStoreLink = URL(string: "https://apps.apple.com/app/id1035159361")
     }
 
     enum Feedback {
@@ -192,13 +194,23 @@ private extension SettingsView {
             )
         }
     }
+
+    @ViewBuilder
+    var shareAppButton: some View {
+        if #available(iOS 16.0, *), let url = Links.appStoreLink {
+            ShareLink(item: url) {
+                ListRowView(
+                    leadingContent: .text("Поделиться приложением"),
+                    trailingContent: .chevron
+                )
+            }
+        }
+    }
 }
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        SettingsView()
-    }
-    .environmentObject(DefaultsService())
+    SettingsView()
+        .environmentObject(DefaultsService())
 }
 #endif
