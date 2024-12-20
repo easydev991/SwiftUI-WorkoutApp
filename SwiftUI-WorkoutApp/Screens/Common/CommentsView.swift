@@ -46,55 +46,28 @@ struct CommentsView: View {
 }
 
 #if DEBUG
-#Preview {
-    Group {
-        ScrollView {
-            CommentsView(
-                items: [.preview],
-                reportClbk: { _ in },
-                deleteClbk: { _ in },
-                editClbk: { _ in },
-                isCreatingComment: .constant(false)
-            )
-        }
-        .previewDisplayName("Light, single")
-        ScrollView {
-            CommentsView(
-                items: [.preview, .preview, .preview],
-                reportClbk: { _ in },
-                deleteClbk: { _ in },
-                editClbk: { _ in },
-                isCreatingComment: .constant(false)
-            )
-        }
-        .previewDisplayName("Light, multiple")
-        Group {
-            ScrollView {
-                CommentsView(
-                    items: [.preview],
-                    reportClbk: { _ in },
-                    deleteClbk: { _ in },
-                    editClbk: { _ in },
-                    isCreatingComment: .constant(false)
-                )
-                .environment(\.colorScheme, .dark)
-                .padding(.horizontal)
-            }
-            .previewDisplayName("Dark, single")
-            ScrollView {
-                CommentsView(
-                    items: [.preview, .preview, .preview],
-                    reportClbk: { _ in },
-                    deleteClbk: { _ in },
-                    editClbk: { _ in },
-                    isCreatingComment: .constant(false)
-                )
-                .environment(\.colorScheme, .dark)
-            }
-            .previewDisplayName("Dark, multiple")
-        }
-        .background(.black)
-    }
+#Preview("Single") {
+    CommentsView(
+        items: [.preview],
+        reportClbk: { _ in },
+        deleteClbk: { _ in },
+        editClbk: { _ in },
+        isCreatingComment: .constant(false)
+    )
+    .padding(.horizontal)
+    .environmentObject(DefaultsService())
+    .environmentObject(NetworkStatus())
+}
+
+#Preview("Multiple") {
+    CommentsView(
+        items: [.preview, .preview, .preview],
+        reportClbk: { _ in },
+        deleteClbk: { _ in },
+        editClbk: { _ in },
+        isCreatingComment: .constant(false)
+    )
+    .padding(.horizontal)
     .environmentObject(DefaultsService())
     .environmentObject(NetworkStatus())
 }
