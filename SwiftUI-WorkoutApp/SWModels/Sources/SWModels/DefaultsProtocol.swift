@@ -33,7 +33,7 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     func triggerLogout()
 }
 
-extension Date: RawRepresentable {
+extension Date: @retroactive RawRepresentable {
     public var rawValue: String {
         timeIntervalSinceReferenceDate.description
     }

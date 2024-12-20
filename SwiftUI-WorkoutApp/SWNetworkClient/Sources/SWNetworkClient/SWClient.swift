@@ -140,7 +140,7 @@ public struct SWClient: Sendable {
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
     }
 
-    #warning("Запрос не используется, т.к. регистрация в приложении тоже отключена")
+    #warning("Запрос не используется, т.к. регистрация в приложении отключена")
     /// Запрашивает удаление профиля текущего пользователя приложения
     public func deleteUser() async throws {
         let endpoint = try await Endpoint.deleteUser(auth: defaults.basicAuthInfo())
