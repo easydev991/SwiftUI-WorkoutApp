@@ -215,7 +215,6 @@ private extension EventDetailsView {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
-            let oldValue = event.trainHere
             event.trainHere = newValue
             isLoading = true
             goingToEventTask = Task {

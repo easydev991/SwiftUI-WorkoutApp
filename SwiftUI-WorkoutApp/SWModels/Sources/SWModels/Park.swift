@@ -11,7 +11,7 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     public let createDate, modifyDate: String?
     public let latitude, longitude: String
     public let name: String?
-    public var photosOptional: [Photo]?
+    private var photosOptional: [Photo]?
     public let preview: String?
     public let usersTrainHereCount: Int?
     public var usersTrainHereText: String {
@@ -21,9 +21,9 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         )
     }
 
-    public var commentsOptional: [CommentResponse]?
+    private var commentsOptional: [CommentResponse]?
     public var usersTrainHere: [UserResponse]?
-    public var trainHereOptional: Bool?
+    private var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String? {
         let grade = NSLocalizedString(ParkGrade(id: typeID).rawValue, comment: "")

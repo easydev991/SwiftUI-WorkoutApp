@@ -199,7 +199,6 @@ private extension ParkDetailScreen {
         case (true, true), (false, false):
             break // Пользователь не трогал тоггл
         case (true, false), (false, true):
-            let oldValue = park.trainHere
             park.trainHere = newValue
             isLoading = true
             changeTrainHereTask = Task {
