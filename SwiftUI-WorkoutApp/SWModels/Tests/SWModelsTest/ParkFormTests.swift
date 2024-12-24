@@ -1,98 +1,114 @@
 @testable import SWModels
-import XCTest
+import Testing
 
-final class ParkFormTests: XCTestCase {
-    func testIsNotReadyToCreate_empty() {
+struct ParkFormTests {
+    @Test
+    func isNotReadyToCreate_empty() {
         let form = emptyForm
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_address() {
+    @Test
+    func isNotReadyToCreate_address() {
         let form = makeForm(address: "")
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_latitude() {
+    @Test
+    func isNotReadyToCreate_latitude() {
         let form = makeForm(latitude: "")
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_longitude() {
+    @Test
+    func isNotReadyToCreate_longitude() {
         let form = makeForm(longitude: "")
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_cityID() {
+    @Test
+    func isNotReadyToCreate_cityID() {
         let form = makeForm(cityID: 0)
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsNotReadyToCreate_newMediaFiles() {
+    @Test
+    func isNotReadyToCreate_newMediaFiles() {
         let form = makeForm(newMediaFiles: [])
-        XCTAssertFalse(form.isReadyToCreate)
+        #expect(!form.isReadyToCreate)
     }
 
-    func testIsReadyToCreate() {
+    @Test
+    func isReadyToCreate() {
         let form = makeForm()
-        XCTAssertTrue(form.isReadyToCreate)
+        #expect(form.isReadyToCreate)
     }
 
-    func testIsNotReadyToUpdate_empty() {
+    @Test
+    func isNotReadyToUpdate_empty() {
         let oldForm = makeForm()
         let newForm = emptyForm
-        XCTAssertFalse(newForm.isReadyToUpdate(old: oldForm))
+        #expect(!newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsNotReadyToUpdate_equal() {
+    @Test
+    func isNotReadyToUpdate_equal() {
         let oldForm = makeForm()
         let newForm = makeForm()
-        XCTAssertFalse(newForm.isReadyToUpdate(old: oldForm))
+        #expect(!newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_address() {
+    @Test
+    func isReadyToUpdate_address() {
         let oldForm = makeForm(address: "old")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_latitude() {
+    @Test
+    func isReadyToUpdate_latitude() {
         let oldForm = makeForm(latitude: "old")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_longitude() {
+    @Test
+    func isReadyToUpdate_longitude() {
         let oldForm = makeForm(longitude: "old")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_cityID() {
+    @Test
+    func isReadyToUpdate_cityID() {
         let oldForm = makeForm(cityID: 123)
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_typeID() {
+    @Test
+    func isReadyToUpdate_typeID() {
         let oldForm = makeForm(typeID: 123)
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_sizeID() {
+    @Test
+    func isReadyToUpdate_sizeID() {
         let oldForm = makeForm(sizeID: 123)
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
-    func testIsReadyToUpdate_newMediaFiles() {
+    @Test
+    func isReadyToUpdate_newMediaFiles() {
         let oldForm = makeForm()
         let newForm = makeForm(
             newMediaFiles: (2 ..< 4).map {
                 MediaFile(imageData: .init(), forKey: "\($0)")
             }
         )
-        XCTAssertTrue(newForm.isReadyToUpdate(old: oldForm))
+        #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 }
 

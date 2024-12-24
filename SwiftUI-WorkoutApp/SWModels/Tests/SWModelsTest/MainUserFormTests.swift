@@ -1,133 +1,154 @@
+import Foundation
 @testable import SWModels
-import XCTest
+import Testing
 
-final class MainUserFormTests: XCTestCase {
-    func testIsNotReadyToRegister_empty() {
+struct MainUserFormTests {
+    @Test
+    func isNotReadyToRegister_empty() {
         let form = emptyForm
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsNotReadyToRegister_userName() {
+    @Test
+    func isNotReadyToRegister_userName() {
         let form = makeForm(userName: "")
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsNotReadyToRegister_email() {
+    @Test
+    func isNotReadyToRegister_email() {
         let form = makeForm(email: "")
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsNotReadyToRegister_passwordCount() {
+    @Test
+    func isNotReadyToRegister_passwordCount() {
         let form = makeForm(password: "short")
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsNotReadyToRegister_gender() {
+    @Test
+    func isNotReadyToRegister_gender() {
         let form = makeForm(gender: .unspecified)
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsNotReadyToRegister_age() {
+    @Test
+    func isNotReadyToRegister_age() {
         let form = makeForm(birthDate: .now)
-        XCTAssertFalse(form.isReadyToRegister)
+        #expect(!form.isReadyToRegister)
     }
 
-    func testIsReadyToRegister() {
+    @Test
+    func isReadyToRegister() {
         let form = makeForm()
-        XCTAssertTrue(form.isReadyToRegister)
+        #expect(form.isReadyToRegister)
     }
 
-    func testIsNotReadyToSave_empty() {
+    @Test
+    func isNotReadyToSave_empty() {
         let oldForm = makeForm()
         let newForm = emptyForm
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_equal() {
+    @Test
+    func isNotReadyToSave_equal() {
         let oldForm = makeForm()
         let newForm = makeForm()
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_userName() {
+    @Test
+    func isNotReadyToSave_userName() {
         let oldForm = makeForm()
         let newForm = makeForm(userName: "")
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_email() {
+    @Test
+    func isNotReadyToSave_email() {
         let oldForm = makeForm()
         let newForm = makeForm(email: "")
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_fullName() {
+    @Test
+    func isNotReadyToSave_fullName() {
         let oldForm = makeForm()
         let newForm = makeForm(fullName: "")
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_gender() {
+    @Test
+    func isNotReadyToSave_gender() {
         let oldForm = makeForm()
         let newForm = makeForm(gender: .unspecified)
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsNotReadyToSave_age() {
+    @Test
+    func isNotReadyToSave_age() {
         let oldForm = makeForm()
         let newForm = makeForm(birthDate: .now)
-        XCTAssertFalse(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(!newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_userName() {
+    @Test
+    func isReadyToSave_userName() {
         let oldForm = makeForm(userName: "old")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_fullName() {
+    @Test
+    func isReadyToSave_fullName() {
         let oldForm = makeForm(fullName: "old")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_email() {
+    @Test
+    func isReadyToSave_email() {
         let oldForm = makeForm(email: "old@old.com")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_password() {
+    @Test
+    func isReadyToSave_password() {
         let oldForm = makeForm(password: "oldPassword")
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_birthDate() {
-        let oldDate = Calendar.current.date(
-            from: .init(year: 1980, month: 1, day: 1)
-        )
-        let oldForm = makeForm(birthDate: oldDate!)
+    @Test
+    func isReadyToSave_birthDate() throws {
+        let oldDate = try #require(Calendar.current.date(from: .init(year: 1980, month: 1, day: 1)))
+        let oldForm = makeForm(birthDate: oldDate)
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_country() {
+    @Test
+    func isReadyToSave_country() {
         let oldForm = makeForm(country: .init(cities: [], id: "0", name: "0"))
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_city() {
+    @Test
+    func isReadyToSave_city() {
         let oldForm = makeForm(city: .init(id: "0"))
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 
-    func testIsReadyToSave_gender() {
+    @Test
+    func isReadyToSave_gender() {
         let oldForm = makeForm(gender: .female)
         let newForm = makeForm()
-        XCTAssertTrue(newForm.isReadyToSave(comparedTo: oldForm))
+        #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
 }
 
