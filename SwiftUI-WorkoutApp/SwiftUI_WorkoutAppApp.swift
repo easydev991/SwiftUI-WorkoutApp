@@ -16,6 +16,13 @@ struct SwiftUI_WorkoutAppApp: App {
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
+    private var colorScheme: ColorScheme? {
+        switch defaults.appTheme {
+        case .light: .light
+        case .dark: .dark
+        case .system: nil
+        }
+    }
 
     init() {
         setupAppearance()
@@ -30,9 +37,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(network)
                 .environmentObject(defaults)
                 .environmentObject(parksManager)
-                .onAppear {
-                    AppThemeService.set(defaults.appTheme)
-                }
+                .preferredColorScheme(colorScheme)
         }
         .onChange(of: scenePhase) { phase in
             switch phase {

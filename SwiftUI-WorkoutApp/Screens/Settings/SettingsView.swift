@@ -89,10 +89,7 @@ private extension SettingsView {
                 "",
                 selection: .init(
                     get: { defaults.appTheme },
-                    set: {
-                        defaults.setAppTheme($0)
-                        AppThemeService.set($0)
-                    }
+                    set: { defaults.setAppTheme($0) }
                 )
             ) {
                 ForEach(AppColorTheme.allCases) {
