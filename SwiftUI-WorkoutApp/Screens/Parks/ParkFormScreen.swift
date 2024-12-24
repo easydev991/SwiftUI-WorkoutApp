@@ -1,6 +1,5 @@
 import CoreLocation.CLLocation
 import ImagePicker
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,7 +8,7 @@ import SWNetworkClient
 /// Экран с формой для создания/изменения площадки
 struct ParkFormScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var parkForm: ParkForm
@@ -169,7 +168,7 @@ private extension ParkFormScreen {
             }
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(!isFormReady || !network.isConnected)
+        .disabled(!isFormReady || !isNetworkConnected)
     }
 
     var isFormReady: Bool {
@@ -182,7 +181,6 @@ private extension ParkFormScreen {
 #if DEBUG
 #Preview {
     ParkFormScreen(.editExisting(.preview), refreshClbk: {})
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

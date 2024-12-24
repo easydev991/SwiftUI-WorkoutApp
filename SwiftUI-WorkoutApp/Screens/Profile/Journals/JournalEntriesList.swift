@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,7 @@ import SWNetworkClient
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesList: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var entries = [JournalEntryResponse]()
     @State private var isLoading = false
@@ -41,7 +40,7 @@ struct JournalEntriesList: View {
                                 showDeleteDialog = true
                             }
                         ),
-                        isNetworkConnected: network.isConnected,
+                        isNetworkConnected: isNetworkConnected,
                         mainUserID: defaults.mainUserInfo?.id,
                         isJournalOwner: userID == defaults.mainUserInfo?.id
                     )
@@ -112,7 +111,7 @@ private extension JournalEntriesList {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(isLoading || !network.isConnected)
+            .disabled(isLoading || !isNetworkConnected)
             .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryView(
                     mode: .newForJournal(
@@ -197,7 +196,6 @@ private extension JournalEntriesList {
 #if DEBUG
 #Preview {
     JournalEntriesList(for: 30, in: .preview)
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

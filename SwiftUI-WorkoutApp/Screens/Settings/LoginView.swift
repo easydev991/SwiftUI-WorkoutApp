@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,7 +8,7 @@ import SWNetworkClient
 /// На нем еще можно восстановить пароль
 struct LoginView: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @State private var isLoading = false
     @State private var credentials = Credentials()
     @State private var showResetInfoAlert = false
@@ -64,7 +63,7 @@ private extension LoginView {
     var isError: Bool { !errorMessage.isEmpty }
 
     var canLogIn: Bool {
-        credentials.isReady && !isError && network.isConnected
+        credentials.isReady && !isError && isNetworkConnected
     }
 
     var loginField: some View {
@@ -156,6 +155,5 @@ private extension LoginView {
 #if DEBUG
 #Preview {
     LoginView()
-        .environmentObject(NetworkStatus())
 }
 #endif

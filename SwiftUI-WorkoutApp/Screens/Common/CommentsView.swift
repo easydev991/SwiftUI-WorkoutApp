@@ -1,11 +1,10 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
 
 /// Список комментариев
 struct CommentsView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     let items: [CommentResponse]
     let reportClbk: (CommentResponse) -> Void
@@ -25,7 +24,7 @@ struct CommentsView: View {
                                 dateText: comment.formattedDateString,
                                 bodyText: comment.formattedBody,
                                 isCommentByMainUser: comment.user?.id == defaults.mainUserInfo?.id,
-                                isNetworkConnected: network.isConnected,
+                                isNetworkConnected: isNetworkConnected,
                                 reportAction: { reportClbk(comment) },
                                 editAction: { editClbk(comment) },
                                 deleteAction: { deleteClbk(comment.id) }
@@ -56,7 +55,6 @@ struct CommentsView: View {
     )
     .padding(.horizontal)
     .environmentObject(DefaultsService())
-    .environmentObject(NetworkStatus())
 }
 
 #Preview("Multiple") {
@@ -69,6 +67,5 @@ struct CommentsView: View {
     )
     .padding(.horizontal)
     .environmentObject(DefaultsService())
-    .environmentObject(NetworkStatus())
 }
 #endif

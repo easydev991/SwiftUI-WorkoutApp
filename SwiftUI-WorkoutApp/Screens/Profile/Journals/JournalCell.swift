@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels

@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,7 @@ import SWNetworkClient
 
 /// Список диалогов
 struct DialogListView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var dialogs = [DialogResponse]()
     @State private var isLoading = false
@@ -72,7 +71,7 @@ private extension DialogListView {
                 .symbolVariant(.circle)
         }
         .opacity(hasFriends || !dialogs.isEmpty ? 1 : 0)
-        .disabled(!network.isConnected)
+        .disabled(!isNetworkConnected)
     }
 
     var emptyContentView: some View {
@@ -81,7 +80,7 @@ private extension DialogListView {
             isAuthorized: defaults.isAuthorized,
             hasFriends: defaults.hasFriends,
             hasParks: defaults.hasParks,
-            isNetworkConnected: network.isConnected,
+            isNetworkConnected: isNetworkConnected,
             action: emptyViewAction
         )
         .opacity(showEmptyView ? 1 : 0)
@@ -206,7 +205,6 @@ private extension DialogListView {
 #if DEBUG
 #Preview {
     DialogListView()
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

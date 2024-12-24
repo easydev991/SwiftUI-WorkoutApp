@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,7 @@ import SWNetworkClient
 
 /// Экран с диалогом
 struct DialogView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messages = [MessageResponse]()
     @State private var newMessage = ""
@@ -93,7 +92,7 @@ private extension DialogView {
     }
 
     var isToolbarItemDisabled: Bool {
-        isLoading || !network.isConnected
+        isLoading || !isNetworkConnected
     }
 
     func makeScrollView(with proxy: ScrollViewProxy) -> some View {
@@ -155,7 +154,7 @@ private extension DialogView {
     var isSendButtonDisabled: Bool {
         newMessage.isEmpty
             || isLoading
-            || !network.isConnected
+            || !isNetworkConnected
     }
 
     func markAsRead() async {
@@ -206,7 +205,6 @@ private extension DialogView {
 #if DEBUG
 #Preview {
     DialogView(dialog: .preview, markedAsReadClbk: { _ in })
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

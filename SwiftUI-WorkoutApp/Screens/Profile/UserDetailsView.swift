@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,7 +6,7 @@ import SWNetworkClient
 /// Экран с детальной информацией профиля
 @MainActor
 struct UserDetailsView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var socialActions = SocialActions()
@@ -257,7 +256,7 @@ private extension UserDetailsView {
         } label: {
             Icons.Regular.magnifyingglass.view
         }
-        .disabled(!network.isConnected)
+        .disabled(!isNetworkConnected)
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
             NavigationView {
@@ -409,7 +408,6 @@ private extension UserDetailsView {
 #if DEBUG
 #Preview {
     UserDetailsView(for: .preview)
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

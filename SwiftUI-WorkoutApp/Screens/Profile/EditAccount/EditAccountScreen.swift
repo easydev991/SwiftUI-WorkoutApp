@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,7 +6,7 @@ import SWNetworkClient
 /// Экран для изменения личных данных пользователя
 struct EditAccountScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var userForm = MainUserForm.emptyValue
     /// Ранее сохраненная форма с данными пользователя
@@ -164,7 +163,7 @@ private extension EditAccountScreen {
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(
                 !userForm.isReadyToSave(comparedTo: oldUserForm)
-                    || !network.isConnected
+                    || !isNetworkConnected
             )
     }
 
@@ -250,7 +249,6 @@ private extension EditAccountScreen {
 #Preview {
     NavigationView {
         EditAccountScreen()
-            .environmentObject(NetworkStatus())
             .environmentObject(DefaultsService())
     }
 }

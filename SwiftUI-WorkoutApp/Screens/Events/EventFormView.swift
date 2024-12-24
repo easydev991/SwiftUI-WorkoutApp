@@ -1,5 +1,4 @@
 import ImagePicker
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -8,7 +7,7 @@ import SWNetworkClient
 /// Экран для создания/изменения мероприятия
 struct EventFormView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
@@ -201,7 +200,7 @@ private extension EventFormView {
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .padding(.top, 42)
-        .disabled(!isFormReady || !network.isConnected)
+        .disabled(!isFormReady || !isNetworkConnected)
     }
 
     var isFormReady: Bool {
@@ -218,7 +217,7 @@ private extension EventFormView {
 
     /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
     var canShowParkPicker: Bool {
-        guard network.isConnected, let userInfo = defaults.mainUserInfo else { return false }
+        guard isNetworkConnected, let userInfo = defaults.mainUserInfo else { return false }
         switch mode {
         case .regularCreate:
             return true
@@ -233,7 +232,6 @@ private extension EventFormView {
 #if DEBUG
 #Preview {
     EventFormView(mode: .regularCreate, refreshClbk: {})
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif
