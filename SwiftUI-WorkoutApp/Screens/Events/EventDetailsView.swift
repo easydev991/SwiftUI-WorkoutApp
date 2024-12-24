@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,7 +6,7 @@ import SWNetworkClient
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -126,7 +125,7 @@ private extension EventDetailsView {
                 }
             }
         }
-        .disabled(isLoading || !network.isConnected)
+        .disabled(isLoading || !isNetworkConnected)
     }
 
     var headerAndMapSection: some View {
@@ -204,7 +203,7 @@ private extension EventDetailsView {
                         )
                     )
                 )
-                .disabled(!network.isConnected)
+                .disabled(!isNetworkConnected)
             }
         }
     }
@@ -256,7 +255,7 @@ private extension EventDetailsView {
             .disabled(
                 !defaults.isAuthorized
                     || isEventAuthor
-                    || !network.isConnected
+                    || !isNetworkConnected
             )
         }
     }
@@ -430,7 +429,6 @@ private extension EventDetailsView {
 #if DEBUG
 #Preview {
     EventDetailsView(event: .preview, onDeletion: { _ in })
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

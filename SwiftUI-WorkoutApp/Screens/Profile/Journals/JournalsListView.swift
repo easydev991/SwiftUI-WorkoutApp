@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,7 @@ import SWNetworkClient
 
 /// Список дневников
 struct JournalsListView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var journals = [JournalResponse]()
     @State private var newJournalTitle = ""
@@ -73,7 +72,7 @@ private extension JournalsListView {
                 .symbolVariant(.circle)
         }
         .opacity(showAddJournalButton ? 1 : 0)
-        .disabled(!network.isConnected)
+        .disabled(!isNetworkConnected)
     }
 
     var emptyContentView: some View {
@@ -82,7 +81,7 @@ private extension JournalsListView {
             isAuthorized: defaults.isAuthorized,
             hasFriends: defaults.hasFriends,
             hasParks: defaults.hasParks,
-            isNetworkConnected: network.isConnected,
+            isNetworkConnected: isNetworkConnected,
             action: showNewJournalSheet
         )
         .opacity(showEmptyView ? 1 : 0)
@@ -101,7 +100,7 @@ private extension JournalsListView {
                                 setupClbk: { setupJournalToEdit(journal) },
                                 deleteClbk: { initiateDeletion(for: journal.id) }
                             ),
-                            isNetworkConnected: network.isConnected,
+                            isNetworkConnected: isNetworkConnected,
                             mainUserID: defaults.mainUserInfo?.id,
                             isJournalOwner: journal.ownerID == defaults.mainUserInfo?.id
                         )
@@ -228,7 +227,6 @@ private extension JournalsListView {
 #if DEBUG
 #Preview {
     JournalsListView(userID: .previewUserID)
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

@@ -1,4 +1,3 @@
-import NetworkStatus
 import OSLog
 import SWDesignSystem
 import SwiftUI
@@ -9,7 +8,7 @@ import SWNetworkClient
 struct ParkDetailScreen: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ParkDetailScreen")
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -126,7 +125,7 @@ private extension ParkDetailScreen {
                 }
             }
         }
-        .disabled(isLoading || !network.isConnected)
+        .disabled(isLoading || !isNetworkConnected)
     }
 
     var headerAndMapSection: some View {
@@ -156,7 +155,7 @@ private extension ParkDetailScreen {
                     Text("Создать мероприятие")
                 }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
-                .disabled(!network.isConnected)
+                .disabled(!isNetworkConnected)
             }
         }
         .insideCardBackground()
@@ -189,7 +188,7 @@ private extension ParkDetailScreen {
                     )
                 )
             )
-            .disabled(!network.isConnected)
+            .disabled(!isNetworkConnected)
         }
     }
 
@@ -241,7 +240,7 @@ private extension ParkDetailScreen {
             .disabled(
                 !defaults.isAuthorized
                     || isParkAuthor
-                    || !network.isConnected
+                    || !isNetworkConnected
             )
         }
     }
@@ -436,7 +435,6 @@ private extension ParkDetailScreen {
 #if DEBUG
 #Preview {
     ParkDetailScreen(park: .preview, onDeletion: { _ in })
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

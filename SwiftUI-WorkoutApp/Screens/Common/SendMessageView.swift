@@ -1,10 +1,9 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
     @Binding var showErrorAlert: Bool
@@ -64,7 +63,7 @@ private extension SendMessageView {
             sendAction()
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(isSendButtonDisabled || !network.isConnected)
+        .disabled(isSendButtonDisabled || !isNetworkConnected)
     }
 
     var textView: some View {
@@ -99,6 +98,5 @@ private extension SendMessageView {
         errorTitle: .constant(""),
         dismissError: {}
     )
-    .environmentObject(NetworkStatus())
 }
 #endif

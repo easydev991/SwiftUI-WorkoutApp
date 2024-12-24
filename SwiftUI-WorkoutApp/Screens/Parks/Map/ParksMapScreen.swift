@@ -1,6 +1,5 @@
 import FileManager991
 import MapView991
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,7 +8,7 @@ import Utils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
     @StateObject private var viewModel = ParksMapViewModel()
@@ -248,7 +247,7 @@ private extension ParksMapScreen {
                     .symbolVariant(.circle)
             }
             .opacity(isLoading ? 0 : 1)
-            .disabled(!network.isConnected || !viewModel.locationErrorMessage.isEmpty)
+            .disabled(!isNetworkConnected || !viewModel.locationErrorMessage.isEmpty)
         }
     }
 
@@ -304,7 +303,6 @@ private extension ParksMapScreen {
 #if DEBUG
 #Preview {
     ParksMapScreen()
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
         .environmentObject(ParksManager())
 }

@@ -1,10 +1,9 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
 
 struct PhotoDetailScreen: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteDialog = false
     @State private var showReportDialog = false
@@ -47,7 +46,7 @@ private extension PhotoDetailScreen {
                 Button("Закрыть") { dismiss() }
                 Spacer()
                 trailingButton
-                    .disabled(!network.isConnected)
+                    .disabled(!isNetworkConnected)
             }
             .tint(.swAccent)
             .padding(.horizontal)
@@ -115,6 +114,5 @@ private extension PhotoDetailScreen {
         reportPhotoClbk: {},
         deletePhotoClbk: { _ in }
     )
-    .environmentObject(NetworkStatus())
 }
 #endif

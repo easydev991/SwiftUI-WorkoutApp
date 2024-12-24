@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,7 +6,7 @@ import SWNetworkClient
 /// Экран со списком мероприятий
 struct EventsListView: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var futureEvents = [EventResponse]()
     @State private var pastEvents = [EventResponse]()
@@ -95,7 +94,7 @@ private extension EventsListView {
             isAuthorized: defaults.isAuthorized,
             hasFriends: defaults.hasFriends,
             hasParks: defaults.hasParks,
-            isNetworkConnected: network.isConnected,
+            isNetworkConnected: isNetworkConnected,
             action: {
                 if canAddEvent {
                     showEventCreationSheet.toggle()
@@ -149,7 +148,7 @@ private extension EventsListView {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(!network.isConnected)
+            .disabled(!isNetworkConnected)
             .sheet(isPresented: $showEventCreationSheet) {
                 NavigationView {
                     EventFormView(
@@ -219,7 +218,6 @@ private extension EventsListView {
 #Preview {
     EventsListView()
         .environmentObject(TabViewModel())
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

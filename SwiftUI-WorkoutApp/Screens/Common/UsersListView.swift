@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,7 +5,7 @@ import SWNetworkClient
 
 /// Экран со списком пользователей
 struct UsersListView: View {
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var users = [UserResponse]()
     @State private var friendRequests = [UserResponse]()
@@ -44,7 +43,7 @@ struct UsersListView: View {
         )
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .disabled(!network.isConnected)
+        .disabled(!isNetworkConnected)
         .alert(errorTitle, isPresented: $showErrorAlert) {
             Button("Ok") { closeAlert() }
         }
@@ -220,7 +219,6 @@ private extension UsersListView {
 #if DEBUG
 #Preview {
     UsersListView(mode: .friends(userID: .previewUserID))
-        .environmentObject(NetworkStatus())
         .environmentObject(DefaultsService())
 }
 #endif

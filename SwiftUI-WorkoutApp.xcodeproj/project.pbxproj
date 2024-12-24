@@ -61,6 +61,7 @@
 		67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A4710C2AEED8F8004D341D /* PastEventStorage.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
 		67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */; };
+		67AE072A2D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AE07292D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
 		67B78716281D8006008B104F /* ParksMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* ParksMapViewModel.swift */; };
 		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
@@ -148,6 +149,7 @@
 		67A4710C2AEED8F8004D341D /* PastEventStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEventStorage.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFilterScreen.swift; sourceTree = "<group>"; };
+		67AE07292D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectedEnvironmentKey.swift; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* ParksMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksMapViewModel.swift; sourceTree = "<group>"; };
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
@@ -330,6 +332,7 @@
 		6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				67AE08172D1B200A0097B59F /* EnvironmentKeys */,
 				677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */,
 				6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */,
 				6758B93A281E74DF001D83D8 /* Extensions */,
@@ -426,6 +429,14 @@
 				67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */,
 			);
 			path = ParkLocation;
+			sourceTree = "<group>";
+		};
+		67AE08172D1B200A0097B59F /* EnvironmentKeys */ = {
+			isa = PBXGroup;
+			children = (
+				67AE07292D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift */,
+			);
+			path = EnvironmentKeys;
 			sourceTree = "<group>";
 		};
 		67C87FD4284388EF00D6377D /* PhotoSection */ = {
@@ -590,6 +601,7 @@
 				67551C362AEC338600084A35 /* SWAddress.swift in Sources */,
 				6798AA59280AF4B100DB76F1 /* ParksMapScreen.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserDetailsView.swift in Sources */,
+				67AE072A2D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift in Sources */,
 				67B78712281D654C008B104F /* DefaultsService.swift in Sources */,
 				67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
@@ -824,7 +836,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -873,7 +885,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

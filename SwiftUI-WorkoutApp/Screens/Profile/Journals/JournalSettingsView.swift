@@ -1,4 +1,3 @@
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,7 +6,7 @@ import SWNetworkClient
 struct JournalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var network: NetworkStatus
+    @Environment(\.networkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -111,7 +110,7 @@ private extension JournalSettingsView {
     }
 
     var isSaveButtonDisabled: Bool {
-        !network.isConnected
+        !isNetworkConnected
             || journal.title.isEmpty
             || initialJournal == journal
     }
@@ -120,6 +119,5 @@ private extension JournalSettingsView {
 #if DEBUG
 #Preview {
     JournalSettingsView(with: .preview, updatedClbk: { _ in })
-        .environmentObject(NetworkStatus())
 }
 #endif

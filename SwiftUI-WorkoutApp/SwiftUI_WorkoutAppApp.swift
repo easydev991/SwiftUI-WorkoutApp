@@ -38,6 +38,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 .environmentObject(defaults)
                 .environmentObject(parksManager)
                 .preferredColorScheme(colorScheme)
+                .environment(\.networkConnected, network.isConnected)
         }
         .onChange(of: scenePhase) { phase in
             switch phase {
