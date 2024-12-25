@@ -21,6 +21,8 @@ struct PickedImagesGrid: View {
     /// Сколько еще можно выбрать фотографий
     let selectionLimit: Int
     /// Обработать добавление лишних фотографий
+    ///
+    /// У стандартного пикера есть баг: иногда можно нажать на фото больше раз, чем позволяет лимит
     let processExtraImages: () -> Void
 
     var body: some View {
@@ -94,13 +96,12 @@ private extension PickedImagesGrid {
     }
 
     var subtitle: String {
-        if images.isEmpty {
-            String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)
-        } else {
-            selectionLimit > 0
-                ? String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
-                : NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
+        guard selectionLimit > 0 else {
+            return NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
         }
+        return images.isEmpty
+            ? String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)
+            : String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
     }
 
     func deletePhoto(at index: Int) {
@@ -110,14 +111,44 @@ private extension PickedImagesGrid {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Лимит 10, есть 0") {
     PickedImagesGrid(
-        images: .constant([
-            .init(systemName: "person")!,
-            .init(systemName: "book")!
-        ]),
+        images: .constant([]),
         showImagePicker: .constant(false),
-        selectionLimit: 5,
+        selectionLimit: 10,
+        processExtraImages: {}
+    )
+}
+
+#Preview("Лимит 7, есть 3") {
+    let images: [UIImage] = Array(1 ... 3).map {
+        .init(systemName: "\($0).circle.fill")!
+    }
+    PickedImagesGrid(
+        images: .constant(images),
+        showImagePicker: .constant(false),
+        selectionLimit: 7,
+        processExtraImages: {}
+    )
+}
+
+#Preview("Лимит 0, есть 10") {
+    let images: [UIImage] = Array(1 ... 10).map {
+        .init(systemName: "\($0).circle.fill")!
+    }
+    PickedImagesGrid(
+        images: .constant(images),
+        showImagePicker: .constant(false),
+        selectionLimit: 0,
+        processExtraImages: {}
+    )
+}
+
+#Preview("Лимит 0, есть 0") {
+    PickedImagesGrid(
+        images: .constant([]),
+        showImagePicker: .constant(false),
+        selectionLimit: 0,
         processExtraImages: {}
     )
 }
