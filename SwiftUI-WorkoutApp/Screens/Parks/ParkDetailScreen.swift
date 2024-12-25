@@ -339,7 +339,7 @@ private extension ParkDetailScreen {
                 if try await SWClient(with: defaults).deletePhoto(
                     from: .park(.init(containerID: park.id, photoID: id))
                 ) {
-                    park.photos.removeAll(where: { $0.id == id })
+                    park.photos = park.removePhotoById(id)
                 }
             } catch {
                 process(error)

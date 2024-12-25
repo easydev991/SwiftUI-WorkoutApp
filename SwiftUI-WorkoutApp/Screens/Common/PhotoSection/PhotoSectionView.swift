@@ -92,7 +92,7 @@ private extension PhotoSectionView {
             ResizableCachedImage(
                 url: photo.imageURL,
                 didTapImage: { uiImage in
-                    fullscreenImageInfo = .init(uiImage: uiImage, id: photo.id)
+                    fullscreenImageInfo = .init(uiImage: uiImage, id: photo.serverId)
                 }
             )
             .scaledToFill()

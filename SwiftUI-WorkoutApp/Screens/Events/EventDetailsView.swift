@@ -365,7 +365,7 @@ private extension EventDetailsView {
                 if try await SWClient(with: defaults).deletePhoto(
                     from: .event(.init(containerID: event.id, photoID: id))
                 ) {
-                    event.photos.removeAll(where: { $0.id == id })
+                    event.photos = event.removePhotoById(id)
                 }
             } catch {
                 setupErrorAlert(ErrorFilter.message(from: error))

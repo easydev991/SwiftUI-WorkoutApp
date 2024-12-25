@@ -156,7 +156,11 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
 }
 
 public struct Photo: Codable, Identifiable, Hashable, Sendable {
-    public let id: Int
+    public var id: String {
+        "\(serverId)-\(stringURL ?? "")"
+    }
+
+    public let serverId: Int
     public let stringURL: String?
 
     public var imageURL: URL? {
@@ -164,12 +168,12 @@ public struct Photo: Codable, Identifiable, Hashable, Sendable {
     }
 
     public enum CodingKeys: String, CodingKey {
-        case id
+        case serverId = "id"
         case stringURL = "photo"
     }
 
-    public init(id: Int, stringURL: String? = nil) {
-        self.id = id
+    public init(id: Int, stringURL: String?) {
+        self.serverId = id
         self.stringURL = stringURL
     }
 }
@@ -206,6 +210,10 @@ public extension Park {
     var photos: [Photo] {
         get { photosOptional ?? [] }
         set { photosOptional = newValue }
+    }
+
+    func removePhotoById(_ id: Int) -> [Photo] {
+        PhotoRemover(initialPhotos: photos, removeId: id).photosAfterRemoval
     }
 
     var hasComments: Bool { !comments.isEmpty }
