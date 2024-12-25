@@ -47,14 +47,14 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Utils",
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/Utils",
         "identifier" : "UtilsTests",
         "name" : "UtilsTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/SWModels",
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
         "identifier" : "SWModelsTest",
         "name" : "SWModelsTest"
       }

@@ -13,7 +13,6 @@
 		67138D922974851F00BBF450 /* XCUIElement+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D912974851F00BBF450 /* XCUIElement+.swift */; };
 		67138D942974854F00BBF450 /* XCTestCase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D932974854F00BBF450 /* XCTestCase+.swift */; };
 		6718BCA42AD5327F002846A6 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */; };
-		671CD13929A2904200645678 /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 671CD13829A2904200645678 /* SWModels */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		674023402B0BC01600A7311A /* FeedbackSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6740233F2B0BC01600A7311A /* FeedbackSender.swift */; };
 		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
@@ -27,7 +26,6 @@
 		67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67515698283FEC3100501346 /* PickedImagesGrid.swift */; };
 		67551C362AEC338600084A35 /* SWAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67551C352AEC338600084A35 /* SWAddress.swift */; };
 		6758463F2965B7F2000BA5E0 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */; };
-		675A370A2854810B00DAE071 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 675A37092854810B00DAE071 /* Utils */; };
 		675E5618297D21D400B4981A /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675E5617297D21D400B4981A /* Array+.swift */; };
 		675EC64F2814126800C2E229 /* TextEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC64E2814126800C2E229 /* TextEntryView.swift */; };
 		675EC6572815433600C2E229 /* UsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EC6562815433600C2E229 /* UsersListView.swift */; };
@@ -39,8 +37,10 @@
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
+		67795FB22D1C05D90087132F /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB12D1C05D90087132F /* SWModels */; };
+		67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB32D1C05D90087132F /* SWNetworkClient */; };
+		67795FB62D1C05D90087132F /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB52D1C05D90087132F /* Utils */; };
 		67891E38283E947B00B10802 /* ParkFormScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* ParkFormScreen.swift */; };
-		678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
 		6798AA40280AEDC900DB76F1 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3F280AEDC900DB76F1 /* RootView.swift */; };
 		6798AA42280AEDCA00DB76F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA41280AEDCA00DB76F1 /* Assets.xcassets */; };
@@ -98,7 +98,6 @@
 		67138D912974851F00BBF450 /* XCUIElement+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+.swift"; sourceTree = "<group>"; };
 		67138D932974854F00BBF450 /* XCTestCase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+.swift"; sourceTree = "<group>"; };
 		6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
-		671CD13729A28CB800645678 /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWModels; path = "SwiftUI-WorkoutApp/SWModels"; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		6740233F2B0BC01600A7311A /* FeedbackSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSender.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
@@ -112,7 +111,6 @@
 		67515698283FEC3100501346 /* PickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedImagesGrid.swift; sourceTree = "<group>"; };
 		67551C352AEC338600084A35 /* SWAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWAddress.swift; sourceTree = "<group>"; };
 		6758463E2965B7F2000BA5E0 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
-		675A3707285480E600DAE071 /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Utils; path = "SwiftUI-WorkoutApp/Utils"; sourceTree = "<group>"; };
 		675E5617297D21D400B4981A /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		675EC64E2814126800C2E229 /* TextEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryView.swift; sourceTree = "<group>"; };
 		675EC65528153B8200C2E229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -127,7 +125,6 @@
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
 		677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SwiftUI-WorkoutApp.xctestplan"; sourceTree = "<group>"; };
 		67891E37283E947B00B10802 /* ParkFormScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFormScreen.swift; sourceTree = "<group>"; };
-		678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SWNetworkClient; path = "SwiftUI-WorkoutApp/SWNetworkClient"; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_WorkoutAppApp.swift; sourceTree = "<group>"; };
 		6798AA3F280AEDC900DB76F1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -150,6 +147,9 @@
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFilterScreen.swift; sourceTree = "<group>"; };
 		67AE07292D1B1E3B0097B59F /* NetworkConnectedEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectedEnvironmentKey.swift; sourceTree = "<group>"; };
+		67AE08482D1C05020097B59F /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWModels; sourceTree = "<group>"; };
+		67AE08492D1C05020097B59F /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWNetworkClient; sourceTree = "<group>"; };
+		67AE084A2D1C05020097B59F /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utils; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* ParksMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksMapViewModel.swift; sourceTree = "<group>"; };
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
@@ -175,13 +175,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				678E3B1C2ACDEFFA00977EEC /* SWNetworkClient in Frameworks */,
+				67795FB22D1C05D90087132F /* SWModels in Frameworks */,
 				67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */,
 				67D322972AE993F90045B92F /* MapView991 in Frameworks */,
-				671CD13929A2904200645678 /* SWModels in Frameworks */,
 				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
+				67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
-				675A370A2854810B00DAE071 /* Utils in Frameworks */,
+				67795FB62D1C05D90087132F /* Utils in Frameworks */,
 				67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,9 +310,6 @@
 		6798AA31280AEDC900DB76F1 = {
 			isa = PBXGroup;
 			children = (
-				678E3B1A2ACDEA9D00977EEC /* SWNetworkClient */,
-				671CD13729A28CB800645678 /* SWModels */,
-				675A3707285480E600DAE071 /* Utils */,
 				6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */,
 				67138D85297311BD00BBF450 /* WorkoutAppUITests */,
 				6798AA3B280AEDC900DB76F1 /* Products */,
@@ -332,6 +329,7 @@
 		6798AA3C280AEDC900DB76F1 /* SwiftUI-WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				67AE08472D1C049F0097B59F /* Libraries */,
 				67AE08172D1B200A0097B59F /* EnvironmentKeys */,
 				677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */,
 				6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */,
@@ -439,6 +437,16 @@
 			path = EnvironmentKeys;
 			sourceTree = "<group>";
 		};
+		67AE08472D1C049F0097B59F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				67AE08482D1C05020097B59F /* SWModels */,
+				67AE08492D1C05020097B59F /* SWNetworkClient */,
+				67AE084A2D1C05020097B59F /* Utils */,
+			);
+			path = Libraries;
+			sourceTree = "<group>";
+		};
 		67C87FD4284388EF00D6377D /* PhotoSection */ = {
 			isa = PBXGroup;
 			children = (
@@ -484,14 +492,14 @@
 			);
 			name = "SwiftUI-WorkoutApp";
 			packageProductDependencies = (
-				675A37092854810B00DAE071 /* Utils */,
 				67F9534E2964A5700077DFDC /* ImagePicker */,
 				67CB32D0297BE0F8009380DF /* NetworkStatus */,
-				671CD13829A2904200645678 /* SWModels */,
-				678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */,
 				67D67DE12AE84D9700F7A8B0 /* FileManager991 */,
 				67D67DE42AE8526600F7A8B0 /* SWDesignSystem */,
 				67D322962AE993F90045B92F /* MapView991 */,
+				67795FB12D1C05D90087132F /* SWModels */,
+				67795FB32D1C05D90087132F /* SWNetworkClient */,
+				67795FB52D1C05D90087132F /* Utils */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -996,17 +1004,17 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		671CD13829A2904200645678 /* SWModels */ = {
+		67795FB12D1C05D90087132F /* SWModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWModels;
 		};
-		675A37092854810B00DAE071 /* Utils */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Utils;
-		};
-		678E3B1B2ACDEFFA00977EEC /* SWNetworkClient */ = {
+		67795FB32D1C05D90087132F /* SWNetworkClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWNetworkClient;
+		};
+		67795FB52D1C05D90087132F /* Utils */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utils;
 		};
 		67CB32D0297BE0F8009380DF /* NetworkStatus */ = {
 			isa = XCSwiftPackageProductDependency;
