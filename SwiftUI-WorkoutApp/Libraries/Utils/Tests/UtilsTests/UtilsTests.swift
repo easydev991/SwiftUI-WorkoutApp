@@ -44,19 +44,6 @@ struct UtilsTests {
     }
 
     @Test
-    func prettyJson() throws {
-        struct TestModel: Codable { let property: String }
-        let data = try JSONEncoder().encode(TestModel(property: "property"))
-        let prettyJson = try #require(data.prettyJson)
-        let expectedResult = """
-        {
-          "property" : "property"
-        }
-        """
-        #expect(prettyJson == expectedResult)
-    }
-
-    @Test
     func readableDate() {
         let stringDate = "2022-10-30T09:00:00+00:00"
         let formattedResult = DateFormatterService.readableDate(from: stringDate, locale: .init(identifier: "ru_RU"))

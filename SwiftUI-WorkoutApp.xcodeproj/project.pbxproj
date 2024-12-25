@@ -125,6 +125,7 @@
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
 		677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SwiftUI-WorkoutApp.xctestplan"; sourceTree = "<group>"; };
 		67891E37283E947B00B10802 /* ParkFormScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFormScreen.swift; sourceTree = "<group>"; };
+		678CE36A2D1C510900F060C6 /* SWNetwork */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWNetwork; sourceTree = "<group>"; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_WorkoutAppApp.swift; sourceTree = "<group>"; };
 		6798AA3F280AEDC900DB76F1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -440,6 +441,7 @@
 		67AE08472D1C049F0097B59F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				678CE36A2D1C510900F060C6 /* SWNetwork */,
 				67AE08482D1C05020097B59F /* SWModels */,
 				67AE08492D1C05020097B59F /* SWNetworkClient */,
 				67AE084A2D1C05020097B59F /* Utils */,
@@ -844,7 +846,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -894,7 +896,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

@@ -1,5 +1,6 @@
 import Foundation
 import SWModels
+import SWNetwork
 
 extension SWClient {
     enum Endpoint {
@@ -417,51 +418,22 @@ private extension SWClient.Endpoint {
         }
     }
 
-    enum Parameter {
-        enum Key: String {
-            case name, fullname, email, password,
-                 comment, message, title, description,
-                 date, address, latitude, longitude
-            case areaID = "area_id"
-            case viewAccess = "view_access"
-            case commentAccess = "comment_access"
-            case genderCode = "gender"
-            case usernameOrEmail = "username_or_email"
-            case newPassword = "new_password"
-            case countryID = "country_id"
-            case cityID = "city_id"
-            case birthDate = "birth_date"
-            case fromUserID = "from_user_id"
-            case typeID = "type_id"
-            case classID = "class_id"
-        }
-
-        static func makeBody(from dict: [Key: String]) -> Data? {
-            dict
-                .map { $0.key.rawValue + "=" + $0.value }
-                .joined(separator: "&")
-                .data(using: .utf8)
-        }
-
-        static func makeBodyWithMultipartForm(from dict: [Key: String], with media: [MediaFile]?) -> Data {
-            let boundary = HTTPHeader.boundary
-            let lineBreak = "\r\n"
-            var body = Data()
-            dict.forEach { key, value in
-                body.append("--\(boundary + lineBreak)")
-                body.append("Content-Disposition: form-data; name=\"\(key.rawValue)\"\(lineBreak + lineBreak)")
-                body.append("\(value + lineBreak)")
-            }
-            media?.forEach { photo in
-                body.append("--\(boundary + lineBreak)")
-                body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
-                body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
-                body.append(photo.data)
-                body.append(lineBreak)
-            }
-            body.append("--\(boundary)--\(lineBreak)")
-            return body
-        }
+    enum ParameterKey: String {
+        case name, fullname, email, password,
+             comment, message, title, description,
+             date, address, latitude, longitude
+        case areaID = "area_id"
+        case viewAccess = "view_access"
+        case commentAccess = "comment_access"
+        case genderCode = "gender"
+        case usernameOrEmail = "username_or_email"
+        case newPassword = "new_password"
+        case countryID = "country_id"
+        case cityID = "city_id"
+        case birthDate = "birth_date"
+        case fromUserID = "from_user_id"
+        case typeID = "type_id"
+        case classID = "class_id"
     }
 
     var httpBody: Data? {
@@ -482,9 +454,9 @@ private extension SWClient.Endpoint {
              .deleteEventPhoto, .deleteParkPhoto:
             return nil
         case let .registration(form):
-            return Parameter.makeBody(
-                from: [
-                    .name: form.userName,
+            return BodyMaker.makeBody(
+                with: [
+                    ParameterKey.name: form.userName,
                     .fullname: form.fullName,
                     .email: form.email,
                     .password: form.password,
@@ -492,68 +464,99 @@ private extension SWClient.Endpoint {
                     .countryID: form.country.id,
                     .cityID: form.city.id,
                     .birthDate: form.birthDateIsoString
-                ]
+                ].map(BodyMaker.Parameter.init)
             )
         case let .editUser(_, form):
-            return Parameter.makeBody(
-                from: [
-                    .name: form.userName,
+            return BodyMaker.makeBody(
+                with: [
+                    ParameterKey.name: form.userName,
                     .fullname: form.fullName,
                     .email: form.email,
                     .genderCode: form.genderCode.description,
                     .countryID: form.country.id,
                     .cityID: form.city.id,
                     .birthDate: form.birthDateIsoString
-                ]
+                ].map(BodyMaker.Parameter.init)
             )
         case let .resetPassword(login):
-            return Parameter.makeBody(from: [.usernameOrEmail: login])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.usernameOrEmail: login].map(BodyMaker.Parameter.init)
+            )
         case let .changePassword(current, new):
-            return Parameter.makeBody(from: [.password: current, .newPassword: new])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.password: current, .newPassword: new].map(BodyMaker.Parameter.init)
+            )
         case let .addCommentToPark(_, comment),
              let .addCommentToEvent(_, comment),
              let .editParkComment(_, _, comment),
              let .editEventComment(_, _, comment):
-            return Parameter.makeBody(from: [.comment: comment])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.comment: comment].map(BodyMaker.Parameter.init)
+            )
         case let .sendMessageTo(message, _):
-            return Parameter.makeBody(from: [.message: message])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.message: message].map(BodyMaker.Parameter.init)
+            )
         case let .markAsRead(userID):
-            return Parameter.makeBody(from: [.fromUserID: userID.description])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.fromUserID: userID.description].map(BodyMaker.Parameter.init)
+            )
         case let .createJournal(_, title):
-            return Parameter.makeBody(from: [.title: title])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.title: title].map(BodyMaker.Parameter.init)
+            )
         case let .saveJournalEntry(_, _, message),
              let .editEntry(_, _, _, message):
-            return Parameter.makeBody(from: [.message: message])
+            return BodyMaker.makeBody(
+                with: [ParameterKey.message: message].map(BodyMaker.Parameter.init)
+            )
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
-            return Parameter.makeBody(
-                from: [
-                    .title: title,
+            return BodyMaker.makeBody(
+                with: [
+                    ParameterKey.title: title,
                     .viewAccess: viewAccess.description,
                     .commentAccess: commentAccess.description
-                ]
+                ].map(BodyMaker.Parameter.init)
             )
         case let .createEvent(form), let .editEvent(_, form):
-            let params = Parameter.makeBodyWithMultipartForm(
-                from: [
-                    .title: form.title,
-                    .description: form.description,
-                    .date: form.dateIsoString,
-                    .areaID: form.parkID.description
-                ],
-                with: form.newMediaFiles
+            let parameters = [
+                ParameterKey.title: form.title,
+                .description: form.description,
+                .date: form.dateIsoString,
+                .areaID: form.parkID.description
+            ]
+            let mediaFiles: [BodyMaker.MediaFile] = form.newMediaFiles.map {
+                .init(
+                    key: $0.key,
+                    filename: $0.filename,
+                    data: $0.data,
+                    mimeType: $0.mimeType
+                )
+            }
+            return BodyMaker.makeBodyWithMultipartForm(
+                with: parameters.map(BodyMaker.Parameter.init),
+                and: mediaFiles
             )
-            return params
         case let .createPark(form), let .editPark(_, form):
-            return Parameter.makeBodyWithMultipartForm(
-                from: [
-                    .address: form.address,
-                    .latitude: form.latitude,
-                    .longitude: form.longitude,
-                    .cityID: form.cityID.description,
-                    .typeID: form.typeID.description,
-                    .classID: form.sizeID.description
-                ],
-                with: form.newMediaFiles
+            let parameters = [
+                ParameterKey.address: form.address,
+                .latitude: form.latitude,
+                .longitude: form.longitude,
+                .cityID: form.cityID.description,
+                .typeID: form.typeID.description,
+                .classID: form.sizeID.description
+            ]
+            let mediaFiles: [BodyMaker.MediaFile] = form.newMediaFiles.map {
+                .init(
+                    key: $0.key,
+                    filename: $0.filename,
+                    data: $0.data,
+                    mimeType: $0.mimeType
+                )
+            }
+            return BodyMaker.makeBodyWithMultipartForm(
+                with: parameters.map(BodyMaker.Parameter.init),
+                and: mediaFiles
             )
         }
     }
