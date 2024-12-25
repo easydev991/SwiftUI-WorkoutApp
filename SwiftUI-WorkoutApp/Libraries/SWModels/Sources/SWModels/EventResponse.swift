@@ -165,6 +165,10 @@ public extension EventResponse {
         set { photosOptional = newValue }
     }
 
+    func removePhotoById(_ id: Int) -> [Photo] {
+        PhotoRemover(initialPhotos: photos, removeId: id).photosAfterRemoval
+    }
+
     var hasParticipants: Bool { !participants.isEmpty }
 
     /// Список участников мероприятия
