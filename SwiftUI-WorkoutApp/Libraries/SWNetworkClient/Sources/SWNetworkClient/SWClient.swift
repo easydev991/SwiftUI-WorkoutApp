@@ -1,8 +1,7 @@
 import Foundation
 import OSLog
 import SWModels
-
-let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWClient")
+import SWNetwork
 
 /// Сервис для обращений к серверу
 public struct SWClient: Sendable {
@@ -10,19 +9,12 @@ public struct SWClient: Sendable {
     let defaults: DefaultsProtocol
     /// Базовый `url` сервера
     private let baseUrlString: String
-    /// Время таймаута для `URLSession`
-    let timeoutInterval: TimeInterval
-    /// `true` - нужна базовая аутентификация, `false` - не нужна
-    ///
-    /// Базовая аутентификация не нужна для запросов:
-    /// - `getUpdatedParks`
-    /// - `registration`
-    /// - `resetPassword`
-    let needAuth: Bool
     /// `true` - можно принудительно деавторизовать пользователя, `false` - не можем
     ///
     /// Если значение `true`, деавторизуем пользователя при получении кода `401` от сервера
-    let canForceLogout: Bool
+    private let canForceLogout: Bool
+    /// Сервис для отправки запросов/получения ответов от сервера
+    private let service: SWNetworkService
 
     /// Инициализирует `SWClient` с заданными параметрами
     /// - Parameters:
@@ -40,9 +32,17 @@ public struct SWClient: Sendable {
     ) {
         self.defaults = defaults
         self.baseUrlString = baseUrlString
-        self.timeoutInterval = timeoutInterval
-        self.needAuth = needAuth
         self.canForceLogout = canForceLogout
+        #if DEBUG
+        let enableDebugLogs = true
+        #else
+        let enableDebugLogs = false
+        #endif
+        self.service = .init(
+            timeoutInterval: timeoutInterval,
+            needAuth: needAuth,
+            enableDebugLogs: enableDebugLogs
+        )
     }
 
     #warning("Запрос не используется, т.к. регистрация в приложении отключена")
@@ -566,5 +566,37 @@ public struct SWClient: Sendable {
             )
         }
         return try await makeStatus(for: endpoint.urlRequest(with: baseUrlString))
+    }
+}
+
+// MARK: - Обертки для SWNetworkService
+
+extension SWClient {
+    private func makeStatus(for request: URLRequest?) async throws -> Bool {
+        let encodedString = try await defaults.basicAuthInfo().base64Encoded
+        do {
+            return try await service.makeStatus(for: request, encodedString: encodedString)
+        } catch APIError.invalidCredentials {
+            if canForceLogout {
+                await defaults.triggerLogout()
+            }
+            throw APIError.invalidCredentials
+        } catch {
+            throw error
+        }
+    }
+
+    private func makeResult<T: Decodable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
+        let encodedString = try await defaults.basicAuthInfo().base64Encoded
+        do {
+            return try await service.makeResult(type, for: request, encodedString: encodedString)
+        } catch APIError.invalidCredentials {
+            if canForceLogout {
+                await defaults.triggerLogout()
+            }
+            throw APIError.invalidCredentials
+        } catch {
+            throw error
+        }
     }
 }

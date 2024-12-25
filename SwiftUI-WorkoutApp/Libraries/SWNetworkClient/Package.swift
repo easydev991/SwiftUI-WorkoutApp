@@ -9,8 +9,14 @@ let package = Package(
     products: [
         .library(name: "SWNetworkClient", targets: ["SWNetworkClient"])
     ],
-    dependencies: [.package(path: "../SWModels")],
+    dependencies: [
+        .package(path: "../SWModels"),
+        .package(path: "../SWNetwork")
+    ],
     targets: [
-        .target(name: "SWNetworkClient", dependencies: ["SWModels"])
+        .target(
+            name: "SWNetworkClient",
+            dependencies: ["SWNetwork", "SWModels"]
+        )
     ]
 )

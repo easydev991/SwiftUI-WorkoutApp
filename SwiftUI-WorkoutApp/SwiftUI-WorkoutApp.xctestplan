@@ -47,6 +47,13 @@
   "testTargets" : [
     {
       "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
+        "identifier" : "SWModelsTest",
+        "name" : "SWModelsTest"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/Utils",
         "identifier" : "UtilsTests",
         "name" : "UtilsTests"
@@ -54,9 +61,9 @@
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
-        "identifier" : "SWModelsTest",
-        "name" : "SWModelsTest"
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
+        "identifier" : "SWNetworkTests",
+        "name" : "SWNetworkTests"
       }
     }
   ],

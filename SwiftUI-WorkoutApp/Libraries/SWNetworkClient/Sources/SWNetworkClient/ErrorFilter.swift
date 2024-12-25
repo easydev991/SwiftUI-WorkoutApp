@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "SWNetworkClient", category: "ErrorFilter")
 
 /// Фильтрует ошибку с кодом`-999` (отмена таска)
 ///
