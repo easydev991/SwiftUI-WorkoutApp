@@ -77,7 +77,7 @@ rbenv exec fastlane snapshot
 - 4.7 дюйма: iPhone SE (3rd generation)
 
 ### Форматирование кода
-- Используем [swiftformat (0.53.2)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.55.4)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 
@@ -89,4 +89,4 @@ rbenv exec fastlane snapshot
 1. Переходим на [страницу с релизами](https://github.com/nicklockwood/SwiftFormat/releases)
 2. Скачиваем `swiftformat.zip`
 3. Заменяем в папке с проектом старый файл `swiftformat` на новый
-4. При необходимости даем системе разрешение на запуск нового файла в `системных настройках -> конфиденциальность и безопасность`
+4. Если при первом запуске форматирования после обновления файла система выдает алерт и не запускает скрипт, даем разрешение на запуск этого файла в `системных настройках -> конфиденциальность и безопасность`
