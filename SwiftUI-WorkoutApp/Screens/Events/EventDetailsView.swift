@@ -8,21 +8,17 @@ struct EventDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @State private var navigationDestination: NavigationDestination?
+    @State private var sheetItem: SheetItem?
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var showDeleteDialog = false
-    @State private var sheetItem: SheetItem?
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
-    /// Мероприятие для редактирования
-    ///
-    /// Задаем при нажатии на кнопку редактирования,
-    /// чтобы в нем были актуальные данные
-    @State private var eventToEdit: EventResponse?
     @State var event: EventResponse
     let onDeletion: (Int) -> Void
 
@@ -53,7 +49,7 @@ struct EventDetailsView: View {
         .background {
             NavigationLink(
                 destination: lazyDestination,
-                isActive: $eventToEdit.mappedToBool()
+                isActive: $navigationDestination.mappedToBool()
             )
         }
         .loadingOverlay(if: isLoading)
@@ -82,7 +78,13 @@ struct EventDetailsView: View {
 }
 
 private extension EventDetailsView {
-    enum SheetItem: Identifiable, Equatable {
+    enum NavigationDestination {
+        case eventAuthor(UserResponse)
+        case eventParticipants([UserResponse])
+        case editEvent(EventResponse)
+    }
+
+    enum SheetItem: Identifiable {
         var id: Int {
             switch self {
             case .newComment: 1
@@ -90,7 +92,7 @@ private extension EventDetailsView {
             }
         }
 
-        case newComment
+        case newComment(_ eventId: Int)
         case editComment(CommentResponse)
     }
 }
@@ -182,8 +184,8 @@ private extension EventDetailsView {
     var participantsSection: some View {
         Group {
             if event.hasParticipants {
-                NavigationLink {
-                    UsersListView(mode: .eventParticipants(list: event.participants))
+                Button {
+                    navigationDestination = .eventParticipants(event.participants)
                 } label: {
                     FormRowView(
                         title: "Участники",
@@ -238,25 +240,29 @@ private extension EventDetailsView {
         }
     }
 
+    @ViewBuilder
     var authorSection: some View {
-        let user = event.author
-        return SectionView(headerWithPadding: "Организатор", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: user)) {
-                UserRowView(
-                    mode: .regular(
-                        .init(
-                            imageURL: user?.avatarURL,
-                            name: user?.userName ?? "",
-                            address: SWAddress(user?.countryID, user?.cityID)?.address ?? ""
+        if let user = event.author {
+            SectionView(headerWithPadding: "Организатор", mode: .regular) {
+                Button {
+                    navigationDestination = .eventAuthor(user)
+                } label: {
+                    UserRowView(
+                        mode: .regular(
+                            .init(
+                                imageURL: user.avatarURL,
+                                name: user.userName ?? "",
+                                address: SWAddress(user.countryID, user.cityID)?.address ?? ""
+                            )
                         )
                     )
+                }
+                .disabled(
+                    !defaults.isAuthorized
+                        || isEventAuthor
+                        || !isNetworkConnected
                 )
             }
-            .disabled(
-                !defaults.isAuthorized
-                    || isEventAuthor
-                    || !isNetworkConnected
-            )
         }
     }
 
@@ -266,12 +272,7 @@ private extension EventDetailsView {
             reportClbk: reportComment,
             deleteClbk: deleteComment,
             editClbk: { sheetItem = .editComment($0) },
-            isCreatingComment: .init(
-                get: { sheetItem == .newComment },
-                set: { newValue in
-                    sheetItem = newValue ? .newComment : nil
-                }
-            )
+            createCommentClbk: { sheetItem = .newComment(event.id) }
         )
     }
 
@@ -282,15 +283,22 @@ private extension EventDetailsView {
     }
 
     var editEventButton: some View {
-        Button { eventToEdit = event } label: {
+        Button { navigationDestination = .editEvent(event) } label: {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
 
     @ViewBuilder
     var lazyDestination: some View {
-        if let eventToEdit {
-            EventFormView(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
+        if let navigationDestination {
+            switch navigationDestination {
+            case let .eventAuthor(user):
+                UserDetailsView(for: user)
+            case let .eventParticipants(users):
+                UsersListView(mode: .eventParticipants(list: users))
+            case let .editEvent(eventToEdit):
+                EventFormView(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
+            }
         }
     }
 
@@ -319,9 +327,9 @@ private extension EventDetailsView {
                 ),
                 refreshClbk: refreshAction
             )
-        case .newComment:
+        case let .newComment(eventId):
             TextEntryView(
-                mode: .newForEvent(id: event.id),
+                mode: .newForEvent(id: eventId),
                 refreshClbk: refreshAction
             )
         }

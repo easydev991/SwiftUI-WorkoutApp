@@ -10,12 +10,11 @@ struct ParkDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @State private var navigationDestination: NavigationDestination?
+    @State private var sheetItem: SheetItem?
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
-    @State private var isCreatingComment = false
-    @State private var isEditingPark = false
-    @State private var editComment: CommentResponse?
     @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
@@ -47,26 +46,14 @@ struct ParkDetailScreen: View {
             .padding([.horizontal, .bottom])
         }
         .background {
-            NavigationLink(isActive: $isEditingPark) {
-                ParkFormScreen(.editExisting(park)) { refreshAction() }
-            } label: {
-                EmptyView()
-            }
+            NavigationLink(
+                destination: lazyDestination,
+                isActive: $navigationDestination.mappedToBool()
+            )
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .sheet(item: $editComment) {
-            TextEntryView(
-                mode: .editPark(
-                    .init(
-                        parentObjectID: park.id,
-                        entryID: $0.id,
-                        oldEntry: $0.formattedBody
-                    )
-                ),
-                refreshClbk: { refreshAction() }
-            )
-        }
+        .sheet(item: $sheetItem, content: makeSheetContent)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
         .alert(alertMessage, isPresented: $showErrorAlert) {
@@ -91,6 +78,27 @@ struct ParkDetailScreen: View {
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private extension ParkDetailScreen {
+    enum NavigationDestination {
+        case parkAuthor(UserResponse)
+        case parkParticipants([UserResponse])
+        case editPark(Park)
+        case createEvent(_ parkId: Int, _ parkLongTitle: String)
+    }
+
+    enum SheetItem: Identifiable {
+        var id: Int {
+            switch self {
+            case .createComment: 1
+            case .editComment: 2
+            }
+        }
+
+        case createComment(_ parkId: Int)
+        case editComment(_ parkId: Int, _ commentId: Int, _ commentBody: String)
     }
 }
 
@@ -149,10 +157,8 @@ private extension ParkDetailScreen {
                 appleMapsURL: park.appleMapsURL
             )
             if defaults.isAuthorized {
-                NavigationLink {
-                    EventFormView(mode: .createForSelected(park.id, park.longTitle))
-                } label: {
-                    Text("Создать мероприятие")
+                Button("Создать мероприятие") {
+                    navigationDestination = .createEvent(park.id, park.longTitle)
                 }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
                 .disabled(!isNetworkConnected)
@@ -164,12 +170,8 @@ private extension ParkDetailScreen {
     var participantsAndEventSection: some View {
         Group {
             if park.hasParticipants {
-                NavigationLink {
-                    UsersListView(
-                        mode: .parkParticipants(
-                            list: park.participants
-                        )
-                    )
+                Button {
+                    navigationDestination = .parkParticipants(park.participants)
                 } label: {
                     FormRowView(
                         title: "Здесь тренируются",
@@ -189,6 +191,44 @@ private extension ParkDetailScreen {
                 )
             )
             .disabled(!isNetworkConnected)
+        }
+    }
+
+    @ViewBuilder
+    var lazyDestination: some View {
+        if let navigationDestination {
+            switch navigationDestination {
+            case let .parkAuthor(user):
+                UserDetailsView(for: user)
+            case let .parkParticipants(users):
+                UsersListView(mode: .parkParticipants(list: users))
+            case let .editPark(park):
+                ParkFormScreen(.editExisting(park)) { refreshAction() }
+            case let .createEvent(parkId, parkLongTitle):
+                EventFormView(mode: .createForSelected(parkId, parkLongTitle))
+            }
+        }
+    }
+
+    @ViewBuilder
+    func makeSheetContent(for item: SheetItem) -> some View {
+        switch item {
+        case let .editComment(parkId, commentId, commentBody):
+            TextEntryView(
+                mode: .editPark(
+                    .init(
+                        parentObjectID: parkId,
+                        entryID: commentId,
+                        oldEntry: commentBody
+                    )
+                ),
+                refreshClbk: refreshAction
+            )
+        case let .createComment(parkId):
+            TextEntryView(
+                mode: .newForPark(id: parkId),
+                refreshClbk: refreshAction
+            )
         }
     }
 
@@ -223,25 +263,29 @@ private extension ParkDetailScreen {
         }
     }
 
+    @ViewBuilder
     var authorSection: some View {
-        let user = park.author
-        return SectionView(headerWithPadding: "Добавил", mode: .regular) {
-            NavigationLink(destination: UserDetailsView(for: user)) {
-                UserRowView(
-                    mode: .regular(
-                        .init(
-                            imageURL: user?.avatarURL,
-                            name: user?.userName ?? "",
-                            address: SWAddress(user?.countryID, user?.cityID)?.address ?? ""
+        if let user = park.author {
+            SectionView(headerWithPadding: "Добавил", mode: .regular) {
+                Button {
+                    navigationDestination = .parkAuthor(user)
+                } label: {
+                    UserRowView(
+                        mode: .regular(
+                            .init(
+                                imageURL: user.avatarURL,
+                                name: user.userName ?? "",
+                                address: SWAddress(user.countryID, user.cityID)?.address ?? ""
+                            )
                         )
                     )
+                }
+                .disabled(
+                    !defaults.isAuthorized
+                        || isParkAuthor
+                        || !isNetworkConnected
                 )
             }
-            .disabled(
-                !defaults.isAuthorized
-                    || isParkAuthor
-                    || !isNetworkConnected
-            )
         }
     }
 
@@ -250,12 +294,11 @@ private extension ParkDetailScreen {
             items: park.comments,
             reportClbk: reportComment,
             deleteClbk: deleteComment,
-            editClbk: { editComment = $0 },
-            isCreatingComment: $isCreatingComment
+            editClbk: {
+                sheetItem = .editComment(park.id, $0.id, $0.formattedBody)
+            },
+            createCommentClbk: { sheetItem = .createComment(park.id) }
         )
-        .sheet(isPresented: $isCreatingComment) {
-            TextEntryView(mode: .newForPark(id: park.id)) { refreshAction() }
-        }
     }
 
     var feedbackButton: some View {
@@ -295,14 +338,13 @@ private extension ParkDetailScreen {
     }
 
     var editParkButton: some View {
-        Button { isEditingPark = true } label: {
+        Button { navigationDestination = .editPark(park) } label: {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
 
     func refreshAction() {
-        isCreatingComment = false
-        editComment = nil
+        sheetItem = nil
         refreshButtonTask = Task { await askForInfo(refresh: true) }
     }
 
