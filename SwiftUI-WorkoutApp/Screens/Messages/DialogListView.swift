@@ -8,6 +8,7 @@ struct DialogListView: View {
     @Environment(\.networkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var dialogs = [DialogResponse]()
+    @State private var selectedDialog: DialogResponse?
     @State private var isLoading = false
     @State private var showErrorAlert = false
     @State private var errorTitle = ""
@@ -107,25 +108,34 @@ private extension DialogListView {
             .opacity(dialogs.isEmpty ? 0 : 1)
         }
         .animation(.default, value: dialogs.count)
+        .background(
+            NavigationLink(
+                destination: lazyDestination,
+                isActive: $selectedDialog.mappedToBool()
+            )
+        )
+    }
+
+    @ViewBuilder
+    var lazyDestination: some View {
+        if let selectedDialog {
+            DialogView(dialog: selectedDialog) { markAsRead($0) }
+        }
     }
 
     func dialogListItem(_ model: DialogResponse) -> some View {
-        DialogRowView(
-            model: .init(
-                avatarURL: model.anotherUserImageURL,
-                authorName: model.anotherUserName ?? "",
-                dateText: model.lastMessageDateString,
-                messageText: model.lastMessageFormatted,
-                unreadCount: model.unreadMessagesCount
+        Button {
+            selectedDialog = model
+        } label: {
+            DialogRowView(
+                model: .init(
+                    avatarURL: model.anotherUserImageURL,
+                    authorName: model.anotherUserName ?? "",
+                    dateText: model.lastMessageDateString,
+                    messageText: model.lastMessageFormatted,
+                    unreadCount: model.unreadMessagesCount
+                )
             )
-        )
-        .background {
-            NavigationLink {
-                DialogView(dialog: model) { markAsRead($0) }
-            } label: {
-                EmptyView()
-            }
-            .opacity(0)
         }
     }
 

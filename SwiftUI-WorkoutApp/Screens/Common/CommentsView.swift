@@ -10,7 +10,7 @@ struct CommentsView: View {
     let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (CommentResponse) -> Void
-    @Binding var isCreatingComment: Bool
+    let createCommentClbk: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
@@ -35,10 +35,8 @@ struct CommentsView: View {
                 }
             }
             if defaults.isAuthorized {
-                Button("Добавить комментарий") {
-                    isCreatingComment.toggle()
-                }
-                .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+                Button("Добавить комментарий", action: createCommentClbk)
+                    .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             }
         }
     }
@@ -51,7 +49,7 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        isCreatingComment: .constant(false)
+        createCommentClbk: {}
     )
     .padding(.horizontal)
     .environmentObject(DefaultsService())
@@ -63,7 +61,7 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        isCreatingComment: .constant(false)
+        createCommentClbk: {}
     )
     .padding(.horizontal)
     .environmentObject(DefaultsService())
