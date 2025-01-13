@@ -23,7 +23,7 @@ private final class LogStore: ObservableObject, @unchecked Sendable {
     @Published private(set) var levels = [State.LogModel.Level]()
 
     func getLogs() async {
-        state = .loading
+        await MainActor.run { state = .loading }
         do {
             let store = try OSLogStore(scope: .currentProcessIdentifier)
             let position = store.position(timeIntervalSinceLatestBoot: 1)
@@ -40,12 +40,14 @@ private final class LogStore: ObservableObject, @unchecked Sendable {
                     )
                 }
             try Task.checkCancellation()
-            categories = Array(Set(entries.map(\.category)))
-            levels = Array(Set(entries.map(\.level)))
-            state = .ready(entries)
+            await MainActor.run {
+                categories = Array(Set(entries.map(\.category)))
+                levels = Array(Set(entries.map(\.level)))
+                state = .ready(entries)
+            }
         } catch {
             logger.error("\(error.localizedDescription, privacy: .public)")
-            state = .empty
+            await MainActor.run { state = .empty }
         }
     }
 

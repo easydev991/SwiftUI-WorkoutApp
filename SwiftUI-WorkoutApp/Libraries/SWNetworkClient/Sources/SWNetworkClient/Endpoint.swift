@@ -2,265 +2,253 @@ import Foundation
 import SWModels
 import SWNetwork
 
-extension SWClient {
-    enum Endpoint {
-        // MARK: Регистрация
-        /// **POST** ${API}/registration
-        case registration(form: MainUserForm)
+enum Endpoint {
+    // MARK: Регистрация
+    /// **POST** ${API}/registration
+    case registration(form: MainUserForm)
 
-        // MARK: Авторизация
-        /// **POST** ${API}/auth/login
-        case login
+    // MARK: Авторизация
+    /// **POST** ${API}/auth/login
+    case login
 
-        // MARK: Восстановление пароля
-        /// **POST** ${API}/auth/reset
-        case resetPassword(login: String)
+    // MARK: Восстановление пароля
+    /// **POST** ${API}/auth/reset
+    case resetPassword(login: String)
 
-        // MARK: Изменить данные пользователя
-        /// **POST** ${API}/users/<user_id>
-        case editUser(id: Int, form: MainUserForm)
+    // MARK: Изменить данные пользователя
+    /// **POST** ${API}/users/<user_id>
+    case editUser(id: Int, form: MainUserForm)
 
-        // MARK: Изменить пароль
-        /// **POST** ${API}/auth/changepass
-        case changePassword(currentPass: String, newPass: String)
+    // MARK: Изменить пароль
+    /// **POST** ${API}/auth/changepass
+    case changePassword(currentPass: String, newPass: String)
 
-        // MARK: Удалить профиль текущего пользователя
-        /// **DELETE** ${API}/users/current
-        case deleteUser(auth: AuthData)
+    // MARK: Удалить профиль текущего пользователя
+    /// **DELETE** ${API}/users/current
+    case deleteUser(auth: AuthData)
 
-        // MARK: Получить профиль пользователя
-        /// **GET** ${API}/users/<id>
-        /// `id` - идентификатор пользователя, чей профиль нужно получить
-        case getUser(id: Int)
+    // MARK: Получить профиль пользователя
+    /// **GET** ${API}/users/<id>
+    /// `id` - идентификатор пользователя, чей профиль нужно получить
+    case getUser(id: Int)
 
-        // MARK: Получить список друзей пользователя
-        /// **GET** ${API}/users/<id>/friends
-        /// `id` - идентификатор пользователя, чьих друзей нужно получить
-        case getFriendsForUser(id: Int)
+    // MARK: Получить список друзей пользователя
+    /// **GET** ${API}/users/<id>/friends
+    /// `id` - идентификатор пользователя, чьих друзей нужно получить
+    case getFriendsForUser(id: Int)
 
-        // MARK: Получить список заявок на добавление в друзья
-        /// **GET** ${API}/friends/requests
-        case getFriendRequests
+    // MARK: Получить список заявок на добавление в друзья
+    /// **GET** ${API}/friends/requests
+    case getFriendRequests
 
-        // MARK: Принять заявку на добавление в друзья
-        /// **POST** ${API}/friends/<id>/accept
-        case acceptFriendRequest(from: Int)
+    // MARK: Принять заявку на добавление в друзья
+    /// **POST** ${API}/friends/<id>/accept
+    case acceptFriendRequest(from: Int)
 
-        // MARK: Отклонить заявку на добавление в друзья
-        /// **DELETE**  ${API}/friends/<user_id>/accept
-        case declineFriendRequest(from: Int)
+    // MARK: Отклонить заявку на добавление в друзья
+    /// **DELETE**  ${API}/friends/<user_id>/accept
+    case declineFriendRequest(from: Int)
 
-        // MARK: Отправить запрос на добавление в друзья
-        /// **POST**  ${API}/friends/<user_id>
-        case sendFriendRequest(to: Int)
+    // MARK: Отправить запрос на добавление в друзья
+    /// **POST**  ${API}/friends/<user_id>
+    case sendFriendRequest(to: Int)
 
-        // MARK: Удалить пользователя из списка друзей
-        /// **DELETE**  ${API}/friends/<user_id>
-        case deleteFriend(_ friendID: Int)
+    // MARK: Удалить пользователя из списка друзей
+    /// **DELETE**  ${API}/friends/<user_id>
+    case deleteFriend(_ friendID: Int)
 
-        // MARK: Получить черный список пользователей
-        /// **GET** ${API}/blacklist
-        case getBlacklist
+    // MARK: Получить черный список пользователей
+    /// **GET** ${API}/blacklist
+    case getBlacklist
 
-        // MARK: Добавить пользователя в черный список
-        /// **POST** ${API}/blacklist/<user_id>
-        case addToBlacklist(_ userID: Int)
+    // MARK: Добавить пользователя в черный список
+    /// **POST** ${API}/blacklist/<user_id>
+    case addToBlacklist(_ userID: Int)
 
-        // MARK: Удалить пользователя из черного списка
-        /// **DELETE** ${API}/blacklist/<user_id>
-        case deleteFromBlacklist(_ userID: Int)
+    // MARK: Удалить пользователя из черного списка
+    /// **DELETE** ${API}/blacklist/<user_id>
+    case deleteFromBlacklist(_ userID: Int)
 
-        // MARK: Найти пользователей по логину
-        /// **GET** ${API}/users/search?name=<user>
-        case findUsers(with: String)
+    // MARK: Найти пользователей по логину
+    /// **GET** ${API}/users/search?name=<user>
+    case findUsers(with: String)
 
-        // MARK: Получить список стран/городов
-        /// **GET** ${API}/countries
-        case getCountries
+    // MARK: Получить список стран/городов
+    /// **GET** ${API}/countries
+    case getCountries
 
-        // MARK: Получить список всех площадок
-        /// **GET** ${API}/areas?fields=short
-        ///
-        /// Возвращает список с кратким набором полей, т.к. при запросе всех данных сервер не справляется с нагрузкой
-        case getAllParks
+    // MARK: Получить список всех площадок
+    /// **GET** ${API}/areas?fields=short
+    ///
+    /// Возвращает список с кратким набором полей, т.к. при запросе всех данных сервер не справляется с нагрузкой
+    case getAllParks
 
-        // MARK: Получить список площадок, обновленных после указанной даты
-        /// **GET** ${API}/areas/last/<date>
-        case getUpdatedParks(from: String)
+    // MARK: Получить список площадок, обновленных после указанной даты
+    /// **GET** ${API}/areas/last/<date>
+    case getUpdatedParks(from: String)
 
-        // MARK: Получить выбранную площадку:
-        /// **GET** ${API}/areas/<id>
-        ///
-        /// - Работает и с аутентификацией, и без
-        /// - Для авторизованного пользователя нужно делать запрос с токеном,
-        /// чтобы получить корректные данные (тренируется ли на площадке)
-        case getPark(id: Int)
+    // MARK: Получить выбранную площадку:
+    /// **GET** ${API}/areas/<id>
+    ///
+    /// - Работает и с аутентификацией, и без
+    /// - Для авторизованного пользователя нужно делать запрос с токеном,
+    /// чтобы получить корректные данные (тренируется ли на площадке)
+    case getPark(id: Int)
 
-        // MARK: Добавить новую спортплощадку
-        /// **POST** ${API}/areas
-        case createPark(form: ParkForm)
+    // MARK: Добавить новую спортплощадку
+    /// **POST** ${API}/areas
+    case createPark(form: ParkForm)
 
-        // MARK: Изменить выбранную спортплощадку
-        /// **POST** ${API}/areas/<id>
-        case editPark(id: Int, form: ParkForm)
+    // MARK: Изменить выбранную спортплощадку
+    /// **POST** ${API}/areas/<id>
+    case editPark(id: Int, form: ParkForm)
 
-        // MARK: Удалить площадку
-        /// **DELETE** ${API}/areas/<id>
-        case deletePark(_ parkID: Int)
+    // MARK: Удалить площадку
+    /// **DELETE** ${API}/areas/<id>
+    case deletePark(_ parkID: Int)
 
-        // MARK: Добавить комментарий для площадки
-        /// **POST** ${API}/areas/<area_id>/comments
-        case addCommentToPark(parkID: Int, comment: String)
+    // MARK: Добавить комментарий для площадки
+    /// **POST** ${API}/areas/<area_id>/comments
+    case addCommentToPark(parkID: Int, comment: String)
 
-        // MARK: Изменить свой комментарий для площадки
-        /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
-        case editParkComment(parkID: Int, commentID: Int, newComment: String)
+    // MARK: Изменить свой комментарий для площадки
+    /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
+    case editParkComment(parkID: Int, commentID: Int, newComment: String)
 
-        // MARK: Удалить свой комментарий для площадки
-        /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
-        case deleteParkComment(_ parkID: Int, commentID: Int)
+    // MARK: Удалить свой комментарий для площадки
+    /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
+    case deleteParkComment(_ parkID: Int, commentID: Int)
 
-        // MARK: Получить список площадок, где тренируется пользователь
-        /// **GET** ${API}/users/<user_id>/areas
-        case getParksForUser(_ userID: Int)
+    // MARK: Получить список площадок, где тренируется пользователь
+    /// **GET** ${API}/users/<user_id>/areas
+    case getParksForUser(_ userID: Int)
 
-        // MARK: Сообщить, что пользователь тренируется на площадке
-        /// **POST** ${API}/areas/<area_id>/train
-        case postTrainHere(_ parkID: Int)
+    // MARK: Сообщить, что пользователь тренируется на площадке
+    /// **POST** ${API}/areas/<area_id>/train
+    case postTrainHere(_ parkID: Int)
 
-        // MARK: Сообщить, что пользователь не тренируется на площадке
-        /// **DELETE** ${API}/areas/<area_id>/train
-        case deleteTrainHere(_ parkID: Int)
+    // MARK: Сообщить, что пользователь не тренируется на площадке
+    /// **DELETE** ${API}/areas/<area_id>/train
+    case deleteTrainHere(_ parkID: Int)
 
-        // MARK: Получить список предстоящих мероприятий
-        /// **GET** ${API}/trainings/current
-        ///
-        /// - Работает и с аутентификацией, и без
-        /// - Для авторизованного пользователя нужно делать запрос с токеном,
-        /// чтобы получить корректные данные (участие в мероприятии)
-        case getFutureEvents
+    // MARK: Получить список предстоящих мероприятий
+    /// **GET** ${API}/trainings/current
+    ///
+    /// - Работает и с аутентификацией, и без
+    /// - Для авторизованного пользователя нужно делать запрос с токеном,
+    /// чтобы получить корректные данные (участие в мероприятии)
+    case getFutureEvents
 
-        // MARK: Получить краткий список прошедших мероприятий
-        /// **GET** ${API}/trainings/last
-        ///
-        /// - Работает и с аутентификацией, и без
-        /// - Для авторизованного пользователя нужно делать запрос с токеном,
-        /// чтобы получить корректные данные (участие в мероприятии)
-        case getPastEvents
+    // MARK: Получить краткий список прошедших мероприятий
+    /// **GET** ${API}/trainings/last
+    ///
+    /// - Работает и с аутентификацией, и без
+    /// - Для авторизованного пользователя нужно делать запрос с токеном,
+    /// чтобы получить корректные данные (участие в мероприятии)
+    case getPastEvents
 
-        // MARK: Получить всю информацию о мероприятии
-        /// **GET** ${API}/trainings/<event_id>
-        case getEvent(id: Int)
+    // MARK: Получить всю информацию о мероприятии
+    /// **GET** ${API}/trainings/<event_id>
+    case getEvent(id: Int)
 
-        // MARK: Создать новое мероприятие
-        /// **POST** ${API}/trainings
-        case createEvent(form: EventForm)
+    // MARK: Создать новое мероприятие
+    /// **POST** ${API}/trainings
+    case createEvent(form: EventForm)
 
-        // MARK: Изменить существующее мероприятие
-        /// **POST** ${API}/trainings/<id>
-        case editEvent(id: Int, form: EventForm)
+    // MARK: Изменить существующее мероприятие
+    /// **POST** ${API}/trainings/<id>
+    case editEvent(id: Int, form: EventForm)
 
-        // MARK: Сообщить, что пользователь пойдет на мероприятие
-        /// **POST** ${API}/trainings/<event_id>/go
-        case postGoToEvent(_ eventID: Int)
+    // MARK: Сообщить, что пользователь пойдет на мероприятие
+    /// **POST** ${API}/trainings/<event_id>/go
+    case postGoToEvent(_ eventID: Int)
 
-        // MARK: Сообщить, что пользователь не пойдет на мероприятие
-        /// **DELETE** ${API}/trainings/<event_id>/go
-        case deleteGoToEvent(_ eventID: Int)
+    // MARK: Сообщить, что пользователь не пойдет на мероприятие
+    /// **DELETE** ${API}/trainings/<event_id>/go
+    case deleteGoToEvent(_ eventID: Int)
 
-        // MARK: Добавить комментарий для мероприятия
-        /// **POST** ${API}/trainings/<event_id>/comments
-        case addCommentToEvent(eventID: Int, comment: String)
+    // MARK: Добавить комментарий для мероприятия
+    /// **POST** ${API}/trainings/<event_id>/comments
+    case addCommentToEvent(eventID: Int, comment: String)
 
-        // MARK: Удалить свой комментарий для мероприятия
-        /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
-        case deleteEventComment(_ eventID: Int, commentID: Int)
+    // MARK: Удалить свой комментарий для мероприятия
+    /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
+    case deleteEventComment(_ eventID: Int, commentID: Int)
 
-        // MARK: Изменить свой комментарий для мероприятия
-        /// **POST** ${API}/trainings/<training_id>/comments/<comment_id>
-        case editEventComment(eventID: Int, commentID: Int, newComment: String)
+    // MARK: Изменить свой комментарий для мероприятия
+    /// **POST** ${API}/trainings/<training_id>/comments/<comment_id>
+    case editEventComment(eventID: Int, commentID: Int, newComment: String)
 
-        // MARK: Удалить мероприятие
-        /// **DELETE** ${API}/trainings/<event_id>
-        case deleteEvent(_ eventID: Int)
+    // MARK: Удалить мероприятие
+    /// **DELETE** ${API}/trainings/<event_id>
+    case deleteEvent(_ eventID: Int)
 
-        // MARK: Получить список диалогов
-        /// **GET** ${API}/dialogs
-        case getDialogs
+    // MARK: Получить список диалогов
+    /// **GET** ${API}/dialogs
+    case getDialogs
 
-        // MARK: Получить сообщения в диалоге
-        /// **GET** ${API}/dialogs/<dialog_id>/messages
-        case getMessages(dialogID: Int)
+    // MARK: Получить сообщения в диалоге
+    /// **GET** ${API}/dialogs/<dialog_id>/messages
+    case getMessages(dialogID: Int)
 
-        // MARK: Отправить сообщение пользователю
-        /// **POST** ${API}/messages/<user_id>
-        case sendMessageTo(_ message: String, _ userID: Int)
+    // MARK: Отправить сообщение пользователю
+    /// **POST** ${API}/messages/<user_id>
+    case sendMessageTo(_ message: String, _ userID: Int)
 
-        // MARK: Отметить сообщения как прочитанные
-        /// **POST** ${API}/messages/mark_as_read
-        case markAsRead(from: Int)
+    // MARK: Отметить сообщения как прочитанные
+    /// **POST** ${API}/messages/mark_as_read
+    case markAsRead(from: Int)
 
-        // MARK: Удалить выбранный диалог
-        /// **DELETE** ${API}/dialogs/<dialog_id>
-        case deleteDialog(id: Int)
+    // MARK: Удалить выбранный диалог
+    /// **DELETE** ${API}/dialogs/<dialog_id>
+    case deleteDialog(id: Int)
 
-        // MARK: Получить список дневников пользователя
-        /// **GET** ${API}/users/<user_id>/journals
-        case getJournals(userID: Int)
+    // MARK: Получить список дневников пользователя
+    /// **GET** ${API}/users/<user_id>/journals
+    case getJournals(userID: Int)
 
-        // MARK: Получить дневник пользователя
-        /// **GET** ${API}/users/<user_id>/journals/<journal_id>
-        case getJournal(userID: Int, journalID: Int)
+    // MARK: Получить дневник пользователя
+    /// **GET** ${API}/users/<user_id>/journals/<journal_id>
+    case getJournal(userID: Int, journalID: Int)
 
-        // MARK: Изменить настройки дневника
-        /// **PUT** ${API}/users/<user_id>/journals/<journal_id>
-        case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int)
+    // MARK: Изменить настройки дневника
+    /// **PUT** ${API}/users/<user_id>/journals/<journal_id>
+    case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int)
 
-        // MARK: Создать новый дневник
-        /// **POST** ${API}/users/<user_id>/journals
-        case createJournal(userID: Int, title: String)
+    // MARK: Создать новый дневник
+    /// **POST** ${API}/users/<user_id>/journals
+    case createJournal(userID: Int, title: String)
 
-        // MARK: Получить записи из дневника пользователя
-        /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
-        case getJournalEntries(userID: Int, journalID: Int)
+    // MARK: Получить записи из дневника пользователя
+    /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
+    case getJournalEntries(userID: Int, journalID: Int)
 
-        // MARK: Сохранить новую запись в дневнике пользователя
-        /// **POST** ${API}/users/<user_id>/journals/<journal_id>/messages
-        case saveJournalEntry(userID: Int, journalID: Int, message: String)
+    // MARK: Сохранить новую запись в дневнике пользователя
+    /// **POST** ${API}/users/<user_id>/journals/<journal_id>/messages
+    case saveJournalEntry(userID: Int, journalID: Int, message: String)
 
-        // MARK: Изменить запись в дневнике пользователя
-        /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
-        case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String)
+    // MARK: Изменить запись в дневнике пользователя
+    /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
+    case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String)
 
-        // MARK: Удалить запись в дневнике пользователя
-        /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
-        case deleteEntry(userID: Int, journalID: Int, entryID: Int)
+    // MARK: Удалить запись в дневнике пользователя
+    /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
+    case deleteEntry(userID: Int, journalID: Int, entryID: Int)
 
-        // MARK: Удалить дневник пользователя
-        /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
-        case deleteJournal(userID: Int, journalID: Int)
+    // MARK: Удалить дневник пользователя
+    /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
+    case deleteJournal(userID: Int, journalID: Int)
 
-        // MARK: Удалить фото мероприятия
-        /// **DELETE** ${API}/trainings/<event_id>/photos/<photo_id>
-        case deleteEventPhoto(eventID: Int, photoID: Int)
+    // MARK: Удалить фото мероприятия
+    /// **DELETE** ${API}/trainings/<event_id>/photos/<photo_id>
+    case deleteEventPhoto(eventID: Int, photoID: Int)
 
-        // MARK: Удалить фото площадки
-        /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
-        case deleteParkPhoto(parkID: Int, photoID: Int)
-
-        /// Создает `URLRequest` с использованием базового `url`
-        func urlRequest(with baseUrlString: String) -> URLRequest? {
-            guard let url = URL(string: "\(baseUrlString)\(urlPath)") else { return nil }
-            var request = URLRequest(url: url)
-            request.httpMethod = method.rawValue
-            request.httpBody = httpBody
-            request.allHTTPHeaderFields = headers
-            return request
-        }
-    }
+    // MARK: Удалить фото площадки
+    /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
+    case deleteParkPhoto(parkID: Int, photoID: Int)
 }
 
-private extension SWClient.Endpoint {
+extension Endpoint {
     var urlPath: String {
         switch self {
         case .registration:
@@ -292,12 +280,12 @@ private extension SWClient.Endpoint {
         case let .addToBlacklist(userID),
              let .deleteFromBlacklist(userID):
             "/blacklist/\(userID)"
-        case let .findUsers(name):
-            "/users/search?name=\(name)"
+        case .findUsers:
+            "/users/search"
         case .getCountries:
             "/countries"
         case .getAllParks:
-            "/areas?fields=short"
+            "/areas"
         case let .getUpdatedParks(date):
             "/areas/last/\(date)"
         case .createPark:
@@ -364,13 +352,6 @@ private extension SWClient.Endpoint {
         }
     }
 
-    enum HTTPMethod: String {
-        case get = "GET"
-        case post = "POST"
-        case put = "PUT"
-        case delete = "DELETE"
-    }
-
     var method: HTTPMethod {
         switch self {
         case .registration, .login, .editUser, .resetPassword,
@@ -402,19 +383,19 @@ private extension SWClient.Endpoint {
         }
     }
 
-    enum HTTPHeader {
-        static let boundary = "FFF"
-        enum Key: String { case contentType = "Content-Type" }
-        static var withMultipartFormData: [String: String] {
-            [Key.contentType.rawValue: "multipart/form-data; boundary=\(boundary)"]
+    var headers: [HTTPHeaderField] {
+        switch self {
+        case .createPark, .editPark, .createEvent, .editEvent:
+            [.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF")]
+        default: []
         }
     }
 
-    var headers: [String: String] {
+    var queryItems: [URLQueryItem] {
         switch self {
-        case .createPark, .editPark, .createEvent, .editEvent:
-            HTTPHeader.withMultipartFormData
-        default: [:]
+        case .getAllParks: [.init(name: "fields", value: "short")]
+        case let .findUsers(name): [.init(name: "name", value: name)]
+        default: []
         }
     }
 
