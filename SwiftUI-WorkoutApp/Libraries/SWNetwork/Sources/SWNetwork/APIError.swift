@@ -10,6 +10,8 @@ public enum APIError: Error, LocalizedError, Equatable {
     case serverError
     case invalidUserID
     case customError(code: Int, message: String)
+    case decodingError
+    case notConnectedToInternet
 
     init(_ error: ErrorResponse, _ code: Int?) {
         if code == 401 {
@@ -55,6 +57,10 @@ public enum APIError: Error, LocalizedError, Equatable {
             "Некорректный идентификатор пользователя"
         case let .customError(code, error):
             "\(code), \(error)"
+        case .decodingError:
+            "Не удалось декодировать ответ"
+        case .notConnectedToInternet:
+            "Нет соединения с сетью"
         }
     }
 }

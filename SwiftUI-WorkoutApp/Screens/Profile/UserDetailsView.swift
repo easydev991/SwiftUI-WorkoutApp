@@ -233,7 +233,6 @@ private extension UserDetailsView {
         }
     }
 
-    @ViewBuilder
     var logoutButton: some View {
         Button("Выйти") { showLogoutDialog = true }
             .foregroundStyle(Color.swSmallElements)
