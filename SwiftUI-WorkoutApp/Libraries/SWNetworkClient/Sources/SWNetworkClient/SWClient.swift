@@ -573,8 +573,8 @@ public struct SWClient: Sendable {
 
 extension SWClient {
     private func makeStatus(for request: URLRequest?) async throws -> Bool {
-        let encodedString = try await defaults.basicAuthInfo().base64Encoded
         do {
+            let encodedString = try? await defaults.basicAuthInfo().base64Encoded
             return try await service.makeStatus(for: request, encodedString: encodedString)
         } catch APIError.invalidCredentials {
             if canForceLogout {
@@ -587,8 +587,8 @@ extension SWClient {
     }
 
     private func makeResult<T: Decodable>(_ type: T.Type, for request: URLRequest?) async throws -> T {
-        let encodedString = try await defaults.basicAuthInfo().base64Encoded
         do {
+            let encodedString = try? await defaults.basicAuthInfo().base64Encoded
             return try await service.makeResult(type, for: request, encodedString: encodedString)
         } catch APIError.invalidCredentials {
             if canForceLogout {
