@@ -10,21 +10,21 @@ struct RequestComponentsTests {
         let httpMethod = HTTPMethod.get
         let headerFields = [HTTPHeaderField(key: "Authorization", value: "Bearer token")]
         let body = Data("test body".utf8)
-        let needAuth = true
+        let token = "token"
         let requestComponents = RequestComponents(
             path: path,
             queryItems: queryItems,
             httpMethod: httpMethod,
             headerFields: headerFields,
             body: body,
-            needAuth: needAuth
+            token: token
         )
         #expect(requestComponents.path == path)
         #expect(requestComponents.queryItems == queryItems)
         #expect(requestComponents.httpMethod == httpMethod)
         #expect(requestComponents.headerFields == headerFields)
         #expect(requestComponents.body == body)
-        #expect(requestComponents.needAuth == needAuth)
+        #expect(requestComponents.token == token)
     }
 
     @Test
@@ -40,11 +40,43 @@ struct RequestComponentsTests {
     }
 
     @Test
-    func urlRequestCreation() throws {
+    func urlRequestCreationWithAuthToken() throws {
         let path = "/test"
         let queryItems = [URLQueryItem(name: "key", value: "value")]
         let httpMethod = HTTPMethod.post
-        let headerFields = [HTTPHeaderField(key: "Authorization", value: "Bearer token")]
+        let headerFields = [HTTPHeaderField(key: "key", value: "value")]
+        let body = Data("test body".utf8)
+        let token = "token123"
+        let requestComponents = RequestComponents(
+            path: path,
+            queryItems: queryItems,
+            httpMethod: httpMethod,
+            headerFields: headerFields,
+            body: body,
+            token: token
+        )
+        let urlRequest = try #require(requestComponents.urlRequest)
+        let expectedHeaderFields: [HTTPHeaderField] = [
+            .init(key: "key", value: "value"),
+            .init(key: "Authorization", value: "Basic token123")
+        ]
+        let finalHeaderFields = try #require(urlRequest.allHTTPHeaderFields)
+        #expect(urlRequest.httpMethod == httpMethod.rawValue)
+        #expect(urlRequest.httpBody == body)
+        #expect(finalHeaderFields.count == expectedHeaderFields.count)
+        #expect(
+            expectedHeaderFields.allSatisfy { header in
+                finalHeaderFields[header.key] == header.value
+            }
+        )
+    }
+
+    @Test
+    func urlRequestCreationWithoutAuthToken() throws {
+        let path = "/test"
+        let queryItems = [URLQueryItem(name: "key", value: "value")]
+        let httpMethod = HTTPMethod.post
+        let headerFields = [HTTPHeaderField(key: "key", value: "value")]
         let body = Data("test body".utf8)
         let requestComponents = RequestComponents(
             path: path,
@@ -54,9 +86,10 @@ struct RequestComponentsTests {
             body: body
         )
         let urlRequest = try #require(requestComponents.urlRequest)
-        let expectedHeaderFields = Dictionary(uniqueKeysWithValues: headerFields.map { ($0.key, $0.value) })
+        let expectedHeaderFields = ["key": "value"]
+        let finalHeaderFields = try #require(urlRequest.allHTTPHeaderFields)
         #expect(urlRequest.httpMethod == httpMethod.rawValue)
         #expect(urlRequest.httpBody == body)
-        #expect(urlRequest.allHTTPHeaderFields == expectedHeaderFields)
+        #expect(finalHeaderFields == expectedHeaderFields)
     }
 }

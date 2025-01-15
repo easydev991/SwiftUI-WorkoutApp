@@ -7,19 +7,13 @@ import SWNetwork
 public struct SWClient: Sendable {
     /// Сервис, отвечающий за обновление `UserDefaults`
     let defaults: DefaultsProtocol
-    let needAuth: Bool
     /// Сервис для отправки запросов/получения ответов от сервера
     private let service: SWNetworkProtocol
 
-    /// Инициализирует `SWClient` с заданными параметрами
-    /// - Parameters:
-    ///   - defaults: Сервис, отвечающий за обновление `UserDefaults`
-    public init(
-        with defaults: DefaultsProtocol,
-        needAuth: Bool = true
-    ) {
+    /// Инициализатор
+    /// - Parameter defaults: Сервис, отвечающий за обновление `UserDefaults`
+    public init(with defaults: DefaultsProtocol) {
         self.defaults = defaults
-        self.needAuth = needAuth
         self.service = SWNetworkService()
     }
 
@@ -580,18 +574,14 @@ private extension SWClient {
     }
 
     private func makeComponents(for endpoint: Endpoint) async throws -> RequestComponents {
-        var finalHeaders: [HTTPHeaderField] = endpoint.headers
-        if needAuth {
-            let encodedString = try await defaults.basicAuthInfo().base64Encoded
-            finalHeaders.append(.authorizationBasic(encodedString))
-        }
+        let encodedString = try? await defaults.basicAuthInfo().base64Encoded
         return .init(
             path: endpoint.urlPath,
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
-            headerFields: finalHeaders,
+            headerFields: endpoint.headers,
             body: endpoint.httpBody,
-            needAuth: needAuth
+            token: encodedString
         )
     }
 }

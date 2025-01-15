@@ -7,7 +7,7 @@ public struct HTTPHeaderField: Equatable {
         self.value = value
     }
 
-    public static func authorizationBasic(_ token: String?) -> HTTPHeaderField {
-        .init(key: "Authorization", value: "Basic \(token ?? "")")
+    public static func authorizationBasic(_ token: String) -> HTTPHeaderField {
+        .init(key: "Authorization", value: "Basic \(token)")
     }
 }

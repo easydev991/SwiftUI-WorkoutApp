@@ -344,8 +344,7 @@ private extension EventDetailsView {
         if event.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
-            event = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
-                .getEvent(by: event.id)
+            event = try await SWClient(with: defaults).getEvent(by: event.id)
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }

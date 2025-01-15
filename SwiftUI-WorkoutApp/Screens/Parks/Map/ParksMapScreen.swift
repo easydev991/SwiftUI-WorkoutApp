@@ -227,9 +227,7 @@ private extension ParksMapScreen {
     func getUpdatedParks(from dateString: String) async {
         isLoading = true
         do {
-            let updatedParks = try await SWClient(with: defaults, needAuth: false).getUpdatedParks(
-                from: dateString
-            )
+            let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
             try parksManager.updateDefaultList(with: updatedParks)
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))

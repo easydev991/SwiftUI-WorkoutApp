@@ -137,7 +137,7 @@ private extension LoginView {
         isLoading.toggle()
         resetPasswordTask = Task {
             do {
-                showResetSuccessfulAlert = try await SWClient(with: defaults, needAuth: false)
+                showResetSuccessfulAlert = try await SWClient(with: defaults)
                     .resetPassword(for: credentials.login)
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
