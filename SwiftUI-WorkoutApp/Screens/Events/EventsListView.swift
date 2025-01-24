@@ -185,8 +185,7 @@ private extension EventsListView {
         { return }
         if !refresh { isLoading = true }
         do {
-            let list = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
-                .getEvents(of: selectedEventType)
+            let list = try await SWClient(with: defaults).getEvents(of: selectedEventType)
             switch selectedEventType {
             case .future: futureEvents = list
             case .past:

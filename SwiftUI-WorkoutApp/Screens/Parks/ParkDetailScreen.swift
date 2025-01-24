@@ -352,8 +352,7 @@ private extension ParkDetailScreen {
         if park.isFull, !refresh { return }
         if !refresh { isLoading = true }
         do {
-            park = try await SWClient(with: defaults, needAuth: defaults.isAuthorized)
-                .getPark(id: park.id)
+            park = try await SWClient(with: defaults).getPark(id: park.id)
         } catch {
             process(error)
         }

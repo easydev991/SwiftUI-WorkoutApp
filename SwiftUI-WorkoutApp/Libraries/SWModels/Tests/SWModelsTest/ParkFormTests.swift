@@ -139,7 +139,7 @@ private extension ParkFormTests {
             latitude: latitude,
             longitude: longitude,
             name: "Название площадки",
-            photosOptional: [.init(id: 1)],
+            photosOptional: [.init(id: 1, stringURL: "demo")],
             preview: nil,
             usersTrainHereCount: 1,
             commentsOptional: nil,

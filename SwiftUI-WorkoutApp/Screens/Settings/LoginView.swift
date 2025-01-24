@@ -120,7 +120,7 @@ private extension LoginView {
         isLoading.toggle()
         loginTask = Task {
             do {
-                try await SWClient(with: defaults, canForceLogout: false)
+                try await SWClient(with: defaults)
                     .logInWith(credentials.login, credentials.password)
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
@@ -137,7 +137,7 @@ private extension LoginView {
         isLoading.toggle()
         resetPasswordTask = Task {
             do {
-                showResetSuccessfulAlert = try await SWClient(with: defaults, needAuth: false)
+                showResetSuccessfulAlert = try await SWClient(with: defaults)
                     .resetPassword(for: credentials.login)
             } catch {
                 errorMessage = ErrorFilter.message(from: error)

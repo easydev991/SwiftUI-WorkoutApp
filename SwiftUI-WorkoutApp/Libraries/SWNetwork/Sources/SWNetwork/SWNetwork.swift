@@ -1,219 +1,185 @@
 import Foundation
 import OSLog
 
-/// Сервис для отправки запросов и обработки ответов сервера по адресу `https://workout.su/api/v3`
-public struct SWNetworkService: Sendable {
-    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "SWNetwork", category: "SWNetworkService")
-    private let successCode: Int
-    private let forceLogoutCode: Int
-    /// Время таймаута для `URLSession`
-    private let timeoutInterval: TimeInterval
-    /// `true` - нужна базовая аутентификация, `false` - не нужна
-    ///
-    /// Базовая аутентификация не нужна в приложении "SW: Площадки" для запросов:
-    /// - `getUpdatedParks`
-    /// - `registration`
-    /// - `resetPassword`
-    private let needAuth: Bool
-    private var urlSession: URLSession {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = timeoutInterval
-        config.timeoutIntervalForResource = timeoutInterval
-        return .init(configuration: config)
-    }
+public protocol SWNetworkProtocol: Sendable {
+    /// Делает запрос и возвращает данные в ответе
+    func requestData<T: Decodable>(components: RequestComponents) async throws -> T
+    /// Делает запрос и возвращает `true/false` в ответе
+    func requestStatus(components: RequestComponents) async throws -> Bool
+}
 
-    /// `true` - дебаг-события будут логироваться в консоли, `false` - не будут
-    private let enableDebugLogs: Bool
+public struct SWNetworkService {
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "SWNetworkService",
+        category: String(describing: SWNetworkService.self)
+    )
+    private let session: URLSession
+    private let decoder = JSONDecoder()
 
-    /// Инициализатор
-    /// - Parameters:
-    ///   - successCode: Код успешного ответа, по умолчанию `200`
-    ///   - forceLogoutCode: Код принудительного логаута, по умолчанию `401`
-    ///   - timeoutInterval: Время ожидания ответа сервера, по умолчанию `30` (сек.)
-    ///   - needAuth: Нужна ли аутентификация, по умолчанию `true`
-    ///   - enableDebugLogs: Нужно ли логировать дебаг-события в консоли. Ошибки будут логироваться всегда.
     public init(
-        successCode: Int = 200,
-        forceLogoutCode: Int = 401,
-        timeoutInterval: TimeInterval = 30,
-        needAuth: Bool = true,
-        enableDebugLogs: Bool = true
+        timeoutIntervalForRequest: Double = 30,
+        timeoutIntervalForResource: Double = 60
     ) {
-        self.successCode = successCode
-        self.forceLogoutCode = forceLogoutCode
-        self.timeoutInterval = timeoutInterval
-        self.needAuth = needAuth
-        self.enableDebugLogs = enableDebugLogs
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
+        configuration.timeoutIntervalForResource = timeoutIntervalForResource
+        self.session = URLSession(configuration: configuration)
     }
+}
 
-    /// Загружает данные в нужном формате или отдает ошибку
-    /// - Parameters:
-    ///   - type: тип, который нужно загрузить
-    ///   - request: запрос, по которому нужно обратиться
-    ///   - encodedString: `base64Encoded`-строка с "токеном" для авторизованного пользователя
-    /// - Returns: Вся информация по запрошенному типу
-    public func makeResult<T: Decodable>(
-        _ type: T.Type,
-        for request: URLRequest?,
-        encodedString: String?
-    ) async throws -> T {
-        guard let request = finalRequest(request, encodedString) else {
-            let apiError = APIError.badRequest
-            logger.error(
-                """
-                \(apiError.localizedDescription, privacy: .public)
-                \nURL запроса: \(request?.url?.absoluteString ?? "-", privacy: .public)
-                """
-            )
-            throw apiError
-        }
-        let (data, response) = try await urlSession.data(for: request)
-        return try await handle(type, data, response)
-    }
-
-    /// Выполняет действие, не требующее указания типа
-    /// - Parameter request: запрос, по которому нужно обратиться
-    /// - Returns: Статус действия
-    public func makeStatus(
-        for request: URLRequest?,
-        encodedString: String?
-    ) async throws -> Bool {
-        guard let request = finalRequest(request, encodedString) else {
-            let apiError = APIError.badRequest
-            logger.error(
-                """
-                \(apiError.localizedDescription, privacy: .public)
-                \nURL запроса: \(request?.url?.absoluteString ?? "-", privacy: .public)
-                """
-            )
-            throw apiError
-        }
-        let response = try await urlSession.data(for: request).1
-        return try await handle(response)
-    }
-
-    /// Формирует итоговый запрос к серверу
-    /// - Parameters:
-    ///   - request: первоначальный запрос
-    ///   - encodedString: `base64Encoded`-строка с "токеном" для авторизованного пользователя
-    /// - Returns: Итоговый запрос к серверу
-    private func finalRequest(_ request: URLRequest?, _ encodedString: String?) -> URLRequest? {
-        if needAuth, let encodedString {
-            var requestWithBasicAuth = request
-            requestWithBasicAuth?.setValue(
-                "Basic \(encodedString)",
-                forHTTPHeaderField: "Authorization"
-            )
-            return requestWithBasicAuth
-        } else {
-            return request
-        }
-    }
-
-    /// Обрабатывает ответ сервера и возвращает данные в нужном формате
-    private func handle<T: Decodable>(_ type: T.Type, _ data: Data?, _ response: URLResponse?) async throws -> T {
-        let urlString = response?.url?.absoluteString ?? "-"
-        guard let data, !data.isEmpty else {
-            let apiError = APIError.noData
-            logger.error(
-                """
-                \(apiError.localizedDescription, privacy: .public)
-                \nURL запроса: \(urlString, privacy: .public)
-                """
-            )
-            throw apiError
-        }
-        let responseCode = (response as? HTTPURLResponse)?.statusCode
-        guard responseCode == successCode else {
-            throw handleError(from: data, response: response)
+extension SWNetworkService: SWNetworkProtocol {
+    public func requestData<T: Decodable>(components: RequestComponents) async throws -> T {
+        guard let request = components.urlRequest else {
+            throw APIError.badRequest
         }
         do {
-            if enableDebugLogs {
-                logger.debug(
-                    """
-                    Обработали ответ сервера
-                    \nURL запроса: \(urlString, privacy: .public)
-                    \nJSON в ответе: \(data.prettyJson, privacy: .public)
-                    """
+            let (data, response) = try await make(request)
+            guard let response else {
+                throw logUnknownError(request: request, data: data)
+            }
+            switch StatusCodeGroup(code: response.statusCode) {
+            case .success:
+                guard let decodedResult = try? decoder.decode(T.self, from: data) else {
+                    throw log(
+                        APIError.decodingError,
+                        code: response.statusCode,
+                        request: request,
+                        data: data,
+                        response: response
+                    )
+                }
+                logSuccess(request: request, data: data)
+                return decodedResult
+            default:
+                let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
+                let apiError = APIError(errorInfo, response.statusCode)
+                throw log(
+                    apiError,
+                    code: response.statusCode,
+                    request: request,
+                    data: data,
+                    response: response
                 )
             }
-            return try JSONDecoder().decode(type, from: data)
         } catch {
-            logger.error(
-                """
-                Ошибка декодирования: \(error.localizedDescription, privacy: .public)
-                \nURL запроса: \(urlString, privacy: .public)
-                \nJSON в ответе: \(data.prettyJson, privacy: .public)
-                """
-            )
-            throw error
+            throw handleUrlSession(error, request)
         }
     }
 
-    /// Обрабатывает ответ сервера, в котором важен только статус
-    private func handle(_ response: URLResponse?) async throws -> Bool {
-        let responseCode = (response as? HTTPURLResponse)?.statusCode
-        let urlString = response?.url?.absoluteString ?? "-"
-        if enableDebugLogs {
-            logger.debug(
-                """
-                Обработали ответ сервера
-                \nURL запроса: \(urlString, privacy: .public)
-                \nСтатус в ответе: \(responseCode ?? 0, privacy: .public)
-                """
-            )
+    public func requestStatus(components: RequestComponents) async throws -> Bool {
+        guard let request = components.urlRequest else {
+            throw APIError.badRequest
         }
-        guard responseCode == successCode else {
-            let apiError = APIError(with: responseCode)
-            logger.error(
-                """
-                Ошибка обработки ответа сервера: \(apiError.localizedDescription, privacy: .public)
-                \nURL запроса: \(urlString, privacy: .public)
-                \nСтатус в ответе: \(responseCode ?? 0, privacy: .public)
-                """
-            )
-            throw apiError
-        }
-        return true
-    }
-
-    /// Обрабатывает ошибки
-    /// - Parameters:
-    ///   - data: данные об ошибке
-    ///   - response: ответ сервера
-    /// - Returns: Готовая к выводу ошибка `APIError`
-    private func handleError(from data: Data, response: URLResponse?) -> APIError {
-        let errorCode = (response as? HTTPURLResponse)?.statusCode
-        guard errorCode != forceLogoutCode else {
-            return .invalidCredentials
-        }
-        let urlString = response?.url?.absoluteString ?? "-"
         do {
-            let errorInfo = try JSONDecoder().decode(ErrorResponse.self, from: data)
-            let apiError = APIError(errorInfo, errorCode)
-            if enableDebugLogs {
-                logger.debug(
-                    """
-                    Обработали ошибку в ответе
-                    \nКод ошибки: \(errorCode ?? 0, privacy: .public)
-                    \nURL запроса: \(urlString, privacy: .public)
-                    \nJSON с ошибкой: \(data.prettyJson, privacy: .public)
-                    \nПреобразованная ошибка: \(apiError.localizedDescription, privacy: .public)
-                    """
-                )
+            let (data, response) = try await make(request)
+            guard let response else {
+                throw logUnknownError(request: request, data: data)
             }
-            return apiError
+            let isSuccess = StatusCodeGroup(code: response.statusCode).isSuccess
+            guard isSuccess else {
+                let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
+                let apiError = APIError(errorInfo, response.statusCode)
+                log(
+                    apiError,
+                    code: response.statusCode,
+                    request: request,
+                    data: data,
+                    response: response
+                )
+                return false
+            }
+            logSuccess(request: request, data: data)
+            return true
         } catch {
-            let apiError = APIError(with: errorCode)
-            logger.error(
-                """
-                Ошибка декодирования: \(error.localizedDescription, privacy: .public)
-                \nURL запроса: \(urlString, privacy: .public)
-                \nJSON с ошибкой: \(data.prettyJson, privacy: .public)
-                \nПреобразованная ошибка: \(apiError.localizedDescription, privacy: .public)
-                """
-            )
-            return apiError
+            throw handleUrlSession(error, request)
         }
     }
+}
+
+private extension SWNetworkService {
+    /// Делает запрос с проверкой на ошибку авторизации (код 401)
+    func make(_ request: URLRequest) async throws -> (Data, HTTPURLResponse?) {
+        let (data, response) = try await session.data(for: request)
+        let httpURLResponse = response as? HTTPURLResponse
+        if let statusCode = httpURLResponse?.statusCode,
+           statusCode != 400,
+           StatusCodeGroup(code: statusCode).isError {
+            throw statusCode == 401
+                ? APIError.invalidCredentials
+                : APIError(with: statusCode)
+        }
+        return (data, httpURLResponse)
+    }
+
+    /// Логирует успешный ответ
+    func logSuccess(request: URLRequest, data: Data) {
+        logger.info(
+            """
+            Обработали ответ сервера
+            \nURL запроса: \(request.urlString, privacy: .public)
+            \nJSON в ответе: \(data.prettyJson, privacy: .public)
+            """
+        )
+    }
+
+    func logUnknownError(request: URLRequest, data: Data) -> Error {
+        let error = APIError.unknown
+        logger.error(
+            """
+            \(error.localizedDescription, privacy: .public)
+            \nURL запроса: \(request.urlString, privacy: .public)
+            \nJSON в ответе: \(data.prettyJson, privacy: .public)
+            """
+        )
+        return error
+    }
+
+    @discardableResult
+    func log(
+        _ error: Error,
+        code: Int,
+        request: URLRequest,
+        data: Data,
+        response _: HTTPURLResponse?
+    ) -> Error {
+        logger.error(
+            """
+            Код ответа: \(code, privacy: .public)
+            \(error.localizedDescription, privacy: .public)
+            \nURL запроса: \(request.urlString, privacy: .public)
+            \nJSON в ответе: \(data.prettyJson, privacy: .public)
+            """
+        )
+        return error
+    }
+
+    /// Обрабатывает ошибку `URLSession`
+    ///
+    /// В дебаг/стейдж сборках логирует ошибку
+    /// - Parameters:
+    ///   - error: Исходная ошибка
+    ///   - request: Запрос, упавший в ошибку
+    /// - Returns: Новая ошибка
+    @discardableResult
+    func handleUrlSession(_ error: Error, _ request: URLRequest) -> Error {
+        logger.error(
+            """
+            \(error.localizedDescription, privacy: .public)
+            \nURL запроса: \(request.urlString, privacy: .public)
+            """
+        )
+        guard let urlError = error as? URLError else {
+            return error
+        }
+        switch urlError.code {
+        case .notConnectedToInternet, .dataNotAllowed:
+            return APIError.notConnectedToInternet
+        default:
+            return error
+        }
+    }
+}
+
+private extension URLRequest {
+    var urlString: String { url?.absoluteString ?? "" }
 }

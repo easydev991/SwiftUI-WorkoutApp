@@ -2322,6 +2322,17 @@
         }
       }
     },
+    "Не удалось декодировать ответ" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to decode server response"
+          }
+        }
+      }
+    },
     "Не указан" : {
       "extractionState" : "manual",
       "localizations" : {
