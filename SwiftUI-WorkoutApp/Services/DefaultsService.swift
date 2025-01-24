@@ -183,6 +183,18 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 }
 
+extension DefaultsService {
+    var userFlags: UserFlags {
+        .init(
+            isAuthorized: isAuthorized,
+            needUpdate: needUpdateUser,
+            hasParks: hasParks,
+            hasFriends: hasFriends,
+            hasJournals: hasJournals
+        )
+    }
+}
+
 private extension DefaultsService {
     enum Key: String {
         case isUserAuthorized, appTheme, appLanguage,

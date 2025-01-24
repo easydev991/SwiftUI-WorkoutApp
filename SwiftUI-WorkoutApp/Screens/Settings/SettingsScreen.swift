@@ -3,7 +3,7 @@ import SwiftUI
 import SWModels
 
 /// Экран с настройками профиля основного пользователя
-struct SettingsView: View {
+struct SettingsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
 
     var body: some View {
@@ -51,7 +51,7 @@ struct SettingsView: View {
     }
 }
 
-private extension SettingsView {
+private extension SettingsScreen {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
@@ -75,7 +75,7 @@ private extension SettingsView {
     }
 }
 
-private extension SettingsView {
+private extension SettingsScreen {
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
@@ -207,7 +207,7 @@ private extension SettingsView {
 
 #if DEBUG
 #Preview {
-    SettingsView()
+    SettingsScreen()
         .environmentObject(DefaultsService())
 }
 #endif

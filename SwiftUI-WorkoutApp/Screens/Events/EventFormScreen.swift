@@ -5,9 +5,9 @@ import SWModels
 import SWNetworkClient
 
 /// Экран для создания/изменения мероприятия
-struct EventFormView: View {
+struct EventFormScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
@@ -62,7 +62,7 @@ struct EventFormView: View {
     }
 }
 
-extension EventFormView {
+extension EventFormScreen {
     enum Mode {
         /// Для экрана "Мероприятия"
         case regularCreate
@@ -88,7 +88,7 @@ extension EventFormView {
     }
 }
 
-private extension EventFormView {
+private extension EventFormScreen {
     enum FocusableField: Hashable {
         case eventName, eventDescription
     }
@@ -231,7 +231,7 @@ private extension EventFormView {
 
 #if DEBUG
 #Preview {
-    EventFormView(mode: .regularCreate, refreshClbk: {})
+    EventFormScreen(mode: .regularCreate, refreshClbk: {})
         .environmentObject(DefaultsService())
 }
 #endif

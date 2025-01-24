@@ -2,7 +2,7 @@ import SWDesignSystem
 import SwiftUI
 import SWModels
 
-/// Список заявок на добавление в друзья
+/// Секция с заявками на добавление в друзья
 struct FriendRequestsView: View {
     let friendRequests: [UserResponse]
     let action: (_ userID: Int, _ accept: Bool) -> Void

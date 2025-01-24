@@ -2,7 +2,7 @@ import SwiftUI
 import SWNetworkClient
 
 /// Экран для создания и изменения текстовой записи (комментарий к площадке, мерпориятию или дневнику)
-struct TextEntryView: View {
+struct TextEntryScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var entryText = ""
@@ -26,7 +26,7 @@ struct TextEntryView: View {
     }
 
     var body: some View {
-        SendMessageView(
+        SendMessageScreen(
             header: mode.headerTitle,
             placeholder: mode.placeholder,
             text: $entryText,
@@ -46,7 +46,7 @@ struct TextEntryView: View {
     }
 }
 
-extension TextEntryView {
+extension TextEntryScreen {
     enum Mode {
         case newForPark(id: Int)
         case newForEvent(id: Int)
@@ -62,7 +62,7 @@ extension TextEntryView {
     }
 }
 
-private extension TextEntryView.Mode {
+private extension TextEntryScreen.Mode {
     var headerTitle: LocalizedStringKey {
         switch self {
         case .newForEvent, .newForPark:
@@ -86,7 +86,7 @@ private extension TextEntryView.Mode {
     }
 }
 
-private extension TextEntryView {
+private extension TextEntryScreen {
     func sendAction() {
         isLoading = true
         saveEntryTask = Task {
@@ -150,7 +150,7 @@ private extension TextEntryView {
 
 #if DEBUG
 #Preview {
-    TextEntryView(mode: .newForPark(id: 0), refreshClbk: {})
+    TextEntryScreen(mode: .newForPark(id: 0), refreshClbk: {})
         .environmentObject(DefaultsService())
 }
 #endif

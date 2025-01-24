@@ -8,7 +8,7 @@ import SWNetworkClient
 /// Экран с формой для создания/изменения площадки
 struct ParkFormScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var parkForm: ParkForm

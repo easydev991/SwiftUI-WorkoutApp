@@ -4,8 +4,8 @@ import SWModels
 import SWNetworkClient
 
 /// Список дневников
-struct JournalsListView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+struct JournalsListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var journals = [JournalResponse]()
     @State private var newJournalTitle = ""
@@ -49,7 +49,7 @@ struct JournalsListView: View {
     }
 }
 
-private extension JournalsListView {
+private extension JournalsListScreen {
     var refreshButton: some View {
         Button {
             updateListTask = Task {
@@ -78,10 +78,6 @@ private extension JournalsListView {
     var emptyContentView: some View {
         EmptyContentView(
             mode: .journals,
-            isAuthorized: defaults.isAuthorized,
-            hasFriends: defaults.hasFriends,
-            hasParks: defaults.hasParks,
-            isNetworkConnected: isNetworkConnected,
             action: showNewJournalSheet
         )
         .opacity(showEmptyView ? 1 : 0)
@@ -92,7 +88,7 @@ private extension JournalsListView {
             LazyVStack(spacing: 12) {
                 ForEach(journals) { journal in
                     NavigationLink {
-                        JournalEntriesList(for: userID, in: journal)
+                        JournalEntriesScreen(for: userID, in: journal)
                     } label: {
                         JournalCell(
                             model: .init(journalResponse: journal),
@@ -125,7 +121,7 @@ private extension JournalsListView {
     }
 
     var newJournalSheet: some View {
-        SendMessageView(
+        SendMessageScreen(
             header: "Новый дневник",
             placeholder: "Создай первую запись в дневнике",
             text: $newJournalTitle,
@@ -169,7 +165,7 @@ private extension JournalsListView {
     }
 
     func showSettingsSheet(for journal: JournalResponse) -> some View {
-        JournalSettingsView(with: journal, updatedClbk: update)
+        JournalSettingsScreen(with: journal, updatedClbk: update)
     }
 
     func askForJournals(refresh: Bool = false) async {
@@ -226,7 +222,7 @@ private extension JournalsListView {
 
 #if DEBUG
 #Preview {
-    JournalsListView(userID: .previewUserID)
+    JournalsListScreen(userID: .previewUserID)
         .environmentObject(DefaultsService())
 }
 #endif

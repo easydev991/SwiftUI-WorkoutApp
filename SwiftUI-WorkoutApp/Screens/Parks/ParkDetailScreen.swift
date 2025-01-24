@@ -8,7 +8,7 @@ import SWNetworkClient
 struct ParkDetailScreen: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ParkDetailScreen")
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
@@ -199,13 +199,13 @@ private extension ParkDetailScreen {
         if let navigationDestination {
             switch navigationDestination {
             case let .parkAuthor(user):
-                UserDetailsView(for: user)
+                UserDetailsScreen(for: user)
             case let .parkParticipants(users):
-                UsersListView(mode: .parkParticipants(list: users))
+                UsersListScreen(mode: .parkParticipants(list: users))
             case let .editPark(park):
                 ParkFormScreen(.editExisting(park)) { refreshAction() }
             case let .createEvent(parkId, parkLongTitle):
-                EventFormView(mode: .createForSelected(parkId, parkLongTitle))
+                EventFormScreen(mode: .createForSelected(parkId, parkLongTitle))
             }
         }
     }
@@ -214,7 +214,7 @@ private extension ParkDetailScreen {
     func makeSheetContent(for item: SheetItem) -> some View {
         switch item {
         case let .editComment(parkId, commentId, commentBody):
-            TextEntryView(
+            TextEntryScreen(
                 mode: .editPark(
                     .init(
                         parentObjectID: parkId,
@@ -225,7 +225,7 @@ private extension ParkDetailScreen {
                 refreshClbk: refreshAction
             )
         case let .createComment(parkId):
-            TextEntryView(
+            TextEntryScreen(
                 mode: .newForPark(id: parkId),
                 refreshClbk: refreshAction
             )
@@ -291,6 +291,7 @@ private extension ParkDetailScreen {
 
     var commentsSection: some View {
         CommentsView(
+            mainUserId: defaults.mainUserInfo?.id,
             items: park.comments,
             reportClbk: reportComment,
             deleteClbk: deleteComment,

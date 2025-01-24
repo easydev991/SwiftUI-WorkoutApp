@@ -3,10 +3,10 @@ import SwiftUI
 import SWModels
 import SWNetworkClient
 
-/// Экран с детальной информацией профиля
+/// Экран с детальной информацией о пользователе
 @MainActor
-struct UserDetailsView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+struct UserDetailsScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var socialActions = SocialActions()
@@ -78,7 +78,7 @@ struct UserDetailsView: View {
     }
 }
 
-private extension UserDetailsView {
+private extension UserDetailsScreen {
     @ViewBuilder
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
@@ -102,7 +102,7 @@ private extension UserDetailsView {
     }
 
     var editProfileButton: some View {
-        NavigationLink(destination: EditAccountScreen()) {
+        NavigationLink(destination: EditProfileScreen()) {
             Text("Изменить профиль")
         }
         .buttonStyle(SWButtonStyle(icon: .pencil, mode: .tinted, size: .large))
@@ -193,7 +193,7 @@ private extension UserDetailsView {
     var friendsButtonIfNeeded: some View {
         let friendRequestsCount = defaults.friendRequestsList.count
         if user.hasFriends || (isMainUser && friendRequestsCount > .zero) {
-            NavigationLink(destination: UsersListView(mode: .friends(userID: user.id))) {
+            NavigationLink(destination: UsersListScreen(mode: .friends(userID: user.id))) {
                 FormRowView(
                     title: "Друзья",
                     trailingContent: .textWithBadgeAndChevron(
@@ -208,7 +208,7 @@ private extension UserDetailsView {
     @ViewBuilder
     var blacklistButtonIfNeeded: some View {
         if !defaults.blacklistedUsers.isEmpty {
-            NavigationLink(destination: UsersListView(mode: .blacklist)) {
+            NavigationLink(destination: UsersListScreen(mode: .blacklist)) {
                 FormRowView(
                     title: "Черный список",
                     trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
@@ -221,7 +221,7 @@ private extension UserDetailsView {
     var journalsButtonIfNeeded: some View {
         if isMainUser || user.hasJournals {
             NavigationLink {
-                JournalsListView(userID: user.id)
+                JournalsListScreen(userID: user.id)
                     .navigationTitle("Дневники")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
@@ -259,13 +259,13 @@ private extension UserDetailsView {
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
             NavigationView {
-                SearchUsersView()
+                SearchUsersScreen()
             }
         }
     }
 
     var settingsButton: some View {
-        NavigationLink(destination: SettingsView()) {
+        NavigationLink(destination: SettingsScreen()) {
             Icons.Regular.gearshape.view
         }
     }
@@ -337,7 +337,7 @@ private extension UserDetailsView {
     }
 
     func messageSheet(for recipient: UserResponse) -> some View {
-        SendMessageView(
+        SendMessageScreen(
             header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
@@ -395,7 +395,7 @@ private extension UserDetailsView {
     }
 }
 
-private extension UserDetailsView {
+private extension UserDetailsScreen {
     struct SocialActions {
         var friend = FriendAction.sendFriendRequest
         var isFriendRequestSent = false
@@ -406,7 +406,7 @@ private extension UserDetailsView {
 
 #if DEBUG
 #Preview {
-    UserDetailsView(for: .preview)
+    UserDetailsScreen(for: .preview)
         .environmentObject(DefaultsService())
 }
 #endif
