@@ -32,7 +32,6 @@ struct SwiftUI_WorkoutAppApp: App {
     var body: some Scene {
         WindowGroup {
             RootScreen(selectedTab: $tabViewModel.selectedTab)
-                .environment(\.locale, .init(identifier: "en"))
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
