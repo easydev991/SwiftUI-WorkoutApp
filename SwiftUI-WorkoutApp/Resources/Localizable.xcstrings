@@ -2717,6 +2717,22 @@
         }
       }
     },
+    "Отмена" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена"
+          }
+        }
+      }
+    },
     "Отправить" : {
       "localizations" : {
         "en" : {
@@ -2831,6 +2847,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пароль (минимум 6 символов)"
+          }
+        }
+      }
+    },
+    "Перейти" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to settings"
           }
         }
       }
@@ -4147,19 +4173,35 @@
         }
       }
     },
-    "Язык" : {
-      "extractionState" : "manual",
+    "Язык можно поменять в настройках телефона" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Language"
+            "value" : "The language can be changed in the phone settings"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Язык"
+            "value" : "Язык можно поменять в настройках телефона"
+          }
+        }
+      }
+    },
+    "Язык приложения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык приложения"
           }
         }
       }

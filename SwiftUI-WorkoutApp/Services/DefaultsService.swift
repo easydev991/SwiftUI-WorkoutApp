@@ -10,11 +10,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.isUserAuthorized.rawValue)
     private(set) var isAuthorized = false
 
-    @AppStorage(Key.appLanguage.rawValue)
-    private(set) var appLanguage = AppLanguage(
-        rawValue: Locale.current.languageCode ?? "en"
-    ) ?? .eng
-
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
 
@@ -89,10 +84,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         } else {
             []
         }
-    }
-
-    func setAppLanguage(_ language: AppLanguage) {
-        appLanguage = language
     }
 
     func setAppTheme(_ theme: AppColorTheme) {
@@ -197,10 +188,8 @@ extension DefaultsService {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, appTheme, appLanguage,
-             authData, userInfo, friends, friendRequests, blacklist,
-             hasJournals, needUpdateUser, hasFriends, unreadMessagesCount,
-             lastCountriesUpdateDate
+        case isUserAuthorized, appTheme, authData, userInfo, friends, friendRequests, blacklist, hasJournals, needUpdateUser, hasFriends,
+             unreadMessagesCount, lastCountriesUpdateDate
         case hasParks = "hasSportsGrounds"
     }
 }

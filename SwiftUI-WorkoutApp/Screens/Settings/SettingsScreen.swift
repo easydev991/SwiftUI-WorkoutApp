@@ -5,6 +5,7 @@ import SWModels
 /// Экран с настройками профиля основного пользователя
 struct SettingsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
+    @State private var showLanguageAlert = false
 
     var body: some View {
         NavigationView {
@@ -105,23 +106,21 @@ private extension SettingsScreen {
     }
 
     var languagePicker: some View {
-        Menu {
-            Picker(
-                "",
-                selection: .init(
-                    get: { defaults.appLanguage },
-                    set: { defaults.setAppLanguage($0) }
-                )
-            ) {
-                ForEach(AppLanguage.allCases, id: \.self) {
-                    Text(.init($0.rawValue)).tag($0)
-                }
-            }
+        Button {
+            showLanguageAlert.toggle()
         } label: {
             ListRowView(
-                leadingContent: .text("Язык"),
-                trailingContent: .textWithChevron(defaults.appLanguage.rawValue)
+                leadingContent: .text("Язык приложения"),
+                trailingContent: .chevron
             )
+        }
+        .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
+            Button("Отмена", role: .cancel) {
+                showLanguageAlert.toggle()
+            }
+            Button("Перейти") {
+                URLOpener.open(URL(string: UIApplication.openSettingsURLString))
+            }
         }
     }
 
