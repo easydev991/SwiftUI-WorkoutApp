@@ -4,8 +4,8 @@ import SWModels
 import SWNetworkClient
 
 /// Экран со списком пользователей
-struct UsersListView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+struct UsersListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var users = [UserResponse]()
     @State private var friendRequests = [UserResponse]()
@@ -55,7 +55,7 @@ struct UsersListView: View {
     }
 }
 
-extension UsersListView {
+extension UsersListScreen {
     enum Mode {
         /// Друзья пользователя с указанным `id`
         ///
@@ -74,7 +74,7 @@ extension UsersListView {
     }
 }
 
-private extension UsersListView.Mode {
+private extension UsersListScreen.Mode {
     var title: LocalizedStringKey {
         switch self {
         case .friends, .friendsForChat:
@@ -89,7 +89,7 @@ private extension UsersListView.Mode {
     }
 }
 
-private extension UsersListView {
+private extension UsersListScreen {
     @ViewBuilder
     var friendRequestsSectionIfNeeded: some View {
         if !friendRequests.isEmpty {
@@ -112,7 +112,7 @@ private extension UsersListView {
             }
         case .friends, .eventParticipants, .parkParticipants, .blacklist:
             NavigationLink {
-                UserDetailsView(for: model)
+                UserDetailsScreen(for: model)
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
                 userRowView(with: model)
@@ -133,7 +133,7 @@ private extension UsersListView {
     }
 
     func messageSheet(for recipient: UserResponse) -> some View {
-        SendMessageView(
+        SendMessageScreen(
             header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
@@ -218,7 +218,7 @@ private extension UsersListView {
 
 #if DEBUG
 #Preview {
-    UsersListView(mode: .friends(userID: .previewUserID))
+    UsersListScreen(mode: .friends(userID: .previewUserID))
         .environmentObject(DefaultsService())
 }
 #endif

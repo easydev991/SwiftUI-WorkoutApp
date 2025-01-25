@@ -3,8 +3,9 @@ import SwiftUI
 import SWModels
 
 /// Экран с настройками профиля основного пользователя
-struct SettingsView: View {
+struct SettingsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
+    @State private var showLanguageAlert = false
 
     var body: some View {
         NavigationView {
@@ -51,7 +52,7 @@ struct SettingsView: View {
     }
 }
 
-private extension SettingsView {
+private extension SettingsScreen {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
@@ -75,7 +76,7 @@ private extension SettingsView {
     }
 }
 
-private extension SettingsView {
+private extension SettingsScreen {
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
@@ -105,23 +106,21 @@ private extension SettingsView {
     }
 
     var languagePicker: some View {
-        Menu {
-            Picker(
-                "",
-                selection: .init(
-                    get: { defaults.appLanguage },
-                    set: { defaults.setAppLanguage($0) }
-                )
-            ) {
-                ForEach(AppLanguage.allCases, id: \.self) {
-                    Text(.init($0.rawValue)).tag($0)
-                }
-            }
+        Button {
+            showLanguageAlert.toggle()
         } label: {
             ListRowView(
-                leadingContent: .text("Язык"),
-                trailingContent: .textWithChevron(defaults.appLanguage.rawValue)
+                leadingContent: .text("Язык приложения"),
+                trailingContent: .chevron
             )
+        }
+        .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
+            Button("Отмена", role: .cancel) {
+                showLanguageAlert.toggle()
+            }
+            Button("Перейти") {
+                URLOpener.open(URL(string: UIApplication.openSettingsURLString))
+            }
         }
     }
 
@@ -207,7 +206,7 @@ private extension SettingsView {
 
 #if DEBUG
 #Preview {
-    SettingsView()
+    SettingsScreen()
         .environmentObject(DefaultsService())
 }
 #endif

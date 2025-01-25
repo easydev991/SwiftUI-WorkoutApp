@@ -2,8 +2,11 @@ import SWDesignSystem
 import SwiftUI
 import SWModels
 
+/// Экран для просмотра фотографии
+///
+/// Можно пожаловаться на фото или удалить его (в некоторых сценариях)
 struct PhotoDetailScreen: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteDialog = false
     @State private var showReportDialog = false
@@ -15,7 +18,7 @@ struct PhotoDetailScreen: View {
     var body: some View {
         VStack {
             headerView
-            ImageDetailView(image: model.uiImage)
+            PDFViewRepresentable(image: model.uiImage)
         }
         .background(Color.swBackground)
     }

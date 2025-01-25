@@ -4,9 +4,9 @@ import SWModels
 import SWNetworkClient
 
 /// Экран для изменения личных данных пользователя
-struct EditAccountScreen: View {
+struct EditProfileScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var userForm = MainUserForm.emptyValue
     /// Ранее сохраненная форма с данными пользователя
@@ -50,7 +50,7 @@ struct EditAccountScreen: View {
     }
 }
 
-private extension EditAccountScreen {
+private extension EditProfileScreen {
     enum FocusableField: Hashable {
         case login, email, fullName
     }
@@ -83,7 +83,7 @@ private extension EditAccountScreen {
     }
 
     var changePasswordButton: some View {
-        NavigationLink(destination: ChangePasswordView()) {
+        NavigationLink(destination: ChangePasswordScreen()) {
             ListRowView(leadingContent: .iconWithText(.key, "Изменить пароль"), trailingContent: .chevron)
         }
     }
@@ -221,7 +221,7 @@ private extension EditAccountScreen {
     }
 }
 
-private extension EditAccountScreen {
+private extension EditProfileScreen {
     struct Locations {
         /// Все доступные страны
         var countries: [Country]
@@ -248,7 +248,7 @@ private extension EditAccountScreen {
 #if DEBUG
 #Preview {
     NavigationView {
-        EditAccountScreen()
+        EditProfileScreen()
             .environmentObject(DefaultsService())
     }
 }

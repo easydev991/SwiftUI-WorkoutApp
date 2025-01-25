@@ -3,10 +3,11 @@ import SwiftUI
 import SWModels
 import SWNetworkClient
 
-struct JournalSettingsView: View {
+/// Экран с настройками дневника
+struct JournalSettingsScreen: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse
     @State private var isLoading = false
     @State private var showErrorAlert = false
@@ -46,7 +47,7 @@ struct JournalSettingsView: View {
     }
 }
 
-private extension JournalSettingsView {
+private extension JournalSettingsScreen {
     var journalTitleTextField: some View {
         SWTextField(
             placeholder: "Название дневника",
@@ -118,6 +119,6 @@ private extension JournalSettingsView {
 
 #if DEBUG
 #Preview {
-    JournalSettingsView(with: .preview, updatedClbk: { _ in })
+    JournalSettingsScreen(with: .preview, updatedClbk: { _ in })
 }
 #endif

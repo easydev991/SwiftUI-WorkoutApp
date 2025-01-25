@@ -4,9 +4,9 @@ import SWModels
 import SWNetworkClient
 
 /// Экран со списком мероприятий
-struct EventsListView: View {
+struct EventsListScreen: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var futureEvents = [EventResponse]()
     @State private var pastEvents = [EventResponse]()
@@ -64,7 +64,7 @@ struct EventsListView: View {
     }
 }
 
-private extension EventsListView {
+private extension EventsListScreen {
     var refreshButton: some View {
         Button {
             eventsTask = Task { await askForEvents(refresh: true) }
@@ -91,10 +91,6 @@ private extension EventsListView {
     var emptyView: some View {
         EmptyContentView(
             mode: .events,
-            isAuthorized: defaults.isAuthorized,
-            hasFriends: defaults.hasFriends,
-            hasParks: defaults.hasParks,
-            isNetworkConnected: isNetworkConnected,
             action: {
                 if canAddEvent {
                     showEventCreationSheet.toggle()
@@ -130,7 +126,7 @@ private extension EventsListView {
         .opacity(isLoading ? 0 : 1)
         .sheet(item: $selectedEvent) { event in
             NavigationView {
-                EventDetailsView(event: event) { removeEvent(id: $0) }
+                EventDetailsScreen(event: event) { removeEvent(id: $0) }
             }
         }
     }
@@ -151,7 +147,7 @@ private extension EventsListView {
             .disabled(!isNetworkConnected)
             .sheet(isPresented: $showEventCreationSheet) {
                 NavigationView {
-                    EventFormView(
+                    EventFormScreen(
                         mode: .regularCreate,
                         refreshClbk: {
                             eventsTask = Task { await askForEvents(refresh: true) }
@@ -215,7 +211,7 @@ private extension EventsListView {
 
 #if DEBUG
 #Preview {
-    EventsListView()
+    EventsListScreen()
         .environmentObject(TabViewModel())
         .environmentObject(DefaultsService())
 }

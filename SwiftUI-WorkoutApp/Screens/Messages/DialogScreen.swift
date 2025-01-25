@@ -3,9 +3,9 @@ import SwiftUI
 import SWModels
 import SWNetworkClient
 
-/// Экран с диалогом
-struct DialogView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+/// Экран для отдельного диалога
+struct DialogScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messages = [MessageResponse]()
     @State private var newMessage = ""
@@ -61,7 +61,7 @@ struct DialogView: View {
     }
 }
 
-private extension DialogView {
+private extension DialogScreen {
     var refreshButton: some View {
         Button {
             refreshDialogTask = Task {
@@ -76,7 +76,7 @@ private extension DialogView {
     var anotherUserProfileButton: some View {
         NavigationLink(
             isActive: $openAnotherUserProfile,
-            destination: { UserDetailsView(from: dialog) },
+            destination: { UserDetailsScreen(from: dialog) },
             label: {
                 CachedImage(
                     url: dialog.anotherUserImageURL,
@@ -204,7 +204,7 @@ private extension DialogView {
 
 #if DEBUG
 #Preview {
-    DialogView(dialog: .preview, markedAsReadClbk: { _ in })
+    DialogScreen(dialog: .preview, markedAsReadClbk: { _ in })
         .environmentObject(DefaultsService())
 }
 #endif

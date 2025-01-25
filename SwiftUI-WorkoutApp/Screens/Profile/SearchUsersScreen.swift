@@ -4,7 +4,7 @@ import SWModels
 import SWNetworkClient
 
 /// Экран для поиска других пользователей
-struct SearchUsersView: View {
+struct SearchUsersScreen: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messagingModel = MessagingModel()
@@ -59,7 +59,7 @@ struct SearchUsersView: View {
     }
 }
 
-extension SearchUsersView {
+extension SearchUsersScreen {
     enum Mode {
         /// Обычный режим с возможностью перехода в профиль найденного пользователя
         case regular
@@ -68,12 +68,12 @@ extension SearchUsersView {
     }
 }
 
-private extension SearchUsersView {
+private extension SearchUsersScreen {
     @ViewBuilder
     func listItem(for model: UserResponse) -> some View {
         switch mode {
         case .regular:
-            NavigationLink(destination: UserDetailsView(for: model)) {
+            NavigationLink(destination: UserDetailsScreen(for: model)) {
                 userRowView(with: model)
             }
         case .chat:
@@ -98,7 +98,7 @@ private extension SearchUsersView {
     }
 
     func messageSheet(for recipient: UserResponse) -> some View {
-        SendMessageView(
+        SendMessageScreen(
             header: .init(recipient.messageFor),
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
@@ -161,6 +161,6 @@ private extension SearchUsersView {
 
 #if DEBUG
 #Preview {
-    SearchUsersView()
+    SearchUsersScreen()
 }
 #endif

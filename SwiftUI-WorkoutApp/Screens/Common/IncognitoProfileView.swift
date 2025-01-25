@@ -17,7 +17,7 @@ struct IncognitoProfileView: View {
         .background(Color.swBackground)
         .sheet(isPresented: $showAuthScreen) {
             ContentInSheet(title: "Авторизация") {
-                LoginView()
+                LoginScreen()
             }
         }
     }

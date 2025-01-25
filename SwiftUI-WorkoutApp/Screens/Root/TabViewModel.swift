@@ -67,13 +67,13 @@ extension TabViewModel {
             case .map:
                 ParksMapScreen()
             case .events:
-                EventsListView()
+                EventsListScreen()
             case .messages:
                 DialogsScreen()
             case .profile:
                 ProfileScreen()
             case .settings:
-                SettingsView()
+                SettingsScreen()
             }
         }
     }

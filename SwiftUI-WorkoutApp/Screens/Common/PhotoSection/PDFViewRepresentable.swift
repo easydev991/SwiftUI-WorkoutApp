@@ -1,7 +1,8 @@
 import PDFKit
 import SwiftUI
 
-struct ImageDetailView: UIViewRepresentable {
+/// Обертка для картинки, для которой работает зум
+struct PDFViewRepresentable: UIViewRepresentable {
     let image: UIImage
 
     func makeUIView(context _: Context) -> PDFView {
@@ -19,6 +20,6 @@ struct ImageDetailView: UIViewRepresentable {
 
 #if DEBUG
 #Preview {
-    ImageDetailView(image: .init(systemName: "book")!)
+    PDFViewRepresentable(image: .init(systemName: "book")!)
 }
 #endif

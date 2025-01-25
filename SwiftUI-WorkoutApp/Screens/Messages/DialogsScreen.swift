@@ -1,23 +1,24 @@
 import SWDesignSystem
 import SwiftUI
 
-/// Экран с диалогами
+/// Экран "Сообщения"
 struct DialogsScreen: View {
-    @EnvironmentObject private var defaults: DefaultsService
+    @Environment(\.userFlags) private var userFlags
 
     var body: some View {
         NavigationView {
             ZStack {
-                if defaults.isAuthorized {
-                    DialogListView()
+                if userFlags.isAuthorized {
+                    DialogsListScreen()
+                        .navigationBarTitleDisplayMode(.inline)
                 } else {
                     IncognitoProfileView()
+                        .navigationBarTitleDisplayMode(.large)
                 }
             }
             .background(Color.swBackground)
             .transaction { $0.animation = nil }
             .navigationTitle("Сообщения")
-            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
         .navigationViewStyle(.stack)
     }
