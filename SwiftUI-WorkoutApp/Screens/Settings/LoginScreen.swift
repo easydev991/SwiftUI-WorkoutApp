@@ -3,12 +3,10 @@ import SwiftUI
 import SWModels
 import SWNetworkClient
 
-/// Экран для авторизации
-///
-/// На нем еще можно восстановить пароль
-struct LoginView: View {
+/// Экран для авторизации / восстановления пароля
+struct LoginScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
     @State private var credentials = Credentials()
     @State private var showResetInfoAlert = false
@@ -43,7 +41,7 @@ struct LoginView: View {
     }
 }
 
-private extension LoginView {
+private extension LoginScreen {
     struct Credentials: Equatable {
         var login = ""
         var password = ""
@@ -154,6 +152,6 @@ private extension LoginView {
 
 #if DEBUG
 #Preview {
-    LoginView()
+    LoginScreen()
 }
 #endif

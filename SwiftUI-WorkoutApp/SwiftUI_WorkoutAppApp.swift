@@ -31,14 +31,15 @@ struct SwiftUI_WorkoutAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(\.locale, .init(identifier: defaults.appLanguage.code))
+            RootScreen(selectedTab: $tabViewModel.selectedTab)
+                .environment(\.locale, .init(identifier: "en"))
                 .environmentObject(tabViewModel)
                 .environmentObject(network)
                 .environmentObject(defaults)
                 .environmentObject(parksManager)
                 .preferredColorScheme(colorScheme)
-                .environment(\.networkConnected, network.isConnected)
+                .environment(\.isNetworkConnected, network.isConnected)
+                .environment(\.userFlags, defaults.userFlags)
         }
         .onChange(of: scenePhase) { phase in
             switch phase {

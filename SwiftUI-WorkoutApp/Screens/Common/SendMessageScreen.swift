@@ -2,8 +2,8 @@ import SWDesignSystem
 import SwiftUI
 
 /// Универсальный экран для отправки текста на сервер
-struct SendMessageView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+struct SendMessageScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
     @Binding var showErrorAlert: Bool
@@ -56,7 +56,7 @@ struct SendMessageView: View {
     }
 }
 
-private extension SendMessageView {
+private extension SendMessageScreen {
     var sendButton: some View {
         Button("Отправить") {
             isFocused = false
@@ -88,7 +88,7 @@ private extension SendMessageView {
 
 #if DEBUG
 #Preview {
-    SendMessageView(
+    SendMessageScreen(
         header: "Новый комментарий",
         text: .constant("Текст комментария"),
         isLoading: false,

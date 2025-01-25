@@ -1,12 +1,12 @@
 import SWDesignSystem
 import SwiftUI
 
-struct RootView: View {
-    @EnvironmentObject private var viewModel: TabViewModel
-    @EnvironmentObject private var defaults: DefaultsService
+struct RootScreen: View {
+    @Environment(\.userFlags) private var userFlags
+    @Binding var selectedTab: TabViewModel.Tab
 
     var body: some View {
-        TabView(selection: $viewModel.selectedTab) {
+        TabView(selection: $selectedTab) {
             ForEach(TabViewModel.Tab.allCases, id: \.rawValue) { tab in
                 tab.screen
                     .tabItem { tab.tabItemLabel }
@@ -14,15 +14,13 @@ struct RootView: View {
             }
         }
         .navigationViewStyle(.stack)
-        .animation(.spring(), value: defaults.isAuthorized)
     }
 }
 
 #if DEBUG
 #Preview {
-    RootView()
-        .environmentObject(DefaultsService())
-        .environmentObject(TabViewModel())
+    RootScreen(selectedTab: .constant(.map))
         .environmentObject(ParksManager())
+        .environmentObject(DefaultsService())
 }
 #endif

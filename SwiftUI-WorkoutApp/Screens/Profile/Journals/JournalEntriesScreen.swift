@@ -4,8 +4,8 @@ import SWModels
 import SWNetworkClient
 
 /// Экран со списком записей в дневнике
-struct JournalEntriesList: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+struct JournalEntriesScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var entries = [JournalEntryResponse]()
     @State private var isLoading = false
@@ -51,7 +51,7 @@ struct JournalEntriesList: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $editEntry) {
-            TextEntryView(
+            TextEntryScreen(
                 mode: .editJournalEntry(
                     ownerId: userID,
                     editInfo: .init(
@@ -87,7 +87,7 @@ struct JournalEntriesList: View {
     }
 }
 
-private extension JournalEntriesList {
+private extension JournalEntriesScreen {
     @ViewBuilder
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
@@ -113,7 +113,7 @@ private extension JournalEntriesList {
             }
             .disabled(isLoading || !isNetworkConnected)
             .sheet(isPresented: $showCreateEntrySheet) {
-                TextEntryView(
+                TextEntryScreen(
                     mode: .newForJournal(
                         ownerId: userID,
                         journalId: currentJournal.id
@@ -195,7 +195,7 @@ private extension JournalEntriesList {
 
 #if DEBUG
 #Preview {
-    JournalEntriesList(for: 30, in: .preview)
+    JournalEntriesScreen(for: 30, in: .preview)
         .environmentObject(DefaultsService())
 }
 #endif

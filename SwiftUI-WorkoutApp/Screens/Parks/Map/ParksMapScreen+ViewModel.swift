@@ -5,33 +5,35 @@ import SWModels
 import SWNetworkClient
 import Utils
 
-final class ParksMapViewModel: NSObject, ObservableObject {
-    private let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: ParksMapViewModel.self)
-    )
-    /// Менеджер локации
-    private let manager = CLLocationManager()
-    @Published private(set) var locationErrorMessage = ""
-    @Published private(set) var addressString = ""
-    @Published private(set) var region = MKCoordinateRegion()
-    @Published private(set) var ignoreUserLocation = false
-    /// Координаты города в профиле авторизованного пользователя
-    private var userCoordinates: (Double, Double) = (0, 0)
+extension ParksMapScreen {
+    final class ViewModel: NSObject, ObservableObject {
+        private let logger = Logger(
+            subsystem: Bundle.main.bundleIdentifier!,
+            category: String(describing: ViewModel.self)
+        )
+        /// Менеджер локации
+        private let manager = CLLocationManager()
+        @Published private(set) var locationErrorMessage = ""
+        @Published private(set) var addressString = ""
+        @Published private(set) var region = MKCoordinateRegion()
+        @Published private(set) var ignoreUserLocation = false
+        /// Координаты города в профиле авторизованного пользователя
+        private var userCoordinates: (Double, Double) = (0, 0)
 
-    override init() {
-        super.init()
-        manager.delegate = self
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-    }
+        override init() {
+            super.init()
+            manager.delegate = self
+            manager.requestWhenInUseAuthorization()
+            manager.startUpdatingLocation()
+        }
 
-    func updateUserCountryAndCity(with info: UserResponse?) {
-        userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
+        func updateUserCountryAndCity(with info: UserResponse?) {
+            userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
+        }
     }
 }
 
-extension ParksMapViewModel {
+extension ParksMapScreen.ViewModel {
     /// `true` - регион пользователя установлен, `false` - не установлен
     var isRegionSet: Bool {
         region.center.latitude != .zero && region.center.longitude != .zero
@@ -43,7 +45,7 @@ extension ParksMapViewModel {
     }
 }
 
-extension ParksMapViewModel: CLLocationManagerDelegate {
+extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         if !isRegionSet {
@@ -87,7 +89,7 @@ extension ParksMapViewModel: CLLocationManagerDelegate {
     }
 }
 
-private extension ParksMapViewModel {
+private extension ParksMapScreen.ViewModel {
     func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Constants.Alert.locationPermissionDenied

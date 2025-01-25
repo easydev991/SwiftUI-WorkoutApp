@@ -8,10 +8,10 @@ import Utils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
-    @StateObject private var viewModel = ParksMapViewModel()
+    @StateObject private var viewModel = ViewModel()
     @State private var presentation = Presentation.map
     @State private var isLoading = false
     @State private var showErrorAlert = false

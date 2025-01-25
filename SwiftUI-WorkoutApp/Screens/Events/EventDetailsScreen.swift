@@ -4,9 +4,9 @@ import SWModels
 import SWNetworkClient
 
 /// Экран с детальной информацией о мероприятии
-struct EventDetailsView: View {
+struct EventDetailsScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
@@ -77,7 +77,7 @@ struct EventDetailsView: View {
     }
 }
 
-private extension EventDetailsView {
+private extension EventDetailsScreen {
     enum NavigationDestination {
         case eventAuthor(UserResponse)
         case eventParticipants([UserResponse])
@@ -97,7 +97,7 @@ private extension EventDetailsView {
     }
 }
 
-private extension EventDetailsView {
+private extension EventDetailsScreen {
     var toolbarMenuButton: some View {
         Menu {
             Group {
@@ -268,6 +268,7 @@ private extension EventDetailsView {
 
     var commentsSection: some View {
         CommentsView(
+            mainUserId: defaults.mainUserInfo?.id,
             items: event.comments,
             reportClbk: reportComment,
             deleteClbk: deleteComment,
@@ -293,11 +294,11 @@ private extension EventDetailsView {
         if let navigationDestination {
             switch navigationDestination {
             case let .eventAuthor(user):
-                UserDetailsView(for: user)
+                UserDetailsScreen(for: user)
             case let .eventParticipants(users):
-                UsersListView(mode: .eventParticipants(list: users))
+                UsersListScreen(mode: .eventParticipants(list: users))
             case let .editEvent(eventToEdit):
-                EventFormView(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
+                EventFormScreen(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
             }
         }
     }
@@ -317,7 +318,7 @@ private extension EventDetailsView {
     func makeSheetContent(for item: SheetItem) -> some View {
         switch item {
         case let .editComment(comment):
-            TextEntryView(
+            TextEntryScreen(
                 mode: .editEvent(
                     .init(
                         parentObjectID: event.id,
@@ -328,7 +329,7 @@ private extension EventDetailsView {
                 refreshClbk: refreshAction
             )
         case let .newComment(eventId):
-            TextEntryView(
+            TextEntryScreen(
                 mode: .newForEvent(id: eventId),
                 refreshClbk: refreshAction
             )
@@ -435,7 +436,7 @@ private extension EventDetailsView {
 
 #if DEBUG
 #Preview {
-    EventDetailsView(event: .preview, onDeletion: { _ in })
+    EventDetailsScreen(event: .preview, onDeletion: { _ in })
         .environmentObject(DefaultsService())
 }
 #endif

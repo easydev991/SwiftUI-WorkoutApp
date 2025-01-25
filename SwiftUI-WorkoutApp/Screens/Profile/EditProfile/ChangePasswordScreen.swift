@@ -4,9 +4,9 @@ import SWModels
 import SWNetworkClient
 
 /// Экран для смены пароля
-struct ChangePasswordView: View {
+struct ChangePasswordScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.networkConnected) private var isNetworkConnected
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var model = PassworModel()
     @State private var isLoading = false
@@ -44,7 +44,7 @@ struct ChangePasswordView: View {
     }
 }
 
-private extension ChangePasswordView {
+private extension ChangePasswordScreen {
     struct PassworModel {
         struct NewPassword {
             var text = ""
@@ -170,6 +170,6 @@ private extension ChangePasswordView {
 
 #if DEBUG
 #Preview {
-    ChangePasswordView()
+    ChangePasswordScreen()
 }
 #endif

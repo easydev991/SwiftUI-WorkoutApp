@@ -4,18 +4,16 @@ import SWModels
 
 /// Заглушка на случай, когда нет контента
 struct EmptyContentView: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
+    @Environment(\.userFlags) private var userFlags
     let mode: Mode
-    let isAuthorized: Bool
-    let hasFriends: Bool
-    let hasParks: Bool
-    let isNetworkConnected: Bool
     let action: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
             if isNetworkConnected {
                 titleText(mode.message)
-                if isAuthorized {
+                if userFlags.isAuthorized {
                     Button(actionButtonTitle, action: action)
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
                 }
@@ -55,17 +53,17 @@ private extension EmptyContentView {
     var actionButtonTitle: LocalizedStringKey {
         switch mode {
         case .events:
-            hasParks && isAuthorized
+            userFlags.hasParks && userFlags.isAuthorized
                 ? "Создать мероприятие"
                 : "Выбрать площадку"
         case .dialogs:
-            hasFriends ? "Открыть список друзей" : "Найти пользователя"
+            userFlags.hasFriends ? "Открыть список друзей" : "Найти пользователя"
         case .journals: "Создать дневник"
         }
     }
 
     var isHintAvailable: Bool {
-        mode == .events && isAuthorized && !hasParks
+        mode == .events && userFlags.isAuthorized && !userFlags.hasParks
     }
 }
 
@@ -94,20 +92,13 @@ private extension EmptyContentView.Mode {
         ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
             EmptyContentView(
                 mode: mode,
-                isAuthorized: true,
-                hasFriends: true,
-                hasParks: true,
-                isNetworkConnected: true,
                 action: {}
             )
             Divider()
         }
+        .environment(\.isNetworkConnected, true)
         EmptyContentView(
             mode: .dialogs,
-            isAuthorized: true,
-            hasFriends: true,
-            hasParks: true,
-            isNetworkConnected: false,
             action: {}
         )
     }

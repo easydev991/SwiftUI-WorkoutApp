@@ -3,9 +3,9 @@ import SwiftUI
 import SWModels
 import SWNetworkClient
 
-/// Список диалогов
-struct DialogListView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
+/// Экран со списком диалогов
+struct DialogsListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var dialogs = [DialogResponse]()
     @State private var selectedDialog: DialogResponse?
@@ -47,7 +47,7 @@ struct DialogListView: View {
     }
 }
 
-private extension DialogListView {
+private extension DialogsListScreen {
     var refreshButton: some View {
         Button {
             refreshTask = Task {
@@ -63,9 +63,9 @@ private extension DialogListView {
     var friendListButton: some View {
         NavigationLink(isActive: $openFriendList) {
             if hasFriends, let mainUserID = defaults.mainUserInfo?.id {
-                UsersListView(mode: .friendsForChat(userID: mainUserID))
+                UsersListScreen(mode: .friendsForChat(userID: mainUserID))
             } else {
-                SearchUsersView(mode: .chat)
+                SearchUsersScreen(mode: .chat)
             }
         } label: {
             Icons.Regular.plus.view
@@ -78,10 +78,6 @@ private extension DialogListView {
     var emptyContentView: some View {
         EmptyContentView(
             mode: .dialogs,
-            isAuthorized: defaults.isAuthorized,
-            hasFriends: defaults.hasFriends,
-            hasParks: defaults.hasParks,
-            isNetworkConnected: isNetworkConnected,
             action: emptyViewAction
         )
         .opacity(showEmptyView ? 1 : 0)
@@ -119,7 +115,7 @@ private extension DialogListView {
     @ViewBuilder
     var lazyDestination: some View {
         if let selectedDialog {
-            DialogView(dialog: selectedDialog) { markAsRead($0) }
+            DialogScreen(dialog: selectedDialog) { markAsRead($0) }
         }
     }
 
@@ -214,7 +210,7 @@ private extension DialogListView {
 
 #if DEBUG
 #Preview {
-    DialogListView()
+    DialogsListScreen()
         .environmentObject(DefaultsService())
 }
 #endif

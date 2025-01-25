@@ -2,7 +2,6 @@ import Foundation
 
 @MainActor
 public protocol DefaultsProtocol: AnyObject, Sendable {
-    var appLanguage: AppLanguage { get }
     var appTheme: AppColorTheme { get }
     var mainUserInfo: UserResponse? { get }
     var mainUserCountryID: Int { get }
@@ -15,7 +14,6 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     var unreadMessagesCount: Int { get }
     /// Дефолтная дата - предыдущее ручное обновление файла `countries.json`
     var lastCountriesUpdateDate: Date { get }
-    func setAppLanguage(_ language: AppLanguage)
     func setAppTheme(_ theme: AppColorTheme)
     func saveAuthData(_ info: AuthData) throws
     func basicAuthInfo() throws -> AuthData

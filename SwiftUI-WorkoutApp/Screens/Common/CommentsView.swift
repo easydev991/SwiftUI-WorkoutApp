@@ -4,8 +4,9 @@ import SWModels
 
 /// Список комментариев
 struct CommentsView: View {
-    @Environment(\.networkConnected) private var isNetworkConnected
-    @EnvironmentObject private var defaults: DefaultsService
+    @Environment(\.userFlags) private var userFlags
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
+    let mainUserId: Int?
     let items: [CommentResponse]
     let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
@@ -23,7 +24,7 @@ struct CommentsView: View {
                                 userName: comment.user?.userName ?? "",
                                 dateText: comment.formattedDateString,
                                 bodyText: comment.formattedBody,
-                                isCommentByMainUser: comment.user?.id == defaults.mainUserInfo?.id,
+                                isCommentByMainUser: comment.user?.id == mainUserId,
                                 isNetworkConnected: isNetworkConnected,
                                 reportAction: { reportClbk(comment) },
                                 editAction: { editClbk(comment) },
@@ -34,7 +35,7 @@ struct CommentsView: View {
                     }
                 }
             }
-            if defaults.isAuthorized {
+            if userFlags.isAuthorized {
                 Button("Добавить комментарий", action: createCommentClbk)
                     .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             }
@@ -45,6 +46,7 @@ struct CommentsView: View {
 #if DEBUG
 #Preview("Single") {
     CommentsView(
+        mainUserId: nil,
         items: [.preview],
         reportClbk: { _ in },
         deleteClbk: { _ in },
@@ -52,11 +54,11 @@ struct CommentsView: View {
         createCommentClbk: {}
     )
     .padding(.horizontal)
-    .environmentObject(DefaultsService())
 }
 
 #Preview("Multiple") {
     CommentsView(
+        mainUserId: nil,
         items: [.preview, .preview, .preview],
         reportClbk: { _ in },
         deleteClbk: { _ in },
@@ -64,6 +66,5 @@ struct CommentsView: View {
         createCommentClbk: {}
     )
     .padding(.horizontal)
-    .environmentObject(DefaultsService())
 }
 #endif

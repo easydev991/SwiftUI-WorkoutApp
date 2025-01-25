@@ -9,15 +9,18 @@ struct ProfileScreen: View {
         NavigationView {
             ZStack {
                 if defaults.isAuthorized {
-                    UserDetailsView(for: defaults.mainUserInfo)
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                    UserDetailsScreen(for: defaults.mainUserInfo)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .transition(.move(edge: .top).combined(with: .opacity))
                 } else {
                     IncognitoProfileView()
+                        .navigationBarTitleDisplayMode(.large)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
+            .animation(.spring, value: defaults.isAuthorized)
             .background(Color.swBackground)
             .navigationTitle("Профиль")
-            .navigationBarTitleDisplayMode(defaults.isAuthorized ? .inline : .large)
         }
         .navigationViewStyle(.stack)
     }
