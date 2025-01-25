@@ -386,8 +386,12 @@ extension Endpoint {
     var headers: [HTTPHeaderField] {
         switch self {
         case .createPark, .editPark, .createEvent, .editEvent:
-            [.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF")]
-        default: []
+            var headers = [HTTPHeaderField(key: "Content-Type", value: "multipart/form-data; boundary=FFF")]
+            if let httpBody {
+                headers.append(.init(key: "Content-Length", value: "\(httpBody.count)"))
+            }
+            return headers
+        default: return []
         }
     }
 
