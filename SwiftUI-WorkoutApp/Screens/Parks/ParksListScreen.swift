@@ -64,7 +64,7 @@ struct ParksListScreen: View {
             await askForParks(refresh: true)
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 refreshButtonIfNeeded
             }
         }

@@ -48,10 +48,10 @@ struct EventsListScreen: View {
             }
             .refreshable { await askForEvents(refresh: true) }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     refreshButton
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     rightBarButton
                 }
             }

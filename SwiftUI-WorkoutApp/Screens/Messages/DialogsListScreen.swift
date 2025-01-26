@@ -34,10 +34,10 @@ struct DialogsListScreen: View {
             .task { await askForDialogs() }
             .refreshable { await askForDialogs(refresh: true) }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     refreshButton
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     friendListButton
                 }
             }

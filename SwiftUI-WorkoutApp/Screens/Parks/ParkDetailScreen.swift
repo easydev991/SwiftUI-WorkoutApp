@@ -67,7 +67,7 @@ struct ParkDetailScreen: View {
             ToolbarItem(placement: .topBarLeading) {
                 CloseButton(mode: .text) { dismiss() }
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 if isParkAuthor {
                     toolbarMenuButton
                 } else {
