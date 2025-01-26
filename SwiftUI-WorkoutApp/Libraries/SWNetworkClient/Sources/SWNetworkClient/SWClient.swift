@@ -31,17 +31,12 @@ public struct SWClient: Sendable {
         try await defaults.saveUserInfo(result)
     }
 
-    /// Запрашивает `id` пользователя для входа в учетную запись
-    /// - Parameters:
-    ///   - login: логин или email для входа
-    ///   - password: пароль от учетной записи
-    public func logInWith(_ login: String, _ password: String) async throws {
-        let authData = AuthData(login: login, password: password)
-        try await defaults.saveAuthData(authData)
+    /// Выполняет авторизацию
+    /// - Returns: `id` авторизованного пользователя
+    public func logIn(with encodedString: String?) async throws -> Int {
         let endpoint = Endpoint.login
-        let result: LoginResponse = try await makeResult(for: endpoint)
-        try await getUserByID(result.userID, loginFlow: true)
-        await getSocialUpdates(userID: result.userID)
+        let result: LoginResponse = try await makeResult(for: endpoint, with: encodedString)
+        return result.userID
     }
 
     /// Запрашивает обновления списка друзей, заявок в друзья, черного списка
@@ -53,6 +48,7 @@ public struct SWClient: Sendable {
     public func getSocialUpdates(userID: Int?) async -> Bool {
         guard let userID else { return false }
         do {
+            // TODO: вынести обновление соц.данных наружу
             try await getFriendsForUser(id: userID)
             try await getFriendRequests()
             try await getBlacklist()
@@ -67,17 +63,11 @@ public struct SWClient: Sendable {
     /// В случае успеха сохраняет данные главного пользователя в `defaults` и авторизует, если еще не авторизован
     /// - Parameters:
     ///   - userID: `id` пользователя
-    ///   - loginFlow: `true` - флоу авторизации пользователя, `false` - флоу получения данных другого пользователя
     /// - Returns: вся информация о пользователе
     @discardableResult
-    public func getUserByID(_ userID: Int, loginFlow: Bool = false) async throws -> UserResponse {
+    public func getUserByID(_ userID: Int) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID)
-        let result: UserResponse = try await makeResult(for: endpoint)
-        let mainUserID = await defaults.mainUserInfo?.id
-        if loginFlow || userID == mainUserID {
-            try await defaults.saveUserInfo(result)
-        }
-        return result
+        return try await makeResult(for: endpoint)
     }
 
     /// Сбрасывает пароль для неавторизованного пользователя с указанным логином
@@ -93,14 +83,10 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` пользователя
     ///   - model: данные для изменения
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func editUser(_ id: Int, model: MainUserForm) async throws -> Bool {
-        let authData = try await defaults.basicAuthInfo()
+    /// - Returns: Актуальные данные пользователя
+    public func editUser(_ id: Int, model: MainUserForm) async throws -> UserResponse {
         let endpoint = Endpoint.editUser(id: id, form: model)
-        let result: UserResponse = try await makeResult(for: endpoint)
-        try await defaults.saveAuthData(.init(login: model.userName, password: authData.password))
-        try await defaults.saveUserInfo(result)
-        return result.userName == model.userName
+        return try await makeResult(for: endpoint)
     }
 
     /// Меняет текущий пароль на новый
@@ -137,18 +123,16 @@ public struct SWClient: Sendable {
         return result
     }
 
-    /// Загружает список заявок на добавление в друзья, в случае успеха сохраняет в `defaults`
-    public func getFriendRequests() async throws {
+    /// Загружает список заявок на добавление в друзья
+    public func getFriendRequests() async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendRequests
-        let result: [UserResponse] = try await makeResult(for: endpoint)
-        try await defaults.saveFriendRequests(result)
+        return try await makeResult(for: endpoint)
     }
 
-    /// Загружает черный список пользователей, в случае успеха сохраняет в `defaults`
-    public func getBlacklist() async throws {
+    /// Загружает черный список пользователей
+    public func getBlacklist() async throws -> [UserResponse] {
         let endpoint = Endpoint.getBlacklist
-        let result: [UserResponse] = try await makeResult(for: endpoint)
-        try await defaults.saveBlacklist(result)
+        return try await makeResult(for: endpoint)
     }
 
     /// Отвечает на заявку для добавления в друзья
@@ -448,11 +432,7 @@ public struct SWClient: Sendable {
     /// - Returns: Список дневников
     public func getJournals(for userID: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userID: userID)
-        let result: [JournalResponse] = try await makeResult(for: endpoint)
-        if await userID == defaults.mainUserInfo?.id {
-            await defaults.setHasJournals(!result.isEmpty)
-        }
-        return result
+        return try await makeResult(for: endpoint)
     }
 
     #warning("Запрос не используется")
@@ -561,9 +541,12 @@ private extension SWClient {
         }
     }
 
-    func makeResult<T: Decodable>(for endpoint: Endpoint) async throws -> T {
+    func makeResult<T: Decodable>(
+        for endpoint: Endpoint,
+        with encodedString: String? = nil
+    ) async throws -> T {
         do {
-            let finalComponents = try await makeComponents(for: endpoint)
+            let finalComponents = try await makeComponents(for: endpoint, with: encodedString)
             return try await service.requestData(components: finalComponents)
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
@@ -573,15 +556,18 @@ private extension SWClient {
         }
     }
 
-    private func makeComponents(for endpoint: Endpoint) async throws -> RequestComponents {
-        let encodedString = try? await defaults.basicAuthInfo().base64Encoded
+    private func makeComponents(
+        for endpoint: Endpoint,
+        with encodedString: String? = nil
+    ) async throws -> RequestComponents {
+        let savedEncodedString = try? await defaults.basicAuthInfo().base64Encoded
         return .init(
             path: endpoint.urlPath,
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
             headerFields: endpoint.headers,
             body: endpoint.httpBody,
-            token: encodedString
+            token: encodedString ?? savedEncodedString
         )
     }
 }

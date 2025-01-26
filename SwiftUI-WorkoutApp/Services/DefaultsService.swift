@@ -7,8 +7,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
 
-    @AppStorage(Key.isUserAuthorized.rawValue)
-    private(set) var isAuthorized = false
+    var isAuthorized: Bool { mainUserInfo != nil }
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
@@ -31,11 +30,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.hasParks.rawValue)
     private(set) var hasParks = false
 
-    @AppStorage(Key.hasJournals.rawValue)
-    private(set) var hasJournals = false
+    var hasJournals: Bool { mainUserInfo?.hasJournals == true }
 
-    @AppStorage(Key.hasFriends.rawValue)
-    private(set) var hasFriends = false
+    var hasFriends: Bool { !friendsIdsList.isEmpty }
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
     private(set) var unreadMessagesCount = 0
@@ -103,16 +100,12 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func saveUserInfo(_ info: UserResponse) throws {
-        hasFriends = info.friendsCount ?? 0 != 0
         setHasParks(info.usedParksCount != 0)
-        setHasJournals(info.journalsCount ?? 0 != 0)
-        if !isAuthorized { isAuthorized = true }
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)
     }
 
     func saveFriendsIds(_ ids: [Int]) throws {
-        hasFriends = !ids.isEmpty
         friendsIds = try JSONEncoder().encode(ids)
     }
 
@@ -133,10 +126,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
             newList.removeAll(where: { $0.id == user.id })
         }
         try? saveBlacklist(newList)
-    }
-
-    func setHasJournals(_ hasJournals: Bool) {
-        self.hasJournals = hasJournals
     }
 
     func setHasParks(_ isAddedPark: Bool) {
@@ -162,15 +151,12 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
-        isAuthorized = false
         hasParks = false
         try? saveFriendsIds([])
         try? saveFriendRequests([])
         try? saveBlacklist([])
         saveUnreadMessagesCount(0)
-        setHasJournals(false)
         setUserNeedUpdate(true)
-        setAppTheme(.system)
     }
 }
 
@@ -188,8 +174,7 @@ extension DefaultsService {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, appTheme, authData, userInfo, friends, friendRequests, blacklist, hasJournals, needUpdateUser, hasFriends,
-             unreadMessagesCount, lastCountriesUpdateDate
+        case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate
         case hasParks = "hasSportsGrounds"
     }
 }

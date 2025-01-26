@@ -21,17 +21,21 @@ extension ProfileViews {
         for user: UserResponse,
         friendRequestsCount: Int = 0
     ) -> some View {
-        if user.hasFriends || friendRequestsCount > .zero {
-            NavigationLink(destination: UsersListScreen(mode: .friends(userID: user.id))) {
-                FormRowView(
-                    title: "Друзья",
-                    trailingContent: .textWithBadgeAndChevron(
-                        user.friendsCountString,
-                        friendRequestsCount
+        let showButton = user.hasFriends || friendRequestsCount > 0
+        ZStack {
+            if showButton {
+                NavigationLink(destination: UsersListScreen(mode: .friends(userID: user.id))) {
+                    FormRowView(
+                        title: "Друзья",
+                        trailingContent: .textWithBadgeAndChevron(
+                            user.friendsCountString,
+                            friendRequestsCount
+                        )
                     )
-                )
+                }
             }
         }
+        .animation(.default, value: showButton)
     }
 
     @ViewBuilder @MainActor
@@ -63,9 +67,17 @@ extension ProfileViews {
         }
     }
 
+    /// Делает вьюху для перехода в дневники
+    /// - Parameters:
+    ///   - user: Данные пользователя
+    ///   - isMainUser: `true` - основной пользователь, `false` - любой другой
+    /// - Returns: `NavigationLink` для перехода в дневники
     @ViewBuilder @MainActor
-    static func makeJournals(for user: UserResponse) -> some View {
-        if user.hasJournals {
+    static func makeJournals(
+        for user: UserResponse,
+        isMainUser: Bool = false
+    ) -> some View {
+        if user.hasJournals || isMainUser {
             NavigationLink {
                 JournalsListScreen(userID: user.id)
                     .navigationTitle("Дневники")

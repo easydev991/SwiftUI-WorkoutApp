@@ -11,6 +11,7 @@ struct MainUserProfileScreen: View {
     @State private var showLogoutDialog = false
     @State private var showSearchUsersScreen = false
     @State private var alertMessage = ""
+    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         ScrollView {
@@ -60,7 +61,7 @@ private extension MainUserProfileScreen {
                 )
                 ProfileViews.makeUsedParks(for: user)
                 ProfileViews.makeAddedParks(for: user)
-                ProfileViews.makeJournals(for: user)
+                ProfileViews.makeJournals(for: user, isMainUser: true)
                 blacklistButtonIfNeeded
             }
             logoutButton
@@ -105,14 +106,17 @@ private extension MainUserProfileScreen {
 
     @ViewBuilder
     var blacklistButtonIfNeeded: some View {
-        if !defaults.blacklistedUsers.isEmpty {
-            NavigationLink(destination: UsersListScreen(mode: .blacklist)) {
-                FormRowView(
-                    title: "Черный список",
-                    trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
-                )
+        ZStack {
+            if !defaults.blacklistedUsers.isEmpty {
+                NavigationLink(destination: UsersListScreen(mode: .blacklist)) {
+                    FormRowView(
+                        title: "Черный список",
+                        trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
+                    )
+                }
             }
         }
+        .animation(.default, value: defaults.blacklistedUsers.isEmpty)
     }
 
     var logoutButton: some View {
@@ -143,9 +147,10 @@ private extension MainUserProfileScreen {
     func makeUserInfo() async {
         guard let mainUserId = defaults.mainUserInfo?.id else { return }
         do {
-            async let getUserInfo = SWClient(with: defaults).getUserByID(mainUserId)
-            async let getFriendRequests = SWClient(with: defaults).getFriendRequests()
-            async let getBlacklist = SWClient(with: defaults).getBlacklist()
+            // TODO: вынести обновление заявок/черного списка в отдельную логику
+            async let getUserInfo = client.getUserByID(mainUserId)
+            async let getFriendRequests = client.getFriendRequests()
+            async let getBlacklist = client.getBlacklist()
             let (userInfo, friendRequests, blacklist) = try await (getUserInfo, getFriendRequests, getBlacklist)
             try defaults.saveUserInfo(userInfo)
             try defaults.saveFriendRequests(friendRequests)

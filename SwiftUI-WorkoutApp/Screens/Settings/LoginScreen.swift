@@ -15,6 +15,7 @@ struct LoginScreen: View {
     @State private var loginTask: Task<Void, Never>?
     @State private var resetPasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
+    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -42,6 +43,7 @@ struct LoginScreen: View {
 }
 
 private extension LoginScreen {
+    // TODO: написать unit-тесты
     struct Credentials: Equatable {
         var login = ""
         var password = ""
@@ -118,8 +120,11 @@ private extension LoginScreen {
         isLoading.toggle()
         loginTask = Task {
             do {
-                try await SWClient(with: defaults)
-                    .logInWith(credentials.login, credentials.password)
+                let authData = AuthData(login: credentials.login, password: credentials.password)
+                let userId = try await client.logIn(with: authData.base64Encoded)
+                let userInfo = try await client.getUserByID(userId)
+                try defaults.saveAuthData(authData)
+                try defaults.saveUserInfo(userInfo)
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
             }
