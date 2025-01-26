@@ -14,7 +14,6 @@ struct EditProfileScreen: View {
     /// Все доступные страны и города
     @State private var locations = Locations(countries: [])
     @State private var isLoading = false
-    @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var editUserTask: Task<Void, Never>?
     @State private var newAvatarImageModel: AvatarModel?
@@ -43,7 +42,15 @@ struct EditProfileScreen: View {
         .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
+        .alert(
+            alertMessage,
+            isPresented: .init(
+                get: { !alertMessage.isEmpty },
+                set: { newValue in
+                    if !newValue { alertMessage = "" }
+                }
+            )
+        ) {
             Button("Ok") { alertMessage = "" }
         }
         .onAppear(perform: prepareLocationsAndUserForm)
@@ -252,7 +259,6 @@ private extension EditProfileScreen {
     }
 
     func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
         alertMessage = message
     }
 }
