@@ -536,7 +536,7 @@ private extension SWClient {
             return try await service.requestStatus(components: finalComponents)
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
-            throw APIError.invalidCredentials
+            throw ClientError.forceLogout
         } catch {
             throw error
         }
@@ -551,7 +551,7 @@ private extension SWClient {
             return try await service.requestData(components: finalComponents)
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
-            throw APIError.invalidCredentials
+            throw ClientError.forceLogout
         } catch {
             throw error
         }

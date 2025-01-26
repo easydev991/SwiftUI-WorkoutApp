@@ -1230,6 +1230,18 @@
         }
       }
     },
+    "Для корректной работы приложения нужен повторный вход" : {
+      "comment" : "Ошибка 401",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Re-login required for the app to function properly"
+          }
+        }
+      }
+    },
     "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках" : {
       "extractionState" : "manual",
       "localizations" : {
