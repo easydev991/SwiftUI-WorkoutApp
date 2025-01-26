@@ -11,7 +11,6 @@ struct JournalsListScreen: View {
     @State private var newJournalTitle = ""
     @State private var isLoading = false
     @State private var isCreatingJournal = false
-    @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var journalIdToDelete: Int?
     @State private var journalToEdit: JournalResponse?
@@ -32,16 +31,24 @@ struct JournalsListScreen: View {
                 titleVisibility: .visible
             ) { deleteJournalButton }
             .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
-            .alert(errorTitle, isPresented: $showErrorAlert) {
-                Button("Ok") { closeAlert() }
+            .alert(
+                errorTitle,
+                isPresented: .init(
+                    get: { !errorTitle.isEmpty },
+                    set: { newValue in
+                        if !newValue { closeAlert() }
+                    }
+                )
+            ) {
+                Button("Ok", action: closeAlert)
             }
             .task { await askForJournals() }
             .refreshable { await askForJournals(refresh: true) }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     refreshButton
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     addJournalButton
                 }
             }
@@ -63,7 +70,8 @@ private extension JournalsListScreen {
     }
 
     var refreshButtonOpacity: CGFloat {
-        showEmptyView || !DeviceOSVersionChecker.iOS16Available ? 1 : 0
+        guard !DeviceOSVersionChecker.iOS16Available else { return 0 }
+        return showEmptyView ? 1 : 0
     }
 
     var addJournalButton: some View {
@@ -128,7 +136,6 @@ private extension JournalsListScreen {
             isLoading: isLoading,
             isSendButtonDisabled: !canSaveNewJournal,
             sendAction: saveNewJournal,
-            showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
             dismissError: closeAlert
         )
@@ -209,7 +216,6 @@ private extension JournalsListScreen {
     }
 
     func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
         errorTitle = message
     }
 
