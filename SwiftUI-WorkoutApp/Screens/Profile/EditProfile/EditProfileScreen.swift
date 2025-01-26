@@ -17,13 +17,17 @@ struct EditProfileScreen: View {
     @State private var showErrorAlert = false
     @State private var alertMessage = ""
     @State private var editUserTask: Task<Void, Never>?
+    @State private var newAvatarImageModel: AvatarModel?
+    @State private var showImagePicker = false
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
             ScrollView {
+                avatarPicker
+                    .padding(.vertical)
                 Group {
-                    loginField.padding(.top)
+                    loginField
                     emailField
                     nameField
                     changePasswordButton
@@ -34,7 +38,6 @@ struct EditProfileScreen: View {
                 countryPicker
                 cityPicker
             }
-            Spacer()
             saveChangesButton
         }
         .padding([.horizontal, .bottom])
@@ -53,6 +56,11 @@ struct EditProfileScreen: View {
 private extension EditProfileScreen {
     enum FocusableField: Hashable {
         case login, email, fullName
+    }
+
+    struct AvatarModel: Equatable {
+        let id = UUID().uuidString
+        let uiImage: UIImage
     }
 
     var loginField: some View {
@@ -86,6 +94,32 @@ private extension EditProfileScreen {
         NavigationLink(destination: ChangePasswordScreen()) {
             ListRowView(leadingContent: .iconWithText(.key, "Изменить пароль"), trailingContent: .chevron)
         }
+    }
+
+    var avatarPicker: some View {
+        VStack(spacing: 20) {
+            if let model = newAvatarImageModel {
+                Image(uiImage: model.uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 150, height: 150)
+                    .clipShape(.rect(cornerRadius: 12))
+                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
+                    .id(model.id)
+            } else {
+                CachedImage(url: defaults.mainUserInfo?.avatarURL, mode: .profileAvatar)
+                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
+            }
+            Button("Изменить фотографию") { showImagePicker.toggle() }
+                .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
+                .sheet(isPresented: $showImagePicker) {
+                    AvatarPickerView {
+                        newAvatarImageModel = .init(uiImage: $0)
+                        userForm.image = $0.toMediaFile()
+                    }
+                }
+        }
+        .animation(.default, value: newAvatarImageModel)
     }
 
     var genderPicker: some View {

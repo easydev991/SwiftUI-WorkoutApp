@@ -38,6 +38,7 @@
 		6765B2562D451771006164AB /* UIImage+toMediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B2552D451771006164AB /* UIImage+toMediaFile.swift */; };
 		6765B2582D4544C8006164AB /* MainUserProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B2572D4544C8006164AB /* MainUserProfileScreen.swift */; };
 		6765B25B2D455D5C006164AB /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B25A2D455D5C006164AB /* ProfileViews.swift */; };
+		6765B25D2D46B024006164AB /* AvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B25C2D46B024006164AB /* AvatarPickerView.swift */; };
 		6766A036284603CA0033F1E8 /* TabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6766A035284603CA0033F1E8 /* TabViewModel.swift */; };
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
 		67795FB22D1C05D90087132F /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB12D1C05D90087132F /* SWModels */; };
@@ -127,6 +128,7 @@
 		6765B2552D451771006164AB /* UIImage+toMediaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+toMediaFile.swift"; sourceTree = "<group>"; };
 		6765B2572D4544C8006164AB /* MainUserProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileScreen.swift; sourceTree = "<group>"; };
 		6765B25A2D455D5C006164AB /* ProfileViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViews.swift; sourceTree = "<group>"; };
+		6765B25C2D46B024006164AB /* AvatarPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPickerView.swift; sourceTree = "<group>"; };
 		6766A035284603CA0033F1E8 /* TabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModel.swift; sourceTree = "<group>"; };
 		677311192965FFAA003CD13A /* PreviewContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContent.swift; sourceTree = "<group>"; };
 		677717162B36D87200ED90BD /* SwiftUI-WorkoutApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SwiftUI-WorkoutApp.xctestplan"; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 			children = (
 				6798AA83280C0F7D00DB76F1 /* EditProfileScreen.swift */,
 				6747575528113419002F0A24 /* ChangePasswordScreen.swift */,
+				6765B25C2D46B024006164AB /* AvatarPickerView.swift */,
 			);
 			path = EditProfile;
 			sourceTree = "<group>";
@@ -633,6 +636,7 @@
 				674D0623282A9896007E75C6 /* SearchUsersScreen.swift in Sources */,
 				67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */,
 				675FB8DB2ADDB87200C9671F /* ParksMapScreen+LocationSettingReminderView.swift in Sources */,
+				6765B25D2D46B024006164AB /* AvatarPickerView.swift in Sources */,
 				6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */,
 				67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */,
 				67FBF64F28338A2E008A7968 /* EventDetailsScreen.swift in Sources */,

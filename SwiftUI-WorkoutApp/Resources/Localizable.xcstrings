@@ -1804,6 +1804,16 @@
         }
       }
     },
+    "Изменить фотографию" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change profile photo"
+          }
+        }
+      }
+    },
     "Имя" : {
       "extractionState" : "manual",
       "localizations" : {
