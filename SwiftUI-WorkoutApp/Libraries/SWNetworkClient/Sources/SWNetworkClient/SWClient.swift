@@ -27,15 +27,16 @@ public struct SWClient: Sendable {
     public func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
         let result: UserResponse = try await makeResult(for: endpoint)
-        try await defaults.saveAuthData(.init(login: model.userName, password: model.password))
+        try await defaults.saveAuthData(login: model.userName, password: model.password)
         try await defaults.saveUserInfo(result)
     }
 
     /// Выполняет авторизацию
+    /// - Parameter token: Токен авторизации
     /// - Returns: `id` авторизованного пользователя
-    public func logIn(with encodedString: String?) async throws -> Int {
+    public func logIn(with token: String?) async throws -> Int {
         let endpoint = Endpoint.login
-        let result: LoginResponse = try await makeResult(for: endpoint, with: encodedString)
+        let result: LoginResponse = try await makeResult(for: endpoint, with: token)
         return result.userID
     }
 
@@ -543,10 +544,10 @@ private extension SWClient {
 
     func makeResult<T: Decodable>(
         for endpoint: Endpoint,
-        with encodedString: String? = nil
+        with token: String? = nil
     ) async throws -> T {
         do {
-            let finalComponents = try await makeComponents(for: endpoint, with: encodedString)
+            let finalComponents = try await makeComponents(for: endpoint, with: token)
             return try await service.requestData(components: finalComponents)
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
@@ -558,16 +559,16 @@ private extension SWClient {
 
     private func makeComponents(
         for endpoint: Endpoint,
-        with encodedString: String? = nil
+        with token: String? = nil
     ) async throws -> RequestComponents {
-        let savedEncodedString = try? await defaults.basicAuthInfo().token
+        let savedToken = try? await defaults.basicAuthInfo().token
         return .init(
             path: endpoint.urlPath,
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
             hasMultipartFormData: endpoint.hasMultipartFormData,
             body: endpoint.httpBody,
-            token: encodedString ?? savedEncodedString
+            token: token ?? savedToken
         )
     }
 }

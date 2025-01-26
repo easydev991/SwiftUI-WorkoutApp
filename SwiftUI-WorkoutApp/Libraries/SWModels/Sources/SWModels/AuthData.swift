@@ -1,15 +1,14 @@
 /// Используется во всех запросах, где нужна авторизация
 public struct AuthData: Codable {
-    public let login: String
+    /// Используем для генерации токена
+    ///
+    /// Например, при смене логина нужно сгенерировать новый токен, чтобы не выбросило из аккаунта - вот тут и используем этот пароль
+    public let password: String
+    /// Отправляем на сервер
     public let token: String?
 
     public init(login: String, password: String) {
-        self.login = login
         self.token = (login + ":" + password).data(using: .utf8)?.base64EncodedString()
-    }
-
-    public init(login: String, token: String?) {
-        self.login = login
-        self.token = token
+        self.password = password
     }
 }

@@ -15,7 +15,7 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     /// Дефолтная дата - предыдущее ручное обновление файла `countries.json`
     var lastCountriesUpdateDate: Date { get }
     func setAppTheme(_ theme: AppColorTheme)
-    func saveAuthData(_ info: AuthData) throws
+    func saveAuthData(login: String, password: String) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
     /// Обновляет `lastCountriesUpdateDate`

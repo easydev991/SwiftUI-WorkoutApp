@@ -87,8 +87,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         appTheme = theme
     }
 
-    func saveAuthData(_ info: AuthData) throws {
-        authData = try JSONEncoder().encode(info)
+    func saveAuthData(login: String, password: String) throws {
+        let model = AuthData(login: login, password: password)
+        authData = try JSONEncoder().encode(model)
     }
 
     func basicAuthInfo() throws -> AuthData {

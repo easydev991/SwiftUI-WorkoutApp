@@ -120,9 +120,9 @@ private extension LoginScreen {
         isLoading.toggle()
         loginTask = Task {
             do {
-                let authData = AuthData(login: credentials.login, password: credentials.password)
-                let userId = try await client.logIn(with: authData.token)
-                try defaults.saveAuthData(authData)
+                let token = AuthData(login: credentials.login, password: credentials.password).token
+                let userId = try await client.logIn(with: token)
+                try defaults.saveAuthData(login: credentials.login, password: credentials.password)
                 let userInfo = try await client.getUserByID(userId)
                 try defaults.saveUserInfo(userInfo)
             } catch {
