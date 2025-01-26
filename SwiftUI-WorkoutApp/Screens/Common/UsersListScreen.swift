@@ -11,10 +11,10 @@ struct UsersListScreen: View {
     @State private var friendRequests = [UserResponse]()
     @State private var isLoading = false
     @State private var messagingModel = MessagingModel()
-    @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var friendRequestTask: Task<Void, Never>?
+    private var client: SWClient { SWClient(with: defaults) }
     let mode: Mode
 
     var body: some View {
@@ -44,8 +44,16 @@ struct UsersListScreen: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .disabled(!isNetworkConnected)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok") { closeAlert() }
+        .alert(
+            errorTitle,
+            isPresented: .init(
+                get: { !errorTitle.isEmpty },
+                set: { newValue in
+                    if !newValue { closeAlert() }
+                }
+            )
+        ) {
+            Button("Ok", action: closeAlert)
         }
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
@@ -139,7 +147,6 @@ private extension UsersListScreen {
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
-            showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
             dismissError: closeAlert
         )
@@ -149,7 +156,7 @@ private extension UsersListScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
+                let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
                 setupErrorAlert(ErrorFilter.message(from: error))
@@ -166,31 +173,40 @@ private extension UsersListScreen {
     }
 
     func askForUsers(refresh: Bool = false) async {
+        guard !isLoading else { return }
         do {
-            if !users.isEmpty || isLoading, !refresh { return }
             switch mode {
             case let .friends(userID), let .friendsForChat(userID):
+                if !users.isEmpty, !refresh { return }
                 if !refresh { isLoading = true }
-                if userID == defaults.mainUserInfo?.id {
+                let isMainUser = userID == defaults.mainUserInfo?.id
+                let response = try await client.getFriendsForUser(id: userID)
+                if isMainUser {
+                    try? defaults.saveFriendsIds(response.map(\.id))
                     if defaults.friendRequestsList.isEmpty || refresh {
-                        try? await SWClient(with: defaults).getFriendRequests()
+                        friendRequests = try await client.getFriendRequests()
+                        try? defaults.saveFriendRequests(friendRequests)
+                    } else {
+                        friendRequests = defaults.friendRequestsList
                     }
-                    friendRequests = defaults.friendRequestsList
                 }
-                users = try await SWClient(with: defaults).getFriendsForUser(id: userID)
+                users = response
             case let .eventParticipants(list), let .parkParticipants(list):
                 users = list
             case .blacklist:
+                if !users.isEmpty, !refresh { return }
                 if !refresh { isLoading = true }
-                if defaults.blacklistedUsers.isEmpty {
-                    try await SWClient(with: defaults).getBlacklist()
+                if defaults.blacklistedUsers.isEmpty || refresh {
+                    users = try await client.getBlacklist()
+                    try? defaults.saveBlacklist(users)
+                } else {
+                    users = defaults.blacklistedUsers
                 }
-                users = defaults.blacklistedUsers
             }
         } catch {
             setupErrorAlert(ErrorFilter.message(from: error))
         }
-        if !refresh { isLoading = false }
+        isLoading = false
     }
 
     func respondToFriendRequest(from userID: Int, accept: Bool) {
@@ -209,7 +225,6 @@ private extension UsersListScreen {
     }
 
     func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
         errorTitle = message
     }
 

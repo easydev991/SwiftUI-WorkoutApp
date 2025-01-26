@@ -49,10 +49,10 @@ struct DialogScreen: View {
             [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 refreshButton
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 anotherUserProfileButton
             }
         }

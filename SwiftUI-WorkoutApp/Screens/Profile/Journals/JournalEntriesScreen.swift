@@ -74,10 +74,10 @@ struct JournalEntriesScreen: View {
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 refreshButtonIfNeeded
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 addEntryButtonIfNeeded
             }
         }

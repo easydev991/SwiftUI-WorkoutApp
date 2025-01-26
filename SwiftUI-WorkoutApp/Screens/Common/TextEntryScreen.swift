@@ -6,11 +6,10 @@ struct TextEntryScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var entryText = ""
-    @State private var showErrorAlert = false
     @State private var errorTitle = ""
     @State private var saveEntryTask: Task<Void, Never>?
     private let mode: Mode
-    private var oldEntryText: String?
+    private let oldEntryText: String?
     private let refreshClbk: () -> Void
 
     init(mode: Mode, refreshClbk: @escaping () -> Void) {
@@ -21,7 +20,8 @@ struct TextEntryScreen: View {
              let .editEvent(info),
              let .editJournalEntry(_, info):
             self.oldEntryText = info.oldEntry
-        default: break
+        default:
+            self.oldEntryText = nil
         }
     }
 
@@ -33,13 +33,12 @@ struct TextEntryScreen: View {
             isLoading: isLoading,
             isSendButtonDisabled: !canSend,
             sendAction: sendAction,
-            showErrorAlert: $showErrorAlert,
             errorTitle: $errorTitle,
             dismissError: { setupErrorAlert("") }
         )
         .onAppear {
-            if let oldEntry = oldEntryText {
-                entryText = oldEntry
+            if let oldEntryText {
+                entryText = oldEntryText
             }
         }
         .onDisappear { saveEntryTask?.cancel() }
@@ -135,7 +134,6 @@ private extension TextEntryScreen {
 
     func setupErrorAlert(_ message: String) {
         errorTitle = message
-        showErrorAlert = !message.isEmpty
     }
 
     var canSend: Bool {

@@ -54,7 +54,7 @@ struct ParksMapScreen: View {
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
+                ToolbarItemGroup(placement: .topBarLeading) {
                     Group {
                         filterButton
                         Button {
@@ -65,7 +65,7 @@ struct ParksMapScreen: View {
                     }
                     .disabled(isLoading)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     rightBarButton
                 }
             }

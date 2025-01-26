@@ -8,6 +8,7 @@ public struct MainUserForm: Codable, Equatable, Sendable {
     public var genderCode: Int
     public var country: Country
     public var city: City
+    public var image: MediaFile?
 
     public init(
         userName: String,
@@ -17,7 +18,8 @@ public struct MainUserForm: Codable, Equatable, Sendable {
         birthDate: Date,
         gender: Int,
         country: Country,
-        city: City
+        city: City,
+        image: MediaFile? = nil
     ) {
         self.userName = userName
         self.fullName = fullName
@@ -27,17 +29,20 @@ public struct MainUserForm: Codable, Equatable, Sendable {
         self.country = country
         self.city = city
         self.genderCode = gender
+        self.image = image
     }
 
     public init(_ user: UserResponse) {
-        self.userName = user.userName ?? ""
-        self.fullName = user.fullName ?? ""
-        self.email = user.email ?? ""
-        self.password = ""
-        self.birthDate = user.birthDate
-        self.country = .init(cities: [], id: (user.countryID ?? 0).description, name: "")
-        self.city = .init(id: (user.cityID ?? 0).description)
-        self.genderCode = user.genderCode ?? 0
+        self.init(
+            userName: user.userName ?? "",
+            fullName: user.fullName ?? "",
+            email: user.email ?? "",
+            password: "",
+            birthDate: user.birthDate,
+            gender: user.genderCode ?? 0,
+            country: .init(cities: [], id: (user.countryID ?? 0).description, name: ""),
+            city: .init(id: (user.cityID ?? 0).description)
+        )
     }
 }
 

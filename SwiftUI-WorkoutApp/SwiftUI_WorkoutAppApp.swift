@@ -16,6 +16,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var socialUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
+    private var client: SWClient { SWClient(with: defaults) }
     private var colorScheme: ColorScheme? {
         switch defaults.appTheme {
         case .light: .light
@@ -44,10 +45,14 @@ struct SwiftUI_WorkoutAppApp: App {
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
+                guard let mainUserId = defaults.mainUserInfo?.id else { return }
                 socialUpdateTask = Task {
-                    let isUpdated = await SWClient(with: defaults)
-                        .getSocialUpdates(userID: defaults.mainUserInfo?.id)
-                    defaults.setUserNeedUpdate(!isUpdated)
+                    if let result = await client.getSocialUpdates(userID: mainUserId) {
+                        try? defaults.saveFriendsIds(result.friends.map(\.id))
+                        try? defaults.saveFriendRequests(result.friendRequests)
+                        try? defaults.saveBlacklist(result.blacklist)
+                        defaults.setUserNeedUpdate(false)
+                    }
                 }
             default:
                 [socialUpdateTask, countriesUpdateTask].forEach { $0?.cancel() }
@@ -59,7 +64,7 @@ struct SwiftUI_WorkoutAppApp: App {
     private func updateCountriesIfNeeded() {
         guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate) else { return }
         countriesUpdateTask = Task {
-            if let countries = try? await SWClient(with: defaults).getCountries(),
+            if let countries = try? await client.getCountries(),
                countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
             }

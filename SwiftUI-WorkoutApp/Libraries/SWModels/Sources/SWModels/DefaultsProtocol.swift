@@ -15,7 +15,7 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     /// Дефолтная дата - предыдущее ручное обновление файла `countries.json`
     var lastCountriesUpdateDate: Date { get }
     func setAppTheme(_ theme: AppColorTheme)
-    func saveAuthData(_ info: AuthData) throws
+    func saveAuthData(login: String, password: String) throws
     func basicAuthInfo() throws -> AuthData
     func setUserNeedUpdate(_ newValue: Bool)
     /// Обновляет `lastCountriesUpdateDate`
@@ -26,7 +26,6 @@ public protocol DefaultsProtocol: AnyObject, Sendable {
     func saveUnreadMessagesCount(_ count: Int)
     func saveBlacklist(_ array: [UserResponse]) throws
     func updateBlacklist(option: BlacklistOption, user: UserResponse)
-    func setHasJournals(_ hasJournals: Bool)
     func setHasParks(_ isAddedPark: Bool)
     func triggerLogout()
 }

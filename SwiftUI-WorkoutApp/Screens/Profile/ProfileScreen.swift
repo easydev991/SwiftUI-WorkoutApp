@@ -9,7 +9,7 @@ struct ProfileScreen: View {
         NavigationView {
             ZStack {
                 if defaults.isAuthorized {
-                    UserDetailsScreen(for: defaults.mainUserInfo)
+                    MainUserProfileScreen()
                         .navigationBarTitleDisplayMode(.inline)
                         .transition(.move(edge: .top).combined(with: .opacity))
                 } else {

@@ -11,7 +11,6 @@ struct SearchUsersScreen: View {
     @State private var users = [UserResponse]()
     @State private var isLoading = false
     @State private var query = ""
-    @State private var showErrorAlert = false
     @State private var errorMessage = ""
     @State private var searchTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
@@ -49,8 +48,16 @@ struct SearchUsersScreen: View {
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .alert(errorMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { closeAlert() }
+        .alert(
+            errorMessage,
+            isPresented: .init(
+                get: { !errorMessage.isEmpty },
+                set: { newValue in
+                    if !newValue { closeAlert() }
+                }
+            )
+        ) {
+            Button("Ok", action: closeAlert)
         }
         .onChange(of: errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTasks)
@@ -104,7 +111,6 @@ private extension SearchUsersScreen {
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
             sendAction: { sendMessage(to: recipient.id) },
-            showErrorAlert: $showErrorAlert,
             errorTitle: $errorMessage,
             dismissError: closeAlert
         )
@@ -148,7 +154,6 @@ private extension SearchUsersScreen {
     }
 
     func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
         errorMessage = message
     }
 
