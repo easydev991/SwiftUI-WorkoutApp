@@ -560,12 +560,12 @@ private extension SWClient {
         for endpoint: Endpoint,
         with encodedString: String? = nil
     ) async throws -> RequestComponents {
-        let savedEncodedString = try? await defaults.basicAuthInfo().base64Encoded
+        let savedEncodedString = try? await defaults.basicAuthInfo().token
         return .init(
             path: endpoint.urlPath,
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
-            headerFields: endpoint.headers,
+            hasMultipartFormData: endpoint.hasMultipartFormData,
             body: endpoint.httpBody,
             token: encodedString ?? savedEncodedString
         )

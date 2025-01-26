@@ -383,15 +383,10 @@ extension Endpoint {
         }
     }
 
-    var headers: [HTTPHeaderField] {
+    var hasMultipartFormData: Bool {
         switch self {
-        case .createPark, .editPark, .createEvent, .editEvent, .editUser:
-            var headers = [HTTPHeaderField(key: "Content-Type", value: "multipart/form-data; boundary=FFF")]
-            if let httpBody {
-                headers.append(.init(key: "Content-Length", value: "\(httpBody.count)"))
-            }
-            return headers
-        default: return []
+        case .createPark, .editPark, .createEvent, .editEvent, .editUser: true
+        default: false
         }
     }
 

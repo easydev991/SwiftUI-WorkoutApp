@@ -205,13 +205,15 @@ private extension EditProfileScreen {
         editUserTask = Task {
             do {
                 let userID = defaults.mainUserInfo?.id ?? 0
-                if try await SWClient(with: defaults).editUser(userID, model: userForm) {
-                    dismiss()
-                }
+                let result = try await SWClient(with: defaults).editUser(userID, model: userForm)
+                let authData = try defaults.basicAuthInfo()
+                try defaults.saveAuthData(.init(login: userForm.userName, token: authData.token))
+                try defaults.saveUserInfo(result)
+                dismiss()
             } catch {
+                isLoading = false
                 setupErrorAlert(ErrorFilter.message(from: error))
             }
-            isLoading = false
         }
     }
 

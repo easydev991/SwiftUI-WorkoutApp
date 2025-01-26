@@ -4,31 +4,30 @@ public struct RequestComponents {
     let path: String
     let queryItems: [URLQueryItem]
     let httpMethod: HTTPMethod
-    public var headerFields: [HTTPHeaderField]
+    let hasMultipartFormData: Bool
     let body: Data?
-    /// Токен для авторизации
-    public var token: String?
+    let token: String?
 
     /// Инициализатор
     /// - Parameters:
     ///   - path: Путь запроса
     ///   - queryItems: Параметры `query`, по умолчанию отсутствуют
     ///   - httpMethod: Метод запроса
-    ///   - headerFields: Параметры хедеров, по умолчанию отсутствуют
+    ///   - hasMultipartFormData: Есть ли в запросе файлы для отправки (в нашем случае картинки), по умолчанию `false`
     ///   - body: Тело запроса, по умолчанию `nil`
     ///   - token: Токен для авторизации, по умолчанию `nil`
     public init(
         path: String,
         queryItems: [URLQueryItem] = [],
         httpMethod: HTTPMethod,
-        headerFields: [HTTPHeaderField] = [],
+        hasMultipartFormData: Bool = false,
         body: Data? = nil,
         token: String? = nil
     ) {
         self.path = path
         self.queryItems = queryItems
         self.httpMethod = httpMethod
-        self.headerFields = headerFields
+        self.hasMultipartFormData = hasMultipartFormData
         self.body = body
         self.token = token
     }
@@ -51,9 +50,16 @@ extension RequestComponents {
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
         request.httpBody = body
-        var allHeaders = headerFields
+        var allHeaders = [HTTPHeaderField]()
+        // TODO: генерировать boundary в одном месте (вместо FFF)
+        if let body {
+            allHeaders.append(.init(key: "Content-Length", value: "\(body.count)"))
+        }
+        if hasMultipartFormData {
+            allHeaders.append(.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF"))
+        }
         if let token {
-            allHeaders.append(.authorizationBasic(token))
+            allHeaders.append(.init(key: "Authorization", value: "Basic \(token)"))
         }
         request.allHTTPHeaderFields = Dictionary(uniqueKeysWithValues: allHeaders.map { ($0.key, $0.value) })
         return request

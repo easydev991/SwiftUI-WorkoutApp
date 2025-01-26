@@ -121,9 +121,9 @@ private extension LoginScreen {
         loginTask = Task {
             do {
                 let authData = AuthData(login: credentials.login, password: credentials.password)
-                let userId = try await client.logIn(with: authData.base64Encoded)
-                let userInfo = try await client.getUserByID(userId)
+                let userId = try await client.logIn(with: authData.token)
                 try defaults.saveAuthData(authData)
+                let userInfo = try await client.getUserByID(userId)
                 try defaults.saveUserInfo(userInfo)
             } catch {
                 errorMessage = ErrorFilter.message(from: error)
