@@ -179,14 +179,18 @@ private extension UsersListScreen {
             case let .friends(userID), let .friendsForChat(userID):
                 if !users.isEmpty, !refresh { return }
                 if !refresh { isLoading = true }
-                if userID == defaults.mainUserInfo?.id {
+                let isMainUser = userID == defaults.mainUserInfo?.id
+                let response = try await client.getFriendsForUser(id: userID)
+                if isMainUser {
+                    try? defaults.saveFriendsIds(response.map(\.id))
                     if defaults.friendRequestsList.isEmpty || refresh {
                         friendRequests = try await client.getFriendRequests()
+                        try? defaults.saveFriendRequests(friendRequests)
                     } else {
                         friendRequests = defaults.friendRequestsList
                     }
                 }
-                users = try await client.getFriendsForUser(id: userID)
+                users = response
             case let .eventParticipants(list), let .parkParticipants(list):
                 users = list
             case .blacklist:
@@ -194,6 +198,7 @@ private extension UsersListScreen {
                 if !refresh { isLoading = true }
                 if defaults.blacklistedUsers.isEmpty || refresh {
                     users = try await client.getBlacklist()
+                    try? defaults.saveBlacklist(users)
                 } else {
                     users = defaults.blacklistedUsers
                 }

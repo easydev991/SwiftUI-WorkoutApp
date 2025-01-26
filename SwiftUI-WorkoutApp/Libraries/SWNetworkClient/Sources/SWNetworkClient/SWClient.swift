@@ -44,19 +44,17 @@ public struct SWClient: Sendable {
     ///
     /// - Вызывается при авторизации и при `scenePhase = active`
     /// - Список чатов не обновляет
-    /// - Returns: `true` - все успешно обновилось, `false` - что-то не обновилось
-    @discardableResult
-    public func getSocialUpdates(userID: Int?) async -> Bool {
-        guard let userID else { return false }
-        do {
-            // TODO: вынести обновление соц.данных наружу
-            try await getFriendsForUser(id: userID)
-            try await getFriendRequests()
-            try await getBlacklist()
-            return true
-        } catch {
-            return false
-        }
+    /// - Parameter userID: Идентификатор основного пользователя
+    /// - Returns: Список друзей, заявок в друзья и черный список
+    public func getSocialUpdates(userID: Int) async -> (
+        friends: [UserResponse],
+        friendRequests: [UserResponse],
+        blacklist: [UserResponse]
+    )? {
+        async let friendsForUser = getFriendsForUser(id: userID)
+        async let friendRequests = getFriendRequests()
+        async let blacklist = getBlacklist()
+        return try? await (friendsForUser, friendRequests, blacklist)
     }
 
     /// Запрашивает данные пользователя по `id`
@@ -117,11 +115,7 @@ public struct SWClient: Sendable {
     @discardableResult
     public func getFriendsForUser(id: Int) async throws -> [UserResponse] {
         let endpoint = Endpoint.getFriendsForUser(id: id)
-        let result: [UserResponse] = try await makeResult(for: endpoint)
-        if await id == defaults.mainUserInfo?.id {
-            try await defaults.saveFriendsIds(result.map(\.id))
-        }
-        return result
+        return try await makeResult(for: endpoint)
     }
 
     /// Загружает список заявок на добавление в друзья
@@ -149,6 +143,7 @@ public struct SWClient: Sendable {
             : .declineFriendRequest(from: userID)
         let isSuccess = try await makeStatus(for: endpoint)
         if isSuccess {
+            // TODO: упростить и вынести наружу
             if let mainUserID = await defaults.mainUserInfo?.id, accept {
                 try await getFriendsForUser(id: mainUserID)
             }
