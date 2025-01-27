@@ -65,6 +65,7 @@
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A4710C2AEED8F8004D341D /* PastEventStorage.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
+		67A85EDE2D4802C600DCFBBD /* SWAlert in Frameworks */ = {isa = PBXBuildFile; productRef = 67A85EDD2D4802C600DCFBBD /* SWAlert */; };
 		67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */; };
 		67AE072A2D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AE07292D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
@@ -156,6 +157,7 @@
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A4710C2AEED8F8004D341D /* PastEventStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEventStorage.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		67A85EDB2D48021A00DCFBBD /* SWAlert */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWAlert; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFilterScreen.swift; sourceTree = "<group>"; };
 		67AE07292D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusEnvironmentKey.swift; sourceTree = "<group>"; };
 		67AE08482D1C05020097B59F /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWModels; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
 				67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
+				67A85EDE2D4802C600DCFBBD /* SWAlert in Frameworks */,
 				67795FB62D1C05D90087132F /* Utils in Frameworks */,
 				67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */,
 			);
@@ -456,6 +459,7 @@
 		67AE08472D1C049F0097B59F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				67A85EDB2D48021A00DCFBBD /* SWAlert */,
 				678CE36A2D1C510900F060C6 /* SWNetwork */,
 				67AE08482D1C05020097B59F /* SWModels */,
 				67AE08492D1C05020097B59F /* SWNetworkClient */,
@@ -517,6 +521,7 @@
 				67795FB12D1C05D90087132F /* SWModels */,
 				67795FB32D1C05D90087132F /* SWNetworkClient */,
 				67795FB52D1C05D90087132F /* Utils */,
+				67A85EDD2D4802C600DCFBBD /* SWAlert */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -1041,6 +1046,10 @@
 		67795FB52D1C05D90087132F /* Utils */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utils;
+		};
+		67A85EDD2D4802C600DCFBBD /* SWAlert */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SWAlert;
 		};
 		67CB32D0297BE0F8009380DF /* NetworkStatus */ = {
 			isa = XCSwiftPackageProductDependency;
