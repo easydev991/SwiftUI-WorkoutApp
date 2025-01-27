@@ -35,6 +35,7 @@ public struct RequestComponents {
     var url: URL? {
         let scheme = "https"
         let host = "workout.su/api/v3"
+        guard path.starts(with: "/") else { return nil }
         let stringComponents = "\(scheme)://\(host)\(path)"
         var components = URLComponents(string: stringComponents)
         if !queryItems.isEmpty {
@@ -58,7 +59,7 @@ extension RequestComponents {
         if hasMultipartFormData {
             allHeaders.append(.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF"))
         }
-        if let token {
+        if let token, !token.isEmpty {
             allHeaders.append(.init(key: "Authorization", value: "Basic \(token)"))
         }
         request.allHTTPHeaderFields = Dictionary(uniqueKeysWithValues: allHeaders.map { ($0.key, $0.value) })
