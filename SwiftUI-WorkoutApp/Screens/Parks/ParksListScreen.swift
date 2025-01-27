@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -10,8 +11,6 @@ struct ParksListScreen: View {
     @EnvironmentObject private var parksManager: ParksManager
     @State private var parks = [Park]()
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var errorTitle = ""
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
     @State private var updateParksTask: Task<Void, Never>?
@@ -54,9 +53,6 @@ struct ParksListScreen: View {
                 defaults.setUserNeedUpdate(true)
                 dismiss()
             }
-        }
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok") { errorTitle = "" }
         }
         .task { await askForParks() }
         .refreshable {
@@ -132,7 +128,7 @@ private extension ParksListScreen {
                 parks = list
             }
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -152,13 +148,8 @@ private extension ParksListScreen {
                 dismiss()
             }
         } catch {
-            setupErrorAlert(error.localizedDescription)
+            SWAlert.shared.present(message: error.localizedDescription)
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        errorTitle = message
     }
 }
 

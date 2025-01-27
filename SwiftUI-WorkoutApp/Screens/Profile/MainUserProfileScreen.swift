@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -10,7 +11,6 @@ struct MainUserProfileScreen: View {
     @State private var isLoading = false
     @State private var showLogoutDialog = false
     @State private var showSearchUsersScreen = false
-    @State private var alertMessage = ""
     private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
@@ -22,17 +22,6 @@ struct MainUserProfileScreen: View {
         .frame(maxWidth: .infinity)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(
-            alertMessage,
-            isPresented: .init(
-                get: { !alertMessage.isEmpty },
-                set: { newValue in
-                    if !newValue { closeAlert() }
-                }
-            )
-        ) {
-            Button("Ok", action: closeAlert)
-        }
         .refreshable { await askForUserInfo(refresh: true) }
         .task { await askForUserInfo() }
         .toolbar {
@@ -156,15 +145,9 @@ private extension MainUserProfileScreen {
             try defaults.saveFriendRequests(friendRequests)
             try defaults.saveBlacklist(blacklist)
         } catch {
-            setupResponseAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
     }
-
-    func setupResponseAlert(_ message: String) {
-        alertMessage = message
-    }
-
-    func closeAlert() { alertMessage = "" }
 }
 
 #if DEBUG

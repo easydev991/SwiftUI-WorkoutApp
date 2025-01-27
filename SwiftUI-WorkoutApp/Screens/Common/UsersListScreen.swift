@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -11,7 +12,6 @@ struct UsersListScreen: View {
     @State private var friendRequests = [UserResponse]()
     @State private var isLoading = false
     @State private var messagingModel = MessagingModel()
-    @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var friendRequestTask: Task<Void, Never>?
     private var client: SWClient { SWClient(with: defaults) }
@@ -44,17 +44,6 @@ struct UsersListScreen: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .disabled(!isNetworkConnected)
-        .alert(
-            errorTitle,
-            isPresented: .init(
-                get: { !errorTitle.isEmpty },
-                set: { newValue in
-                    if !newValue { closeAlert() }
-                }
-            )
-        ) {
-            Button("Ok", action: closeAlert)
-        }
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
         .onDisappear { sendMessageTask?.cancel() }
@@ -146,9 +135,7 @@ private extension UsersListScreen {
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
-            sendAction: { sendMessage(to: recipient.id) },
-            errorTitle: $errorTitle,
-            dismissError: closeAlert
+            sendAction: { sendMessage(to: recipient.id) }
         )
     }
 
@@ -159,7 +146,7 @@ private extension UsersListScreen {
                 let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -204,7 +191,7 @@ private extension UsersListScreen {
                 }
             }
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -218,17 +205,11 @@ private extension UsersListScreen {
                     defaults.setUserNeedUpdate(true)
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
-
-    func setupErrorAlert(_ message: String) {
-        errorTitle = message
-    }
-
-    func closeAlert() { errorTitle = "" }
 }
 
 #if DEBUG

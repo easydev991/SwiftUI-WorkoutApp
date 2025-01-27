@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -11,7 +12,6 @@ struct JournalsListScreen: View {
     @State private var newJournalTitle = ""
     @State private var isLoading = false
     @State private var isCreatingJournal = false
-    @State private var errorTitle = ""
     @State private var journalIdToDelete: Int?
     @State private var journalToEdit: JournalResponse?
     @State private var showDeleteDialog = false
@@ -31,17 +31,6 @@ struct JournalsListScreen: View {
                 titleVisibility: .visible
             ) { deleteJournalButton }
             .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
-            .alert(
-                errorTitle,
-                isPresented: .init(
-                    get: { !errorTitle.isEmpty },
-                    set: { newValue in
-                        if !newValue { closeAlert() }
-                    }
-                )
-            ) {
-                Button("Ok", action: closeAlert)
-            }
             .task { await askForJournals() }
             .refreshable { await askForJournals(refresh: true) }
             .toolbar {
@@ -135,9 +124,7 @@ private extension JournalsListScreen {
             text: $newJournalTitle,
             isLoading: isLoading,
             isSendButtonDisabled: !canSaveNewJournal,
-            sendAction: saveNewJournal,
-            errorTitle: $errorTitle,
-            dismissError: closeAlert
+            sendAction: saveNewJournal
         )
     }
 
@@ -154,7 +141,7 @@ private extension JournalsListScreen {
                         defaults.setUserNeedUpdate(true)
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    SWAlert.shared.present(message: ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -181,7 +168,7 @@ private extension JournalsListScreen {
         do {
             journals = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -197,7 +184,7 @@ private extension JournalsListScreen {
                     await askForJournals(refresh: true)
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -214,12 +201,6 @@ private extension JournalsListScreen {
         journalIdToDelete = journalID
         showDeleteDialog.toggle()
     }
-
-    func setupErrorAlert(_ message: String) {
-        errorTitle = message
-    }
-
-    func closeAlert() { errorTitle = "" }
 
     func cancelTasks() {
         [saveJournalTask, deleteJournalTask, updateListTask].forEach { $0?.cancel() }

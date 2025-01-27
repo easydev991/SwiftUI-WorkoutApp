@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -12,7 +13,6 @@ struct UserDetailsScreen: View {
     @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
     @State private var showBlacklistConfirmation = false
-    @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var blacklistUserTask: Task<Void, Never>?
@@ -44,17 +44,6 @@ struct UserDetailsScreen: View {
         .opacity(user.isFull ? 1 : 0)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(
-            alertMessage,
-            isPresented: .init(
-                get: { !alertMessage.isEmpty },
-                set: { newValue in
-                    if !newValue { closeAlert() }
-                }
-            )
-        ) {
-            Button("Ok", action: closeAlert)
-        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 refreshButtonIfNeeded
@@ -144,7 +133,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -159,15 +148,15 @@ private extension UserDetailsScreen {
                 ) {
                     switch socialActions.blacklist {
                     case .add:
-                        setupResponseAlert("Пользователь добавлен в черный список")
+                        SWAlert.shared.present(message: "Пользователь добавлен в черный список")
                         socialActions.blacklist = .remove
                     case .remove:
-                        setupResponseAlert("Пользователь удален из черного списка")
+                        SWAlert.shared.present(message: "Пользователь удален из черного списка")
                         socialActions.blacklist = .add
                     }
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -192,9 +181,7 @@ private extension UserDetailsScreen {
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
-            sendAction: sendMessage,
-            errorTitle: $alertMessage,
-            dismissError: closeAlert
+            sendAction: sendMessage
         )
     }
 
@@ -202,7 +189,7 @@ private extension UserDetailsScreen {
         do {
             user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            setupResponseAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
     }
 
@@ -215,17 +202,11 @@ private extension UserDetailsScreen {
                     messagingModel.recipient = nil
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
     }
-
-    func setupResponseAlert(_ message: String) {
-        alertMessage = message
-    }
-
-    func closeAlert() { alertMessage = "" }
 
     func cancelTasks() {
         [friendActionTask, sendMessageTask, blacklistUserTask].forEach { $0?.cancel() }

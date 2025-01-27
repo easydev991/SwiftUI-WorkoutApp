@@ -1,4 +1,5 @@
 import ImagePicker
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -12,8 +13,6 @@ struct EventFormScreen: View {
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var showImagePicker = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
@@ -52,9 +51,6 @@ struct EventFormScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onDisappear { saveEventTask?.cancel() }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -193,7 +189,7 @@ private extension EventFormScreen {
                         dismiss()
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    SWAlert.shared.present(message: ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -208,11 +204,6 @@ private extension EventFormScreen {
         case .regularCreate, .createForSelected: eventForm.isReadyToCreate
         case .editExisting: eventForm.isReadyToUpdate(old: oldEventForm)
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
     }
 
     /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
