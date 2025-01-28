@@ -3,7 +3,7 @@ import UIKit
 @MainActor
 public final class SWAlert {
     public static let shared = SWAlert()
-    var alertController: UIAlertController?
+    private var alertController: UIAlertController?
 
     public nonisolated func present(
         title: String? = "",
@@ -19,6 +19,7 @@ public final class SWAlert {
                 message: message,
                 preferredStyle: .alert
             )
+            alert.view.tintColor = .systemGreen // иначе при появлении цвет будет дефолтный
             alert.addAction(
                 .init(
                     title: closeButtonTitle,

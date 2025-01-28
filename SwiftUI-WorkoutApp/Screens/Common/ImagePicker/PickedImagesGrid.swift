@@ -90,14 +90,14 @@ struct PickedImagesGrid: View {
 private extension PickedImagesGrid {
     var header: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("photoSectionHeader", comment: ""),
+            "photoSectionHeader".localized,
             images.count
         )
     }
 
     var subtitle: String {
         guard selectionLimit > 0 else {
-            return NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
+            return "Добавлено максимальное количество фотографий".localized
         }
         return images.isEmpty
             ? String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)

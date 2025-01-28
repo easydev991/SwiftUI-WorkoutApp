@@ -148,10 +148,16 @@ private extension UserDetailsScreen {
                 ) {
                     switch socialActions.blacklist {
                     case .add:
-                        SWAlert.shared.present(message: "Пользователь добавлен в черный список")
+                        SWAlert.shared.present(
+                            title: "Готово".localized,
+                            message: "Пользователь добавлен в черный список".localized
+                        )
                         socialActions.blacklist = .remove
                     case .remove:
-                        SWAlert.shared.present(message: "Пользователь удален из черного списка")
+                        SWAlert.shared.present(
+                            title: "Готово".localized,
+                            message: "Пользователь удален из черного списка".localized
+                        )
                         socialActions.blacklist = .add
                     }
                 }

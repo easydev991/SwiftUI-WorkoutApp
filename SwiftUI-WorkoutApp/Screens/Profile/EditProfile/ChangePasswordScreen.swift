@@ -140,7 +140,10 @@ private extension ChangePasswordScreen {
                 isChangeSuccessful = try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
             } catch {
-                SWAlert.shared.present(title: "Ошибка", message: ErrorFilter.message(from: error))
+                SWAlert.shared.present(
+                    title: "Ошибка".localized,
+                    message: ErrorFilter.message(from: error)
+                )
             }
             isLoading.toggle()
         }
