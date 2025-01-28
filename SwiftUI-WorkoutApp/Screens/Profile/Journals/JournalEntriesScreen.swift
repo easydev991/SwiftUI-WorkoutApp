@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,8 +10,6 @@ struct JournalEntriesScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var entries = [JournalEntryResponse]()
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var errorTitle = ""
     @State private var showCreateEntrySheet = false
     @State private var entryIdToDelete: Int?
     @State private var showDeleteDialog = false
@@ -68,9 +67,6 @@ struct JournalEntriesScreen: View {
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) { deleteEntryButton }
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok") { errorTitle = "" }
-        }
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .toolbar {
@@ -156,7 +152,7 @@ private extension JournalEntriesScreen {
             entries = try await SWClient(with: defaults)
                 .getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -174,18 +170,13 @@ private extension JournalEntriesScreen {
                         entries.removeAll(where: { $0.id == entryID })
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    SWAlert.shared.present(message: ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
         } label: {
             Text("Удалить")
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        errorTitle = message
     }
 
     func cancelTasks() {

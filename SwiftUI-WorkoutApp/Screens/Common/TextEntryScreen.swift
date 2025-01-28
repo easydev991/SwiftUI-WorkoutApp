@@ -1,3 +1,4 @@
+import SWAlert
 import SwiftUI
 import SWNetworkClient
 
@@ -6,7 +7,6 @@ struct TextEntryScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var entryText = ""
-    @State private var errorTitle = ""
     @State private var saveEntryTask: Task<Void, Never>?
     private let mode: Mode
     private let oldEntryText: String?
@@ -32,9 +32,7 @@ struct TextEntryScreen: View {
             text: $entryText,
             isLoading: isLoading,
             isSendButtonDisabled: !canSend,
-            sendAction: sendAction,
-            errorTitle: $errorTitle,
-            dismissError: { setupErrorAlert("") }
+            sendAction: sendAction
         )
         .onAppear {
             if let oldEntryText {
@@ -126,14 +124,10 @@ private extension TextEntryScreen {
                 }
                 if isSuccess { refreshClbk() }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        errorTitle = message
     }
 
     var canSend: Bool {

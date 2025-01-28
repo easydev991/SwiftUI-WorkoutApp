@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -14,7 +15,6 @@ struct EditProfileScreen: View {
     /// Все доступные страны и города
     @State private var locations = Locations(countries: [])
     @State private var isLoading = false
-    @State private var alertMessage = ""
     @State private var editUserTask: Task<Void, Never>?
     @State private var newAvatarImageModel: AvatarModel?
     @State private var showImagePicker = false
@@ -42,17 +42,6 @@ struct EditProfileScreen: View {
         .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(
-            alertMessage,
-            isPresented: .init(
-                get: { !alertMessage.isEmpty },
-                set: { newValue in
-                    if !newValue { alertMessage = "" }
-                }
-            )
-        ) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onAppear(perform: prepareLocationsAndUserForm)
         .onDisappear { editUserTask?.cancel() }
         .navigationTitle("Изменить профиль")
@@ -221,7 +210,7 @@ private extension EditProfileScreen {
                 userForm = oldUserForm
             }
         } catch {
-            setupErrorAlert(error.localizedDescription)
+            SWAlert.shared.present(message: error.localizedDescription)
         }
     }
 
@@ -253,13 +242,9 @@ private extension EditProfileScreen {
                 dismiss()
             } catch {
                 isLoading = false
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.present(message: ErrorFilter.message(from: error))
             }
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        alertMessage = message
     }
 }
 

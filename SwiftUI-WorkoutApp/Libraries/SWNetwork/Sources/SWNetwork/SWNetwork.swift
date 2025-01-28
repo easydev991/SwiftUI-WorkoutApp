@@ -75,9 +75,11 @@ extension SWNetworkService: SWNetworkProtocol {
             guard let response else {
                 throw logUnknownError(request: request, data: data)
             }
-            let isSuccess = StatusCodeGroup(code: response.statusCode).isSuccess
-            guard isSuccess else {
-                let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
+            if StatusCodeGroup(code: response.statusCode).isSuccess {
+                logSuccess(request: request, data: data)
+                return true
+            }
+            if let errorInfo = try? decoder.decode(ErrorResponse.self, from: data) {
                 let apiError = APIError(errorInfo, response.statusCode)
                 log(
                     apiError,
@@ -86,10 +88,9 @@ extension SWNetworkService: SWNetworkProtocol {
                     data: data,
                     response: response
                 )
-                return false
+                throw apiError
             }
-            logSuccess(request: request, data: data)
-            return true
+            return false
         } catch {
             throw handleUrlSession(error, request)
         }

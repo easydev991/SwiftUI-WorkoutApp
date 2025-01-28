@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -17,8 +18,6 @@ struct EventsListScreen: View {
     @State private var selectedEvent: EventResponse?
     @State private var showEventCreationSheet = false
     @State private var showEventCreationRule = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var eventsTask: Task<Void, Never>?
     private let pastEventStorage = PastEventStorage()
 
@@ -36,9 +35,6 @@ struct EventsListScreen: View {
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
                 Text(.init(Constants.Alert.eventCreationRule))
-            }
-            .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button("Ok") { alertMessage = "" }
             }
             .onChange(of: selectedEventType) { _ in
                 eventsTask = Task { await askForEvents() }
@@ -192,7 +188,7 @@ private extension EventsListScreen {
             if selectedEventType == .past {
                 pastEventStorage.loadIfNeeded(&pastEvents)
             }
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.present(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -201,11 +197,6 @@ private extension EventsListScreen {
         selectedEvent = nil
         futureEvents.removeAll(where: { $0.id == id })
         pastEvents.removeAll(where: { $0.id == id })
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
     }
 }
 

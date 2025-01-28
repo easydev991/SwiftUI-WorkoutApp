@@ -62,7 +62,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var blacklistedUsersCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("usersCount", comment: ""),
+            "usersCount".localized,
             blacklistedUsers.count
         )
     }

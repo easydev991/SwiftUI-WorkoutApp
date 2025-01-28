@@ -316,23 +316,6 @@
         }
       }
     },
-    "Oleg991 на boosty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oleg991 (boosty)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oleg991 на boosty"
-          }
-        }
-      }
-    },
     "parksCount" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -601,6 +584,7 @@
       }
     },
     "photoSectionHeader" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "variations" : {
@@ -688,24 +672,8 @@
         }
       }
     },
-    "Street Workout на boosty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Street Workout (boosty)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Street Workout на boosty"
-          }
-        }
-      }
-    },
     "usersCount" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "variations" : {
@@ -1176,6 +1144,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Город"
+          }
+        }
+      }
+    },
+    "Готово" : {
+      "comment" : "Заголовок для алертов",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         }
       }
@@ -2822,6 +2802,18 @@
         }
       }
     },
+    "Ошибка" : {
+      "comment" : "Заголовок для алертов",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
     "Пароли должны совпадать" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3173,6 +3165,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пользователь будет удален из черного списка"
+          }
+        }
+      }
+    },
+    "Пользователь добавлен в черный список" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user was added to your black list"
+          }
+        }
+      }
+    },
+    "Пользователь удален из черного списка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user was removed from your black list"
           }
         }
       }
