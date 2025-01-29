@@ -161,7 +161,7 @@ private extension DialogScreen {
                 markedAsReadClbk(dialog)
             }
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 
@@ -171,7 +171,7 @@ private extension DialogScreen {
         do {
             messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -186,7 +186,7 @@ private extension DialogScreen {
                     await askForMessages(refresh: true)
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }

@@ -146,7 +146,7 @@ private extension UsersListScreen {
                 let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -191,7 +191,7 @@ private extension UsersListScreen {
                 }
             }
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -205,7 +205,7 @@ private extension UsersListScreen {
                     defaults.setUserNeedUpdate(true)
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }

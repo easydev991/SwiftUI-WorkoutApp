@@ -145,7 +145,7 @@ private extension MainUserProfileScreen {
             try defaults.saveFriendRequests(friendRequests)
             try defaults.saveBlacklist(blacklist)
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 }

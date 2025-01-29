@@ -133,7 +133,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -148,13 +148,13 @@ private extension UserDetailsScreen {
                 ) {
                     switch socialActions.blacklist {
                     case .add:
-                        SWAlert.shared.present(
+                        SWAlert.shared.presentDefaultUIKit(
                             title: "Готово".localized,
                             message: "Пользователь добавлен в черный список".localized
                         )
                         socialActions.blacklist = .remove
                     case .remove:
-                        SWAlert.shared.present(
+                        SWAlert.shared.presentDefaultUIKit(
                             title: "Готово".localized,
                             message: "Пользователь удален из черного списка".localized
                         )
@@ -162,7 +162,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -195,7 +195,7 @@ private extension UserDetailsScreen {
         do {
             user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 
@@ -208,7 +208,7 @@ private extension UserDetailsScreen {
                     messagingModel.recipient = nil
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }

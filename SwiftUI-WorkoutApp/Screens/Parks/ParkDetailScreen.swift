@@ -439,7 +439,7 @@ private extension ParkDetailScreen {
             )
             onDeletion(park.id)
         } else {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 }

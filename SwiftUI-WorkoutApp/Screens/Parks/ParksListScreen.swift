@@ -128,7 +128,7 @@ private extension ParksListScreen {
                 parks = list
             }
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -148,7 +148,7 @@ private extension ParksListScreen {
                 dismiss()
             }
         } catch {
-            SWAlert.shared.present(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 }

@@ -117,7 +117,7 @@ private extension EventDetailsScreen {
                             onDeletion(event.id)
                         }
                     } catch {
-                        SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                        SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                     }
                     isLoading = false
                 }
@@ -228,7 +228,7 @@ private extension EventDetailsScreen {
                         event.trainHere = oldValue
                     }
                 } catch {
-                    SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                    SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                     event.trainHere = oldValue
                 }
                 isLoading = false
@@ -343,7 +343,7 @@ private extension EventDetailsScreen {
         do {
             event = try await SWClient(with: defaults).getEvent(by: event.id)
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -356,7 +356,7 @@ private extension EventDetailsScreen {
                     event.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -372,7 +372,7 @@ private extension EventDetailsScreen {
                     event.photos = event.removePhotoById(id)
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }

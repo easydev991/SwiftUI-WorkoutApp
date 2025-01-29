@@ -1,45 +1,46 @@
+import SwiftUI
 import UIKit
 
 @MainActor
 public final class SWAlert {
     public static let shared = SWAlert()
-    private var alertController: UIAlertController?
+    private var currentAlert: UIViewController?
 
-    public nonisolated func present(
+    /// Показывает системный алерт с заданными параметрами
+    /// - Parameters:
+    ///   - title: Заголовок. Если передать `nil`, то сообщение выделится жирным. Если передать текст или пустую строку, будет без
+    /// заголовка, и сообщение будет со стандартным шрифтом
+    ///   - message: Текст сообщения
+    ///   - closeButtonTitle: Заголовок кнопки для закрытия алерта
+    ///   - closeButtonStyle: Стиль кнопки для закрытия алерта
+    ///   - closeButtonTintColor: Цвет кнопки для закрытия алерта. Если не настроить явно, то при появлении будет системный (синий) цвет, а
+    /// при нажатии он изменится на `AccentColor` в проекте
+    public func presentDefaultUIKit(
         title: String? = "",
         message: String,
         closeButtonTitle: String = "Ok",
-        closeButtonStyle: UIAlertAction.Style = .default
+        closeButtonStyle: UIAlertAction.Style = .default,
+        closeButtonTintColor: UIColor? = .systemGreen
     ) {
-        Task { @MainActor in
-            guard alertController == nil else { return }
-            guard let topMostViewController else { return }
-            let alert = UIAlertController(
-                title: title,
-                message: message,
-                preferredStyle: .alert
+        guard currentAlert == nil, let topMostViewController else { return }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = closeButtonTintColor
+        alert.addAction(
+            .init(
+                title: closeButtonTitle,
+                style: closeButtonStyle,
+                handler: { [weak self] _ in
+                    self?.dismiss()
+                }
             )
-            alert.view.tintColor = .systemGreen // иначе при появлении цвет будет дефолтный
-            alert.addAction(
-                .init(
-                    title: closeButtonTitle,
-                    style: closeButtonStyle,
-                    handler: { [weak self] _ in
-                        guard let self else { return }
-                        alertController = nil
-                    }
-                )
-            )
-            alertController = alert
-            topMostViewController.present(alert, animated: true)
-        }
+        )
+        currentAlert = alert
+        topMostViewController.present(alert, animated: true)
     }
 
-    public nonisolated func dismiss() {
-        Task { @MainActor in
-            alertController?.dismiss(animated: true)
-            alertController = nil
-        }
+    private func dismiss() {
+        currentAlert?.dismiss(animated: true)
+        currentAlert = nil
     }
 
     private var topMostViewController: UIViewController? {

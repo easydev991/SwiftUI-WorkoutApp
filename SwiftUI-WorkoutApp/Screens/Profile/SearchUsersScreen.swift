@@ -109,7 +109,7 @@ private extension SearchUsersScreen {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -130,10 +130,10 @@ private extension SearchUsersScreen {
                     .findUsers(with: query.withoutSpaces)
                 users = foundUsers
                 if foundUsers.isEmpty {
-                    SWAlert.shared.present(message: "Не удалось найти такого пользователя")
+                    SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя")
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }

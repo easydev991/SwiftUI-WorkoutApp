@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,9 +10,8 @@ struct LoginScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
     @State private var credentials = Credentials()
-    @State private var showResetInfoAlert = false
-    @State private var showResetSuccessfulAlert = false
-    @State private var errorMessage = ""
+    @State private var resetErrorMessage = ""
+    @State private var loginErrorMessage = ""
     @State private var loginTask: Task<Void, Never>?
     @State private var resetPasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
@@ -34,10 +34,7 @@ struct LoginScreen: View {
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
         .background(Color.swBackground)
-        .onChange(of: credentials) { _ in errorMessage = "" }
-        .alert(.init(Constants.Alert.resetSuccessful), isPresented: $showResetSuccessfulAlert) {
-            Button("Ok") { showResetSuccessfulAlert = false }
-        }
+        .onChange(of: credentials) { _ in clearErrorMessages() }
         .onDisappear(perform: cancelTasks)
     }
 }
@@ -45,12 +42,22 @@ struct LoginScreen: View {
 private extension LoginScreen {
     // TODO: написать unit-тесты
     struct Credentials: Equatable {
-        var login = ""
-        var password = ""
+        var login: String
+        var password: String
+        let minPasswordSize: Int
+
+        init(
+            login: String = "",
+            password: String = "",
+            minPasswordSize: Int = Constants.minPasswordSize
+        ) {
+            self.login = login
+            self.password = password
+            self.minPasswordSize = minPasswordSize
+        }
 
         var isReady: Bool {
-            !login.isEmpty
-                && password.trueCount >= Constants.minPasswordSize
+            !login.isEmpty && password.trueCount >= minPasswordSize
         }
 
         var canRestorePassword: Bool { !login.isEmpty }
@@ -60,7 +67,9 @@ private extension LoginScreen {
         case username, password
     }
 
-    var isError: Bool { !errorMessage.isEmpty }
+    var isError: Bool {
+        !loginErrorMessage.isEmpty || !resetErrorMessage.isEmpty
+    }
 
     var canLogIn: Bool {
         credentials.isReady && !isError && isNetworkConnected
@@ -71,7 +80,7 @@ private extension LoginScreen {
             placeholder: "Логин или email",
             text: $credentials.login,
             isFocused: focus == .username,
-            errorState: isError ? .noMessage : nil
+            errorState: isError ? .message(resetErrorMessage) : nil
         )
         .focused($focus, equals: .username)
         .onAppear(perform: showKeyboard)
@@ -92,7 +101,7 @@ private extension LoginScreen {
             text: $credentials.password,
             isSecure: true,
             isFocused: focus == .password,
-            errorState: isError ? .message(errorMessage) : nil
+            errorState: !loginErrorMessage.isEmpty ? .message(loginErrorMessage) : nil
         )
         .focused($focus, equals: .password)
         .onSubmit(loginAction)
@@ -109,9 +118,6 @@ private extension LoginScreen {
     var forgotPasswordButton: some View {
         Button("Восстановить пароль", action: forgotPasswordAction)
             .tint(.swMainText)
-            .alert(.init(Constants.Alert.forgotPassword), isPresented: $showResetInfoAlert) {
-                Button("Ok") { showResetInfoAlert = false }
-            }
     }
 
     func loginAction() {
@@ -126,7 +132,7 @@ private extension LoginScreen {
                 let userInfo = try await client.getUserByID(userId)
                 try defaults.saveUserInfo(userInfo)
             } catch {
-                errorMessage = ErrorFilter.message(from: error)
+                loginErrorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }
@@ -134,20 +140,32 @@ private extension LoginScreen {
 
     func forgotPasswordAction() {
         guard credentials.canRestorePassword else {
-            showResetInfoAlert = true
+            SWAlert.shared.presentDefaultUIKit(
+                message: Constants.Alert.forgotPassword.localized
+            )
             return
         }
+        clearErrorMessages()
         isLoading.toggle()
         resetPasswordTask = Task {
             do {
-                showResetSuccessfulAlert = try await SWClient(with: defaults)
-                    .resetPassword(for: credentials.login)
+                if try await SWClient(with: defaults).resetPassword(for: credentials.login) {
+                    SWAlert.shared.presentDefaultUIKit(
+                        title: "Готово".localized,
+                        message: Constants.Alert.resetSuccessful.localized
+                    )
+                }
             } catch {
-                errorMessage = ErrorFilter.message(from: error)
+                resetErrorMessage = ErrorFilter.message(from: error)
             }
             isLoading.toggle()
         }
         focus = credentials.canRestorePassword ? nil : .username
+    }
+
+    func clearErrorMessages() {
+        loginErrorMessage = ""
+        resetErrorMessage = ""
     }
 
     func cancelTasks() {

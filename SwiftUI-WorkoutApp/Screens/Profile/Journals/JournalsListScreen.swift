@@ -141,7 +141,7 @@ private extension JournalsListScreen {
                         defaults.setUserNeedUpdate(true)
                     }
                 } catch {
-                    SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                    SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }
@@ -168,7 +168,7 @@ private extension JournalsListScreen {
         do {
             journals = try await SWClient(with: defaults).getJournals(for: userID)
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -184,7 +184,7 @@ private extension JournalsListScreen {
                     await askForJournals(refresh: true)
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }

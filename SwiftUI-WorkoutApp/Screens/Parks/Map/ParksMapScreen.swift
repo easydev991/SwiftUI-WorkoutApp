@@ -192,7 +192,7 @@ private extension ParksMapScreen {
             do {
                 try parksManager.makeDefaultList()
             } catch {
-                SWAlert.shared.present(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
             if parksManager.needUpdateDefaultList {
@@ -208,7 +208,7 @@ private extension ParksMapScreen {
         do {
             try parksManager.deletePark(with: id)
         } catch {
-            SWAlert.shared.present(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 
@@ -226,7 +226,7 @@ private extension ParksMapScreen {
             let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
             try parksManager.updateDefaultList(with: updatedParks)
         } catch {
-            SWAlert.shared.present(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }

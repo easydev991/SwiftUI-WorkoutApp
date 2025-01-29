@@ -98,7 +98,7 @@ private extension JournalSettingsScreen {
                     updateOnSuccess(journal)
                 }
             } catch {
-                SWAlert.shared.present(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading.toggle()
         }
