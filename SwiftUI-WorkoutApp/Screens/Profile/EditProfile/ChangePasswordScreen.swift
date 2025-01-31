@@ -163,5 +163,6 @@ private extension ChangePasswordScreen {
 #if DEBUG
 #Preview {
     ChangePasswordScreen()
+        .environmentObject(DefaultsService())
 }
 #endif
