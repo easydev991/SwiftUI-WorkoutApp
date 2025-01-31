@@ -26,10 +26,9 @@ jobs:
 
     - name: Build App
       run: |
-        # Сборка
         xcodebuild build \
         -scheme "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
+        -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" \
         CODE_SIGNING_ALLOWED=NO
         
     - name: Run Tests
@@ -37,6 +36,6 @@ jobs:
         xcodebuild test \
         -scheme "SwiftUI-WorkoutApp" \
         -testPlan "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
+        -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" \
         CODE_SIGNING_ALLOWED=NO \
         -verbose
