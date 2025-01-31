@@ -25,13 +25,13 @@ jobs:
       run: |
         xcodebuild build \
         -scheme "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,OS=latest" \
+        -destination "platform=iOS Simulator,name=iPhone 16,OS=18.2" \
         CODE_SIGNING_ALLOWED=NO
 
         # Запуск тестов с тест-планом
         xcodebuild test \
         -scheme "SwiftUI-WorkoutApp" \
         -testPlan "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,OS=latest" \
+        -destination "platform=iOS Simulator,name=iPhone 16,OS=18.2" \
         CODE_SIGNING_ALLOWED=NO \
         ARCHS=arm64 ONLY_ACTIVE_ARCH=NO
