@@ -124,7 +124,9 @@ private extension UserDetailsScreen {
         isLoading = true
         friendActionTask = Task {
             do {
-                if try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend) {
+                let isSuccess = try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
+                if isSuccess {
+                    defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
                     switch socialActions.friend {
                     case .sendFriendRequest:
                         socialActions.isFriendRequestSent = true
@@ -143,9 +145,11 @@ private extension UserDetailsScreen {
         isLoading = true
         blacklistUserTask = Task {
             do {
-                if try await SWClient(with: defaults).blacklistAction(
+                let isSuccess = try await SWClient(with: defaults).blacklistAction(
                     user: user, option: socialActions.blacklist
-                ) {
+                )
+                if isSuccess {
+                    defaults.updateBlacklist(option: socialActions.blacklist, user: user)
                     switch socialActions.blacklist {
                     case .add:
                         SWAlert.shared.presentDefaultUIKit(

@@ -133,10 +133,14 @@ private extension JournalsListScreen {
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             deleteJournalTask = Task {
-                guard let journalID = journalIdToDelete, !isLoading else { return }
+                guard let journalID = journalIdToDelete else { return }
                 isLoading = true
                 do {
-                    if try await SWClient(with: defaults).deleteJournal(journalID: journalID) {
+                    let isJournalDeleted = try await SWClient(with: defaults).deleteJournal(
+                        with: journalID,
+                        for: defaults.mainUserInfo?.id
+                    )
+                    if isJournalDeleted {
                         journals.removeAll(where: { $0.id == journalID })
                         defaults.setUserNeedUpdate(true)
                     }
@@ -148,6 +152,7 @@ private extension JournalsListScreen {
         } label: {
             Text("Удалить")
         }
+        .disabled(isLoading)
     }
 
     func showNewJournalSheet() {
@@ -177,7 +182,11 @@ private extension JournalsListScreen {
         isLoading = true
         saveJournalTask = Task {
             do {
-                if try await SWClient(with: defaults).createJournal(with: newJournalTitle) {
+                let isJournalCreated = try await SWClient(with: defaults).createJournal(
+                    with: newJournalTitle,
+                    for: defaults.mainUserInfo?.id
+                )
+                if isJournalCreated {
                     newJournalTitle = ""
                     isCreatingJournal.toggle()
                     defaults.setUserNeedUpdate(true)

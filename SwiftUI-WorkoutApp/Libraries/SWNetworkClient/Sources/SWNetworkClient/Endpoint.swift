@@ -25,7 +25,7 @@ enum Endpoint {
 
     // MARK: Удалить профиль текущего пользователя
     /// **DELETE** ${API}/users/current
-    case deleteUser(auth: AuthData)
+    case deleteUser
 
     // MARK: Получить профиль пользователя
     /// **GET** ${API}/users/<id>
