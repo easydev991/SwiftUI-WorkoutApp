@@ -36,7 +36,8 @@ public struct SWClient: Sendable {
     /// - Returns: `id` авторизованного пользователя
     public func logIn(with token: String?) async throws -> Int {
         let endpoint = Endpoint.login
-        let result: LoginResponse = try await makeResult(for: endpoint, with: token)
+        let finalComponents = try await makeComponents(for: endpoint, with: token)
+        let result: LoginResponse = try await service.requestData(components: finalComponents)
         return result.userID
     }
 
@@ -552,7 +553,7 @@ private extension SWClient {
         }
     }
 
-    private func makeComponents(
+    func makeComponents(
         for endpoint: Endpoint,
         with token: String? = nil
     ) async throws -> RequestComponents {
