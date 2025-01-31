@@ -4,23 +4,28 @@
 name: SwiftUI-WorkoutApp CI
 
 on:
+  push:
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [main, develop]
+    branches: [ "main", "develop" ]
 
 jobs:
   test:
     runs-on: macos-latest
-    timeout-minutes: 1
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Xcode Version
-      run: xcodebuild -version
-
-    - name: Run Unit Tests
+    - name: Build and Test
       run: |
+        xcodebuild build \
+        -scheme "SwiftUI-WorkoutApp" \
+        -destination "platform=iOS Simulator,OS=latest" \
+        CODE_SIGNING_ALLOWED=NO
+
+        # Запуск тестов с тест-планом
         xcodebuild test \
-        -scheme SwiftUI-WorkoutApp \
-        -destination 'platform=iOS Simulator,OS=latest' \
+        -scheme "SwiftUI-WorkoutApp" \
+        -testPlan "SwiftUI-WorkoutApp" \
+        -destination "platform=iOS Simulator,OS=latest" \
         CODE_SIGNING_ALLOWED=NO
