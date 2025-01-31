@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -10,8 +11,6 @@ struct DialogsListScreen: View {
     @State private var dialogs = [DialogResponse]()
     @State private var selectedDialog: DialogResponse?
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var errorTitle = ""
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
     @State private var showDeleteConfirmation = false
@@ -28,16 +27,13 @@ struct DialogsListScreen: View {
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) { deleteDialogButton }
-            .alert(errorTitle, isPresented: $showErrorAlert) {
-                Button("Ok") { errorTitle = "" }
-            }
             .task { await askForDialogs() }
             .refreshable { await askForDialogs(refresh: true) }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     refreshButton
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     friendListButton
                 }
             }
@@ -176,7 +172,7 @@ private extension DialogsListScreen {
             let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -196,15 +192,10 @@ private extension DialogsListScreen {
                     dialogs.remove(at: index)
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        errorTitle = message
     }
 }
 

@@ -6,15 +6,12 @@ struct SendMessageScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
-    @Binding var showErrorAlert: Bool
-    @Binding var errorTitle: String
     @FocusState private var isFocused
     private let header: LocalizedStringKey
     private let placeholder: String?
     private let isLoading: Bool
     private let isSendButtonDisabled: Bool
     private let sendAction: () -> Void
-    private let dismissError: () -> Void
 
     init(
         header: LocalizedStringKey,
@@ -22,10 +19,7 @@ struct SendMessageScreen: View {
         text: Binding<String>,
         isLoading: Bool,
         isSendButtonDisabled: Bool,
-        sendAction: @escaping () -> Void,
-        showErrorAlert: Binding<Bool>,
-        errorTitle: Binding<String>,
-        dismissError: @escaping () -> Void
+        sendAction: @escaping () -> Void
     ) {
         self.header = header
         self.placeholder = placeholder
@@ -33,9 +27,6 @@ struct SendMessageScreen: View {
         self.isLoading = isLoading
         self.isSendButtonDisabled = isSendButtonDisabled
         self.sendAction = sendAction
-        self._showErrorAlert = showErrorAlert
-        self._errorTitle = errorTitle
-        self.dismissError = dismissError
     }
 
     var body: some View {
@@ -50,9 +41,6 @@ struct SendMessageScreen: View {
         .background(Color.swBackground)
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok", action: dismissError)
-        }
     }
 }
 
@@ -93,10 +81,7 @@ private extension SendMessageScreen {
         text: .constant("Текст комментария"),
         isLoading: false,
         isSendButtonDisabled: true,
-        sendAction: {},
-        showErrorAlert: .constant(false),
-        errorTitle: .constant(""),
-        dismissError: {}
+        sendAction: {}
     )
 }
 #endif

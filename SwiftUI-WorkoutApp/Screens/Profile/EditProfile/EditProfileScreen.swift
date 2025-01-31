@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -14,35 +15,33 @@ struct EditProfileScreen: View {
     /// Все доступные страны и города
     @State private var locations = Locations(countries: [])
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var editUserTask: Task<Void, Never>?
+    @State private var newAvatarImageModel: AvatarModel?
+    @State private var showImagePicker = false
     @FocusState private var focus: FocusableField?
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
             ScrollView {
-                Group {
-                    loginField.padding(.top)
+                VStack(spacing: 12) {
+                    avatarPicker
+                    loginField
                     emailField
                     nameField
                     changePasswordButton
+                    VStack(spacing: 4) {
+                        genderPicker
+                        birthdayPicker
+                        countryPicker
+                        cityPicker
+                    }
                 }
-                .padding(.bottom, 12)
-                genderPicker
-                birthdayPicker
-                countryPicker
-                cityPicker
+                .padding()
             }
-            Spacer()
             saveChangesButton
         }
-        .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onAppear(perform: prepareLocationsAndUserForm)
         .onDisappear { editUserTask?.cancel() }
         .navigationTitle("Изменить профиль")
@@ -53,6 +52,11 @@ struct EditProfileScreen: View {
 private extension EditProfileScreen {
     enum FocusableField: Hashable {
         case login, email, fullName
+    }
+
+    struct AvatarModel: Equatable {
+        let id = UUID().uuidString
+        let uiImage: UIImage
     }
 
     var loginField: some View {
@@ -86,6 +90,33 @@ private extension EditProfileScreen {
         NavigationLink(destination: ChangePasswordScreen()) {
             ListRowView(leadingContent: .iconWithText(.key, "Изменить пароль"), trailingContent: .chevron)
         }
+    }
+
+    var avatarPicker: some View {
+        VStack(spacing: 20) {
+            if let model = newAvatarImageModel {
+                Image(uiImage: model.uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 150, height: 150)
+                    .clipShape(.rect(cornerRadius: 12))
+                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
+                    .id(model.id)
+            } else {
+                CachedImage(url: defaults.mainUserInfo?.avatarURL, mode: .profileAvatar)
+                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
+            }
+            Button("Изменить фотографию") { showImagePicker.toggle() }
+                .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
+                .padding(.bottom, 8)
+                .sheet(isPresented: $showImagePicker) {
+                    AvatarPickerView {
+                        newAvatarImageModel = .init(uiImage: $0)
+                        userForm.image = $0.toMediaFile()
+                    }
+                }
+        }
+        .animation(.default, value: newAvatarImageModel)
     }
 
     var genderPicker: some View {
@@ -161,6 +192,7 @@ private extension EditProfileScreen {
     var saveChangesButton: some View {
         Button("Сохранить", action: saveChangesAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+            .padding([.horizontal, .bottom])
             .disabled(
                 !userForm.isReadyToSave(comparedTo: oldUserForm)
                     || !isNetworkConnected
@@ -180,7 +212,7 @@ private extension EditProfileScreen {
                 userForm = oldUserForm
             }
         } catch {
-            setupErrorAlert(error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 
@@ -205,19 +237,16 @@ private extension EditProfileScreen {
         editUserTask = Task {
             do {
                 let userID = defaults.mainUserInfo?.id ?? 0
-                if try await SWClient(with: defaults).editUser(userID, model: userForm) {
-                    dismiss()
-                }
+                let result = try await SWClient(with: defaults).editUser(userID, model: userForm)
+                try defaults.saveUserInfo(result)
+                let currentPassword = try defaults.basicAuthInfo().password
+                try defaults.saveAuthData(login: userForm.userName, password: currentPassword)
+                dismiss()
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                isLoading = false
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
-            isLoading = false
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
     }
 }
 

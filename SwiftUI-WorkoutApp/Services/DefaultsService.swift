@@ -4,11 +4,12 @@ import Utils
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
+    var authToken: String? { try? basicAuthInfo().token }
+
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
 
-    @AppStorage(Key.isUserAuthorized.rawValue)
-    private(set) var isAuthorized = false
+    var isAuthorized: Bool { mainUserInfo != nil }
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
@@ -28,14 +29,11 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.blacklist.rawValue)
     private var blacklist = Data()
 
-    @AppStorage(Key.hasParks.rawValue)
-    private(set) var hasParks = false
+    var hasParks: Bool { mainUserInfo?.hasUsedParks == true }
 
-    @AppStorage(Key.hasJournals.rawValue)
-    private(set) var hasJournals = false
+    var hasJournals: Bool { mainUserInfo?.hasJournals == true }
 
-    @AppStorage(Key.hasFriends.rawValue)
-    private(set) var hasFriends = false
+    var hasFriends: Bool { !friendsIdsList.isEmpty }
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
     private(set) var unreadMessagesCount = 0
@@ -65,7 +63,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var blacklistedUsersCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("usersCount", comment: ""),
+            "usersCount".localized,
             blacklistedUsers.count
         )
     }
@@ -90,8 +88,9 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         appTheme = theme
     }
 
-    func saveAuthData(_ info: AuthData) throws {
-        authData = try JSONEncoder().encode(info)
+    func saveAuthData(login: String, password: String) throws {
+        let model = AuthData(login: login, password: password)
+        authData = try JSONEncoder().encode(model)
     }
 
     func basicAuthInfo() throws -> AuthData {
@@ -103,16 +102,11 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func saveUserInfo(_ info: UserResponse) throws {
-        hasFriends = info.friendsCount ?? 0 != 0
-        setHasParks(info.usedParksCount != 0)
-        setHasJournals(info.journalsCount ?? 0 != 0)
-        if !isAuthorized { isAuthorized = true }
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)
     }
 
     func saveFriendsIds(_ ids: [Int]) throws {
-        hasFriends = !ids.isEmpty
         friendsIds = try JSONEncoder().encode(ids)
     }
 
@@ -135,22 +129,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         try? saveBlacklist(newList)
     }
 
-    func setHasJournals(_ hasJournals: Bool) {
-        self.hasJournals = hasJournals
-    }
-
-    func setHasParks(_ isAddedPark: Bool) {
-        switch (hasParks, isAddedPark) {
-        case (true, true), (false, false): break
-        case (true, false):
-            if mainUserInfo?.usedParksCount == 1 {
-                hasParks = false
-            }
-        case (false, true):
-            hasParks = true
-        }
-    }
-
     func saveUnreadMessagesCount(_ count: Int) {
         unreadMessagesCount = count
     }
@@ -159,18 +137,27 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         lastCountriesUpdateDate = .now
     }
 
+    /// Обновляет сохраненный список идентификаторов друзей главного пользователя
+    ///
+    /// Если друга удаляют, то удаляем его `id` из списка сохраненных друзей
+    /// - Parameters:
+    ///   - friendID: `id` друга
+    ///   - action: действие с другом (отправка заявки/удаление)
+    func updateFriendIds(friendID: Int, action: FriendAction) {
+        var newList = friendsIdsList
+        guard case .removeFriend = action else { return }
+        newList.removeAll(where: { $0 == friendID })
+        try? saveFriendsIds(newList)
+    }
+
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
-        isAuthorized = false
-        hasParks = false
         try? saveFriendsIds([])
         try? saveFriendRequests([])
         try? saveBlacklist([])
         saveUnreadMessagesCount(0)
-        setHasJournals(false)
         setUserNeedUpdate(true)
-        setAppTheme(.system)
     }
 }
 
@@ -188,8 +175,6 @@ extension DefaultsService {
 
 private extension DefaultsService {
     enum Key: String {
-        case isUserAuthorized, appTheme, authData, userInfo, friends, friendRequests, blacklist, hasJournals, needUpdateUser, hasFriends,
-             unreadMessagesCount, lastCountriesUpdateDate
-        case hasParks = "hasSportsGrounds"
+        case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate
     }
 }

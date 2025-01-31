@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -13,8 +14,6 @@ struct DialogScreen: View {
     /// `NavigationLink` не работает сам по себе внутри тулбара,
     /// т.к. тулбар не находится в иерархии `NavigationView`
     @State private var openAnotherUserProfile = false
-    @State private var showErrorAlert = false
-    @State private var errorTitle = ""
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var refreshDialogTask: Task<Void, Never>?
     @Namespace private var chatScrollView
@@ -40,19 +39,16 @@ struct DialogScreen: View {
             }
         }
         .background(Color.swBackground)
-        .alert(errorTitle, isPresented: $showErrorAlert) {
-            Button("Ok") { errorTitle = "" }
-        }
         .task(priority: .low) { await markAsRead() }
         .task(priority: .high) { await askForMessages() }
         .onDisappear {
             [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 refreshButton
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 anotherUserProfileButton
             }
         }
@@ -165,7 +161,7 @@ private extension DialogScreen {
                 markedAsReadClbk(dialog)
             }
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 
@@ -175,7 +171,7 @@ private extension DialogScreen {
         do {
             messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -190,15 +186,10 @@ private extension DialogScreen {
                     await askForMessages(refresh: true)
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        errorTitle = message
     }
 }
 

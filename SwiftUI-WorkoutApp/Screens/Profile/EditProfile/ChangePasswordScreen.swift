@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -10,8 +11,6 @@ struct ChangePasswordScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var model = PassworModel()
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var errorMessage = ""
     @State private var isChangeSuccessful = false
     @State private var changePasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
@@ -33,11 +32,7 @@ struct ChangePasswordScreen: View {
         .padding()
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(errorMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { errorMessage = "" }
-        }
         .onChange(of: isChangeSuccessful, perform: performLogout)
-        .onChange(of: errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTask)
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
@@ -83,9 +78,7 @@ private extension ChangePasswordScreen {
     }
 
     var canChangePassword: Bool {
-        model.isReady
-            && errorMessage.isEmpty
-            && isNetworkConnected
+        model.isReady && isNetworkConnected
     }
 
     var passwordField: some View {
@@ -147,7 +140,10 @@ private extension ChangePasswordScreen {
                 isChangeSuccessful = try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
             } catch {
-                errorMessage = ErrorFilter.message(from: error)
+                SWAlert.shared.presentDefaultUIKit(
+                    title: "Ошибка".localized,
+                    message: ErrorFilter.message(from: error)
+                )
             }
             isLoading.toggle()
         }
@@ -159,10 +155,6 @@ private extension ChangePasswordScreen {
         }
     }
 
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-    }
-
     func cancelTask() {
         changePasswordTask?.cancel()
     }
@@ -171,5 +163,6 @@ private extension ChangePasswordScreen {
 #if DEBUG
 #Preview {
     ChangePasswordScreen()
+        .environmentObject(DefaultsService())
 }
 #endif

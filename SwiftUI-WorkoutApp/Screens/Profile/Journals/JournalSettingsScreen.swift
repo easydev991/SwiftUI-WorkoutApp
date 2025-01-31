@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -10,8 +11,6 @@ struct JournalSettingsScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var saveJournalChangesTask: Task<Void, Never>?
     @FocusState private var isTextFieldFocused: Bool
     private let options = JournalAccess.allCases
@@ -40,9 +39,6 @@ struct JournalSettingsScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onDisappear { saveJournalChangesTask?.cancel() }
     }
 }
@@ -93,18 +89,18 @@ private extension JournalSettingsScreen {
         saveJournalChangesTask = Task {
             isLoading = true
             do {
-                if try await SWClient(with: defaults).editJournalSettings(
-                    for: journal.id,
+                let isSuccess = try await SWClient(with: defaults).editJournalSettings(
+                    with: journal.id,
                     title: journal.title,
+                    for: defaults.mainUserInfo?.id,
                     viewAccess: journal.viewAccessType,
                     commentAccess: journal.commentAccessType
-                ) {
+                )
+                if isSuccess {
                     updateOnSuccess(journal)
                 }
             } catch {
-                let message = ErrorFilter.message(from: error)
-                showErrorAlert = !message.isEmpty
-                alertMessage = message
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading.toggle()
         }

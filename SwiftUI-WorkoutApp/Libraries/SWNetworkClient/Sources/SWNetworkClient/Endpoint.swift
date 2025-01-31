@@ -25,7 +25,7 @@ enum Endpoint {
 
     // MARK: Удалить профиль текущего пользователя
     /// **DELETE** ${API}/users/current
-    case deleteUser(auth: AuthData)
+    case deleteUser
 
     // MARK: Получить профиль пользователя
     /// **GET** ${API}/users/<id>
@@ -383,11 +383,10 @@ extension Endpoint {
         }
     }
 
-    var headers: [HTTPHeaderField] {
+    var hasMultipartFormData: Bool {
         switch self {
-        case .createPark, .editPark, .createEvent, .editEvent:
-            [.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF")]
-        default: []
+        case .createPark, .editPark, .createEvent, .editEvent, .editUser: true
+        default: false
         }
     }
 
@@ -400,9 +399,7 @@ extension Endpoint {
     }
 
     enum ParameterKey: String {
-        case name, fullname, email, password,
-             comment, message, title, description,
-             date, address, latitude, longitude
+        case name, fullname, email, password, comment, message, title, description, date, address, latitude, longitude, image
         case areaID = "area_id"
         case viewAccess = "view_access"
         case commentAccess = "comment_access"
@@ -448,16 +445,30 @@ extension Endpoint {
                 ].map(BodyMaker.Parameter.init)
             )
         case let .editUser(_, form):
-            return BodyMaker.makeBody(
-                with: [
-                    ParameterKey.name: form.userName,
-                    .fullname: form.fullName,
-                    .email: form.email,
-                    .genderCode: form.genderCode.description,
-                    .countryID: form.country.id,
-                    .cityID: form.city.id,
-                    .birthDate: form.birthDateIsoString
-                ].map(BodyMaker.Parameter.init)
+            let parameters = [
+                ParameterKey.name: form.userName,
+                .fullname: form.fullName,
+                .email: form.email,
+                .genderCode: form.genderCode.description,
+                .countryID: form.country.id,
+                .cityID: form.city.id,
+                .birthDate: form.birthDateIsoString
+            ]
+            let mediaFiles: [BodyMaker.MediaFile]? = if let image = form.image {
+                [
+                    BodyMaker.MediaFile(
+                        key: ParameterKey.image.rawValue,
+                        filename: "\(UUID().uuidString).jpg",
+                        data: image.data,
+                        mimeType: image.mimeType
+                    )
+                ]
+            } else {
+                nil
+            }
+            return BodyMaker.makeBodyWithMultipartForm(
+                with: parameters.map(BodyMaker.Parameter.init),
+                and: mediaFiles
             )
         case let .resetPassword(login):
             return BodyMaker.makeBody(

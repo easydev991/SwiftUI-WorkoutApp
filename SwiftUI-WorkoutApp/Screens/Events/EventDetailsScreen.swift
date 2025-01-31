@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -11,8 +12,6 @@ struct EventDetailsScreen: View {
     @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var showDeleteDialog = false
     @State private var goingToEventTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
@@ -57,15 +56,12 @@ struct EventDetailsScreen: View {
         .sheet(item: $sheetItem, content: makeSheetContent)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onDisappear(perform: cancelTasks)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 CloseButton(mode: .text) { dismiss() }
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 if isEventAuthor {
                     toolbarMenuButton
                 }
@@ -121,7 +117,7 @@ private extension EventDetailsScreen {
                             onDeletion(event.id)
                         }
                     } catch {
-                        setupErrorAlert(ErrorFilter.message(from: error))
+                        SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                     }
                     isLoading = false
                 }
@@ -232,7 +228,7 @@ private extension EventDetailsScreen {
                         event.trainHere = oldValue
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                     event.trainHere = oldValue
                 }
                 isLoading = false
@@ -347,7 +343,7 @@ private extension EventDetailsScreen {
         do {
             event = try await SWClient(with: defaults).getEvent(by: event.id)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -360,7 +356,7 @@ private extension EventDetailsScreen {
                     event.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -376,15 +372,10 @@ private extension EventDetailsScreen {
                     event.photos = event.removePhotoById(id)
                 }
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
     }
 
     func reportPhoto() {

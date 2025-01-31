@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -11,8 +12,6 @@ struct SearchUsersScreen: View {
     @State private var users = [UserResponse]()
     @State private var isLoading = false
     @State private var query = ""
-    @State private var showErrorAlert = false
-    @State private var errorMessage = ""
     @State private var searchTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     var mode = Mode.regular
@@ -49,10 +48,6 @@ struct SearchUsersScreen: View {
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .alert(errorMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { closeAlert() }
-        }
-        .onChange(of: errorMessage, perform: setupErrorAlert)
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
         .navigationBarTitleDisplayMode(.inline)
@@ -103,10 +98,7 @@ private extension SearchUsersScreen {
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
-            sendAction: { sendMessage(to: recipient.id) },
-            showErrorAlert: $showErrorAlert,
-            errorTitle: $errorMessage,
-            dismissError: closeAlert
+            sendAction: { sendMessage(to: recipient.id) }
         )
     }
 
@@ -117,7 +109,7 @@ private extension SearchUsersScreen {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                setupErrorAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
@@ -138,21 +130,14 @@ private extension SearchUsersScreen {
                     .findUsers(with: query.withoutSpaces)
                 users = foundUsers
                 if foundUsers.isEmpty {
-                    errorMessage = "Не удалось найти такого пользователя"
+                    SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя")
                 }
             } catch {
-                errorMessage = ErrorFilter.message(from: error)
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
     }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        errorMessage = message
-    }
-
-    func closeAlert() { errorMessage = "" }
 
     func cancelTasks() {
         [searchTask, sendMessageTask].forEach { $0?.cancel() }

@@ -6,6 +6,10 @@ public struct MediaFile: Codable, Equatable, Sendable {
     public let data: Data
     public let mimeType: String
 
+    /// Инициализатор для добавления фото площадки/мероприятия
+    /// - Parameters:
+    ///   - imageData: Данные для картинки
+    ///   - key: Индекс
     public init(imageData: Data, forKey key: String) {
         self.key = "photo\(key)"
         self.mimeType = "image/jpeg"

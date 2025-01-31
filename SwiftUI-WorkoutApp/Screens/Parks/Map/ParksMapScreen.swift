@@ -1,5 +1,6 @@
 import FileManager991
 import MapView991
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -14,8 +15,6 @@ struct ParksMapScreen: View {
     @StateObject private var viewModel = ViewModel()
     @State private var presentation = Presentation.map
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var sheetItem: SheetItem?
     @State private var filter = ParkFilterScreen.Model()
     /// Город для фильтра списка площадок
@@ -48,13 +47,10 @@ struct ParksMapScreen: View {
             .onChange(of: defaults.mainUserCityID) { _ in
                 viewModel.updateUserCountryAndCity(with: defaults.mainUserInfo)
             }
-            .alert(alertMessage, isPresented: $showErrorAlert) {
-                Button("Ok") { alertMessage = "" }
-            }
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
+                ToolbarItemGroup(placement: .topBarLeading) {
                     Group {
                         filterButton
                         Button {
@@ -65,7 +61,7 @@ struct ParksMapScreen: View {
                     }
                     .disabled(isLoading)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     rightBarButton
                 }
             }
@@ -196,7 +192,7 @@ private extension ParksMapScreen {
             do {
                 try parksManager.makeDefaultList()
             } catch {
-                setupErrorAlert(error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
             if parksManager.needUpdateDefaultList {
@@ -212,7 +208,7 @@ private extension ParksMapScreen {
         do {
             try parksManager.deletePark(with: id)
         } catch {
-            setupErrorAlert(error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 
@@ -230,7 +226,7 @@ private extension ParksMapScreen {
             let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
             try parksManager.updateDefaultList(with: updatedParks)
         } catch {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
         isLoading = false
     }
@@ -290,11 +286,6 @@ private extension ParksMapScreen {
                 ParkDetailScreen(park: park) { deletePark(id: $0) }
             }
         }
-    }
-
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
     }
 }
 

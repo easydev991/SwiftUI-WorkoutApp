@@ -8,23 +8,51 @@ struct RequestComponentsTests {
         let path = "/test"
         let queryItems = [URLQueryItem(name: "key", value: "value")]
         let httpMethod = HTTPMethod.get
-        let headerFields = [HTTPHeaderField(key: "Authorization", value: "Bearer token")]
         let body = Data("test body".utf8)
         let token = "token"
         let requestComponents = RequestComponents(
             path: path,
             queryItems: queryItems,
             httpMethod: httpMethod,
-            headerFields: headerFields,
             body: body,
             token: token
         )
         #expect(requestComponents.path == path)
         #expect(requestComponents.queryItems == queryItems)
         #expect(requestComponents.httpMethod == httpMethod)
-        #expect(requestComponents.headerFields == headerFields)
         #expect(requestComponents.body == body)
         #expect(requestComponents.token == token)
+    }
+
+    @Test(arguments: [HTTPMethod.put, .get, .post, .delete])
+    func urlRequestCreationWithSpecificMethod(_ method: HTTPMethod) throws {
+        let requestComponents = RequestComponents(
+            path: "/test",
+            httpMethod: method
+        )
+        let urlRequest = try #require(requestComponents.urlRequest)
+        #expect(urlRequest.httpMethod == method.rawValue)
+    }
+
+    @Test("Генерация URL без ведущего слеша в path")
+    func urlCreationFailure() {
+        let requestComponents = RequestComponents(
+            path: "invalidpath",
+            httpMethod: .get
+        )
+        #expect(requestComponents.url == nil)
+    }
+
+    @Test
+    func urlRequestCreationWithEmptyToken() throws {
+        let requestComponents = RequestComponents(
+            path: "/test",
+            httpMethod: .get,
+            token: ""
+        )
+        let urlRequest = try #require(requestComponents.urlRequest)
+        let headers = try #require(urlRequest.allHTTPHeaderFields)
+        #expect(headers["Authorization"] == nil)
     }
 
     @Test
@@ -41,55 +69,77 @@ struct RequestComponentsTests {
 
     @Test
     func urlRequestCreationWithAuthToken() throws {
-        let path = "/test"
-        let queryItems = [URLQueryItem(name: "key", value: "value")]
-        let httpMethod = HTTPMethod.post
-        let headerFields = [HTTPHeaderField(key: "key", value: "value")]
         let body = Data("test body".utf8)
-        let token = "token123"
         let requestComponents = RequestComponents(
-            path: path,
-            queryItems: queryItems,
-            httpMethod: httpMethod,
-            headerFields: headerFields,
+            path: "/test",
+            httpMethod: .post,
             body: body,
-            token: token
+            token: "token123"
         )
         let urlRequest = try #require(requestComponents.urlRequest)
-        let expectedHeaderFields: [HTTPHeaderField] = [
-            .init(key: "key", value: "value"),
-            .init(key: "Authorization", value: "Basic token123")
-        ]
-        let finalHeaderFields = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(urlRequest.httpMethod == httpMethod.rawValue)
+        let headers = try #require(urlRequest.allHTTPHeaderFields)
         #expect(urlRequest.httpBody == body)
-        #expect(finalHeaderFields.count == expectedHeaderFields.count)
-        #expect(
-            expectedHeaderFields.allSatisfy { header in
-                finalHeaderFields[header.key] == header.value
-            }
-        )
+        #expect(headers.count == 2)
+        #expect(headers["Content-Length"] == "\(body.count)")
+        #expect(headers["Authorization"] == "Basic token123")
     }
 
     @Test
     func urlRequestCreationWithoutAuthToken() throws {
-        let path = "/test"
-        let queryItems = [URLQueryItem(name: "key", value: "value")]
-        let httpMethod = HTTPMethod.post
-        let headerFields = [HTTPHeaderField(key: "key", value: "value")]
         let body = Data("test body".utf8)
         let requestComponents = RequestComponents(
-            path: path,
-            queryItems: queryItems,
-            httpMethod: httpMethod,
-            headerFields: headerFields,
+            path: "/test",
+            httpMethod: .post,
             body: body
         )
         let urlRequest = try #require(requestComponents.urlRequest)
-        let expectedHeaderFields = ["key": "value"]
-        let finalHeaderFields = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(urlRequest.httpMethod == httpMethod.rawValue)
+        let headerFields = try #require(urlRequest.allHTTPHeaderFields)
         #expect(urlRequest.httpBody == body)
-        #expect(finalHeaderFields == expectedHeaderFields)
+        #expect(headerFields == ["Content-Length": "\(body.count)"])
+    }
+
+    @Test
+    func urlRequestCreationWithoutBody() throws {
+        let requestComponents = RequestComponents(
+            path: "/test",
+            httpMethod: .get,
+            body: nil,
+            token: "token"
+        )
+        let urlRequest = try #require(requestComponents.urlRequest)
+        let headers = try #require(urlRequest.allHTTPHeaderFields)
+        #expect(headers.count == 1)
+        #expect(headers["Content-Length"] == nil)
+        #expect(headers["Authorization"] == "Basic token")
+    }
+
+    @Test
+    func urlRequestCreationWithMultipartFormData() throws {
+        let body = Data("test".utf8)
+        let requestComponents = RequestComponents(
+            path: "/upload",
+            httpMethod: .post,
+            hasMultipartFormData: true,
+            body: body,
+            token: "token"
+        )
+        let urlRequest = try #require(requestComponents.urlRequest)
+        let headers = try #require(urlRequest.allHTTPHeaderFields)
+        #expect(headers.count == 3)
+        #expect(headers["Content-Type"] == "multipart/form-data; boundary=FFF")
+        #expect(headers["Content-Length"] == "\(body.count)")
+        #expect(headers["Authorization"] == "Basic token")
+    }
+
+    @Test
+    func urlGenerationWithSpecialCharacters() throws {
+        let requestComponents = RequestComponents(
+            path: "/test path",
+            queryItems: [URLQueryItem(name: "key", value: "value with space")],
+            httpMethod: .get
+        )
+        let resultURL = try #require(requestComponents.url)
+        let expectedString = "https://workout.su/api/v3/test%20path?key=value%20with%20space"
+        #expect(resultURL.absoluteString == expectedString)
     }
 }

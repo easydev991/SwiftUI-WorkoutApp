@@ -22,10 +22,16 @@ public enum DateFormatterService {
         }
     }
 
-    public static func stringFromFullDate(_ date: Date, format: DateFormat = .isoDateTimeSec, iso: Bool = true) -> String {
+    public static func stringFromFullDate(
+        _ date: Date,
+        format: DateFormat = .isoDateTimeSec,
+        timeZone: TimeZone? = nil,
+        iso: Bool = true
+    ) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format.rawValue
+        dateFormatter.timeZone = timeZone
         var string = dateFormatter.string(from: date)
         if iso { string.append("Z") }
         return string
@@ -43,9 +49,14 @@ public enum DateFormatterService {
         ISO8601DateFormatter().date(from: string ?? "") ?? .now
     }
 
-    public static func dateFromString(_ string: String?, format: DateFormat) -> Date {
+    public static func dateFromString(
+        _ string: String?,
+        format: DateFormat,
+        timeZone: TimeZone? = nil
+    ) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
+        formatter.timeZone = timeZone
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.date(from: string ?? "") ?? .now
     }
@@ -61,7 +72,13 @@ public enum DateFormatterService {
     ///   - date2: Дата 2
     /// - Returns: Количество дней между датами
     public static func days(from date1: Date, to date2: Date) -> Int {
-        Calendar.current.dateComponents([.day], from: date1, to: date2).day ?? 0
+        let calendar = Calendar(identifier: .iso8601)
+        let components = calendar.dateComponents(
+            [.day],
+            from: calendar.startOfDay(for: date1),
+            to: calendar.startOfDay(for: date2)
+        )
+        return components.day ?? 0
     }
 }
 

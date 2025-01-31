@@ -1,5 +1,6 @@
 import CoreLocation.CLLocation
 import ImagePicker
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -13,8 +14,6 @@ struct ParkFormScreen: View {
     @State private var isLoading = false
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var showImagePicker = false
     @State private var saveParkTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
@@ -55,9 +54,6 @@ struct ParkFormScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onDisappear { saveParkTask?.cancel() }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
@@ -144,11 +140,6 @@ private extension ParkFormScreen {
         }
     }
 
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
-    }
-
     var saveButton: some View {
         Button("Сохранить") {
             isFocused = false
@@ -162,7 +153,7 @@ private extension ParkFormScreen {
                         refreshClbk()
                     }
                 } catch {
-                    setupErrorAlert(ErrorFilter.message(from: error))
+                    SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
                 }
                 isLoading = false
             }

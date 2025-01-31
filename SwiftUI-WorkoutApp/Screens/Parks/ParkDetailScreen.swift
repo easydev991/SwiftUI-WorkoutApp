@@ -1,4 +1,5 @@
 import OSLog
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -13,8 +14,6 @@ struct ParkDetailScreen: View {
     @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
     @State private var isLoading = false
-    @State private var showErrorAlert = false
-    @State private var alertMessage = ""
     @State private var dialogs = ConfirmationDialogs()
     @State private var changeTrainHereTask: Task<Void, Never>?
     @State private var deleteCommentTask: Task<Void, Never>?
@@ -56,9 +55,6 @@ struct ParkDetailScreen: View {
         .sheet(item: $sheetItem, content: makeSheetContent)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
-        .alert(alertMessage, isPresented: $showErrorAlert) {
-            Button("Ok") { alertMessage = "" }
-        }
         .onChange(of: defaults.isAuthorized) { isAuth in
             if !isAuth { dismiss() }
         }
@@ -67,7 +63,7 @@ struct ParkDetailScreen: View {
             ToolbarItem(placement: .topBarLeading) {
                 CloseButton(mode: .text) { dismiss() }
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 if isParkAuthor {
                     toolbarMenuButton
                 } else {
@@ -390,11 +386,6 @@ private extension ParkDetailScreen {
         }
     }
 
-    func setupErrorAlert(_ message: String) {
-        showErrorAlert = !message.isEmpty
-        alertMessage = message
-    }
-
     func reportPhoto() {
         let complaint = Complaint.parkPhoto(parkTitle: park.shortTitle)
         FeedbackSender.sendFeedback(
@@ -448,7 +439,7 @@ private extension ParkDetailScreen {
             )
             onDeletion(park.id)
         } else {
-            setupErrorAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 }

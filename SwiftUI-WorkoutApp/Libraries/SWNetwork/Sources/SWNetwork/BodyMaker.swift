@@ -39,16 +39,16 @@ public enum BodyMaker {
         var body = Data()
         if !parameters.isEmpty {
             parameters.forEach { element in
-                body.append("--\(boundary + lineBreak)")
+                body.append("--\(boundary)\(lineBreak)")
                 body.append("Content-Disposition: form-data; name=\"\(element.key)\"\(lineBreak + lineBreak)")
-                body.append("\(element.value + lineBreak)")
+                body.append("\(element.value)\(lineBreak)")
             }
         }
         if let media, !media.isEmpty {
             media.forEach { photo in
-                body.append("--\(boundary + lineBreak)")
+                body.append("--\(boundary)\(lineBreak)")
                 body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
-                body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
+                body.append("Content-Type: \(photo.mimeType)\(lineBreak + lineBreak)")
                 body.append(photo.data)
                 body.append(lineBreak)
             }

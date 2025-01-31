@@ -1,3 +1,4 @@
+import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -11,11 +12,7 @@ struct UserDetailsScreen: View {
     @State private var isLoading = false
     @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
-    @State private var showAlertMessage = false
-    @State private var showLogoutDialog = false
     @State private var showBlacklistConfirmation = false
-    @State private var showSearchUsersScreen = false
-    @State private var alertMessage = ""
     @State private var friendActionTask: Task<Void, Never>?
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var blacklistUserTask: Task<Void, Never>?
@@ -32,20 +29,14 @@ struct UserDetailsScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                userInfoSection
-                if isMainUser {
-                    editProfileButton
-                } else {
-                    communicationSection
-                }
+                ProfileViews.makeUserInfo(for: user)
+                communicationSection
                 VStack(spacing: 12) {
-                    friendsButtonIfNeeded
-                    usesParksIfNeeded
-                    addedParksIfNeeded
-                    journalsButtonIfNeeded
-                    if isMainUser { blacklistButtonIfNeeded }
+                    ProfileViews.makeFriends(for: user)
+                    ProfileViews.makeUsedParks(for: user)
+                    ProfileViews.makeAddedParks(for: user)
+                    ProfileViews.makeJournals(for: user)
                 }
-                if isMainUser { logoutButton }
             }
             .padding(.horizontal)
         }
@@ -53,27 +44,18 @@ struct UserDetailsScreen: View {
         .opacity(user.isFull ? 1 : 0)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .alert(alertMessage, isPresented: $showAlertMessage) {
-            Button("Ok") { closeAlert() }
-        }
-        .refreshable { await askForUserInfo(refresh: true) }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 refreshButtonIfNeeded
             }
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Group {
-                    if isMainUser {
-                        searchUsersButton
-                    } else {
-                        blockUserButton
-                    }
-                }
-                .disabled(isLoading)
+            ToolbarItem(placement: .topBarTrailing) {
+                blockUserButton
+                    .disabled(isLoading)
             }
         }
         .onDisappear(perform: cancelTasks)
-        .task(priority: .userInitiated) { await askForUserInfo() }
+        .refreshable { await askForUserInfo(refresh: true) }
+        .task { await askForUserInfo() }
         .navigationTitle("Профиль")
     }
 }
@@ -89,24 +71,6 @@ private extension UserDetailsScreen {
             }
             .disabled(isLoading)
         }
-    }
-
-    var userInfoSection: some View {
-        ProfileView(
-            imageURL: user.avatarURL,
-            login: user.userName ?? "",
-            genderWithAge: user.genderWithAge,
-            countryAndCity: SWAddress(user.countryID, user.cityID)?.address ?? ""
-        )
-        .padding(24)
-    }
-
-    var editProfileButton: some View {
-        NavigationLink(destination: EditProfileScreen()) {
-            Text("Изменить профиль")
-        }
-        .buttonStyle(SWButtonStyle(icon: .pencil, mode: .tinted, size: .large))
-        .padding(.bottom, 24)
     }
 
     var communicationSection: some View {
@@ -156,125 +120,13 @@ private extension UserDetailsScreen {
         }
     }
 
-    func toggleFriendRequestSent(isSent: Bool) {
-        socialActions.isFriendRequestSent = isSent
-    }
-
-    @ViewBuilder
-    var usesParksIfNeeded: some View {
-        if user.hasUsedParks {
-            NavigationLink {
-                ParksListScreen(mode: .usedBy(userID: user.id))
-            } label: {
-                FormRowView(
-                    title: "Где тренируется",
-                    trailingContent: .textWithChevron(user.usesParksCountString)
-                )
-            }
-            .accessibilityIdentifier("usesParksButton")
-        }
-    }
-
-    @ViewBuilder
-    var addedParksIfNeeded: some View {
-        if user.hasAddedParks {
-            NavigationLink {
-                ParksListScreen(mode: .added(list: user.addedParks ?? []))
-            } label: {
-                FormRowView(
-                    title: user.addedParksString,
-                    trailingContent: .textWithChevron(user.addedParksCountString)
-                )
-            }
-        }
-    }
-
-    @ViewBuilder
-    var friendsButtonIfNeeded: some View {
-        let friendRequestsCount = defaults.friendRequestsList.count
-        if user.hasFriends || (isMainUser && friendRequestsCount > .zero) {
-            NavigationLink(destination: UsersListScreen(mode: .friends(userID: user.id))) {
-                FormRowView(
-                    title: "Друзья",
-                    trailingContent: .textWithBadgeAndChevron(
-                        user.friendsCountString,
-                        friendRequestsCount
-                    )
-                )
-            }
-        }
-    }
-
-    @ViewBuilder
-    var blacklistButtonIfNeeded: some View {
-        if !defaults.blacklistedUsers.isEmpty {
-            NavigationLink(destination: UsersListScreen(mode: .blacklist)) {
-                FormRowView(
-                    title: "Черный список",
-                    trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)
-                )
-            }
-        }
-    }
-
-    @ViewBuilder
-    var journalsButtonIfNeeded: some View {
-        if isMainUser || user.hasJournals {
-            NavigationLink {
-                JournalsListScreen(userID: user.id)
-                    .navigationTitle("Дневники")
-                    .navigationBarTitleDisplayMode(.inline)
-            } label: {
-                FormRowView(
-                    title: "Дневники",
-                    trailingContent: .textWithChevron(user.journalsCountString)
-                )
-            }
-        }
-    }
-
-    var logoutButton: some View {
-        Button("Выйти") { showLogoutDialog = true }
-            .foregroundStyle(Color.swSmallElements)
-            .padding(.top, 36)
-            .padding(.bottom, 20)
-            .confirmationDialog(
-                .init(Constants.Alert.logout),
-                isPresented: $showLogoutDialog,
-                titleVisibility: .visible
-            ) {
-                Button("Выйти", role: .destructive) {
-                    defaults.triggerLogout()
-                }
-            }
-    }
-
-    var searchUsersButton: some View {
-        Button {
-            showSearchUsersScreen = true
-        } label: {
-            Icons.Regular.magnifyingglass.view
-        }
-        .disabled(!isNetworkConnected)
-        .accessibilityIdentifier("searchUsersButton")
-        .sheet(isPresented: $showSearchUsersScreen) {
-            NavigationView {
-                SearchUsersScreen()
-            }
-        }
-    }
-
-    var settingsButton: some View {
-        NavigationLink(destination: SettingsScreen()) {
-            Icons.Regular.gearshape.view
-        }
-    }
-
     func performFriendAction() {
         isLoading = true
         friendActionTask = Task {
             do {
-                if try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend) {
+                let isSuccess = try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
+                if isSuccess {
+                    defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
                     switch socialActions.friend {
                     case .sendFriendRequest:
                         socialActions.isFriendRequestSent = true
@@ -283,7 +135,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -293,20 +145,28 @@ private extension UserDetailsScreen {
         isLoading = true
         blacklistUserTask = Task {
             do {
-                if try await SWClient(with: defaults).blacklistAction(
+                let isSuccess = try await SWClient(with: defaults).blacklistAction(
                     user: user, option: socialActions.blacklist
-                ) {
+                )
+                if isSuccess {
+                    defaults.updateBlacklist(option: socialActions.blacklist, user: user)
                     switch socialActions.blacklist {
                     case .add:
-                        setupResponseAlert("Пользователь добавлен в черный список")
+                        SWAlert.shared.presentDefaultUIKit(
+                            title: "Готово".localized,
+                            message: "Пользователь добавлен в черный список".localized
+                        )
                         socialActions.blacklist = .remove
                     case .remove:
-                        setupResponseAlert("Пользователь удален из черного списка")
+                        SWAlert.shared.presentDefaultUIKit(
+                            title: "Готово".localized,
+                            message: "Пользователь удален из черного списка".localized
+                        )
                         socialActions.blacklist = .add
                     }
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             isLoading = false
         }
@@ -315,24 +175,13 @@ private extension UserDetailsScreen {
     func askForUserInfo(refresh: Bool = false) async {
         guard !isLoading else { return }
         if !refresh { isLoading = true }
-        if isMainUser {
-            if !refresh, !defaults.needUpdateUser,
-               let mainUserInfo = defaults.mainUserInfo {
-                user = mainUserInfo
-            } else {
-                await makeUserInfo()
-            }
-        } else {
-            if !refresh, user.isFull {
-                isLoading = false
-            } else {
-                await makeUserInfo()
-            }
-            let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
-            socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
-            let isPersonBlocked = defaults.blacklistedUsers.map(\.id).contains(user.id)
-            socialActions.blacklist = isPersonBlocked ? .remove : .add
+        if refresh || !user.isFull {
+            await makeUserInfo()
         }
+        let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
+        socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
+        let isPersonBlocked = defaults.blacklistedUsers.map(\.id).contains(user.id)
+        socialActions.blacklist = isPersonBlocked ? .remove : .add
         isLoading = false
     }
 
@@ -342,25 +191,15 @@ private extension UserDetailsScreen {
             text: $messagingModel.message,
             isLoading: messagingModel.isLoading,
             isSendButtonDisabled: !messagingModel.canSendMessage,
-            sendAction: sendMessage,
-            showErrorAlert: $showAlertMessage,
-            errorTitle: $alertMessage,
-            dismissError: closeAlert
+            sendAction: sendMessage
         )
     }
 
     func makeUserInfo() async {
         do {
-            let client = SWClient(with: defaults)
-            async let info = client.getUserByID(user.id)
-            if isMainUser {
-                async let friendRequests: () = client.getFriendRequests()
-                async let blacklist: () = client.getBlacklist()
-                _ = try await (friendRequests, blacklist)
-            }
-            user = try await info
+            user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            setupResponseAlert(ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
         }
     }
 
@@ -373,21 +212,10 @@ private extension UserDetailsScreen {
                     messagingModel.recipient = nil
                 }
             } catch {
-                setupResponseAlert(ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
             }
             messagingModel.isLoading = false
         }
-    }
-
-    func setupResponseAlert(_ message: String) {
-        showAlertMessage = !message.isEmpty
-        alertMessage = message
-    }
-
-    func closeAlert() { alertMessage = "" }
-
-    var isMainUser: Bool {
-        user.id == defaults.mainUserInfo?.id
     }
 
     func cancelTasks() {
