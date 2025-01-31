@@ -16,6 +16,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Select Xcode 16
+      run: |
+        sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+        xcodebuild -version
+
+    - name: Clean Project
+      run: |
+        xcodebuild clean \
+        -scheme "SwiftUI-WorkoutApp"
+
     - name: Build and Test
       run: |
         xcodebuild build \
@@ -28,4 +38,5 @@ jobs:
         -scheme "SwiftUI-WorkoutApp" \
         -testPlan "SwiftUI-WorkoutApp" \
         -destination "platform=iOS Simulator,OS=latest" \
-        CODE_SIGNING_ALLOWED=NO
+        CODE_SIGNING_ALLOWED=NO \
+        ARCHS=arm64 ONLY_ACTIVE_ARCH=NO
