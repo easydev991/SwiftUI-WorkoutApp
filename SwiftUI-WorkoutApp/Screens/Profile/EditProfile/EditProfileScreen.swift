@@ -23,23 +23,23 @@ struct EditProfileScreen: View {
     var body: some View {
         VStack(spacing: 12) {
             ScrollView {
-                avatarPicker
-                    .padding(.vertical)
-                Group {
+                VStack(spacing: 12) {
+                    avatarPicker
                     loginField
                     emailField
                     nameField
                     changePasswordButton
+                    VStack(spacing: 4) {
+                        genderPicker
+                        birthdayPicker
+                        countryPicker
+                        cityPicker
+                    }
                 }
-                .padding(.bottom, 12)
-                genderPicker
-                birthdayPicker
-                countryPicker
-                cityPicker
+                .padding()
             }
             saveChangesButton
         }
-        .padding([.horizontal, .bottom])
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .onAppear(perform: prepareLocationsAndUserForm)
@@ -108,6 +108,7 @@ private extension EditProfileScreen {
             }
             Button("Изменить фотографию") { showImagePicker.toggle() }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
+                .padding(.bottom, 8)
                 .sheet(isPresented: $showImagePicker) {
                     AvatarPickerView {
                         newAvatarImageModel = .init(uiImage: $0)
@@ -191,6 +192,7 @@ private extension EditProfileScreen {
     var saveChangesButton: some View {
         Button("Сохранить", action: saveChangesAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+            .padding([.horizontal, .bottom])
             .disabled(
                 !userForm.isReadyToSave(comparedTo: oldUserForm)
                     || !isNetworkConnected
