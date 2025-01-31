@@ -200,9 +200,9 @@ private extension UsersListScreen {
         isLoading = true
         friendRequestTask = Task {
             do {
-                if try await SWClient(with: defaults).respondToFriendRequest(from: userID, accept: accept) {
-                    friendRequests = defaults.friendRequestsList
-                    defaults.setUserNeedUpdate(true)
+                let isSuccess = try await client.respondToFriendRequest(from: userID, accept: accept)
+                if isSuccess {
+                    await askForUsers(refresh: true)
                 }
             } catch {
                 SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))

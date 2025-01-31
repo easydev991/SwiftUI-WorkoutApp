@@ -4,6 +4,8 @@ import Utils
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
+    var authToken: String? { try? basicAuthInfo().token }
+
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
 
@@ -27,8 +29,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.blacklist.rawValue)
     private var blacklist = Data()
 
-    @AppStorage(Key.hasParks.rawValue)
-    private(set) var hasParks = false
+    var hasParks: Bool { mainUserInfo?.hasUsedParks == true }
 
     var hasJournals: Bool { mainUserInfo?.hasJournals == true }
 
@@ -101,7 +102,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func saveUserInfo(_ info: UserResponse) throws {
-        setHasParks(info.usedParksCount != 0)
         userInfo = try JSONEncoder().encode(info)
         setUserNeedUpdate(false)
     }
@@ -129,18 +129,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         try? saveBlacklist(newList)
     }
 
-    func setHasParks(_ isAddedPark: Bool) {
-        switch (hasParks, isAddedPark) {
-        case (true, true), (false, false): break
-        case (true, false):
-            if mainUserInfo?.usedParksCount == 1 {
-                hasParks = false
-            }
-        case (false, true):
-            hasParks = true
-        }
-    }
-
     func saveUnreadMessagesCount(_ count: Int) {
         unreadMessagesCount = count
     }
@@ -149,10 +137,22 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         lastCountriesUpdateDate = .now
     }
 
+    /// Обновляет сохраненный список идентификаторов друзей главного пользователя
+    ///
+    /// Если друга удаляют, то удаляем его `id` из списка сохраненных друзей
+    /// - Parameters:
+    ///   - friendID: `id` друга
+    ///   - action: действие с другом (отправка заявки/удаление)
+    func updateFriendIds(friendID: Int, action: FriendAction) {
+        var newList = friendsIdsList
+        guard case .removeFriend = action else { return }
+        newList.removeAll(where: { $0 == friendID })
+        try? saveFriendsIds(newList)
+    }
+
     func triggerLogout() {
         authData = .init()
         userInfo = .init()
-        hasParks = false
         try? saveFriendsIds([])
         try? saveFriendRequests([])
         try? saveBlacklist([])
@@ -176,6 +176,5 @@ extension DefaultsService {
 private extension DefaultsService {
     enum Key: String {
         case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate
-        case hasParks = "hasSportsGrounds"
     }
 }

@@ -89,12 +89,14 @@ private extension JournalSettingsScreen {
         saveJournalChangesTask = Task {
             isLoading = true
             do {
-                if try await SWClient(with: defaults).editJournalSettings(
-                    for: journal.id,
+                let isSuccess = try await SWClient(with: defaults).editJournalSettings(
+                    with: journal.id,
                     title: journal.title,
+                    for: defaults.mainUserInfo?.id,
                     viewAccess: journal.viewAccessType,
                     commentAccess: journal.commentAccessType
-                ) {
+                )
+                if isSuccess {
                     updateOnSuccess(journal)
                 }
             } catch {
