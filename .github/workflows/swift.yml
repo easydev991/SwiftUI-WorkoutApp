@@ -21,11 +21,6 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_16.2.app
         xcodebuild -version
 
-    - name: Clean Project
-      run: |
-        xcodebuild clean \
-        -scheme "SwiftUI-WorkoutApp"
-
     - name: Build and Test
       run: |
         xcodebuild build \
