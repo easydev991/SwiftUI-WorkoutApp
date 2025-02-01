@@ -84,9 +84,18 @@ private extension SwiftUI_WorkoutAppApp {
         }
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
+        fixAlertAccentColor()
         if !DeviceOSVersionChecker.iOS16Available {
             UITextView.appearance().backgroundColor = .clear
         }
+    }
+
+    /// Исправляет баг с accentColor у алертов,  [обсуждение](https://developer.apple.com/forums/thread/673147)
+    ///
+    /// Без этой настройки у всех алертов при первом появлении стандартный tintColor (синий),
+    /// а при нажатии он меняется на `AccentColor` в проекте
+    func fixAlertAccentColor() {
+        UIView.appearance().tintColor = .accent
     }
 
     func prepareForUITestIfNeeded() {
