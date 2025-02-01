@@ -69,9 +69,9 @@ extension TabViewModel {
             case .events:
                 EventsListScreen()
             case .messages:
-                DialogsScreen()
+                DialogsListScreen()
             case .profile:
-                ProfileScreen()
+                MainUserProfileScreen()
             case .settings:
                 SettingsScreen()
             }

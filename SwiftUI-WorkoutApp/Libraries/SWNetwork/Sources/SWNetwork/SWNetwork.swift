@@ -163,6 +163,9 @@ private extension SWNetworkService {
     /// - Returns: Новая ошибка
     @discardableResult
     func handleUrlSession(_ error: Error, _ request: URLRequest) -> Error {
+        if (error as NSError).code == -999 {
+            assertionFailure("Запрос отменён! Код ошибки: -999")
+        }
         logger.error(
             """
             \(error.localizedDescription, privacy: .public)

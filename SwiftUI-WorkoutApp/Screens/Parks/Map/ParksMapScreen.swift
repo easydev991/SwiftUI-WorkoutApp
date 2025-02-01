@@ -226,7 +226,7 @@ private extension ParksMapScreen {
             let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
             try parksManager.updateDefaultList(with: updatedParks)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
         isLoading = false
     }
