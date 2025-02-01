@@ -16,8 +16,30 @@ struct DialogsListScreen: View {
     @State private var showDeleteConfirmation = false
     @State private var refreshTask: Task<Void, Never>?
     @State private var deleteDialogTask: Task<Void, Never>?
+    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
+        NavigationView {
+            ZStack {
+                if defaults.isAuthorized {
+                    authorizedContentView
+                        .navigationBarTitleDisplayMode(.inline)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                } else {
+                    IncognitoProfileView()
+                }
+            }
+            .animation(.spring, value: defaults.isAuthorized)
+            .background(Color.swBackground)
+            .navigationTitle("Сообщения")
+        }
+        .navigationViewStyle(.stack)
+        .task { await askForDialogs() }
+    }
+}
+
+private extension DialogsListScreen {
+    var authorizedContentView: some View {
         dialogList
             .overlay { emptyContentView }
             .loadingOverlay(if: isLoading)
@@ -27,7 +49,6 @@ struct DialogsListScreen: View {
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) { deleteDialogButton }
-            .task { await askForDialogs() }
             .refreshable { await askForDialogs(refresh: true) }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -41,9 +62,7 @@ struct DialogsListScreen: View {
                 [refreshTask, deleteDialogTask].forEach { $0?.cancel() }
             }
     }
-}
 
-private extension DialogsListScreen {
     var refreshButton: some View {
         Button {
             refreshTask = Task {
@@ -165,14 +184,15 @@ private extension DialogsListScreen {
     }
 
     func askForDialogs(refresh: Bool = false) async {
+        guard defaults.isAuthorized else { return }
         if isLoading || (!dialogs.isEmpty && !refresh) { return }
         if !refresh { isLoading = true }
         do {
-            dialogs = try await SWClient(with: defaults).getDialogs()
+            dialogs = try await client.getDialogs()
             let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
             defaults.saveUnreadMessagesCount(unreadMessagesCount)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
         isLoading = false
     }
@@ -188,11 +208,11 @@ private extension DialogsListScreen {
             isLoading = true
             do {
                 let dialogID = dialogs[index].id
-                if try await SWClient(with: defaults).deleteDialog(dialogID) {
+                if try await client.deleteDialog(dialogID) {
                     dialogs.remove(at: index)
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             isLoading = false
         }

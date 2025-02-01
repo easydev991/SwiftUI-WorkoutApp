@@ -244,7 +244,7 @@ private extension EditProfileScreen {
                 dismiss()
             } catch {
                 isLoading = false
-                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
         }
     }

@@ -14,6 +14,27 @@ struct MainUserProfileScreen: View {
     private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
+        NavigationView {
+            ZStack {
+                if defaults.isAuthorized {
+                    authorizedContentView
+                        .navigationBarTitleDisplayMode(.inline)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                } else {
+                    IncognitoProfileView()
+                }
+            }
+            .animation(.spring, value: defaults.isAuthorized)
+            .background(Color.swBackground)
+            .navigationTitle("Профиль")
+        }
+        .navigationViewStyle(.stack)
+        .task { await askForUserInfo() }
+    }
+}
+
+private extension MainUserProfileScreen {
+    var authorizedContentView: some View {
         ScrollView {
             if let user = defaults.mainUserInfo {
                 makeProfileContent(for: user)
@@ -23,7 +44,6 @@ struct MainUserProfileScreen: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .refreshable { await askForUserInfo(refresh: true) }
-        .task { await askForUserInfo() }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 refreshButtonIfNeeded
@@ -34,9 +54,7 @@ struct MainUserProfileScreen: View {
             }
         }
     }
-}
 
-private extension MainUserProfileScreen {
     @ViewBuilder
     func makeProfileContent(for user: UserResponse) -> some View {
         VStack(spacing: 0) {
@@ -125,6 +143,7 @@ private extension MainUserProfileScreen {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
+        guard defaults.isAuthorized else { return }
         guard !isLoading else { return }
         if !refresh { isLoading = true }
         if refresh || defaults.needUpdateUser {
@@ -145,7 +164,7 @@ private extension MainUserProfileScreen {
             try defaults.saveFriendRequests(friendRequests)
             try defaults.saveBlacklist(blacklist)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 }

@@ -152,7 +152,7 @@ private extension JournalEntriesScreen {
             entries = try await SWClient(with: defaults)
                 .getJournalEntries(for: userID, journalID: currentJournal.id)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
         isLoading = false
     }
@@ -170,7 +170,7 @@ private extension JournalEntriesScreen {
                         entries.removeAll(where: { $0.id == entryID })
                     }
                 } catch {
-                    SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                    SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
                 }
                 isLoading = false
             }
