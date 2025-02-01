@@ -8,23 +8,19 @@ public final class SWAlert {
 
     /// Показывает системный алерт с заданными параметрами
     /// - Parameters:
-    ///   - title: Заголовок. Если передать `nil`, то сообщение выделится жирным. Если передать текст или пустую строку, будет без
-    /// заголовка, и сообщение будет со стандартным шрифтом
+    ///   - title: Заголовок. Если передать `nil`, то сообщение выделится жирным. Если передать текст или пустую строку,
+    ///   будет без заголовка, и сообщение будет со стандартным шрифтом
     ///   - message: Текст сообщения
     ///   - closeButtonTitle: Заголовок кнопки для закрытия алерта
     ///   - closeButtonStyle: Стиль кнопки для закрытия алерта
-    ///   - closeButtonTintColor: Цвет кнопки для закрытия алерта. Если не настроить явно, то при появлении будет системный (синий) цвет, а
-    /// при нажатии он изменится на `AccentColor` в проекте
     public func presentDefaultUIKit(
         title: String? = "",
         message: String,
         closeButtonTitle: String = "Ok",
-        closeButtonStyle: UIAlertAction.Style = .default,
-        closeButtonTintColor: UIColor? = .systemGreen
+        closeButtonStyle: UIAlertAction.Style = .default
     ) {
         guard currentAlert == nil, let topMostViewController else { return }
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.view.tintColor = closeButtonTintColor
         alert.addAction(
             .init(
                 title: closeButtonTitle,
