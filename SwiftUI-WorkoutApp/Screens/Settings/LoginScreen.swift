@@ -132,7 +132,7 @@ private extension LoginScreen {
                 let userInfo = try await client.getUserByID(userId)
                 try defaults.saveUserInfo(userInfo)
             } catch {
-                loginErrorMessage = ErrorFilter.message(from: error)
+                loginErrorMessage = error.localizedDescription
             }
             isLoading.toggle()
         }
@@ -156,7 +156,7 @@ private extension LoginScreen {
                     )
                 }
             } catch {
-                resetErrorMessage = ErrorFilter.message(from: error)
+                resetErrorMessage = error.localizedDescription
             }
             isLoading.toggle()
         }

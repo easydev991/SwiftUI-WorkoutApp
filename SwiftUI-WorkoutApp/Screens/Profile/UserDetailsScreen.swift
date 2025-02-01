@@ -135,7 +135,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             isLoading = false
         }
@@ -166,7 +166,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             isLoading = false
         }
@@ -199,7 +199,7 @@ private extension UserDetailsScreen {
         do {
             user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
     }
 
@@ -212,7 +212,7 @@ private extension UserDetailsScreen {
                     messagingModel.recipient = nil
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
             }
             messagingModel.isLoading = false
         }

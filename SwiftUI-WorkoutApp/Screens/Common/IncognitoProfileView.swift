@@ -20,6 +20,13 @@ struct IncognitoProfileView: View {
                 LoginScreen()
             }
         }
+        .navigationBarTitleDisplayMode(.large)
+        .transition(
+            .asymmetric(
+                insertion: .opacity,
+                removal: .move(edge: .bottom).combined(with: .opacity)
+            )
+        )
     }
 }
 

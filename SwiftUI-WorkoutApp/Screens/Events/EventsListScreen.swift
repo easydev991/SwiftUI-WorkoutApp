@@ -188,7 +188,7 @@ private extension EventsListScreen {
             if selectedEventType == .past {
                 pastEventStorage.loadIfNeeded(&pastEvents)
             }
-            SWAlert.shared.presentDefaultUIKit(message: ErrorFilter.message(from: error))
+            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
         }
         isLoading = false
     }

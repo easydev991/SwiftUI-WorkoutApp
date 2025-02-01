@@ -142,7 +142,7 @@ private extension ChangePasswordScreen {
             } catch {
                 SWAlert.shared.presentDefaultUIKit(
                     title: "Ошибка".localized,
-                    message: ErrorFilter.message(from: error)
+                    message: error.localizedDescription
                 )
             }
             isLoading.toggle()
