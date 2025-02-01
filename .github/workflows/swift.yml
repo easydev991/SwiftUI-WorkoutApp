@@ -1,5 +1,5 @@
-# This workflow will build a Swift project 
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+# Воркфлоу для запуска unit-тестов
+# Документация тут: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
 name: SwiftUI-WorkoutApp CI
 
@@ -23,13 +23,6 @@ jobs:
         
     - name: List Available Simulators
       run: xcrun simctl list devices
-
-    - name: Build App
-      run: |
-        xcodebuild build \
-        -scheme "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" \
-        CODE_SIGNING_ALLOWED=NO
         
     - name: Run Tests
       run: |
@@ -37,5 +30,4 @@ jobs:
         -scheme "SwiftUI-WorkoutApp" \
         -testPlan "SwiftUI-WorkoutApp" \
         -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" \
-        CODE_SIGNING_ALLOWED=NO \
-        -verbose
+        CODE_SIGNING_ALLOWED=NO
