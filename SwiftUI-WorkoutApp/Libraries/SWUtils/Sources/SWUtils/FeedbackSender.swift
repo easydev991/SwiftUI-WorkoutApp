@@ -1,13 +1,17 @@
 import Foundation
 
-enum FeedbackSender {
+public enum FeedbackSender {
     /// Открывает диплинк `mailto` для создания письма
     /// - Parameters:
     ///   - subject: Тема письма
     ///   - messageBody: Тело письма
     ///   - recipients: Получатели
     @MainActor
-    static func sendFeedback(subject: String, messageBody: String, recipients: [String]) {
+    public static func sendFeedback(
+        subject: String,
+        messageBody: String,
+        recipients: [String]
+    ) {
         let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "Feedback"
         let encodedBody = messageBody.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         if let firstRecipient = recipients.first {

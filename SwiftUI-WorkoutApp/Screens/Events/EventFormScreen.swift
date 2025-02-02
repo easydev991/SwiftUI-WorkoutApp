@@ -1,9 +1,9 @@
 import ImagePicker
-import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
+import SWUtils
 
 /// Экран для создания/изменения мероприятия
 struct EventFormScreen: View {

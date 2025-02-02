@@ -1,8 +1,8 @@
-import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
+import SWUtils
 
 /// Экран со списком диалогов
 struct DialogsListScreen: View {

@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Модель со всей информацией о мероприятии
 public struct EventResponse: Codable, Identifiable, Equatable, Sendable {

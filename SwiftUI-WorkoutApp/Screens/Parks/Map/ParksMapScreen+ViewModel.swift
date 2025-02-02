@@ -3,7 +3,7 @@ import MapView991
 import OSLog
 import SWModels
 import SWNetworkClient
-import Utils
+import SWUtils
 
 extension ParksMapScreen {
     final class ViewModel: NSObject, ObservableObject {

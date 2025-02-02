@@ -1,9 +1,9 @@
 import OSLog
-import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
+import SWUtils
 
 /// Экран с детальной информацией о площадке
 struct ParkDetailScreen: View {

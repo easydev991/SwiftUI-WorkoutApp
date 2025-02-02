@@ -1,6 +1,6 @@
-import SWAlert
 import SwiftUI
 import SWNetworkClient
+import SWUtils
 
 /// Экран для создания и изменения текстовой записи (комментарий к площадке, мерпориятию или дневнику)
 struct TextEntryScreen: View {

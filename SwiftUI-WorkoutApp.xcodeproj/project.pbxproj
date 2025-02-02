@@ -14,8 +14,6 @@
 		67138D942974854F00BBF450 /* XCTestCase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D932974854F00BBF450 /* XCTestCase+.swift */; };
 		6718BCA42AD5327F002846A6 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
-		6725E3552D4CB7300070B323 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6725E3542D4CB7300070B323 /* Date+.swift */; };
-		674023402B0BC01600A7311A /* FeedbackSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6740233F2B0BC01600A7311A /* FeedbackSender.swift */; };
 		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordScreen.swift */; };
 		6747575928128603002F0A24 /* ParkDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* ParkDetailScreen.swift */; };
@@ -45,7 +43,6 @@
 		6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677311192965FFAA003CD13A /* PreviewContent.swift */; };
 		67795FB22D1C05D90087132F /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB12D1C05D90087132F /* SWModels */; };
 		67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB32D1C05D90087132F /* SWNetworkClient */; };
-		67795FB62D1C05D90087132F /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB52D1C05D90087132F /* Utils */; };
 		67891E38283E947B00B10802 /* ParkFormScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67891E37283E947B00B10802 /* ParkFormScreen.swift */; };
 		6798AA3E280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3D280AEDC900DB76F1 /* SwiftUI_WorkoutAppApp.swift */; };
 		6798AA40280AEDC900DB76F1 /* RootScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA3F280AEDC900DB76F1 /* RootScreen.swift */; };
@@ -60,22 +57,19 @@
 		6798AA79280BE8E200DB76F1 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA75280BE8E200DB76F1 /* countries.json */; };
 		6798AA7B280BE8E200DB76F1 /* oldParks.json in Resources */ = {isa = PBXBuildFile; fileRef = 6798AA77280BE8E200DB76F1 /* oldParks.json */; };
 		6798AA84280C0F7D00DB76F1 /* EditProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6798AA83280C0F7D00DB76F1 /* EditProfileScreen.swift */; };
-		679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F3B02296841DD00BB3590 /* URLOpener.swift */; };
 		67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */; };
 		67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A4710C2AEED8F8004D341D /* PastEventStorage.swift */; };
 		67A64A242AC83A0F00CBDD5F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
-		67A85EDE2D4802C600DCFBBD /* SWAlert in Frameworks */ = {isa = PBXBuildFile; productRef = 67A85EDD2D4802C600DCFBBD /* SWAlert */; };
 		67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */; };
 		67AE072A2D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AE07292D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift */; };
 		67B78712281D654C008B104F /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78711281D654C008B104F /* DefaultsService.swift */; };
 		67B78716281D8006008B104F /* ParksMapScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B78715281D8006008B104F /* ParksMapScreen+ViewModel.swift */; };
+		67B7EB812D4FED510004A40D /* SWUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 67B7EB802D4FED510004A40D /* SWUtils */; };
 		67BAF3F428361BC400DB40D9 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */; };
 		67BAF3F6283620ED00DB40D9 /* ParkLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */; };
 		67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BAF3F72836245100DB40D9 /* CommentsView.swift */; };
 		67BD2D012AF7D21B00F44064 /* ParksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD2D002AF7D21B00F44064 /* ParksManager.swift */; };
-		67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */ = {isa = PBXBuildFile; productRef = 67CB32D0297BE0F8009380DF /* NetworkStatus */; };
 		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
-		67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE12AE84D9700F7A8B0 /* FileManager991 */; };
 		67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE42AE8526600F7A8B0 /* SWDesignSystem */; };
 		67D916812838E2460098D3CB /* DialogsListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogsListScreen.swift */; };
 		67D916862838F0DD0098D3CB /* DialogScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogScreen.swift */; };
@@ -104,8 +98,6 @@
 		67138D932974854F00BBF450 /* XCTestCase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+.swift"; sourceTree = "<group>"; };
 		6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
-		6725E3542D4CB7300070B323 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
-		6740233F2B0BC01600A7311A /* FeedbackSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSender.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordScreen.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* ParkDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkDetailScreen.swift; sourceTree = "<group>"; };
@@ -151,18 +143,16 @@
 		6798AA75280BE8E200DB76F1 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		6798AA77280BE8E200DB76F1 /* oldParks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oldParks.json; sourceTree = "<group>"; };
 		6798AA83280C0F7D00DB76F1 /* EditProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileScreen.swift; sourceTree = "<group>"; };
-		679F3B02296841DD00BB3590 /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickedPhotoView.swift; sourceTree = "<group>"; };
 		67A4710C2AEED8F8004D341D /* PastEventStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEventStorage.swift; sourceTree = "<group>"; };
 		67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		67A85EDB2D48021A00DCFBBD /* SWAlert */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWAlert; sourceTree = "<group>"; };
 		67A9C90728427DEA005D6A36 /* ParkFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkFilterScreen.swift; sourceTree = "<group>"; };
 		67AE07292D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusEnvironmentKey.swift; sourceTree = "<group>"; };
 		67AE08482D1C05020097B59F /* SWModels */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWModels; sourceTree = "<group>"; };
 		67AE08492D1C05020097B59F /* SWNetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWNetworkClient; sourceTree = "<group>"; };
-		67AE084A2D1C05020097B59F /* Utils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Utils; sourceTree = "<group>"; };
 		67B78711281D654C008B104F /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		67B78715281D8006008B104F /* ParksMapScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParksMapScreen+ViewModel.swift"; sourceTree = "<group>"; };
+		67B7EB7F2D4FECD90004A40D /* SWUtils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWUtils; sourceTree = "<group>"; };
 		67BAF3F328361BC400DB40D9 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		67BAF3F5283620ED00DB40D9 /* ParkLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkLocationInfoView.swift; sourceTree = "<group>"; };
 		67BAF3F72836245100DB40D9 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
@@ -188,13 +178,10 @@
 			files = (
 				67795FB22D1C05D90087132F /* SWModels in Frameworks */,
 				67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */,
+				67B7EB812D4FED510004A40D /* SWUtils in Frameworks */,
 				67D322972AE993F90045B92F /* MapView991 in Frameworks */,
-				67D67DE22AE84D9700F7A8B0 /* FileManager991 in Frameworks */,
 				67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */,
 				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
-				67A85EDE2D4802C600DCFBBD /* SWAlert in Frameworks */,
-				67795FB62D1C05D90087132F /* Utils in Frameworks */,
-				67CB32D1297BE0F8009380DF /* NetworkStatus in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +276,6 @@
 				674DF03F2B11257D00828016 /* NavigationLink+.swift */,
 				6765B2552D451771006164AB /* UIImage+toMediaFile.swift */,
 				676D5A602D48BF0700EE5E9E /* String+localized.swift */,
-				6725E3542D4CB7300070B323 /* Date+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -396,11 +382,9 @@
 			isa = PBXGroup;
 			children = (
 				67B78711281D654C008B104F /* DefaultsService.swift */,
-				679F3B02296841DD00BB3590 /* URLOpener.swift */,
 				67551C352AEC338600084A35 /* SWAddress.swift */,
 				67A4710C2AEED8F8004D341D /* PastEventStorage.swift */,
 				67BD2D002AF7D21B00F44064 /* ParksManager.swift */,
-				6740233F2B0BC01600A7311A /* FeedbackSender.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -456,11 +440,10 @@
 		67AE08472D1C049F0097B59F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				67A85EDB2D48021A00DCFBBD /* SWAlert */,
+				67B7EB7F2D4FECD90004A40D /* SWUtils */,
 				678CE36A2D1C510900F060C6 /* SWNetwork */,
 				67AE08482D1C05020097B59F /* SWModels */,
 				67AE08492D1C05020097B59F /* SWNetworkClient */,
-				67AE084A2D1C05020097B59F /* Utils */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -511,14 +494,11 @@
 			name = "SwiftUI-WorkoutApp";
 			packageProductDependencies = (
 				67F9534E2964A5700077DFDC /* ImagePicker */,
-				67CB32D0297BE0F8009380DF /* NetworkStatus */,
-				67D67DE12AE84D9700F7A8B0 /* FileManager991 */,
 				67D67DE42AE8526600F7A8B0 /* SWDesignSystem */,
 				67D322962AE993F90045B92F /* MapView991 */,
 				67795FB12D1C05D90087132F /* SWModels */,
 				67795FB32D1C05D90087132F /* SWNetworkClient */,
-				67795FB52D1C05D90087132F /* Utils */,
-				67A85EDD2D4802C600DCFBBD /* SWAlert */,
+				67B7EB802D4FED510004A40D /* SWUtils */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -555,8 +535,6 @@
 			mainGroup = 6798AA31280AEDC900DB76F1;
 			packageReferences = (
 				67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */,
-				67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */,
-				67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */,
 				67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */,
 				67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */,
 			);
@@ -610,7 +588,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				674023402B0BC01600A7311A /* FeedbackSender.swift in Sources */,
 				674D31592D44103300A2EFE8 /* UserFlagsEnvironmentKey.swift in Sources */,
 				67A9C90828427DEA005D6A36 /* ParkFilterScreen.swift in Sources */,
 				6758463F2965B7F2000BA5E0 /* PDFViewRepresentable.swift in Sources */,
@@ -618,7 +595,6 @@
 				67BAF3F82836245100DB40D9 /* CommentsView.swift in Sources */,
 				67A079F22A758E7D005EAF70 /* PickedPhotoView.swift in Sources */,
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
-				679F3B03296841DD00BB3590 /* URLOpener.swift in Sources */,
 				67BAF3F6283620ED00DB40D9 /* ParkLocationInfoView.swift in Sources */,
 				67627755283A4C77009C203F /* JournalEntriesScreen.swift in Sources */,
 				674E704E2B24D382008AE9D0 /* LoggerScreen.swift in Sources */,
@@ -626,7 +602,6 @@
 				671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */,
 				6773111A2965FFAA003CD13A /* PreviewContent.swift in Sources */,
 				67551C362AEC338600084A35 /* SWAddress.swift in Sources */,
-				6725E3552D4CB7300070B323 /* Date+.swift in Sources */,
 				6798AA59280AF4B100DB76F1 /* ParksMapScreen.swift in Sources */,
 				6798AA68280B23B700DB76F1 /* UserDetailsScreen.swift in Sources */,
 				67AE072A2D1B1E3B0097B59F /* NetworkStatusEnvironmentKey.swift in Sources */,
@@ -869,7 +844,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -919,7 +894,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -988,25 +963,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/OlegEremenko991/NetworkStatus";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
-			};
-		};
 		67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/OlegEremenko991/MapView991";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/OlegEremenko991/FileManager991";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
@@ -1039,28 +998,14 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SWNetworkClient;
 		};
-		67795FB52D1C05D90087132F /* Utils */ = {
+		67B7EB802D4FED510004A40D /* SWUtils */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Utils;
-		};
-		67A85EDD2D4802C600DCFBBD /* SWAlert */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SWAlert;
-		};
-		67CB32D0297BE0F8009380DF /* NetworkStatus */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 67CB32CF297BE0F8009380DF /* XCRemoteSwiftPackageReference "NetworkStatus" */;
-			productName = NetworkStatus;
+			productName = SWUtils;
 		};
 		67D322962AE993F90045B92F /* MapView991 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */;
 			productName = MapView991;
-		};
-		67D67DE12AE84D9700F7A8B0 /* FileManager991 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 67D67DE02AE84D9700F7A8B0 /* XCRemoteSwiftPackageReference "FileManager991" */;
-			productName = FileManager991;
 		};
 		67D67DE42AE8526600F7A8B0 /* SWDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;

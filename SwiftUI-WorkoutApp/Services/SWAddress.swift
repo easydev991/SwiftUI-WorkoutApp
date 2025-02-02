@@ -1,14 +1,13 @@
 import CoreLocation
-import FileManager991
 import Foundation
 import OSLog
 import SWModels
-import Utils
+import SWUtils
 
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
-    private let storage = FileManager991(fileName: "CountriesAndCities.json")
+    private let storage = SWFileManager(fileName: "CountriesAndCities.json")
     private let countryID: Int
     private let cityID: Int
 

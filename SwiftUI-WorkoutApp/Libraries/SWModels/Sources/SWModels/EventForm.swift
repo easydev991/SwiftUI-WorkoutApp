@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Форма для отправки создании/изменении мероприятия
 public struct EventForm: Codable, Sendable, Equatable {

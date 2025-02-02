@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "Utils",
+    name: "SWUtils",
     platforms: [.iOS(.v15)],
     products: [
-        .library(name: "Utils", targets: ["Utils"])
+        .library(name: "SWUtils", targets: ["SWUtils"])
     ],
     targets: [
-        .target(name: "Utils", dependencies: []),
-        .testTarget(name: "UtilsTests", dependencies: ["Utils"])
+        .target(name: "SWUtils", dependencies: []),
+        .testTarget(name: "SWUtilsTests", dependencies: ["SWUtils"])
     ]
 )

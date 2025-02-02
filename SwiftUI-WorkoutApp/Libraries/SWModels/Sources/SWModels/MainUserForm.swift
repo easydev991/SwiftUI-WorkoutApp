@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Форма для отправки при регистрации или изменении данных профиля
 public struct MainUserForm: Codable, Equatable, Sendable {

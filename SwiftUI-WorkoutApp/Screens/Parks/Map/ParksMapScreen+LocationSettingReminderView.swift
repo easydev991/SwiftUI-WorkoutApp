@@ -1,6 +1,7 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
+import SWUtils
 
 extension ParksMapScreen {
     /// Отображает текст с ошибкой определения геолокации пользователя

@@ -1,6 +1,6 @@
 import Foundation
 import MapKit.MKGeometry
-import Utils
+import SWUtils
 
 /// Модель данных спортивной площадки
 public struct Park: Codable, Identifiable, Hashable, Sendable {

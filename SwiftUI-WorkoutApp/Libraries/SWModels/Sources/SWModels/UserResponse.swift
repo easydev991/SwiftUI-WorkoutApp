@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Модель данных пользователя со всеми доступными свойствами
 public struct UserResponse: Codable, Identifiable, Hashable, Sendable {

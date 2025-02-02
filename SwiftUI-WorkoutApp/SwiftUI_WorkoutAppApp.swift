@@ -1,10 +1,8 @@
-import FileManager991
-import NetworkStatus
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
-import Utils
+import SWUtils
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
