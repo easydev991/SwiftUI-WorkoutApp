@@ -110,7 +110,7 @@ private extension EditProfileScreen {
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
                 .padding(.bottom, 8)
                 .sheet(isPresented: $showImagePicker) {
-                    AvatarPickerView {
+                    SWImagePicker {
                         newAvatarImageModel = .init(uiImage: $0)
                         userForm.image = $0.toMediaFile()
                     }
