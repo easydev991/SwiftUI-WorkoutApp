@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Модель с информацией о диалоге
 public struct DialogResponse: Codable, Identifiable, Sendable {

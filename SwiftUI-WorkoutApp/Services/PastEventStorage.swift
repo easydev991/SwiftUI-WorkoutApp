@@ -1,10 +1,10 @@
-import FileManager991
 import Foundation
 import SWModels
+import SWUtils
 
 /// Обертка над хранилищем прошедших мероприятий
 struct PastEventStorage {
-    private let storage = FileManager991(fileName: "OldEvents.json")
+    private let storage = SWFileManager(fileName: "OldEvents.json")
 
     /// Прошедшие мероприятия в памяти приложения
     var savedPastEvents: [EventResponse] {

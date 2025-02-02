@@ -1,8 +1,7 @@
-import FileManager991
 import Foundation
 import SwiftUI
 import SWModels
-import Utils
+import SWUtils
 
 /// Держит актуальный список всех площадок и умеет его обновлять
 final class ParksManager: ObservableObject {
@@ -13,7 +12,7 @@ final class ParksManager: ObservableObject {
     @AppStorage("lastGroundsUpdateDateString")
     private(set) var lastParksUpdateDateString = "2023-01-12T00:00:00"
     /// Хранилище файла с площадками
-    private let swStorage = FileManager991(fileName: "SportsGrounds.json")
+    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     /// Все площадки, доступные для отображения на карте
     @Published private(set) var fullList = [Park]()
     /// Нужно ли обновить список площадок

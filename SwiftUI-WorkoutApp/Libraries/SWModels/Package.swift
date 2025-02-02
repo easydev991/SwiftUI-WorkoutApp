@@ -9,9 +9,9 @@ let package = Package(
     products: [
         .library(name: "SWModels", targets: ["SWModels"])
     ],
-    dependencies: [.package(path: "../Utils")],
+    dependencies: [.package(path: "../SWUtils")],
     targets: [
-        .target(name: "SWModels", dependencies: ["Utils"]),
+        .target(name: "SWModels", dependencies: ["SWUtils"]),
         .testTarget(name: "SWModelsTest", dependencies: ["SWModels"])
     ]
 )

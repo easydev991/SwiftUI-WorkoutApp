@@ -1,8 +1,8 @@
-import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
+import SWUtils
 
 /// Экран с настройками дневника
 struct JournalSettingsScreen: View {

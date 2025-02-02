@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Модель с информацией о дневнике
 public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {

@@ -1,5 +1,5 @@
 import Foundation
-import Utils
+import SWUtils
 
 /// Модель сообщения в диалоге
 public struct MessageResponse: Codable, Identifiable, Hashable, Sendable {

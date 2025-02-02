@@ -1,6 +1,7 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
+import SWUtils
 
 /// Экран с настройками профиля основного пользователя
 struct SettingsScreen: View {

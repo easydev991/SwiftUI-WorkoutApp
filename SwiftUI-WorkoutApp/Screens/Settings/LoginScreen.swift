@@ -1,15 +1,15 @@
-import SWAlert
 import SWDesignSystem
 import SwiftUI
 import SWModels
 import SWNetworkClient
+import SWUtils
 
 /// Экран для авторизации / восстановления пароля
 struct LoginScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
-    @State private var credentials = Credentials()
+    @State private var credentials = LoginCredentials()
     @State private var resetErrorMessage = ""
     @State private var loginErrorMessage = ""
     @State private var loginTask: Task<Void, Never>?
@@ -40,29 +40,6 @@ struct LoginScreen: View {
 }
 
 private extension LoginScreen {
-    // TODO: написать unit-тесты
-    struct Credentials: Equatable {
-        var login: String
-        var password: String
-        let minPasswordSize: Int
-
-        init(
-            login: String = "",
-            password: String = "",
-            minPasswordSize: Int = Constants.minPasswordSize
-        ) {
-            self.login = login
-            self.password = password
-            self.minPasswordSize = minPasswordSize
-        }
-
-        var isReady: Bool {
-            !login.isEmpty && password.trueCount >= minPasswordSize
-        }
-
-        var canRestorePassword: Bool { !login.isEmpty }
-    }
-
     enum FocusableField: Hashable {
         case username, password
     }
@@ -72,7 +49,7 @@ private extension LoginScreen {
     }
 
     var canLogIn: Bool {
-        credentials.isReady && !isError && isNetworkConnected
+        credentials.canLogIn(isError: isError, isNetworkConnected: isNetworkConnected)
     }
 
     var loginField: some View {

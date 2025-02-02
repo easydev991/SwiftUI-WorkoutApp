@@ -1,6 +1,6 @@
 import SwiftUI
 import SWModels
-import Utils
+import SWUtils
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
