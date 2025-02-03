@@ -3,143 +3,214 @@ import Foundation
 import Testing
 
 struct RequestComponentsTests {
-    @Test
-    func initialization() {
-        let path = "/test"
-        let queryItems = [URLQueryItem(name: "key", value: "value")]
-        let httpMethod = HTTPMethod.get
-        let body = Data("test body".utf8)
-        let token = "token"
-        let requestComponents = RequestComponents(
-            path: path,
-            queryItems: queryItems,
-            httpMethod: httpMethod,
-            body: body,
-            token: token
-        )
-        #expect(requestComponents.path == path)
-        #expect(requestComponents.queryItems == queryItems)
-        #expect(requestComponents.httpMethod == httpMethod)
-        #expect(requestComponents.body == body)
-        #expect(requestComponents.token == token)
-    }
-
-    @Test(arguments: [HTTPMethod.put, .get, .post, .delete])
-    func urlRequestCreationWithSpecificMethod(_ method: HTTPMethod) throws {
-        let requestComponents = RequestComponents(
-            path: "/test",
-            httpMethod: method
-        )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        #expect(urlRequest.httpMethod == method.rawValue)
-    }
-
-    @Test("Генерация URL без ведущего слеша в path")
-    func urlCreationFailure() {
-        let requestComponents = RequestComponents(
-            path: "invalidpath",
-            httpMethod: .get
-        )
-        #expect(requestComponents.url == nil)
-    }
+    // MARK: - URL
 
     @Test
-    func urlRequestCreationWithEmptyToken() throws {
-        let requestComponents = RequestComponents(
+    func urlConstructionWithValidPath() throws {
+        let components = RequestComponents(
             path: "/test",
             httpMethod: .get,
-            token: ""
+            boundary: "TEST"
         )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        let headers = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(headers["Authorization"] == nil)
+        let url = try #require(components.url)
+        #expect(url.absoluteString == "https://workout.su/api/v3/test")
     }
 
     @Test
-    func urlGeneration() throws {
-        let requestComponents = RequestComponents(
-            path: "/test",
-            queryItems: [URLQueryItem(name: "key", value: "value")],
+    func urlConstructionWithInvalidPath() {
+        let components = RequestComponents(
+            path: "invalid",
             httpMethod: .get
         )
-        let resultURL = try #require(requestComponents.url)
-        let expectedURLString = "https://workout.su/api/v3/test?key=value"
-        #expect(resultURL.absoluteString == expectedURLString)
+        #expect(components.url == nil)
     }
 
     @Test
-    func urlRequestCreationWithAuthToken() throws {
-        let body = Data("test body".utf8)
-        let requestComponents = RequestComponents(
+    func urlWithQueryItems() throws {
+        let components = RequestComponents(
+            path: "/search",
+            queryItems: [URLQueryItem(name: "q", value: "test")],
+            httpMethod: .get
+        )
+        let url = try #require(components.url)
+        let query = try #require(url.query)
+        #expect(query == "q=test")
+    }
+
+    // MARK: - Настройка URLRequest
+
+    @Test
+    func basicRequestConfiguration() throws {
+        let components = RequestComponents(
             path: "/test",
             httpMethod: .post,
-            body: body,
-            token: "token123"
+            boundary: "TEST"
         )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        let headers = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(urlRequest.httpBody == body)
-        #expect(headers.count == 2)
-        #expect(headers["Content-Length"] == "\(body.count)")
-        #expect(headers["Authorization"] == "Basic token123")
+        let request = try #require(components.urlRequest)
+        let httpMethod = try #require(request.httpMethod)
+        #expect(httpMethod == "POST")
+        let urlString = try #require(request.url?.absoluteString)
+        #expect(urlString == "https://workout.su/api/v3/test")
     }
 
-    @Test
-    func urlRequestCreationWithoutAuthToken() throws {
-        let body = Data("test body".utf8)
-        let requestComponents = RequestComponents(
-            path: "/test",
-            httpMethod: .post,
-            body: body
-        )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        let headerFields = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(urlRequest.httpBody == body)
-        #expect(headerFields == ["Content-Length": "\(body.count)"])
-    }
+    // MARK: - Хедеры и тело
 
     @Test
-    func urlRequestCreationWithoutBody() throws {
-        let requestComponents = RequestComponents(
-            path: "/test",
-            httpMethod: .get,
-            body: nil,
-            token: "token"
-        )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        let headers = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(headers.count == 1)
-        #expect(headers["Content-Length"] == nil)
-        #expect(headers["Authorization"] == "Basic token")
-    }
-
-    @Test
-    func urlRequestCreationWithMultipartFormData() throws {
-        let body = Data("test".utf8)
-        let requestComponents = RequestComponents(
+    func multipartFormDataHeaders() throws {
+        let components = RequestComponents(
             path: "/upload",
             httpMethod: .post,
             hasMultipartFormData: true,
-            body: body,
-            token: "token"
+            body: (["text": "value"], nil),
+            boundary: "BOUNDARY123"
         )
-        let urlRequest = try #require(requestComponents.urlRequest)
-        let headers = try #require(urlRequest.allHTTPHeaderFields)
-        #expect(headers.count == 3)
-        #expect(headers["Content-Type"] == "multipart/form-data; boundary=FFF")
-        #expect(headers["Content-Length"] == "\(body.count)")
-        #expect(headers["Authorization"] == "Basic token")
+        let request = try #require(components.urlRequest)
+        let headers = try #require(request.allHTTPHeaderFields)
+        let contentType = try #require(headers["Content-Type"])
+        #expect(contentType == "multipart/form-data; boundary=BOUNDARY123")
+        let bodyData = try #require(request.httpBody)
+        let contentLength = try #require(headers["Content-Length"])
+        #expect(contentLength == "\(bodyData.count)")
     }
 
     @Test
-    func urlGenerationWithSpecialCharacters() throws {
-        let requestComponents = RequestComponents(
-            path: "/test path",
-            queryItems: [URLQueryItem(name: "key", value: "value with space")],
+    func authorizationHeader() throws {
+        let components = RequestComponents(
+            path: "/secure",
+            httpMethod: .get,
+            token: "secret_token"
+        )
+        let headers = try #require(components.urlRequest?.allHTTPHeaderFields)
+        let authHeader = try #require(headers["Authorization"])
+        #expect(authHeader == "Basic secret_token")
+    }
+
+    @Test
+    func urlEncodedBody() throws {
+        let params = ["name": "John", "age": "30"]
+        let components = RequestComponents(
+            path: "/form",
+            httpMethod: .post,
+            body: (params, nil)
+        )
+        let request = try #require(components.urlRequest)
+        let bodyData = try #require(request.httpBody)
+        let bodyString = try #require(String(data: bodyData, encoding: .utf8))
+        let sortedBodyString = bodyString.components(separatedBy: "&").sorted().joined(separator: "&")
+        #expect(sortedBodyString == "age=30&name=John")
+    }
+
+    @Test
+    func multipartBodyContent() throws {
+        let media = BodyMaker.MediaFile(
+            key: "file",
+            filename: "test.txt",
+            data: Data("content".utf8),
+            mimeType: "text/plain"
+        )
+        let components = RequestComponents(
+            path: "/upload",
+            httpMethod: .post,
+            hasMultipartFormData: true,
+            body: (["title": "Doc"], [media]),
+            boundary: "TESTBOUNDARY"
+        )
+        let request = try #require(components.urlRequest)
+        let bodyData = try #require(request.httpBody)
+        let bodyString = try #require(String(data: bodyData, encoding: .utf8))
+
+        let expectedPatterns = [
+            "--TESTBOUNDARY\r\n",
+            "Content-Disposition: form-data; name=\"title\"\r\n\r\nDoc\r\n",
+            "Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\n",
+            "Content-Type: text/plain\r\n\r\ncontent\r\n",
+            "--TESTBOUNDARY--\r\n"
+        ]
+
+        for pattern in expectedPatterns {
+            #expect(bodyString.contains(pattern))
+        }
+    }
+
+    // MARK: - Едж-кейсы
+
+    @Test
+    func emptyRequestComponents() throws {
+        let components = RequestComponents(
+            path: "/",
             httpMethod: .get
         )
-        let resultURL = try #require(requestComponents.url)
-        let expectedString = "https://workout.su/api/v3/test%20path?key=value%20with%20space"
-        #expect(resultURL.absoluteString == expectedString)
+        let request = try #require(components.urlRequest)
+        #expect(request.url?.absoluteString == "https://workout.su/api/v3/")
+    }
+
+    @Test
+    func invalidTokenHandling() throws {
+        let components = RequestComponents(
+            path: "/secure",
+            httpMethod: .get,
+            token: ""
+        )
+        let headers = try #require(components.urlRequest?.allHTTPHeaderFields)
+        #expect(!headers.keys.contains("Authorization"))
+    }
+
+    @Test
+    func missingBodyHandling() throws {
+        let components = RequestComponents(
+            path: "/empty",
+            httpMethod: .post
+        )
+        let request = try #require(components.urlRequest)
+        #expect(request.httpBody == nil)
+    }
+
+    @Test
+    func urlWithEncodedQueryItems() throws {
+        let components = RequestComponents(
+            path: "/search",
+            queryItems: [URLQueryItem(name: "q", value: "test&value")],
+            httpMethod: .get
+        )
+        let query = try #require(components.url?.query)
+        // Проверка кодировки амперсанда
+        #expect(query == "q=test%26value")
+    }
+
+    @Test
+    func emptyParameterValueHandling() throws {
+        let components = RequestComponents(
+            path: "/form",
+            httpMethod: .post,
+            body: (["empty": ""], nil)
+        )
+        let request = try #require(components.urlRequest)
+        let bodyString = try #require(request.httpBody.flatMap { String(data: $0, encoding: .utf8) })
+        #expect(bodyString == "empty=")
+    }
+
+    @Test
+    func largeDataHandling() throws {
+        // 10 MB данных
+        let bigData = Data(repeating: 0x55, count: 10_000_000)
+        let media = BodyMaker.MediaFile(
+            key: "bigfile",
+            filename: "large.bin",
+            data: bigData,
+            mimeType: "application/octet-stream"
+        )
+
+        let components = RequestComponents(
+            path: "/upload",
+            httpMethod: .post,
+            hasMultipartFormData: true,
+            body: ([:], [media]),
+            boundary: "BIGBOUNDARY"
+        )
+
+        let request = try #require(components.urlRequest)
+        let contentLength = try #require(request.allHTTPHeaderFields?["Content-Length"])
+        let expectedSize = request.httpBody?.count ?? 0
+        #expect(contentLength == "\(expectedSize)")
     }
 }

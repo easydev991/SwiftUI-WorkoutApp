@@ -5,7 +5,8 @@ public struct RequestComponents {
     let queryItems: [URLQueryItem]
     let httpMethod: HTTPMethod
     let hasMultipartFormData: Bool
-    let body: Data?
+    let body: (parameters: [String: String], mediaFiles: [BodyMaker.MediaFile]?)?
+    let boundary: String
     let token: String?
 
     /// Инициализатор
@@ -14,14 +15,16 @@ public struct RequestComponents {
     ///   - queryItems: Параметры `query`, по умолчанию отсутствуют
     ///   - httpMethod: Метод запроса
     ///   - hasMultipartFormData: Есть ли в запросе файлы для отправки (в нашем случае картинки), по умолчанию `false`
-    ///   - body: Тело запроса, по умолчанию `nil`
+    ///   - body: Данные для тела запроса, по умолчанию `nil`
+    ///   - boundary: `Boundary` для `body`, по умолчанию `UUID().uuidString`
     ///   - token: Токен для авторизации, по умолчанию `nil`
     public init(
         path: String,
         queryItems: [URLQueryItem] = [],
         httpMethod: HTTPMethod,
         hasMultipartFormData: Bool = false,
-        body: Data? = nil,
+        body: (parameters: [String: String], mediaFiles: [BodyMaker.MediaFile]?)? = nil,
+        boundary: String = UUID().uuidString,
         token: String? = nil
     ) {
         self.path = path
@@ -29,6 +32,7 @@ public struct RequestComponents {
         self.httpMethod = httpMethod
         self.hasMultipartFormData = hasMultipartFormData
         self.body = body
+        self.boundary = boundary
         self.token = token
     }
 
@@ -50,19 +54,37 @@ extension RequestComponents {
         guard let url else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
-        request.httpBody = body
+
         var allHeaders = [HTTPHeaderField]()
-        // TODO: генерировать boundary в одном месте (вместо FFF)
+        var httpBodyData: Data?
+
         if let body {
-            allHeaders.append(.init(key: "Content-Length", value: "\(body.count)"))
+            let parameters = body.parameters.map(BodyMaker.Parameter.init)
+            if hasMultipartFormData {
+                httpBodyData = BodyMaker.makeBodyWithMultipartForm(
+                    parameters: parameters,
+                    media: body.mediaFiles,
+                    boundary: boundary
+                )
+                allHeaders.append(.init(
+                    key: "Content-Type",
+                    value: "multipart/form-data; boundary=\(boundary)"
+                ))
+            } else {
+                httpBodyData = BodyMaker.makeBody(with: parameters)
+            }
+            if let httpBodyData {
+                allHeaders.append(.init(key: "Content-Length", value: "\(httpBodyData.count)"))
+            }
         }
-        if hasMultipartFormData {
-            allHeaders.append(.init(key: "Content-Type", value: "multipart/form-data; boundary=FFF"))
-        }
+
         if let token, !token.isEmpty {
             allHeaders.append(.init(key: "Authorization", value: "Basic \(token)"))
         }
-        request.allHTTPHeaderFields = Dictionary(uniqueKeysWithValues: allHeaders.map { ($0.key, $0.value) })
+        request.allHTTPHeaderFields = Dictionary(
+            uniqueKeysWithValues: allHeaders.map { ($0.key, $0.value) }
+        )
+        request.httpBody = httpBodyData
         return request
     }
 }

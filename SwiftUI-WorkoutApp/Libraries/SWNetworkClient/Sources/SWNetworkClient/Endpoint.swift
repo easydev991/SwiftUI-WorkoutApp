@@ -414,7 +414,10 @@ extension Endpoint {
         case classID = "class_id"
     }
 
-    var httpBody: Data? {
+    var httpBody: (
+        parameters: [String: String],
+        mediaFiles: [BodyMaker.MediaFile]?
+    )? {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
              .acceptFriendRequest, .declineFriendRequest, .findUsers,
@@ -432,27 +435,25 @@ extension Endpoint {
              .deleteEventPhoto, .deleteParkPhoto:
             return nil
         case let .registration(form):
-            return BodyMaker.makeBody(
-                with: [
-                    ParameterKey.name: form.userName,
-                    .fullname: form.fullName,
-                    .email: form.email,
-                    .password: form.password,
-                    .genderCode: form.genderCode.description,
-                    .countryID: form.country.id,
-                    .cityID: form.city.id,
-                    .birthDate: form.birthDateIsoString
-                ].map(BodyMaker.Parameter.init)
-            )
+            return ([
+                ParameterKey.name.rawValue: form.userName,
+                ParameterKey.fullname.rawValue: form.fullName,
+                ParameterKey.email.rawValue: form.email,
+                ParameterKey.password.rawValue: form.password,
+                ParameterKey.genderCode.rawValue: form.genderCode.description,
+                ParameterKey.countryID.rawValue: form.country.id,
+                ParameterKey.cityID.rawValue: form.city.id,
+                ParameterKey.birthDate.rawValue: form.birthDateIsoString
+            ], nil)
         case let .editUser(_, form):
             let parameters = [
-                ParameterKey.name: form.userName,
-                .fullname: form.fullName,
-                .email: form.email,
-                .genderCode: form.genderCode.description,
-                .countryID: form.country.id,
-                .cityID: form.city.id,
-                .birthDate: form.birthDateIsoString
+                ParameterKey.name.rawValue: form.userName,
+                ParameterKey.fullname.rawValue: form.fullName,
+                ParameterKey.email.rawValue: form.email,
+                ParameterKey.genderCode.rawValue: form.genderCode.description,
+                ParameterKey.countryID.rawValue: form.country.id,
+                ParameterKey.cityID.rawValue: form.city.id,
+                ParameterKey.birthDate.rawValue: form.birthDateIsoString
             ]
             let mediaFiles: [BodyMaker.MediaFile]? = if let image = form.image {
                 [
@@ -466,90 +467,75 @@ extension Endpoint {
             } else {
                 nil
             }
-            return BodyMaker.makeBodyWithMultipartForm(
-                with: parameters.map(BodyMaker.Parameter.init),
-                and: mediaFiles
-            )
+            return (parameters, mediaFiles)
         case let .resetPassword(login):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.usernameOrEmail: login].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.usernameOrEmail.rawValue: login], nil)
         case let .changePassword(current, new):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.password: current, .newPassword: new].map(BodyMaker.Parameter.init)
-            )
+            return ([
+                ParameterKey.password.rawValue: current,
+                ParameterKey.newPassword.rawValue: new
+            ], nil)
         case let .addCommentToPark(_, comment),
              let .addCommentToEvent(_, comment),
              let .editParkComment(_, _, comment),
              let .editEventComment(_, _, comment):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.comment: comment].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.comment.rawValue: comment], nil)
         case let .sendMessageTo(message, _):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.message: message].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.message.rawValue: message], nil)
         case let .markAsRead(userID):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.fromUserID: userID.description].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.fromUserID.rawValue: userID.description], nil)
         case let .createJournal(_, title):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.title: title].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.title.rawValue: title], nil)
         case let .saveJournalEntry(_, _, message),
              let .editEntry(_, _, _, message):
-            return BodyMaker.makeBody(
-                with: [ParameterKey.message: message].map(BodyMaker.Parameter.init)
-            )
+            return ([ParameterKey.message.rawValue: message], nil)
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
-            return BodyMaker.makeBody(
-                with: [
-                    ParameterKey.title: title,
-                    .viewAccess: viewAccess.description,
-                    .commentAccess: commentAccess.description
-                ].map(BodyMaker.Parameter.init)
+            return (
+                [
+                    ParameterKey.title.rawValue: title,
+                    ParameterKey.viewAccess.rawValue: viewAccess.description,
+                    ParameterKey.commentAccess.rawValue: commentAccess.description
+                ],
+                nil
             )
         case let .createEvent(form), let .editEvent(_, form):
             let parameters = [
-                ParameterKey.title: form.title,
-                .description: form.description,
-                .date: form.dateIsoString,
-                .areaID: form.parkID.description
+                ParameterKey.title.rawValue: form.title,
+                ParameterKey.description.rawValue: form.description,
+                ParameterKey.date.rawValue: form.dateIsoString,
+                ParameterKey.areaID.rawValue: form.parkID.description
             ]
-            let mediaFiles: [BodyMaker.MediaFile] = form.newMediaFiles.map {
-                .init(
-                    key: $0.key,
-                    filename: $0.filename,
-                    data: $0.data,
-                    mimeType: $0.mimeType
-                )
-            }
-            return BodyMaker.makeBodyWithMultipartForm(
-                with: parameters.map(BodyMaker.Parameter.init),
-                and: mediaFiles
-            )
+            let mediaFiles: [BodyMaker.MediaFile]? = form.newMediaFiles.isEmpty
+                ? nil
+                : form.newMediaFiles.map {
+                    BodyMaker.MediaFile(
+                        key: $0.key,
+                        filename: $0.filename,
+                        data: $0.data,
+                        mimeType: $0.mimeType
+                    )
+                }
+            return (parameters, mediaFiles)
         case let .createPark(form), let .editPark(_, form):
             let parameters = [
-                ParameterKey.address: form.address,
-                .latitude: form.latitude,
-                .longitude: form.longitude,
-                .cityID: form.cityID.description,
-                .typeID: form.typeID.description,
-                .classID: form.sizeID.description
+                ParameterKey.address.rawValue: form.address,
+                ParameterKey.latitude.rawValue: form.latitude,
+                ParameterKey.longitude.rawValue: form.longitude,
+                ParameterKey.cityID.rawValue: form.cityID.description,
+                ParameterKey.typeID.rawValue: form.typeID.description,
+                ParameterKey.classID.rawValue: form.sizeID.description
             ]
-            let mediaFiles: [BodyMaker.MediaFile] = form.newMediaFiles.map {
-                .init(
-                    key: $0.key,
-                    filename: $0.filename,
-                    data: $0.data,
-                    mimeType: $0.mimeType
-                )
-            }
-            return BodyMaker.makeBodyWithMultipartForm(
-                with: parameters.map(BodyMaker.Parameter.init),
-                and: mediaFiles
-            )
+            let mediaFiles: [BodyMaker.MediaFile]? = form.newMediaFiles.isEmpty
+                ? nil
+                : form.newMediaFiles.map {
+                    BodyMaker.MediaFile(
+                        key: $0.key,
+                        filename: $0.filename,
+                        data: $0.data,
+                        mimeType: $0.mimeType
+                    )
+                }
+            return (parameters, mediaFiles)
         }
     }
 }

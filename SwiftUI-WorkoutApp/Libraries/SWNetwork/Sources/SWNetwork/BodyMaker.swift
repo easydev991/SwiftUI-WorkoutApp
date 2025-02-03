@@ -2,12 +2,12 @@ import Foundation
 
 /// Делает `body` для запроса
 public enum BodyMaker {
-    public struct Parameter<T: Hashable & RawRepresentable> where T.RawValue == String {
+    public struct Parameter {
         let key: String
         let value: String
 
-        public init(from element: Dictionary<T, String>.Element) {
-            self.key = element.key.rawValue
+        public init(from element: Dictionary<String, String>.Element) {
+            self.key = element.key
             self.value = element.value
         }
 
@@ -19,7 +19,7 @@ public enum BodyMaker {
 
     /// Делает `body` из словаря
     public static func makeBody(
-        with parameters: [Parameter<some Hashable & RawRepresentable>]
+        with parameters: [Parameter]
     ) -> Data? {
         parameters.isEmpty
             ? nil
@@ -31,10 +31,10 @@ public enum BodyMaker {
 
     /// Делает `body` из словаря и медиа-файлов
     public static func makeBodyWithMultipartForm(
-        with parameters: [Parameter<some Hashable & RawRepresentable>],
-        and media: [MediaFile]?
+        parameters: [Parameter],
+        media: [MediaFile]?,
+        boundary: String
     ) -> Data? {
-        let boundary = "FFF"
         let lineBreak = "\r\n"
         var body = Data()
         if !parameters.isEmpty {
@@ -56,9 +56,8 @@ public enum BodyMaker {
         if !body.isEmpty {
             body.append("--\(boundary)--\(lineBreak)")
             return body
-        } else {
-            return nil
         }
+        return nil
     }
 
     /// Медиа-файл для отправки на сервер

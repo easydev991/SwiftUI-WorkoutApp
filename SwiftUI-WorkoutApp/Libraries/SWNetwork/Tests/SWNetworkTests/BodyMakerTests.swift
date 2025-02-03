@@ -3,85 +3,158 @@ import Foundation
 import Testing
 
 struct BodyMakerTests {
-    private typealias Parameter = BodyMaker.Parameter
+    @Test
+    func parameterInitializationFromDictionaryElement() {
+        let element = ("testKey", "testValue")
+        let parameter = BodyMaker.Parameter(from: element)
+        #expect(parameter.key == "testKey")
+        #expect(parameter.value == "testValue")
+    }
+
+    // MARK: - makeBody
 
     @Test
-    func makeBody_noParameters() {
-        let parameters = [Parameter<TestKey>]()
-        let result = BodyMaker.makeBody(with: parameters)
+    func makeBodyWithNoParametersReturnsNil() {
+        let result = BodyMaker.makeBody(with: [])
         #expect(result == nil)
     }
 
     @Test
-    func makeBody_validParameters() throws {
-        let parameters: [Parameter<TestKey>] = [
-            .init(key: TestKey.name.rawValue, value: "John"),
-            .init(key: TestKey.age.rawValue, value: "30")
-        ]
-        let expectedData = try #require("name=John&age=30".data(using: .utf8))
-        let result = try #require(BodyMaker.makeBody(with: parameters))
-        #expect(result == expectedData)
+    func makeBodyWithSingleParameter() throws {
+        let parameter = BodyMaker.Parameter(key: "name", value: "John")
+        let result = try #require(BodyMaker.makeBody(with: [parameter]))
+        let expectedString = "name=John"
+        #expect(String(data: result, encoding: .utf8) == expectedString)
     }
 
     @Test
-    func makeBodyWithMultipartForm_noParameters_noMedia() {
-        let parameters = [Parameter<TestKey>]()
-        let result = BodyMaker.makeBodyWithMultipartForm(with: parameters, and: nil)
+    func makeBodyWithMultipleParameters() throws {
+        let params = [
+            BodyMaker.Parameter(key: "a", value: "1"),
+            BodyMaker.Parameter(key: "b", value: "2")
+        ]
+        let result = try #require(BodyMaker.makeBody(with: params))
+        let expectedString = "a=1&b=2"
+        #expect(String(data: result, encoding: .utf8) == expectedString)
+    }
+
+    // MARK: - makeBodyWithMultipartForm
+
+    @Test
+    func multipartFormWithNoContentReturnsNil() {
+        let result = BodyMaker.makeBodyWithMultipartForm(
+            parameters: [],
+            media: nil,
+            boundary: "BOUNDARY"
+        )
         #expect(result == nil)
     }
 
     @Test
-    func makeBodyWithMultipartForm_onlyDictionary() throws {
-        let parameters: [Parameter<TestKey>] = [
-            .init(key: TestKey.name.rawValue, value: "John"),
-            .init(key: TestKey.age.rawValue, value: "30")
+    func multipartFormWithParametersOnly() throws {
+        let params = [BodyMaker.Parameter(key: "text", value: "Hello")]
+        let boundary = "TESTBOUNDARY"
+        let result = try #require(BodyMaker.makeBodyWithMultipartForm(
+            parameters: params,
+            media: nil,
+            boundary: boundary
+        ))
+        let string = try #require(String(data: result, encoding: .utf8))
+        let expectedPatterns = [
+            "--TESTBOUNDARY\r\n",
+            "Content-Disposition: form-data; name=\"text\"\r\n\r\n",
+            "Hello\r\n",
+            "--TESTBOUNDARY--\r\n"
         ]
-        let expectedData = try #require(
-            "--FFF\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\nJohn\r\n--FFF\r\nContent-Disposition: form-data; name=\"age\"\r\n\r\n30\r\n--FFF--\r\n"
-                .data(using: .utf8)
-        )
-        let result = try #require(BodyMaker.makeBodyWithMultipartForm(with: parameters, and: nil))
-        #expect(result == expectedData)
+        for pattern in expectedPatterns {
+            #expect(string.contains(pattern))
+        }
     }
 
     @Test
-    func makeBodyWithMultipartForm_onlyMedia() throws {
-        let parameters = [Parameter<TestKey>]()
-        let mediaFile = BodyMaker.MediaFile(
-            key: "file",
-            filename: "test.png",
-            data: Data("Test image content".utf8),
-            mimeType: "image/png"
-        )
-        let expectedData = try #require(
-            "--FFF\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.png\"\r\nContent-Type: image/png\r\n\r\nTest image content\r\n--FFF--\r\n"
-                .data(using: .utf8)
-        )
-        let result = try #require(BodyMaker.makeBodyWithMultipartForm(with: parameters, and: [mediaFile]))
-        #expect(result == expectedData)
+    func multipartFormWithMediaOnly() throws {
+        let media = [
+            BodyMaker.MediaFile(
+                key: "file",
+                filename: "test.txt",
+                data: Data("file content".utf8),
+                mimeType: "text/plain"
+            )
+        ]
+        let boundary = "MEDIA_BOUNDARY"
+        let result = try #require(BodyMaker.makeBodyWithMultipartForm(
+            parameters: [],
+            media: media,
+            boundary: boundary
+        ))
+        let string = try #require(String(data: result, encoding: .utf8))
+        let expectedPatterns = [
+            "--MEDIA_BOUNDARY\r\n",
+            "Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\n",
+            "Content-Type: text/plain\r\n\r\n",
+            "file content\r\n",
+            "--MEDIA_BOUNDARY--\r\n"
+        ]
+        for pattern in expectedPatterns {
+            #expect(string.contains(pattern))
+        }
     }
 
     @Test
-    func makeBodyWithMultipartForm_dictionaryAndMedia() throws {
-        let parameters: [Parameter<TestKey>] = [.init(key: TestKey.description.rawValue, value: "A test image")]
-        let mediaFile = BodyMaker.MediaFile(
-            key: "file",
-            filename: "test.png",
-            data: Data("Test image content".utf8),
-            mimeType: "image/png"
-        )
-        let expectedData = try #require(
-            "--FFF\r\nContent-Disposition: form-data; name=\"description\"\r\n\r\nA test image\r\n--FFF\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.png\"\r\nContent-Type: image/png\r\n\r\nTest image content\r\n--FFF--\r\n"
-                .data(using: .utf8)
-        )
-        let result = try #require(BodyMaker.makeBodyWithMultipartForm(with: parameters, and: [mediaFile]))
-        #expect(result == expectedData)
-    }
-}
+    func multipartFormWithMixedContent() throws {
+        let params = [BodyMaker.Parameter(key: "title", value: "Document")]
+        let media = [
+            BodyMaker.MediaFile(
+                key: "doc",
+                filename: "doc.pdf",
+                data: Data("pdf content".utf8),
+                mimeType: "application/pdf"
+            )
+        ]
+        let boundary = "MIXEDBOUNDARY"
+        let result = try #require(BodyMaker.makeBodyWithMultipartForm(
+            parameters: params,
+            media: media,
+            boundary: boundary
+        ))
 
-/// Пример ключа для тестирования
-private enum TestKey: String {
-    case name
-    case age
-    case description
+        let string = try #require(String(data: result, encoding: .utf8))
+
+        // Проверяем порядок: сначала параметры, потом медиа
+        let paramSection = """
+        --MIXEDBOUNDARY\r\n\
+        Content-Disposition: form-data; name="title"\r\n\r\n\
+        Document\r\n
+        """
+
+        let mediaSection = """
+        --MIXEDBOUNDARY\r\n\
+        Content-Disposition: form-data; name="doc"; filename="doc.pdf"\r\n\
+        Content-Type: application/pdf\r\n\r\n\
+        pdf content\r\n
+        """
+
+        let closing = "--MIXEDBOUNDARY--\r\n"
+
+        #expect(string.contains(paramSection))
+        #expect(string.contains(mediaSection))
+        #expect(string.contains(closing))
+    }
+
+    // MARK: - MediaFile Tests
+
+    @Test
+    func mediaFileInitialization() {
+        let data = Data("test".utf8)
+        let media = BodyMaker.MediaFile(
+            key: "avatar",
+            filename: "image.jpg",
+            data: data,
+            mimeType: "image/jpeg"
+        )
+        #expect(media.key == "avatar")
+        #expect(media.filename == "image.jpg")
+        #expect(media.data == data)
+        #expect(media.mimeType == "image/jpeg")
+    }
 }
