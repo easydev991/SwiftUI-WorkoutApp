@@ -211,6 +211,42 @@
         }
       }
     },
+    "ImageErrorDataLoadingFailed" : {
+      "comment" : "PhotosPicker",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to retrieve data from the gallery"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось получить данные из галереи"
+          }
+        }
+      }
+    },
+    "ImageErrorImageCreationFailed" : {
+      "comment" : "PhotosPicker",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to create the image"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось создать изображение"
+          }
+        }
+      }
+    },
     "journalsCount" : {
       "extractionState" : "manual",
       "localizations" : {
