@@ -30,28 +30,23 @@ struct SwiftUI_WorkoutAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootScreen(selectedTab: $tabViewModel.selectedTab)
-                .environmentObject(tabViewModel)
-                .environmentObject(network)
-                .environmentObject(defaults)
-                .environmentObject(parksManager)
-                .preferredColorScheme(colorScheme)
-                .environment(\.isNetworkConnected, network.isConnected)
-                .environment(\.userFlags, defaults.userFlags)
+            RootScreen(
+                selectedTab: $tabViewModel.selectedTab,
+                unreadCount: defaults.unreadMessagesCount
+            )
+            .environmentObject(tabViewModel)
+            .environmentObject(network)
+            .environmentObject(defaults)
+            .environmentObject(parksManager)
+            .preferredColorScheme(colorScheme)
+            .environment(\.isNetworkConnected, network.isConnected)
+            .environment(\.userFlags, defaults.userFlags)
         }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
-                guard let mainUserId = defaults.mainUserInfo?.id else { return }
-                socialUpdateTask = Task {
-                    if let result = await client.getSocialUpdates(userID: mainUserId) {
-                        try? defaults.saveFriendsIds(result.friends.map(\.id))
-                        try? defaults.saveFriendRequests(result.friendRequests)
-                        try? defaults.saveBlacklist(result.blacklist)
-                        defaults.setUserNeedUpdate(false)
-                    }
-                }
+                updateSocialInfoIfNeeded()
             default:
                 [socialUpdateTask, countriesUpdateTask].forEach { $0?.cancel() }
                 defaults.setUserNeedUpdate(true)
@@ -65,6 +60,24 @@ struct SwiftUI_WorkoutAppApp: App {
             if let countries = try? await client.getCountries(),
                countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
+            }
+        }
+    }
+
+    private func updateSocialInfoIfNeeded() {
+        guard let mainUserId = defaults.mainUserInfo?.id else { return }
+        socialUpdateTask = Task {
+            async let socialUpdatesTask = client.getSocialUpdates(userID: mainUserId)
+            async let unreadCountTask = UnreadCountService(client: client).getUnreadCount()
+            let (socialUpdates, unreadCount) = await (socialUpdatesTask, unreadCountTask)
+            if let socialUpdates {
+                try? defaults.saveFriendsIds(socialUpdates.friends.map(\.id))
+                try? defaults.saveFriendRequests(socialUpdates.friendRequests)
+                try? defaults.saveBlacklist(socialUpdates.blacklist)
+                defaults.setUserNeedUpdate(false)
+            }
+            if let unreadCount {
+                defaults.saveUnreadMessagesCount(unreadCount)
             }
         }
     }

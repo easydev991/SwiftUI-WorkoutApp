@@ -4,6 +4,7 @@ import SwiftUI
 struct RootScreen: View {
     @Environment(\.userFlags) private var userFlags
     @Binding var selectedTab: TabViewModel.Tab
+    let unreadCount: Int
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -11,6 +12,7 @@ struct RootScreen: View {
                 tab.screen
                     .tabItem { tab.tabItemLabel }
                     .tag(tab)
+                    .badge(tab == .messages ? unreadCount : 0)
             }
         }
         .navigationViewStyle(.stack)
@@ -18,9 +20,21 @@ struct RootScreen: View {
 }
 
 #if DEBUG
-#Preview {
-    RootScreen(selectedTab: .constant(.map))
-        .environmentObject(ParksManager())
-        .environmentObject(DefaultsService())
+#Preview("Есть бейдж для чатов") {
+    RootScreen(
+        selectedTab: .constant(.map),
+        unreadCount: 1
+    )
+    .environmentObject(ParksManager())
+    .environmentObject(DefaultsService())
+}
+
+#Preview("Нет бейджа") {
+    RootScreen(
+        selectedTab: .constant(.map),
+        unreadCount: 0
+    )
+    .environmentObject(ParksManager())
+    .environmentObject(DefaultsService())
 }
 #endif
