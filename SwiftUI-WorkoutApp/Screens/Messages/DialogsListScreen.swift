@@ -33,7 +33,8 @@ struct DialogsListScreen: View {
             .navigationTitle("Сообщения")
         }
         .navigationViewStyle(.stack)
-        .task { await askForDialogs() }
+        .onChange(of: defaults.isAuthorized, perform: viewModel.clearDialogsOnLogout)
+        .task(id: defaults.isAuthorized) { await askForDialogs() }
     }
 }
 
@@ -48,7 +49,6 @@ private extension DialogsListScreen {
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) { deleteDialogButton }
-            .refreshable { await askForDialogs(refresh: true) }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     refreshButton
@@ -67,8 +67,8 @@ private extension DialogsListScreen {
         } label: {
             Icons.Regular.refresh.view
         }
-        .opacity(viewModel.showRefreshButton ? 1 : 0)
-        .disabled(viewModel.isLoading)
+        .opacity(viewModel.showEmptyView ? 1 : 0)
+        .disabled(viewModel.isLoading || !isNetworkConnected)
     }
 
     var friendListButton: some View {
@@ -109,6 +109,7 @@ private extension DialogsListScreen {
             }
             .listStyle(.plain)
             .opacity(viewModel.hasDialogs ? 1 : 0)
+            .refreshable { await askForDialogs(refresh: true) }
         }
         .animation(.default, value: viewModel.dialogs.count)
         .background(

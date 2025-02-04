@@ -8,9 +8,6 @@ final class DialogsViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     var hasDialogs: Bool { !dialogs.isEmpty }
     var showEmptyView: Bool { !hasDialogs && !isLoading }
-    var showRefreshButton: Bool {
-        showEmptyView || !DeviceOSVersionChecker.iOS16Available
-    }
 
     @MainActor
     func askForDialogs(
@@ -53,5 +50,11 @@ final class DialogsViewModel: ObservableObject {
         else { return }
         let newValue = defaults.unreadMessagesCount - dialog.unreadMessagesCount
         defaults.saveUnreadMessagesCount(newValue)
+    }
+
+    @MainActor
+    func clearDialogsOnLogout(isAuthorized: Bool) {
+        guard !isAuthorized else { return }
+        dialogs.removeAll()
     }
 }
