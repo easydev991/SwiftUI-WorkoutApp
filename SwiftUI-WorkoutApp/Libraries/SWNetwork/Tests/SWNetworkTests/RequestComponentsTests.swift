@@ -61,7 +61,7 @@ struct RequestComponentsTests {
             path: "/upload",
             httpMethod: .post,
             hasMultipartFormData: true,
-            body: (["text": "value"], nil),
+            bodyParts: .init(["text": "value"], nil),
             boundary: "BOUNDARY123"
         )
         let request = try #require(components.urlRequest)
@@ -91,7 +91,7 @@ struct RequestComponentsTests {
         let components = RequestComponents(
             path: "/form",
             httpMethod: .post,
-            body: (params, nil)
+            bodyParts: .init(params, nil)
         )
         let request = try #require(components.urlRequest)
         let bodyData = try #require(request.httpBody)
@@ -112,7 +112,7 @@ struct RequestComponentsTests {
             path: "/upload",
             httpMethod: .post,
             hasMultipartFormData: true,
-            body: (["title": "Doc"], [media]),
+            bodyParts: .init(["title": "Doc"], [media]),
             boundary: "TESTBOUNDARY"
         )
         let request = try #require(components.urlRequest)
@@ -182,7 +182,7 @@ struct RequestComponentsTests {
         let components = RequestComponents(
             path: "/form",
             httpMethod: .post,
-            body: (["empty": ""], nil)
+            bodyParts: .init(["empty": ""], nil)
         )
         let request = try #require(components.urlRequest)
         let bodyString = try #require(request.httpBody.flatMap { String(data: $0, encoding: .utf8) })
@@ -204,7 +204,7 @@ struct RequestComponentsTests {
             path: "/upload",
             httpMethod: .post,
             hasMultipartFormData: true,
-            body: ([:], [media]),
+            bodyParts: .init([:], [media]),
             boundary: "BIGBOUNDARY"
         )
 

@@ -2,11 +2,11 @@ import Foundation
 
 /// Делает `body` для запроса
 public enum BodyMaker {
-    public struct Parameter {
+    struct Parameter {
         let key: String
         let value: String
 
-        public init(from element: Dictionary<String, String>.Element) {
+        init(from element: Dictionary<String, String>.Element) {
             self.key = element.key
             self.value = element.value
         }
@@ -18,7 +18,7 @@ public enum BodyMaker {
     }
 
     /// Делает `body` из словаря
-    public static func makeBody(
+    static func makeBody(
         with parameters: [Parameter]
     ) -> Data? {
         parameters.isEmpty
@@ -30,7 +30,7 @@ public enum BodyMaker {
     }
 
     /// Делает `body` из словаря и медиа-файлов
-    public static func makeBodyWithMultipartForm(
+    static func makeBodyWithMultipartForm(
         parameters: [Parameter],
         media: [MediaFile]?,
         boundary: String
@@ -59,9 +59,22 @@ public enum BodyMaker {
         }
         return nil
     }
+}
+
+public extension BodyMaker {
+    /// Модель для последующего создания тела запроса
+    struct Parts {
+        let parameters: [Parameter]
+        let mediaFiles: [MediaFile]?
+
+        public init(_ parameters: [String: String], _ mediaFiles: [MediaFile]?) {
+            self.parameters = parameters.map(Parameter.init)
+            self.mediaFiles = mediaFiles
+        }
+    }
 
     /// Медиа-файл для отправки на сервер
-    public struct MediaFile: Codable, Equatable, Sendable {
+    struct MediaFile: Codable, Equatable, Sendable {
         public let key: String
         public let filename: String
         public let data: Data

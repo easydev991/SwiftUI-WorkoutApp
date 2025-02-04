@@ -414,10 +414,7 @@ extension Endpoint {
         case classID = "class_id"
     }
 
-    var httpBody: (
-        parameters: [String: String],
-        mediaFiles: [BodyMaker.MediaFile]?
-    )? {
+    var bodyParts: BodyMaker.Parts? {
         switch self {
         case .login, .getUser, .getFriendsForUser, .getFriendRequests,
              .acceptFriendRequest, .declineFriendRequest, .findUsers,
@@ -435,7 +432,7 @@ extension Endpoint {
              .deleteEventPhoto, .deleteParkPhoto:
             return nil
         case let .registration(form):
-            return ([
+            return .init([
                 ParameterKey.name.rawValue: form.userName,
                 ParameterKey.fullname.rawValue: form.fullName,
                 ParameterKey.email.rawValue: form.email,
@@ -467,11 +464,11 @@ extension Endpoint {
             } else {
                 nil
             }
-            return (parameters, mediaFiles)
+            return .init(parameters, mediaFiles)
         case let .resetPassword(login):
-            return ([ParameterKey.usernameOrEmail.rawValue: login], nil)
+            return .init([ParameterKey.usernameOrEmail.rawValue: login], nil)
         case let .changePassword(current, new):
-            return ([
+            return .init([
                 ParameterKey.password.rawValue: current,
                 ParameterKey.newPassword.rawValue: new
             ], nil)
@@ -479,18 +476,18 @@ extension Endpoint {
              let .addCommentToEvent(_, comment),
              let .editParkComment(_, _, comment),
              let .editEventComment(_, _, comment):
-            return ([ParameterKey.comment.rawValue: comment], nil)
+            return .init([ParameterKey.comment.rawValue: comment], nil)
         case let .sendMessageTo(message, _):
-            return ([ParameterKey.message.rawValue: message], nil)
+            return .init([ParameterKey.message.rawValue: message], nil)
         case let .markAsRead(userID):
-            return ([ParameterKey.fromUserID.rawValue: userID.description], nil)
+            return .init([ParameterKey.fromUserID.rawValue: userID.description], nil)
         case let .createJournal(_, title):
-            return ([ParameterKey.title.rawValue: title], nil)
+            return .init([ParameterKey.title.rawValue: title], nil)
         case let .saveJournalEntry(_, _, message),
              let .editEntry(_, _, _, message):
-            return ([ParameterKey.message.rawValue: message], nil)
+            return .init([ParameterKey.message.rawValue: message], nil)
         case let .editJournalSettings(_, _, title, viewAccess, commentAccess):
-            return (
+            return .init(
                 [
                     ParameterKey.title.rawValue: title,
                     ParameterKey.viewAccess.rawValue: viewAccess.description,
@@ -515,7 +512,7 @@ extension Endpoint {
                         mimeType: $0.mimeType
                     )
                 }
-            return (parameters, mediaFiles)
+            return .init(parameters, mediaFiles)
         case let .createPark(form), let .editPark(_, form):
             let parameters = [
                 ParameterKey.address.rawValue: form.address,
@@ -535,7 +532,7 @@ extension Endpoint {
                         mimeType: $0.mimeType
                     )
                 }
-            return (parameters, mediaFiles)
+            return .init(parameters, mediaFiles)
         }
     }
 }

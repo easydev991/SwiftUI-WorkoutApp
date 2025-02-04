@@ -544,7 +544,7 @@ private extension SWClient {
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
             hasMultipartFormData: endpoint.hasMultipartFormData,
-            body: endpoint.httpBody,
+            bodyParts: endpoint.bodyParts,
             token: token ?? savedToken
         )
     }

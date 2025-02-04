@@ -5,7 +5,7 @@ public struct RequestComponents {
     let queryItems: [URLQueryItem]
     let httpMethod: HTTPMethod
     let hasMultipartFormData: Bool
-    let body: (parameters: [String: String], mediaFiles: [BodyMaker.MediaFile]?)?
+    let bodyParts: BodyMaker.Parts?
     let boundary: String
     let token: String?
 
@@ -15,7 +15,7 @@ public struct RequestComponents {
     ///   - queryItems: Параметры `query`, по умолчанию отсутствуют
     ///   - httpMethod: Метод запроса
     ///   - hasMultipartFormData: Есть ли в запросе файлы для отправки (в нашем случае картинки), по умолчанию `false`
-    ///   - body: Данные для тела запроса, по умолчанию `nil`
+    ///   - bodyParts: Данные для тела запроса, по умолчанию `nil`
     ///   - boundary: `Boundary` для `body`, по умолчанию `UUID().uuidString`
     ///   - token: Токен для авторизации, по умолчанию `nil`
     public init(
@@ -23,7 +23,7 @@ public struct RequestComponents {
         queryItems: [URLQueryItem] = [],
         httpMethod: HTTPMethod,
         hasMultipartFormData: Bool = false,
-        body: (parameters: [String: String], mediaFiles: [BodyMaker.MediaFile]?)? = nil,
+        bodyParts: BodyMaker.Parts? = nil,
         boundary: String = UUID().uuidString,
         token: String? = nil
     ) {
@@ -31,7 +31,7 @@ public struct RequestComponents {
         self.queryItems = queryItems
         self.httpMethod = httpMethod
         self.hasMultipartFormData = hasMultipartFormData
-        self.body = body
+        self.bodyParts = bodyParts
         self.boundary = boundary
         self.token = token
     }
@@ -58,12 +58,12 @@ extension RequestComponents {
         var allHeaders = [HTTPHeaderField]()
         var httpBodyData: Data?
 
-        if let body {
-            let parameters = body.parameters.map(BodyMaker.Parameter.init)
+        if let bodyParts {
+            let parameters = bodyParts.parameters
             if hasMultipartFormData {
                 httpBodyData = BodyMaker.makeBodyWithMultipartForm(
                     parameters: parameters,
-                    media: body.mediaFiles,
+                    media: bodyParts.mediaFiles,
                     boundary: boundary
                 )
                 allHeaders.append(.init(
