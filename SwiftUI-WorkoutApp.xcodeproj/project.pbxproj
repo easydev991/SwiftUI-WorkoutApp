@@ -13,6 +13,8 @@
 		67138D922974851F00BBF450 /* XCUIElement+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D912974851F00BBF450 /* XCUIElement+.swift */; };
 		67138D942974854F00BBF450 /* XCTestCase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D932974854F00BBF450 /* XCTestCase+.swift */; };
 		6718BCA42AD5327F002846A6 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */; };
+		671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */; };
+		671B4AEB2D4F683E00286996 /* ImagePickerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
 		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordScreen.swift */; };
@@ -34,6 +36,7 @@
 		67627750283A3A54009C203F /* JournalsListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762774F283A3A54009C203F /* JournalsListScreen.swift */; };
 		67627755283A4C77009C203F /* JournalEntriesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67627754283A4C77009C203F /* JournalEntriesScreen.swift */; };
 		6762775B283A87AD009C203F /* JournalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6762775A283A87AD009C203F /* JournalCell.swift */; };
+		6764D6382D52009F00699007 /* DialogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6764D6372D52009F00699007 /* DialogsViewModel.swift */; };
 		6765B2562D451771006164AB /* UIImage+toMediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B2552D451771006164AB /* UIImage+toMediaFile.swift */; };
 		6765B2582D4544C8006164AB /* MainUserProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B2572D4544C8006164AB /* MainUserProfileScreen.swift */; };
 		6765B25B2D455D5C006164AB /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6765B25A2D455D5C006164AB /* ProfileViews.swift */; };
@@ -97,6 +100,8 @@
 		67138D912974851F00BBF450 /* XCUIElement+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+.swift"; sourceTree = "<group>"; };
 		67138D932974854F00BBF450 /* XCTestCase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+.swift"; sourceTree = "<group>"; };
 		6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
+		671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernPickedImagesGrid.swift; sourceTree = "<group>"; };
+		671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViews.swift; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordScreen.swift; sourceTree = "<group>"; };
@@ -119,6 +124,7 @@
 		6762774F283A3A54009C203F /* JournalsListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalsListScreen.swift; sourceTree = "<group>"; };
 		67627754283A4C77009C203F /* JournalEntriesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesScreen.swift; sourceTree = "<group>"; };
 		6762775A283A87AD009C203F /* JournalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCell.swift; sourceTree = "<group>"; };
+		6764D6372D52009F00699007 /* DialogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogsViewModel.swift; sourceTree = "<group>"; };
 		6765B2552D451771006164AB /* UIImage+toMediaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+toMediaFile.swift"; sourceTree = "<group>"; };
 		6765B2572D4544C8006164AB /* MainUserProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileScreen.swift; sourceTree = "<group>"; };
 		6765B25A2D455D5C006164AB /* ProfileViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViews.swift; sourceTree = "<group>"; };
@@ -223,6 +229,7 @@
 		67419AD5282E8E7C004F5339 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
+				6764D6372D52009F00699007 /* DialogsViewModel.swift */,
 				67D916802838E2460098D3CB /* DialogsListScreen.swift */,
 				67D916852838F0DD0098D3CB /* DialogScreen.swift */,
 			);
@@ -265,6 +272,8 @@
 			children = (
 				67515698283FEC3100501346 /* PickedImagesGrid.swift */,
 				67A079F12A758E7D005EAF70 /* PickedPhotoView.swift */,
+				671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */,
+				671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */,
 			);
 			path = ImagePicker;
 			sourceTree = "<group>";
@@ -609,9 +618,11 @@
 				67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */,
 				67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */,
 				674DF0402B11257D00828016 /* NavigationLink+.swift in Sources */,
+				671B4AEB2D4F683E00286996 /* ImagePickerViews.swift in Sources */,
 				67BD2D012AF7D21B00F44064 /* ParksManager.swift in Sources */,
 				6705E7EE283B703400DABCC8 /* JournalSettingsScreen.swift in Sources */,
 				6798AA40280AEDC900DB76F1 /* RootScreen.swift in Sources */,
+				671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryScreen.swift in Sources */,
 				674D0623282A9896007E75C6 /* SearchUsersScreen.swift in Sources */,
 				67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */,
@@ -638,6 +649,7 @@
 				6798AA84280C0F7D00DB76F1 /* EditProfileScreen.swift in Sources */,
 				6798AA73280B43FE00DB76F1 /* LoginScreen.swift in Sources */,
 				67D9169628396C1E0098D3CB /* SendMessageScreen.swift in Sources */,
+				6764D6382D52009F00699007 /* DialogsViewModel.swift in Sources */,
 				6747575928128603002F0A24 /* ParkDetailScreen.swift in Sources */,
 				675EC6572815433600C2E229 /* UsersListScreen.swift in Sources */,
 				675EC65F2815532800C2E229 /* EventFormScreen.swift in Sources */,
@@ -844,7 +856,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -855,6 +867,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -894,7 +907,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -905,6 +918,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -38,6 +38,7 @@ struct DialogScreen: View {
                 sendMessageBar
             }
         }
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .task(priority: .low) { await markAsRead() }
         .task(priority: .high) { await askForMessages() }
@@ -178,6 +179,7 @@ private extension DialogScreen {
 
     func sendMessage() {
         isLoading = true
+        isMessageBarFocused = false
         sendMessageTask = Task(priority: .userInitiated) {
             do {
                 let userID = dialog.anotherUserID ?? 0

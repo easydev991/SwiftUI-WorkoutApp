@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>com.FGU.WorkOut</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>swparks</string>
+			</array>
+		</dict>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -9,7 +22,5 @@
 		<string>maps</string>
 		<string>mailto</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Для выбора фото профиля требуется доступ к галерее</string>
 </dict>
 </plist>

@@ -26,43 +26,53 @@ struct PickedImagesGrid: View {
     let processExtraImages: () -> Void
 
     var body: some View {
+        Group {
+            if #available(iOS 16.0, *) {
+                ModernPickedImagesGrid(
+                    images: $images,
+                    showImagePicker: $showImagePicker,
+                    selectionLimit: selectionLimit
+                )
+            } else {
+                oldContentView
+                    .sheet(isPresented: $showImagePicker) {
+                        processExtraImages()
+                    } content: {
+                        ImagePicker(
+                            pickedImages: $images,
+                            selectionLimit: selectionLimit,
+                            compressionQuality: 0
+                        )
+                    }
+            }
+        }
+        .animation(.default, value: images.count)
+    }
+}
+
+private extension PickedImagesGrid {
+    var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
+
+    var oldContentView: some View {
         SectionView(header: .init(header), mode: .regular) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(Color.swMainText)
-                    .multilineTextAlignment(.leading)
-                LazyVGrid(
-                    columns: .init(
-                        repeating: .init(
-                            .flexible(minimum: screenWidth * 0.287),
-                            spacing: 11
-                        ),
-                        count: 3
-                    ),
-                    spacing: 12
-                ) {
-                    ForEach(Array(zip(imagesArray.indices, imagesArray)), id: \.0) { index, model in
-                        GeometryReader { geo in
-                            PickedImageView(
-                                model: model,
-                                height: geo.size.width,
-                                action: { option in
-                                    switch option {
-                                    case .addImage:
-                                        showImagePicker.toggle()
-                                    case .deleteImage:
-                                        deletePhoto(at: index)
-                                    case let .showDetailImage(uiImage):
-                                        fullscreenImageInfo = .init(uiImage: uiImage, id: index)
-                                    }
-                                }
-                            )
+                ImagePickerViews.makeSubtitleView(
+                    selectionLimit: selectionLimit,
+                    isEmpty: images.isEmpty
+                )
+                ImagePickerViews.makeGridView(
+                    items: imagesArray,
+                    action: { index, option in
+                        switch option {
+                        case .addImage:
+                            showImagePicker.toggle()
+                        case .deleteImage:
+                            deletePhoto(at: index)
+                        case let .showDetailImage(uiImage):
+                            fullscreenImageInfo = .init(uiImage: uiImage, id: index)
                         }
-                        .aspectRatio(1, contentMode: .fit)
-                        .cornerRadius(8)
                     }
-                }
+                )
             }
             .fullScreenCover(item: $fullscreenImageInfo) {
                 fullscreenImageInfo = nil
@@ -75,33 +85,6 @@ struct PickedImagesGrid: View {
                 )
             }
         }
-        .sheet(isPresented: $showImagePicker) {
-            processExtraImages()
-        } content: {
-            ImagePicker(
-                pickedImages: $images,
-                selectionLimit: selectionLimit,
-                compressionQuality: 0
-            )
-        }
-    }
-}
-
-private extension PickedImagesGrid {
-    var header: String {
-        String.localizedStringWithFormat(
-            "photoSectionHeader".localized,
-            images.count
-        )
-    }
-
-    var subtitle: String {
-        guard selectionLimit > 0 else {
-            return "Добавлено максимальное количество фотографий".localized
-        }
-        return images.isEmpty
-            ? String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)
-            : String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
     }
 
     func deletePhoto(at index: Int) {

@@ -38,6 +38,7 @@ struct SearchUsersScreen: View {
         .onSubmit(of: .search, search)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
+        .navigationBarBackButtonHidden(mode == .chat)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 CloseButton(mode: .text) { dismiss() }
@@ -130,7 +131,7 @@ private extension SearchUsersScreen {
                     .findUsers(with: query.withoutSpaces)
                 users = foundUsers
                 if foundUsers.isEmpty {
-                    SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя")
+                    SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя".localized)
                 }
             } catch {
                 SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)

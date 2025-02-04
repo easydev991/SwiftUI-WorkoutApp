@@ -62,7 +62,6 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - userID: `id` пользователя
     /// - Returns: вся информация о пользователе
-    @discardableResult
     public func getUserByID(_ userID: Int) async throws -> UserResponse {
         let endpoint = Endpoint.getUser(id: userID)
         return try await makeResult(for: endpoint)
@@ -544,7 +543,7 @@ private extension SWClient {
             queryItems: endpoint.queryItems,
             httpMethod: endpoint.method,
             hasMultipartFormData: endpoint.hasMultipartFormData,
-            body: endpoint.httpBody,
+            bodyParts: endpoint.bodyParts,
             token: token ?? savedToken
         )
     }
