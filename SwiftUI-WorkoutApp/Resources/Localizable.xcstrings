@@ -2371,6 +2371,17 @@
         }
       }
     },
+    "Не удалось найти такого пользователя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not find such a user"
+          }
+        }
+      }
+    },
     "Не указан" : {
       "extractionState" : "manual",
       "localizations" : {

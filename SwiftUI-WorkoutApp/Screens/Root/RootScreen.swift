@@ -2,7 +2,6 @@ import SWDesignSystem
 import SwiftUI
 
 struct RootScreen: View {
-    @Environment(\.userFlags) private var userFlags
     @Binding var selectedTab: TabViewModel.Tab
     let unreadCount: Int
 
