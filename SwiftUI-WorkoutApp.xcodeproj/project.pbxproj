@@ -863,6 +863,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -913,6 +914,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
