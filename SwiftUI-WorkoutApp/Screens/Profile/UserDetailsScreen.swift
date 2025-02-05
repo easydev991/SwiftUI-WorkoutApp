@@ -41,7 +41,6 @@ struct UserDetailsScreen: View {
             .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .opacity(user.isFull ? 1 : 0)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .toolbar {
