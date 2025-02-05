@@ -66,7 +66,7 @@ struct ModernPickedImagesGrid: View {
                 let newImages = try await loadImages(from: selectedItems)
                 images.append(contentsOf: newImages)
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             selectedItems.removeAll()
             isLoading.toggle()

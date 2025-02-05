@@ -41,7 +41,6 @@ struct UserDetailsScreen: View {
             .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .opacity(user.isFull ? 1 : 0)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .toolbar {
@@ -135,7 +134,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }
@@ -166,7 +165,7 @@ private extension UserDetailsScreen {
                     }
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }
@@ -199,7 +198,8 @@ private extension UserDetailsScreen {
         do {
             user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            guard (error as NSError).code != -999 else { return }
+            SWAlert.shared.presentDefaultUIKit(error)
         }
     }
 
@@ -212,7 +212,7 @@ private extension UserDetailsScreen {
                     messagingModel.recipient = nil
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
         }

@@ -162,7 +162,7 @@ private extension DialogScreen {
                 markedAsReadClbk(dialog)
             }
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
     }
 
@@ -172,7 +172,7 @@ private extension DialogScreen {
         do {
             messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
     }
@@ -188,7 +188,7 @@ private extension DialogScreen {
                     await askForMessages(refresh: true)
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }

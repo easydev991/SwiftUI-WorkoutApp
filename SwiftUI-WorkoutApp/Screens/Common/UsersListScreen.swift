@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком пользователей
 struct UsersListScreen: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var users = [UserResponse]()
@@ -21,20 +22,10 @@ struct UsersListScreen: View {
         ScrollView {
             VStack(spacing: 0) {
                 friendRequestsSectionIfNeeded
-                SectionView(
-                    header: friendRequests.isEmpty ? nil : "Друзья",
-                    mode: .regular
-                ) {
-                    LazyVStack(spacing: 12) {
-                        ForEach(users) { item in
-                            listItem(for: item)
-                                .disabled(item.id == defaults.mainUserInfo?.id)
-                        }
-                    }
-                }
-                .padding(.top)
+                friendsSectionIfNeeded
             }
             .padding(.horizontal)
+            .frame(maxWidth: .infinity)
         }
         .sheet(
             item: $messagingModel.recipient,
@@ -99,6 +90,27 @@ private extension UsersListScreen {
     }
 
     @ViewBuilder
+    var friendsSectionIfNeeded: some View {
+        ZStack {
+            if !users.isEmpty {
+                SectionView(
+                    header: friendRequests.isEmpty ? nil : "Друзья",
+                    mode: .regular
+                ) {
+                    LazyVStack(spacing: 12) {
+                        ForEach(users) { item in
+                            listItem(for: item)
+                                .disabled(item.id == defaults.mainUserInfo?.id)
+                        }
+                    }
+                }
+            }
+        }
+        .animation(.default, value: users)
+        .padding(.top)
+    }
+
+    @ViewBuilder
     func listItem(for model: UserResponse) -> some View {
         switch mode {
         case .friendsForChat:
@@ -146,7 +158,7 @@ private extension UsersListScreen {
                 let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
         }
@@ -166,32 +178,24 @@ private extension UsersListScreen {
             case let .friends(userID), let .friendsForChat(userID):
                 if !users.isEmpty, !refresh { return }
                 if !refresh { isLoading = true }
-                let isMainUser = userID == defaults.mainUserInfo?.id
-                let response = try await client.getFriendsForUser(id: userID)
-                if isMainUser {
-                    try? defaults.saveFriendsIds(response.map(\.id))
-                    if defaults.friendRequestsList.isEmpty || refresh {
-                        friendRequests = try await client.getFriendRequests()
-                        try? defaults.saveFriendRequests(friendRequests)
-                    } else {
-                        friendRequests = defaults.friendRequestsList
-                    }
+                if userID == defaults.mainUserInfo?.id {
+                    try await makeListForMainUser(userID)
+                } else {
+                    users = try await client.getFriendsForUser(id: userID)
                 }
-                users = response
             case let .eventParticipants(list), let .parkParticipants(list):
                 users = list
             case .blacklist:
                 if !users.isEmpty, !refresh { return }
                 if !refresh { isLoading = true }
-                if defaults.blacklistedUsers.isEmpty || refresh {
-                    users = try await client.getBlacklist()
-                    try? defaults.saveBlacklist(users)
-                } else {
-                    users = defaults.blacklistedUsers
+                users = try await client.getBlacklist()
+                try? defaults.saveBlacklist(users)
+                if users.isEmpty {
+                    dismiss()
                 }
             }
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
     }
@@ -202,13 +206,25 @@ private extension UsersListScreen {
             do {
                 let isSuccess = try await client.respondToFriendRequest(from: userID, accept: accept)
                 if isSuccess {
-                    await askForUsers(refresh: true)
+                    friendRequests.removeAll(where: { $0.id == userID })
+                    try await makeListForMainUser(defaults.mainUserInfo?.id)
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }
+    }
+
+    func makeListForMainUser(_ id: Int?) async throws {
+        guard let id else { return }
+        async let friendsTask = client.getFriendsForUser(id: id)
+        async let requestsTask = client.getFriendRequests()
+        let (friends, requests) = try await (friendsTask, requestsTask)
+        try? defaults.saveFriendsIds(friends.map(\.id))
+        try? defaults.saveFriendRequests(requests)
+        users = friends
+        friendRequests = requests
     }
 }
 

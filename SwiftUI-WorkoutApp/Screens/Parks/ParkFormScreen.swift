@@ -153,7 +153,7 @@ private extension ParkFormScreen {
                         refreshClbk()
                     }
                 } catch {
-                    SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                    SWAlert.shared.presentDefaultUIKit(error)
                 }
                 isLoading = false
             }

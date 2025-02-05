@@ -189,7 +189,7 @@ private extension EventFormScreen {
                         dismiss()
                     }
                 } catch {
-                    SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                    SWAlert.shared.presentDefaultUIKit(error)
                 }
                 isLoading = false
             }
