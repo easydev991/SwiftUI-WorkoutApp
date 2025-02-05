@@ -34,6 +34,14 @@ public final class SWAlert {
         topMostViewController.present(alert, animated: true)
     }
 
+    /// Показывает стандартный алерт с сообщение об ошибке
+    ///
+    /// Игнорирует `CancellationError`
+    public func presentDefaultUIKit(_ error: Error) {
+        guard (error as NSError).code != -999 else { return }
+        presentDefaultUIKit(message: error.localizedDescription)
+    }
+
     private func dismiss() {
         currentAlert?.dismiss(animated: true)
         currentAlert = nil

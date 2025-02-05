@@ -124,7 +124,7 @@ private extension TextEntryScreen {
                 }
                 if isSuccess { refreshClbk() }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }

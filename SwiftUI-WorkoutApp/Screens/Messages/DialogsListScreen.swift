@@ -164,7 +164,7 @@ private extension DialogsListScreen {
         do {
             try await viewModel.askForDialogs(refresh: refresh, defaults: defaults)
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
     }
 
@@ -178,7 +178,7 @@ private extension DialogsListScreen {
             do {
                 try await viewModel.deleteDialog(at: index, defaults: defaults)
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
         }
     }

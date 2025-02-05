@@ -439,7 +439,7 @@ private extension ParkDetailScreen {
             )
             onDeletion(park.id)
         } else {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
     }
 }

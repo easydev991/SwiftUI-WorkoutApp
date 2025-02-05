@@ -212,7 +212,7 @@ private extension EditProfileScreen {
                 userForm = oldUserForm
             }
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
     }
 
@@ -244,7 +244,7 @@ private extension EditProfileScreen {
                 dismiss()
             } catch {
                 isLoading = false
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
         }
     }

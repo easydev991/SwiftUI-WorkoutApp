@@ -110,7 +110,7 @@ private extension SearchUsersScreen {
                 let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
         }
@@ -134,7 +134,7 @@ private extension SearchUsersScreen {
                     SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя".localized)
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }

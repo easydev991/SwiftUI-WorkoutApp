@@ -158,7 +158,7 @@ private extension UsersListScreen {
                 let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
                 endMessaging(isSuccess: isSuccess)
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
         }
@@ -195,7 +195,7 @@ private extension UsersListScreen {
                 }
             }
         } catch {
-            SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+            SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
     }
@@ -210,7 +210,7 @@ private extension UsersListScreen {
                     try await makeListForMainUser(defaults.mainUserInfo?.id)
                 }
             } catch {
-                SWAlert.shared.presentDefaultUIKit(message: error.localizedDescription)
+                SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
         }
