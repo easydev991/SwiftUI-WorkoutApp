@@ -42,7 +42,6 @@ extension SWNetworkService: SWNetworkProtocol {
                 guard let decodedResult = try? decoder.decode(T.self, from: data) else {
                     throw log(
                         APIError.decodingError,
-                        code: response.statusCode,
                         request: request,
                         data: data,
                         response: response
@@ -52,10 +51,8 @@ extension SWNetworkService: SWNetworkProtocol {
                 return decodedResult
             default:
                 let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
-                let apiError = APIError(errorInfo, response.statusCode)
                 throw log(
-                    apiError,
-                    code: response.statusCode,
+                    APIError(errorInfo, response.statusCode),
                     request: request,
                     data: data,
                     response: response
@@ -80,15 +77,12 @@ extension SWNetworkService: SWNetworkProtocol {
                 return true
             }
             if let errorInfo = try? decoder.decode(ErrorResponse.self, from: data) {
-                let apiError = APIError(errorInfo, response.statusCode)
-                log(
-                    apiError,
-                    code: response.statusCode,
+                throw log(
+                    APIError(errorInfo, response.statusCode),
                     request: request,
                     data: data,
                     response: response
                 )
-                throw apiError
             }
             return false
         } catch {
@@ -135,19 +129,18 @@ private extension SWNetworkService {
         return error
     }
 
-    @discardableResult
     func log(
         _ error: Error,
-        code: Int,
         request: URLRequest,
         data: Data,
-        response _: HTTPURLResponse?
+        response: HTTPURLResponse
     ) -> Error {
         logger.error(
             """
-            Код ответа: \(code, privacy: .public)
+            Код ответа: \(response.statusCode, privacy: .public)
             \(error.localizedDescription, privacy: .public)
             \nURL запроса: \(request.urlString, privacy: .public)
+            \nответ (response): \(response)
             \nJSON в ответе: \(data.prettyJson, privacy: .public)
             """
         )
@@ -161,22 +154,21 @@ private extension SWNetworkService {
     ///   - error: Исходная ошибка
     ///   - request: Запрос, упавший в ошибку
     /// - Returns: Новая ошибка
-    @discardableResult
     func handleUrlSession(_ error: Error, _ request: URLRequest) -> Error {
         let errorCode = (error as NSError).code
-        if errorCode == -999 {
+        guard errorCode != -999 else {
             let message = "Запрос отменён! Код ошибки: -999. URL запроса: \(request.urlString)"
             logger.error("\(message)")
-        } else {
-            logger.error(
-                """
-                Ошибка!
-                \(error.localizedDescription, privacy: .public)
-                Код ошибки: \(errorCode, privacy: .public)
-                \nURL запроса: \(request.urlString, privacy: .public)
-                """
-            )
+            return CancellationError()
         }
+        logger.error(
+            """
+            Ошибка!
+            \(error.localizedDescription, privacy: .public)
+            Код ошибки: \(errorCode, privacy: .public)
+            \nURL запроса: \(request.urlString, privacy: .public)
+            """
+        )
         guard let urlError = error as? URLError else {
             return error
         }

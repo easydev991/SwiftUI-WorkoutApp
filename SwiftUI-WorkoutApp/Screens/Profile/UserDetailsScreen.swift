@@ -198,7 +198,6 @@ private extension UserDetailsScreen {
         do {
             user = try await SWClient(with: defaults).getUserByID(user.id)
         } catch {
-            guard (error as NSError).code != -999 else { return }
             SWAlert.shared.presentDefaultUIKit(error)
         }
     }

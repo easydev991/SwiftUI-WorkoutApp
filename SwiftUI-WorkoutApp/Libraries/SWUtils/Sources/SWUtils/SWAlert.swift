@@ -38,7 +38,13 @@ public final class SWAlert {
     ///
     /// Игнорирует `CancellationError`
     public func presentDefaultUIKit(_ error: Error) {
-        guard (error as NSError).code != -999 else { return }
+        guard type(of: error) != CancellationError.self else {
+            // Баг в NavigationView + searchable приводит к ошибке отмены,
+            // если сначала нажать на поле поиска, а следующий модальный
+            // экран закрыть свайпом вниз. Будет исправлено переходом
+            // на iOS 16 min + NavigationStack
+            return
+        }
         presentDefaultUIKit(message: error.localizedDescription)
     }
 

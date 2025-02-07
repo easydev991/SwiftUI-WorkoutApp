@@ -1,12 +1,12 @@
 import Foundation
 
-public struct ErrorResponse: Codable {
-    public let errors: [String]?
-    public let name, message: String?
-    public let code, status: Int?
-    public let type: String?
+struct ErrorResponse: Codable {
+    let errors: [String]?
+    let name, message: String?
+    let code, status: Int?
+    let type: String?
 
-    public var realCode: Int {
+    var realCode: Int {
         if let code, code != 0 {
             code
         } else {
