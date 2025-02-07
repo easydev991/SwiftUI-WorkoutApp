@@ -37,7 +37,6 @@ struct SwiftUI_WorkoutAppApp: App {
                 unreadCount: defaults.unreadMessagesCount
             )
             .environmentObject(tabViewModel)
-            .environmentObject(network)
             .environmentObject(defaults)
             .environmentObject(parksManager)
             .environmentObject(dialogsViewModel)
