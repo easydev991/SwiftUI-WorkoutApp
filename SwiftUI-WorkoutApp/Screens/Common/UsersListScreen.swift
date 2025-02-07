@@ -57,8 +57,6 @@ extension UsersListScreen {
         case eventParticipants(list: [UserResponse])
         /// Тренирующиеся на площадке
         case parkParticipants(list: [UserResponse])
-        /// Черный список основного пользователя
-        case blacklist
     }
 }
 
@@ -71,8 +69,6 @@ private extension UsersListScreen.Mode {
             "Участники мероприятия"
         case .parkParticipants:
             "Здесь тренируются"
-        case .blacklist:
-            "Черный список"
         }
     }
 }
@@ -119,7 +115,7 @@ private extension UsersListScreen {
             } label: {
                 userRowView(with: model)
             }
-        case .friends, .eventParticipants, .parkParticipants, .blacklist:
+        case .friends, .eventParticipants, .parkParticipants:
             NavigationLink {
                 UserDetailsScreen(for: model)
                     .navigationBarTitleDisplayMode(.inline)
@@ -185,14 +181,6 @@ private extension UsersListScreen {
                 }
             case let .eventParticipants(list), let .parkParticipants(list):
                 users = list
-            case .blacklist:
-                if !users.isEmpty, !refresh { return }
-                if !refresh { isLoading = true }
-                users = try await client.getBlacklist()
-                try? defaults.saveBlacklist(users)
-                if users.isEmpty {
-                    dismiss()
-                }
             }
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)

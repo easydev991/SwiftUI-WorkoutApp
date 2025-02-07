@@ -16,6 +16,7 @@
 		671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */; };
 		671B4AEB2D4F683E00286996 /* ImagePickerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
+		674000402D55E97900E5CB06 /* BlackListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6740003F2D55E97900E5CB06 /* BlackListScreen.swift */; };
 		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordScreen.swift */; };
 		6747575928128603002F0A24 /* ParkDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575828128603002F0A24 /* ParkDetailScreen.swift */; };
@@ -103,6 +104,7 @@
 		671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernPickedImagesGrid.swift; sourceTree = "<group>"; };
 		671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViews.swift; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
+		6740003F2D55E97900E5CB06 /* BlackListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackListScreen.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordScreen.swift; sourceTree = "<group>"; };
 		6747575828128603002F0A24 /* ParkDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkDetailScreen.swift; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				674D061A28280A63007E75C6 /* FriendRequestsView.swift */,
 				674D0622282A9896007E75C6 /* SearchUsersScreen.swift */,
 				6765B2572D4544C8006164AB /* MainUserProfileScreen.swift */,
+				6740003F2D55E97900E5CB06 /* BlackListScreen.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 				6798AA40280AEDC900DB76F1 /* RootScreen.swift in Sources */,
 				671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */,
 				675EC64F2814126800C2E229 /* TextEntryScreen.swift in Sources */,
+				674000402D55E97900E5CB06 /* BlackListScreen.swift in Sources */,
 				674D0623282A9896007E75C6 /* SearchUsersScreen.swift in Sources */,
 				67A4710D2AEED8F8004D341D /* PastEventStorage.swift in Sources */,
 				675FB8DB2ADDB87200C9671F /* ParksMapScreen+LocationSettingReminderView.swift in Sources */,
@@ -856,7 +860,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -907,7 +911,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
