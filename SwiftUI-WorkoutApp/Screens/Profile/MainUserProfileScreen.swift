@@ -115,7 +115,7 @@ private extension MainUserProfileScreen {
     var blacklistButtonIfNeeded: some View {
         ZStack {
             if !defaults.blacklistedUsers.isEmpty {
-                NavigationLink(destination: UsersListScreen(mode: .blacklist)) {
+                NavigationLink(destination: BlackListScreen()) {
                     FormRowView(
                         title: "Черный список",
                         trailingContent: .textWithChevron(defaults.blacklistedUsersCountString)

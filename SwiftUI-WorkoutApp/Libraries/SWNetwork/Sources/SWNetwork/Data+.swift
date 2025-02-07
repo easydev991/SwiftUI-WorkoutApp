@@ -7,7 +7,7 @@ extension Data {
            let json = String(data: jsonData, encoding: .utf8) {
             json
         } else {
-            ""
+            "отсутствует"
         }
     }
 

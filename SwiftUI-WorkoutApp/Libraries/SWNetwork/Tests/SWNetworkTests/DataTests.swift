@@ -17,6 +17,32 @@ struct DataTests {
     }
 
     @Test
+    func validJSON_producesFormattedString() throws {
+        let jsonObject = ["name": "Test", "value": 42] as [String: Any]
+        let data = try JSONSerialization.data(withJSONObject: jsonObject)
+        let result = data.prettyJson
+        #expect(!result.isEmpty)
+        #expect(result != "отсутствует")
+        #expect(result.contains("\n"))
+        #expect(result.contains("  "))
+    }
+
+    @Test(arguments: [Data(), Data([0x00, 0x01, 0x02])])
+    func emptyOrInvalidData(_ data: Data) {
+        #expect(data.prettyJson == "отсутствует")
+    }
+
+    @Test
+    func minimalValidJSON_keepsContentIntegrity() throws {
+        let originalJson = "{\"key\":\"value\"}"
+        let data = try #require(originalJson.data(using: .utf8))
+        let prettyJson = data.prettyJson
+        #expect(prettyJson.contains("\"key\" : \"value\""))
+        #expect(prettyJson.contains("{"))
+        #expect(prettyJson.contains("}"))
+    }
+
+    @Test
     func appendString() throws {
         var data = Data()
         data.append("Hello, World!")
