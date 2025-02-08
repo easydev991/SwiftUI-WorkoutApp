@@ -56,6 +56,7 @@ struct UserDetailsScreen: View {
         .refreshable { await askForUserInfo(refresh: true) }
         .task { await askForUserInfo() }
         .navigationTitle("Профиль")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

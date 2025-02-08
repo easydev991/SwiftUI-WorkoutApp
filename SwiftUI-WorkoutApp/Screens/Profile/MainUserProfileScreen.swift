@@ -64,6 +64,7 @@ private extension MainUserProfileScreen {
             VStack(spacing: 12) {
                 ProfileViews.makeFriends(
                     for: user,
+                    isMainUser: true,
                     friendRequestsCount: defaults.friendRequestsList.count
                 )
                 ProfileViews.makeUsedParks(for: user)

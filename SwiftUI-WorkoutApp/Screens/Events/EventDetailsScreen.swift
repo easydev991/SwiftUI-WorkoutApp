@@ -292,7 +292,7 @@ private extension EventDetailsScreen {
             case let .eventAuthor(user):
                 UserDetailsScreen(for: user)
             case let .eventParticipants(users):
-                UsersListScreen(mode: .eventParticipants(list: users))
+                ParticipantsScreen(mode: .event(list: users))
             case let .editEvent(eventToEdit):
                 EventFormScreen(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
             }

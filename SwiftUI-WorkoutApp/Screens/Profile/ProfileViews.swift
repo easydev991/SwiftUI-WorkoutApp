@@ -19,12 +19,19 @@ extension ProfileViews {
     @ViewBuilder @MainActor
     static func makeFriends(
         for user: UserResponse,
+        isMainUser: Bool = false,
         friendRequestsCount: Int = 0
     ) -> some View {
         let showButton = user.hasFriends || friendRequestsCount > 0
         ZStack {
             if showButton {
-                NavigationLink(destination: UsersListScreen(mode: .friends(userID: user.id))) {
+                NavigationLink {
+                    if isMainUser {
+                        MainUserFriendsListScreen(userId: user.id)
+                    } else {
+                        FriendsListScreen(mode: .user(id: user.id))
+                    }
+                } label: {
                     FormRowView(
                         title: "Друзья",
                         trailingContent: .textWithBadgeAndChevron(

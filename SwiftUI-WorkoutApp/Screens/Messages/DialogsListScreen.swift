@@ -74,7 +74,7 @@ private extension DialogsListScreen {
     var friendListButton: some View {
         NavigationLink(isActive: $openFriendList) {
             if hasFriends, let mainUserID = defaults.mainUserInfo?.id {
-                UsersListScreen(mode: .friendsForChat(userID: mainUserID))
+                FriendsListScreen(mode: .chat(userID: mainUserID))
             } else {
                 SearchUsersScreen(mode: .chat)
             }
