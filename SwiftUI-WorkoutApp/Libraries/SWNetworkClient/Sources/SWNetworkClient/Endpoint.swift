@@ -28,12 +28,12 @@ enum Endpoint {
     case deleteUser
 
     // MARK: Получить профиль пользователя
-    /// **GET** ${API}/users/<id>
+    /// **GET** ${API}/users/<user_id>
     /// `id` - идентификатор пользователя, чей профиль нужно получить
     case getUser(id: Int)
 
     // MARK: Получить список друзей пользователя
-    /// **GET** ${API}/users/<id>/friends
+    /// **GET** ${API}/users/<user_id>/friends
     /// `id` - идентификатор пользователя, чьих друзей нужно получить
     case getFriendsForUser(id: Int)
 
@@ -42,7 +42,7 @@ enum Endpoint {
     case getFriendRequests
 
     // MARK: Принять заявку на добавление в друзья
-    /// **POST** ${API}/friends/<id>/accept
+    /// **POST** ${API}/friends/<user_id>/accept
     case acceptFriendRequest(from: Int)
 
     // MARK: Отклонить заявку на добавление в друзья
@@ -70,7 +70,7 @@ enum Endpoint {
     case deleteFromBlacklist(_ userID: Int)
 
     // MARK: Найти пользователей по логину
-    /// **GET** ${API}/users/search?name=<user>
+    /// **GET** ${API}/users/search?name=<user_login>
     case findUsers(with: String)
 
     // MARK: Получить список стран/городов
@@ -88,23 +88,23 @@ enum Endpoint {
     case getUpdatedParks(from: String)
 
     // MARK: Получить выбранную площадку:
-    /// **GET** ${API}/areas/<id>
+    /// **GET** ${API}/areas/<area_id>
     ///
     /// - Работает и с аутентификацией, и без
     /// - Для авторизованного пользователя нужно делать запрос с токеном,
     /// чтобы получить корректные данные (тренируется ли на площадке)
     case getPark(id: Int)
 
-    // MARK: Добавить новую спортплощадку
+    // MARK: Добавить новую площадку
     /// **POST** ${API}/areas
     case createPark(form: ParkForm)
 
-    // MARK: Изменить выбранную спортплощадку
-    /// **POST** ${API}/areas/<id>
+    // MARK: Изменить выбранную площадку
+    /// **POST** ${API}/areas/<area_id>
     case editPark(id: Int, form: ParkForm)
 
     // MARK: Удалить площадку
-    /// **DELETE** ${API}/areas/<id>
+    /// **DELETE** ${API}/areas/<area_id>
     case deletePark(_ parkID: Int)
 
     // MARK: Добавить комментарий для площадки
@@ -156,7 +156,7 @@ enum Endpoint {
     case createEvent(form: EventForm)
 
     // MARK: Изменить существующее мероприятие
-    /// **POST** ${API}/trainings/<id>
+    /// **POST** ${API}/trainings/<event_id>
     case editEvent(id: Int, form: EventForm)
 
     // MARK: Сообщить, что пользователь пойдет на мероприятие
@@ -176,7 +176,7 @@ enum Endpoint {
     case deleteEventComment(_ eventID: Int, commentID: Int)
 
     // MARK: Изменить свой комментарий для мероприятия
-    /// **POST** ${API}/trainings/<training_id>/comments/<comment_id>
+    /// **POST** ${API}/trainings/<event_id>/comments/<comment_id>
     case editEventComment(eventID: Int, commentID: Int, newComment: String)
 
     // MARK: Удалить мероприятие
@@ -228,11 +228,11 @@ enum Endpoint {
     case saveJournalEntry(userID: Int, journalID: Int, message: String)
 
     // MARK: Изменить запись в дневнике пользователя
-    /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
+    /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<entry_id>
     case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String)
 
     // MARK: Удалить запись в дневнике пользователя
-    /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<id>
+    /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<entry_id>
     case deleteEntry(userID: Int, journalID: Int, entryID: Int)
 
     // MARK: Удалить дневник пользователя

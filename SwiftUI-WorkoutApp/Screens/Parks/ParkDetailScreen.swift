@@ -197,7 +197,7 @@ private extension ParkDetailScreen {
             case let .parkAuthor(user):
                 UserDetailsScreen(for: user)
             case let .parkParticipants(users):
-                UsersListScreen(mode: .parkParticipants(list: users))
+                ParticipantsScreen(mode: .park(list: users))
             case let .editPark(park):
                 ParkFormScreen(.editExisting(park)) { refreshAction() }
             case let .createEvent(parkId, parkLongTitle):
