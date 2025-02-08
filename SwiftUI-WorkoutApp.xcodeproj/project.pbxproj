@@ -256,7 +256,6 @@
 			children = (
 				674E704D2B24D382008AE9D0 /* LoggerScreen.swift */,
 				670CA19D280E8F09003914A3 /* SettingsScreen.swift */,
-				6798AA72280B43FE00DB76F1 /* LoginScreen.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -424,6 +423,7 @@
 			isa = PBXGroup;
 			children = (
 				67BAF3F72836245100DB40D9 /* CommentsView.swift */,
+				6798AA72280B43FE00DB76F1 /* LoginScreen.swift */,
 				671D7DEB28210D2F0068E728 /* EmptyContentView.swift */,
 				67515697283FEC0B00501346 /* ImagePicker */,
 				6798AA65280B232F00DB76F1 /* IncognitoProfileView.swift */,
@@ -868,7 +868,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -919,7 +919,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;

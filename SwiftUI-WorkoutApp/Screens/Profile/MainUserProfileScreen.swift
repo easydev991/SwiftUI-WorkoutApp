@@ -6,8 +6,10 @@ import SWUtils
 
 /// Экран с профилем главного пользователя
 struct MainUserProfileScreen: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @State private var refreshTask: Task<Void, Never>?
     @State private var isLoading = false
     @State private var showLogoutDialog = false
     @State private var showSearchUsersScreen = false
@@ -30,6 +32,13 @@ struct MainUserProfileScreen: View {
         }
         .navigationViewStyle(.stack)
         .task { await askForUserInfo() }
+        .onChange(of: scenePhase) { phase in
+            if case .active = phase {
+                refreshTask = Task {
+                    await askForUserInfo(refresh: true)
+                }
+            }
+        }
     }
 }
 
@@ -144,29 +153,21 @@ private extension MainUserProfileScreen {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
-        guard defaults.isAuthorized else { return }
+        guard let userId = defaults.mainUserInfo?.id else { return }
         guard !isLoading else { return }
         if !refresh { isLoading = true }
         if refresh || defaults.needUpdateUser {
-            await makeUserInfo()
+            do {
+                let result = try await client.getSocialUpdates(userID: userId)
+                try defaults.saveFriendsIds(result.friends.map(\.id))
+                try defaults.saveFriendRequests(result.friendRequests)
+                try defaults.saveBlacklist(result.blacklist)
+                try defaults.saveUserInfo(result.user)
+            } catch {
+                SWAlert.shared.presentDefaultUIKit(error)
+            }
         }
         isLoading = false
-    }
-
-    func makeUserInfo() async {
-        guard let mainUserId = defaults.mainUserInfo?.id else { return }
-        do {
-            // TODO: вынести обновление заявок/черного списка в отдельную логику
-            async let getUserInfo = client.getUserByID(mainUserId)
-            async let getFriendRequests = client.getFriendRequests()
-            async let getBlacklist = client.getBlacklist()
-            let (userInfo, friendRequests, blacklist) = try await (getUserInfo, getFriendRequests, getBlacklist)
-            try defaults.saveUserInfo(userInfo)
-            try defaults.saveFriendRequests(friendRequests)
-            try defaults.saveBlacklist(blacklist)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
     }
 }
 
