@@ -39,21 +39,23 @@ public struct SWClient: Sendable {
         return result.userID
     }
 
-    /// Запрашивает обновления списка друзей, заявок в друзья, черного списка
+    /// Запрашивает обновления для пользователя и его списков: друзья, заявки, черный список
     ///
     /// - Вызывается при авторизации и при `scenePhase = active`
-    /// - Список чатов не обновляет
+    /// - Список чатов не обновляет (для этого `DialogsViewModel`)
     /// - Parameter userID: Идентификатор основного пользователя
     /// - Returns: Список друзей, заявок в друзья и черный список
-    public func getSocialUpdates(userID: Int) async -> (
+    public func getSocialUpdates(userID: Int) async throws -> (
+        user: UserResponse,
         friends: [UserResponse],
         friendRequests: [UserResponse],
         blacklist: [UserResponse]
-    )? {
+    ) {
+        async let user = getUserByID(userID)
         async let friendsForUser = getFriendsForUser(id: userID)
         async let friendRequests = getFriendRequests()
         async let blacklist = getBlacklist()
-        return try? await (friendsForUser, friendRequests, blacklist)
+        return try await (user, friendsForUser, friendRequests, blacklist)
     }
 
     /// Запрашивает данные пользователя по `id`

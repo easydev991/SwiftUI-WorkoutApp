@@ -6,13 +6,13 @@ import SWUtils
 
 /// Экран со списком диалогов
 struct DialogsListScreen: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var viewModel: DialogsViewModel
+    @StateObject private var viewModel = DialogsViewModel()
     @State private var selectedDialog: DialogResponse?
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
-    @State private var showDeleteConfirmation = false
     @State private var refreshTask: Task<Void, Never>?
     @State private var deleteDialogTask: Task<Void, Never>?
     private var client: SWClient { SWClient(with: defaults) }
@@ -34,6 +34,11 @@ struct DialogsListScreen: View {
         }
         .navigationViewStyle(.stack)
         .onChange(of: defaults.isAuthorized, perform: viewModel.clearDialogsOnLogout)
+        .onChange(of: scenePhase) { phase in
+            if case .active = phase {
+                refreshTask = Task { await askForDialogs() }
+            }
+        }
         .task(id: defaults.isAuthorized) { await askForDialogs() }
     }
 }
@@ -46,7 +51,7 @@ private extension DialogsListScreen {
             .background(Color.swBackground)
             .confirmationDialog(
                 .init(Constants.Alert.deleteDialog),
-                isPresented: $showDeleteConfirmation,
+                isPresented: $indexToDelete.mappedToBool(),
                 titleVisibility: .visible
             ) { deleteDialogButton }
             .toolbar {
@@ -105,7 +110,7 @@ private extension DialogsListScreen {
                         .listRowBackground(Color.swBackground)
                         .listRowSeparator(.hidden)
                 }
-                .onDelete { initiateDeletion(at: $0) }
+                .onDelete { indexToDelete = $0.first }
             }
             .listStyle(.plain)
             .opacity(viewModel.hasDialogs ? 1 : 0)
@@ -166,11 +171,6 @@ private extension DialogsListScreen {
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
-    }
-
-    func initiateDeletion(at indexSet: IndexSet) {
-        indexToDelete = indexSet.first
-        showDeleteConfirmation.toggle()
     }
 
     func deleteAction(at index: Int?) {

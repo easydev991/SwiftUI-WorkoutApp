@@ -7,6 +7,7 @@ import SWUtils
 /// Экран для авторизации / восстановления пароля
 struct LoginScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
     @State private var credentials = LoginCredentials()
@@ -100,18 +101,21 @@ private extension LoginScreen {
     func loginAction() {
         guard !isLoading else { return }
         focus = nil
-        isLoading.toggle()
+        isLoading = true
         loginTask = Task {
             do {
                 let token = AuthData(login: credentials.login, password: credentials.password).token
                 let userId = try await client.logIn(with: token)
                 try defaults.saveAuthData(login: credentials.login, password: credentials.password)
-                let userInfo = try await client.getUserByID(userId)
-                try defaults.saveUserInfo(userInfo)
+                let result = try await client.getSocialUpdates(userID: userId)
+                try defaults.saveFriendsIds(result.friends.map(\.id))
+                try defaults.saveFriendRequests(result.friendRequests)
+                try defaults.saveBlacklist(result.blacklist)
+                try defaults.saveUserInfo(result.user)
             } catch {
                 loginErrorMessage = error.localizedDescription
             }
-            isLoading.toggle()
+            isLoading = false
         }
     }
 

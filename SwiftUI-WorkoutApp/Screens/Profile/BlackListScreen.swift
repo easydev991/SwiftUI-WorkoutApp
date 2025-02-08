@@ -33,10 +33,7 @@ struct BlackListScreen: View {
             .frame(maxWidth: .infinity)
             .confirmationDialog(
                 .init(BlacklistOption.remove.dialogTitle),
-                isPresented: .init(
-                    get: { userToDelete != nil },
-                    set: { if !$0 { userToDelete = nil } }
-                ),
+                isPresented: $userToDelete.mappedToBool(),
                 titleVisibility: .visible
             ) {
                 Button(

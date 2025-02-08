@@ -11,10 +11,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
-    @StateObject private var dialogsViewModel = DialogsViewModel()
     @State private var countriesUpdateTask: Task<Void, Never>?
-    @State private var socialUpdateTask: Task<Void, Never>?
-    @State private var dialogsUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
     private var client: SWClient { SWClient(with: defaults) }
     private var colorScheme: ColorScheme? {
@@ -39,7 +36,6 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(tabViewModel)
             .environmentObject(defaults)
             .environmentObject(parksManager)
-            .environmentObject(dialogsViewModel)
             .preferredColorScheme(colorScheme)
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
@@ -48,9 +44,8 @@ struct SwiftUI_WorkoutAppApp: App {
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
-                updateSocialInfoIfNeeded()
             default:
-                [socialUpdateTask, countriesUpdateTask].forEach { $0?.cancel() }
+                countriesUpdateTask?.cancel()
                 defaults.setUserNeedUpdate(true)
             }
         }
@@ -63,21 +58,6 @@ struct SwiftUI_WorkoutAppApp: App {
                countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
             }
-        }
-    }
-
-    private func updateSocialInfoIfNeeded() {
-        guard let mainUserId = defaults.mainUserInfo?.id else { return }
-        socialUpdateTask = Task {
-            if let result = await client.getSocialUpdates(userID: mainUserId) {
-                try? defaults.saveFriendsIds(result.friends.map(\.id))
-                try? defaults.saveFriendRequests(result.friendRequests)
-                try? defaults.saveBlacklist(result.blacklist)
-                defaults.setUserNeedUpdate(false)
-            }
-        }
-        dialogsUpdateTask = Task {
-            try? await dialogsViewModel.askForDialogs(refresh: true, defaults: defaults)
         }
     }
 }

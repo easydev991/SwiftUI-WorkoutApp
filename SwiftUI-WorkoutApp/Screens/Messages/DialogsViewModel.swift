@@ -15,7 +15,8 @@ final class DialogsViewModel: ObservableObject {
         defaults: DefaultsService
     ) async throws {
         guard defaults.isAuthorized else { return }
-        if isLoading || (!dialogs.isEmpty && !refresh) { return }
+        guard !isLoading else { return }
+        guard dialogs.isEmpty || refresh else { return }
         if !refresh || dialogs.isEmpty { isLoading = true }
         dialogs = try await SWClient(with: defaults).getDialogs()
         let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
