@@ -34,9 +34,8 @@ struct MainUserProfileScreen: View {
         .task { await askForUserInfo() }
         .onChange(of: scenePhase) { phase in
             if case .active = phase {
-                refreshTask = Task {
-                    await askForUserInfo(refresh: true)
-                }
+                guard refreshTask == nil else { return }
+                refreshTask = Task { await askForUserInfo(refresh: true) }
             }
         }
     }
@@ -110,6 +109,7 @@ private extension MainUserProfileScreen {
             NavigationView {
                 SearchUsersScreen()
             }
+            .navigationViewStyle(.stack)
         }
     }
 

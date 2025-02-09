@@ -280,5 +280,6 @@ private extension EditProfileScreen {
         EditProfileScreen()
             .environmentObject(DefaultsService())
     }
+    .navigationViewStyle(.stack)
 }
 #endif

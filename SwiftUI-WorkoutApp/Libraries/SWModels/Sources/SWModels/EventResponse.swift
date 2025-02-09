@@ -6,6 +6,7 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     /// Название мероприятия
     public var title: String?
+    /// Описание мероприятия с `html`-тегами
     public var eventDescription: String?
     public let fullAddress: String?
     public var beginDate: String?
@@ -145,6 +146,10 @@ public extension EventResponse {
 
     var previewImageURL: URL? {
         previewImageStringURL.queryAllowedURL
+    }
+
+    var eventBeginDateForCalendar: Date {
+        DateFormatterService.dateFromIsoString(beginDate)
     }
 
     var eventDateString: String {

@@ -112,5 +112,6 @@ private extension BlackListScreen {
         BlackListScreen()
             .environmentObject(DefaultsService())
     }
+    .navigationViewStyle(.stack)
 }
 #endif

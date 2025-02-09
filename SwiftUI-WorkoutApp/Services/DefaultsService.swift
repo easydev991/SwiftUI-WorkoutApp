@@ -85,6 +85,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func setAppTheme(_ theme: AppColorTheme) {
+        guard appTheme != theme else { return }
         appTheme = theme
     }
 
@@ -130,6 +131,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func saveUnreadMessagesCount(_ count: Int) {
+        guard unreadMessagesCount != count else { return }
         unreadMessagesCount = count
     }
 

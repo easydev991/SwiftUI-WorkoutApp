@@ -11,7 +11,6 @@ struct JournalSettingsScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse
     @State private var isLoading = false
-    @State private var saveJournalChangesTask: Task<Void, Never>?
     @FocusState private var isTextFieldFocused: Bool
     private let options = JournalAccess.allCases
     private let updateOnSuccess: (JournalResponse) -> Void
@@ -39,7 +38,6 @@ struct JournalSettingsScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
-        .onDisappear { saveJournalChangesTask?.cancel() }
     }
 }
 
@@ -86,7 +84,7 @@ private extension JournalSettingsScreen {
     }
 
     func saveChanges() {
-        saveJournalChangesTask = Task {
+        Task {
             isLoading = true
             do {
                 let isSuccess = try await SWClient(with: defaults).editJournalSettings(

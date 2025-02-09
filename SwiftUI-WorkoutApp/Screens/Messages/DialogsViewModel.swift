@@ -3,13 +3,13 @@ import SWModels
 import SWNetworkClient
 import SWUtils
 
+@MainActor
 final class DialogsViewModel: ObservableObject {
     @Published private(set) var dialogs = [DialogResponse]()
     @Published private(set) var isLoading = false
     var hasDialogs: Bool { !dialogs.isEmpty }
     var showEmptyView: Bool { !hasDialogs && !isLoading }
 
-    @MainActor
     func askForDialogs(
         refresh: Bool = false,
         defaults: DefaultsService
@@ -19,23 +19,21 @@ final class DialogsViewModel: ObservableObject {
         guard dialogs.isEmpty || refresh else { return }
         if !refresh || dialogs.isEmpty { isLoading = true }
         dialogs = try await SWClient(with: defaults).getDialogs()
-        let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
-        defaults.saveUnreadMessagesCount(unreadMessagesCount)
+        updateUnreadMessagesCount(with: defaults)
         isLoading = false
     }
 
-    @MainActor
     func deleteDialog(at index: Int?, defaults: DefaultsService) async throws {
         guard let index, !isLoading else { return }
         isLoading = true
         let dialogID = dialogs[index].id
         if try await SWClient(with: defaults).deleteDialog(dialogID) {
             dialogs.remove(at: index)
+            updateUnreadMessagesCount(with: defaults)
         }
         isLoading = false
     }
 
-    @MainActor
     func markAsRead(_ dialog: DialogResponse, defaults: DefaultsService) {
         dialogs = dialogs.map { item in
             if item.id == dialog.id {
@@ -53,9 +51,13 @@ final class DialogsViewModel: ObservableObject {
         defaults.saveUnreadMessagesCount(newValue)
     }
 
-    @MainActor
     func clearDialogsOnLogout(isAuthorized: Bool) {
         guard !isAuthorized else { return }
         dialogs.removeAll()
+    }
+
+    private func updateUnreadMessagesCount(with defaults: DefaultsService) {
+        let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
+        defaults.saveUnreadMessagesCount(unreadMessagesCount)
     }
 }

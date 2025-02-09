@@ -16,6 +16,8 @@
 		671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */; };
 		671B4AEB2D4F683E00286996 /* ImagePickerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */; };
 		671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671D7DEB28210D2F0068E728 /* EmptyContentView.swift */; };
+		671F17FD2D589E7E005EE522 /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671F17FC2D589E7E005EE522 /* CalendarManager.swift */; };
+		671F17FF2D589F45005EE522 /* EKEventEditViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671F17FE2D589F45005EE522 /* EKEventEditViewControllerRepresentable.swift */; };
 		674000402D55E97900E5CB06 /* BlackListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6740003F2D55E97900E5CB06 /* BlackListScreen.swift */; };
 		67419ACF282E70B9004F5339 /* ParksListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67419ACE282E70B9004F5339 /* ParksListScreen.swift */; };
 		6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6747575528113419002F0A24 /* ChangePasswordScreen.swift */; };
@@ -106,6 +108,8 @@
 		671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernPickedImagesGrid.swift; sourceTree = "<group>"; };
 		671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViews.swift; sourceTree = "<group>"; };
 		671D7DEB28210D2F0068E728 /* EmptyContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContentView.swift; sourceTree = "<group>"; };
+		671F17FC2D589E7E005EE522 /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
+		671F17FE2D589F45005EE522 /* EKEventEditViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EKEventEditViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		6740003F2D55E97900E5CB06 /* BlackListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackListScreen.swift; sourceTree = "<group>"; };
 		67419ACE282E70B9004F5339 /* ParksListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParksListScreen.swift; sourceTree = "<group>"; };
 		6747575528113419002F0A24 /* ChangePasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordScreen.swift; sourceTree = "<group>"; };
@@ -217,6 +221,8 @@
 				6798AA52280AF43900DB76F1 /* EventsListScreen.swift */,
 				67FBF64E28338A2E008A7968 /* EventDetailsScreen.swift */,
 				675EC65E2815532800C2E229 /* EventFormScreen.swift */,
+				671F17FC2D589E7E005EE522 /* CalendarManager.swift */,
+				671F17FE2D589F45005EE522 /* EKEventEditViewControllerRepresentable.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -615,6 +621,7 @@
 				6798AA66280B232F00DB76F1 /* IncognitoProfileView.swift in Sources */,
 				67BAF3F6283620ED00DB40D9 /* ParkLocationInfoView.swift in Sources */,
 				67627755283A4C77009C203F /* JournalEntriesScreen.swift in Sources */,
+				671F17FD2D589E7E005EE522 /* CalendarManager.swift in Sources */,
 				674E704E2B24D382008AE9D0 /* LoggerScreen.swift in Sources */,
 				67B78716281D8006008B104F /* ParksMapScreen+ViewModel.swift in Sources */,
 				671D7DEC28210D2F0068E728 /* EmptyContentView.swift in Sources */,
@@ -640,6 +647,7 @@
 				675FB8DB2ADDB87200C9671F /* ParksMapScreen+LocationSettingReminderView.swift in Sources */,
 				6747575628113419002F0A24 /* ChangePasswordScreen.swift in Sources */,
 				67515699283FEC3100501346 /* PickedImagesGrid.swift in Sources */,
+				671F17FF2D589F45005EE522 /* EKEventEditViewControllerRepresentable.swift in Sources */,
 				67FBF64F28338A2E008A7968 /* EventDetailsScreen.swift in Sources */,
 				676D5A612D48BF0700EE5E9E /* String+localized.swift in Sources */,
 				6765B2562D451771006164AB /* UIImage+toMediaFile.swift in Sources */,
@@ -868,9 +876,9 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
-				DEVELOPMENT_TEAM = CR68PP2Z3F;
+				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
@@ -878,6 +886,7 @@
 				INFOPLIST_FILE = "SwiftUI-WorkoutApp/Resources/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Для добавления мероприятий в календарь";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -891,7 +900,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.6.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut1;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -919,9 +928,9 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
-				DEVELOPMENT_TEAM = CR68PP2Z3F;
+				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
@@ -929,6 +938,7 @@
 				INFOPLIST_FILE = "SwiftUI-WorkoutApp/Resources/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "SW Площадки";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Для добавления мероприятий в календарь";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для отображения спортивных площадок поблизости";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Для выбора фото профиля требуется доступ к галерее";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -942,7 +952,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.6.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut1;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
