@@ -9,6 +9,7 @@ struct EventDetailsScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @StateObject private var calendarManager = CalendarManager()
     @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
     @State private var isLoading = false
@@ -25,7 +26,7 @@ struct EventDetailsScreen: View {
         ScrollView {
             VStack(spacing: 16) {
                 headerAndMapSection
-                if showParticipantSection {
+                if defaults.isAuthorized {
                     participantsSection
                 }
                 if event.hasPhotos {
@@ -162,8 +163,30 @@ private extension EventDetailsScreen {
                 address: event.fullAddress ?? shortAddress,
                 appleMapsURL: event.park.appleMapsURL
             )
+            addToCalendarButton
         }
         .insideCardBackground()
+    }
+
+    var addToCalendarButton: some View {
+        Button("Добавить в календарь", action: calendarManager.requestAccess)
+            .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
+            .padding(.top, 12)
+            .sheet(isPresented: $calendarManager.showCalendar) {
+                EKEventEditViewControllerRepresentable(
+                    eventStore: calendarManager.eventStore,
+                    event: event
+                )
+            }
+            .alert(
+                "Необходимо разрешить полный доступ к календарю в настройках телефона",
+                isPresented: $calendarManager.showSettingsAlert
+            ) {
+                Button("Отмена", role: .cancel) {}
+                Button("Перейти") {
+                    URLOpener.open(URL(string: UIApplication.openSettingsURLString))
+                }
+            }
     }
 
     var descriptionSection: some View {
@@ -191,7 +214,7 @@ private extension EventDetailsScreen {
                     )
                 }
             }
-            if event.isCurrent ?? false {
+            if event.isCurrent == true {
                 FormRowView(
                     title: "Пойду на мероприятие",
                     trailingContent: .toggle(
@@ -404,14 +427,6 @@ private extension EventDetailsScreen {
         defaults.isAuthorized
             ? event.authorID == defaults.mainUserInfo?.id
             : false
-    }
-
-    var showParticipantSection: Bool {
-        if defaults.isAuthorized {
-            event.hasParticipants || event.isCurrent ?? false
-        } else {
-            false
-        }
     }
 
     func cancelTasks() {

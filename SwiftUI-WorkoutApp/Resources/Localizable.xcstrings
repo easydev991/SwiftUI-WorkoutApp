@@ -1410,6 +1410,16 @@
         }
       }
     },
+    "Добавить в календарь" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to calendar"
+          }
+        }
+      }
+    },
     "Добавить комментарий" : {
       "localizations" : {
         "en" : {
@@ -2462,6 +2472,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Необходимо выбрать площадку"
+          }
+        }
+      }
+    },
+    "Необходимо разрешить полный доступ к календарю в настройках телефона" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You need to allow full access to the calendar in your phone settings"
           }
         }
       }
