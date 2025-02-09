@@ -17,7 +17,7 @@ struct EventDetailsScreen: View {
     @State private var deleteCommentTask: Task<Void, Never>?
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var deleteEventTask: Task<Void, Never>?
-    @State private var refreshButtonTask: Task<Void, Never>?
+    @State private var refreshEventTask: Task<Void, Never>?
     @State var event: EventResponse
     let onDeletion: (Int) -> Void
 
@@ -334,7 +334,7 @@ private extension EventDetailsScreen {
 
     func refreshAction() {
         sheetItem = nil
-        refreshButtonTask = Task { await askForInfo(refresh: true) }
+        refreshEventTask = Task { await askForInfo(refresh: true) }
     }
 
     func askForInfo(refresh: Bool = false) async {
@@ -416,7 +416,7 @@ private extension EventDetailsScreen {
 
     func cancelTasks() {
         [
-            refreshButtonTask,
+            refreshEventTask,
             deleteCommentTask,
             goingToEventTask,
             deletePhotoTask,

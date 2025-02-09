@@ -36,7 +36,8 @@ struct DialogsListScreen: View {
         .onChange(of: defaults.isAuthorized, perform: viewModel.clearDialogsOnLogout)
         .onChange(of: scenePhase) { phase in
             if case .active = phase {
-                refreshTask = Task { await askForDialogs() }
+                guard refreshTask == nil else { return }
+                refreshTask = Task { await askForDialogs(refresh: true) }
             }
         }
         .task(id: defaults.isAuthorized) { await askForDialogs() }

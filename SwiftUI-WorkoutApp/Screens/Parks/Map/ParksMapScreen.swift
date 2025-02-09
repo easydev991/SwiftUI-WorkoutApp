@@ -279,10 +279,12 @@ private extension ParksMapScreen {
                     }
                 }
             }
+            .navigationViewStyle(.stack)
         case let .parkDetails(park):
             NavigationView {
                 ParkDetailScreen(park: park) { deletePark(id: $0) }
             }
+            .navigationViewStyle(.stack)
         }
     }
 }

@@ -50,6 +50,7 @@ struct SettingsScreen: View {
             .navigationTitle("Настройки")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

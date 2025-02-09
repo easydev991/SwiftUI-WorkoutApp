@@ -13,7 +13,6 @@ struct ParksListScreen: View {
     @State private var isLoading = false
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
-    @State private var updateParksTask: Task<Void, Never>?
     let mode: Mode
 
     var body: some View {
@@ -47,6 +46,7 @@ struct ParksListScreen: View {
             NavigationView {
                 ParkDetailScreen(park: park) { deletePark(id: $0) }
             }
+            .navigationViewStyle(.stack)
         }
         .onChange(of: parks) { list in
             if list.isEmpty {
@@ -66,7 +66,6 @@ struct ParksListScreen: View {
         }
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onDisappear { updateParksTask?.cancel() }
     }
 }
 
@@ -100,9 +99,7 @@ private extension ParksListScreen {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button {
-                updateParksTask = Task {
-                    await askForParks(refresh: true)
-                }
+                Task { await askForParks(refresh: true) }
             } label: {
                 Icons.Regular.refresh.view
             }

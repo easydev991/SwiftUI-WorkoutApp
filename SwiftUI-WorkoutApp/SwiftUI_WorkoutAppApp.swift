@@ -45,14 +45,15 @@ struct SwiftUI_WorkoutAppApp: App {
             case .active:
                 updateCountriesIfNeeded()
             default:
-                countriesUpdateTask?.cancel()
                 defaults.setUserNeedUpdate(true)
             }
         }
     }
 
     private func updateCountriesIfNeeded() {
-        guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate) else { return }
+        guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate),
+              countriesUpdateTask == nil
+        else { return }
         countriesUpdateTask = Task {
             if let countries = try? await client.getCountries(),
                countriesStorage.save(countries) {

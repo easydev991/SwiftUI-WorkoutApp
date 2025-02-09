@@ -40,11 +40,12 @@ struct DialogScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .task(priority: .low) { await markAsRead() }
-        .task(priority: .high) { await askForMessages() }
-        .onDisappear {
-            [refreshDialogTask, sendMessageTask].forEach { $0?.cancel() }
+        .task {
+            async let markAsReadTask: () = markAsRead()
+            async let askForMessagesTask: () = askForMessages()
+            _ = await (markAsReadTask, askForMessagesTask)
         }
+        .onDisappear { refreshDialogTask?.cancel() }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 refreshButton

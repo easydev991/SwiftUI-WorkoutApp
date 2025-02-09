@@ -18,7 +18,6 @@ struct EventsListScreen: View {
     @State private var selectedEvent: EventResponse?
     @State private var showEventCreationSheet = false
     @State private var showEventCreationRule = false
-    @State private var eventsTask: Task<Void, Never>?
     private let pastEventStorage = PastEventStorage()
 
     var body: some View {
@@ -36,9 +35,6 @@ struct EventsListScreen: View {
             } message: {
                 Text(.init(Constants.Alert.eventCreationRule))
             }
-            .onChange(of: selectedEventType) { _ in
-                eventsTask = Task { await askForEvents() }
-            }
             .onChange(of: defaults.isAuthorized) { isAuth in
                 if !isAuth { selectedEvent = nil }
             }
@@ -55,15 +51,14 @@ struct EventsListScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
-        .task { await askForEvents() }
-        .onDisappear { eventsTask?.cancel() }
+        .task(id: selectedEventType) { await askForEvents() }
     }
 }
 
 private extension EventsListScreen {
     var refreshButton: some View {
         Button {
-            eventsTask = Task { await askForEvents(refresh: true) }
+            Task { await askForEvents(refresh: true) }
         } label: {
             Icons.Regular.refresh.view
         }
@@ -124,6 +119,7 @@ private extension EventsListScreen {
             NavigationView {
                 EventDetailsScreen(event: event) { removeEvent(id: $0) }
             }
+            .navigationViewStyle(.stack)
         }
     }
 
@@ -146,7 +142,7 @@ private extension EventsListScreen {
                     EventFormScreen(
                         mode: .regularCreate,
                         refreshClbk: {
-                            eventsTask = Task { await askForEvents(refresh: true) }
+                            Task { await askForEvents(refresh: true) }
                         }
                     )
                     .toolbar {
@@ -155,6 +151,7 @@ private extension EventsListScreen {
                         }
                     }
                 }
+                .navigationViewStyle(.stack)
             }
         }
     }
