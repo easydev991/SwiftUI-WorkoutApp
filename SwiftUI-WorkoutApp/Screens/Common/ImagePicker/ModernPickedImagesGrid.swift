@@ -132,7 +132,7 @@ private extension ModernPickedImagesGrid {
     let images: [UIImage] = Array(1 ... 3).map {
         .init(systemName: "\($0).circle.fill")!
     }
-    ModernPickedImagesGrid(
+    return ModernPickedImagesGrid(
         images: .constant(images),
         showImagePicker: .constant(false),
         selectionLimit: 7
@@ -144,7 +144,7 @@ private extension ModernPickedImagesGrid {
     let images: [UIImage] = Array(1 ... 10).map {
         .init(systemName: "\($0).circle.fill")!
     }
-    ModernPickedImagesGrid(
+    return ModernPickedImagesGrid(
         images: .constant(images),
         showImagePicker: .constant(false),
         selectionLimit: 0

@@ -1,6 +1,6 @@
 import Foundation
 
-extension Date: @retroactive RawRepresentable {
+extension Date: RawRepresentable {
     public var rawValue: String {
         String(timeIntervalSinceReferenceDate)
     }

@@ -53,6 +53,7 @@ struct PickedImagesGrid: View {
 private extension PickedImagesGrid {
     var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
 
+    @MainActor
     var oldContentView: some View {
         SectionView(header: .init(header), mode: .regular) {
             VStack(alignment: .leading, spacing: 12) {
@@ -107,7 +108,7 @@ private extension PickedImagesGrid {
     let images: [UIImage] = Array(1 ... 3).map {
         .init(systemName: "\($0).circle.fill")!
     }
-    PickedImagesGrid(
+    return PickedImagesGrid(
         images: .constant(images),
         showImagePicker: .constant(false),
         selectionLimit: 7,
@@ -119,7 +120,7 @@ private extension PickedImagesGrid {
     let images: [UIImage] = Array(1 ... 10).map {
         .init(systemName: "\($0).circle.fill")!
     }
-    PickedImagesGrid(
+    return PickedImagesGrid(
         images: .constant(images),
         showImagePicker: .constant(false),
         selectionLimit: 0,
