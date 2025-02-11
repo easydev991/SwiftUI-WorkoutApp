@@ -105,12 +105,12 @@ private extension SwiftUI_WorkoutAppApp {
         return tabBarItemAppearance
     }
 
-    #if DEBUG
     func prepareForUITestIfNeeded() {
+        #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("UITest") {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
             UIView.setAnimationsEnabled(false)
         }
+        #endif
     }
-    #endif
 }
