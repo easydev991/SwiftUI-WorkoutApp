@@ -32,7 +32,8 @@ struct SwiftUI_WorkoutAppApp: App {
         WindowGroup {
             RootScreen(
                 selectedTab: $tabViewModel.selectedTab,
-                unreadCount: defaults.unreadMessagesCount
+                unreadCount: defaults.unreadMessagesCount,
+                friendRequestsCount: defaults.friendRequestsList.count
             )
             .environmentObject(tabViewModel)
             .environmentObject(defaults)
