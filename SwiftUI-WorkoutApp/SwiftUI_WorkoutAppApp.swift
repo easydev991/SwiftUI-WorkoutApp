@@ -51,6 +51,7 @@ struct SwiftUI_WorkoutAppApp: App {
             case .active:
                 updateCountriesIfNeeded()
             default:
+                updateAppIconBadge()
                 defaults.setUserNeedUpdate(true)
             }
         }
@@ -64,6 +65,28 @@ struct SwiftUI_WorkoutAppApp: App {
             if let countries = try? await client.getCountries(),
                countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
+            }
+        }
+    }
+
+    @available(iOS, deprecated: 16, message: "Заменить на async-вариант")
+    private func updateAppIconBadge() {
+        func setupAppIconBadge() {
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
+            }
+        }
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                center.requestAuthorization(options: [.badge]) { granted, _ in
+                    guard granted else { return }
+                    setupAppIconBadge()
+                }
+            case .authorized, .provisional:
+                setupAppIconBadge()
+            default: break
             }
         }
     }
@@ -106,8 +129,6 @@ private extension SwiftUI_WorkoutAppApp {
         let tabBarItemAppearance = UITabBarItemAppearance()
         tabBarItemAppearance.normal.iconColor = .init(.swSmallElements)
         tabBarItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.swSmallElements)]
-        tabBarItemAppearance.normal.badgeBackgroundColor = .accent
-        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor(.swBackground)]
         return tabBarItemAppearance
     }
 

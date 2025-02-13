@@ -5,6 +5,9 @@ import SWUtils
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
     var authToken: String? { try? basicAuthInfo().token }
+    var appIconBadgeCount: Int {
+        unreadMessagesCount + friendRequestsList.count
+    }
 
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
