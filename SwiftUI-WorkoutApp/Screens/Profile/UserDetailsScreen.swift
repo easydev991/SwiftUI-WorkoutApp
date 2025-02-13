@@ -133,6 +133,7 @@ private extension UserDetailsScreen {
                     case .removeFriend:
                         socialActions.friend = .sendFriendRequest
                     }
+                    defaults.setUserNeedUpdate(true)
                 }
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
