@@ -74,10 +74,11 @@ private extension MainUserFriendsListScreen {
 
     func askForUsers(refresh: Bool = false) async {
         guard !isLoading else { return }
+        let needUpdate = defaults.needUpdateUser
         let isEmpty = [friends, friendRequests].allSatisfy(\.isEmpty)
-        guard isEmpty || refresh else { return }
+        guard isEmpty || refresh || needUpdate else { return }
         do {
-            if !refresh { isLoading = true }
+            if !refresh || needUpdate { isLoading = true }
             try await getFriendsAndRequests()
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)

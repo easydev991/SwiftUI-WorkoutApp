@@ -11,6 +11,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
+    @StateObject private var dialogsViewModel = DialogsViewModel()
     @State private var countriesUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
     private var client: SWClient { SWClient(with: defaults) }
@@ -31,20 +32,26 @@ struct SwiftUI_WorkoutAppApp: App {
         WindowGroup {
             RootScreen(
                 selectedTab: $tabViewModel.selectedTab,
-                unreadCount: defaults.unreadMessagesCount
+                unreadCount: defaults.unreadMessagesCount,
+                friendRequestsCount: defaults.friendRequestsList.count
             )
             .environmentObject(tabViewModel)
             .environmentObject(defaults)
             .environmentObject(parksManager)
+            .environmentObject(dialogsViewModel)
             .preferredColorScheme(colorScheme)
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
+            .task(id: defaults.isAuthorized) {
+                try? await dialogsViewModel.getDialogs(defaults: defaults)
+            }
         }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
             default:
+                updateAppIconBadge()
                 defaults.setUserNeedUpdate(true)
             }
         }
@@ -58,6 +65,28 @@ struct SwiftUI_WorkoutAppApp: App {
             if let countries = try? await client.getCountries(),
                countriesStorage.save(countries) {
                 defaults.didUpdateCountries()
+            }
+        }
+    }
+
+    @available(iOS, deprecated: 16, message: "Заменить на async-вариант")
+    private func updateAppIconBadge() {
+        func setupAppIconBadge() {
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
+            }
+        }
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                center.requestAuthorization(options: [.badge]) { granted, _ in
+                    guard granted else { return }
+                    setupAppIconBadge()
+                }
+            case .authorized, .provisional:
+                setupAppIconBadge()
+            default: break
             }
         }
     }
@@ -100,8 +129,6 @@ private extension SwiftUI_WorkoutAppApp {
         let tabBarItemAppearance = UITabBarItemAppearance()
         tabBarItemAppearance.normal.iconColor = .init(.swSmallElements)
         tabBarItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.swSmallElements)]
-        tabBarItemAppearance.normal.badgeBackgroundColor = .accent
-        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor(.swBackground)]
         return tabBarItemAppearance
     }
 

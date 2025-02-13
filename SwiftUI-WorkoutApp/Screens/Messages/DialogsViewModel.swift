@@ -10,11 +10,16 @@ final class DialogsViewModel: ObservableObject {
     var hasDialogs: Bool { !dialogs.isEmpty }
     var showEmptyView: Bool { !hasDialogs && !isLoading }
 
-    func askForDialogs(
+    func getDialogs(
         refresh: Bool = false,
         defaults: DefaultsService
     ) async throws {
-        guard defaults.isAuthorized else { return }
+        guard defaults.isAuthorized else {
+            if !dialogs.isEmpty {
+                dialogs.removeAll()
+            }
+            return
+        }
         guard !isLoading else { return }
         guard dialogs.isEmpty || refresh else { return }
         if !refresh || dialogs.isEmpty { isLoading = true }
@@ -49,11 +54,6 @@ final class DialogsViewModel: ObservableObject {
         else { return }
         let newValue = defaults.unreadMessagesCount - dialog.unreadMessagesCount
         defaults.saveUnreadMessagesCount(newValue)
-    }
-
-    func clearDialogsOnLogout(isAuthorized: Bool) {
-        guard !isAuthorized else { return }
-        dialogs.removeAll()
     }
 
     private func updateUnreadMessagesCount(with defaults: DefaultsService) {
