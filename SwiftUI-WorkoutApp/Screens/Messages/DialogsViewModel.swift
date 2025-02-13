@@ -15,7 +15,9 @@ final class DialogsViewModel: ObservableObject {
         defaults: DefaultsService
     ) async throws {
         guard defaults.isAuthorized else {
-            dialogs.removeAll()
+            if !dialogs.isEmpty {
+                dialogs.removeAll()
+            }
             return
         }
         guard !isLoading else { return }
