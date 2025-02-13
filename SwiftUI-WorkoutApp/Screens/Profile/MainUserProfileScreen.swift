@@ -34,7 +34,6 @@ struct MainUserProfileScreen: View {
         .task { await askForUserInfo() }
         .onChange(of: scenePhase) { phase in
             if case .active = phase {
-                guard refreshTask == nil else { return }
                 refreshTask = Task { await askForUserInfo(refresh: true) }
             }
         }
@@ -155,7 +154,7 @@ private extension MainUserProfileScreen {
     func askForUserInfo(refresh: Bool = false) async {
         guard let userId = defaults.mainUserInfo?.id else { return }
         guard !isLoading else { return }
-        if !refresh { isLoading = true }
+        if !refresh || defaults.needUpdateUser { isLoading = true }
         if refresh || defaults.needUpdateUser {
             do {
                 let result = try await client.getSocialUpdates(userID: userId)

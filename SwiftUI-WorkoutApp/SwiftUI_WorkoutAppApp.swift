@@ -11,6 +11,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
+    @StateObject private var dialogsViewModel = DialogsViewModel()
     @State private var countriesUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
     private var client: SWClient { SWClient(with: defaults) }
@@ -36,9 +37,13 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(tabViewModel)
             .environmentObject(defaults)
             .environmentObject(parksManager)
+            .environmentObject(dialogsViewModel)
             .preferredColorScheme(colorScheme)
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
+            .task(id: defaults.isAuthorized) {
+                try? await dialogsViewModel.getDialogs(defaults: defaults)
+            }
         }
         .onChange(of: scenePhase) { phase in
             switch phase {

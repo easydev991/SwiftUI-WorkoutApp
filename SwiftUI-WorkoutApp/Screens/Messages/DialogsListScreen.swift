@@ -9,7 +9,7 @@ struct DialogsListScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @StateObject private var viewModel = DialogsViewModel()
+    @EnvironmentObject private var viewModel: DialogsViewModel
     @State private var selectedDialog: DialogResponse?
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
@@ -32,15 +32,14 @@ struct DialogsListScreen: View {
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
         }
-        .navigationViewStyle(.stack)
-        .onChange(of: defaults.isAuthorized, perform: viewModel.clearDialogsOnLogout)
         .onChange(of: scenePhase) { phase in
             if case .active = phase {
-                guard refreshTask == nil else { return }
-                refreshTask = Task { await askForDialogs(refresh: true) }
+                refreshTask = Task {
+                    try? await viewModel.getDialogs(refresh: true, defaults: defaults)
+                }
             }
         }
-        .task(id: defaults.isAuthorized) { await askForDialogs() }
+        .navigationViewStyle(.stack)
     }
 }
 
@@ -168,7 +167,7 @@ private extension DialogsListScreen {
 
     func askForDialogs(refresh: Bool = false) async {
         do {
-            try await viewModel.askForDialogs(refresh: refresh, defaults: defaults)
+            try await viewModel.getDialogs(refresh: refresh, defaults: defaults)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -189,5 +188,6 @@ private extension DialogsListScreen {
 #Preview {
     DialogsListScreen()
         .environmentObject(DefaultsService())
+        .environmentObject(DialogsViewModel())
 }
 #endif
