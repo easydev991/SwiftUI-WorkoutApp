@@ -7,7 +7,6 @@ import SWUtils
 /// Экран для списка заблокированных пользователей
 struct BlackListScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var users = [UserResponse]()
     @State private var userToDelete: UserResponse?

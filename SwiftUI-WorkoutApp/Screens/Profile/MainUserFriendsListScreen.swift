@@ -6,7 +6,6 @@ import SWUtils
 
 /// Экран со списком входящих заявок и друзей основного пользователя
 struct MainUserFriendsListScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @State private var friendRequests = [UserResponse]()
     @State private var friends = [UserResponse]()

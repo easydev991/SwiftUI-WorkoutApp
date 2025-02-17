@@ -28,8 +28,7 @@ struct SWAddress {
         guard let countryID, let cityID else {
             return nil
         }
-        self.countryID = countryID
-        self.cityID = cityID
+        self.init(countryID, cityID)
     }
 
     /// Инициализатор для обращения к справочнику стран/городов

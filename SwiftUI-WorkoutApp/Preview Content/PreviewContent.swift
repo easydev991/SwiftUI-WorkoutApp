@@ -34,9 +34,7 @@ extension Park {
             author: .preview,
             cityID: 1,
             commentsCount: 1,
-            countryID: 17,
             createDate: "2011-03-07T22:55:15+03:00",
-            modifyDate: "2023-01-21T15:24:25+03:00",
             latitude: "55.795396",
             longitude: "37.762597",
             name: "№3 Средняя Легендарная",
@@ -93,7 +91,6 @@ extension EventResponse {
                     stringURL: "https://workout.su/uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg"
                 )
             ],
-            authorName: "Kahar",
             author: .preview,
             trainHereOptional: false
         )
@@ -124,7 +121,6 @@ extension JournalResponse {
             modifyDate: "2022-05-22T09:48:17+03:00",
             lastMessageDate: "2022-05-22T09:48:29+03:00",
             lastMessageText: "Test last message",
-            ownerName: "ninenineone",
             itemsCount: 2,
             ownerID: 10367,
             viewAccess: 2,

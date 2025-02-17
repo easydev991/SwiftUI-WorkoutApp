@@ -7,7 +7,6 @@ import SWUtils
 /// Экран с детальной информацией о пользователе
 @MainActor
 struct UserDetailsScreen: View {
-    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var socialActions = SocialActions()

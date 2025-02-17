@@ -6,7 +6,6 @@ import SWUtils
 
 /// Экран для смены пароля
 struct ChangePasswordScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var model = PassworModel()

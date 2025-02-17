@@ -1,7 +1,6 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
-import SWNetworkClient
 import SWUtils
 
 /// Экран со списком диалогов
@@ -15,7 +14,6 @@ struct DialogsListScreen: View {
     @State private var openFriendList = false
     @State private var refreshTask: Task<Void, Never>?
     @State private var deleteDialogTask: Task<Void, Never>?
-    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         NavigationView {

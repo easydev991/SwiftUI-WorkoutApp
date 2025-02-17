@@ -1,6 +1,5 @@
 import SWDesignSystem
 import SwiftUI
-import SWModels
 
 /// Экран для просмотра фотографии
 ///

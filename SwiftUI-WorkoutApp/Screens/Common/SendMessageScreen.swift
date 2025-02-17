@@ -4,7 +4,6 @@ import SwiftUI
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
-    @Environment(\.dismiss) private var dismiss
     @Binding var text: String
     @FocusState private var isFocused
     private let header: LocalizedStringKey

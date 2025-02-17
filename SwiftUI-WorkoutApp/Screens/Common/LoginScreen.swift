@@ -7,7 +7,6 @@ import SWUtils
 /// Экран для авторизации / восстановления пароля
 struct LoginScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
     @State private var credentials = LoginCredentials()

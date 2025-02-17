@@ -3,8 +3,6 @@ import SWDesignSystem
 import SwiftUI
 
 struct PickedImagesGrid: View {
-    @MainActor
-    private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     private var imagesArray: [PickedImageView.Model] {
         var realImages: [PickedImageView.Model] = images.map {
             .image($0)

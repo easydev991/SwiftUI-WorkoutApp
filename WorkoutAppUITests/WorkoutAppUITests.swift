@@ -98,7 +98,6 @@ private extension WorkoutAppUITests {
     var searchUsersButton: XCUIElement { app.buttons["searchUsersButton"] }
     var closeButton: XCUIElement { app.buttons["closeButton"] }
     var searchUserField: XCUIElement { app.searchFields.firstMatch }
-    var keyboardSearchButton: XCUIElement { app.keyboards.buttons["Search"] }
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
     var usesParksButton: XCUIElement { app.buttons["usesParksButton"] }
     var firstParkCell: XCUIElement { app.buttons["ParkViewCell"].firstMatch }

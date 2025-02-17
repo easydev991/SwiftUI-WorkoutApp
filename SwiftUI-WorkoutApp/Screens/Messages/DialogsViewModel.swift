@@ -1,7 +1,6 @@
 import Foundation
 import SWModels
 import SWNetworkClient
-import SWUtils
 
 @MainActor
 final class DialogsViewModel: ObservableObject {

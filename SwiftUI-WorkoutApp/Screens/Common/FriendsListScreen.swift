@@ -6,7 +6,6 @@ import SWUtils
 
 /// Экран со списком друзей
 struct FriendsListScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @State private var friends = [UserResponse]()
     @State private var isLoading = false

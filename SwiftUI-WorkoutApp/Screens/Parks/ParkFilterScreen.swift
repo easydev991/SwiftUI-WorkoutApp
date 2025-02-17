@@ -1,7 +1,6 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
-import SWUtils
 
 struct ParkFilterScreen: View {
     @Binding private var filter: Model
