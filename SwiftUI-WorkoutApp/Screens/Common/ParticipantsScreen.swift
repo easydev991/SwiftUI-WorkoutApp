@@ -1,11 +1,9 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
-import SWUtils
 
 /// Экран со списком участников мероприятия/тренирующихся на площадке
 struct ParticipantsScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     let mode: Mode
 

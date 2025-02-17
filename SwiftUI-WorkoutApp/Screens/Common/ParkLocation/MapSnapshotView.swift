@@ -2,7 +2,6 @@ import MapKit
 import OSLog
 import SWDesignSystem
 import SwiftUI
-import SWModels
 
 /// Снапшот карты
 struct MapSnapshotView: View {

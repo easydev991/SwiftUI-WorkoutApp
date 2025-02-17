@@ -22,8 +22,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
     /// `true` - предстоящее мероприятие, `false` - прошедшее
     public let isCurrent: Bool?
     public var photosOptional: [Photo]?
-    /// Логин автора мероприятия
-    public let authorName: String?
     public let author: UserResponse?
     /// Участвует ли пользователь в мероприятии
     ///
@@ -33,7 +31,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
 
     public enum CodingKeys: String, CodingKey {
         case id, title, latitude, longitude, author
-        case authorName = "name"
         case fullAddress = "address"
         case previewImageStringURL = "preview"
         case eventDescription = "description"
@@ -68,7 +65,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         participantsOptional: [UserResponse]? = nil,
         isCurrent: Bool? = nil,
         photosOptional: [Photo]? = nil,
-        authorName: String? = nil,
         author: UserResponse? = nil,
         trainHereOptional: Bool? = nil
     ) {
@@ -89,7 +85,6 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         self.participantsOptional = participantsOptional
         self.isCurrent = isCurrent
         self.photosOptional = photosOptional
-        self.authorName = authorName
         self.author = author
         self.trainHereOptional = trainHereOptional
     }
@@ -127,9 +122,7 @@ public extension EventResponse {
                 author: author,
                 cityID: cityID,
                 commentsCount: nil,
-                countryID: countryID,
                 createDate: nil,
-                modifyDate: nil,
                 latitude: latitude ?? "",
                 longitude: longitude ?? "",
                 name: nil,
@@ -155,8 +148,6 @@ public extension EventResponse {
     var eventDateString: String {
         DateFormatterService.readableDate(from: beginDate)
     }
-
-    var hasComments: Bool { !comments.isEmpty }
 
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
@@ -238,7 +229,6 @@ public extension EventResponse {
             participantsOptional: nil,
             isCurrent: nil,
             photosOptional: nil,
-            authorName: nil,
             author: nil,
             trainHereOptional: nil
         )

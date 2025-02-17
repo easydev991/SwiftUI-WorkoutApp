@@ -1,7 +1,6 @@
 import Foundation
 
 public struct JournalCommonInfo {
-    public let id: Int
     public let authorID: Int?
     // `URL` картинки
     public let imageURL: URL?
@@ -13,7 +12,6 @@ public struct JournalCommonInfo {
     public let formattedMessage: String
 
     public init(journalResponse: JournalResponse) {
-        self.id = journalResponse.id
         self.authorID = journalResponse.ownerID
         self.imageURL = journalResponse.imageURL
         self.entryTitle = journalResponse.title
@@ -22,7 +20,6 @@ public struct JournalCommonInfo {
     }
 
     public init(journalEntryResponse: JournalEntryResponse) {
-        self.id = journalEntryResponse.id
         self.authorID = journalEntryResponse.authorID
         self.imageURL = journalEntryResponse.imageURL
         self.entryTitle = journalEntryResponse.authorName ?? ""

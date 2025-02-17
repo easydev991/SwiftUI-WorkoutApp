@@ -64,15 +64,4 @@ public extension DialogResponse {
         get { unreadCountOptional ?? 0 }
         set { unreadCountOptional = newValue }
     }
-
-    static var emptyValue: DialogResponse {
-        .init(
-            id: 0,
-            anotherUserImageStringURL: nil,
-            anotherUserName: nil,
-            lastMessageText: nil,
-            lastMessageDate: nil,
-            anotherUserID: nil
-        )
-    }
 }

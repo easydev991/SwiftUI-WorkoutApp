@@ -1,6 +1,5 @@
 import SwiftUI
 import SWModels
-import SWUtils
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
@@ -34,8 +33,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var hasParks: Bool { mainUserInfo?.hasUsedParks == true }
 
-    var hasJournals: Bool { mainUserInfo?.hasJournals == true }
-
     var hasFriends: Bool { !friendsIdsList.isEmpty }
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
@@ -46,10 +43,6 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
-    }
-
-    var mainUserCountryID: Int {
-        mainUserInfo?.countryID ?? 0
     }
 
     var mainUserCityID: Int {
@@ -170,10 +163,8 @@ extension DefaultsService {
     var userFlags: UserFlags {
         .init(
             isAuthorized: isAuthorized,
-            needUpdate: needUpdateUser,
             hasParks: hasParks,
-            hasFriends: hasFriends,
-            hasJournals: hasJournals
+            hasFriends: hasFriends
         )
     }
 }

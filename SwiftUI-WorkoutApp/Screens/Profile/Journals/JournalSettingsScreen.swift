@@ -6,7 +6,6 @@ import SWUtils
 
 /// Экран с настройками дневника
 struct JournalSettingsScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse

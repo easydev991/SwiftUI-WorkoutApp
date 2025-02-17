@@ -7,8 +7,8 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     public let id, typeID, sizeID: Int
     public let address: String?
     public let author: UserResponse?
-    public let cityID, commentsCount, countryID: Int?
-    public let createDate, modifyDate: String?
+    public let cityID, commentsCount: Int?
+    public let createDate: String?
     public let latitude, longitude: String
     public let name: String?
     private var photosOptional: [Photo]?
@@ -42,10 +42,6 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         author?.id ?? 0
     }
 
-    public var authorName: String {
-        author?.userName ?? ""
-    }
-
     public var coordinate: CLLocationCoordinate2D {
         .init(
             latitude: .init(Double(latitude) ?? 0),
@@ -76,13 +72,11 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         case cityID = "city_id"
         case sizeID = "class_id"
         case commentsCount = "comments_count"
-        case countryID = "country_id"
         case createDate = "create_date"
         case id, latitude, longitude, name, preview
         case usersTrainHereCount = "trainings"
         case commentsOptional = "comments"
         case photosOptional = "photos"
-        case modifyDate = "modify_date"
         case typeID = "type_id"
         case trainHereOptional = "train_here"
         case usersTrainHere = "users_train_here"
@@ -96,9 +90,7 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         author: UserResponse?,
         cityID: Int?,
         commentsCount: Int?,
-        countryID: Int?,
         createDate: String?,
-        modifyDate: String?,
         latitude: String,
         longitude: String,
         name: String?,
@@ -116,9 +108,7 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         self.author = author
         self.cityID = cityID
         self.commentsCount = commentsCount
-        self.countryID = countryID
         self.createDate = createDate
-        self.modifyDate = modifyDate
         self.latitude = latitude
         self.longitude = longitude
         self.name = name
@@ -128,30 +118,6 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         self.commentsOptional = commentsOptional
         self.usersTrainHere = usersTrainHere
         self.trainHereOptional = trainHere
-    }
-
-    public init(id: Int) {
-        self.init(
-            id: id,
-            typeID: 0,
-            sizeID: 0,
-            address: nil,
-            author: nil,
-            cityID: nil,
-            commentsCount: nil,
-            countryID: nil,
-            createDate: nil,
-            modifyDate: nil,
-            latitude: "",
-            longitude: "",
-            name: nil,
-            photosOptional: nil,
-            preview: nil,
-            usersTrainHereCount: nil,
-            commentsOptional: nil,
-            usersTrainHere: nil,
-            trainHere: nil
-        )
     }
 }
 
@@ -216,8 +182,6 @@ public extension Park {
         PhotoRemover(initialPhotos: photos, removeId: id).photosAfterRemoval
     }
 
-    var hasComments: Bool { !comments.isEmpty }
-
     var comments: [CommentResponse] {
         get { commentsOptional ?? [] }
         set { commentsOptional = newValue }
@@ -275,9 +239,7 @@ public extension Park {
             author: .emptyValue,
             cityID: nil,
             commentsCount: nil,
-            countryID: nil,
             createDate: nil,
-            modifyDate: nil,
             latitude: "",
             longitude: "",
             name: nil,
@@ -291,21 +253,12 @@ public extension Park {
     }
 }
 
-public final class ParkAnnotation: NSObject, MKAnnotation {
-    public let coordinate: CLLocationCoordinate2D
-    public let title: String?
-    public let subtitle: String?
+final class ParkAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
 
-    private let regionRadius: CLLocationDistance = 1000
-    public var region: MKCoordinateRegion {
-        .init(
-            center: coordinate,
-            latitudinalMeters: regionRadius,
-            longitudinalMeters: regionRadius
-        )
-    }
-
-    public init(
+    init(
         coordinate: CLLocationCoordinate2D,
         title: String?,
         subtitle: String?

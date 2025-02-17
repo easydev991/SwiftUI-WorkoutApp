@@ -39,8 +39,7 @@ struct APIErrorTests {
             name: nil,
             message: "Непредвиденная ошибка",
             code: nil,
-            status: nil,
-            type: nil
+            status: nil
         )
         let error = APIError(errorResponse, 123)
         #expect(error.errorDescription == "123, Непредвиденная ошибка")
@@ -48,14 +47,14 @@ struct APIErrorTests {
 
     @Test
     func customErrorWithErrorsArray() {
-        let errorResponse = ErrorResponse(errors: ["Ошибка 1", "Ошибка 2"], name: nil, message: nil, code: nil, status: nil, type: nil)
+        let errorResponse = ErrorResponse(errors: ["Ошибка 1", "Ошибка 2"], name: nil, message: nil, code: nil, status: nil)
         let error = APIError(errorResponse, nil)
         #expect(error.errorDescription == "404, Ошибка 1,\nОшибка 2")
     }
 
     @Test
     func unknownError() {
-        let errorResponse = ErrorResponse(errors: nil, name: nil, message: nil, code: nil, status: nil, type: nil)
+        let errorResponse = ErrorResponse(errors: nil, name: nil, message: nil, code: nil, status: nil)
         let error = APIError(errorResponse, nil)
         #expect(error == .unknown)
     }

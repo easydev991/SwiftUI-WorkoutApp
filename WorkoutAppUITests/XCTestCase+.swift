@@ -17,15 +17,6 @@ extension XCTestCase {
     }
 
     @MainActor
-    func waitAndPressOrFail(timeout: TimeInterval = 3, pressDuration: TimeInterval = 1.1, element: XCUIElement) {
-        if element.waitForExistence(timeout: timeout) {
-            element.press(forDuration: pressDuration)
-        } else {
-            XCTFail("Не нашли элемент \(element)")
-        }
-    }
-
-    @MainActor
     func swipeToFind(element: XCUIElement, in app: XCUIApplication, direction: SwipeDirection = .up) {
         while !element.isVisibleOnScreen {
             switch direction {
