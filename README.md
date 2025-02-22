@@ -82,7 +82,7 @@ rbenv exec fastlane snapshot
 Список всех существующих девайсов есть [тут](https://www.ios-resolution.com).
 
 ### Форматирование кода
-- Используем [swiftformat (0.55.4)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
+- Используем [swiftformat (0.55.5)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)
 - Все правила можно найти [тут](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md)
 
