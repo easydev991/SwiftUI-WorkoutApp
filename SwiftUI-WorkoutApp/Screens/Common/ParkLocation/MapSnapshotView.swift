@@ -6,16 +6,19 @@ import SwiftUI
 /// Снапшот карты
 struct MapSnapshotView: View {
     let mapModel: MapModel
-    let size: CGSize
+    private let height: CGFloat = 153
     @State private var snapshotImage: UIImage?
 
     var body: some View {
-        contentView
-            .animation(.easeInOut, value: snapshotImage)
-            .onAppear(perform: generateSnapshot)
-            .onChange(of: mapModel) { _ in
-                generateSnapshot()
-            }
+        GeometryReader { geo in
+            makeContentView(width: geo.size.width)
+                .animation(.easeInOut, value: snapshotImage)
+                .clipShape(.rect(cornerRadius: 8))
+                .onAppear { generateSnapshot(size: geo.size) }
+                .onChange(of: mapModel) { _ in generateSnapshot(size: geo.size) }
+                .onChange(of: geo.size, perform: generateSnapshot)
+        }
+        .frame(height: height)
     }
 }
 
@@ -35,25 +38,28 @@ extension MapSnapshotView {
 }
 
 private extension MapSnapshotView {
-    var contentView: some View {
+    func makeContentView(width: CGFloat) -> some View {
         ZStack {
             if let image = snapshotImage {
                 Image(uiImage: image)
-                    .transition(.scale)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: width, height: height)
+                    .transition(.opacity.combined(with: .scale))
             } else {
                 Image.defaultWorkout
                     .resizable()
                     .scaledToFit()
-                    .frame(width: size.width, height: size.height)
+                    .frame(width: width, height: height)
                     .background(.black)
-                    .cornerRadius(12)
+                    .clipShape(.rect(cornerRadius: 12))
                     .transition(.opacity.combined(with: .scale))
             }
         }
     }
 
     @MainActor
-    func generateSnapshot() {
+    func generateSnapshot(size: CGSize) {
         guard mapModel.isComplete else { return }
         let regionRadius: CLLocationDistance = 1000
         let options = MKMapSnapshotter.Options()
@@ -105,8 +111,7 @@ private extension MapSnapshotView {
             mapModel: .init(
                 latitude: 55.687001,
                 longitude: 37.504467
-            ),
-            size: .init(width: 350, height: 150)
+            )
         )
     }
 }

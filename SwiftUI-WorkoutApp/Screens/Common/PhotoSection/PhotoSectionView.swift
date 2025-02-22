@@ -5,7 +5,6 @@ import SWModels
 /// Галерея с фотографиями
 @MainActor
 struct PhotoSectionView: View {
-    private var screenWidth: CGFloat { UIScreen.main.bounds.size.width }
     private let photos: [Photo]
     /// `true` - есть доступ на удаление фото, `false` - нет доступа
     ///
@@ -69,10 +68,7 @@ private extension PhotoSectionView {
     var gridView: some View {
         LazyVGrid(
             columns: .init(
-                repeating: .init(
-                    .flexible(minimum: screenWidth * 0.282),
-                    spacing: 2
-                ),
+                repeating: .init(.flexible(minimum: 50), spacing: 2),
                 count: columns
             ),
             spacing: 2
