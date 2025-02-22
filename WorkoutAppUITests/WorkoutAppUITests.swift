@@ -1,12 +1,14 @@
 import XCTest
 
+@MainActor
 final class WorkoutAppUITests: XCTestCase {
-    @MainActor private let springBoard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+    private let springBoard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
     private var app: XCUIApplication!
+    private let login = "testuserapple"
+    private let password = "111111"
+    private let usernameForSearch = "Ninenineone"
 
-    @MainActor
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchArguments.append("UITest")
@@ -14,17 +16,22 @@ final class WorkoutAppUITests: XCTestCase {
         app.launch()
     }
 
-    @MainActor
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try super.tearDownWithError()
         app.launchArguments.removeAll()
         app = nil
     }
 
-    @MainActor
     func testMakeScreenshots() {
-        waitAndTap(timeout: 5, element: grantLocationAccessButton)
-        waitAndTap(timeout: 5, element: grantNotificationAccessButton)
+        handleLocationAlert()
+        handleNotificationAlert()
+        checkParks()
+        checkEvents()
+        checkProfile()
+    }
+
+    private func checkParks() {
+        waitForServerResponse()
         waitAndTapOrFail(timeout: 10, element: parksListPickerButton)
         waitForServerResponse()
         snapshot("1-sportsGroundsList")
@@ -33,7 +40,9 @@ final class WorkoutAppUITests: XCTestCase {
         waitForServerResponse()
         snapshot("2-sportsGroundDetails")
         waitAndTapOrFail(timeout: 5, element: closeButton)
+    }
 
+    private func checkEvents() {
         waitAndTapOrFail(timeout: 10, element: eventsTabButton)
         waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
         waitForServerResponse()
@@ -43,18 +52,20 @@ final class WorkoutAppUITests: XCTestCase {
         waitForServerResponse()
         snapshot("4-eventDetails")
         waitAndTapOrFail(timeout: 5, element: closeButton)
+    }
 
+    private func checkProfile() {
         waitAndTapOrFail(timeout: 5, element: profileTabButton)
         waitAndTapOrFail(element: authorizeButton)
         waitAndTapOrFail(element: loginField)
-        loginField.typeText(Constants.login)
+        loginField.typeText(login)
         waitAndTapOrFail(element: passwordField)
-        passwordField.typeText(Constants.password)
+        passwordField.typeText(password)
         waitAndTapOrFail(element: loginButton)
         waitAndTapOrFail(timeout: 10, element: searchUsersButton)
         waitAndTapOrFail(timeout: 10, element: searchUserField)
         sleep(1) // иногда симулятор начинает печатать раньше времени, поэтому ждем
-        searchUserField.typeText(Constants.usernameForSearch)
+        searchUserField.typeText(usernameForSearch)
         searchUserField.typeText("\n") // жмем "return", чтобы начать поиск
         waitAndTapOrFail(timeout: 10, element: firstFoundUserCell)
         waitForServerResponse()
@@ -62,45 +73,36 @@ final class WorkoutAppUITests: XCTestCase {
     }
 }
 
-@MainActor
 private extension WorkoutAppUITests {
-    enum Constants {
-        static let login = "testuserapple"
-        static let password = "111111"
-        static let usernameForSearch = "Ninenineone"
+    func handleLocationAlert() {
+        let alert = springBoard.alerts.firstMatch
+        let button = alert.buttons.element(
+            matching: NSPredicate(
+                format:
+                "label IN {'Allow While Using App', 'При использовании приложения'}"
+            )
+        )
+        waitAndTap(timeout: 5, element: button)
     }
 
-    var grantLocationAccessButton: XCUIElement {
-        let rusButton = springBoard.alerts.firstMatch.buttons["При использовании приложения"]
-        let enButton = springBoard.alerts.firstMatch.buttons["Allow While Using App"]
-        return rusButton.exists ? rusButton : enButton
+    func handleNotificationAlert() {
+        let alert = springBoard.alerts.firstMatch
+        let button = alert.buttons.element(
+            matching: NSPredicate(
+                format:
+                "label IN {'Allow', 'Разрешить'}"
+            )
+        )
+        waitAndTap(timeout: 5, element: button)
     }
 
-    var grantNotificationAccessButton: XCUIElement {
-        let rusButton = springBoard.alerts.firstMatch.buttons["Разрешить"]
-        let enButton = springBoard.alerts.firstMatch.buttons["Allow"]
-        return rusButton.exists ? rusButton : enButton
+    var tabbar: XCUIElement { app.tabBars.firstMatch }
+    var parksListPickerButton: XCUIElement {
+        app.segmentedControls.firstMatch.buttons.element(for: "Список")
     }
 
-    var tabbar: XCUIElement {
-        let rusButton = app.tabBars["Панель вкладок"]
-        let enButton = app.tabBars["Tab Bar"]
-        return rusButton.exists ? rusButton : enButton
-    }
-
-    var parksListPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Список"] }
-    var profileTabButton: XCUIElement {
-        let rusButton = tabbar.buttons["Профиль"]
-        let enButton = tabbar.buttons["Profile"]
-        return rusButton.exists ? rusButton : enButton
-    }
-
-    var eventsTabButton: XCUIElement {
-        let rusButton = tabbar.buttons["Мероприятия"]
-        let enButton = tabbar.buttons["Events"]
-        return rusButton.exists ? rusButton : enButton
-    }
-
+    var profileTabButton: XCUIElement { tabbar.buttons.element(for: "Профиль") }
+    var eventsTabButton: XCUIElement { tabbar.buttons.element(for: "Мероприятия") }
     var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
     var loginField: XCUIElement { app.textFields["loginField"] }
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
@@ -110,6 +112,9 @@ private extension WorkoutAppUITests {
     var searchUserField: XCUIElement { app.searchFields.firstMatch }
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
     var firstParkCell: XCUIElement { app.buttons["ParkViewCell"].firstMatch }
-    var pastEventsPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Прошедшие"] }
+    var pastEventsPickerButton: XCUIElement {
+        app.segmentedControls.firstMatch.buttons.element(for: "Прошедшие")
+    }
+
     var firstEventViewCell: XCUIElement { app.buttons["EventViewCell"].firstMatch }
 }

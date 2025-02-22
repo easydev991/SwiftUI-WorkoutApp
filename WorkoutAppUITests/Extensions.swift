@@ -1,5 +1,13 @@
 import XCTest
 
+extension XCUIElementQuery {
+    func element(for localizationKey: String) -> XCUIElement {
+        let bundle = Bundle(for: WorkoutAppUITests.self)
+        let localizedString = NSLocalizedString(localizationKey, bundle: bundle, comment: "")
+        return self[localizedString]
+    }
+}
+
 extension XCUIElement {
     func tapElement() {
         if isHittable {

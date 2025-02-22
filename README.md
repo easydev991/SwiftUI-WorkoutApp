@@ -73,8 +73,11 @@ rbenv exec fastlane snapshot
 | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-1-sportsGroundsList.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-2-sportsGroundDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-3-pastEvents.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-4-eventDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-5-profile.png"> |
 
 #### Модели девайсов, используемые для скриншотов
-По состоянию на 2025 год Apple берет за основу скриншоты для диагонали 6.9 (или 6.7) дюймов и масштабирует их под все остальные размеры экранов. Поэтому для скриншотов используется только один симулятор:
+По состоянию на 2025 год Apple берет за основу скриншоты для диагонали 6.9 (или 6.7) дюймов и масштабирует их под все остальные размеры экранов, то есть при желании можно использовать для скриншотов только один девайс.
+Поскольку в этом проекте подключен и работает `fastlane snapshot`, используем три девайса:
 - iPhone 16 Pro Max
+- iPhone 16 pro
+- iPhone SE (3rd generation)
 
 Список всех существующих девайсов есть [тут](https://www.ios-resolution.com).
 
