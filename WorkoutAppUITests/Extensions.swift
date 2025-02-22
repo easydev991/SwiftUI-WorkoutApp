@@ -1,5 +1,19 @@
 import XCTest
 
+extension XCUIElement {
+    func tapElement() {
+        if isHittable {
+            tap()
+        } else {
+            coordinate(withNormalizedOffset: .init(dx: 0.0, dy: 0.0)).tap()
+        }
+    }
+
+    var isVisibleOnScreen: Bool {
+        exists && isHittable
+    }
+}
+
 extension XCTestCase {
     @MainActor
     @discardableResult
@@ -33,7 +47,7 @@ extension XCTestCase {
         waitAndTapOrFail(element: element)
     }
 
-    /// Иногда сервер очень долго отвечает, поэтому ждем
+    /// Иногда сервер очень долго отвечает, или картинки долго грузятся, поэтому ждем
     func waitForServerResponse(_ timeout: UInt32 = 5) {
         sleep(timeout)
     }
