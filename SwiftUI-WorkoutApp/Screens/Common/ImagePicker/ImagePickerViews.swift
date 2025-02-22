@@ -33,10 +33,7 @@ extension ImagePickerViews {
     ) -> some View {
         LazyVGrid(
             columns: .init(
-                repeating: .init(
-                    .flexible(minimum: UIScreen.main.bounds.size.width * 0.287),
-                    spacing: 11
-                ),
+                repeating: .init(.flexible(minimum: 50), spacing: 11),
                 count: 3
             ),
             spacing: 12
