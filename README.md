@@ -22,8 +22,8 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-push
 1. Для доработок создаем **issue** с описанием задачи
 2. Доработки делаем в отдельных ветках
 3. Для каждого **PR** необходимо оставить описание на русском языке по аналогии со старыми **PR**
-4. Вопросы по iOS-приложению решаем с Oleg991 в [почте](mailto:o.n.eremenko@gmail.com?subject=[GitHub]-SwiftUI-WorkoutApp) или в [телеграм](http://t.me/oleg991)
-5. Вопросы по бэкенду/сайту - c Антоном в [почте](mailto:anton@workout.su?subject=[GitHub]-SwiftUI-WorkoutApp)
+4. Вопросы по iOS-приложению решаем с Oleg991 в [почте](mailto:o.n.eremenko@gmail.com?subject=[GitHub]-SwiftUI-WorkoutApp), [телеграм](http://t.me/oleg991) или в **issue** с подробным описанием проблемы
+5. Вопросы по бэкенду/сайту - c Антоном в [почте](mailto:anton@workout.su?subject=[GitHub]-SwiftUI-WorkoutApp) или в **issue** с подробным описанием проблемы
 
 ## Шпаргалка
 ### Настройка базовых параметров приложения  
@@ -59,22 +59,24 @@ chmod +x SwiftUI-WorkoutApp/githooks/pre-push
 
 ### Скриншоты  
 1. Генерируем скриншоты при помощи `Fastlane` ([документация](https://docs.fastlane.tools/getting-started/ios/setup/))
-2. Настройки для генерации скриншотов находятся в файле [Snapfile](./fastlane/Snapfile) ([документация](https://docs.fastlane.tools/actions/snapshot/))
+2. Настройки для генерации скриншотов находятся в [Snapfile](./fastlane/Snapfile) ([документация](https://docs.fastlane.tools/actions/snapshot/))
 3. Генерация скриншотов выполняется командой в папке с проектом (команда может меняться в зависимости от способа установки `Ruby`/`fastlane`)
 ```shell
 rbenv exec fastlane snapshot
 ```
-4. Готовые скриншоты сохраняются в папке [screenshots](./screenshots)
+3.1. Для генерации скриншотов **необходимо наличие в Xcode симуляторов с нужной версией iOS** в соответствие с настройками в [Snapfile](./fastlane/Snapfile)
+3.4. Если тесты падают с ошибкой при запуске через `fastlane`, нужно убедиться, что при ручном запуске тестов из `Xcode` они успешно проходят во всех локализациях, используемых для создания скриншотов
+4. Готовые скриншоты сохраняются в папке [screenshots](./fastlane/screenshots)
 
 | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
 | --- | --- | --- | --- | --- |
-| <img src="./screenshots/ru-RU/iPhone 13 Pro Max-1-sportsGroundsList.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-2-sportsGroundDetails.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-3-pastEvents.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-4-eventDetails.png"> | <img src="./screenshots/ru-RU/iPhone 13 Pro Max-5-profile.png"> |
+| <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-1-sportsGroundsList.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-2-sportsGroundDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-3-pastEvents.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-4-eventDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-5-profile.png"> |
 
 #### Модели девайсов, используемые для скриншотов
-- 6.5 дюйма: iPhone 13 Pro Max
-- 5.8 дюйма: iPhone 13 Pro
-- 5.5 дюйма: iPhone 8 Plus
-- 4.7 дюйма: iPhone SE (3rd generation)
+По состоянию на 2025 год Apple берет за основу скриншоты для диагонали 6.9 (или 6.7) дюймов и масштабирует их под все остальные размеры экранов. Поэтому для скриншотов используется только один симулятор:
+- iPhone 16 Pro Max
+
+Список всех существующих девайсов есть [тут](https://www.ios-resolution.com).
 
 ### Форматирование кода
 - Используем [swiftformat (0.55.4)](https://github.com/nicklockwood/SwiftFormat) для форматирования кода

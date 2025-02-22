@@ -24,9 +24,25 @@ final class WorkoutAppUITests: XCTestCase {
     @MainActor
     func testMakeScreenshots() {
         waitAndTap(timeout: 5, element: grantLocationAccessButton)
-        waitAndTapOrFail(element: parksListPickerButton)
-        app.swipeUp(velocity: .slow)
-        snapshot("1-sportsGroundsList", timeWaitingForIdle: 5)
+        waitAndTap(timeout: 5, element: grantNotificationAccessButton)
+        waitAndTapOrFail(timeout: 10, element: parksListPickerButton)
+        waitForServerResponse()
+        snapshot("1-sportsGroundsList")
+
+        waitAndTapOrFail(timeout: 10, element: firstParkCell)
+        waitForServerResponse()
+        snapshot("2-sportsGroundDetails")
+        waitAndTapOrFail(timeout: 5, element: closeButton)
+
+        waitAndTapOrFail(timeout: 10, element: eventsTabButton)
+        waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
+        waitForServerResponse()
+        snapshot("3-pastEvents")
+
+        waitAndTapOrFail(timeout: 10, element: firstEventViewCell)
+        waitForServerResponse()
+        snapshot("4-eventDetails")
+        waitAndTapOrFail(timeout: 5, element: closeButton)
 
         waitAndTapOrFail(timeout: 5, element: profileTabButton)
         waitAndTapOrFail(element: authorizeButton)
@@ -42,22 +58,7 @@ final class WorkoutAppUITests: XCTestCase {
         searchUserField.typeText("\n") // жмем "return", чтобы начать поиск
         waitAndTapOrFail(timeout: 10, element: firstFoundUserCell)
         waitForServerResponse()
-        snapshot("5-profile", timeWaitingForIdle: 10)
-
-        swipeToFind(element: usesParksButton, in: app)
-        waitAndTapOrFail(timeout: 10, element: firstParkCell)
-        snapshot("2-sportsGroundDetails", timeWaitingForIdle: 10)
-
-        waitAndTapOrFail(timeout: 5, element: closeButton)
-        swipeDownToClosePage(element: whereTrainsText)
-        waitAndTapOrFail(timeout: 10, element: eventsTabButton)
-        waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
-        waitForServerResponse()
-        snapshot("3-pastEvents", timeWaitingForIdle: 10)
-
-        waitAndTapOrFail(timeout: 10, element: firstEventViewCell)
-        waitForServerResponse()
-        snapshot("4-eventDetails", timeWaitingForIdle: 10)
+        snapshot("5-profile")
     }
 }
 
@@ -70,8 +71,14 @@ private extension WorkoutAppUITests {
     }
 
     var grantLocationAccessButton: XCUIElement {
-        let rusButton = springBoard.alerts.firstMatch.buttons["При использовании"]
+        let rusButton = springBoard.alerts.firstMatch.buttons["При использовании приложения"]
         let enButton = springBoard.alerts.firstMatch.buttons["Allow While Using App"]
+        return rusButton.exists ? rusButton : enButton
+    }
+
+    var grantNotificationAccessButton: XCUIElement {
+        let rusButton = springBoard.alerts.firstMatch.buttons["Разрешить"]
+        let enButton = springBoard.alerts.firstMatch.buttons["Allow"]
         return rusButton.exists ? rusButton : enButton
     }
 
@@ -81,16 +88,19 @@ private extension WorkoutAppUITests {
         return rusButton.exists ? rusButton : enButton
     }
 
-    /// Текст в навбаре модального окна
-    var whereTrainsText: XCUIElement {
-        let rusButton = app.staticTexts["Где тренируется"]
-        let enButton = app.staticTexts["Where trains"]
+    var parksListPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Список"] }
+    var profileTabButton: XCUIElement {
+        let rusButton = tabbar.buttons["Профиль"]
+        let enButton = tabbar.buttons["Profile"]
         return rusButton.exists ? rusButton : enButton
     }
 
-    var parksListPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Список"] }
-    var profileTabButton: XCUIElement { tabbar.buttons["profile"] }
-    var eventsTabButton: XCUIElement { tabbar.buttons["events"] }
+    var eventsTabButton: XCUIElement {
+        let rusButton = tabbar.buttons["Мероприятия"]
+        let enButton = tabbar.buttons["Events"]
+        return rusButton.exists ? rusButton : enButton
+    }
+
     var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
     var loginField: XCUIElement { app.textFields["loginField"] }
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
@@ -99,7 +109,6 @@ private extension WorkoutAppUITests {
     var closeButton: XCUIElement { app.buttons["closeButton"] }
     var searchUserField: XCUIElement { app.searchFields.firstMatch }
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
-    var usesParksButton: XCUIElement { app.buttons["usesParksButton"] }
     var firstParkCell: XCUIElement { app.buttons["ParkViewCell"].firstMatch }
     var pastEventsPickerButton: XCUIElement { app.segmentedControls.firstMatch.buttons["Прошедшие"] }
     var firstEventViewCell: XCUIElement { app.buttons["EventViewCell"].firstMatch }

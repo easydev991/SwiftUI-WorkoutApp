@@ -10,8 +10,7 @@
 		6705E7EE283B703400DABCC8 /* JournalSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6705E7ED283B703400DABCC8 /* JournalSettingsScreen.swift */; };
 		670CA19E280E8F09003914A3 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670CA19D280E8F09003914A3 /* SettingsScreen.swift */; };
 		67138D87297311BD00BBF450 /* WorkoutAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */; };
-		67138D922974851F00BBF450 /* XCUIElement+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D912974851F00BBF450 /* XCUIElement+.swift */; };
-		67138D942974854F00BBF450 /* XCTestCase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D932974854F00BBF450 /* XCTestCase+.swift */; };
+		67138D922974851F00BBF450 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67138D912974851F00BBF450 /* Extensions.swift */; };
 		6718BCA42AD5327F002846A6 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */; };
 		671B4AE92D4F623100286996 /* ModernPickedImagesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */; };
 		671B4AEB2D4F683E00286996 /* ImagePickerViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */; };
@@ -102,8 +101,7 @@
 		670CA19D280E8F09003914A3 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutAppUITests.swift; sourceTree = "<group>"; };
-		67138D912974851F00BBF450 /* XCUIElement+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+.swift"; sourceTree = "<group>"; };
-		67138D932974854F00BBF450 /* XCTestCase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+.swift"; sourceTree = "<group>"; };
+		67138D912974851F00BBF450 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		671B4AE82D4F623100286996 /* ModernPickedImagesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernPickedImagesGrid.swift; sourceTree = "<group>"; };
 		671B4AEA2D4F683E00286996 /* ImagePickerViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViews.swift; sourceTree = "<group>"; };
@@ -209,8 +207,7 @@
 			children = (
 				6718BCA32AD5327F002846A6 /* SnapshotHelper.swift */,
 				67138D86297311BD00BBF450 /* WorkoutAppUITests.swift */,
-				67138D912974851F00BBF450 /* XCUIElement+.swift */,
-				67138D932974854F00BBF450 /* XCTestCase+.swift */,
+				67138D912974851F00BBF450 /* Extensions.swift */,
 			);
 			path = WorkoutAppUITests;
 			sourceTree = "<group>";
@@ -602,8 +599,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67138D87297311BD00BBF450 /* WorkoutAppUITests.swift in Sources */,
-				67138D922974851F00BBF450 /* XCUIElement+.swift in Sources */,
-				67138D942974854F00BBF450 /* XCTestCase+.swift in Sources */,
+				67138D922974851F00BBF450 /* Extensions.swift in Sources */,
 				6718BCA42AD5327F002846A6 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
