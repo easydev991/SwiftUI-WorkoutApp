@@ -78,6 +78,7 @@
 		67BD2D012AF7D21B00F44064 /* ParksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD2D002AF7D21B00F44064 /* ParksManager.swift */; };
 		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
 		67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 67D67DE42AE8526600F7A8B0 /* SWDesignSystem */; };
+		67D908E22D6A2BBD0018EAF9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 67A64A232AC83A0F00CBDD5F /* Localizable.xcstrings */; };
 		67D916812838E2460098D3CB /* DialogsListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916802838E2460098D3CB /* DialogsListScreen.swift */; };
 		67D916862838F0DD0098D3CB /* DialogScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogScreen.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageScreen.swift */; };
@@ -574,6 +575,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67D908E22D6A2BBD0018EAF9 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

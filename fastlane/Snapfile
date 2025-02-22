@@ -1,5 +1,5 @@
 # A list of devices you want to take the screenshots from
-devices(["iPhone 16 Pro Max"])
+devices(["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone SE (3rd generation)"])
 
 # A list of languages which should be used. See https://docs.fastlane.tools/actions/snapshot/#available-language-codes
 languages(["en-US", "ru"])
@@ -8,13 +8,16 @@ languages(["en-US", "ru"])
 ios_version("18.1")
 
 # Очистить папку билда перед стартом
-clean(true)
+# clean(true)
+
+# Пропускаем открытие html-файла с результатами
+skip_open_summary(true)
 
 # Переустановить приложение перед стартом
 reinstall_app(true)
 
 # Стереть данные симулятора перед стартом
-erase_simulator(true)
+# erase_simulator(true)
 
 # Enabling this option will configure the Simulator's system language
 localize_simulator(true)
