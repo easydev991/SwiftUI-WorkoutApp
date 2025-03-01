@@ -83,6 +83,7 @@
 		67D916862838F0DD0098D3CB /* DialogScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D916852838F0DD0098D3CB /* DialogScreen.swift */; };
 		67D9169628396C1E0098D3CB /* SendMessageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D9169528396C1E0098D3CB /* SendMessageScreen.swift */; };
 		67EA685C2A71A99700697C88 /* PhotoDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */; };
+		67F2ABAB2D7451C3008F9928 /* SWKeychain in Frameworks */ = {isa = PBXBuildFile; productRef = 67F2ABAA2D7451C3008F9928 /* SWKeychain */; };
 		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
 		67FBF64F28338A2E008A7968 /* EventDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FBF64E28338A2E008A7968 /* EventDetailsScreen.swift */; };
 /* End PBXBuildFile section */
@@ -176,6 +177,7 @@
 		67D916852838F0DD0098D3CB /* DialogScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogScreen.swift; sourceTree = "<group>"; };
 		67D9169528396C1E0098D3CB /* SendMessageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageScreen.swift; sourceTree = "<group>"; };
 		67EA685B2A71A99700697C88 /* PhotoDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailScreen.swift; sourceTree = "<group>"; };
+		67F2ABA92D74508E008F9928 /* SWKeychain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SWKeychain; sourceTree = "<group>"; };
 		67FBF64E28338A2E008A7968 /* EventDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67795FB22D1C05D90087132F /* SWModels in Frameworks */,
+				67F2ABAB2D7451C3008F9928 /* SWKeychain in Frameworks */,
 				67D67DE52AE8526600F7A8B0 /* SWDesignSystem in Frameworks */,
 				67B7EB812D4FED510004A40D /* SWUtils in Frameworks */,
 				67D322972AE993F90045B92F /* MapView991 in Frameworks */,
@@ -462,6 +465,7 @@
 		67AE08472D1C049F0097B59F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				67F2ABA92D74508E008F9928 /* SWKeychain */,
 				67B7EB7F2D4FECD90004A40D /* SWUtils */,
 				678CE36A2D1C510900F060C6 /* SWNetwork */,
 				67AE08482D1C05020097B59F /* SWModels */,
@@ -521,6 +525,7 @@
 				67795FB12D1C05D90087132F /* SWModels */,
 				67795FB32D1C05D90087132F /* SWNetworkClient */,
 				67B7EB802D4FED510004A40D /* SWUtils */,
+				67F2ABAA2D7451C3008F9928 /* SWKeychain */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -874,7 +879,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -927,7 +932,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
@@ -1047,6 +1052,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 67D67DE32AE8526600F7A8B0 /* XCRemoteSwiftPackageReference "SWDesignSystem" */;
 			productName = SWDesignSystem;
+		};
+		67F2ABAA2D7451C3008F9928 /* SWKeychain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SWKeychain;
 		};
 		67F9534E2964A5700077DFDC /* ImagePicker */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,5 +1,6 @@
 import SWDesignSystem
 import SwiftUI
+import SWKeychain
 import SWModels
 import SWNetworkClient
 import SWUtils
@@ -103,9 +104,9 @@ private extension LoginScreen {
         isLoading = true
         loginTask = Task {
             do {
-                let token = AuthData(login: credentials.login, password: credentials.password).token
-                let userId = try await client.logIn(with: token)
-                try defaults.saveAuthData(login: credentials.login, password: credentials.password)
+                let model = AuthData(login: credentials.login, password: credentials.password)
+                let userId = try await client.logIn(with: model.token)
+                defaults.saveAuthData(model)
                 let result = try await client.getSocialUpdates(userID: userId)
                 try defaults.saveFriendsIds(result.friends.map(\.id))
                 try defaults.saveFriendRequests(result.friendRequests)
