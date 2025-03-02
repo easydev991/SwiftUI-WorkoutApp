@@ -238,6 +238,7 @@ private extension EditProfileScreen {
             do {
                 let userID = defaults.mainUserInfo?.id ?? 0
                 let result = try await SWClient(with: defaults).editUser(userID, model: userForm)
+                try Task.checkCancellation()
                 try defaults.saveUserInfo(result)
                 let password = try defaults.getUserPassword()
                 defaults.saveAuthData(.init(login: userForm.userName, password: password))

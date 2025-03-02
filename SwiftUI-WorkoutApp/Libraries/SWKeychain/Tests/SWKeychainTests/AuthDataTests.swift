@@ -4,7 +4,7 @@ import Testing
 struct AuthDataTests {
     private static let validLogin = "user@domain.com"
     private static let validPassword = "p@ss!123"
-    
+
     @Test
     func validCredentialsGenerateCorrectToken() throws {
         let login = Self.validLogin
@@ -15,7 +15,7 @@ struct AuthDataTests {
         #expect(model.password == password)
         #expect(token == "dXNlckBkb21haW4uY29tOnBAc3MhMTIz")
     }
-    
+
     @Test(arguments: [
         ("", Self.validPassword),
         (Self.validLogin, ""),

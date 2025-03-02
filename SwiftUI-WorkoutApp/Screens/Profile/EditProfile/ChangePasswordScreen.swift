@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для смены пароля
 struct ChangePasswordScreen: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var model = PassworModel()
@@ -31,7 +32,6 @@ struct ChangePasswordScreen: View {
         .padding()
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onChange(of: isChangeSuccessful, perform: performLogout)
         .onDisappear(perform: cancelTask)
         .navigationTitle("Изменить пароль")
         .navigationBarTitleDisplayMode(.inline)
@@ -77,7 +77,7 @@ private extension ChangePasswordScreen {
     }
 
     var canChangePassword: Bool {
-        model.isReady && isNetworkConnected
+        model.isReady && isNetworkConnected && !isChangeSuccessful
     }
 
     var passwordField: some View {
@@ -128,6 +128,9 @@ private extension ChangePasswordScreen {
         Button("Сохранить изменения", action: changePasswordAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .disabled(!canChangePassword)
+            .alert("Пароль успешно изменен", isPresented: $isChangeSuccessful) {
+                Button("Ok") { dismiss() }
+            }
     }
 
     func changePasswordAction() {
@@ -136,8 +139,13 @@ private extension ChangePasswordScreen {
         isLoading.toggle()
         changePasswordTask = Task {
             do {
-                isChangeSuccessful = try await SWClient(with: defaults)
+                let isSuccess = try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
+                try Task.checkCancellation()
+                if isSuccess, let login = defaults.mainUserInfo?.userName {
+                    defaults.saveAuthData(.init(login: login, password: model.new.text))
+                }
+                isChangeSuccessful = isSuccess
             } catch {
                 SWAlert.shared.presentDefaultUIKit(
                     title: "Ошибка".localized,
@@ -145,12 +153,6 @@ private extension ChangePasswordScreen {
                 )
             }
             isLoading.toggle()
-        }
-    }
-
-    func performLogout(needRelogin: Bool) {
-        if needRelogin {
-            defaults.triggerLogout()
         }
     }
 
