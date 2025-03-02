@@ -3,7 +3,6 @@ import Foundation
 
 final class CalendarManager: ObservableObject {
     let eventStore = EKEventStore()
-    private var hasAccess = false
     @Published var showCalendar = false
     @Published var showSettingsAlert = false
 
@@ -15,7 +14,6 @@ final class CalendarManager: ObservableObject {
         default:
             eventStore.requestAccess(to: .event) { [weak self] granted, _ in
                 DispatchQueue.main.async {
-                    self?.hasAccess = granted
                     self?.showCalendar = granted
                     self?.showSettingsAlert = !granted
                 }
