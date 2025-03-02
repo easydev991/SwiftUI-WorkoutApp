@@ -163,7 +163,9 @@ private extension EventDetailsScreen {
                 address: event.fullAddress ?? shortAddress,
                 appleMapsURL: event.park.appleMapsURL
             )
-            addToCalendarButton
+            if event.isCurrent == true {
+                addToCalendarButton
+            }
         }
         .insideCardBackground()
     }
