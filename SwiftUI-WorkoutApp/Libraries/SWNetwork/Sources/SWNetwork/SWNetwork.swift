@@ -110,7 +110,7 @@ private extension SWNetworkService {
     func logSuccess(request: URLRequest, data: Data) {
         logger.info(
             """
-            Обработали ответ сервера
+            Получили успешный ответ сервера
             \nURL запроса: \(request.urlString, privacy: .public)
             \nJSON в ответе: \(data.prettyJson, privacy: .public)
             """

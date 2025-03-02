@@ -1,9 +1,14 @@
 import SwiftUI
+import SWKeychain
 import SWModels
 
 @MainActor
 final class DefaultsService: ObservableObject, DefaultsProtocol {
-    var authToken: String? { try? basicAuthInfo().token }
+    init() {
+        migrateAuthDataFromUserDefaults()
+    }
+
+    var authToken: String? { authData?.token }
     var appIconBadgeCount: Int {
         unreadMessagesCount + friendRequestsList.count
     }
@@ -16,8 +21,8 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
 
-    @AppStorage(Key.authData.rawValue)
-    private var authData = Data()
+    @KeychainWrapper(Key.authData.rawValue)
+    private var authData: AuthData?
 
     @AppStorage(Key.userInfo.rawValue)
     private var userInfo = Data()
@@ -85,13 +90,15 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
         appTheme = theme
     }
 
-    func saveAuthData(login: String, password: String) throws {
-        let model = AuthData(login: login, password: password)
-        authData = try JSONEncoder().encode(model)
+    func saveAuthData(_ model: AuthData) {
+        authData = model
     }
 
-    func basicAuthInfo() throws -> AuthData {
-        try JSONDecoder().decode(AuthData.self, from: authData)
+    func getUserPassword() throws -> String {
+        guard let password = authData?.password else {
+            throw StorageError.noAuthData
+        }
+        return password
     }
 
     func setUserNeedUpdate(_ newValue: Bool) {
@@ -149,7 +156,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     }
 
     func triggerLogout() {
-        authData = .init()
+        authData = nil
         userInfo = .init()
         try? saveFriendsIds([])
         try? saveFriendRequests([])
@@ -169,8 +176,50 @@ extension DefaultsService {
     }
 }
 
+extension DefaultsService {
+    enum StorageError: Error, LocalizedError {
+        case noAuthData
+
+        var errorDescription: String? {
+            switch self {
+            case .noAuthData: "В keychain нет данных авторизации"
+            }
+        }
+    }
+}
+
 private extension DefaultsService {
     enum Key: String {
         case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate
+    }
+}
+
+private extension DefaultsService {
+    /// Старая модель, которая хранилась в `UserDefaults`
+    struct LegacyAuthData: Codable {
+        let password: String
+        let token: String?
+
+        var login: String? {
+            guard let token else { return nil }
+            guard let data = Data(base64Encoded: token),
+                  let decodedString = String(data: data, encoding: .utf8)
+            else { return nil }
+            let components = decodedString.components(separatedBy: ":")
+            guard components.count >= 2 else { return nil }
+            return components[0]
+        }
+    }
+
+    /// Переносит авторизационные данные из `UserDefaults` в `keychain`
+    func migrateAuthDataFromUserDefaults() {
+        guard authData == nil,
+              let legacyData = UserDefaults.standard.data(forKey: Key.authData.rawValue)
+        else { return }
+        UserDefaults.standard.removeObject(forKey: Key.authData.rawValue)
+        guard let oldModel = try? JSONDecoder().decode(LegacyAuthData.self, from: legacyData),
+              let login = oldModel.login
+        else { return }
+        authData = .init(login: login, password: oldModel.password)
     }
 }

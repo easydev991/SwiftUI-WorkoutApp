@@ -4,13 +4,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "SWUtils",
+    name: "SWKeychain",
     platforms: [.iOS(.v15)],
     products: [
-        .library(name: "SWUtils", targets: ["SWUtils"])
+        .library(
+            name: "SWKeychain", targets: ["SWKeychain"]
+        )
     ],
     targets: [
-        .target(name: "SWUtils"),
-        .testTarget(name: "SWUtilsTests", dependencies: ["SWUtils"])
+        .target(name: "SWKeychain"),
+        .testTarget(name: "SWKeychainTests", dependencies: ["SWKeychain"])
     ]
 )

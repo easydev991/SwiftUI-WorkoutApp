@@ -54,6 +54,13 @@
     },
     {
       "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
+        "identifier" : "SWUtilsTests",
+        "name" : "SWUtilsTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
         "identifier" : "SWModelsTest",
         "name" : "SWModelsTest"
@@ -61,9 +68,9 @@
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
-        "identifier" : "SWUtilsTests",
-        "name" : "SWUtilsTests"
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWKeychain",
+        "identifier" : "SWKeychainTests",
+        "name" : "SWKeychainTests"
       }
     }
   ],

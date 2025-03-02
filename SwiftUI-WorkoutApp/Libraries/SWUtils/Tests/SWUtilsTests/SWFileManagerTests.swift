@@ -27,7 +27,7 @@ struct SWFileManagerTests {
     func allFeaturesInOneTest() {
         let sut = SWFileManager(fileName: uniqueFileName)
         #expect(!sut.documentExists)
-        let testModel = TestModel(id: 1, title: "Demo file")
+        let testModel = TestModel(title: "Demo file")
         do {
             try sut.save(testModel)
             #expect(sut.documentExists, "Файл должен существовать")
@@ -43,7 +43,6 @@ struct SWFileManagerTests {
 
 extension SWFileManagerTests {
     private struct TestModel: Codable, Equatable {
-        let id: Int
         let title: String
     }
 }

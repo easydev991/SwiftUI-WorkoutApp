@@ -2932,6 +2932,16 @@
         }
       }
     },
+    "Пароль успешно изменен" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password has been changed"
+          }
+        }
+      }
+    },
     "Перейти" : {
       "localizations" : {
         "en" : {
