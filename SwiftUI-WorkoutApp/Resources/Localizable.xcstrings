@@ -1033,6 +1033,17 @@
         }
       }
     },
+    "Вчера" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yesterday"
+          }
+        }
+      }
+    },
     "Выбери город" : {
       "extractionState" : "manual",
       "localizations" : {
