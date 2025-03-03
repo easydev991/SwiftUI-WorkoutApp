@@ -16,7 +16,8 @@ public enum DateFormatterService {
                 showTimeInThisYear: showTimeInThisYear
             )
             formatter.dateFormat = dateFormat
-            return prefix + formatter.string(from: fullDate)
+            let localizedPrefix = prefix.isEmpty ? "" : NSLocalizedString(prefix, comment: "") + ", "
+            return localizedPrefix + formatter.string(from: fullDate)
         } else {
             return ""
         }
@@ -99,7 +100,7 @@ public extension DateFormatterService {
             if date.isToday {
                 ("", mediumTime.rawValue)
             } else if date.isYesterday {
-                ("Вчера, ", mediumTime.rawValue)
+                ("Вчера", mediumTime.rawValue)
             } else if date.isThisYear {
                 (
                     "",
