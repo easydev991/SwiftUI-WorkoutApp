@@ -1,22 +1,30 @@
-import MapKit
+@preconcurrency import MapKit
 import OSLog
 import SWDesignSystem
 import SwiftUI
 
-/// Снапшот карты
+/// Снимок карты
 struct MapSnapshotView: View {
-    let mapModel: MapModel
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: "MapSnapshotView"
+    )
     private let height: CGFloat = 153
     @State private var snapshotImage: UIImage?
+    @State private var currentSize: CGSize?
+    let mapModel: MapModel
 
     var body: some View {
         GeometryReader { geo in
             makeContentView(width: geo.size.width)
                 .animation(.easeInOut, value: snapshotImage)
                 .clipShape(.rect(cornerRadius: 8))
-                .onAppear { generateSnapshot(size: geo.size) }
-                .onChange(of: mapModel) { _ in generateSnapshot(size: geo.size) }
-                .onChange(of: geo.size, perform: generateSnapshot)
+                .task(id: mapModel) {
+                    await generateSnapshot(size: geo.size)
+                }
+                .task(id: geo.size) {
+                    await generateSnapshot(size: geo.size)
+                }
         }
         .frame(height: height)
     }
@@ -40,8 +48,8 @@ extension MapSnapshotView {
 private extension MapSnapshotView {
     func makeContentView(width: CGFloat) -> some View {
         ZStack {
-            if let image = snapshotImage {
-                Image(uiImage: image)
+            if let snapshotImage {
+                Image(uiImage: snapshotImage)
                     .resizable()
                     .scaledToFit()
                     .frame(width: width, height: height)
@@ -59,8 +67,16 @@ private extension MapSnapshotView {
     }
 
     @MainActor
-    func generateSnapshot(size: CGSize) {
-        guard mapModel.isComplete else { return }
+    func generateSnapshot(size: CGSize) async {
+        guard mapModel.isComplete else {
+            logger.error("Широта или долгота отсутствует!")
+            return
+        }
+        guard currentSize != size else {
+            logger.info("Пропускаем лишнюю генерацию картинки, т.к. размеры не изменились")
+            return
+        }
+        currentSize = size
         let regionRadius: CLLocationDistance = 1000
         let options = MKMapSnapshotter.Options()
         options.region = .init(
@@ -72,9 +88,10 @@ private extension MapSnapshotView {
         options.pointOfInterestFilter = .excludingAll
 
         let snapshotter = MKMapSnapshotter(options: options)
-        snapshotter.start { snapshot, error in
-            if let snapshot {
-                let image = UIGraphicsImageRenderer(size: options.size).image { _ in
+        do {
+            let snapshot = try await snapshotter.start()
+            let image = await withCheckedContinuation { continuation in
+                let result = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
                     let point = snapshot.point(for: mapModel.coordinate)
                     let annotationView = MKMarkerAnnotationView(
@@ -94,12 +111,12 @@ private extension MapSnapshotView {
                         afterScreenUpdates: true
                     )
                 }
-                snapshotImage = image
-            } else {
-                snapshotImage = nil
-                let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MapSnapshotView")
-                logger.error("Ошибка при создании снапшота карты: \(error, privacy: .public)")
+                continuation.resume(returning: result)
             }
+            snapshotImage = image
+        } catch {
+            logger.error("Ошибка при создании снапшота карты: \(error, privacy: .public)")
+            snapshotImage = nil
         }
     }
 }
