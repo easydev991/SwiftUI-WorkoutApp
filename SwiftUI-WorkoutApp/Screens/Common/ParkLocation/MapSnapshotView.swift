@@ -20,7 +20,7 @@ struct MapSnapshotView: View {
                 .animation(.easeInOut, value: snapshotImage)
                 .clipShape(.rect(cornerRadius: 8))
                 .task(id: mapModel) {
-                    await generateSnapshot(size: geo.size)
+                    await generateSnapshot(size: geo.size, force: true)
                 }
                 .task(id: geo.size) {
                     await generateSnapshot(size: geo.size)
@@ -67,12 +67,12 @@ private extension MapSnapshotView {
     }
 
     @MainActor
-    func generateSnapshot(size: CGSize) async {
+    func generateSnapshot(size: CGSize, force: Bool = false) async {
         guard mapModel.isComplete else {
             logger.error("Широта или долгота отсутствует!")
             return
         }
-        guard currentSize != size else {
+        guard currentSize != size || force else {
             logger.info("Пропускаем лишнюю генерацию картинки, т.к. размеры не изменились")
             return
         }
