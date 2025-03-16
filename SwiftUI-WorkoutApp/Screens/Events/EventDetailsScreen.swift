@@ -79,6 +79,7 @@ private extension EventDetailsScreen {
         case eventAuthor(UserResponse)
         case eventParticipants([UserResponse])
         case editEvent(EventResponse)
+        case commentAuthor(UserResponse)
     }
 
     enum SheetItem: Identifiable {
@@ -124,7 +125,7 @@ private extension EventDetailsScreen {
                 }
             }
         }
-        .disabled(isLoading || !isNetworkConnected)
+        .opacity(isLoading ? 0 : 1)
     }
 
     var headerAndMapSection: some View {
@@ -294,7 +295,11 @@ private extension EventDetailsScreen {
             reportClbk: reportComment,
             deleteClbk: deleteComment,
             editClbk: { sheetItem = .editComment($0) },
-            createCommentClbk: { sheetItem = .newComment(event.id) }
+            createCommentClbk: { sheetItem = .newComment(event.id) },
+            openProfile: {
+                guard defaults.isAuthorized else { return }
+                navigationDestination = .commentAuthor($0)
+            }
         )
     }
 
@@ -314,7 +319,7 @@ private extension EventDetailsScreen {
     var lazyDestination: some View {
         if let navigationDestination {
             switch navigationDestination {
-            case let .eventAuthor(user):
+            case let .eventAuthor(user), let .commentAuthor(user):
                 UserDetailsScreen(for: user)
             case let .eventParticipants(users):
                 ParticipantsScreen(mode: .event(list: users))

@@ -83,7 +83,7 @@ private extension DialogScreen {
                         openAnotherUserProfile.toggle()
                     }
                 )
-                .borderedClipshape()
+                .borderedCircleClipShape()
             }
         )
         .disabled(isToolbarItemDisabled)
