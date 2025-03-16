@@ -83,6 +83,7 @@ private extension ParkDetailScreen {
         case parkParticipants([UserResponse])
         case editPark(Park)
         case createEvent(_ parkId: Int, _ parkLongTitle: String)
+        case commentAuthor(UserResponse)
     }
 
     enum SheetItem: Identifiable {
@@ -129,7 +130,7 @@ private extension ParkDetailScreen {
                 }
             }
         }
-        .disabled(isLoading || !isNetworkConnected)
+        .opacity(isLoading ? 0 : 1)
     }
 
     var headerAndMapSection: some View {
@@ -194,7 +195,7 @@ private extension ParkDetailScreen {
     var lazyDestination: some View {
         if let navigationDestination {
             switch navigationDestination {
-            case let .parkAuthor(user):
+            case let .parkAuthor(user), let .commentAuthor(user):
                 UserDetailsScreen(for: user)
             case let .parkParticipants(users):
                 ParticipantsScreen(mode: .park(list: users))
@@ -294,7 +295,11 @@ private extension ParkDetailScreen {
             editClbk: {
                 sheetItem = .editComment(park.id, $0.id, $0.formattedBody)
             },
-            createCommentClbk: { sheetItem = .createComment(park.id) }
+            createCommentClbk: { sheetItem = .createComment(park.id) },
+            openProfile: {
+                guard defaults.isAuthorized else { return }
+                navigationDestination = .commentAuthor($0)
+            }
         )
     }
 

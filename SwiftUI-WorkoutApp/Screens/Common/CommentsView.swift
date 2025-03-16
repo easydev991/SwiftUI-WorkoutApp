@@ -12,6 +12,7 @@ struct CommentsView: View {
     let deleteClbk: (Int) -> Void
     let editClbk: (CommentResponse) -> Void
     let createCommentClbk: () -> Void
+    let openProfile: (UserResponse) -> Void
 
     var body: some View {
         VStack(spacing: 16) {
@@ -26,9 +27,20 @@ struct CommentsView: View {
                                 bodyText: comment.formattedBody,
                                 isCommentByMainUser: comment.user?.id == mainUserId,
                                 isNetworkConnected: isNetworkConnected,
-                                reportAction: { reportClbk(comment) },
-                                editAction: { editClbk(comment) },
-                                deleteAction: { deleteClbk(comment.id) }
+                                action: { option in
+                                    switch option {
+                                    case .report:
+                                        reportClbk(comment)
+                                    case .edit:
+                                        editClbk(comment)
+                                    case .delete:
+                                        deleteClbk(comment.id)
+                                    case .openProfile:
+                                        if let user = comment.user {
+                                            openProfile(user)
+                                        }
+                                    }
+                                }
                             )
                             .withDivider(if: index != items.endIndex - 1)
                         }
@@ -51,7 +63,8 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        createCommentClbk: {}
+        createCommentClbk: {},
+        openProfile: { _ in }
     )
     .padding(.horizontal)
 }
@@ -63,7 +76,8 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        createCommentClbk: {}
+        createCommentClbk: {},
+        openProfile: { _ in }
     )
     .padding(.horizontal)
 }

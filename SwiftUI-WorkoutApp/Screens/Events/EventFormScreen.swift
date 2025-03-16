@@ -38,23 +38,17 @@ struct EventFormScreen: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                eventNameSection
-                descriptionSection
-                parkSection
-                datePickerSection
-                pickedImagesGrid
-                saveButton
-            }
-            .padding()
+        if #available(iOS 16.0, *) {
+            scrollView
+                .scrollDismissesKeyboard(.immediately)
+        } else {
+            scrollView
+                .simultaneousGesture(
+                    DragGesture().onChanged { _ in
+                        focus = nil
+                    }
+                )
         }
-        .loadingOverlay(if: isLoading)
-        .background(Color.swBackground)
-        .onDisappear { saveEventTask?.cancel() }
-        .navigationTitle(mode.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled(isLoading)
     }
 }
 
@@ -89,11 +83,32 @@ private extension EventFormScreen {
         case eventName, eventDescription
     }
 
+    var scrollView: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                eventNameSection
+                descriptionSection
+                parkSection
+                datePickerSection
+                pickedImagesGrid
+                saveButton
+            }
+            .padding()
+        }
+        .loadingOverlay(if: isLoading)
+        .background(Color.swBackground)
+        .onDisappear { saveEventTask?.cancel() }
+        .navigationTitle(mode.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled(isLoading)
+    }
+
     var eventNameSection: some View {
         SectionView(header: "Название", mode: .regular) {
             SWTextField(
                 placeholder: "Название мероприятия",
                 text: $eventForm.title,
+                lineLimit: 3,
                 isFocused: focus == .eventName
             )
             .focused($focus, equals: .eventName)

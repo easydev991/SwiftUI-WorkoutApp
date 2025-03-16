@@ -40,24 +40,17 @@ struct ParkFormScreen: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                VStack(spacing: 12) {
-                    addressSection
-                    typePicker
-                    sizePicker
-                }
-                pickedImagesGrid
-                saveButton
-            }
-            .padding([.horizontal, .bottom])
+        if #available(iOS 16.0, *) {
+            scrollView
+                .scrollDismissesKeyboard(.immediately)
+        } else {
+            scrollView
+                .simultaneousGesture(
+                    DragGesture().onChanged { _ in
+                        isFocused = false
+                    }
+                )
         }
-        .loadingOverlay(if: isLoading)
-        .background(Color.swBackground)
-        .onDisappear { saveParkTask?.cancel() }
-        .navigationTitle("Площадка")
-        .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled(isLoading)
     }
 }
 
@@ -80,11 +73,33 @@ extension ParkFormScreen {
 }
 
 private extension ParkFormScreen {
+    var scrollView: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                VStack(spacing: 12) {
+                    addressSection
+                    typePicker
+                    sizePicker
+                }
+                pickedImagesGrid
+                saveButton
+            }
+            .padding([.horizontal, .bottom])
+        }
+        .loadingOverlay(if: isLoading)
+        .background(Color.swBackground)
+        .onDisappear { saveParkTask?.cancel() }
+        .navigationTitle("Площадка")
+        .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled(isLoading)
+    }
+
     var addressSection: some View {
         SectionView(header: "Адрес", mode: .regular) {
             SWTextField(
                 placeholder: "Адрес площадки",
                 text: $parkForm.address,
+                lineLimit: 3,
                 isFocused: isFocused
             )
             .focused($isFocused)
