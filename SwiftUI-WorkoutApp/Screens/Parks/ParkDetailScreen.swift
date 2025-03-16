@@ -434,7 +434,8 @@ private extension ParkDetailScreen {
     }
 
     func process(_ error: Error) {
-        if error.localizedDescription.contains("404") {
+        let notFoundStrings = ["404", "Запрашиваемый ресурс не найден", "The requested resource is not found"]
+        if notFoundStrings.contains(error.localizedDescription) {
             logger.debug(
                 """
                 Похоже, был запрос данных о несуществующей площадке
