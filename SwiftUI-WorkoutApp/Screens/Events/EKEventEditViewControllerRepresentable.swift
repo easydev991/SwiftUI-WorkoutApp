@@ -31,7 +31,7 @@ struct EKEventEditViewControllerRepresentable: UIViewControllerRepresentable {
 
     func makeCoordinator() -> Coordinator { .init(parent: self) }
 
-    final class Coordinator: NSObject, EKEventEditViewDelegate {
+    final class Coordinator: NSObject, @preconcurrency EKEventEditViewDelegate {
         private let parent: EKEventEditViewControllerRepresentable
 
         init(parent: EKEventEditViewControllerRepresentable) {

@@ -1,7 +1,7 @@
 import Foundation
 import Network
 
-public final class NetworkStatus: ObservableObject {
+public final class NetworkStatus: ObservableObject, @unchecked Sendable {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue.global(qos: .background)
 
