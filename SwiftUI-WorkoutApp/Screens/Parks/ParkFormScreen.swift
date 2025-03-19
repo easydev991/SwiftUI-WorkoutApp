@@ -157,6 +157,7 @@ private extension ParkFormScreen {
 
     var saveButton: some View {
         Button("Сохранить") {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             isFocused = false
             isLoading = true
             saveParkTask = Task {
@@ -174,7 +175,7 @@ private extension ParkFormScreen {
             }
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(!isFormReady || !isNetworkConnected)
+        .disabled(!isFormReady)
     }
 
     var isFormReady: Bool {

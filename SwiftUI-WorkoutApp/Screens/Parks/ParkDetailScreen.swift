@@ -158,7 +158,6 @@ private extension ParkDetailScreen {
                     navigationDestination = .createEvent(park.id, park.longTitle)
                 }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
-                .disabled(!isNetworkConnected)
             }
         }
         .insideCardBackground()
@@ -187,7 +186,6 @@ private extension ParkDetailScreen {
                     )
                 )
             )
-            .disabled(!isNetworkConnected)
         }
     }
 
@@ -230,6 +228,7 @@ private extension ParkDetailScreen {
     }
 
     func changeTrainHereStatus(newValue: Bool) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         let oldValue = park.trainHere
         switch (oldValue, newValue) {
         case (true, true), (false, false):
@@ -277,11 +276,7 @@ private extension ParkDetailScreen {
                         )
                     )
                 }
-                .disabled(
-                    !defaults.isAuthorized
-                        || isParkAuthor
-                        || !isNetworkConnected
-                )
+                .disabled(!defaults.isAuthorized || isParkAuthor)
             }
         }
     }
@@ -362,6 +357,7 @@ private extension ParkDetailScreen {
     }
 
     func deleteComment(with id: Int) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         deleteCommentTask = Task {
             do {
@@ -376,6 +372,7 @@ private extension ParkDetailScreen {
     }
 
     func deletePhoto(id: Int) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         deletePhotoTask = Task {
             do {

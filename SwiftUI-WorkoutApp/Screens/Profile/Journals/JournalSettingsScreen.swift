@@ -83,6 +83,7 @@ private extension JournalSettingsScreen {
     }
 
     func saveChanges() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         Task {
             isLoading = true
             do {
@@ -104,9 +105,7 @@ private extension JournalSettingsScreen {
     }
 
     var isSaveButtonDisabled: Bool {
-        !isNetworkConnected
-            || journal.title.isEmpty
-            || initialJournal == journal
+        journal.title.isEmpty || initialJournal == journal
     }
 }
 

@@ -1,5 +1,6 @@
 import SWDesignSystem
 import SwiftUI
+import SWUtils
 
 /// Универсальный экран для отправки текста на сервер
 struct SendMessageScreen: View {
@@ -46,11 +47,12 @@ struct SendMessageScreen: View {
 private extension SendMessageScreen {
     var sendButton: some View {
         Button("Отправить") {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             isFocused = false
             sendAction()
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(isSendButtonDisabled || !isNetworkConnected)
+        .disabled(isSendButtonDisabled)
     }
 
     var textView: some View {

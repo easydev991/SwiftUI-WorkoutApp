@@ -7,6 +7,7 @@ import SWUtils
 /// Экран с детальной информацией о пользователе
 @MainActor
 struct UserDetailsScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var socialActions = SocialActions()
@@ -120,6 +121,7 @@ private extension UserDetailsScreen {
     }
 
     func performFriendAction() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         friendActionTask = Task {
             do {
@@ -142,6 +144,7 @@ private extension UserDetailsScreen {
     }
 
     func performBlacklistAction() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         blacklistUserTask = Task {
             do {

@@ -227,12 +227,12 @@ private extension EventDetailsScreen {
                         )
                     )
                 )
-                .disabled(!isNetworkConnected)
             }
         }
     }
 
     func changeTrainHereStatus(newValue: Bool) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         let oldValue = event.trainHere
         switch (oldValue, newValue) {
         case (true, true), (false, false):
@@ -279,11 +279,7 @@ private extension EventDetailsScreen {
                         )
                     )
                 }
-                .disabled(
-                    !defaults.isAuthorized
-                        || isEventAuthor
-                        || !isNetworkConnected
-                )
+                .disabled(!defaults.isAuthorized || isEventAuthor)
             }
         }
     }
@@ -393,6 +389,7 @@ private extension EventDetailsScreen {
     }
 
     func deletePhoto(id: Int) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         deletePhotoTask = Task {
             do {

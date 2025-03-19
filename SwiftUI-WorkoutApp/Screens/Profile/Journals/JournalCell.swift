@@ -3,9 +3,9 @@ import SwiftUI
 import SWModels
 
 struct JournalCell: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     let model: JournalCommonInfo
     let mode: Mode
-    let isNetworkConnected: Bool
     let mainUserID: Int?
     let isJournalOwner: Bool
 
@@ -74,7 +74,6 @@ private extension JournalCell {
     JournalCell(
         model: .init(journalEntryResponse: .preview),
         mode: .root(setupClbk: {}, deleteClbk: {}),
-        isNetworkConnected: true,
         mainUserID: nil,
         isJournalOwner: true
     )

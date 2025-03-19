@@ -77,7 +77,7 @@ private extension ChangePasswordScreen {
     }
 
     var canChangePassword: Bool {
-        model.isReady && isNetworkConnected && !isChangeSuccessful
+        model.isReady && !isChangeSuccessful
     }
 
     var passwordField: some View {
@@ -135,6 +135,7 @@ private extension ChangePasswordScreen {
 
     func changePasswordAction() {
         guard !isLoading else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         focus = nil
         isLoading.toggle()
         changePasswordTask = Task {

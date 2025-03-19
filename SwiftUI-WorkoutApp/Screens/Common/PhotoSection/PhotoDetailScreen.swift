@@ -5,7 +5,6 @@ import SwiftUI
 ///
 /// Можно пожаловаться на фото или удалить его (в некоторых сценариях)
 struct PhotoDetailScreen: View {
-    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteDialog = false
     @State private var showReportDialog = false
@@ -48,7 +47,6 @@ private extension PhotoDetailScreen {
                 Button("Закрыть") { dismiss() }
                 Spacer()
                 trailingButton
-                    .disabled(!isNetworkConnected)
             }
             .tint(.swAccent)
             .padding(.horizontal)

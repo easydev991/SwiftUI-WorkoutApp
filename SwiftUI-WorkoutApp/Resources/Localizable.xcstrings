@@ -3328,6 +3328,23 @@
         }
       }
     },
+    "Проверьте подключение и повторите попытку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your connection and try again"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверьте подключение и повторите попытку"
+          }
+        }
+      }
+    },
     "Профиль" : {
       "localizations" : {
         "en" : {

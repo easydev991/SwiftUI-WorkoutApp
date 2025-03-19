@@ -69,7 +69,6 @@ private extension JournalsListScreen {
                 .symbolVariant(.circle)
         }
         .opacity(showAddJournalButton ? 1 : 0)
-        .disabled(!isNetworkConnected)
     }
 
     var emptyContentView: some View {
@@ -93,7 +92,6 @@ private extension JournalsListScreen {
                                 setupClbk: { setupJournalToEdit(journal) },
                                 deleteClbk: { initiateDeletion(for: journal.id) }
                             ),
-                            isNetworkConnected: isNetworkConnected,
                             mainUserID: defaults.mainUserInfo?.id,
                             isJournalOwner: journal.ownerID == defaults.mainUserInfo?.id
                         )
@@ -132,6 +130,7 @@ private extension JournalsListScreen {
 
     var deleteJournalButton: some View {
         Button(role: .destructive) {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             deleteJournalTask = Task {
                 guard let journalID = journalIdToDelete else { return }
                 isLoading = true
@@ -179,6 +178,7 @@ private extension JournalsListScreen {
     }
 
     func saveNewJournal() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         saveJournalTask = Task {
             do {
