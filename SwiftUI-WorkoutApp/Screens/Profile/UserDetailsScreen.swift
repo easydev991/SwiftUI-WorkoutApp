@@ -125,17 +125,15 @@ private extension UserDetailsScreen {
         isLoading = true
         friendActionTask = Task {
             do {
-                let isSuccess = try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
-                if isSuccess {
-                    defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
-                    switch socialActions.friend {
-                    case .sendFriendRequest:
-                        socialActions.isFriendRequestSent = true
-                    case .removeFriend:
-                        socialActions.friend = .sendFriendRequest
-                    }
-                    defaults.setUserNeedUpdate(true)
+                try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
+                defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
+                switch socialActions.friend {
+                case .sendFriendRequest:
+                    socialActions.isFriendRequestSent = true
+                case .removeFriend:
+                    socialActions.friend = .sendFriendRequest
                 }
+                defaults.setUserNeedUpdate(true)
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
@@ -148,25 +146,23 @@ private extension UserDetailsScreen {
         isLoading = true
         blacklistUserTask = Task {
             do {
-                let isSuccess = try await SWClient(with: defaults).blacklistAction(
+                try await SWClient(with: defaults).blacklistAction(
                     user: user, option: socialActions.blacklist
                 )
-                if isSuccess {
-                    defaults.updateBlacklist(option: socialActions.blacklist, user: user)
-                    switch socialActions.blacklist {
-                    case .add:
-                        SWAlert.shared.presentDefaultUIKit(
-                            title: "Готово".localized,
-                            message: "Пользователь добавлен в черный список".localized
-                        )
-                        socialActions.blacklist = .remove
-                    case .remove:
-                        SWAlert.shared.presentDefaultUIKit(
-                            title: "Готово".localized,
-                            message: "Пользователь удален из черного списка".localized
-                        )
-                        socialActions.blacklist = .add
-                    }
+                defaults.updateBlacklist(option: socialActions.blacklist, user: user)
+                switch socialActions.blacklist {
+                case .add:
+                    SWAlert.shared.presentDefaultUIKit(
+                        title: "Готово".localized,
+                        message: "Пользователь добавлен в черный список".localized
+                    )
+                    socialActions.blacklist = .remove
+                case .remove:
+                    SWAlert.shared.presentDefaultUIKit(
+                        title: "Готово".localized,
+                        message: "Пользователь удален из черного списка".localized
+                    )
+                    socialActions.blacklist = .add
                 }
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)

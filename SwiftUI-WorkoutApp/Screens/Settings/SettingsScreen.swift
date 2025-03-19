@@ -3,7 +3,7 @@ import SwiftUI
 import SWModels
 import SWUtils
 
-/// Экран с настройками профиля основного пользователя
+/// Экран с настройками и общей информацией о приложении
 struct SettingsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var showLanguageAlert = false

@@ -8,9 +8,8 @@ import SWUtils
 struct JournalsListScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var journals = [JournalResponse]()
+    @State private var currentState = CurrentState.initial
     @State private var newJournalTitle = ""
-    @State private var isLoading = false
     @State private var isCreatingJournal = false
     @State private var journalIdToDelete: Int?
     @State private var journalToEdit: JournalResponse?
@@ -21,31 +20,83 @@ struct JournalsListScreen: View {
     let userID: Int
 
     var body: some View {
-        journalsList
-            .overlay { emptyContentView }
-            .loadingOverlay(if: isLoading)
-            .background(Color.swBackground)
-            .confirmationDialog(
-                .init(Constants.Alert.deleteJournal),
-                isPresented: $showDeleteDialog,
-                titleVisibility: .visible
-            ) { deleteJournalButton }
-            .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
-            .task { await askForJournals() }
-            .refreshable { await askForJournals(refresh: true) }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    refreshButton
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    addJournalButton
-                }
+        ScrollView {
+            contentView
+                .animation(.default, value: currentState)
+                .padding([.top, .horizontal])
+                .sheet(item: $journalToEdit, content: showSettingsSheet)
+        }
+        .overlay {
+            EmptyContentView(
+                mode: .journals,
+                action: showNewJournalSheet
+            )
+            .opacity(currentState.showEmptyView(isMainUser: isMainUser) ? 1 : 0)
+        }
+        .loadingOverlay(if: currentState.isLoading)
+        .background(Color.swBackground)
+        .confirmationDialog(
+            .init(Constants.Alert.deleteJournal),
+            isPresented: $showDeleteDialog,
+            titleVisibility: .visible
+        ) {
+            deleteJournalButton
+        }
+        .sheet(isPresented: $isCreatingJournal) { newJournalSheet }
+        .task { await askForJournals() }
+        .refreshable { await askForJournals(refresh: true) }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                refreshButton
             }
-            .onDisappear(perform: cancelTasks)
+            ToolbarItem(placement: .topBarTrailing) {
+                addJournalButton
+            }
+        }
+        .onDisappear(perform: cancelTasks)
     }
 }
 
 private extension JournalsListScreen {
+    enum CurrentState: Equatable {
+        case initial
+        case loading
+        case saveJournalAction([JournalResponse])
+        case deleteJournalAction([JournalResponse])
+        case ready([JournalResponse])
+        case error(ErrorKind)
+
+        var isLoading: Bool {
+            switch self {
+            case .loading, .saveJournalAction, .deleteJournalAction: true
+            default: false
+            }
+        }
+
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(journals): journals.isEmpty
+            case .loading, .saveJournalAction, .deleteJournalAction: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(journals): !journals.isEmpty
+            default: false
+            }
+        }
+
+        func showEmptyView(isMainUser: Bool) -> Bool {
+            if case let .ready(list) = self, isMainUser {
+                list.isEmpty
+            } else {
+                false
+            }
+        }
+    }
+
     var refreshButton: some View {
         Button {
             updateListTask = Task {
@@ -55,12 +106,12 @@ private extension JournalsListScreen {
             Icons.Regular.refresh.view
         }
         .opacity(refreshButtonOpacity)
-        .disabled(isLoading)
+        .disabled(currentState.isLoading)
     }
 
     var refreshButtonOpacity: CGFloat {
         guard !DeviceOSVersionChecker.iOS16Available else { return 0 }
-        return showEmptyView ? 1 : 0
+        return currentState.showEmptyView(isMainUser: isMainUser) ? 1 : 0
     }
 
     var addJournalButton: some View {
@@ -71,16 +122,10 @@ private extension JournalsListScreen {
         .opacity(showAddJournalButton ? 1 : 0)
     }
 
-    var emptyContentView: some View {
-        EmptyContentView(
-            mode: .journals,
-            action: showNewJournalSheet
-        )
-        .opacity(showEmptyView ? 1 : 0)
-    }
-
-    var journalsList: some View {
-        ScrollView {
+    @ViewBuilder
+    var contentView: some View {
+        switch currentState {
+        case let .ready(journals), let .saveJournalAction(journals), let .deleteJournalAction(journals):
             LazyVStack(spacing: 12) {
                 ForEach(journals) { journal in
                     NavigationLink {
@@ -98,13 +143,13 @@ private extension JournalsListScreen {
                     }
                 }
             }
-            .padding([.top, .horizontal])
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            ContainerRelativeView {
+                Text("Загрузка...")
+            }
         }
-        .sheet(item: $journalToEdit, content: showSettingsSheet)
-    }
-
-    var showEmptyView: Bool {
-        journals.isEmpty && isMainUser && !isLoading
     }
 
     var isMainUser: Bool {
@@ -120,38 +165,37 @@ private extension JournalsListScreen {
             header: "Новый дневник",
             placeholder: "Создай первую запись в дневнике",
             text: $newJournalTitle,
-            isLoading: isLoading,
+            isLoading: currentState.isLoading,
             isSendButtonDisabled: !canSaveNewJournal,
             sendAction: saveNewJournal
         )
     }
 
-    var canSaveNewJournal: Bool { !isLoading && !newJournalTitle.isEmpty }
+    var canSaveNewJournal: Bool { !currentState.isLoading && !newJournalTitle.isEmpty }
 
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+            guard let journalID = journalIdToDelete else { return }
+            guard case let .ready(journals) = currentState else { return }
             deleteJournalTask = Task {
-                guard let journalID = journalIdToDelete else { return }
-                isLoading = true
+                currentState = .deleteJournalAction(journals)
                 do {
-                    let isJournalDeleted = try await SWClient(with: defaults).deleteJournal(
+                    try await SWClient(with: defaults).deleteJournal(
                         with: journalID,
                         for: defaults.mainUserInfo?.id
                     )
-                    if isJournalDeleted {
-                        journals.removeAll(where: { $0.id == journalID })
-                        defaults.setUserNeedUpdate(true)
-                    }
+                    defaults.setUserNeedUpdate(true)
+                    let updatedList = journals.filter { $0.id != journalID }
+                    currentState = .ready(updatedList)
                 } catch {
+                    currentState = .ready(journals)
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
-                isLoading = false
             }
         } label: {
             Text("Удалить")
         }
-        .disabled(isLoading)
     }
 
     func showNewJournalSheet() {
@@ -167,42 +211,55 @@ private extension JournalsListScreen {
     }
 
     func askForJournals(refresh: Bool = false) async {
-        if isLoading || !journals.isEmpty, !refresh { return }
-        if !refresh { isLoading = true }
-        do {
-            journals = try await SWClient(with: defaults).getJournals(for: userID)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+        let needUpdateMainUser = isMainUser ? defaults.needUpdateUser : false
+        guard currentState.shouldLoad || needUpdateMainUser || refresh else { return }
+        guard isNetworkConnected else {
+            if currentState.isReadyAndNotEmpty {
+                SWAlert.shared.presentNoConnection(false)
+            } else {
+                currentState = .error(.notConnected)
+            }
+            return
         }
-        isLoading = false
+        if !refresh {
+            currentState = .loading
+        }
+        do {
+            let journals = try await SWClient(with: defaults).getJournals(for: userID)
+            currentState = .ready(journals)
+        } catch {
+            currentState = .error(.common(message: error.localizedDescription))
+        }
     }
 
     func saveNewJournal() {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        isLoading = true
+        guard case let .ready(journals) = currentState else { return }
+        currentState = .saveJournalAction(journals)
         saveJournalTask = Task {
             do {
-                let isJournalCreated = try await SWClient(with: defaults).createJournal(
+                try await SWClient(with: defaults).createJournal(
                     with: newJournalTitle,
                     for: defaults.mainUserInfo?.id
                 )
-                if isJournalCreated {
-                    newJournalTitle = ""
-                    isCreatingJournal.toggle()
-                    defaults.setUserNeedUpdate(true)
-                    await askForJournals(refresh: true)
-                }
+                newJournalTitle = ""
+                isCreatingJournal.toggle()
+                defaults.setUserNeedUpdate(true)
+                await askForJournals(refresh: true)
             } catch {
+                currentState = .ready(journals)
                 SWAlert.shared.presentDefaultUIKit(error)
             }
-            isLoading = false
         }
     }
 
     func update(journal: JournalResponse) {
         journalToEdit = nil
-        if let index = journals.firstIndex(where: { $0.id == journal.id }) {
-            journals[index] = journal
+        if case let .ready(journals) = currentState,
+           let index = journals.firstIndex(where: { $0.id == journal.id }) {
+            var updatedList = journals
+            updatedList[index] = journal
+            currentState = .ready(updatedList)
         }
     }
 

@@ -1641,6 +1641,16 @@
         }
       }
     },
+    "Загрузка..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading..."
+          }
+        }
+      }
+    },
     "Закрыть" : {
       "localizations" : {
         "en" : {
@@ -2388,6 +2398,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to decode server response"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось декодировать ответ"
           }
         }
       }

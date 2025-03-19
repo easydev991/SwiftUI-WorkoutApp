@@ -6,9 +6,9 @@ import SWUtils
 
 /// Экран со списком друзей
 struct FriendsListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var friends = [UserResponse]()
-    @State private var isLoading = false
+    @State private var currentState = CurrentState.initial
     @State private var messagingModel = MessagingModel()
     @State private var sendMessageTask: Task<Void, Never>?
     private var client: SWClient { SWClient(with: defaults) }
@@ -16,21 +16,17 @@ struct FriendsListScreen: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(friends) { user in
-                    listItem(for: user)
-                        .disabled(user.id == defaults.mainUserInfo?.id)
-                }
-            }
-            .animation(.default, value: friends)
-            .padding()
+            contentView
+                .frame(maxWidth: .infinity)
+                .animation(.default, value: currentState)
+                .padding()
         }
         .sheet(
             item: $messagingModel.recipient,
             onDismiss: { endMessaging() },
             content: messageSheet
         )
-        .loadingOverlay(if: isLoading)
+        .loadingOverlay(if: currentState.isLoading)
         .background(Color.swBackground)
         .task { await askForUsers() }
         .refreshable { await askForUsers(refresh: true) }
@@ -49,10 +45,58 @@ extension FriendsListScreen {
         ///
         /// При нажатии на друга откроется окно отправки сообщения
         case chat(userID: Int)
+
+        var userId: Int {
+            switch self {
+            case let .user(id), let .chat(id): id
+            }
+        }
     }
 }
 
 private extension FriendsListScreen {
+    enum CurrentState: Equatable {
+        case initial
+        case loading
+        case ready([UserResponse])
+        case error(ErrorKind)
+
+        var isLoading: Bool { self == .loading }
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(friends): friends.isEmpty
+            case .loading: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(friends): !friends.isEmpty
+            default: false
+            }
+        }
+    }
+
+    @ViewBuilder
+    var contentView: some View {
+        switch currentState {
+        case let .ready(friends):
+            LazyVStack(spacing: 12) {
+                ForEach(friends) { user in
+                    listItem(for: user)
+                        .disabled(user.id == defaults.mainUserInfo?.id)
+                }
+            }
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            ContainerRelativeView {
+                Text("Загрузка...")
+            }
+        }
+    }
+
     @ViewBuilder
     func listItem(for model: UserResponse) -> some View {
         switch mode {
@@ -115,18 +159,26 @@ private extension FriendsListScreen {
     }
 
     func askForUsers(refresh: Bool = false) async {
-        guard !isLoading else { return }
-        do {
-            switch mode {
-            case let .user(id), let .chat(id):
-                if !friends.isEmpty, !refresh { return }
-                if !refresh { isLoading = true }
-                friends = try await client.getFriendsForUser(id: id)
+        guard currentState.shouldLoad || refresh else { return }
+        guard isNetworkConnected else {
+            if currentState.isReadyAndNotEmpty {
+                SWAlert.shared.presentNoConnection(false)
+            } else {
+                currentState = .error(.notConnected)
             }
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+            return
         }
-        isLoading = false
+        if !refresh {
+            // Иначе падает в CancellationError
+            // Альтернативное решение: https://stackoverflow.com/a/76305308/11830041
+            currentState = .loading
+        }
+        do {
+            let friends = try await client.getFriendsForUser(id: mode.userId)
+            currentState = .ready(friends)
+        } catch {
+            currentState = .error(.common(message: error.localizedDescription))
+        }
     }
 }
 
@@ -134,5 +186,6 @@ private extension FriendsListScreen {
 #Preview {
     FriendsListScreen(mode: .user(id: .previewUserID))
         .environmentObject(DefaultsService())
+        .environment(\.isNetworkConnected, true)
 }
 #endif
