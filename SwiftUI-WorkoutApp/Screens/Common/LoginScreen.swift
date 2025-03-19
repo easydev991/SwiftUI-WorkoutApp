@@ -113,6 +113,8 @@ private extension LoginScreen {
                 try defaults.saveFriendRequests(result.friendRequests)
                 try defaults.saveBlacklist(result.blacklist)
                 try defaults.saveUserInfo(result.user)
+            } catch ClientError.noConnection {
+                SWAlert.shared.presentNoConnection(true)
             } catch {
                 loginErrorMessage = error.localizedDescription
             }
@@ -138,6 +140,8 @@ private extension LoginScreen {
                         message: Constants.Alert.resetSuccessful.localized
                     )
                 }
+            } catch ClientError.noConnection {
+                SWAlert.shared.presentNoConnection(true)
             } catch {
                 resetErrorMessage = error.localizedDescription
             }

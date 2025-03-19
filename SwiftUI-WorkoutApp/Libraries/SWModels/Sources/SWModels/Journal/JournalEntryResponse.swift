@@ -2,7 +2,7 @@ import Foundation
 import SWUtils
 
 /// Модель с информацией о записи в дневнике
-public struct JournalEntryResponse: Codable, Identifiable, Sendable {
+public struct JournalEntryResponse: Equatable, Codable, Identifiable, Sendable {
     public let id: Int
     public let journalID, authorID: Int?
     public let authorName, message, createDate, modifyDate, authorImage: String?

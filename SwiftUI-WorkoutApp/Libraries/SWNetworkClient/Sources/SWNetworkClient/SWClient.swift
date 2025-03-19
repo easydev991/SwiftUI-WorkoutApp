@@ -134,6 +134,7 @@ public struct SWClient: Sendable {
     ///   - userID: `id` инициатора заявки
     ///   - accept: `true` - одобрить заявку, `false` - отклонить
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func respondToFriendRequest(from userID: Int, accept: Bool) async throws -> Bool {
         let endpoint: Endpoint = accept
             ? .acceptFriendRequest(from: userID)
@@ -146,6 +147,7 @@ public struct SWClient: Sendable {
     ///   - userID: `id` пользователя, к которому применяется действие
     ///   - option: вид действия - отправить заявку на добавление в друзья или удалить из списка друзей
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func friendAction(userID: Int, option: FriendAction) async throws -> Bool {
         let endpoint: Endpoint = option == .sendFriendRequest
             ? .sendFriendRequest(to: userID)
@@ -160,6 +162,7 @@ public struct SWClient: Sendable {
     ///   - user: Пользователь, к которому применяется действие
     ///   - option: вид действия - добавить/убрать из черного списка
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func blacklistAction(user: UserResponse, option: BlacklistOption) async throws -> Bool {
         let endpoint: Endpoint = option == .add
             ? .addToBlacklist(user.id)
@@ -276,6 +279,7 @@ public struct SWClient: Sendable {
     ///   - option: тип записи
     ///   - entryID: `id` записи
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func deleteEntry(from option: TextEntryOption, entryID: Int) async throws -> Bool {
         let endpoint: Endpoint = switch option {
         case let .park(id):
@@ -382,6 +386,7 @@ public struct SWClient: Sendable {
     ///   - message: отправляемое сообщение
     ///   - userID: `id` получателя сообщения
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func sendMessage(_ message: String, to userID: Int) async throws -> Bool {
         let endpoint = Endpoint.sendMessageTo(message, userID)
         return try await makeStatus(for: endpoint)
@@ -457,6 +462,7 @@ public struct SWClient: Sendable {
     ///   - title: название дневника
     ///   - mainUserID: `id` главного пользователя
     /// - Returns: Создает новый дневник для пользователя
+    @discardableResult
     public func createJournal(with title: String, for mainUserID: Int?) async throws -> Bool {
         guard let mainUserID else {
             throw APIError.invalidUserID
@@ -480,6 +486,7 @@ public struct SWClient: Sendable {
     ///   - journalID: `id` дневника для удаления
     ///   - mainUserID: `id` владельца дневника (главного пользователя)
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func deleteJournal(with journalID: Int, for mainUserID: Int?) async throws -> Bool {
         guard let mainUserID else {
             throw APIError.invalidUserID
@@ -515,6 +522,8 @@ private extension SWClient {
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
             throw ClientError.forceLogout
+        } catch APIError.notConnectedToInternet {
+            throw ClientError.noConnection
         } catch {
             throw error
         }
@@ -530,6 +539,8 @@ private extension SWClient {
         } catch APIError.invalidCredentials {
             await defaults.triggerLogout()
             throw ClientError.forceLogout
+        } catch APIError.notConnectedToInternet {
+            throw ClientError.noConnection
         } catch {
             throw error
         }

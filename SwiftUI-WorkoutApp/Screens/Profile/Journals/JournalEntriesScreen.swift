@@ -8,8 +8,7 @@ import SWUtils
 struct JournalEntriesScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var entries = [JournalEntryResponse]()
-    @State private var isLoading = false
+    @State private var currentState = CurrentState.initial
     @State private var showCreateEntrySheet = false
     @State private var entryIdToDelete: Int?
     @State private var showDeleteDialog = false
@@ -26,27 +25,11 @@ struct JournalEntriesScreen: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(entries) { item in
-                    JournalCell(
-                        model: .init(journalEntryResponse: item),
-                        mode: .entry(
-                            editClbk: { editEntry = item },
-                            reportClbk: { reportEntry(item) },
-                            canDelete: checkIfCanDelete(entry: item),
-                            deleteClbk: {
-                                entryIdToDelete = item.id
-                                showDeleteDialog = true
-                            }
-                        ),
-                        mainUserID: defaults.mainUserInfo?.id,
-                        isJournalOwner: userID == defaults.mainUserInfo?.id
-                    )
-                }
-            }
-            .padding([.top, .horizontal])
+            contentView
+                .animation(.default, value: currentState)
+                .padding([.top, .horizontal])
         }
-        .loadingOverlay(if: isLoading)
+        .loadingOverlay(if: currentState.isLoading)
         .background(Color.swBackground)
         .sheet(item: $editEntry) {
             TextEntryScreen(
@@ -83,13 +66,78 @@ struct JournalEntriesScreen: View {
 }
 
 private extension JournalEntriesScreen {
+    enum CurrentState: Equatable {
+        case initial
+        case loading
+        case saveEntryAction([JournalEntryResponse])
+        case deleteEntryAction([JournalEntryResponse])
+        case ready([JournalEntryResponse])
+        case error(ErrorKind)
+
+        var isLoading: Bool {
+            switch self {
+            case .loading, .saveEntryAction, .deleteEntryAction: true
+            default: false
+            }
+        }
+
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(entries): entries.isEmpty
+            case .loading, .saveEntryAction, .deleteEntryAction: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(entries): !entries.isEmpty
+            default: false
+            }
+        }
+    }
+
+    var mainUserId: Int? { defaults.mainUserInfo?.id }
+    var isMainUser: Bool { userID == mainUserId }
+
+    @ViewBuilder
+    var contentView: some View {
+        switch currentState {
+        case let .ready(entries), let .saveEntryAction(entries), let .deleteEntryAction(entries):
+            LazyVStack(spacing: 12) {
+                ForEach(entries) { item in
+                    JournalCell(
+                        model: .init(journalEntryResponse: item),
+                        mode: .entry(
+                            editClbk: { editEntry = item },
+                            reportClbk: { reportEntry(item) },
+                            canDelete: checkIfCanDelete(entry: item),
+                            deleteClbk: {
+                                entryIdToDelete = item.id
+                                showDeleteDialog = true
+                            }
+                        ),
+                        mainUserID: mainUserId,
+                        isJournalOwner: isMainUser && mainUserId == currentJournal.ownerID
+                    )
+                }
+            }
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            ContainerRelativeView {
+                Text("Загрузка...")
+            }
+        }
+    }
+
     @ViewBuilder
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button(action: updateEntries) {
                 Icons.Regular.refresh.view
             }
-            .disabled(isLoading)
+            .disabled(currentState.isLoading)
         }
     }
 
@@ -106,7 +154,7 @@ private extension JournalEntriesScreen {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(isLoading)
+            .disabled(currentState.isLoading)
             .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryScreen(
                     mode: .newForJournal(
@@ -123,7 +171,8 @@ private extension JournalEntriesScreen {
     ///
     /// Сервер не дает удалить самую первую запись в дневнике
     func checkIfCanDelete(entry: JournalEntryResponse) -> Bool {
-        entry.id != entries.map(\.id).min()
+        guard case let .ready(entries) = currentState else { return false }
+        return entry.id != entries.map(\.id).min()
     }
 
     func reportEntry(_ entry: JournalEntryResponse) {
@@ -141,38 +190,55 @@ private extension JournalEntriesScreen {
     func updateEntries() {
         showCreateEntrySheet = false
         editEntry = nil
+        guard case let .ready(entries) = currentState else { return }
+        currentState = .saveEntryAction(entries)
         updateEntriesTask = Task { await askForEntries(refresh: true) }
     }
 
     func askForEntries(refresh: Bool = false) async {
-        if isLoading || !entries.isEmpty, !refresh { return }
-        if !refresh { isLoading = true }
-        do {
-            entries = try await SWClient(with: defaults)
-                .getJournalEntries(for: userID, journalID: currentJournal.id)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+        let needUpdateMainUser = isMainUser ? defaults.needUpdateUser : false
+        guard currentState.shouldLoad || needUpdateMainUser || refresh else { return }
+        guard isNetworkConnected else {
+            if currentState.isReadyAndNotEmpty {
+                SWAlert.shared.presentNoConnection(false)
+            } else {
+                currentState = .error(.notConnected)
+            }
+            return
         }
-        isLoading = false
+        if !refresh {
+            currentState = .loading
+        }
+        do {
+            let entries = try await SWClient(with: defaults).getJournalEntries(
+                for: userID,
+                journalID: currentJournal.id
+            )
+            currentState = .ready(entries)
+        } catch {
+            currentState = .error(.common(message: error.localizedDescription))
+        }
     }
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
             guard let entryID = entryIdToDelete else { return }
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+            guard case let .ready(entries) = currentState else { return }
             deleteEntryTask = Task {
-                isLoading = true
+                currentState = .deleteEntryAction(entries)
                 do {
-                    if try await SWClient(with: defaults).deleteEntry(
+                    try await SWClient(with: defaults).deleteEntry(
                         from: .journal(ownerId: userID, journalId: currentJournal.id),
                         entryID: entryID
-                    ) {
-                        entries.removeAll(where: { $0.id == entryID })
-                    }
+                    )
+                    defaults.setUserNeedUpdate(true)
+                    let updatedList = entries.filter { $0.id != entryID }
+                    currentState = .ready(updatedList)
                 } catch {
+                    currentState = .ready(entries)
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
-                isLoading = false
             }
         } label: {
             Text("Удалить")

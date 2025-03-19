@@ -4,42 +4,39 @@ import SWNetworkClient
 
 @MainActor
 final class DialogsViewModel: ObservableObject {
-    @Published private(set) var dialogs = [DialogResponse]()
-    @Published private(set) var isLoading = false
-    var hasDialogs: Bool { !dialogs.isEmpty }
-    var showEmptyView: Bool { !hasDialogs && !isLoading }
+    @Published private(set) var currentState = CurrentState.initial
 
     func getDialogs(
         refresh: Bool = false,
         defaults: DefaultsService
     ) async throws {
         guard defaults.isAuthorized else {
-            if !dialogs.isEmpty {
-                dialogs.removeAll()
-            }
+            currentState = .initial
             return
         }
-        guard !isLoading else { return }
-        guard dialogs.isEmpty || refresh else { return }
-        if !refresh || dialogs.isEmpty { isLoading = true }
-        dialogs = try await SWClient(with: defaults).getDialogs()
+        guard currentState.shouldLoad || refresh else { return }
+        if !refresh {
+            currentState = .loading
+        }
+        let dialogs = try await SWClient(with: defaults).getDialogs()
+        currentState = .ready(dialogs)
         updateUnreadMessagesCount(with: defaults)
-        isLoading = false
     }
 
     func deleteDialog(at index: Int?, defaults: DefaultsService) async throws {
-        guard let index, !isLoading else { return }
-        isLoading = true
+        guard let index, let dialogs = currentState.dialogs, currentState.isReadyAndNotEmpty else { return }
         let dialogID = dialogs[index].id
+        let updatedDialogs = dialogs.filter { $0.id != dialogID }
+        currentState = .deleteDialog(updatedDialogs)
         if try await SWClient(with: defaults).deleteDialog(dialogID) {
-            dialogs.remove(at: index)
+            currentState = .ready(updatedDialogs)
             updateUnreadMessagesCount(with: defaults)
         }
-        isLoading = false
     }
 
     func markAsRead(_ dialog: DialogResponse, defaults: DefaultsService) {
-        dialogs = dialogs.map { item in
+        guard let dialogs = currentState.dialogs, currentState.isReadyAndNotEmpty else { return }
+        let updatedDialogs = dialogs.map { item in
             if item.id == dialog.id {
                 var updatedDialog = dialog
                 updatedDialog.unreadMessagesCount = 0
@@ -48,6 +45,7 @@ final class DialogsViewModel: ObservableObject {
                 return item
             }
         }
+        currentState = .ready(updatedDialogs)
         guard dialog.unreadMessagesCount > 0,
               defaults.unreadMessagesCount >= dialog.unreadMessagesCount
         else { return }
@@ -56,7 +54,54 @@ final class DialogsViewModel: ObservableObject {
     }
 
     private func updateUnreadMessagesCount(with defaults: DefaultsService) {
+        guard let dialogs = currentState.dialogs, !dialogs.isEmpty else { return }
         let unreadMessagesCount = dialogs.map(\.unreadMessagesCount).reduce(0, +)
         defaults.saveUnreadMessagesCount(unreadMessagesCount)
+    }
+}
+
+extension DialogsViewModel {
+    enum CurrentState: Equatable {
+        case initial
+        /// Загрузка с нуля или рефреш
+        case loading
+        /// Удаление диалога из списка
+        case deleteDialog([DialogResponse])
+        case ready([DialogResponse])
+        case error(ErrorKind)
+
+        var dialogs: [DialogResponse]? {
+            if case let .ready(list) = self { list } else { nil }
+        }
+
+        var isLoading: Bool {
+            switch self {
+            case .loading, .deleteDialog: true
+            default: false
+            }
+        }
+
+        /// Нужно ли загружать данные, когда их нет (или для рефреша)
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(dialogList): dialogList.isEmpty
+            case .loading, .deleteDialog: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(dialogList): !dialogList.isEmpty
+            default: false
+            }
+        }
+
+        var isReadyAndEmpty: Bool {
+            switch self {
+            case let .ready(dialogList): dialogList.isEmpty
+            default: false
+            }
+        }
     }
 }

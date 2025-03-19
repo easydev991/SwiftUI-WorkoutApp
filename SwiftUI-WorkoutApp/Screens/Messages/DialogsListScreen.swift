@@ -43,10 +43,16 @@ struct DialogsListScreen: View {
 
 private extension DialogsListScreen {
     var authorizedContentView: some View {
-        dialogList
-            .overlay { emptyContentView }
-            .loadingOverlay(if: viewModel.isLoading)
+        stateContentView
+            .animation(.default, value: viewModel.currentState)
+            .loadingOverlay(if: viewModel.currentState.isLoading)
             .background(Color.swBackground)
+            .background(
+                NavigationLink(
+                    destination: lazyDestination,
+                    isActive: $selectedDialog.mappedToBool()
+                )
+            )
             .confirmationDialog(
                 .init(Constants.Alert.deleteDialog),
                 isPresented: $indexToDelete.mappedToBool(),
@@ -62,17 +68,46 @@ private extension DialogsListScreen {
             }
     }
 
+    @ViewBuilder
+    var stateContentView: some View {
+        switch viewModel.currentState {
+        case let .ready(dialogs), let .deleteDialog(dialogs):
+            ZStack {
+                Color.swBackground
+                if dialogs.isEmpty {
+                    emptyContentView
+                } else {
+                    List {
+                        ForEach(dialogs) { model in
+                            dialogListItem(model)
+                                .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
+                                .listRowBackground(Color.swBackground)
+                                .listRowSeparator(.hidden)
+                        }
+                        .onDelete { indexToDelete = $0.first }
+                    }
+                    .listStyle(.plain)
+                    .refreshable { await askForDialogs(refresh: true) }
+                }
+            }
+            .animation(.default, value: dialogs.isEmpty)
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            ContainerRelativeView {
+                Text("Загрузка...")
+            }
+        }
+    }
+
     var refreshButton: some View {
         Button {
-            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-            refreshTask = Task {
-                await askForDialogs(refresh: true)
-            }
+            refreshTask = Task { await askForDialogs() }
         } label: {
             Icons.Regular.refresh.view
         }
-        .opacity(viewModel.showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading)
+        .opacity(viewModel.currentState.isReadyAndEmpty ? 1 : 0)
+        .disabled(viewModel.currentState.isLoading)
     }
 
     var friendListButton: some View {
@@ -86,40 +121,13 @@ private extension DialogsListScreen {
             Icons.Regular.plus.view
                 .symbolVariant(.circle)
         }
-        .opacity(hasFriends || viewModel.hasDialogs ? 1 : 0)
+        .opacity(hasFriends || viewModel.currentState.isReadyAndNotEmpty ? 1 : 0)
     }
 
     var emptyContentView: some View {
         EmptyContentView(
             mode: .dialogs,
             action: { openFriendList.toggle() }
-        )
-        .opacity(viewModel.showEmptyView ? 1 : 0)
-    }
-
-    @ViewBuilder
-    var dialogList: some View {
-        ZStack {
-            Color.swBackground
-            List {
-                ForEach(viewModel.dialogs) { model in
-                    dialogListItem(model)
-                        .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
-                        .listRowBackground(Color.swBackground)
-                        .listRowSeparator(.hidden)
-                }
-                .onDelete { indexToDelete = $0.first }
-            }
-            .listStyle(.plain)
-            .opacity(viewModel.hasDialogs ? 1 : 0)
-            .refreshable { await askForDialogs(refresh: true) }
-        }
-        .animation(.default, value: viewModel.dialogs.count)
-        .background(
-            NavigationLink(
-                destination: lazyDestination,
-                isActive: $selectedDialog.mappedToBool()
-            )
         )
     }
 
@@ -164,6 +172,7 @@ private extension DialogsListScreen {
     }
 
     func askForDialogs(refresh: Bool = false) async {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         do {
             try await viewModel.getDialogs(refresh: refresh, defaults: defaults)
         } catch {
@@ -172,6 +181,7 @@ private extension DialogsListScreen {
     }
 
     func deleteAction(at index: Int?) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         deleteDialogTask = Task {
             do {
                 try await viewModel.deleteDialog(at: index, defaults: defaults)

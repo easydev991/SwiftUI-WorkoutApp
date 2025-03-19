@@ -16,16 +16,11 @@ struct EmptyContentView: View {
                 if userFlags.isAuthorized {
                     Button(actionButtonTitle, action: action)
                         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
+                    hintTextIfAvailable
                 }
             } else {
-                Icons.Regular.noSignal.imageView
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .foregroundStyle(.accent)
-                titleText("Нет соединения с сетью")
+                NoConnectionView()
             }
-            hintTextIfAvailable
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
@@ -88,19 +83,22 @@ private extension EmptyContentView.Mode {
 
 #if DEBUG
 #Preview {
-    VStack {
-        ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
+    ScrollView {
+        VStack {
+            ForEach(EmptyContentView.Mode.allCases, id: \.self) { mode in
+                EmptyContentView(
+                    mode: mode,
+                    action: {}
+                )
+                Divider()
+            }
+            .environment(\.isNetworkConnected, true)
             EmptyContentView(
-                mode: mode,
+                mode: .dialogs,
                 action: {}
             )
-            Divider()
         }
-        .environment(\.isNetworkConnected, true)
-        EmptyContentView(
-            mode: .dialogs,
-            action: {}
-        )
     }
+    .environment(\.userFlags, .init(isAuthorized: true, hasParks: false, hasFriends: true))
 }
 #endif

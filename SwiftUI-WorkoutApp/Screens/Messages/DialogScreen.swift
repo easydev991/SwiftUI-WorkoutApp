@@ -62,7 +62,6 @@ struct DialogScreen: View {
 private extension DialogScreen {
     var refreshButton: some View {
         Button {
-            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             refreshDialogTask = Task {
                 await askForMessages(refresh: true)
             }
@@ -165,6 +164,7 @@ private extension DialogScreen {
     }
 
     func askForMessages(refresh: Bool = false) async {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if isLoading, !refresh { return }
         if !refresh { isLoading = true }
         do {
@@ -176,6 +176,7 @@ private extension DialogScreen {
     }
 
     func sendMessage() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         isMessageBarFocused = false
         sendMessageTask = Task(priority: .userInitiated) {
