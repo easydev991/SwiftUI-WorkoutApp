@@ -62,13 +62,14 @@ struct DialogScreen: View {
 private extension DialogScreen {
     var refreshButton: some View {
         Button {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             refreshDialogTask = Task {
                 await askForMessages(refresh: true)
             }
         } label: {
             Icons.Regular.refresh.view
         }
-        .disabled(isToolbarItemDisabled)
+        .disabled(isLoading)
     }
 
     var anotherUserProfileButton: some View {
@@ -86,11 +87,7 @@ private extension DialogScreen {
                 .borderedCircleClipShape()
             }
         )
-        .disabled(isToolbarItemDisabled)
-    }
-
-    var isToolbarItemDisabled: Bool {
-        isLoading || !isNetworkConnected
+        .disabled(isLoading)
     }
 
     func makeScrollView(with proxy: ScrollViewProxy) -> some View {
@@ -131,8 +128,10 @@ private extension DialogScreen {
                 )
                 .background(Color.swBackground)
                 .animation(.default, value: isMessageBarFocused)
-            SendChatMessageButton { sendMessage() }
-                .disabled(isSendButtonDisabled)
+            SendChatMessageButton {
+                sendMessage()
+            }
+            .disabled(isSendButtonDisabled)
         }
         .padding()
     }
@@ -150,9 +149,7 @@ private extension DialogScreen {
     }
 
     var isSendButtonDisabled: Bool {
-        newMessage.isEmpty
-            || isLoading
-            || !isNetworkConnected
+        newMessage.isEmpty || isLoading
     }
 
     func markAsRead() async {

@@ -48,6 +48,21 @@ public final class SWAlert {
         presentDefaultUIKit(message: error.localizedDescription)
     }
 
+    /// Показывает алерт об отсутствии интернета
+    /// - Parameter isConnected: Состояние подключения к сети
+    /// - Returns: `true` - нужно показать алерт (нет сети), `false` - алерт не нужен (сеть есть)
+    @discardableResult
+    public func presentNoConnection(_ isConnected: Bool) -> Bool {
+        let showAlert = !isConnected
+        if showAlert {
+            presentDefaultUIKit(
+                title: NSLocalizedString("Нет соединения с сетью", comment: ""),
+                message: NSLocalizedString("Проверьте подключение и повторите попытку", comment: "")
+            )
+        }
+        return showAlert
+    }
+
     private func dismiss() {
         currentAlert?.dismiss(animated: true)
         currentAlert = nil

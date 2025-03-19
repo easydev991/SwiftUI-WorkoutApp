@@ -64,6 +64,7 @@ private extension DialogsListScreen {
 
     var refreshButton: some View {
         Button {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             refreshTask = Task {
                 await askForDialogs(refresh: true)
             }
@@ -71,7 +72,7 @@ private extension DialogsListScreen {
             Icons.Regular.refresh.view
         }
         .opacity(viewModel.showEmptyView ? 1 : 0)
-        .disabled(viewModel.isLoading || !isNetworkConnected)
+        .disabled(viewModel.isLoading)
     }
 
     var friendListButton: some View {
@@ -86,7 +87,6 @@ private extension DialogsListScreen {
                 .symbolVariant(.circle)
         }
         .opacity(hasFriends || viewModel.hasDialogs ? 1 : 0)
-        .disabled(!isNetworkConnected)
     }
 
     var emptyContentView: some View {

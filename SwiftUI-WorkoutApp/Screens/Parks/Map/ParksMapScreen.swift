@@ -7,7 +7,6 @@ import SWUtils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
-    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
     @StateObject private var viewModel = ViewModel()
@@ -239,7 +238,7 @@ private extension ParksMapScreen {
                     .symbolVariant(.circle)
             }
             .opacity(isLoading ? 0 : 1)
-            .disabled(!isNetworkConnected || !viewModel.locationErrorMessage.isEmpty)
+            .disabled(!viewModel.locationErrorMessage.isEmpty)
         }
     }
 

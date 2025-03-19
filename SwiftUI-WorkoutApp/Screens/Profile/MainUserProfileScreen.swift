@@ -88,6 +88,7 @@ private extension MainUserProfileScreen {
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
             Button {
+                guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
                 Task { await askForUserInfo(refresh: true) }
             } label: {
                 Icons.Regular.refresh.view
@@ -102,7 +103,6 @@ private extension MainUserProfileScreen {
         } label: {
             Icons.Regular.magnifyingglass.view
         }
-        .disabled(!isNetworkConnected)
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
             NavigationView {

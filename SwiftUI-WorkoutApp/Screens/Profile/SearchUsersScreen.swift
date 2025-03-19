@@ -7,6 +7,7 @@ import SWUtils
 /// Экран для поиска других пользователей
 struct SearchUsersScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messagingModel = MessagingModel()
     @State private var users = [UserResponse]()
@@ -35,7 +36,7 @@ struct SearchUsersScreen: View {
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: Text("Имя пользователя на английском")
         )
-        .onSubmit(of: .search, search)
+        .onSubmit(of: .search, performSearch)
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .navigationBarBackButtonHidden(mode == .chat)
@@ -123,7 +124,8 @@ private extension SearchUsersScreen {
         }
     }
 
-    func search() {
+    func performSearch() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         searchTask = Task {
             do {

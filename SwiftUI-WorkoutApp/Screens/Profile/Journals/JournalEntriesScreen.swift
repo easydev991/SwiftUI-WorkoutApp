@@ -39,7 +39,6 @@ struct JournalEntriesScreen: View {
                                 showDeleteDialog = true
                             }
                         ),
-                        isNetworkConnected: isNetworkConnected,
                         mainUserID: defaults.mainUserInfo?.id,
                         isJournalOwner: userID == defaults.mainUserInfo?.id
                     )
@@ -107,7 +106,7 @@ private extension JournalEntriesScreen {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(isLoading || !isNetworkConnected)
+            .disabled(isLoading)
             .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryScreen(
                     mode: .newForJournal(
@@ -159,8 +158,9 @@ private extension JournalEntriesScreen {
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
+            guard let entryID = entryIdToDelete else { return }
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             deleteEntryTask = Task {
-                guard let entryID = entryIdToDelete else { return }
                 isLoading = true
                 do {
                     if try await SWClient(with: defaults).deleteEntry(

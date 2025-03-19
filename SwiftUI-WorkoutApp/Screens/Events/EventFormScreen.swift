@@ -193,6 +193,7 @@ private extension EventFormScreen {
 
     var saveButton: some View {
         Button("Сохранить") {
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             focus = nil
             isLoading = true
             saveEventTask = Task {
@@ -211,7 +212,7 @@ private extension EventFormScreen {
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .padding(.top, 42)
-        .disabled(!isFormReady || !isNetworkConnected)
+        .disabled(!isFormReady)
     }
 
     var isFormReady: Bool {
@@ -223,7 +224,7 @@ private extension EventFormScreen {
 
     /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
     var canShowParkPicker: Bool {
-        guard isNetworkConnected, let userInfo = defaults.mainUserInfo else { return false }
+        guard let userInfo = defaults.mainUserInfo else { return false }
         switch mode {
         case .regularCreate:
             return true

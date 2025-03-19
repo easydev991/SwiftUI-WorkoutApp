@@ -50,7 +50,7 @@ private extension LoginScreen {
     }
 
     var canLogIn: Bool {
-        credentials.canLogIn(isError: isError, isNetworkConnected: isNetworkConnected)
+        credentials.canLogIn(isError: isError)
     }
 
     var loginField: some View {
@@ -100,6 +100,7 @@ private extension LoginScreen {
 
     func loginAction() {
         guard !isLoading else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         focus = nil
         isLoading = true
         loginTask = Task {
@@ -126,6 +127,7 @@ private extension LoginScreen {
             )
             return
         }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         clearErrorMessages()
         isLoading.toggle()
         resetPasswordTask = Task {
@@ -157,5 +159,6 @@ private extension LoginScreen {
 #if DEBUG
 #Preview {
     LoginScreen()
+        .environment(\.isNetworkConnected, false)
 }
 #endif

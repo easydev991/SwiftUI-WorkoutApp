@@ -7,7 +7,6 @@ import SWUtils
 /// Экран со списком мероприятий
 struct EventsListScreen: View {
     @EnvironmentObject private var tabViewModel: TabViewModel
-    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var futureEvents = [EventResponse]()
     @State private var pastEvents = [EventResponse]()
@@ -136,7 +135,6 @@ private extension EventsListScreen {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(!isNetworkConnected)
             .sheet(isPresented: $showEventCreationSheet) {
                 NavigationView {
                     EventFormScreen(

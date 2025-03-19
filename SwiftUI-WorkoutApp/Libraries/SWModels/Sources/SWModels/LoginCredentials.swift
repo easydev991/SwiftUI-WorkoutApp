@@ -22,7 +22,7 @@ public struct LoginCredentials: Equatable {
 
     public var canRestorePassword: Bool { !login.isEmpty }
 
-    public func canLogIn(isError: Bool, isNetworkConnected: Bool) -> Bool {
-        isReady && !isError && isNetworkConnected
+    public func canLogIn(isError: Bool) -> Bool {
+        isReady && !isError
     }
 }

@@ -7,6 +7,7 @@ import SWUtils
 /// Экран для списка заблокированных пользователей
 struct BlackListScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var users = [UserResponse]()
     @State private var userToDelete: UserResponse?
@@ -82,6 +83,7 @@ private extension BlackListScreen {
 
     func unblock() {
         guard let user = userToDelete else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         Task {
             do {

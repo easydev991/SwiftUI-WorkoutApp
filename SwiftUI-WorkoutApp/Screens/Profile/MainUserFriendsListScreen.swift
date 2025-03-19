@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком входящих заявок и друзей основного пользователя
 struct MainUserFriendsListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var friendRequests = [UserResponse]()
     @State private var friends = [UserResponse]()
@@ -86,6 +87,7 @@ private extension MainUserFriendsListScreen {
     }
 
     func respondToFriendRequest(from userID: Int, accept: Bool) {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         friendRequestTask = Task {
             do {

@@ -93,30 +93,18 @@ struct LoginCredentialsTests {
     @Test
     func testCanLogIn_AllConditionsMet() {
         let credentials = LoginCredentials(login: "user", password: "123456")
-        #expect(credentials.canLogIn(isError: false, isNetworkConnected: true))
+        #expect(credentials.canLogIn(isError: false))
     }
 
     @Test
     func testCanLogIn_WhenNotReady() {
         let credentials = LoginCredentials(login: "user", password: "123")
-        #expect(!credentials.canLogIn(isError: false, isNetworkConnected: true))
+        #expect(!credentials.canLogIn(isError: false))
     }
 
     @Test
     func testCanLogIn_WithError() {
         let credentials = LoginCredentials(login: "user", password: "123456")
-        #expect(!credentials.canLogIn(isError: true, isNetworkConnected: true))
-    }
-
-    @Test
-    func testCanLogIn_NoNetwork() {
-        let credentials = LoginCredentials(login: "user", password: "123456")
-        #expect(!credentials.canLogIn(isError: false, isNetworkConnected: false))
-    }
-
-    @Test
-    func testCanLogIn_MultipleIssues() {
-        let credentials = LoginCredentials(login: "user", password: "123")
-        #expect(!credentials.canLogIn(isError: true, isNetworkConnected: false))
+        #expect(!credentials.canLogIn(isError: true))
     }
 }

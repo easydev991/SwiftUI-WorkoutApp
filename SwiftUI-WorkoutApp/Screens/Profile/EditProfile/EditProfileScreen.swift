@@ -193,10 +193,7 @@ private extension EditProfileScreen {
         Button("Сохранить", action: saveChangesAction)
             .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             .padding([.horizontal, .bottom])
-            .disabled(
-                !userForm.isReadyToSave(comparedTo: oldUserForm)
-                    || !isNetworkConnected
-            )
+            .disabled(!userForm.isReadyToSave(comparedTo: oldUserForm))
     }
 
     func prepareLocationsAndUserForm() {
@@ -233,6 +230,7 @@ private extension EditProfileScreen {
     }
 
     func saveChangesAction() {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         editUserTask = Task {
             do {
