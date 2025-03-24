@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 
-@MainActor
 public final class SWAlert {
     public static let shared = SWAlert()
     private var currentAlert: UIViewController?
@@ -13,25 +12,27 @@ public final class SWAlert {
     ///   - message: Текст сообщения
     ///   - closeButtonTitle: Заголовок кнопки для закрытия алерта
     ///   - closeButtonStyle: Стиль кнопки для закрытия алерта
-    public func presentDefaultUIKit(
+    public nonisolated func presentDefaultUIKit(
         title: String? = "",
         message: String,
         closeButtonTitle: String = "Ok",
         closeButtonStyle: UIAlertAction.Style = .default
     ) {
-        guard currentAlert == nil, let topMostViewController else { return }
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(
-            .init(
-                title: closeButtonTitle,
-                style: closeButtonStyle,
-                handler: { [weak self] _ in
-                    self?.dismiss()
-                }
+        Task { @MainActor in
+            guard currentAlert == nil, let topMostViewController else { return }
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(
+                .init(
+                    title: closeButtonTitle,
+                    style: closeButtonStyle,
+                    handler: { [weak self] _ in
+                        self?.dismiss()
+                    }
+                )
             )
-        )
-        currentAlert = alert
-        topMostViewController.present(alert, animated: true)
+            currentAlert = alert
+            topMostViewController.present(alert, animated: true)
+        }
     }
 
     /// Показывает стандартный алерт с сообщение об ошибке
@@ -52,7 +53,7 @@ public final class SWAlert {
     /// - Parameter isConnected: Состояние подключения к сети
     /// - Returns: `true` - нужно показать алерт (нет сети), `false` - алерт не нужен (сеть есть)
     @discardableResult
-    public func presentNoConnection(_ isConnected: Bool) -> Bool {
+    public nonisolated func presentNoConnection(_ isConnected: Bool) -> Bool {
         let showAlert = !isConnected
         if showAlert {
             presentDefaultUIKit(
