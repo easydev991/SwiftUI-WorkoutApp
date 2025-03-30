@@ -117,7 +117,7 @@ private extension ParksMapScreen.ViewModel {
             let street = placemark.thoroughfare
             let houseNumber = placemark.subThoroughfare
             let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
-                .compactMap { $0 }
+                .compactMap(\.self)
                 .joined(separator: ", ")
             return fullAddress.isEmpty ? nil : fullAddress
         }()
