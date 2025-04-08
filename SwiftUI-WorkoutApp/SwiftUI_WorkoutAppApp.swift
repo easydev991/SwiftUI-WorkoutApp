@@ -13,6 +13,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var parksManager = ParksManager()
     @StateObject private var dialogsViewModel = DialogsViewModel()
     @State private var countriesUpdateTask: Task<Void, Never>?
+    @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
     private var client: SWClient { SWClient(with: defaults) }
     private var colorScheme: ColorScheme? {
@@ -46,13 +47,15 @@ struct SwiftUI_WorkoutAppApp: App {
                 try? await dialogsViewModel.getDialogs(defaults: defaults)
             }
         }
+        .onChange(of: defaults.isAuthorized) { _ in updateAppIconBadgeIfNeeded() }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
-            default:
-                updateAppIconBadge()
+            case .background:
+                updateAppIconBadgeIfNeeded()
                 defaults.setUserNeedUpdate(true)
+            default: break
             }
         }
     }
@@ -69,25 +72,16 @@ struct SwiftUI_WorkoutAppApp: App {
         }
     }
 
-    @available(iOS, deprecated: 16, message: "Заменить на async-вариант")
-    private func updateAppIconBadge() {
-        func setupAppIconBadge() {
-            DispatchQueue.main.async {
-                UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
-            }
-        }
-        let center = UNUserNotificationCenter.current()
-        center.getNotificationSettings { settings in
-            switch settings.authorizationStatus {
-            case .notDetermined:
-                center.requestAuthorization(options: [.badge]) { granted, _ in
-                    guard granted else { return }
-                    setupAppIconBadge()
-                }
-            case .authorized, .provisional:
-                setupAppIconBadge()
-            default: break
-            }
+    private func updateAppIconBadgeIfNeeded() {
+        guard defaults.isAuthorized,
+              UIApplication.shared.applicationIconBadgeNumber != defaults.appIconBadgeCount
+        else { return }
+        badgeUpdateTask?.cancel()
+        badgeUpdateTask = Task {
+            let center = UNUserNotificationCenter.current()
+            let granted = try? await center.requestAuthorization(options: [.badge])
+            guard granted == true else { return }
+            UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
         }
     }
 }
