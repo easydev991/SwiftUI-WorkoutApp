@@ -1,5 +1,6 @@
 # SW Площадки
-[Ссылка на приложение в AppStore](https://workout.su/ios)
+<img alt="Static Badge" src="https://img.shields.io/badge/Swift_Version-6.0-orange">
+<img alt="Static Badge" src="https://img.shields.io/badge/iOS_Version-15-blue">
 
 ## Реализованный функционал
 - Большинство возможностей требуют подключения к интернету, но некоторые фичи доступны оффлайн
