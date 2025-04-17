@@ -93,6 +93,7 @@ public struct SWClient: Sendable {
     ///   - current: текущий пароль
     ///   - new: новый пароль
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func changePassword(current: String, new: String) async throws -> Bool {
         let endpoint = Endpoint.changePassword(currentPass: current, newPass: new)
         return try await makeStatus(for: endpoint)
@@ -438,6 +439,7 @@ public struct SWClient: Sendable {
     ///   - viewAccess: доступ на просмотр
     ///   - commentAccess: доступ на комментирование
     /// - Returns: `true` в случае успеха, `false` при ошибках
+    @discardableResult
     public func editJournalSettings(
         with journalID: Int,
         title: String,

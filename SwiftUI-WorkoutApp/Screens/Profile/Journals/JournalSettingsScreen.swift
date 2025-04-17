@@ -84,23 +84,21 @@ private extension JournalSettingsScreen {
 
     func saveChanges() {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        isLoading = true
         Task {
-            isLoading = true
             do {
-                let isSuccess = try await SWClient(with: defaults).editJournalSettings(
+                try await SWClient(with: defaults).editJournalSettings(
                     with: journal.id,
                     title: journal.title,
                     for: defaults.mainUserInfo?.id,
                     viewAccess: journal.viewAccessType,
                     commentAccess: journal.commentAccessType
                 )
-                if isSuccess {
-                    updateOnSuccess(journal)
-                }
+                updateOnSuccess(journal)
             } catch {
+                isLoading = false
                 SWAlert.shared.presentDefaultUIKit(error)
             }
-            isLoading.toggle()
         }
     }
 

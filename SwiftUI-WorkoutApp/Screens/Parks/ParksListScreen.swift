@@ -131,7 +131,7 @@ private extension ParksListScreen {
     }
 
     func makeList(for userID: Int, _ isMainUser: Bool, _ isRefreshing: Bool) async throws {
-        if !isRefreshing { isLoading.toggle() }
+        if !isRefreshing { isLoading = true }
         if isMainUser { defaults.setUserNeedUpdate(false) }
         parks = try await SWClient(with: defaults).getParksForUser(userID)
     }

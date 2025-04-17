@@ -61,16 +61,12 @@ private extension LoginScreen {
             errorState: isError ? .message(resetErrorMessage) : nil
         )
         .focused($focus, equals: .username)
-        .onAppear(perform: showKeyboard)
-        .accessibilityIdentifier("loginField")
-    }
-
-    func showKeyboard() {
-        guard focus == nil else { return }
-        Task {
-            try await Task.sleep(nanoseconds: 500_000_000)
+        .task {
+            guard focus == nil else { return }
+            try? await Task.sleep(nanoseconds: 500_000_000)
             focus = .username
         }
+        .accessibilityIdentifier("loginField")
     }
 
     var passwordField: some View {
@@ -124,6 +120,7 @@ private extension LoginScreen {
 
     func forgotPasswordAction() {
         guard credentials.canRestorePassword else {
+            focus = .username
             SWAlert.shared.presentDefaultUIKit(
                 message: Constants.Alert.forgotPassword.localized
             )
@@ -131,7 +128,8 @@ private extension LoginScreen {
         }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         clearErrorMessages()
-        isLoading.toggle()
+        focus = nil
+        isLoading = true
         resetPasswordTask = Task {
             do {
                 if try await SWClient(with: defaults).resetPassword(for: credentials.login) {
@@ -145,9 +143,8 @@ private extension LoginScreen {
             } catch {
                 resetErrorMessage = error.localizedDescription
             }
-            isLoading.toggle()
+            isLoading = false
         }
-        focus = credentials.canRestorePassword ? nil : .username
     }
 
     func clearErrorMessages() {

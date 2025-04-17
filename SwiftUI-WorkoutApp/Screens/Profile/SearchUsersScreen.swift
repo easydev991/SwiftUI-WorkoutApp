@@ -108,8 +108,8 @@ private extension SearchUsersScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                let isSuccess = try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
-                endMessaging(isSuccess: isSuccess)
+                try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
+                endMessaging()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }

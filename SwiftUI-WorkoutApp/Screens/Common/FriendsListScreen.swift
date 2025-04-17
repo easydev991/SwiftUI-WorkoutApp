@@ -142,8 +142,8 @@ private extension FriendsListScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                let isSuccess = try await client.sendMessage(messagingModel.message, to: userID)
-                endMessaging(isSuccess: isSuccess)
+                try await client.sendMessage(messagingModel.message, to: userID)
+                endMessaging()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
