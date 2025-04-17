@@ -88,13 +88,9 @@ private extension ChangePasswordScreen {
             isFocused: focus == .current
         )
         .focused($focus, equals: .current)
-        .onAppear(perform: showKeyboard)
-    }
-
-    func showKeyboard() {
-        guard focus == nil else { return }
-        Task {
-            try await Task.sleep(nanoseconds: 500_000_000)
+        .task {
+            guard focus == nil else { return }
+            try? await Task.sleep(nanoseconds: 500_000_000)
             focus = .current
         }
     }
@@ -137,23 +133,23 @@ private extension ChangePasswordScreen {
         guard !isLoading else { return }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         focus = nil
-        isLoading.toggle()
+        isLoading = true
         changePasswordTask = Task {
             do {
-                let isSuccess = try await SWClient(with: defaults)
+                try await SWClient(with: defaults)
                     .changePassword(current: model.current, new: model.new.text)
                 try Task.checkCancellation()
-                if isSuccess, let login = defaults.mainUserInfo?.userName {
+                if let login = defaults.mainUserInfo?.userName {
                     defaults.saveAuthData(.init(login: login, password: model.new.text))
                 }
-                isChangeSuccessful = isSuccess
+                isChangeSuccessful = true
             } catch {
                 SWAlert.shared.presentDefaultUIKit(
                     title: "Ошибка".localized,
                     message: error.localizedDescription
                 )
             }
-            isLoading.toggle()
+            isLoading = false
         }
     }
 

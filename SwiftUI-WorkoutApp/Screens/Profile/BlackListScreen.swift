@@ -9,15 +9,84 @@ struct BlackListScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var users = [UserResponse]()
+    @State private var currentState = CurrentState.initial
     @State private var userToDelete: UserResponse?
-    @State private var isLoading = false
     private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         ScrollView {
+            contentView
+                .animation(.default, value: currentState)
+                .padding([.horizontal, .top])
+                .frame(maxWidth: .infinity)
+                .confirmationDialog(
+                    .init(BlacklistOption.remove.dialogTitle),
+                    isPresented: $userToDelete.mappedToBool(),
+                    titleVisibility: .visible
+                ) {
+                    Button(
+                        .init(BlacklistOption.remove.rawValue),
+                        role: .destructive,
+                        action: unblock
+                    )
+                } message: {
+                    Text(.init(BlacklistOption.remove.dialogMessage))
+                }
+        }
+        .onChange(of: currentState) { _ in
+            if case let .ready(list) = currentState, list.isEmpty {
+                dismiss()
+            }
+        }
+        .loadingOverlay(if: currentState.isLoading)
+        .background(Color.swBackground)
+        .task { await askForUsers() }
+        .refreshable { await askForUsers(refresh: true) }
+        .navigationTitle("Черный список")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private extension BlackListScreen {
+    enum CurrentState: Equatable {
+        case initial
+        /// Загрузка с нуля или рефреш
+        case loading
+        /// Удаление пользователя из черного списка
+        case unblockAction([UserResponse])
+        case ready([UserResponse])
+        case error(ErrorKind)
+
+        var isLoading: Bool {
+            switch self {
+            case .loading, .unblockAction: true
+            default: false
+            }
+        }
+
+        /// Нужно ли загружать данные, когда их нет (или для рефреша)
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(blockList): blockList.isEmpty
+            case .loading, .unblockAction: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(blockList): !blockList.isEmpty
+            default: false
+            }
+        }
+    }
+
+    @ViewBuilder
+    var contentView: some View {
+        switch currentState {
+        case let .ready(blockedUsers), let .unblockAction(blockedUsers):
             LazyVStack(spacing: 12) {
-                ForEach(users) { user in
+                ForEach(blockedUsers) { user in
                     Button {
                         userToDelete = user
                     } label: {
@@ -29,32 +98,15 @@ struct BlackListScreen: View {
                     .animation(.easeInOut(duration: 0.2), value: userToDelete)
                 }
             }
-            .padding([.horizontal, .top])
-            .frame(maxWidth: .infinity)
-            .confirmationDialog(
-                .init(BlacklistOption.remove.dialogTitle),
-                isPresented: $userToDelete.mappedToBool(),
-                titleVisibility: .visible
-            ) {
-                Button(
-                    .init(BlacklistOption.remove.rawValue),
-                    role: .destructive,
-                    action: unblock
-                )
-            } message: {
-                Text(.init(BlacklistOption.remove.dialogMessage))
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            ContainerRelativeView {
+                Text("Загрузка...")
             }
         }
-        .loadingOverlay(if: isLoading)
-        .background(Color.swBackground)
-        .task { await askForUsers() }
-        .refreshable { await askForUsers(refresh: true) }
-        .navigationTitle("Черный список")
-        .navigationBarTitleDisplayMode(.inline)
     }
-}
 
-private extension BlackListScreen {
     func makeLabelFor(_ user: UserResponse) -> some View {
         UserRowView(
             mode: .regular(
@@ -68,42 +120,47 @@ private extension BlackListScreen {
     }
 
     func askForUsers(refresh: Bool = false) async {
-        guard !isLoading else { return }
-        do {
-            if !users.isEmpty, !refresh { return }
-            if !refresh { isLoading = true }
-            users = try await client.getBlacklist()
-            try? defaults.saveBlacklist(users)
-            dismissIfEmpty()
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+        let needUpdateUser = defaults.needUpdateUser
+        guard currentState.shouldLoad || needUpdateUser || refresh else { return }
+        guard isNetworkConnected else {
+            if currentState.isReadyAndNotEmpty {
+                SWAlert.shared.presentNoConnection(false)
+            } else {
+                currentState = .error(.notConnected)
+            }
+            return
         }
-        isLoading = false
+        if !refresh {
+            currentState = .loading
+        }
+        do {
+            let users = try await client.getBlacklist()
+            try? defaults.saveBlacklist(users)
+            currentState = .ready(users)
+        } catch {
+            currentState = .error(.common(message: error.localizedDescription))
+        }
     }
 
     func unblock() {
         guard let user = userToDelete else { return }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        isLoading = true
+        guard case let .ready(blockedUsers) = currentState else { return }
+        currentState = .unblockAction(blockedUsers)
         Task {
             do {
-                let isSuccess = try await SWClient(with: defaults).blacklistAction(
+                try await SWClient(with: defaults).blacklistAction(
                     user: user, option: .remove
                 )
-                if isSuccess {
-                    defaults.updateBlacklist(option: .remove, user: user)
-                    users.removeAll(where: { $0.id == user.id })
-                }
-                dismissIfEmpty()
+                defaults.updateBlacklist(option: .remove, user: user)
+                defaults.setUserNeedUpdate(true)
+                let updatedList = blockedUsers.filter { $0.id != user.id }
+                currentState = .ready(updatedList)
             } catch {
+                currentState = .ready(blockedUsers)
                 SWAlert.shared.presentDefaultUIKit(error)
             }
-            isLoading = false
         }
-    }
-
-    func dismissIfEmpty() {
-        if users.isEmpty { dismiss() }
     }
 }
 

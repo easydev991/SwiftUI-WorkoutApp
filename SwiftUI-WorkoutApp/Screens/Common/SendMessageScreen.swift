@@ -63,13 +63,9 @@ private extension SendMessageScreen {
             height: 200
         )
         .focused($isFocused)
-        .onAppear(perform: showKeyboard)
-    }
-
-    func showKeyboard() {
-        guard !isFocused else { return }
-        Task { @MainActor in
-            try await Task.sleep(nanoseconds: 750_000_000)
+        .task {
+            guard !isFocused else { return }
+            try? await Task.sleep(nanoseconds: 750_000_000)
             isFocused = true
         }
     }

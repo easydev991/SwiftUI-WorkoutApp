@@ -60,8 +60,8 @@ struct ModernPickedImagesGrid: View {
             matching: .any(of: [.images, .panoramas])
         )
         .task(id: selectedItems) {
+            isLoading = true
             do {
-                isLoading.toggle()
                 // TODO: Вывод картинок тяжелая задача, можно оптимизировать
                 let newImages = try await loadImages(from: selectedItems)
                 images.append(contentsOf: newImages)
@@ -69,7 +69,7 @@ struct ModernPickedImagesGrid: View {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             selectedItems.removeAll()
-            isLoading.toggle()
+            isLoading = false
         }
     }
 }

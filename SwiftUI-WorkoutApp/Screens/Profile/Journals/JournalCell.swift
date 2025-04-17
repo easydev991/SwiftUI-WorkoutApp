@@ -44,24 +44,22 @@ private extension JournalCell {
         let isEntryByMainUser = model.authorID == mainUserID
         switch mode {
         case let .root(setupClbk, deleteClbk):
-            if isEntryByMainUser {
-                var array = [OptionButton]()
-                array.append(.init(.setup, action: setupClbk))
-                array.append(.init(.delete, action: deleteClbk))
-                return array
-            } else {
-                return []
-            }
+            return isEntryByMainUser
+                ? [.init(.setup, action: setupClbk), .init(.delete, action: deleteClbk)]
+                : []
         case let .entry(editClbk, reportClbk, canDelete, deleteClbk):
             if isEntryByMainUser {
-                var array = [OptionButton]()
-                array.append(.init(.edit, action: editClbk))
+                var array = [OptionButton(.edit, action: editClbk)]
                 if canDelete {
                     array.append(.init(.delete, action: deleteClbk))
                 }
                 return array
             } else if isJournalOwner {
-                return canDelete ? [.init(.delete, action: deleteClbk)] : []
+                var array = [OptionButton(.report, action: reportClbk)]
+                if canDelete {
+                    array.append(.init(.delete, action: deleteClbk))
+                }
+                return array
             } else {
                 return [.init(.report, action: reportClbk)]
             }

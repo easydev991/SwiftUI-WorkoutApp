@@ -62,8 +62,9 @@ private actor NetworkMonitorActor {
         }
         monitor.start(queue: .global(qos: .background))
         await withTaskCancellationHandler {
-            monitor.cancel()
-            continuation.finish()
+            while !Task.isCancelled {
+                await Task.yield()
+            }
         } onCancel: {
             monitor.cancel()
             continuation.finish()
