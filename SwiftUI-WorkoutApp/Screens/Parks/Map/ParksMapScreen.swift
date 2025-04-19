@@ -14,8 +14,6 @@ struct ParksMapScreen: View {
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
     @State private var filter = ParkFilterScreen.Model()
-    /// Город для фильтра списка площадок
-    @State private var selectedCity: City?
     /// Отфильтрованные площадки для вкладки "Карта"
     private var filteredMapParks: [Park] {
         parksManager.fullList.filter { park in
@@ -26,7 +24,7 @@ struct ParksMapScreen: View {
 
     /// Отфильтрованные по выбранному городу площадки для вкладки "Список"
     private var filteredListParks: [Park] {
-        if let selectedCity {
+        if let selectedCity = viewModel.selectedCity {
             filteredMapParks.filter { $0.cityID == Int(selectedCity.id) }
         } else {
             filteredMapParks
@@ -132,10 +130,10 @@ private extension ParksMapScreen {
             VStack(spacing: 16) {
                 if let storedCities = try? SWAddress().cities() {
                     SWTextFieldSearchButton(
-                        selectedCity == nil ? "Выбери город" : "\(selectedCity!.name)",
-                        showClearButton: selectedCity != nil,
+                        .init(viewModel.cityFilterButtonTitle),
+                        showClearButton: viewModel.canClearCityFilter,
                         mainAction: { sheetItem = .searchCity(storedCities) },
-                        clearAction: { selectedCity = nil }
+                        clearAction: { viewModel.updateSelectedCity(nil) }
                     )
                     .padding(.horizontal)
                 }
@@ -155,7 +153,7 @@ private extension ParksMapScreen {
                             .accessibilityIdentifier("ParkViewCell")
                         }
                     }
-                    .padding(.horizontal)
+                    .padding([.horizontal, .bottom])
                 }
             }
         case .map:
@@ -267,9 +265,10 @@ private extension ParksMapScreen {
                 ItemListScreen(
                     mode: .city,
                     allItems: storedCities.map(\.name),
-                    selectedItem: selectedCity?.name ?? "",
+                    selectedItem: viewModel.selectedCity?.name ?? "",
                     didSelectItem: { cityName in
-                        selectedCity = storedCities.first(where: { $0.name == cityName })
+                        let newCity = storedCities.first(where: { $0.name == cityName })
+                        viewModel.updateSelectedCity(newCity)
                     }
                 )
                 .toolbar {

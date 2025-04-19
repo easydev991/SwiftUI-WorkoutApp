@@ -1,6 +1,7 @@
 import MapKit.MKGeometry
 import MapView991
 import OSLog
+import SwiftUI // для использования @AppStorage
 import SWModels
 
 extension ParksMapScreen {
@@ -13,6 +14,17 @@ extension ParksMapScreen {
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
         @Published private(set) var addressString = ""
+        /// Город для фильтра списка площадок
+        @AppStorage("selectedCityFilter") private(set) var selectedCity: City?
+        var cityFilterButtonTitle: String {
+            if let selectedCity {
+                selectedCity.name
+            } else {
+                "Выбери город"
+            }
+        }
+
+        var canClearCityFilter: Bool { selectedCity != nil }
         @Published private(set) var region = MKCoordinateRegion()
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
@@ -27,6 +39,10 @@ extension ParksMapScreen {
 
         func updateUserCountryAndCity(with info: UserResponse?) {
             userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
+        }
+
+        func updateSelectedCity(_ newCity: City?) {
+            selectedCity = newCity
         }
     }
 }
@@ -123,7 +139,23 @@ private extension ParksMapScreen.ViewModel {
         }()
         if let fullAddress, fullAddress != addressString {
             addressString = fullAddress
-            logger.debug("Местоположение пользователя: \(fullAddress, privacy: .public)")
+            logger.debug("Местоположение пользователя: \(fullAddress)")
+        }
+        guard selectedCity == nil else {
+            let cityName = selectedCity!.name
+            logger.debug("Город для фильтра площадок уже определен: \(cityName)")
+            return
+        }
+        guard let cityName = placemark.locality else {
+            logger.error("Не удалось определить название города: \(placemark.debugDescription, privacy: .public)")
+            return
+        }
+        do {
+            let storedCity = try SWAddress().findCity(with: cityName)
+            logger.debug("Город пользователя для фильтра списка площадок: \(storedCity.name)")
+            selectedCity = storedCity
+        } catch {
+            logger.error("Не удалось найти город \(cityName) в списке сохраненных городов, ошибка: \(error.localizedDescription)")
         }
     }
 }
