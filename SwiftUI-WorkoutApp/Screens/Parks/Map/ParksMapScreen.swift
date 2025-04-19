@@ -44,6 +44,13 @@ struct ParksMapScreen: View {
             .onChange(of: defaults.mainUserCityID) { _ in
                 viewModel.updateUserCountryAndCity(with: defaults.mainUserInfo)
             }
+            .onChange(of: viewModel.currentCity) { newValue in
+                if selectedCity == nil {
+                    // Настраиваем дефолтный фильтр площадок по городу,
+                    // в котором находится пользователь
+                    selectedCity = newValue
+                }
+            }
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {

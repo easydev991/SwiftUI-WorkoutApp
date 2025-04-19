@@ -13,6 +13,8 @@ extension ParksMapScreen {
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
         @Published private(set) var addressString = ""
+        /// Текущий город для дефолтного фильтра списка площадок
+        @Published private(set) var currentCity: City?
         @Published private(set) var region = MKCoordinateRegion()
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
@@ -121,6 +123,15 @@ private extension ParksMapScreen.ViewModel {
                 .joined(separator: ", ")
             return fullAddress.isEmpty ? nil : fullAddress
         }()
+        let currentCity: City = if let cityName = placemark.locality,
+                                   let storedCities = try? SWAddress().cities(),
+                                   let city = storedCities.first(where: { $0.name == cityName }) {
+            city
+        } else {
+            .defaultCity
+        }
+        self.currentCity = currentCity
+        logger.debug("Текущий город пользователя: \(currentCity.name, privacy: .public)")
         if let fullAddress, fullAddress != addressString {
             addressString = fullAddress
             logger.debug("Местоположение пользователя: \(fullAddress, privacy: .public)")
