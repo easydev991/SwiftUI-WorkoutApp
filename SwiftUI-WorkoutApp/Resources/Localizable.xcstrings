@@ -2398,6 +2398,23 @@
         }
       }
     },
+    "Не удалось загрузить данные. Проверьте подключение к интернету." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to load data. Check your internet connection."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось загрузить данные. Проверьте подключение к интернету."
+          }
+        }
+      }
+    },
     "Не удалось найти такого пользователя" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3330,23 +3347,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Построить маршрут"
-          }
-        }
-      }
-    },
-    "Проверьте подключение и повторите попытку" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Check your connection and try again"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Проверьте подключение и повторите попытку"
           }
         }
       }

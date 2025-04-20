@@ -154,7 +154,6 @@ private extension MainUserProfileScreen {
     func askForUserInfo(refresh: Bool = false) async {
         guard let userId = defaults.mainUserInfo?.id else { return }
         guard !isLoading else { return }
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh || defaults.needUpdateUser { isLoading = true }
         if refresh || defaults.needUpdateUser {
             do {
@@ -163,6 +162,8 @@ private extension MainUserProfileScreen {
                 try defaults.saveFriendRequests(result.friendRequests)
                 try defaults.saveBlacklist(result.blacklist)
                 try defaults.saveUserInfo(result.user)
+            } catch ClientError.noConnection {
+                SWAlert.shared.presentNoConnection(false)
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }

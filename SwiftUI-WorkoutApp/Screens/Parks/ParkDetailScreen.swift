@@ -347,6 +347,7 @@ private extension ParkDetailScreen {
 
     func askForInfo(refresh: Bool = false) async {
         if park.isFull, !refresh { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh { isLoading = true }
         do {
             park = try await SWClient(with: defaults).getPark(id: park.id)
