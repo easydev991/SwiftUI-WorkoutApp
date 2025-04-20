@@ -1641,16 +1641,6 @@
         }
       }
     },
-    "Загрузка..." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading..."
-          }
-        }
-      }
-    },
     "Закрыть" : {
       "localizations" : {
         "en" : {
