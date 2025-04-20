@@ -16,8 +16,8 @@ struct MainUserFriendsListScreen: View {
     var body: some View {
         ScrollView {
             contentView
-                .frame(maxWidth: .infinity)
                 .animation(.default, value: currentState)
+                .frame(maxWidth: .infinity)
                 .padding([.horizontal, .bottom])
         }
         .onChange(of: currentState) { newState in

@@ -23,6 +23,7 @@ struct JournalsListScreen: View {
         ScrollView {
             contentView
                 .animation(.default, value: currentState)
+                .frame(maxWidth: .infinity)
                 .padding([.top, .horizontal])
                 .sheet(item: $journalToEdit, content: showSettingsSheet)
         }
