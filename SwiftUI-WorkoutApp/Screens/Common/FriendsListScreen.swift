@@ -17,8 +17,8 @@ struct FriendsListScreen: View {
     var body: some View {
         ScrollView {
             contentView
-                .frame(maxWidth: .infinity)
                 .animation(.default, value: currentState)
+                .frame(maxWidth: .infinity)
                 .padding()
         }
         .sheet(
