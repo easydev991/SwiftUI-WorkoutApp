@@ -154,6 +154,7 @@ private extension MainUserProfileScreen {
     func askForUserInfo(refresh: Bool = false) async {
         guard let userId = defaults.mainUserInfo?.id else { return }
         guard !isLoading else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh || defaults.needUpdateUser { isLoading = true }
         if refresh || defaults.needUpdateUser {
             do {
