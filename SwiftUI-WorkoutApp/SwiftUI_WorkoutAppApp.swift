@@ -47,13 +47,13 @@ struct SwiftUI_WorkoutAppApp: App {
                 try? await dialogsViewModel.getDialogs(defaults: defaults)
             }
         }
-        .onChange(of: defaults.isAuthorized) { _ in updateAppIconBadgeIfNeeded() }
+        .onChange(of: defaults.isAuthorized, perform: updateAppIconBadgeIfNeeded)
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
             case .background:
-                updateAppIconBadgeIfNeeded()
+                updateAppIconBadgeIfNeeded(defaults.isAuthorized)
                 defaults.setUserNeedUpdate(true)
             default: break
             }
@@ -72,15 +72,17 @@ struct SwiftUI_WorkoutAppApp: App {
         }
     }
 
-    private func updateAppIconBadgeIfNeeded() {
-        guard defaults.isAuthorized,
-              UIApplication.shared.applicationIconBadgeNumber != defaults.appIconBadgeCount
-        else { return }
+    private func updateAppIconBadgeIfNeeded(_ isAuthorized: Bool) {
+        guard isAuthorized else {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            return
+        }
         badgeUpdateTask?.cancel()
         badgeUpdateTask = Task {
             let center = UNUserNotificationCenter.current()
             let granted = try? await center.requestAuthorization(options: [.badge])
             guard granted == true else { return }
+            guard UIApplication.shared.applicationIconBadgeNumber != defaults.appIconBadgeCount else { return }
             UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
         }
     }
