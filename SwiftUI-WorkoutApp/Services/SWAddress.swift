@@ -114,6 +114,27 @@ extension SWAddress {
     func cities() throws -> [City] {
         try countries().flatMap(\.cities)
     }
+
+    func findCity(with name: String) throws -> City {
+        let storedCities = try cities()
+        guard let storedCity = storedCities.first(where: { $0.name.lowercased() == name.lowercased() }) else {
+            throw AddressError.failedToFindCityByName(name)
+        }
+        return storedCity
+    }
+}
+
+extension SWAddress {
+    enum AddressError: Error, LocalizedError {
+        case failedToFindCityByName(String)
+
+        var errorDescription: String? {
+            switch self {
+            case let .failedToFindCityByName(name):
+                "Не удалось найти город \(name)"
+            }
+        }
+    }
 }
 
 private extension SWAddress {
