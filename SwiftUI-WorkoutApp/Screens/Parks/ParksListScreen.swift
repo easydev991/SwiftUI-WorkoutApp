@@ -7,16 +7,107 @@ import SWUtils
 /// Экран со списком площадок
 struct ParksListScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
-    @State private var parks = [Park]()
-    @State private var isLoading = false
+    @State private var currentState = CurrentState.initial
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
+    private var client: SWClient { SWClient(with: defaults) }
     let mode: Mode
 
     var body: some View {
         ScrollView {
+            contentView
+                .animation(.default, value: currentState)
+                .frame(maxWidth: .infinity)
+        }
+        .loadingOverlay(if: currentState.isLoading)
+        .background(Color.swBackground)
+        .sheet(item: $selectedPark) { park in
+            NavigationView {
+                ParkDetailScreen(park: park) { deletePark(id: $0) }
+            }
+            .navigationViewStyle(.stack)
+        }
+        .onChange(of: currentState) { newState in
+            if newState.isReadyAndEmpty {
+                dismiss()
+            }
+        }
+        .task { await askForParks() }
+        .refreshable {
+            await askForParks(refresh: true)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                refreshButtonIfNeeded
+            }
+        }
+        .navigationTitle(mode.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension ParksListScreen {
+    enum Mode {
+        /// Площадки, где тренируется пользователь
+        case usedBy(userID: Int)
+        /// Площадки, где тренируется пользователь, для создания мероприятия
+        case event(userID: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
+        /// Площадки, добавленные пользователем
+        case added(list: [Park])
+    }
+}
+
+extension ParksListScreen {
+    enum CurrentState: Equatable {
+        case initial
+        case loading
+        case ready([Park])
+        case error(ErrorKind)
+
+        var isLoading: Bool {
+            if case .loading = self { true } else { false }
+        }
+
+        /// Нужно ли загружать данные, когда их нет (или для рефреша)
+        var shouldLoad: Bool {
+            switch self {
+            case .initial, .error: true
+            case let .ready(parks): parks.isEmpty
+            case .loading: false
+            }
+        }
+
+        var isReadyAndNotEmpty: Bool {
+            switch self {
+            case let .ready(parks): !parks.isEmpty
+            default: false
+            }
+        }
+
+        var isReadyAndEmpty: Bool {
+            if case let .ready(parks) = self { parks.isEmpty } else { false }
+        }
+    }
+}
+
+private extension ParksListScreen.Mode {
+    var title: LocalizedStringKey {
+        switch self {
+        case .usedBy: "Где тренируется"
+        case .event: "Твои площадки"
+        case .added: "Добавленные"
+        }
+    }
+}
+
+private extension ParksListScreen {
+    @ViewBuilder
+    var contentView: some View {
+        switch currentState {
+        case let .ready(parks):
             LazyVStack(spacing: 12) {
                 ForEach(parks) { park in
                     Button {
@@ -39,62 +130,13 @@ struct ParksListScreen: View {
                 }
             }
             .padding([.top, .horizontal])
-        }
-        .loadingOverlay(if: isLoading)
-        .background(Color.swBackground)
-        .sheet(item: $selectedPark) { park in
-            NavigationView {
-                ParkDetailScreen(park: park) { deletePark(id: $0) }
-            }
-            .navigationViewStyle(.stack)
-        }
-        .onChange(of: parks) { list in
-            if list.isEmpty {
-                defaults.setUserNeedUpdate(true)
-                dismiss()
-            }
-        }
-        .task { await askForParks() }
-        .refreshable {
-            guard mode.canRefreshList else { return }
-            await askForParks(refresh: true)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButtonIfNeeded
-            }
-        }
-        .navigationTitle(mode.title)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-extension ParksListScreen {
-    enum Mode {
-        case usedBy(userID: Int)
-        case event(userID: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
-        case added(list: [Park])
-
-        var canRefreshList: Bool {
-            switch self {
-            case .added: false
-            case .usedBy, .event: true
-            }
+        case let .error(errorKind):
+            CommonErrorView(errorKind: errorKind)
+        case .initial, .loading:
+            EmptyView()
         }
     }
-}
 
-private extension ParksListScreen.Mode {
-    var title: LocalizedStringKey {
-        switch self {
-        case .usedBy: "Где тренируется"
-        case .event: "Твои площадки"
-        case .added: "Добавленные"
-        }
-    }
-}
-
-private extension ParksListScreen {
     @ViewBuilder
     var refreshButtonIfNeeded: some View {
         if !DeviceOSVersionChecker.iOS16Available {
@@ -103,47 +145,45 @@ private extension ParksListScreen {
             } label: {
                 Icons.Regular.refresh.view
             }
-            .disabled(isLoading)
+            .disabled(currentState.isLoading)
         }
     }
 
     func askForParks(refresh: Bool = false) async {
-        if isLoading { return }
-        do {
-            switch mode {
-            case let .usedBy(userID), let .event(userID, _):
-                let isMainUser = userID == defaults.mainUserInfo?.id
-                let needUpdate = parks.isEmpty || refresh
-                if isMainUser {
-                    if !needUpdate, !defaults.needUpdateUser { return }
-                    try await makeList(for: userID, isMainUser, refresh)
+        switch mode {
+        case let .usedBy(userID), let .event(userID, _):
+            guard currentState.shouldLoad || refresh else { return }
+            guard isNetworkConnected else {
+                if currentState.isReadyAndNotEmpty {
+                    SWAlert.shared.presentNoConnection(false)
                 } else {
-                    if !needUpdate { return }
-                    try await makeList(for: userID, isMainUser, refresh)
+                    currentState = .error(.notConnected)
                 }
-            case let .added(list):
-                parks = list
+                return
             }
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+            if !refresh {
+                currentState = .loading
+            }
+            do {
+                let parks = try await SWClient(with: defaults).getParksForUser(userID)
+                let isMainUser = userID == defaults.mainUserInfo?.id
+                if isMainUser { defaults.setUserNeedUpdate(false) }
+                currentState = .ready(parks)
+            } catch {
+                currentState = .error(.common(message: error.localizedDescription))
+            }
+        case let .added(list):
+            currentState = .ready(list)
         }
-        isLoading = false
-    }
-
-    func makeList(for userID: Int, _ isMainUser: Bool, _ isRefreshing: Bool) async throws {
-        if !isRefreshing { isLoading = true }
-        if isMainUser { defaults.setUserNeedUpdate(false) }
-        parks = try await SWClient(with: defaults).getParksForUser(userID)
     }
 
     func deletePark(id: Int) {
         selectedPark = nil
-        parks.removeAll(where: { $0.id == id })
+        guard case let .ready(parks) = currentState else { return }
         do {
             try parksManager.deletePark(with: id)
-            if !mode.canRefreshList {
-                dismiss()
-            }
+            let updatedParks = parks.filter { $0.id != id }
+            currentState = .ready(updatedParks)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
