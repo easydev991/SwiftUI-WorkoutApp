@@ -3845,6 +3845,17 @@
         }
       }
     },
+    "Ссылка на GitHub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub page"
+          }
+        }
+      }
+    },
     "Страна" : {
       "extractionState" : "manual",
       "localizations" : {

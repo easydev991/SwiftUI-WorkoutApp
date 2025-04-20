@@ -26,6 +26,7 @@ struct SettingsScreen: View {
                             userAgreementButton
                             officialSiteButton
                             developerProfileButton
+                            githubButton
                             shareAppButton
                             appVersionView
                         }
@@ -59,6 +60,7 @@ private extension SettingsScreen {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
         static let developerBlog = URL(string: "https://t.me/easy_dev991")!
+        static let githubLink = URL(string: "https://github.com/easydev991/SwiftUI-WorkoutApp")!
         static let officialSite = URL(string: "https://workout.su")!
         static let rulesOfService = URL(string: "https://workout.su/pravila")!
         static let appStoreLink = URL(string: "https://apps.apple.com/app/id1035159361")
@@ -188,6 +190,15 @@ private extension SettingsScreen {
         Link(destination: Links.developerBlog) {
             ListRowView(
                 leadingContent: .text("Разработчик приложения"),
+                trailingContent: .chevron
+            )
+        }
+    }
+
+    var githubButton: some View {
+        Link(destination: Links.githubLink) {
+            ListRowView(
+                leadingContent: .text("Ссылка на GitHub"),
                 trailingContent: .chevron
             )
         }
