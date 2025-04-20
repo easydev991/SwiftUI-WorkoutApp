@@ -174,7 +174,9 @@ private extension UserDetailsScreen {
 
     func askForUserInfo(refresh: Bool = false) async {
         guard !isLoading else { return }
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else {
+            return
+        }
         if !refresh { isLoading = true }
         if refresh || !user.isFull {
             await makeUserInfo()

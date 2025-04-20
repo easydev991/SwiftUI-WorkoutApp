@@ -365,6 +365,7 @@ private extension EventDetailsScreen {
 
     func askForInfo(refresh: Bool = false) async {
         if event.isFull, !refresh { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh { isLoading = true }
         do {
             event = try await SWClient(with: defaults).getEvent(by: event.id)

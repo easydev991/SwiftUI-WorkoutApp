@@ -57,7 +57,7 @@ public final class SWAlert {
         if showAlert {
             presentDefaultUIKit(
                 title: NSLocalizedString("Нет соединения с сетью", comment: ""),
-                message: NSLocalizedString("Проверьте подключение и повторите попытку", comment: "")
+                message: NSLocalizedString("Не удалось загрузить данные. Проверьте подключение к интернету.", comment: "")
             )
         }
         return showAlert
