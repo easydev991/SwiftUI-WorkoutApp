@@ -6,20 +6,15 @@ import SWUtils
 /// Сетка для добавления фотографий с использованием `PhotosPicker`
 @available(iOS 16.0, *)
 struct ModernPickedImagesGrid: View {
-    private var imagesArray: [PickedImageView.Model] {
-        var realImages = images.map(PickedImageView.Model.image)
-        if selectionLimit > 0 {
-            realImages.append(.addImageButton)
-        }
-        return realImages
-    }
-
-    @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
     @State private var selectedItems = [PhotosPickerItem]()
     @State private var isLoading = false
+    let imagesArray: [PickedImageView.Model]
+    @Binding var presentedItem: PickedImagesGrid.PresentedItem?
     @Binding var images: [UIImage]
-    @Binding var showImagePicker: Bool
+    @Binding var showImagePickerDialog: Bool
+    @Binding var showPhotosPicker: Bool
     let selectionLimit: Int
+    let deletePhoto: (_ index: Int) -> Void
 
     var body: some View {
         SectionView(header: .init(header), mode: .regular) {
@@ -33,29 +28,19 @@ struct ModernPickedImagesGrid: View {
                     action: { index, option in
                         switch option {
                         case .addImage:
-                            showImagePicker.toggle()
+                            showImagePickerDialog.toggle()
                         case .deleteImage:
-                            deletePhoto(at: index)
+                            deletePhoto(index)
                         case let .showDetailImage(uiImage):
-                            fullscreenImageInfo = .init(uiImage: uiImage, id: index)
+                            presentedItem = .viewImage(model: .init(uiImage: uiImage, id: index))
                         }
                     }
-                )
-            }
-            .fullScreenCover(item: $fullscreenImageInfo) {
-                fullscreenImageInfo = nil
-            } content: { model in
-                PhotoDetailScreen(
-                    model: model,
-                    canDelete: true,
-                    reportPhotoClbk: {},
-                    deletePhotoClbk: deletePhoto
                 )
             }
         }
         .loadingOverlay(if: isLoading)
         .photosPicker(
-            isPresented: $showImagePicker,
+            isPresented: $showPhotosPicker,
             selection: $selectedItems,
             matching: .any(of: [.images, .panoramas])
         )
@@ -99,11 +84,6 @@ private extension ModernPickedImagesGrid {
         }
     }
 
-    func deletePhoto(at index: Int) {
-        images.remove(at: index)
-        fullscreenImageInfo = nil
-    }
-
     enum ImageError: Error, LocalizedError {
         case dataLoadingFailed
         case imageCreationFailed
@@ -118,45 +98,20 @@ private extension ModernPickedImagesGrid {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 #Preview("Лимит 10, есть 0") {
+    @Previewable @State var presentedItem: PickedImagesGrid.PresentedItem?
+    @Previewable @State var showImagePickerDialog = false
+    @Previewable @State var showPhotosPicker = false
+
     ModernPickedImagesGrid(
+        imagesArray: [],
+        presentedItem: $presentedItem,
         images: .constant([]),
-        showImagePicker: .constant(false),
-        selectionLimit: 10
-    )
-}
-
-@available(iOS 16.0, *)
-#Preview("Лимит 7, есть 3") {
-    let images: [UIImage] = Array(1 ... 3).map {
-        .init(systemName: "\($0).circle.fill")!
-    }
-    return ModernPickedImagesGrid(
-        images: .constant(images),
-        showImagePicker: .constant(false),
-        selectionLimit: 7
-    )
-}
-
-@available(iOS 16.0, *)
-#Preview("Лимит 0, есть 10") {
-    let images: [UIImage] = Array(1 ... 10).map {
-        .init(systemName: "\($0).circle.fill")!
-    }
-    return ModernPickedImagesGrid(
-        images: .constant(images),
-        showImagePicker: .constant(false),
-        selectionLimit: 0
-    )
-}
-
-@available(iOS 16.0, *)
-#Preview("Лимит 0, есть 0") {
-    ModernPickedImagesGrid(
-        images: .constant([]),
-        showImagePicker: .constant(false),
-        selectionLimit: 0
+        showImagePickerDialog: $showImagePickerDialog,
+        showPhotosPicker: $showPhotosPicker,
+        selectionLimit: 10,
+        deletePhoto: { _ in }
     )
 }
 #endif

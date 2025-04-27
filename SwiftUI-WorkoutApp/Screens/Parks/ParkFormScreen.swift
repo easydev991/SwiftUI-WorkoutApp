@@ -14,7 +14,6 @@ struct ParkFormScreen: View {
     @State private var isLoading = false
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
-    @State private var showImagePicker = false
     @State private var saveParkTask: Task<Void, Never>?
     @FocusState private var isFocused: Bool
     private let oldParkForm: ParkForm
@@ -140,7 +139,6 @@ private extension ParkFormScreen {
     var pickedImagesGrid: some View {
         PickedImagesGrid(
             images: $newImages,
-            showImagePicker: $showImagePicker,
             selectionLimit: parkForm.imagesLimit,
             processExtraImages: {
                 while parkForm.imagesLimit < 0 {

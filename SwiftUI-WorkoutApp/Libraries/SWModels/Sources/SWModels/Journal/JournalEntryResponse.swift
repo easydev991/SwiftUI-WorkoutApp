@@ -44,7 +44,10 @@ public extension JournalEntryResponse {
     }
 
     var formattedMessage: String {
-        (message ?? "").withoutHTML
+        guard let message, message.trueCount > 0 else {
+            return ""
+        }
+        return message.withoutHTML
     }
 
     var messageDateString: String {

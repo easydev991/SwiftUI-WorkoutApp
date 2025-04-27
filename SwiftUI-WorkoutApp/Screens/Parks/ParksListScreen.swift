@@ -26,7 +26,11 @@ struct ParksListScreen: View {
         .background(Color.swBackground)
         .sheet(item: $selectedPark) { park in
             NavigationView {
-                ParkDetailScreen(park: park) { deletePark(id: $0) }
+                ParkDetailScreen(
+                    park: park,
+                    onEdit: updatePark,
+                    onDelete: deletePark
+                )
             }
             .navigationViewStyle(.stack)
         }
@@ -55,8 +59,6 @@ extension ParksListScreen {
         case usedBy(userID: Int)
         /// Площадки, где тренируется пользователь, для создания мероприятия
         case event(userID: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
-        /// Площадки, добавленные пользователем
-        case added(list: [Park])
     }
 }
 
@@ -98,7 +100,6 @@ private extension ParksListScreen.Mode {
         switch self {
         case .usedBy: "Где тренируется"
         case .event: "Твои площадки"
-        case .added: "Добавленные"
         }
     }
 }
@@ -115,7 +116,7 @@ private extension ParksListScreen {
                         case let .event(_, callBack):
                             callBack(park.id, park.name ?? park.longTitle)
                             dismiss()
-                        case .usedBy, .added:
+                        case .usedBy:
                             selectedPark = park
                         }
                     } label: {
@@ -172,8 +173,6 @@ private extension ParksListScreen {
             } catch {
                 currentState = .error(.common(message: error.localizedDescription))
             }
-        case let .added(list):
-            currentState = .ready(list)
         }
     }
 
@@ -183,6 +182,17 @@ private extension ParksListScreen {
         do {
             try parksManager.deletePark(with: id)
             let updatedParks = parks.filter { $0.id != id }
+            currentState = .ready(updatedParks)
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+    }
+
+    func updatePark(_ park: Park) {
+        guard case let .ready(parks) = currentState else { return }
+        do {
+            try parksManager.manuallyUpdatePark(park)
+            let updatedParks = try parksManager.getParks(ids: parks.map(\.id))
             currentState = .ready(updatedParks)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)

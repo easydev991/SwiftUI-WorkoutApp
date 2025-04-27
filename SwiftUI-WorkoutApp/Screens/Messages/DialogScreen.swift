@@ -16,7 +16,6 @@ struct DialogScreen: View {
     @State private var openAnotherUserProfile = false
     @State private var sendMessageTask: Task<Void, Never>?
     @State private var refreshDialogTask: Task<Void, Never>?
-    @Namespace private var chatScrollView
     @FocusState private var isMessageBarFocused: Bool
     let dialog: DialogResponse
     let markedAsReadClbk: (DialogResponse) -> Void
@@ -103,10 +102,12 @@ private extension DialogScreen {
                 }
             }
             .padding(.horizontal)
-            .id(chatScrollView)
-            .onChange(of: messages) { _ in
-                withAnimation {
-                    proxy.scrollTo(chatScrollView, anchor: .bottom)
+            .task(id: messages.count) {
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                if let lastMessageId = messages.last?.id {
+                    withAnimation {
+                        proxy.scrollTo(lastMessageId, anchor: .bottom)
+                    }
                 }
             }
         }

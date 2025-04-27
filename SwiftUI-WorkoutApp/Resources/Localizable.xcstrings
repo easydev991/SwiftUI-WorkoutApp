@@ -17,22 +17,6 @@
         }
       }
     },
-    "%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@"
-          }
-        }
-      }
-    },
     "ageInYears" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -620,7 +604,8 @@
       }
     },
     "photoSectionHeader" : {
-      "extractionState" : "stale",
+      "comment" : "Заголовок для секции с фотографиями",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "variations" : {
@@ -709,7 +694,8 @@
       }
     },
     "usersCount" : {
-      "extractionState" : "stale",
+      "comment" : "Количество людей",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "variations" : {
@@ -1044,36 +1030,12 @@
         }
       }
     },
-    "Выбери город" : {
-      "extractionState" : "manual",
+    "Выбрать из галереи" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a city"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбери город"
-          }
-        }
-      }
-    },
-    "Выбери страну" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select a country"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбери страну"
+            "value" : "Pick from gallery"
           }
         }
       }
@@ -1382,24 +1344,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавила площадки"
-          }
-        }
-      }
-    },
-    "Добавить" : {
-      "comment" : "Принять заявку на добавление в друзья",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accept"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Добавить"
           }
         }
       }
@@ -1919,7 +1863,7 @@
       }
     },
     "Как в системе" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2326,23 +2270,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Написать письмо"
-          }
-        }
-      }
-    },
-    "Настроить" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configure"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Настроить"
           }
         }
       }
@@ -2769,24 +2696,6 @@
         }
       }
     },
-    "Отклонить" : {
-      "comment" : "Отклонить заявку на добавление в друзья",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Decline"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отклонить"
-          }
-        }
-      }
-    },
     "Открыть настройки" : {
       "localizations" : {
         "en" : {
@@ -3145,23 +3054,6 @@
         }
       }
     },
-    "Пожаловаться" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Report"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пожаловаться"
-          }
-        }
-      }
-    },
     "Пожаловаться на фото" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3175,23 +3067,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пожаловаться на фото"
-          }
-        }
-      }
-    },
-    "Поиск" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Поиск"
           }
         }
       }
@@ -3580,7 +3455,7 @@
       }
     },
     "Светлая тема" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3592,6 +3467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Светлая тема"
+          }
+        }
+      }
+    },
+    "Сделать фото" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take a photo"
           }
         }
       }
@@ -3907,7 +3792,7 @@
       }
     },
     "Тема приложения" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3924,7 +3809,7 @@
       }
     },
     "Темная тема" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {

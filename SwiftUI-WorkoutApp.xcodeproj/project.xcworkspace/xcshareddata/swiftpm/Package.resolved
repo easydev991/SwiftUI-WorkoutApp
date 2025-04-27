@@ -1,12 +1,13 @@
 {
+  "originHash" : "5025f985eb7c106c02f098e4c66ebb3eac21fc292b102c71f7169d6abc051568",
   "pins" : [
     {
       "identity" : "cachedasyncimage991",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/CachedAsyncImage991",
       "state" : {
-        "revision" : "7c625daaadea6c56f2c739af70374c0b7ca41112",
-        "version" : "1.2.0"
+        "revision" : "39b9af97f88a88f877b9815ae937fec92199f96d",
+        "version" : "1.3.0"
       }
     },
     {
@@ -32,10 +33,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OlegEremenko991/SWDesignSystem",
       "state" : {
-        "revision" : "88e435249fd9fdf314e0a44eb563ece25703253a",
-        "version" : "1.10.0"
+        "revision" : "0e642fef4b3bb89d3458f6bd59e9c3841ab5585f",
+        "version" : "1.13.0"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

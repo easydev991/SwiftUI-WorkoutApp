@@ -17,7 +17,8 @@ struct EditProfileScreen: View {
     @State private var isLoading = false
     @State private var editUserTask: Task<Void, Never>?
     @State private var newAvatarImageModel: AvatarModel?
-    @State private var showImagePicker = false
+    @State private var showImagePickerDialog = false
+    @State private var pickerSourceType: UIImagePickerController.SourceType?
     @FocusState private var focus: FocusableField?
 
     var body: some View {
@@ -106,17 +107,30 @@ private extension EditProfileScreen {
                 CachedImage(url: defaults.mainUserInfo?.avatarURL, mode: .profileAvatar)
                     .transition(.scale.combined(with: .slide).combined(with: .opacity))
             }
-            Button("Изменить фотографию") { showImagePicker.toggle() }
+            Button("Изменить фотографию") { showImagePickerDialog.toggle() }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
                 .padding(.bottom, 8)
-                .sheet(isPresented: $showImagePicker) {
-                    SWImagePicker {
-                        newAvatarImageModel = .init(uiImage: $0)
-                        userForm.image = $0.toMediaFile()
+                .confirmationDialog(
+                    "",
+                    isPresented: $showImagePickerDialog,
+                    titleVisibility: .hidden
+                ) {
+                    Button("Сделать фото") {
+                        pickerSourceType = .camera
+                    }
+                    Button("Выбрать из галереи") {
+                        pickerSourceType = .photoLibrary
                     }
                 }
         }
         .animation(.default, value: newAvatarImageModel)
+        .fullScreenCover(item: $pickerSourceType) { sourceType in
+            SWImagePicker(sourceType: sourceType) {
+                newAvatarImageModel = .init(uiImage: $0)
+                userForm.image = $0.toMediaFile()
+            }
+            .ignoresSafeArea()
+        }
     }
 
     var genderPicker: some View {

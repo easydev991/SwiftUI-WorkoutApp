@@ -50,6 +50,24 @@
         }
       }
     },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy - Camera Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needed to take park and profile photos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Для создания фотографий площадок и профиля требуется доступ к камере"
+          }
+        }
+      }
+    },
     "NSLocationWhenInUseUsageDescription" : {
       "comment" : "Privacy - Location When In Use Usage Description",
       "extractionState" : "extracted_with_value",
@@ -75,13 +93,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Needed to choose your profile picture"
+            "value" : "Needed to choose your profile and park photos"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Для выбора фото профиля требуется доступ к галерее"
+            "value" : "Для загрузки фотографий площадок и выбора фото профиля требуется доступ к галерее"
           }
         }
       }

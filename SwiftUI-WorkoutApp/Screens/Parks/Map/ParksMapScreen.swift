@@ -207,6 +207,14 @@ private extension ParksMapScreen {
         }
     }
 
+    func updatePark(_ park: Park) {
+        do {
+            try parksManager.manuallyUpdatePark(park)
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+    }
+
     /// Проверяем недавние обновления списка площадок
     ///
     /// Запрашиваем обновление за прошедшие 5 минут
@@ -280,7 +288,11 @@ private extension ParksMapScreen {
             .navigationViewStyle(.stack)
         case let .parkDetails(park):
             NavigationView {
-                ParkDetailScreen(park: park) { deletePark(id: $0) }
+                ParkDetailScreen(
+                    park: park,
+                    onEdit: updatePark,
+                    onDelete: deletePark
+                )
             }
             .navigationViewStyle(.stack)
         }

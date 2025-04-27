@@ -46,7 +46,10 @@ public extension DialogResponse {
     }
 
     var lastMessageFormatted: String {
-        (lastMessageText ?? "").withoutHTML
+        guard let lastMessageText, lastMessageText.trueCount > 0 else {
+            return ""
+        }
+        return lastMessageText.withoutHTML
     }
 
     var lastMessageDateString: String {

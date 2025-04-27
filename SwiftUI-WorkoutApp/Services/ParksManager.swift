@@ -22,6 +22,9 @@ final class ParksManager: ObservableObject {
         DateFormatterService.days(from: lastParksUpdateDateString, to: .now) > 1
     }
 
+    /// Подготавливает дефолтный список площадок при загрузке приложения
+    ///
+    /// Достает список площадок из `JSON-файла` в памяти приложения
     func makeDefaultList() throws {
         fullList = if swStorage.documentExists {
             try swStorage.get()
@@ -46,6 +49,27 @@ final class ParksManager: ObservableObject {
         }
         try saveParksInMemory()
         lastParksUpdateDateString = DateFormatterService.fiveMinutesAgoDateString
+    }
+
+    /// Обновляет выбранную площадку
+    /// - Parameter park: Площадка с новыми данными
+    func manuallyUpdatePark(_ park: Park) throws {
+        guard let parkIndex = fullList.firstIndex(where: { $0.id == park.id }) else {
+            return
+        }
+        fullList[parkIndex] = park
+        try saveParksInMemory()
+    }
+
+    /// Находит площадки с указанными идентификаторами
+    /// - Parameter ids: Идентификаторы площадок
+    /// - Returns: Список площадок по заданным идентификаторам
+    func getParks(ids: [Int]) throws -> [Park] {
+        if fullList.isEmpty {
+            try makeDefaultList()
+        }
+        let idSet = Set(ids)
+        return fullList.filter { idSet.contains($0.id) }
     }
 
     /// Удаляет площадку с указанным идентификатором из списка
