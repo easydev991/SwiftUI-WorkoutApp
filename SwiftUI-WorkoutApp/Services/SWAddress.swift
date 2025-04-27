@@ -74,16 +74,9 @@ extension SWAddress {
     /// Сохраняет список стран/городов в памяти девайса
     ///
     /// - Parameter countries: Страны/города для сохранения
-    /// - Returns: `true` в случае успеха, `false` - при неудаче
-    func save(_ countries: [Country]) -> Bool {
-        do {
-            try storage.save(countries)
-            logger.debug("Успешно сохранили список стран в количестве \(countries.count, privacy: .public) шт.")
-            return true
-        } catch {
-            logger.error("Не смогли сохранить список стран, \(error.localizedDescription, privacy: .public)")
-            return false
-        }
+    func save(_ countries: [Country]) throws {
+        try storage.save(countries)
+        logger.debug("Успешно сохранили список стран (\(countries.count) шт.)")
     }
 }
 

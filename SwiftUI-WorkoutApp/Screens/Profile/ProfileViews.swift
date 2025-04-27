@@ -62,9 +62,9 @@ extension ProfileViews {
 
     @ViewBuilder @MainActor
     static func makeAddedParks(for user: UserResponse) -> some View {
-        if user.hasAddedParks {
+        if user.hasAddedParks, let parks = user.addedParks {
             NavigationLink {
-                ParksListScreen(mode: .added(list: user.addedParks ?? []))
+                ParksAddedByUserScreen(parks: parks)
             } label: {
                 FormRowView(
                     title: user.addedParksString,

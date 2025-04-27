@@ -21,7 +21,8 @@ struct ParkDetailScreen: View {
     @State private var deletePhotoTask: Task<Void, Never>?
     @State private var refreshButtonTask: Task<Void, Never>?
     @State var park: Park
-    let onDeletion: (Int) -> Void
+    let onEdit: (_ updatedPark: Park) -> Void
+    let onDelete: (_ parkId: Int) -> Void
 
     var body: some View {
         ScrollView {
@@ -121,7 +122,7 @@ private extension ParkDetailScreen {
                     do {
                         if try await SWClient(with: defaults).delete(parkID: park.id) {
                             defaults.setUserNeedUpdate(true)
-                            onDeletion(park.id)
+                            onDelete(park.id)
                         }
                     } catch {
                         process(error)
@@ -351,6 +352,9 @@ private extension ParkDetailScreen {
         if !refresh { isLoading = true }
         do {
             park = try await SWClient(with: defaults).getPark(id: park.id)
+            if refresh {
+                onEdit(park)
+            }
         } catch {
             process(error)
         }
@@ -441,7 +445,7 @@ private extension ParkDetailScreen {
                 Удаляем ее из памяти и закрываем экран
                 """
             )
-            onDeletion(park.id)
+            onDelete(park.id)
         } else {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -471,7 +475,7 @@ private extension ParkDetailScreen {
 
 #if DEBUG
 #Preview {
-    ParkDetailScreen(park: .preview, onDeletion: { _ in })
+    ParkDetailScreen(park: .preview, onEdit: { _ in }, onDelete: { _ in })
         .environmentObject(DefaultsService())
 }
 #endif

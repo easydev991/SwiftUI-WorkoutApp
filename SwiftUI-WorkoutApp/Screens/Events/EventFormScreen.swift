@@ -13,7 +13,6 @@ struct EventFormScreen: View {
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
     @State private var isLoading = false
-    @State private var showImagePicker = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
     private let oldEventForm: EventForm
@@ -178,7 +177,6 @@ private extension EventFormScreen {
     var pickedImagesGrid: some View {
         PickedImagesGrid(
             images: $newImages,
-            showImagePicker: $showImagePicker,
             selectionLimit: eventForm.imagesLimit,
             processExtraImages: {
                 while eventForm.imagesLimit < 0 {

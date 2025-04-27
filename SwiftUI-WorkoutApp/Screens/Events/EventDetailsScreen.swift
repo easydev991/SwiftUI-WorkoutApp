@@ -20,7 +20,7 @@ struct EventDetailsScreen: View {
     @State private var deleteEventTask: Task<Void, Never>?
     @State private var refreshEventTask: Task<Void, Never>?
     @State var event: EventResponse
-    let onDeletion: (Int) -> Void
+    let onDelete: (Int) -> Void
 
     var body: some View {
         ScrollView {
@@ -116,7 +116,7 @@ private extension EventDetailsScreen {
                 deleteEventTask = Task {
                     do {
                         if try await SWClient(with: defaults).delete(eventID: event.id) {
-                            onDeletion(event.id)
+                            onDelete(event.id)
                         }
                     } catch {
                         SWAlert.shared.presentDefaultUIKit(error)
@@ -447,7 +447,7 @@ private extension EventDetailsScreen {
 
 #if DEBUG
 #Preview {
-    EventDetailsScreen(event: .preview, onDeletion: { _ in })
+    EventDetailsScreen(event: .preview, onDelete: { _ in })
         .environmentObject(DefaultsService())
 }
 #endif

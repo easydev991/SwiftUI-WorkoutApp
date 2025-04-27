@@ -1,3 +1,4 @@
+import OSLog
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -6,6 +7,10 @@ import SWUtils
 
 @main
 struct SwiftUI_WorkoutAppApp: App {
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: "SwiftUI_WorkoutAppApp"
+    )
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults = DefaultsService()
@@ -65,9 +70,12 @@ struct SwiftUI_WorkoutAppApp: App {
               countriesUpdateTask == nil
         else { return }
         countriesUpdateTask = Task {
-            if let countries = try? await client.getCountries(),
-               countriesStorage.save(countries) {
+            do {
+                let countries = try await client.getCountries()
+                try countriesStorage.save(countries)
                 defaults.didUpdateCountries()
+            } catch {
+                logger.error("Не смогли сохранить список стран, ошибка: \(error.localizedDescription)")
             }
         }
     }

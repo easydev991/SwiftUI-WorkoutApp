@@ -60,7 +60,10 @@ public extension JournalResponse {
     }
 
     var formattedLastMessage: String {
-        (lastMessageText ?? "").withoutHTML
+        guard let lastMessageText, lastMessageText.trueCount > 0 else {
+            return ""
+        }
+        return lastMessageText.withoutHTML
     }
 
     var lastMessageDateString: String {

@@ -31,7 +31,7 @@ extension PhotoDetailScreen {
     enum DialogOption {
         case report, delete
 
-        var title: String {
+        var title: LocalizedStringKey {
             switch self {
             case .report: "Пожаловаться на фото"
             case .delete: "Удалить фото"
@@ -73,12 +73,12 @@ private extension PhotoDetailScreen {
             Icons.Regular.trash.view
         }
         .confirmationDialog(
-            .init(DialogOption.delete.title),
+            DialogOption.delete.title,
             isPresented: $showDeleteDialog,
             titleVisibility: .hidden
         ) {
             Button(
-                .init(DialogOption.delete.title),
+                DialogOption.delete.title,
                 role: .destructive
             ) {
                 deletePhotoClbk(model.id)
@@ -93,12 +93,12 @@ private extension PhotoDetailScreen {
             Icons.Regular.exclamation.view
         }
         .confirmationDialog(
-            .init(DialogOption.report.title),
+            DialogOption.report.title,
             isPresented: $showReportDialog,
             titleVisibility: .hidden
         ) {
             Button(
-                .init(DialogOption.report.title),
+                DialogOption.report.title,
                 role: .destructive,
                 action: reportPhotoClbk
             )

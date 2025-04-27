@@ -4,18 +4,19 @@ import SwiftUI
 
 struct PickedImagesGrid: View {
     private var imagesArray: [PickedImageView.Model] {
-        var realImages: [PickedImageView.Model] = images.map {
-            .image($0)
-        }
+        var realImages = images.map(PickedImageView.Model.image)
         if selectionLimit > 0 {
             realImages.append(.addImageButton)
         }
         return realImages
     }
 
-    @State private var fullscreenImageInfo: PhotoDetailScreen.Model?
+    @State private var presentedItem: PresentedItem?
+    /// Диалог для выбора источника фото (камера/галерея)
+    @State private var showImagePickerDialog = false
+    /// Тоггл для отображения фото в галерее
+    @State private var showImagePicker = false
     @Binding var images: [UIImage]
-    @Binding var showImagePicker: Bool
     /// Сколько еще можно выбрать фотографий
     let selectionLimit: Int
     /// Обработать добавление лишних фотографий
@@ -27,12 +28,16 @@ struct PickedImagesGrid: View {
         Group {
             if #available(iOS 16.0, *) {
                 ModernPickedImagesGrid(
+                    imagesArray: imagesArray,
+                    presentedItem: $presentedItem,
                     images: $images,
-                    showImagePicker: $showImagePicker,
-                    selectionLimit: selectionLimit
+                    showImagePickerDialog: $showImagePickerDialog,
+                    showPhotosPicker: $showImagePicker,
+                    selectionLimit: selectionLimit,
+                    deletePhoto: deletePhoto
                 )
             } else {
-                oldContentView
+                commonContentView
                     .sheet(isPresented: $showImagePicker) {
                         processExtraImages()
                     } content: {
@@ -45,14 +50,58 @@ struct PickedImagesGrid: View {
             }
         }
         .animation(.default, value: images.count)
+        .confirmationDialog(
+            "",
+            isPresented: $showImagePickerDialog,
+            titleVisibility: .hidden
+        ) {
+            Button("Сделать фото") {
+                presentedItem = .takePhoto
+            }
+            Button("Выбрать из галереи") {
+                showImagePicker = true
+            }
+        }
+        .fullScreenCover(
+            item: $presentedItem,
+            content: { item in
+                switch item {
+                case .takePhoto:
+                    SWImagePicker(sourceType: .camera) { images.append($0) }
+                        .ignoresSafeArea()
+                case let .viewImage(model):
+                    PhotoDetailScreen(
+                        model: model,
+                        canDelete: true,
+                        reportPhotoClbk: {},
+                        deletePhotoClbk: deletePhoto
+                    )
+                }
+            }
+        )
+    }
+}
+
+extension PickedImagesGrid {
+    enum PresentedItem: Identifiable {
+        var id: String {
+            switch self {
+            case .takePhoto: "takePhoto"
+            case let .viewImage(model): "viewImage-\(model.id)"
+            }
+        }
+
+        case takePhoto
+        case viewImage(model: PhotoDetailScreen.Model)
     }
 }
 
 private extension PickedImagesGrid {
     var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
 
-    @MainActor
-    var oldContentView: some View {
+    /// Одинаковая вьюха для iOS 16 и ниже, но отличается логика
+    /// для работы с выбранными фото, поэтому такое название
+    var commonContentView: some View {
         SectionView(header: .init(header), mode: .regular) {
             VStack(alignment: .leading, spacing: 12) {
                 ImagePickerViews.makeSubtitleView(
@@ -64,23 +113,13 @@ private extension PickedImagesGrid {
                     action: { index, option in
                         switch option {
                         case .addImage:
-                            showImagePicker.toggle()
+                            showImagePickerDialog.toggle()
                         case .deleteImage:
                             deletePhoto(at: index)
                         case let .showDetailImage(uiImage):
-                            fullscreenImageInfo = .init(uiImage: uiImage, id: index)
+                            presentedItem = .viewImage(model: .init(uiImage: uiImage, id: index))
                         }
                     }
-                )
-            }
-            .fullScreenCover(item: $fullscreenImageInfo) {
-                fullscreenImageInfo = nil
-            } content: { model in
-                PhotoDetailScreen(
-                    model: model,
-                    canDelete: true,
-                    reportPhotoClbk: {},
-                    deletePhotoClbk: deletePhoto
                 )
             }
         }
@@ -88,7 +127,7 @@ private extension PickedImagesGrid {
 
     func deletePhoto(at index: Int) {
         images.remove(at: index)
-        fullscreenImageInfo = nil
+        presentedItem = nil
     }
 }
 
@@ -96,7 +135,6 @@ private extension PickedImagesGrid {
 #Preview("Лимит 10, есть 0") {
     PickedImagesGrid(
         images: .constant([]),
-        showImagePicker: .constant(false),
         selectionLimit: 10,
         processExtraImages: {}
     )
@@ -108,7 +146,6 @@ private extension PickedImagesGrid {
     }
     return PickedImagesGrid(
         images: .constant(images),
-        showImagePicker: .constant(false),
         selectionLimit: 7,
         processExtraImages: {}
     )
@@ -120,7 +157,6 @@ private extension PickedImagesGrid {
     }
     return PickedImagesGrid(
         images: .constant(images),
-        showImagePicker: .constant(false),
         selectionLimit: 0,
         processExtraImages: {}
     )
@@ -129,7 +165,6 @@ private extension PickedImagesGrid {
 #Preview("Лимит 0, есть 0") {
     PickedImagesGrid(
         images: .constant([]),
-        showImagePicker: .constant(false),
         selectionLimit: 0,
         processExtraImages: {}
     )
