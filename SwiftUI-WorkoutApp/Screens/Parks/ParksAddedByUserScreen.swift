@@ -40,7 +40,7 @@ struct ParksAddedByUserScreen: View {
                     .accessibilityIdentifier("ParkViewCell")
                 }
             }
-            .padding([.top, .horizontal])
+            .padding()
         }
         .onChange(of: parkList) { updatedParks in
             if updatedParks.isEmpty { dismiss() }

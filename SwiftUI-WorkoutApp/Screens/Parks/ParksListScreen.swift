@@ -130,7 +130,7 @@ private extension ParksListScreen {
                     .accessibilityIdentifier("ParkViewCell")
                 }
             }
-            .padding([.top, .horizontal])
+            .padding()
         case let .error(errorKind):
             CommonErrorView(errorKind: errorKind)
         case .initial, .loading:
