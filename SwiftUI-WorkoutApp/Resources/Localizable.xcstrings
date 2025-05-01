@@ -2437,12 +2437,12 @@
         }
       }
     },
-    "Необходимо разрешить полный доступ к календарю в настройках телефона" : {
+    "Необходимо разрешить доступ к календарю в настройках телефона" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You need to allow full access to the calendar in your phone settings"
+            "value" : "You need to allow access to the calendar in your phone settings"
           }
         }
       }

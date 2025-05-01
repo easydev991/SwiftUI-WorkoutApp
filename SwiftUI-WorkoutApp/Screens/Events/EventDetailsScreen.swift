@@ -172,24 +172,32 @@ private extension EventDetailsScreen {
     }
 
     var addToCalendarButton: some View {
-        Button("Добавить в календарь", action: calendarManager.requestAccess)
-            .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
-            .padding(.top, 12)
-            .sheet(isPresented: $calendarManager.showCalendar) {
-                EKEventEditViewControllerRepresentable(
-                    eventStore: calendarManager.eventStore,
-                    event: event
-                )
-            }
-            .alert(
-                "Необходимо разрешить полный доступ к календарю в настройках телефона",
-                isPresented: $calendarManager.showSettingsAlert
-            ) {
-                Button("Отмена", role: .cancel) {}
-                Button("Перейти") {
-                    URLOpener.open(URL(string: UIApplication.openSettingsURLString))
+        Button("Добавить в календарь") {
+            Task {
+                do {
+                    try await calendarManager.requestAccess()
+                } catch {
+                    SWAlert.shared.presentDefaultUIKit(error)
                 }
             }
+        }
+        .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
+        .padding(.top, 12)
+        .sheet(isPresented: $calendarManager.showCalendar) {
+            EKEventEditViewControllerRepresentable(
+                eventStore: calendarManager.eventStore,
+                event: event
+            )
+        }
+        .alert(
+            "Необходимо разрешить доступ к календарю в настройках телефона",
+            isPresented: $calendarManager.showSettingsAlert
+        ) {
+            Button("Отмена", role: .cancel) {}
+            Button("Перейти") {
+                URLOpener.open(URL(string: UIApplication.openSettingsURLString))
+            }
+        }
     }
 
     var descriptionSection: some View {
