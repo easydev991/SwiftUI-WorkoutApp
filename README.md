@@ -1,5 +1,4 @@
 # SW Площадки
-<a href="https://www.emergetools.com/app/example/ios/com.FGU.WorkOut/manual?utm_campaign=badge-data"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.emergetools.com%2Fapi%2Fv2%2Fpublic_new_build%3FexampleId%3Dcom.FGU.WorkOut%26platform%3Dios%26badgeOption%3Dversion_and_max_install_size%26buildType%3Dmanual&query=$.badgeMetadata&label=SW%20%D0%9F%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D0%BA%D0%B8&logo=apple&color=67BD6F" /></a>
 <img alt="Static Badge" src="https://img.shields.io/badge/Swift_Version-6.0-orange">
 <img alt="Static Badge" src="https://img.shields.io/badge/iOS_Version-15-blue">
 
