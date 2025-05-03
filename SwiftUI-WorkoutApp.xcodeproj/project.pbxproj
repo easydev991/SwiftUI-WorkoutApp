@@ -468,7 +468,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8.1;
+				MARKETING_VERSION = 3.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -522,7 +522,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.8.1;
+				MARKETING_VERSION = 3.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -583,7 +583,7 @@
 			repositoryURL = "https://github.com/OlegEremenko991/SWDesignSystem";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.13.0;
+				minimumVersion = 1.14.0;
 			};
 		};
 		67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */ = {

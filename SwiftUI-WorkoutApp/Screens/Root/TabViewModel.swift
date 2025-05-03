@@ -32,7 +32,7 @@ extension TabViewModel {
             case .profile:
                 "Профиль"
             case .settings:
-                "Настройки"
+                "Ещё"
             }
         }
 

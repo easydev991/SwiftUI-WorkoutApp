@@ -12,7 +12,7 @@ struct SettingsScreen: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 0) {
-                    SectionView(header: "Внешний вид", mode: .regular) {
+                    SectionView(header: "Настройки", mode: .regular) {
                         VStack(spacing: 0) {
                             appThemeButton
                             languagePicker
@@ -23,10 +23,8 @@ struct SettingsScreen: View {
                         VStack(spacing: 4) {
                             feedbackButton
                             rateAppButton
-                            userAgreementButton
                             officialSiteButton
                             developerProfileButton
-                            githubButton
                             shareAppButton
                             appVersionView
                         }
@@ -34,6 +32,7 @@ struct SettingsScreen: View {
                     dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
                         workoutShopButton
+                        githubButton
                     }
                     #if DEBUG
                     dividerView
@@ -48,7 +47,7 @@ struct SettingsScreen: View {
                 .padding()
             }
             .background(Color.swBackground)
-            .navigationTitle("Настройки")
+            .navigationTitle("Ещё")
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -62,7 +61,6 @@ private extension SettingsScreen {
         static let developerBlog = URL(string: "https://t.me/easy_dev991")!
         static let githubLink = URL(string: "https://github.com/easydev991/SwiftUI-WorkoutApp")!
         static let officialSite = URL(string: "https://workout.su")!
-        static let rulesOfService = URL(string: "https://workout.su/pravila")!
         static let appStoreLink = URL(string: "https://apps.apple.com/app/id1035159361")
     }
 
@@ -147,15 +145,6 @@ private extension SettingsScreen {
         Link(destination: Links.appReview) {
             ListRowView(
                 leadingContent: .text("Оценить приложение"),
-                trailingContent: .chevron
-            )
-        }
-    }
-
-    var userAgreementButton: some View {
-        Link(destination: Links.rulesOfService) {
-            ListRowView(
-                leadingContent: .text("Пользовательское соглашение"),
                 trailingContent: .chevron
             )
         }
