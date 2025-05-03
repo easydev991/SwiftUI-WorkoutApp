@@ -3180,23 +3180,6 @@
         }
       }
     },
-    "Пользовательское соглашение" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terms of use"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пользовательское соглашение"
-          }
-        }
-      }
-    },
     "Понятно" : {
       "localizations" : {
         "en" : {
