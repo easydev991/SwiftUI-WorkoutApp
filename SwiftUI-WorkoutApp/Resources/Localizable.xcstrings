@@ -1507,6 +1507,16 @@
         }
       }
     },
+    "Ещё" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
+    },
     "Женский" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2275,18 +2285,11 @@
       }
     },
     "Настройки" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Настройки"
           }
         }
       }
