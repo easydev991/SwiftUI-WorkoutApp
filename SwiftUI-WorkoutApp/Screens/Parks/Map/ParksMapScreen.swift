@@ -228,6 +228,8 @@ private extension ParksMapScreen {
         do {
             let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
             try parksManager.updateDefaultList(with: updatedParks)
+        } catch ClientError.noConnection {
+            SWAlert.shared.presentNoConnection(false)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
