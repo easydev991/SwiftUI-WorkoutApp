@@ -14,7 +14,9 @@ final class DialogsViewModel: ObservableObject {
             currentState = .initial
             return
         }
-        guard currentState.shouldLoad || refresh else { return }
+        guard currentState.shouldLoad || refresh else {
+            return
+        }
         if !refresh {
             currentState = .loading
         }

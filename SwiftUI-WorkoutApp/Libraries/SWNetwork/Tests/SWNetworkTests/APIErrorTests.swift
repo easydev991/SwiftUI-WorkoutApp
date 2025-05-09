@@ -3,23 +3,23 @@ import Testing
 
 struct APIErrorTests {
     private static var badRequestCodes: [Int] {
-        [400, 402, 403] + Array(405...412) + Array(414...499)
+        [400, 402, 403] + Array(405 ... 412) + Array(414 ... 499)
     }
-    
-    private static let serverErrorCodes = Array(500...599)
-    
+
+    private static let serverErrorCodes = Array(500 ... 599)
+
     @Test(arguments: badRequestCodes)
     func badRequest(code: Int) {
         let error = APIError(with: code)
         #expect(error == .badRequest)
     }
-    
+
     @Test(arguments: serverErrorCodes)
     func serverError(code: Int) {
         let error = APIError(with: code)
         #expect(error == .serverError)
     }
-    
+
     @Test
     func errorInitializationByCode() {
         let testCases: [(Int?, APIError)] = [
@@ -59,7 +59,7 @@ struct APIErrorTests {
         let error = APIError(errorResponse, nil)
         #expect(error == .unknown)
     }
-    
+
     @Test
     func customErrorPriorities() {
         // Сообщение имеет приоритет над errors
@@ -71,7 +71,7 @@ struct APIErrorTests {
         )
         let error1 = APIError(case1, nil)
         #expect(error1.errorDescription == "400, Priority Message")
-        
+
         // Errors используются, если message отсутствует
         let case2 = ErrorResponse(
             errors: ["Error1", "Error2"],
@@ -81,14 +81,14 @@ struct APIErrorTests {
         let error2 = APIError(case2, nil)
         #expect(error2.errorDescription == "500, Error1, Error2")
     }
-    
+
     @Test
     func specialCombinations() {
         // Кастомная ошибка с кодом, соответствующим стандартному
         let response1 = ErrorResponse(message: "Custom Credentials", code: 401, status: 0)
         let error1 = APIError(response1, nil)
         #expect(error1 == .customError(code: 401, message: "Custom Credentials"))
-        
+
         // Пустой массив errors
         let response2 = ErrorResponse(errors: [], code: 500, status: 0)
         let error2 = APIError(response2, nil)

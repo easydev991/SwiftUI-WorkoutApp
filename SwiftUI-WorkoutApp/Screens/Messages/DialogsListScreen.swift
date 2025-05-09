@@ -30,13 +30,6 @@ struct DialogsListScreen: View {
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
         }
-        .onChange(of: scenePhase) { phase in
-            if case .active = phase {
-                refreshTask = Task {
-                    try? await viewModel.getDialogs(refresh: true, defaults: defaults)
-                }
-            }
-        }
         .navigationViewStyle(.stack)
     }
 }

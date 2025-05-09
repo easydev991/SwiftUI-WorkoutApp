@@ -17,6 +17,9 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
     @StateObject private var dialogsViewModel = DialogsViewModel()
+    /// Используется для обновления диалогов
+    @State private var lastScenePhase: ScenePhase?
+    @State private var dialogsUpdateTask: Task<Void, Never>?
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
@@ -57,11 +60,13 @@ struct SwiftUI_WorkoutAppApp: App {
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
+                updateDialogsIfNeeded()
             case .background:
                 updateAppIconBadgeIfNeeded(defaults.isAuthorized)
                 defaults.setUserNeedUpdate(true)
             default: break
             }
+            lastScenePhase = phase
         }
     }
 
@@ -76,6 +81,15 @@ struct SwiftUI_WorkoutAppApp: App {
                 defaults.didUpdateCountries()
             } catch {
                 logger.error("Не смогли сохранить список стран, ошибка: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func updateDialogsIfNeeded() {
+        if lastScenePhase == .inactive || lastScenePhase == .background {
+            dialogsUpdateTask?.cancel()
+            dialogsUpdateTask = Task {
+                try? await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
             }
         }
     }
