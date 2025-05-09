@@ -18,6 +18,14 @@ struct EventsListScreen: View {
     @State private var showEventCreationSheet = false
     @State private var showEventCreationRule = false
     private let pastEventStorage = PastEventStorage()
+    private var currentEventList: [EventResponse] {
+        switch selectedEventType {
+        case .future:
+            futureEvents
+        case .past:
+            pastEvents.isEmpty ? pastEventStorage.savedPastEvents : pastEvents
+        }
+    }
 
     var body: some View {
         NavigationView {
@@ -97,7 +105,7 @@ private extension EventsListScreen {
     var eventsList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(selectedEventType == .future ? futureEvents : pastEvents) { event in
+                ForEach(currentEventList) { event in
                     Button {
                         selectedEvent = event
                     } label: {
