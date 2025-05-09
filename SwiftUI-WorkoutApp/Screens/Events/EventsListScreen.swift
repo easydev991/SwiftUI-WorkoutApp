@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком мероприятий
 struct EventsListScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var tabViewModel: TabViewModel
     @EnvironmentObject private var defaults: DefaultsService
     @State private var futureEvents = [EventResponse]()
@@ -70,7 +71,7 @@ private extension EventsListScreen {
             Icons.Regular.refresh.view
         }
         .opacity(
-            showEmptyView && !DeviceOSVersionChecker.iOS16Available ? 1 : 0
+            !isLoading && !DeviceOSVersionChecker.iOS16Available ? 1 : 0
         )
         .disabled(isLoading)
     }
@@ -86,18 +87,29 @@ private extension EventsListScreen {
         .padding(.horizontal)
     }
 
+    @ViewBuilder
     var emptyView: some View {
-        EmptyContentView(
-            mode: .events,
-            action: {
-                if canAddEvent {
-                    showEventCreationSheet.toggle()
-                } else {
-                    goToMap()
+        switch selectedEventType {
+        case .future:
+            EmptyContentView(
+                mode: .events,
+                action: {
+                    if canAddEvent {
+                        showEventCreationSheet.toggle()
+                    } else {
+                        goToMap()
+                    }
                 }
-            }
-        )
-        .opacity(showEmptyView ? 1 : 0)
+            )
+            .opacity(futureEvents.isEmpty && !isLoading ? 1 : 0)
+        case .past:
+            let showView = pastEvents.isEmpty
+                && pastEventStorage.savedPastEvents.isEmpty
+                && !isLoading
+                && !isNetworkConnected
+            NoConnectionView()
+                .opacity(showView ? 1 : 0)
+        }
     }
 
     func goToMap() { tabViewModel.selectTab(.map) }
@@ -167,11 +179,8 @@ private extension EventsListScreen {
         defaults.hasParks && defaults.isAuthorized
     }
 
-    var showEmptyView: Bool {
-        selectedEventType == .future && futureEvents.isEmpty && !isLoading
-    }
-
     func askForEvents(refresh: Bool = false) async {
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         let hasFutureEvents = selectedEventType == .future && !futureEvents.isEmpty
         let hasPastEvents = selectedEventType == .past && !pastEvents.isEmpty
         if isLoading && !refresh
