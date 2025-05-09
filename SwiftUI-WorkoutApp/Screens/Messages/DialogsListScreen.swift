@@ -8,7 +8,7 @@ struct DialogsListScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var viewModel: DialogsViewModel
+    @EnvironmentObject private var viewModel: ViewModel
     @State private var selectedDialog: DialogResponse?
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
@@ -29,13 +29,6 @@ struct DialogsListScreen: View {
             .animation(.spring, value: defaults.isAuthorized)
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
-        }
-        .onChange(of: scenePhase) { phase in
-            if case .active = phase {
-                refreshTask = Task {
-                    try? await viewModel.getDialogs(refresh: true, defaults: defaults)
-                }
-            }
         }
         .navigationViewStyle(.stack)
     }
@@ -171,11 +164,7 @@ private extension DialogsListScreen {
 
     func askForDialogs(refresh: Bool = false) async {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        do {
-            try await viewModel.getDialogs(refresh: refresh, defaults: defaults)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
+        await viewModel.getDialogs(refresh: refresh, defaults: defaults)
     }
 
     func deleteAction(at index: Int?) {
@@ -193,7 +182,7 @@ private extension DialogsListScreen {
 #if DEBUG
 #Preview {
     DialogsListScreen()
+        .environmentObject(DialogsListScreen.ViewModel())
         .environmentObject(DefaultsService())
-        .environmentObject(DialogsViewModel())
 }
 #endif

@@ -16,10 +16,20 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
-    @StateObject private var dialogsViewModel = DialogsViewModel()
+    @StateObject private var dialogsViewModel = DialogsListScreen.ViewModel()
+    @StateObject private var profileViewModel = MainUserProfileScreen.ViewModel()
+    /// Используется для обновления диалогов
+    @State private var lastScenePhase: ScenePhase?
+    @State private var dialogsUpdateTask: Task<Void, Never>?
+    @State private var profileUpdateTask: Task<Void, Never>?
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
+    /// Нужно ли обновить диалоги/профиль при смене фазы приложения
+    private var shouldUpdateDialogsAndProfile: Bool {
+        lastScenePhase == .inactive || lastScenePhase == .background
+    }
+
     private var client: SWClient { SWClient(with: defaults) }
     private var colorScheme: ColorScheme? {
         switch defaults.appTheme {
@@ -45,11 +55,12 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(defaults)
             .environmentObject(parksManager)
             .environmentObject(dialogsViewModel)
+            .environmentObject(profileViewModel)
             .preferredColorScheme(colorScheme)
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
             .task(id: defaults.isAuthorized) {
-                try? await dialogsViewModel.getDialogs(defaults: defaults)
+                await dialogsViewModel.getDialogs(defaults: defaults)
             }
         }
         .onChange(of: defaults.isAuthorized, perform: updateAppIconBadgeIfNeeded)
@@ -57,11 +68,14 @@ struct SwiftUI_WorkoutAppApp: App {
             switch phase {
             case .active:
                 updateCountriesIfNeeded()
+                updateDialogsIfNeeded()
+                updateProfileIfNeeded()
             case .background:
                 updateAppIconBadgeIfNeeded(defaults.isAuthorized)
                 defaults.setUserNeedUpdate(true)
             default: break
             }
+            lastScenePhase = phase
         }
     }
 
@@ -77,6 +91,26 @@ struct SwiftUI_WorkoutAppApp: App {
             } catch {
                 logger.error("Не смогли сохранить список стран, ошибка: \(error.localizedDescription)")
             }
+        }
+    }
+
+    private func updateDialogsIfNeeded() {
+        guard shouldUpdateDialogsAndProfile else {
+            return
+        }
+        dialogsUpdateTask?.cancel()
+        dialogsUpdateTask = Task {
+            await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
+        }
+    }
+
+    private func updateProfileIfNeeded() {
+        guard shouldUpdateDialogsAndProfile else {
+            return
+        }
+        profileUpdateTask?.cancel()
+        profileUpdateTask = Task {
+            try? await profileViewModel.getUserProfile(refresh: true, defaults: defaults)
         }
     }
 

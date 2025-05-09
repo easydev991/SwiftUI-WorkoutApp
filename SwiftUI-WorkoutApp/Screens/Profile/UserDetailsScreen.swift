@@ -9,7 +9,7 @@ import SWUtils
 struct UserDetailsScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @EnvironmentObject private var dialogsViewModel: DialogsViewModel
+    @EnvironmentObject private var dialogsViewModel: DialogsListScreen.ViewModel
     @State private var isLoading = false
     @State private var socialActions = SocialActions()
     @State private var messagingModel = MessagingModel()
@@ -213,7 +213,7 @@ private extension UserDetailsScreen {
                 try await SWClient(with: defaults).sendMessage(messagingModel.message, to: user.id)
                 messagingModel.message = ""
                 messagingModel.recipient = nil
-                try? await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
+                await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
@@ -239,6 +239,6 @@ private extension UserDetailsScreen {
 #Preview {
     UserDetailsScreen(for: .preview)
         .environmentObject(DefaultsService())
-        .environmentObject(DialogsViewModel())
+        .environmentObject(DialogsListScreen.ViewModel())
 }
 #endif

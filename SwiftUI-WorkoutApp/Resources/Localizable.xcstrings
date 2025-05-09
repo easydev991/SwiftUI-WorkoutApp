@@ -3013,23 +3013,6 @@
         }
       }
     },
-    "Поддержать разработчика" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Support the developer"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Поддержать разработчика"
-          }
-        }
-      }
-    },
     "Поделиться приложением" : {
       "extractionState" : "manual",
       "localizations" : {
