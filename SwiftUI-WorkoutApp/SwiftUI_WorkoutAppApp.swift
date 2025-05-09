@@ -16,7 +16,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var defaults = DefaultsService()
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
-    @StateObject private var dialogsViewModel = DialogsViewModel()
+    @StateObject private var dialogsViewModel = DialogsListScreen.ViewModel()
     /// Используется для обновления диалогов
     @State private var lastScenePhase: ScenePhase?
     @State private var dialogsUpdateTask: Task<Void, Never>?
@@ -52,7 +52,7 @@ struct SwiftUI_WorkoutAppApp: App {
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
             .task(id: defaults.isAuthorized) {
-                try? await dialogsViewModel.getDialogs(defaults: defaults)
+                await dialogsViewModel.getDialogs(defaults: defaults)
             }
         }
         .onChange(of: defaults.isAuthorized, perform: updateAppIconBadgeIfNeeded)
@@ -89,7 +89,7 @@ struct SwiftUI_WorkoutAppApp: App {
         if lastScenePhase == .inactive || lastScenePhase == .background {
             dialogsUpdateTask?.cancel()
             dialogsUpdateTask = Task {
-                try? await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
+                await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
             }
         }
     }
