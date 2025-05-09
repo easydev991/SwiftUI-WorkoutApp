@@ -17,12 +17,19 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var network = NetworkStatus()
     @StateObject private var parksManager = ParksManager()
     @StateObject private var dialogsViewModel = DialogsListScreen.ViewModel()
+    @StateObject private var profileViewModel = MainUserProfileScreen.ViewModel()
     /// Используется для обновления диалогов
     @State private var lastScenePhase: ScenePhase?
     @State private var dialogsUpdateTask: Task<Void, Never>?
+    @State private var profileUpdateTask: Task<Void, Never>?
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
+    /// Нужно ли обновить диалоги/профиль при смене фазы приложения
+    private var shouldUpdateDialogsAndProfile: Bool {
+        lastScenePhase == .inactive || lastScenePhase == .background
+    }
+
     private var client: SWClient { SWClient(with: defaults) }
     private var colorScheme: ColorScheme? {
         switch defaults.appTheme {
@@ -48,6 +55,7 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(defaults)
             .environmentObject(parksManager)
             .environmentObject(dialogsViewModel)
+            .environmentObject(profileViewModel)
             .preferredColorScheme(colorScheme)
             .environment(\.isNetworkConnected, network.isConnected)
             .environment(\.userFlags, defaults.userFlags)
@@ -61,6 +69,7 @@ struct SwiftUI_WorkoutAppApp: App {
             case .active:
                 updateCountriesIfNeeded()
                 updateDialogsIfNeeded()
+                updateProfileIfNeeded()
             case .background:
                 updateAppIconBadgeIfNeeded(defaults.isAuthorized)
                 defaults.setUserNeedUpdate(true)
@@ -86,11 +95,22 @@ struct SwiftUI_WorkoutAppApp: App {
     }
 
     private func updateDialogsIfNeeded() {
-        if lastScenePhase == .inactive || lastScenePhase == .background {
-            dialogsUpdateTask?.cancel()
-            dialogsUpdateTask = Task {
-                await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
-            }
+        guard shouldUpdateDialogsAndProfile else {
+            return
+        }
+        dialogsUpdateTask?.cancel()
+        dialogsUpdateTask = Task {
+            await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
+        }
+    }
+
+    private func updateProfileIfNeeded() {
+        guard shouldUpdateDialogsAndProfile else {
+            return
+        }
+        profileUpdateTask?.cancel()
+        profileUpdateTask = Task {
+            try? await profileViewModel.getUserProfile(refresh: true, defaults: defaults)
         }
     }
 

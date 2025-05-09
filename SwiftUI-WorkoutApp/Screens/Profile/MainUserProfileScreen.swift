@@ -8,12 +8,10 @@ import SWUtils
 struct MainUserProfileScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
+    @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var refreshTask: Task<Void, Never>?
-    @State private var isLoading = false
     @State private var showLogoutDialog = false
     @State private var showSearchUsersScreen = false
-    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         NavigationView {
@@ -32,11 +30,6 @@ struct MainUserProfileScreen: View {
         }
         .navigationViewStyle(.stack)
         .task { await askForUserInfo() }
-        .onChange(of: scenePhase) { phase in
-            if case .active = phase {
-                refreshTask = Task { await askForUserInfo(refresh: true) }
-            }
-        }
     }
 }
 
@@ -48,7 +41,7 @@ private extension MainUserProfileScreen {
             }
         }
         .frame(maxWidth: .infinity)
-        .loadingOverlay(if: isLoading)
+        .loadingOverlay(if: viewModel.currentState.isLoading)
         .background(Color.swBackground)
         .refreshable { await askForUserInfo(refresh: true) }
         .toolbar {
@@ -57,7 +50,7 @@ private extension MainUserProfileScreen {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 searchUsersButton
-                    .disabled(isLoading)
+                    .disabled(viewModel.currentState.isLoading)
             }
         }
     }
@@ -93,7 +86,7 @@ private extension MainUserProfileScreen {
             } label: {
                 Icons.Regular.refresh.view
             }
-            .disabled(isLoading)
+            .disabled(viewModel.currentState.isLoading)
         }
     }
 
@@ -152,28 +145,19 @@ private extension MainUserProfileScreen {
     }
 
     func askForUserInfo(refresh: Bool = false) async {
-        guard let userId = defaults.mainUserInfo?.id else { return }
-        guard !isLoading else { return }
-        if !refresh || defaults.needUpdateUser { isLoading = true }
-        if refresh || defaults.needUpdateUser {
-            do {
-                let result = try await client.getSocialUpdates(userID: userId)
-                try defaults.saveFriendsIds(result.friends.map(\.id))
-                try defaults.saveFriendRequests(result.friendRequests)
-                try defaults.saveBlacklist(result.blacklist)
-                try defaults.saveUserInfo(result.user)
-            } catch ClientError.noConnection {
-                SWAlert.shared.presentNoConnection(false)
-            } catch {
-                SWAlert.shared.presentDefaultUIKit(error)
-            }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        do {
+            try await viewModel.getUserProfile(refresh: refresh, defaults: defaults)
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
         }
-        isLoading = false
     }
 }
 
 #if DEBUG
 #Preview {
     MainUserProfileScreen()
+        .environmentObject(MainUserProfileScreen.ViewModel())
+        .environmentObject(DefaultsService())
 }
 #endif
