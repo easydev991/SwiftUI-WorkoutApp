@@ -156,6 +156,7 @@ private extension ParksMapScreen.ViewModel {
             selectedCity = storedCity
         } catch {
             logger.error("Не удалось найти город \(cityName) в списке сохраненных городов, ошибка: \(error.localizedDescription)")
+            selectedCity = .defaultCity
         }
     }
 }
