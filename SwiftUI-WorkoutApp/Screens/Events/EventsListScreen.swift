@@ -111,7 +111,7 @@ private extension EventsListScreen {
                     .accessibilityIdentifier("EventViewCell")
                 }
             }
-            .padding([.top, .horizontal])
+            .padding()
         }
         .opacity(isLoading ? 0 : 1)
         .sheet(item: $selectedEvent) { event in
