@@ -436,7 +436,7 @@ private extension ParkDetailScreen {
     }
 
     func process(_ error: Error) {
-        let notFoundStrings = ["404", "Запрашиваемый ресурс не найден", "The requested resource is not found"]
+        let notFoundStrings = ["0", "Запрашиваемый ресурс не найден", "The requested resource is not found"]
         if notFoundStrings.contains(error.localizedDescription) {
             logger.debug(
                 """

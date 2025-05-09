@@ -1,15 +1,43 @@
 import Foundation
 
 struct ErrorResponse: Codable {
-    let errors: [String]?
+    let errors: [String]
     let name, message: String?
-    let code, status: Int?
-
-    var realCode: Int {
-        if let code, code != 0 {
-            code
+    let code, status: Int
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        errors = try container.decodeIfPresent([String].self, forKey: .errors) ?? []
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+        message = try container.decodeIfPresent(String.self, forKey: .message)
+        code = try container.decodeIfPresent(Int.self, forKey: .code) ?? 0
+        status = try container.decodeIfPresent(Int.self, forKey: .status) ?? 0
+    }
+    
+    init(
+        errors: [String] = [],
+        name: String? = nil,
+        message: String? = nil,
+        code: Int = 0,
+        status: Int = 0
+    ) {
+        self.errors = errors
+        self.name = name
+        self.message = message
+        self.code = code
+        self.status = status
+    }
+    
+    var realMessage: String? {
+        if let message {
+            message
         } else {
-            status ?? 0
+            errors.isEmpty ? nil : errors.joined(separator: ", ")
         }
+    }
+    
+    func makeRealCode(statusCode: Int?) -> Int {
+        let realCode = code != 0 ? code : status
+        return realCode != 0 ? realCode : (statusCode ?? 0)
     }
 }
