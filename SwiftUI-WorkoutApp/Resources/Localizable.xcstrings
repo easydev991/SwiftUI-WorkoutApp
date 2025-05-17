@@ -952,23 +952,6 @@
         }
       }
     },
-    "Внутренняя ошибка сервера" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Internal Server Error"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Внутренняя ошибка сервера"
-          }
-        }
-      }
-    },
     "Войти" : {
       "localizations" : {
         "en" : {
@@ -1611,23 +1594,6 @@
         }
       }
     },
-    "Запрашиваемый ресурс не найден" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The requested resource is not found"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Запрашиваемый ресурс не найден"
-          }
-        }
-      }
-    },
     "Запрещен доступ к геолокации" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1658,23 +1624,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Запрос отправлен!"
-          }
-        }
-      }
-    },
-    "Запрос содержит ошибку" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The request contains an error"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Запрос содержит ошибку"
           }
         }
       }
@@ -2311,23 +2260,6 @@
         }
       }
     },
-    "Не удалось декодировать ответ" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Failed to decode server response"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалось декодировать ответ"
-          }
-        }
-      }
-    },
     "Не удалось загрузить данные. Проверьте подключение к интернету." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2369,57 +2301,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не указан"
-          }
-        }
-      }
-    },
-    "Неизвестная ошибка" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unknown error"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Неизвестная ошибка"
-          }
-        }
-      }
-    },
-    "Некорректное имя пользователя или пароль" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid username or password"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Некорректное имя пользователя или пароль"
-          }
-        }
-      }
-    },
-    "Некорректный идентификатор пользователя" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid user ID"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Некорректный идентификатор пользователя"
           }
         }
       }
@@ -2646,23 +2527,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "О приложении"
-          }
-        }
-      }
-    },
-    "Объем данных для загрузки на сервер превышает лимит" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The amount of data to upload to the server exceeds the limit"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Объем данных для загрузки на сервер превышает лимит"
           }
         }
       }
@@ -3446,23 +3310,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Take a photo"
-          }
-        }
-      }
-    },
-    "Сервер не прислал данные для обработки ответа" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The server did not send data to process the response"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сервер не прислал данные для обработки ответа"
           }
         }
       }
