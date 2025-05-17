@@ -17,7 +17,8 @@ public final class SWAlert {
         title: String? = "",
         message: String,
         closeButtonTitle: String = "Ok",
-        closeButtonStyle: UIAlertAction.Style = .default
+        closeButtonStyle: UIAlertAction.Style = .default,
+        completion: (() -> Void)? = nil
     ) {
         guard currentAlert == nil, let topMostViewController else { return }
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -26,7 +27,7 @@ public final class SWAlert {
                 title: closeButtonTitle,
                 style: closeButtonStyle,
                 handler: { [weak self] _ in
-                    self?.dismiss()
+                    self?.dismiss(completion: completion)
                 }
             )
         )
@@ -56,15 +57,23 @@ public final class SWAlert {
         let showAlert = !isConnected
         if showAlert {
             presentDefaultUIKit(
-                title: NSLocalizedString("Нет соединения с сетью", comment: ""),
-                message: NSLocalizedString("Не удалось загрузить данные. Проверьте подключение к интернету.", comment: "")
+                title: NSLocalizedString(
+                    "Error.NoConnectionTitle",
+                    bundle: .module,
+                    comment: "Нет соединения с сетью"
+                ),
+                message: NSLocalizedString(
+                    "Error.NoConnectionMessage",
+                    bundle: .module,
+                    comment: "Не удалось загрузить данные. Проверьте подключение к интернету."
+                )
             )
         }
         return showAlert
     }
 
-    private func dismiss() {
-        currentAlert?.dismiss(animated: true)
+    private func dismiss(completion: (() -> Void)? = nil) {
+        currentAlert?.dismiss(animated: true, completion: completion)
         currentAlert = nil
     }
 

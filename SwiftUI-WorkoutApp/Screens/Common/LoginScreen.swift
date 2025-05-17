@@ -120,9 +120,9 @@ private extension LoginScreen {
 
     func forgotPasswordAction() {
         guard credentials.canRestorePassword else {
-            focus = .username
             SWAlert.shared.presentDefaultUIKit(
-                message: Constants.Alert.forgotPassword.localized
+                message: Constants.Alert.forgotPassword.localized,
+                completion: { focus = .username }
             )
             return
         }
