@@ -106,8 +106,8 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
 private extension ParksMapScreen.ViewModel {
     func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
-            ? Constants.Alert.locationPermissionDenied
-            : Constants.Alert.needLocationPermission
+            ? Strings.Alert.locationPermissionDenied
+            : Strings.Alert.needLocationPermission
         guard userCoordinates != (0, 0) else {
             ignoreUserLocation = true
             return

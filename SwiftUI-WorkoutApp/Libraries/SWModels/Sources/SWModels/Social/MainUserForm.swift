@@ -59,7 +59,7 @@ public extension MainUserForm {
     }
 
     var genderString: String {
-        (Gender(genderCode) ?? .unspecified).rawValue
+        (Gender(genderCode) ?? .unspecified).affiliation
     }
 
     func placeholder(_ element: Placeholder) -> String {

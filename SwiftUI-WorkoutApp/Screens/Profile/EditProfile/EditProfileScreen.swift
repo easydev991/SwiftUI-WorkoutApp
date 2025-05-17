@@ -137,7 +137,7 @@ private extension EditProfileScreen {
         Menu {
             Picker("", selection: $userForm.genderCode) {
                 ForEach([Gender.male, Gender.female], id: \.code) {
-                    Text(.init($0.rawValue))
+                    Text($0.affiliation)
                 }
             }
         } label: {
@@ -146,7 +146,7 @@ private extension EditProfileScreen {
                     .personQuestion,
                     userForm.placeholder(.gender)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.genderString))
+                trailingContent: .textWithChevron(userForm.genderString)
             )
         }
     }
@@ -170,7 +170,8 @@ private extension EditProfileScreen {
                 mode: .country,
                 allItems: locations.countries.map(\.name),
                 selectedItem: userForm.country.name,
-                didSelectItem: { selectCountry(name: $0) }
+                didSelectItem: { selectCountry(name: $0) },
+                didTapContactUs: sendFeedback
             )
         } label: {
             ListRowView(
@@ -190,7 +191,8 @@ private extension EditProfileScreen {
                 mode: .city,
                 allItems: locations.cities.map(\.name),
                 selectedItem: userForm.city.name,
-                didSelectItem: { selectCity(name: $0) }
+                didSelectItem: { selectCity(name: $0) },
+                didTapContactUs: sendFeedback
             )
         } label: {
             ListRowView(
@@ -260,6 +262,18 @@ private extension EditProfileScreen {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
         }
+    }
+
+    func sendFeedback(mode: ItemListScreen.Mode) {
+        let (subject, body) = switch mode {
+        case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
+        case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)
+        }
+        FeedbackSender.sendFeedback(
+            subject: subject,
+            messageBody: body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 }
 

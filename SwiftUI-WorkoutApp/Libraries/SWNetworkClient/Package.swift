@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SWNetworkClient",
+    defaultLocalization: "en",
     platforms: [.iOS(.v15)],
     products: [
         .library(name: "SWNetworkClient", targets: ["SWNetworkClient"])

@@ -39,7 +39,7 @@ extension ParksMapScreen {
 #if DEBUG
 #Preview {
     ParksMapScreen.LocationSettingReminderView(
-        message: Constants.Alert.needLocationPermission,
+        message: Strings.Alert.needLocationPermission,
         isHidden: false
     )
 }

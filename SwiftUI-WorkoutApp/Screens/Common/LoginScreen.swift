@@ -121,7 +121,7 @@ private extension LoginScreen {
     func forgotPasswordAction() {
         guard credentials.canRestorePassword else {
             SWAlert.shared.presentDefaultUIKit(
-                message: Constants.Alert.forgotPassword.localized,
+                message: Strings.Alert.forgotPassword,
                 completion: { focus = .username }
             )
             return
@@ -134,8 +134,8 @@ private extension LoginScreen {
             do {
                 if try await SWClient(with: defaults).resetPassword(for: credentials.login) {
                     SWAlert.shared.presentDefaultUIKit(
-                        title: "Готово".localized,
-                        message: Constants.Alert.resetSuccessful.localized
+                        title: Strings.doneTitle,
+                        message: Strings.Alert.resetSuccessful
                     )
                 }
             } catch ClientError.noConnection {

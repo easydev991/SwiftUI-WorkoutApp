@@ -90,8 +90,8 @@ private extension ModernPickedImagesGrid {
 
         var errorDescription: String? {
             switch self {
-            case .dataLoadingFailed: "ImageErrorDataLoadingFailed".localized
-            case .imageCreationFailed: "ImageErrorImageCreationFailed".localized
+            case .dataLoadingFailed: NSLocalizedString("Error.Media.ImageLoad", comment: "")
+            case .imageCreationFailed: NSLocalizedString("Error.Media.ImageCreation", comment: "")
             }
         }
     }

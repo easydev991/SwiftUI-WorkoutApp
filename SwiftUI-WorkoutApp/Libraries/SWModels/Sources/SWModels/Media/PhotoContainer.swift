@@ -1,3 +1,6 @@
+/// Модель "контейнера" для удаления фотографии
+///
+/// Используется для удаления фотографий площадок/мероприятий
 public enum PhotoContainer: Sendable {
     case event(Input), park(Input)
 

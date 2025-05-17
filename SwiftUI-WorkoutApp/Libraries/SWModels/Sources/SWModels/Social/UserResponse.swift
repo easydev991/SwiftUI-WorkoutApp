@@ -81,7 +81,7 @@ public extension UserResponse {
 
     var genderWithAge: String {
         let localizedAgeString = String.localizedStringWithFormat(
-            NSLocalizedString("ageInYears", comment: ""),
+            NSLocalizedString("ageInYears", bundle: .module, comment: ""),
             age
         )
         return genderString.isEmpty
@@ -91,7 +91,7 @@ public extension UserResponse {
 
     var friendsCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("friendsCount", comment: ""),
+            NSLocalizedString("friendsCount", bundle: .module, comment: ""),
             friendsCount ?? 0
         )
     }
@@ -105,7 +105,7 @@ public extension UserResponse {
 
     var journalsCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("journalsCount", comment: ""),
+            NSLocalizedString("journalsCount", bundle: .module, comment: ""),
             journalsCount ?? 0
         )
     }
@@ -121,7 +121,7 @@ public extension UserResponse {
 
     var addedParksCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("parksCount", comment: ""),
+            NSLocalizedString("parksCount", bundle: .module, comment: ""),
             addedParks?.count ?? 0
         )
     }
@@ -131,7 +131,7 @@ public extension UserResponse {
 
     var usesParksCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("parksCount", comment: ""),
+            NSLocalizedString("parksCount", bundle: .module, comment: ""),
             usedParksCount
         )
     }
@@ -188,6 +188,6 @@ public extension UserResponse {
 private extension UserResponse {
     var genderString: String {
         guard let genderCode, let gender = Gender(genderCode) else { return "" }
-        return NSLocalizedString(gender.description, comment: "")
+        return gender.description
     }
 }

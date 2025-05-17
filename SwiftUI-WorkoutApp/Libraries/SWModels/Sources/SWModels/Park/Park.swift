@@ -16,7 +16,7 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     public let usersTrainHereCount: Int?
     public var usersTrainHereText: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("peopleTrainHere", comment: ""),
+            NSLocalizedString("peopleTrainHere", bundle: .module, comment: ""),
             usersTrainHereCount ?? 0
         )
     }
@@ -26,8 +26,8 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     private var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String? {
-        let grade = NSLocalizedString(ParkGrade(id: typeID).rawValue, comment: "")
-        let size = NSLocalizedString(ParkSize(id: sizeID).rawValue, comment: "")
+        let grade = ParkGrade(rawValue: typeID).description
+        let size = ParkSize(rawValue: sizeID).description
         return grade + " / " + size
     }
 
@@ -197,7 +197,7 @@ public extension Park {
 
     var participantsCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("peopleCount", comment: ""),
+            NSLocalizedString("peopleCount", bundle: .module, comment: ""),
             participants.count
         )
     }

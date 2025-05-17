@@ -112,7 +112,7 @@ private extension ParkDetailScreen {
                 .symbolVariant(.circle)
         }
         .confirmationDialog(
-            .init(Constants.Alert.deletePark),
+            Strings.Alert.deletePark,
             isPresented: $dialogs.showDelete,
             titleVisibility: .visible
         ) {
@@ -304,7 +304,7 @@ private extension ParkDetailScreen {
             Icons.Regular.exclamationArrowCircle.view
         }
         .confirmationDialog(
-            .init(Constants.Alert.parkFeedback),
+            .init(Strings.Alert.parkFeedback),
             isPresented: $dialogs.showFeedback,
             titleVisibility: .visible
         ) {

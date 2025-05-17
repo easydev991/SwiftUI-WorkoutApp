@@ -32,7 +32,7 @@ struct IncognitoProfileView: View {
 
 private extension IncognitoProfileView {
     var authInvitation: some View {
-        Text(.init(Constants.authInvitationText))
+        Text(Strings.authInvitationText)
             .multilineTextAlignment(.center)
             .foregroundStyle(Color.swMainText)
             .padding(.bottom, 6)
@@ -47,7 +47,7 @@ private extension IncognitoProfileView {
     }
 
     var registrationInfo: some View {
-        Text(.init(Constants.registrationInfoText))
+        Text(Strings.registrationInfoText)
             .font(.footnote.weight(.medium))
             .multilineTextAlignment(.center)
             .foregroundStyle(Color.swMainText)

@@ -41,7 +41,7 @@ struct EventsListScreen: View {
                 Button("Перейти на карту") { goToMap() }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
-                Text(.init(Constants.Alert.eventCreationRule))
+                Text(Strings.Alert.eventCreationRule)
             }
             .onChange(of: defaults.isAuthorized) { isAuth in
                 if !isAuth { selectedEvent = nil }
@@ -79,8 +79,8 @@ private extension EventsListScreen {
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) {
-                Text(.init($0.rawValue))
-                    .accessibilityIdentifier($0.rawValue)
+                Text($0.description)
+                    .accessibilityIdentifier($0.description)
             }
         }
         .pickerStyle(.segmented)

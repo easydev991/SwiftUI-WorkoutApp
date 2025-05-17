@@ -5,15 +5,15 @@ import SWNetwork
 
 /// Сервис для обращений к серверу
 public struct SWClient: Sendable {
-    /// Сервис, отвечающий за обновление `UserDefaults`
-    let defaults: DefaultsProtocol
+    let authHelper: AuthHelper
     /// Сервис для отправки запросов/получения ответов от сервера
     private let service: SWNetworkProtocol
 
     /// Инициализатор
-    /// - Parameter defaults: Сервис, отвечающий за обновление `UserDefaults`
-    public init(with defaults: DefaultsProtocol) {
-        self.defaults = defaults
+    /// - Parameter authHelper: Сервис, предоставляющий токен авторизации,
+    /// и выполняющий логаут при необходимости
+    public init(with authHelper: AuthHelper) {
+        self.authHelper = authHelper
         self.service = SWNetworkService()
     }
 
@@ -150,7 +150,7 @@ public struct SWClient: Sendable {
     /// - Returns: `true` в случае успеха, `false` при ошибках
     @discardableResult
     public func friendAction(userID: Int, option: FriendAction) async throws -> Bool {
-        let endpoint: Endpoint = option == .sendFriendRequest
+        let endpoint: Endpoint = option == .add
             ? .sendFriendRequest(to: userID)
             : .deleteFriend(userID)
         return try await makeStatus(for: endpoint)
@@ -522,7 +522,7 @@ private extension SWClient {
             let finalComponents = try await makeComponents(for: endpoint)
             return try await service.requestStatus(components: finalComponents)
         } catch APIError.invalidCredentials {
-            await defaults.triggerLogout()
+            await authHelper.triggerLogout()
             throw ClientError.forceLogout
         } catch APIError.notConnectedToInternet {
             throw ClientError.noConnection
@@ -539,7 +539,7 @@ private extension SWClient {
             let finalComponents = try await makeComponents(for: endpoint, with: token)
             return try await service.requestData(components: finalComponents)
         } catch APIError.invalidCredentials {
-            await defaults.triggerLogout()
+            await authHelper.triggerLogout()
             throw ClientError.forceLogout
         } catch APIError.notConnectedToInternet {
             throw ClientError.noConnection
@@ -552,7 +552,7 @@ private extension SWClient {
         for endpoint: Endpoint,
         with token: String? = nil
     ) async throws -> RequestComponents {
-        let savedToken = await defaults.authToken
+        let savedToken = await authHelper.authToken
         return .init(
             path: endpoint.urlPath,
             queryItems: endpoint.queryItems,

@@ -107,7 +107,7 @@ private extension EventDetailsScreen {
                 .symbolVariant(.circle)
         }
         .confirmationDialog(
-            .init(Constants.Alert.deleteEvent),
+            Strings.Alert.deleteEvent,
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {

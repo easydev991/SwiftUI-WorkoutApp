@@ -134,7 +134,7 @@ private extension MainUserProfileScreen {
             .padding(.top, 36)
             .padding(.bottom, 20)
             .confirmationDialog(
-                .init(Constants.Alert.logout),
+                .init(Strings.Alert.logout),
                 isPresented: $showLogoutDialog,
                 titleVisibility: .visible
             ) {

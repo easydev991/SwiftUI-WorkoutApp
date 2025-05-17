@@ -37,7 +37,7 @@ struct JournalsListScreen: View {
         .loadingOverlay(if: currentState.isLoading)
         .background(Color.swBackground)
         .confirmationDialog(
-            .init(Constants.Alert.deleteJournal),
+            .init(Strings.Alert.deleteJournal),
             isPresented: $showDeleteDialog,
             titleVisibility: .visible
         ) {
