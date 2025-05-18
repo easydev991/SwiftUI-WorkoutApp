@@ -24,7 +24,7 @@ struct EventsListScreen: View {
         case .future:
             futureEvents
         case .past:
-            pastEvents.isEmpty ? pastEventStorage.savedPastEvents : pastEvents
+            pastEvents
         }
     }
 
@@ -180,7 +180,10 @@ private extension EventsListScreen {
     }
 
     func askForEvents(refresh: Bool = false) async {
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else {
+            fillPastEventsWithPreviouslySaved()
+            return
+        }
         let hasFutureEvents = selectedEventType == .future && !futureEvents.isEmpty
         let hasPastEvents = selectedEventType == .past && !pastEvents.isEmpty
         if isLoading && !refresh
@@ -197,12 +200,16 @@ private extension EventsListScreen {
                 pastEvents = list
             }
         } catch {
-            if selectedEventType == .past {
-                pastEventStorage.loadIfNeeded(&pastEvents)
-            }
+            fillPastEventsWithPreviouslySaved()
             SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
+    }
+
+    func fillPastEventsWithPreviouslySaved() {
+        if selectedEventType == .past {
+            pastEventStorage.loadIfNeeded(&pastEvents)
+        }
     }
 
     func removeEvent(id: Int) {
