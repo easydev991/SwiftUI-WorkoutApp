@@ -12,11 +12,16 @@ public enum FeedbackSender {
         messageBody: String,
         recipients: [String]
     ) {
+        guard !recipients.isEmpty else {
+            assertionFailure("Не указан список получателей письма")
+            return
+        }
         let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "Feedback"
         let encodedBody = messageBody.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        if let firstRecipient = recipients.first {
-            let url = URL(string: "mailto:\(firstRecipient)?subject=\(encodedSubject)&body=\(encodedBody)")
-            URLOpener.open(url)
-        }
+        let encodedRecipients = recipients
+            .map { $0.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? $0 }
+            .joined(separator: ",")
+        let url = URL(string: "mailto:\(encodedRecipients)?subject=\(encodedSubject)&body=\(encodedBody)")
+        URLOpener.open(url)
     }
 }
