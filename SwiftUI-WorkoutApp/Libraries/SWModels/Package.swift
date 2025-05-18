@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SWModels",
+    defaultLocalization: "en",
     platforms: [.iOS(.v15)],
     products: [
         .library(name: "SWModels", targets: ["SWModels"])

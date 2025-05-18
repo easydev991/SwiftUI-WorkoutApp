@@ -17,8 +17,8 @@ struct ParksMapScreen: View {
     /// Отфильтрованные площадки для вкладки "Карта"
     private var filteredMapParks: [Park] {
         parksManager.fullList.filter { park in
-            filter.size.map(\.code).contains(park.sizeID)
-                && filter.grade.map(\.code).contains(park.typeID)
+            filter.size.map(\.rawValue).contains(park.sizeID)
+                && filter.grade.map(\.rawValue).contains(park.typeID)
         }
     }
 
@@ -279,7 +279,8 @@ private extension ParksMapScreen {
                     didSelectItem: { cityName in
                         let newCity = storedCities.first(where: { $0.name == cityName })
                         viewModel.updateSelectedCity(newCity)
-                    }
+                    },
+                    didTapContactUs: sendFeedback
                 )
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -298,6 +299,18 @@ private extension ParksMapScreen {
             }
             .navigationViewStyle(.stack)
         }
+    }
+
+    func sendFeedback(mode: ItemListScreen.Mode) {
+        let (subject, body) = switch mode {
+        case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
+        case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)
+        }
+        FeedbackSender.sendFeedback(
+            subject: subject,
+            messageBody: body,
+            recipients: Constants.feedbackRecipient
+        )
     }
 }
 

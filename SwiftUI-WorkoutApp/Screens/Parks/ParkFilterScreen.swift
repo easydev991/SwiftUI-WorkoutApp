@@ -64,7 +64,7 @@ private extension ParkFilterScreen {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: .init(ParkSize(id: size.code).rawValue),
+                text: size.description,
                 isChecked: filter.size.contains(size)
             )
         }
@@ -80,7 +80,7 @@ private extension ParkFilterScreen {
             }
         } label: {
             TextWithCheckmarkRowView(
-                text: .init(ParkGrade(id: grade.code).rawValue),
+                text: grade.description,
                 isChecked: filter.grade.contains(grade)
             )
         }

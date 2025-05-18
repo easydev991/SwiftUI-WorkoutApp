@@ -29,20 +29,20 @@ public struct ParkForm: Codable, Sendable {
         self.latitude = latitude.description
         self.longitude = longitude.description
         self.cityID = cityID
-        self.typeID = ParkGrade.soviet.code
-        self.sizeID = ParkSize.small.code
+        self.typeID = ParkGrade.soviet.rawValue
+        self.sizeID = ParkSize.small.rawValue
         self.photosCount = 0
     }
 }
 
 public extension ParkForm {
     var gradeString: String {
-        get { ParkGrade(id: typeID).rawValue }
+        get { ParkGrade(rawValue: typeID).description }
         set { typeID = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
-        get { ParkSize(id: sizeID).rawValue }
+        get { ParkSize(rawValue: sizeID).description }
         set { sizeID = Int(newValue) ?? 0 }
     }
 

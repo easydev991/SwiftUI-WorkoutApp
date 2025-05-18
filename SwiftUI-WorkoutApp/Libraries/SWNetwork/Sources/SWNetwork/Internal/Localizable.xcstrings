@@ -1,0 +1,176 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Error.BadRequest" : {
+      "comment" : "Запрос содержит ошибку",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The request contains an error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрос содержит ошибку"
+          }
+        }
+      }
+    },
+    "Error.Decoding" : {
+      "comment" : "Не удалось декодировать ответ",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to decode server response"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось декодировать ответ"
+          }
+        }
+      }
+    },
+    "Error.InvalidCredentials" : {
+      "comment" : "Некорректное имя пользователя или пароль",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid username or password"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Некорректное имя пользователя или пароль"
+          }
+        }
+      }
+    },
+    "Error.InvalidUserID" : {
+      "comment" : "Некорректный идентификатор пользователя",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid user ID"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Некорректный идентификатор пользователя"
+          }
+        }
+      }
+    },
+    "Error.NoData" : {
+      "comment" : "Сервер не прислал данные для обработки ответа",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The server did not send data to process the response"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер не прислал данные для обработки ответа"
+          }
+        }
+      }
+    },
+    "Error.NoInternet" : {
+      "comment" : "Нет соединения с сетью",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No network connection"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет соединения с сетью"
+          }
+        }
+      }
+    },
+    "Error.NotFound" : {
+      "comment" : "Запрашиваемый ресурс не найден",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The requested resource is not found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрашиваемый ресурс не найден"
+          }
+        }
+      }
+    },
+    "Error.PayloadTooLarge" : {
+      "comment" : "Объем данных для загрузки на сервер превышает лимит",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The amount of data to upload to the server exceeds the limit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Объем данных для загрузки на сервер превышает лимит"
+          }
+        }
+      }
+    },
+    "Error.ServerError" : {
+      "comment" : "Внутренняя ошибка сервера",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internal Server Error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "Error.Unknown" : {
+      "comment" : "Неизвестная ошибка",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неизвестная ошибка"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

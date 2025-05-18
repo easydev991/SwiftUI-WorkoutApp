@@ -133,7 +133,7 @@ private extension SearchUsersScreen {
                     .findUsers(with: query.withoutSpaces)
                 users = foundUsers
                 if foundUsers.isEmpty {
-                    SWAlert.shared.presentDefaultUIKit(message: "Не удалось найти такого пользователя".localized)
+                    SWAlert.shared.presentDefaultUIKit(message: Strings.Alert.userNotFound)
                 }
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)

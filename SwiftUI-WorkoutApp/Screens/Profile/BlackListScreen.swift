@@ -25,12 +25,12 @@ struct BlackListScreen: View {
                     titleVisibility: .visible
                 ) {
                     Button(
-                        .init(BlacklistOption.remove.rawValue),
+                        BlacklistOption.remove.title,
                         role: .destructive,
                         action: unblock
                     )
                 } message: {
-                    Text(.init(BlacklistOption.remove.dialogMessage))
+                    Text(BlacklistOption.remove.dialogMessage)
                 }
         }
         .onChange(of: currentState) { _ in

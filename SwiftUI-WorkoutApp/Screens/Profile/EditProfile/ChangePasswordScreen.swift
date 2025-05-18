@@ -145,7 +145,7 @@ private extension ChangePasswordScreen {
                 isChangeSuccessful = true
             } catch {
                 SWAlert.shared.presentDefaultUIKit(
-                    title: "Ошибка".localized,
+                    title: Strings.errorTitle,
                     message: error.localizedDescription
                 )
             }

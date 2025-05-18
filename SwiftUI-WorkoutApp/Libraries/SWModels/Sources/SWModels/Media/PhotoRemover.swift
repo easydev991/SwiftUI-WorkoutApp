@@ -1,6 +1,9 @@
 import Foundation
 
 /// Удаляет фото по идентификатору и составляет актуальный список фото
+///
+/// Используется для удобного обновления фотографий для площадки/мероприятия
+/// после удаления фотографии
 struct PhotoRemover {
     private let initialPhotos: [Photo]
     private let removeId: Int

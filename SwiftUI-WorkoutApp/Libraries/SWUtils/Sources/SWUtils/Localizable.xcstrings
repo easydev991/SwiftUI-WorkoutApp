@@ -1,0 +1,40 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Error.NoConnectionMessage" : {
+      "comment" : "Не удалось загрузить данные. Проверьте подключение к интернету.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to load data. Check your internet connection."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось загрузить данные. Проверьте подключение к интернету."
+          }
+        }
+      }
+    },
+    "Error.NoConnectionTitle" : {
+      "comment" : "Нет соединения с сетью",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No network connection"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет соединения с сетью"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

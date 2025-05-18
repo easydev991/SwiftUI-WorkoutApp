@@ -109,14 +109,14 @@ private extension ParkFormScreen {
     var typePicker: some View {
         Menu {
             Picker("", selection: $parkForm.typeID) {
-                ForEach(ParkGrade.allCases.map(\.code), id: \.self) {
-                    Text(.init(ParkGrade(id: $0).rawValue))
+                ForEach(ParkGrade.allCases.map(\.rawValue), id: \.self) {
+                    Text(ParkGrade(rawValue: $0).description)
                 }
             }
         } label: {
             ListRowView(
                 leadingContent: .text("Тип площадки"),
-                trailingContent: .textWithChevron(.init(parkForm.gradeString))
+                trailingContent: .textWithChevron(parkForm.gradeString)
             )
         }
     }
@@ -124,14 +124,14 @@ private extension ParkFormScreen {
     var sizePicker: some View {
         Menu {
             Picker("", selection: $parkForm.sizeID) {
-                ForEach(ParkSize.allCases.map(\.code), id: \.self) {
-                    Text(.init(ParkSize(id: $0).rawValue))
+                ForEach(ParkSize.allCases.map(\.rawValue), id: \.self) {
+                    Text(ParkSize(rawValue: $0).description)
                 }
             }
         } label: {
             ListRowView(
                 leadingContent: .text("Размер площадки"),
-                trailingContent: .textWithChevron(.init(parkForm.sizeString))
+                trailingContent: .textWithChevron(parkForm.sizeString)
             )
         }
     }

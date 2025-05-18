@@ -47,7 +47,7 @@ private extension DialogsListScreen {
                 )
             )
             .confirmationDialog(
-                .init(Constants.Alert.deleteDialog),
+                Strings.Alert.deleteDialog,
                 isPresented: $indexToDelete.mappedToBool(),
                 titleVisibility: .visible
             ) { deleteDialogButton }

@@ -9,7 +9,7 @@ struct CommonErrorView: View {
         ContainerRelativeView {
             if case let .common(message) = errorKind {
                 VStack(spacing: 16) {
-                    Text("Ошибка").bold()
+                    Text(Strings.errorTitle).bold()
                     Text(.init(message))
                         .multilineTextAlignment(.center)
                 }

@@ -1,6 +1,6 @@
 import Foundation
 
-/// Жалоба
+/// Модель для обратной связи с жалобой на контент
 public enum Complaint {
     private static let subjectFirstPart = "\(ProcessInfo.processInfo.processName): Жалоба на "
 

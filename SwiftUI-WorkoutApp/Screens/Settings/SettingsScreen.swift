@@ -6,6 +6,7 @@ import SWUtils
 /// Экран с настройками и общей информацией о приложении
 struct SettingsScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
+    @Environment(\.locale) private var locale
     @State private var showLanguageAlert = false
 
     var body: some View {
@@ -63,19 +64,6 @@ private extension SettingsScreen {
         static let officialSite = URL(string: "https://workout.su")!
         static let appStoreLink = URL(string: "https://apps.apple.com/app/id1035159361")
     }
-
-    enum Feedback {
-        static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
-        static let body = """
-            \(Feedback.sysVersion)
-            \(Feedback.appVersion)
-            \(Feedback.question)
-            \n
-        """
-        private static let question = "Над чем нам стоит поработать?"
-        private static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
-        private static let appVersion = "App version: \(Constants.appVersion)"
-    }
 }
 
 private extension SettingsScreen {
@@ -96,13 +84,13 @@ private extension SettingsScreen {
                 )
             ) {
                 ForEach(AppColorTheme.allCases) {
-                    Text(.init($0.rawValue)).tag($0)
+                    Text($0.description).tag($0)
                 }
             }
         } label: {
             ListRowView(
                 leadingContent: .text("Тема приложения"),
-                trailingContent: .textWithChevron(defaults.appTheme.rawValue)
+                trailingContent: .textWithChevron(defaults.appTheme.description)
             )
         }
     }
@@ -111,9 +99,10 @@ private extension SettingsScreen {
         Button {
             showLanguageAlert.toggle()
         } label: {
+            let trailingText = AppLanguage.makeCurrentValue(locale.identifier).title
             ListRowView(
                 leadingContent: .text("Язык приложения"),
-                trailingContent: .chevron
+                trailingContent: .textWithChevron(trailingText)
             )
         }
         .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
@@ -129,8 +118,8 @@ private extension SettingsScreen {
     var feedbackButton: some View {
         Button {
             FeedbackSender.sendFeedback(
-                subject: Feedback.subject,
-                messageBody: Feedback.body,
+                subject: CommonFeedback.subject,
+                messageBody: CommonFeedback.body,
                 recipients: Constants.feedbackRecipient
             )
         } label: {

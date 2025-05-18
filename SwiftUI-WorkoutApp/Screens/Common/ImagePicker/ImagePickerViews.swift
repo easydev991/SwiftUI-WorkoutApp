@@ -6,7 +6,7 @@ enum ImagePickerViews {}
 extension ImagePickerViews {
     static func makeHeaderString(for count: Int) -> String {
         String.localizedStringWithFormat(
-            "photoSectionHeader".localized,
+            NSLocalizedString("photoSectionHeader", comment: ""),
             count
         )
     }
@@ -18,7 +18,7 @@ extension ImagePickerViews {
                 ? String(format: NSLocalizedString("Добавьте фото, максимум %lld", comment: ""), selectionLimit)
                 : String(format: NSLocalizedString("Можно добавить ещё %lld", comment: ""), selectionLimit)
         } else {
-            "Добавлено максимальное количество фотографий".localized
+            NSLocalizedString("Добавлено максимальное количество фотографий", comment: "")
         }
         Text(subtitle)
             .font(.subheadline)

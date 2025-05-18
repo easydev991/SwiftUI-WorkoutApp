@@ -175,7 +175,7 @@ public extension EventResponse {
 
     var participantsCountString: String {
         String.localizedStringWithFormat(
-            NSLocalizedString("peopleCount", comment: ""),
+            NSLocalizedString("peopleCount", bundle: .module, comment: ""),
             participants.count
         )
     }

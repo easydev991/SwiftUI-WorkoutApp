@@ -3,7 +3,7 @@ import SWKeychain
 import SWModels
 
 @MainActor
-final class DefaultsService: ObservableObject, DefaultsProtocol {
+final class DefaultsService: ObservableObject, AuthHelper {
     init() {
         migrateAuthDataFromUserDefaults()
     }
@@ -64,7 +64,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
 
     var blacklistedUsersCountString: String {
         String.localizedStringWithFormat(
-            "usersCount".localized,
+            NSLocalizedString("usersCount", comment: ""),
             blacklistedUsers.count
         )
     }
@@ -150,7 +150,7 @@ final class DefaultsService: ObservableObject, DefaultsProtocol {
     ///   - action: действие с другом (отправка заявки/удаление)
     func updateFriendIds(friendID: Int, action: FriendAction) {
         var newList = friendsIdsList
-        guard case .removeFriend = action else { return }
+        guard case .remove = action else { return }
         newList.removeAll(where: { $0 == friendID })
         try? saveFriendsIds(newList)
     }

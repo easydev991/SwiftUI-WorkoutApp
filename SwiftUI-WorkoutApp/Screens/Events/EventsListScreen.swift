@@ -24,7 +24,7 @@ struct EventsListScreen: View {
         case .future:
             futureEvents
         case .past:
-            pastEvents.isEmpty ? pastEventStorage.savedPastEvents : pastEvents
+            pastEvents
         }
     }
 
@@ -41,7 +41,7 @@ struct EventsListScreen: View {
                 Button("Перейти на карту") { goToMap() }
                 Button(role: .cancel, action: {}, label: { Text("Понятно") })
             } message: {
-                Text(.init(Constants.Alert.eventCreationRule))
+                Text(Strings.Alert.eventCreationRule)
             }
             .onChange(of: defaults.isAuthorized) { isAuth in
                 if !isAuth { selectedEvent = nil }
@@ -79,8 +79,8 @@ private extension EventsListScreen {
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) {
-                Text(.init($0.rawValue))
-                    .accessibilityIdentifier($0.rawValue)
+                Text($0.description)
+                    .accessibilityIdentifier($0.description)
             }
         }
         .pickerStyle(.segmented)
@@ -180,7 +180,10 @@ private extension EventsListScreen {
     }
 
     func askForEvents(refresh: Bool = false) async {
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else {
+            fillPastEventsWithPreviouslySaved()
+            return
+        }
         let hasFutureEvents = selectedEventType == .future && !futureEvents.isEmpty
         let hasPastEvents = selectedEventType == .past && !pastEvents.isEmpty
         if isLoading && !refresh
@@ -197,12 +200,16 @@ private extension EventsListScreen {
                 pastEvents = list
             }
         } catch {
-            if selectedEventType == .past {
-                pastEventStorage.loadIfNeeded(&pastEvents)
-            }
+            fillPastEventsWithPreviouslySaved()
             SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
+    }
+
+    func fillPastEventsWithPreviouslySaved() {
+        if selectedEventType == .past {
+            pastEventStorage.loadIfNeeded(&pastEvents)
+        }
     }
 
     func removeEvent(id: Int) {

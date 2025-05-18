@@ -6,8 +6,10 @@ public enum ClientError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .forceLogout: "Для корректной работы приложения нужен повторный вход"
-        case .noConnection: "Не удалось загрузить данные. Проверьте подключение к интернету."
+        case .forceLogout:
+            NSLocalizedString("ClientError.ForceLogout", bundle: .module, comment: "")
+        case .noConnection:
+            NSLocalizedString("ClientError.NoConnection", bundle: .module, comment: "")
         }
     }
 }

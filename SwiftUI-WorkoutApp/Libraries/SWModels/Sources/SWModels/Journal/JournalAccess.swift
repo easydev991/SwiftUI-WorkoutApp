@@ -1,3 +1,6 @@
+import Foundation
+
+// Доступ к дневнику
 public enum JournalAccess: Int, CaseIterable, CustomStringConvertible, Sendable {
     case all = 0
     case friends = 1
@@ -14,9 +17,9 @@ public enum JournalAccess: Int, CaseIterable, CustomStringConvertible, Sendable 
 
     public var description: String {
         switch self {
-        case .all: "Все"
-        case .friends: "Друзья"
-        case .nobody: "Только я"
+        case .all: NSLocalizedString("JournalAccess.All", bundle: .module, comment: "Все")
+        case .friends: NSLocalizedString("JournalAccess.Friends", bundle: .module, comment: "Друзья")
+        case .nobody: NSLocalizedString("JournalAccess.Nobody", bundle: .module, comment: "Только я")
         }
     }
 

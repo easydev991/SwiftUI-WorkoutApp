@@ -79,17 +79,17 @@ private extension UserDetailsScreen {
             Button("Сообщение") { messagingModel.recipient = user }
                 .buttonStyle(SWButtonStyle(icon: .message, mode: .filled, size: .large))
                 .sheet(item: $messagingModel.recipient) { messageSheet(for: $0) }
-            Button(.init(socialActions.friend.rawValue)) { performFriendAction() }
+            Button(socialActions.friend.description) { performFriendAction() }
                 .buttonStyle(
                     SWButtonStyle(
-                        icon: socialActions.friend == .removeFriend
+                        icon: socialActions.friend == .remove
                             ? .deletePerson
                             : .addPerson,
                         mode: .tinted,
                         size: .large
                     )
                 )
-                .alert(.init(Constants.Alert.friendRequestSent), isPresented: $socialActions.isFriendRequestSent) {
+                .alert(.init(Strings.Alert.friendRequestSent), isPresented: $socialActions.isFriendRequestSent) {
                     Button("Ok") {}
                 }
         }
@@ -102,22 +102,22 @@ private extension UserDetailsScreen {
             showBlacklistConfirmation.toggle()
         } label: {
             Label(
-                socialActions.blacklist.rawValue,
+                socialActions.blacklist.title,
                 systemImage: Icons.Regular.exclamation.rawValue
             )
             .symbolVariant(socialActions.isBlacklisted ? .fill : .none)
         }
         .confirmationDialog(
-            .init(socialActions.blacklist.dialogTitle),
+            socialActions.blacklist.dialogTitle,
             isPresented: $showBlacklistConfirmation,
             titleVisibility: .visible
         ) {
             Button(
-                .init(socialActions.blacklist.rawValue),
+                socialActions.blacklist.title,
                 role: .destructive
             ) { performBlacklistAction() }
         } message: {
-            Text(.init(socialActions.blacklist.dialogMessage))
+            Text(socialActions.blacklist.dialogMessage)
         }
     }
 
@@ -129,10 +129,10 @@ private extension UserDetailsScreen {
                 try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
                 defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
                 switch socialActions.friend {
-                case .sendFriendRequest:
+                case .add:
                     socialActions.isFriendRequestSent = true
-                case .removeFriend:
-                    socialActions.friend = .sendFriendRequest
+                case .remove:
+                    socialActions.friend = .add
                 }
                 defaults.setUserNeedUpdate(true)
             } catch {
@@ -151,18 +151,14 @@ private extension UserDetailsScreen {
                     user: user, option: socialActions.blacklist
                 )
                 defaults.updateBlacklist(option: socialActions.blacklist, user: user)
+                SWAlert.shared.presentDefaultUIKit(
+                    title: Strings.doneTitle,
+                    message: socialActions.blacklist.result
+                )
                 switch socialActions.blacklist {
                 case .add:
-                    SWAlert.shared.presentDefaultUIKit(
-                        title: "Готово".localized,
-                        message: "Пользователь добавлен в черный список".localized
-                    )
                     socialActions.blacklist = .remove
                 case .remove:
-                    SWAlert.shared.presentDefaultUIKit(
-                        title: "Готово".localized,
-                        message: "Пользователь удален из черного списка".localized
-                    )
                     socialActions.blacklist = .add
                 }
             } catch {
@@ -182,7 +178,7 @@ private extension UserDetailsScreen {
             await makeUserInfo()
         }
         let isPersonInFriendList = defaults.friendsIdsList.contains(user.id)
-        socialActions.friend = isPersonInFriendList ? .removeFriend : .sendFriendRequest
+        socialActions.friend = isPersonInFriendList ? .remove : .add
         let isPersonBlocked = defaults.blacklistedUsers.map(\.id).contains(user.id)
         socialActions.blacklist = isPersonBlocked ? .remove : .add
         isLoading = false
@@ -228,7 +224,7 @@ private extension UserDetailsScreen {
 
 private extension UserDetailsScreen {
     struct SocialActions {
-        var friend = FriendAction.sendFriendRequest
+        var friend = FriendAction.add
         var isFriendRequestSent = false
         var blacklist = BlacklistOption.add
         var isBlacklisted: Bool { blacklist == .remove }
