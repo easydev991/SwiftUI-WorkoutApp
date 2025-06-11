@@ -427,6 +427,16 @@
         }
       }
     },
+    "Выбери город" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a city"
+          }
+        }
+      }
+    },
     "Выбрать из галереи" : {
       "localizations" : {
         "en" : {

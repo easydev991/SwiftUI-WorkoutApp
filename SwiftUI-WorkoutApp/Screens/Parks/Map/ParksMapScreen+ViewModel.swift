@@ -20,7 +20,7 @@ extension ParksMapScreen {
             if let selectedCity {
                 selectedCity.name
             } else {
-                "Выбери город"
+                NSLocalizedString("Выбери город", comment: "")
             }
         }
 
