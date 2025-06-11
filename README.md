@@ -1,5 +1,6 @@
 # SW Площадки
-<img alt="Static Badge" src="https://img.shields.io/badge/Swift_Version-6.0-orange"> <img alt="Static Badge" src="https://img.shields.io/badge/iOS_Version-15-blue">
+[<img alt="Swift Version" src="https://img.shields.io/badge/Swift_Version-6.1.0-orange">](https://swift.org)
+[<img alt="iOS Version" src="https://img.shields.io/badge/iOS_Version-15-blue">](https://www.apple.com/ios/)
 
 ## Реализованный функционал
 - Большинство возможностей требуют подключения к интернету, но некоторые фичи доступны оффлайн
