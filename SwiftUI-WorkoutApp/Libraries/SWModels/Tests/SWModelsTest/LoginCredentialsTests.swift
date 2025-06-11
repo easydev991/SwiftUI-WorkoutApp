@@ -3,7 +3,7 @@ import Testing
 
 struct LoginCredentialsTests {
     @Test
-    func testInitializationWithDefaultValues() {
+    func initializationWithDefaultValues() {
         let credentials = LoginCredentials()
         #expect(credentials.login == "")
         #expect(credentials.password == "")
@@ -11,7 +11,7 @@ struct LoginCredentialsTests {
     }
 
     @Test
-    func testInitializationWithCustomParameters() {
+    func initializationWithCustomParameters() {
         let credentials = LoginCredentials(
             login: "test@mail.com",
             password: "qwerty",
@@ -25,37 +25,37 @@ struct LoginCredentialsTests {
     // MARK: - isReady
 
     @Test
-    func testIsReady_AllFieldsEmpty() {
+    func isReady_AllFieldsEmpty() {
         let credentials = LoginCredentials()
         #expect(!credentials.isReady)
     }
 
     @Test
-    func testIsReady_LoginNotEmptyPasswordTooShort() {
+    func isReady_LoginNotEmptyPasswordTooShort() {
         let credentials = LoginCredentials(login: "user", password: "12345")
         #expect(!credentials.isReady)
     }
 
     @Test
-    func testIsReady_ValidLoginAndExactMinPassword() {
+    func isReady_ValidLoginAndExactMinPassword() {
         let credentials = LoginCredentials(login: "user", password: "123456")
         #expect(credentials.isReady)
     }
 
     @Test
-    func testIsReady_PasswordWithSpacesMeetingMinLength() {
+    func isReady_PasswordWithSpacesMeetingMinLength() {
         let credentials = LoginCredentials(login: "user", password: "12 345 6")
         #expect(credentials.isReady)
     }
 
     @Test
-    func testIsReady_PasswordWithSpacesBelowMinLength() {
+    func isReady_PasswordWithSpacesBelowMinLength() {
         let credentials = LoginCredentials(login: "user", password: "123 45")
         #expect(!credentials.isReady)
     }
 
     @Test
-    func testIsReady_CustomMinPasswordSizeValidation() {
+    func isReady_CustomMinPasswordSizeValidation() {
         let credentials = LoginCredentials(
             login: "user",
             password: "1234",
@@ -74,13 +74,13 @@ struct LoginCredentialsTests {
     // MARK: - canRestorePassword
 
     @Test
-    func testCanRestorePassword_EmptyLogin() {
+    func canRestorePassword_EmptyLogin() {
         let credentials = LoginCredentials(login: "")
         #expect(!credentials.canRestorePassword)
     }
 
     @Test
-    func testCanRestorePassword_NonEmptyLogin() {
+    func canRestorePassword_NonEmptyLogin() {
         let credentials = LoginCredentials(login: " ")
         #expect(credentials.canRestorePassword)
 
@@ -91,19 +91,19 @@ struct LoginCredentialsTests {
     // MARK: - canLogIn
 
     @Test
-    func testCanLogIn_AllConditionsMet() {
+    func canLogIn_AllConditionsMet() {
         let credentials = LoginCredentials(login: "user", password: "123456")
         #expect(credentials.canLogIn(isError: false))
     }
 
     @Test
-    func testCanLogIn_WhenNotReady() {
+    func canLogIn_WhenNotReady() {
         let credentials = LoginCredentials(login: "user", password: "123")
         #expect(!credentials.canLogIn(isError: false))
     }
 
     @Test
-    func testCanLogIn_WithError() {
+    func canLogIn_WithError() {
         let credentials = LoginCredentials(login: "user", password: "123456")
         #expect(!credentials.canLogIn(isError: true))
     }
