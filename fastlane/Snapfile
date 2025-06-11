@@ -1,23 +1,17 @@
 # A list of devices you want to take the screenshots from
-devices(["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone SE (3rd generation)"])
+devices(["iPhone 16 Pro Max"])
 
 # A list of languages which should be used. See https://docs.fastlane.tools/actions/snapshot/#available-language-codes
 languages(["en-US", "ru"])
 
 # By default, the latest version should be used automatically. If you want to change it, do it here. 
-ios_version("18.1")
-
-# Очистить папку билда перед стартом
-# clean(true)
+#ios_version("18.1")
 
 # Пропускаем открытие html-файла с результатами
 skip_open_summary(true)
 
 # Переустановить приложение перед стартом
 reinstall_app(true)
-
-# Стереть данные симулятора перед стартом
-# erase_simulator(true)
 
 # Enabling this option will configure the Simulator's system language
 localize_simulator(true)
@@ -36,9 +30,6 @@ scheme("WorkoutAppUITests")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
 clear_previous_screenshots(true)
-
-# Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
-launch_arguments(["UITest"])
 
 # For more information about all available options run
 # fastlane action snapshot
