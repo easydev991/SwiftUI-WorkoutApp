@@ -13,7 +13,7 @@ struct ParksMapScreen: View {
     @State private var presentation = Presentation.map
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
-    @State private var filter = ParkFilterScreen.Model()
+    @State private var filter = ParkFilterModel()
     /// Отфильтрованные площадки для вкладки "Карта"
     private var filteredMapParks: [Park] {
         parksManager.fullList.filter { park in
