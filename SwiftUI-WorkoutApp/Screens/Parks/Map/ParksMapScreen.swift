@@ -156,6 +156,7 @@ private extension ParksMapScreen {
                     .padding([.horizontal, .bottom])
                 }
             }
+            .overlay { noParksFoundView }
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
@@ -176,6 +177,18 @@ private extension ParksMapScreen {
                     isHidden: !viewModel.ignoreUserLocation
                 )
             }
+        }
+    }
+
+    @ViewBuilder
+    var noParksFoundView: some View {
+        if let storedCities = try? SWAddress().cities() {
+            let showView = filter.isEdited && filteredListParks.isEmpty
+            NoParksFoundView(
+                openCities: { sheetItem = .searchCity(storedCities) },
+                openFilter: { sheetItem = .filters },
+                isHidden: !showView
+            )
         }
     }
 
