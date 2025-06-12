@@ -47,6 +47,8 @@ final class DefaultsService: ObservableObject, AuthHelper {
     @AppStorage(Key.lastCountriesUpdateDate.rawValue)
     private(set) var lastCountriesUpdateDate = Date(timeIntervalSince1970: 1673470800.0)
 
+    @AppStorage(Key.parksFilter.rawValue) var parksFilter = ParkFilterModel()
+
     var mainUserInfo: UserResponse? {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
@@ -191,7 +193,8 @@ extension DefaultsService {
 
 private extension DefaultsService {
     enum Key: String {
-        case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate
+        case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate,
+             parksFilter
     }
 }
 

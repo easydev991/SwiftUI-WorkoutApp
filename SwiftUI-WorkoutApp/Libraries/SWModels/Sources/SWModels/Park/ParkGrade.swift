@@ -1,14 +1,14 @@
 import Foundation
 
 /// Тип/класс площадки
-public enum ParkGrade: Int, CaseIterable, CustomStringConvertible {
+public enum ParkGrade: Int, CaseIterable, CustomStringConvertible, Codable {
     case soviet = 1
     case modern = 2
     case collars = 3
     case legendary = 6
 
-    public init(rawValue: Int) {
-        switch rawValue {
+    public init(code: Int) {
+        switch code {
         case 1: self = .soviet
         case 2: self = .modern
         case 3: self = .collars

@@ -140,8 +140,8 @@ private extension ParkDetailScreen {
                 Text(park.shortTitle)
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Color.swMainText)
-                if let subtitle = park.subtitle, !subtitle.isEmpty {
-                    Text(subtitle)
+                if !park.subtitle.isEmpty {
+                    Text(park.subtitle)
                         .foregroundStyle(Color.swSmallElements)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }

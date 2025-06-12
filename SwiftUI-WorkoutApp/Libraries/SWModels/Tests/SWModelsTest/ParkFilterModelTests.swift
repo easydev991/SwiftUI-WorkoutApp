@@ -55,4 +55,45 @@ struct ParkFilterModelTests {
         #expect(defaultModel != editedModel, "Дефолтная и измененная модели должны считаться разными")
         #expect(!defaultModel.isEqual(to: editedModel), "Метод isEqual должен возвращать false для дефолтной и измененной моделей")
     }
+
+    @Test("Инициализация из валидного rawValue")
+    func initFromValidRawValue() throws {
+        let rawValue = "1,2,3|1,2,3,6"
+        let expectedModel = SUT(size: [.small, .medium, .large], grade: [.soviet, .modern, .collars, .legendary])
+
+        let model = try #require(SUT(rawValue: rawValue))
+        #expect(model.size == expectedModel.size, "Размеры должны соответствовать значениям из rawValue")
+        #expect(model.grade == expectedModel.grade, "Типы должны соответствовать значениям из rawValue")
+    }
+
+    @Test(
+        "Инициализация из невалидного rawValue",
+        arguments: [
+            "", // пустая строка
+            "|", // пустые массивы
+            "\(ParkSize.small.rawValue)", // нет разделителя для grade
+            "\(ParkSize.small.rawValue)|0,\(ParkGrade.soviet.rawValue),4,5,7", // grade 0, 4, 5, 7 не существует
+            "0,4,\(ParkSize.small.rawValue)|\(ParkGrade.soviet.rawValue)" // size 0 и 4 не существует
+        ]
+    )
+    func initFromInvalidRawValue(string: String) {
+        let model = SUT(rawValue: string)
+        #expect(model == nil)
+    }
+
+    @Test("Преобразование в rawValue")
+    func rawValueConversion() {
+        let model = SUT(size: [.small, .large], grade: [.soviet, .collars])
+        let expectedRawValue = "1,3|1,3"
+        #expect(model.rawValue == expectedRawValue)
+    }
+
+    @Test("Циклическое преобразование Model -> RawValue -> Model")
+    func roundTripConversion() throws {
+        let originalModel = SUT(size: [.medium, .large], grade: [.modern, .collars])
+        let rawValue = originalModel.rawValue
+        let convertedModel = try #require(SUT(rawValue: rawValue))
+        #expect(convertedModel.size == originalModel.size, "Размеры должны остаться неизменными после циклического преобразования")
+        #expect(convertedModel.grade == originalModel.grade, "Типы должны остаться неизменными после циклического преобразования")
+    }
 }

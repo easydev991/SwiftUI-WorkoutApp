@@ -37,12 +37,12 @@ public struct ParkForm: Codable, Sendable {
 
 public extension ParkForm {
     var gradeString: String {
-        get { ParkGrade(rawValue: typeID).description }
+        get { ParkGrade(code: typeID).description }
         set { typeID = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
-        get { ParkSize(rawValue: sizeID).description }
+        get { ParkSize(code: sizeID).description }
         set { sizeID = Int(newValue) ?? 0 }
     }
 
