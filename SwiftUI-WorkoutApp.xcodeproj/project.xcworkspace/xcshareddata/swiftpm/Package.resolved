@@ -1,5 +1,5 @@
 {
-  "originHash" : "b1625630c75c7087ff731f9d9a64a51dd349f5a54e4f2fc3368b865a0de839ac",
+  "originHash" : "6e256c9cdd8b2e254a563f68c04b32f6fcf4d6238d6239ab141dcba9555457ca",
   "pins" : [
     {
       "identity" : "cachedasyncimage991",
@@ -26,15 +26,6 @@
       "state" : {
         "revision" : "e006bdd1f01909bcdd100ec05129bf95d04f052e",
         "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "swdesignsystem",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/OlegEremenko991/SWDesignSystem",
-      "state" : {
-        "revision" : "6c70b1b471f446402e537aeae224f2c51ad6b985",
-        "version" : "1.15.0"
       }
     }
   ],
