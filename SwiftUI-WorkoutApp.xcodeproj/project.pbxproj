@@ -100,19 +100,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6733AB0B2DFAB4FD00DF1493 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		6798AA31280AEDC900DB76F1 = {
 			isa = PBXGroup;
 			children = (
 				674BAED72D89DA9200547410 /* SwiftUI-WorkoutApp */,
 				674BADD02D89DA0600547410 /* WorkoutAppUITests */,
-				6733AB0B2DFAB4FD00DF1493 /* Frameworks */,
 				6798AA3B280AEDC900DB76F1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -453,7 +445,7 @@
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
+				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/PreviewContent";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
@@ -507,7 +499,7 @@
 				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/Preview\\ Content/PreviewContent.swift SwiftUI-WorkoutApp/Preview\\ Content";
+				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/PreviewContent";
 				DEVELOPMENT_TEAM = CR68PP2Z3F;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
