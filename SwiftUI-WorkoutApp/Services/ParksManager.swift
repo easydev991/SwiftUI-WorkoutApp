@@ -15,11 +15,20 @@ final class ParksManager: ObservableObject {
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     /// Все площадки, доступные для отображения на карте
     @Published private(set) var fullList = [Park]()
+    /// Загружены ли данные
+    @Published private(set) var didLoad = false
     /// Нужно ли обновить список площадок
     ///
     /// Обновляем, если прошло больше дня с момента предыдущего обновления
     var needUpdateDefaultList: Bool {
         DateFormatterService.days(from: lastParksUpdateDateString, to: .now) > 1
+    }
+
+    init() {
+        // Подписываемся на изменения fullList
+        $fullList
+            .map { !$0.isEmpty }
+            .assign(to: &$didLoad)
     }
 
     /// Подготавливает дефолтный список площадок при загрузке приложения

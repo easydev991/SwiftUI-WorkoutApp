@@ -13,20 +13,17 @@ struct ParksMapScreen: View {
     @State private var presentation = Presentation.map
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
-    /// Отфильтрованные площадки для вкладки "Карта"
-    private var filteredMapParks: [Park] {
-        parksManager.fullList.filter { park in
+
+    /// Отфильтрованные по выбранному городу и активным фильтрам площадки
+    private var filteredParks: [Park] {
+        let regularParks = parksManager.fullList.filter { park in
             defaults.parksFilter.size.map(\.rawValue).contains(park.sizeID)
                 && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeID)
         }
-    }
-
-    /// Отфильтрованные по выбранному городу площадки для вкладки "Список"
-    private var filteredListParks: [Park] {
-        if let selectedCity = viewModel.selectedCity {
-            filteredMapParks.filter { $0.cityID == Int(selectedCity.id) }
+        return if let selectedCity = viewModel.selectedCity {
+            regularParks.filter { $0.cityID == Int(selectedCity.id) }
         } else {
-            filteredMapParks
+            regularParks
         }
     }
 
@@ -36,6 +33,7 @@ struct ParksMapScreen: View {
                 segmentedControl
                 searchCityButton
                 parksContent
+                    .overlay { noParksFoundView }
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
@@ -60,7 +58,7 @@ struct ParksMapScreen: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(currentParksCount))")
+            .navigationTitle("Площадки (\(filteredParks.count))")
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -96,13 +94,6 @@ private extension ParksMapScreen {
         case list = "Список"
     }
 
-    var currentParksCount: Int {
-        switch presentation {
-        case .map: filteredMapParks.count
-        case .list: filteredListParks.count
-        }
-    }
-
     var filterButton: some View {
         Button {
             sheetItem = .filters
@@ -122,7 +113,7 @@ private extension ParksMapScreen {
         .pickerStyle(.segmented)
         .padding(.horizontal)
     }
-    
+
     @ViewBuilder
     var searchCityButton: some View {
         if let storedCities = try? SWAddress().cities() {
@@ -142,7 +133,7 @@ private extension ParksMapScreen {
         case .list:
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(filteredListParks) { park in
+                    ForEach(filteredParks) { park in
                         Button {
                             sheetItem = .parkDetails(park)
                         } label: {
@@ -158,14 +149,13 @@ private extension ParksMapScreen {
                 }
                 .padding([.horizontal, .bottom])
             }
-            .overlay { noParksFoundView }
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredMapParks.map(\.annotation),
+                annotations: filteredParks.map(\.annotation),
                 didSelect: { annotation in
-                    if let park = filteredMapParks.first(
+                    if let park = filteredParks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
                         sheetItem = .parkDetails(park)
@@ -185,18 +175,22 @@ private extension ParksMapScreen {
     @ViewBuilder
     var noParksFoundView: some View {
         if let storedCities = try? SWAddress().cities() {
-            let showView = defaults.parksFilter.isEdited && filteredListParks.isEmpty
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
-                isHidden: !showView
+                model: .init(
+                    isFilterEdited: defaults.parksFilter.isEdited,
+                    isFilteredParksEmpty: filteredParks.isEmpty,
+                    didParksManagerLoad: parksManager.didLoad,
+                    isLoading: isLoading
+                )
             )
         }
     }
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
-        if !filteredMapParks.isEmpty, !refresh { return }
+        if !filteredParks.isEmpty, !refresh { return }
         guard !parksManager.fullList.isEmpty else {
             // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
