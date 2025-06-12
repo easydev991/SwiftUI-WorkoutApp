@@ -1,4 +1,3 @@
-import ImagePicker
 import SWDesignSystem
 import SwiftUI
 import SWModels
