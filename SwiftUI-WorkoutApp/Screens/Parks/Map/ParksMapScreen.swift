@@ -34,6 +34,7 @@ struct ParksMapScreen: View {
         NavigationView {
             VStack(spacing: 12) {
                 segmentedControl
+                searchCityButton
                 parksContent
             }
             .loadingOverlay(if: isLoading)
@@ -121,39 +122,41 @@ private extension ParksMapScreen {
         .pickerStyle(.segmented)
         .padding(.horizontal)
     }
+    
+    @ViewBuilder
+    var searchCityButton: some View {
+        if let storedCities = try? SWAddress().cities() {
+            SWTextFieldSearchButton(
+                .init(viewModel.cityFilterButtonTitle),
+                showClearButton: viewModel.canClearCityFilter,
+                mainAction: { sheetItem = .searchCity(storedCities) },
+                clearAction: { viewModel.updateSelectedCity(nil) }
+            )
+            .padding(.horizontal)
+        }
+    }
 
     @ViewBuilder
     var parksContent: some View {
         switch presentation {
         case .list:
-            VStack(spacing: 16) {
-                if let storedCities = try? SWAddress().cities() {
-                    SWTextFieldSearchButton(
-                        .init(viewModel.cityFilterButtonTitle),
-                        showClearButton: viewModel.canClearCityFilter,
-                        mainAction: { sheetItem = .searchCity(storedCities) },
-                        clearAction: { viewModel.updateSelectedCity(nil) }
-                    )
-                    .padding(.horizontal)
-                }
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(filteredListParks) { park in
-                            Button {
-                                sheetItem = .parkDetails(park)
-                            } label: {
-                                ParkRowView(
-                                    imageURL: park.previewImageURL,
-                                    title: park.longTitle,
-                                    address: park.address,
-                                    usersTrainHereText: park.usersTrainHereText
-                                )
-                            }
-                            .accessibilityIdentifier("ParkViewCell")
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach(filteredListParks) { park in
+                        Button {
+                            sheetItem = .parkDetails(park)
+                        } label: {
+                            ParkRowView(
+                                imageURL: park.previewImageURL,
+                                title: park.longTitle,
+                                address: park.address,
+                                usersTrainHereText: park.usersTrainHereText
+                            )
                         }
+                        .accessibilityIdentifier("ParkViewCell")
                     }
-                    .padding([.horizontal, .bottom])
                 }
+                .padding([.horizontal, .bottom])
             }
             .overlay { noParksFoundView }
         case .map:
