@@ -1,5 +1,5 @@
+import ClusteringMapView
 import MapKit.MKGeometry
-import MapView991
 import OSLog
 import SwiftUI // для использования @AppStorage
 import SWModels

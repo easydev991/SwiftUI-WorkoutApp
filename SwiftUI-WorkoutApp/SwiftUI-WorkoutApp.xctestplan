@@ -47,20 +47,6 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
-        "identifier" : "SWNetworkTests",
-        "name" : "SWNetworkTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
-        "identifier" : "SWUtilsTests",
-        "name" : "SWUtilsTests"
-      }
-    },
-    {
-      "target" : {
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
         "identifier" : "SWModelsTest",
         "name" : "SWModelsTest"
@@ -71,6 +57,27 @@
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWKeychain",
         "identifier" : "SWKeychainTests",
         "name" : "SWKeychainTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/ClusteringMapView",
+        "identifier" : "ClusteringMapViewTests",
+        "name" : "ClusteringMapViewTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
+        "identifier" : "SWNetworkTests",
+        "name" : "SWNetworkTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
+        "identifier" : "SWUtilsTests",
+        "name" : "SWUtilsTests"
       }
     }
   ],

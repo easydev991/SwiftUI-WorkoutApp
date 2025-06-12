@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "LegacyImagePicker",
+    name: "ClusteringMapView",
     platforms: [.iOS(.v14)],
     products: [
-        .library(name: "LegacyImagePicker", targets: ["LegacyImagePicker"])
+        .library(name: "ClusteringMapView", targets: ["ClusteringMapView"])
     ],
-    dependencies: [],
     targets: [
-        .target(name: "LegacyImagePicker", dependencies: [])
+        .target(name: "ClusteringMapView"),
+        .testTarget(name: "ClusteringMapViewTests", dependencies: ["ClusteringMapView"])
     ]
 )

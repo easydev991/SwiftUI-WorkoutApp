@@ -1,4 +1,4 @@
-import MapView991
+import ClusteringMapView
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -157,7 +157,7 @@ private extension ParksMapScreen {
                 }
             }
         case .map:
-            MapView991(
+            ClusteringMapView(
                 region: viewModel.region,
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredMapParks.map(\.annotation),

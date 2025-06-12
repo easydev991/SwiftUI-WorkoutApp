@@ -1,5 +1,4 @@
 {
-  "originHash" : "3edf852c68647f4bce847db379abd5da50bee9c0dd7001c3e145338fc138be9a",
   "pins" : [
     {
       "identity" : "cachedasyncimage991",
@@ -9,16 +8,7 @@
         "revision" : "12bda834918a32f4eb52af5bfe4aedac0284390d",
         "version" : "1.4.0"
       }
-    },
-    {
-      "identity" : "mapview991",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/OlegEremenko991/MapView991",
-      "state" : {
-        "revision" : "e006bdd1f01909bcdd100ec05129bf95d04f052e",
-        "version" : "1.0.0"
-      }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
