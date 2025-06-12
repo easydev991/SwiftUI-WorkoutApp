@@ -78,6 +78,7 @@ public extension ItemListScreen {
             case .city: "Pick a city"
             }
         }
+
         var helpMessage: LocalizedStringKey {
             switch self {
             case .country: "Help.CountryNotFound"
@@ -93,7 +94,7 @@ private extension ItemListScreen {
             ? allItems
             : allItems.filter { $0.contains(searchQuery) }
     }
-    
+
     var emptyStateView: some View {
         HStack(spacing: 12) {
             Text(mode.helpMessage, bundle: .module)
@@ -114,7 +115,7 @@ private extension ItemListScreen {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview("Поиск страны") {
-    @Previewable @State var selectedItem: String = "Россия"
+    @Previewable @State var selectedItem = "Россия"
     NavigationStack {
         ItemListScreen(
             mode: .country,
@@ -129,7 +130,7 @@ private extension ItemListScreen {
 
 @available(iOS 17.0, *)
 #Preview("Поиск города") {
-    @Previewable @State var selectedItem: String = "Москва"
+    @Previewable @State var selectedItem = "Москва"
     NavigationStack {
         ItemListScreen(
             mode: .city,

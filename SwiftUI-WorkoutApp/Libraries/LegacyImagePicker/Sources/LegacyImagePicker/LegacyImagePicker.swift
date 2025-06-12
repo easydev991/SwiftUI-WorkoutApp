@@ -15,7 +15,8 @@ public struct LegacyImagePicker: UIViewControllerRepresentable {
     private var selectionLimit = 1
     /// The quality of the resulting JPEG image, expressed as a value from `0.0` to `1.0`.
     ///
-    /// - The value `0.0` represents the maximum compression (or lowest quality) while the value `1.0` represents the least compression (or best quality).
+    /// - The value `0.0` represents the maximum compression (or lowest quality) while the value `1.0` represents the least compression (or
+    /// best quality).
     /// - If not specified, no compression will be applied.
     private let compressionQuality: CGFloat?
 
@@ -59,13 +60,12 @@ public struct LegacyImagePicker: UIViewControllerRepresentable {
                 group.enter()
                 item.loadObject(ofClass: UIImage.self) { [weak self] element, _ in
                     if let image = element as? UIImage {
-                        let finalImage: UIImage
-                        if let compressionQuality = self?.parent.compressionQuality,
-                           let compressedData = image.jpegData(compressionQuality: compressionQuality),
-                           let compressedImage = UIImage(data: compressedData) {
-                            finalImage = compressedImage
+                        let finalImage: UIImage = if let compressionQuality = self?.parent.compressionQuality,
+                                                     let compressedData = image.jpegData(compressionQuality: compressionQuality),
+                                                     let compressedImage = UIImage(data: compressedData) {
+                            compressedImage
                         } else {
-                            finalImage = image
+                            image
                         }
                         finalArray.append(finalImage)
                     }

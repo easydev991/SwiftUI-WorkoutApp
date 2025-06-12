@@ -8,7 +8,7 @@ struct SystemImageWithFrame: View {
     private let systemName: String
     private let size: CGSize
     private let isCircle: Bool
-    
+
     init(
         _ systemName: String,
         size: CGSize = .init(width: 15, height: 15),
@@ -18,7 +18,7 @@ struct SystemImageWithFrame: View {
         self.size = size
         self.isCircle = isCircle
     }
-    
+
     var body: some View {
         Image(systemName: systemName)
             .resizable()

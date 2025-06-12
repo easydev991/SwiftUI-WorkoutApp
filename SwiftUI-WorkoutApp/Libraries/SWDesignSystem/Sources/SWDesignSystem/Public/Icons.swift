@@ -14,7 +14,7 @@ public enum Icons {
         case messages = "message"
         case profile = "person"
         case settings = "gearshape"
-        
+
         public var view: some View { Image(systemName: rawValue) }
         public var imageView: Image { Image(systemName: rawValue) }
     }
@@ -31,14 +31,14 @@ public enum Icons {
         case refresh = "arrow.triangle.2.circlepath"
         case exclamation = "exclamationmark.triangle"
         case exclamationArrowCircle = "exclamationmark.arrow.circlepath"
-        case xmark = "xmark"
+        case xmark
         case filter = "line.3.horizontal.decrease.circle"
         case magnifyingglass
         case trash
         case pencil
         case clock
-        case person = "person"
-        case location = "location"
+        case person
+        case location
         case arrowUp = "arrow.up"
         case message
         case addPerson = "person.crop.circle.badge.plus"
@@ -49,7 +49,7 @@ public enum Icons {
         case personQuestion = "person.fill.questionmark"
         case calendar
         case chevron = "chevron.forward"
-        
+
         public var view: some View { Image(systemName: rawValue) }
         public var imageView: Image { Image(systemName: rawValue) }
     }

@@ -7,10 +7,10 @@ let package = Package(
     name: "LegacyImagePicker",
     platforms: [.iOS(.v14)],
     products: [
-        .library(name: "LegacyImagePicker", targets: ["LegacyImagePicker"]),
+        .library(name: "LegacyImagePicker", targets: ["LegacyImagePicker"])
     ],
     dependencies: [],
     targets: [
-        .target(name: "LegacyImagePicker", dependencies: []),
+        .target(name: "LegacyImagePicker", dependencies: [])
     ]
 )

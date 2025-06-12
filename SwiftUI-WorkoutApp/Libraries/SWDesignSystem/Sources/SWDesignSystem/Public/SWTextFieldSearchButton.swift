@@ -6,7 +6,7 @@ public struct SWTextFieldSearchButton: View {
     private let showClearButton: Bool
     private let mainAction: () -> Void
     private let clearAction: () -> Void
-    
+
     public init(
         _ titleKey: LocalizedStringKey,
         showClearButton: Bool = false,
@@ -18,7 +18,7 @@ public struct SWTextFieldSearchButton: View {
         self.mainAction = mainAction
         self.clearAction = clearAction
     }
-    
+
     public var body: some View {
         HStack(spacing: 8) {
             Button(action: mainAction) {

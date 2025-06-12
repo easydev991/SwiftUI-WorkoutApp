@@ -34,7 +34,7 @@ public struct CachedImage: View {
         .clipped()
         .clipShape(.rect(cornerRadius: cornerRadius))
     }
-    
+
     private func makeImageView(_ uiImage: UIImage) -> some View {
         Image(uiImage: uiImage)
             .resizable()

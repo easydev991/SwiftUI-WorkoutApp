@@ -44,9 +44,9 @@ public struct ChatBubbleRowView: View {
     private var corners: UIRectCorner {
         switch messageType {
         case .incoming:
-            return [.bottomLeft, .topRight, .bottomRight]
+            [.bottomLeft, .topRight, .bottomRight]
         case .sent:
-            return [.topLeft, .bottomLeft, .topRight]
+            [.topLeft, .bottomLeft, .topRight]
         }
     }
 }
