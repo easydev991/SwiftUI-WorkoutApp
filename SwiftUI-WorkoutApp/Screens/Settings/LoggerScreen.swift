@@ -214,7 +214,7 @@ struct LoggerScreen: View {
                         }
                     }
                 }
-                Button("Сбросить фильтры") {
+                Button("Сбросить") {
                     categoriesToShow = []
                     levelsToShow = []
                 }

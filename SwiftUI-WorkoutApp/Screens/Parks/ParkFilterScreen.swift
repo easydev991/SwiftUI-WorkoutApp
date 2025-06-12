@@ -5,13 +5,13 @@ import SWModels
 struct ParkFilterScreen: View {
     @Environment(\.dismiss) private var dismiss
     /// Фильтр на родительском экране
-    @Binding private var filter: Model
+    @Binding private var filter: ParkFilterModel
     /// Локальный фильтр
-    @State private var localFilter: Model
+    @State private var localFilter: ParkFilterModel
     private let allSizes = ParkSize.allCases
     private let allGrades = ParkGrade.allCases
 
-    init(filter: Binding<Model>) {
+    init(filter: Binding<ParkFilterModel>) {
         self._filter = filter
         self._localFilter = .init(initialValue: filter.wrappedValue)
     }
@@ -40,23 +40,12 @@ struct ParkFilterScreen: View {
                         }
                     }
                     VStack(spacing: 12) {
-                        resetFilterButton
-                        applyFilterButton
+                        resetButton
+                        applyButton
                     }
                 }
                 .padding([.top, .horizontal])
             }
-        }
-    }
-}
-
-extension ParkFilterScreen {
-    struct Model: Equatable {
-        var size = ParkSize.allCases
-        var grade = ParkGrade.allCases
-
-        var isEdited: Bool {
-            size.count < ParkSize.allCases.count || grade.count < ParkGrade.allCases.count
         }
     }
 }
@@ -94,28 +83,37 @@ private extension ParkFilterScreen {
         }
     }
 
-    var resetFilterButton: some View {
+    var resetButton: some View {
         Button("Сбросить") {
             localFilter = .init()
         }
         .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
         .disabled(!localFilter.isEdited)
+        .animation(.default, value: localFilter.isEdited)
     }
 
-    var applyFilterButton: some View {
-        Button("Применить") {
+    var applyButton: some View {
+        let canApply = localFilter != filter
+        return Button("Применить") {
             filter = localFilter
             dismiss()
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
-        .disabled(localFilter == filter)
+        .disabled(!canApply)
+        .animation(.default, value: canApply)
     }
 }
 
 #if DEBUG
 @available(iOS 17, *)
-#Preview {
-    @Previewable @State var filter = ParkFilterScreen.Model()
+#Preview("Изначально пустой") {
+    @Previewable @State var filter = ParkFilterModel()
+    ParkFilterScreen(filter: $filter)
+}
+
+@available(iOS 17, *)
+#Preview("Изначально настроен") {
+    @Previewable @State var filter = ParkFilterModel(size: [.large], grade: [.modern])
     ParkFilterScreen(filter: $filter)
 }
 #endif

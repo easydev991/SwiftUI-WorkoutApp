@@ -2098,6 +2098,22 @@
         }
       }
     },
+    "Применить" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Применить"
+          }
+        }
+      }
+    },
     "Профиль" : {
       "localizations" : {
         "en" : {
@@ -2225,18 +2241,18 @@
         }
       }
     },
-    "Сбросить фильтры" : {
+    "Сбросить" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset filters"
+            "value" : "Reset"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сбросить фильтры"
+            "value" : "Сбросить"
           }
         }
       }
