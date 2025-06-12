@@ -11,13 +11,13 @@ let package = Package(
         .library(name: "SWDesignSystem", targets: ["SWDesignSystem"])
     ],
     dependencies: [
-        .package(url: "https://github.com/OlegEremenko991/CachedAsyncImage991", from: "1.4.0")
+        .package(path: "../CachedAsyncImage")
     ],
     targets: [
         .target(
             name: "SWDesignSystem",
             dependencies: [
-                .product(name: "CachedAsyncImage991", package: "CachedAsyncImage991")
+                .product(name: "CachedAsyncImage", package: "CachedAsyncImage")
             ]
         )
     ]

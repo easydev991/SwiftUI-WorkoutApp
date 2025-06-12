@@ -54,6 +54,20 @@
     },
     {
       "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
+        "identifier" : "SWUtilsTests",
+        "name" : "SWUtilsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
+        "identifier" : "SWNetworkTests",
+        "name" : "SWNetworkTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWKeychain",
         "identifier" : "SWKeychainTests",
         "name" : "SWKeychainTests"
@@ -68,16 +82,9 @@
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
-        "identifier" : "SWNetworkTests",
-        "name" : "SWNetworkTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
-        "identifier" : "SWUtilsTests",
-        "name" : "SWUtilsTests"
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/CachedAsyncImage",
+        "identifier" : "CachedAsyncImageTests",
+        "name" : "CachedAsyncImageTests"
       }
     }
   ],

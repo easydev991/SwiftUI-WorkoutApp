@@ -35,6 +35,7 @@
 		674BAF242D89DA9200547410 /* Exceptions for "SwiftUI-WorkoutApp" folder in "SwiftUI-WorkoutApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Libraries/CachedAsyncImage,
 				Libraries/ClusteringMapView,
 				Libraries/LegacyImagePicker,
 				Libraries/SWDesignSystem,
