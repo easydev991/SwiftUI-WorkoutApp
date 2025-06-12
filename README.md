@@ -86,7 +86,7 @@ cd SwiftUI-WorkoutApp
 ```shell
 make setup
 ```
-5. Запускаем в папке с проектом файл `SwiftUI-WorkoutApp.xcodeproj` и ждем загрузки пакетов
+5. Запускаем в папке с проектом файл `SwiftUI-WorkoutApp.xcodeproj`
 6. Проект готов к работе!
 
 ### Форматирование кода
