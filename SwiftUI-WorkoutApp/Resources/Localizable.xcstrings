@@ -437,6 +437,16 @@
         }
       }
     },
+    "Выбрать другой город" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose another city"
+          }
+        }
+      }
+    },
     "Выбрать из галереи" : {
       "localizations" : {
         "en" : {
@@ -1417,6 +1427,16 @@
         }
       }
     },
+    "Не нашли площадки для этого города с выбранными фильтрами" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No parks found for this city with the selected filters"
+          }
+        }
+      }
+    },
     "Не указан" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1704,6 +1724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открыть список друзей"
+          }
+        }
+      }
+    },
+    "Изменить фильтры" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change filters"
           }
         }
       }
