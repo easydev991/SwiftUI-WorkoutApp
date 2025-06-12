@@ -4,9 +4,10 @@ import OSLog
 import SWModels
 import SWUtils
 
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
+
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
-    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
     private let storage = SWFileManager(fileName: "CountriesAndCities.json")
     private let countryID: Int
     private let cityID: Int
