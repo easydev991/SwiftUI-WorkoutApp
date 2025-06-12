@@ -465,10 +465,6 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				MARKETING_VERSION = 3.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
@@ -519,10 +515,6 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				MARKETING_VERSION = 3.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
