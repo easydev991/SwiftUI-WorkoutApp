@@ -7,7 +7,7 @@ struct DataTests {
     func prettyJson() throws {
         struct TestModel: Codable { let property: String }
         let data = try JSONEncoder().encode(TestModel(property: "property"))
-        let prettyJson = try #require(data.prettyJson)
+        let prettyJson = data.prettyJson
         let expectedResult = """
         {
           "property" : "property"
