@@ -25,17 +25,16 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     public var usersTrainHere: [UserResponse]?
     private var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
-    public var subtitle: String? {
-        let grade = ParkGrade(rawValue: typeID).description
-        let size = ParkSize(rawValue: sizeID).description
-        return grade + " / " + size
+    public var subtitle: String {
+        let grade = ParkGrade(rawValue: typeID)?.description
+        let size = ParkSize(rawValue: sizeID)?.description
+        return [grade, size].compactMap(\.self).joined(separator: " / ")
     }
 
     public var shortTitle: String { "№ \(id)" }
     /// shortTitle + subtitle
     public var longTitle: String {
-        guard let subtitle else { return shortTitle }
-        return shortTitle + " " + subtitle
+        shortTitle + " " + subtitle
     }
 
     public var authorID: Int {

@@ -13,12 +13,11 @@ struct ParksMapScreen: View {
     @State private var presentation = Presentation.map
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
-    @State private var filter = ParkFilterModel()
     /// Отфильтрованные площадки для вкладки "Карта"
     private var filteredMapParks: [Park] {
         parksManager.fullList.filter { park in
-            filter.size.map(\.rawValue).contains(park.sizeID)
-                && filter.grade.map(\.rawValue).contains(park.typeID)
+            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeID)
+                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeID)
         }
     }
 
@@ -108,7 +107,7 @@ private extension ParksMapScreen {
             sheetItem = .filters
         } label: {
             Icons.Regular.filter.view
-                .symbolVariant(filter.isEdited ? .fill : .none)
+                .symbolVariant(defaults.parksFilter.isEdited ? .fill : .none)
         }
     }
 
@@ -183,7 +182,7 @@ private extension ParksMapScreen {
     @ViewBuilder
     var noParksFoundView: some View {
         if let storedCities = try? SWAddress().cities() {
-            let showView = filter.isEdited && filteredListParks.isEmpty
+            let showView = defaults.parksFilter.isEdited && filteredListParks.isEmpty
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
@@ -267,7 +266,7 @@ private extension ParksMapScreen {
     func makeContentView(for item: SheetItem) -> some View {
         switch item {
         case .filters:
-            ParkFilterScreen(filter: $filter)
+            ParkFilterScreen(filter: $defaults.parksFilter)
         case .createNewPark:
             ContentInSheet(title: "Новая площадка", spacing: 0) {
                 ParkFormScreen(

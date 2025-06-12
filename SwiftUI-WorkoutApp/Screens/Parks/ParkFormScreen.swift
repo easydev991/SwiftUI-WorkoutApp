@@ -109,7 +109,7 @@ private extension ParkFormScreen {
         Menu {
             Picker("", selection: $parkForm.typeID) {
                 ForEach(ParkGrade.allCases.map(\.rawValue), id: \.self) {
-                    Text(ParkGrade(rawValue: $0).description)
+                    Text(ParkGrade(code: $0).description)
                 }
             }
         } label: {
@@ -124,7 +124,7 @@ private extension ParkFormScreen {
         Menu {
             Picker("", selection: $parkForm.sizeID) {
                 ForEach(ParkSize.allCases.map(\.rawValue), id: \.self) {
-                    Text(ParkSize(rawValue: $0).description)
+                    Text(ParkSize(code: $0).description)
                 }
             }
         } label: {
