@@ -1,6 +1,7 @@
 import SwiftUI
 import SWKeychain
 import SWModels
+import SWNetworkClient
 
 @MainActor
 final class DefaultsService: ObservableObject, AuthHelper {
