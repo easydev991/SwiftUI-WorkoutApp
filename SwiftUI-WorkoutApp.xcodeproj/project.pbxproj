@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		6733AB0D2DFAB4FD00DF1493 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */; };
+		6733AB102DFAB67B00DF1493 /* LegacyImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */; };
 		67795FB22D1C05D90087132F /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB12D1C05D90087132F /* SWModels */; };
 		67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB32D1C05D90087132F /* SWNetworkClient */; };
 		67B7EB812D4FED510004A40D /* SWUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 67B7EB802D4FED510004A40D /* SWUtils */; };
 		67D322972AE993F90045B92F /* MapView991 in Frameworks */ = {isa = PBXBuildFile; productRef = 67D322962AE993F90045B92F /* MapView991 */; };
 		67F2ABAB2D7451C3008F9928 /* SWKeychain in Frameworks */ = {isa = PBXBuildFile; productRef = 67F2ABAA2D7451C3008F9928 /* SWKeychain */; };
-		67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 67F9534E2964A5700077DFDC /* ImagePicker */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +35,7 @@
 		674BAF242D89DA9200547410 /* Exceptions for "SwiftUI-WorkoutApp" folder in "SwiftUI-WorkoutApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Libraries/LegacyImagePicker,
 				Libraries/SWDesignSystem,
 				Libraries/SWKeychain,
 				Libraries/SWModels,
@@ -84,13 +85,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6733AB102DFAB67B00DF1493 /* LegacyImagePicker in Frameworks */,
 				67795FB22D1C05D90087132F /* SWModels in Frameworks */,
 				67F2ABAB2D7451C3008F9928 /* SWKeychain in Frameworks */,
 				67B7EB812D4FED510004A40D /* SWUtils in Frameworks */,
 				6733AB0D2DFAB4FD00DF1493 /* SWDesignSystem in Frameworks */,
 				67D322972AE993F90045B92F /* MapView991 in Frameworks */,
 				67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */,
-				67F9534F2964A5700077DFDC /* ImagePicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,13 +165,13 @@
 			);
 			name = "SwiftUI-WorkoutApp";
 			packageProductDependencies = (
-				67F9534E2964A5700077DFDC /* ImagePicker */,
 				67D322962AE993F90045B92F /* MapView991 */,
 				67795FB12D1C05D90087132F /* SWModels */,
 				67795FB32D1C05D90087132F /* SWNetworkClient */,
 				67B7EB802D4FED510004A40D /* SWUtils */,
 				67F2ABAA2D7451C3008F9928 /* SWKeychain */,
 				6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */,
+				6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */,
 			);
 			productName = "SwiftUI-WorkoutApp";
 			productReference = 6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */;
@@ -205,7 +206,6 @@
 			);
 			mainGroup = 6798AA31280AEDC900DB76F1;
 			packageReferences = (
-				67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */,
 				67D322952AE993F90045B92F /* XCRemoteSwiftPackageReference "MapView991" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -586,20 +586,16 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/OlegEremenko991/ImagePicker";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWDesignSystem;
+		};
+		6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyImagePicker;
 		};
 		67795FB12D1C05D90087132F /* SWModels */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -621,11 +617,6 @@
 		67F2ABAA2D7451C3008F9928 /* SWKeychain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWKeychain;
-		};
-		67F9534E2964A5700077DFDC /* ImagePicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 67F9534D2964A5700077DFDC /* XCRemoteSwiftPackageReference "ImagePicker" */;
-			productName = ImagePicker;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

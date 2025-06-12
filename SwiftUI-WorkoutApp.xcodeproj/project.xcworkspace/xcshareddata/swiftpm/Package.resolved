@@ -1,5 +1,5 @@
 {
-  "originHash" : "6e256c9cdd8b2e254a563f68c04b32f6fcf4d6238d6239ab141dcba9555457ca",
+  "originHash" : "3edf852c68647f4bce847db379abd5da50bee9c0dd7001c3e145338fc138be9a",
   "pins" : [
     {
       "identity" : "cachedasyncimage991",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "12bda834918a32f4eb52af5bfe4aedac0284390d",
         "version" : "1.4.0"
-      }
-    },
-    {
-      "identity" : "imagepicker",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/OlegEremenko991/ImagePicker",
-      "state" : {
-        "revision" : "1d13b1c0cce41940ef01e3111d90a4440cf14ac8",
-        "version" : "1.0.5"
       }
     },
     {
