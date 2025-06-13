@@ -10,6 +10,7 @@ extension ParksMapScreen {
             subsystem: Bundle.main.bundleIdentifier!,
             category: String(describing: ViewModel.self)
         )
+        private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         /// Менеджер локации
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
@@ -35,6 +36,7 @@ extension ParksMapScreen {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             manager.startUpdatingLocation()
+            updateSelectedCity(selectedCity)
         }
 
         func updateUserCountryAndCity(with info: UserResponse?) {
@@ -43,6 +45,12 @@ extension ParksMapScreen {
 
         func updateSelectedCity(_ newCity: City?) {
             selectedCity = newCity
+            if let newCity, let coordinate = newCity.coordinate {
+                region = .init(center: coordinate, span: defaultCoordinateSpan)
+                logger.debug("Регион карты обновлен для города: \(newCity.name)")
+            } else {
+                resetToUserLocation()
+            }
         }
     }
 }
@@ -63,10 +71,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         if !isRegionSet {
-            region = .init(
-                center: location.coordinate,
-                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
-            )
+            region = .init(center: location.coordinate, span: defaultCoordinateSpan)
         }
         let oldCoordinates = LocationCoordinates(region.center)
         let newCoordinates = LocationCoordinates(location.coordinate)
@@ -114,7 +119,7 @@ private extension ParksMapScreen.ViewModel {
         }
         region = .init(
             center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
-            span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            span: defaultCoordinateSpan
         )
     }
 
@@ -153,10 +158,25 @@ private extension ParksMapScreen.ViewModel {
         do {
             let storedCity = try SWAddress().findCity(with: cityName)
             logger.debug("Город пользователя для фильтра списка площадок: \(storedCity.name)")
-            selectedCity = storedCity
+            updateSelectedCity(storedCity)
         } catch {
             logger.error("Не удалось найти город \(cityName) в списке сохраненных городов, ошибка: \(error.localizedDescription)")
-            selectedCity = .defaultCity
+            updateSelectedCity(.defaultCity)
+        }
+    }
+
+    func resetToUserLocation() {
+        // Проверяем, есть ли координаты пользователя из профиля
+        if userCoordinates != (0, 0) {
+            region = MKCoordinateRegion(
+                center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
+                span: defaultCoordinateSpan
+            )
+            logger.debug("Регион карты сброшен к координатам пользователя из профиля")
+        } else {
+            // Если координат пользователя нет, запрашиваем текущее местоположение
+            manager.requestLocation()
+            logger.debug("Запрошено обновление текущего местоположения")
         }
     }
 }
