@@ -32,7 +32,6 @@ extension ParksMapScreen {
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
         @Published private var userCoordinates: (Double, Double) = (0, 0)
-        private var didAppearFirstTime = false
 
         override init() {
             super.init()
@@ -40,12 +39,7 @@ extension ParksMapScreen {
             manager.requestWhenInUseAuthorization()
             manager.startUpdatingLocation()
             subscribeToUserCoordinates()
-        }
-
-        func onAppear() {
-            guard !didAppearFirstTime else { return }
             updateSelectedCity(selectedCity)
-            didAppearFirstTime = true
         }
 
         func userInfoDidChange(_ info: UserResponse?) {
