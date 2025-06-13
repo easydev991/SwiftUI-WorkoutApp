@@ -116,6 +116,9 @@ private extension ParksMapScreen.ViewModel {
         // Реагируем на изменение `userCoordinates`, если город не выбран
         cancellable = $userCoordinates
             .dropFirst()
+            .removeDuplicates { old, new in
+                old.0 == new.0 && old.1 == new.1
+            }
             .filter { [weak self] _ in
                 self?.selectedCity == nil
             }
