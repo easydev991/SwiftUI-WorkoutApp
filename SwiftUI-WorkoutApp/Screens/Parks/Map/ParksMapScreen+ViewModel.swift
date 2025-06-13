@@ -32,14 +32,20 @@ extension ParksMapScreen {
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
         @Published private var userCoordinates: (Double, Double) = (0, 0)
+        private var didAppearFirstTime = false
 
         override init() {
             super.init()
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             manager.startUpdatingLocation()
-            updateSelectedCity(selectedCity)
             subscribeToUserCoordinates()
+        }
+
+        func onAppear() {
+            guard !didAppearFirstTime else { return }
+            updateSelectedCity(selectedCity)
+            didAppearFirstTime = true
         }
 
         func userInfoDidChange(_ info: UserResponse?) {
@@ -92,9 +98,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
             ignoreUserLocation = false
             manager.requestLocation()
         case .restricted, .denied:
-            if !ignoreUserLocation {
-                setupDefaultLocation(permissionDenied: true)
-            }
+            setupDefaultLocation(permissionDenied: true)
         @unknown default:
             let message = "Не обработан новый кейс `authorizationStatus`"
             logger.error("\(message, privacy: .public)")

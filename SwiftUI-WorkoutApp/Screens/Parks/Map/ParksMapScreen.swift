@@ -37,6 +37,7 @@ struct ParksMapScreen: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
+            .onAppear(perform: viewModel.onAppear)
             .task(id: defaults.mainUserCityID) {
                 viewModel.userInfoDidChange(defaults.mainUserInfo)
             }
@@ -165,7 +166,7 @@ private extension ParksMapScreen {
             .overlay(alignment: .bottom) {
                 LocationSettingReminderView(
                     message: viewModel.locationErrorMessage,
-                    isHidden: !viewModel.ignoreUserLocation
+                    isHidden: viewModel.locationErrorMessage.isEmpty
                 )
             }
         }
