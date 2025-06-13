@@ -131,6 +131,25 @@ extension SWAddress {
     }
 }
 
+extension SWAddress {
+    /// Пытается создать адрес из отметки на карте
+    ///
+    /// Используется для адреса новой площадки
+    static func makeAddress(for placemark: CLPlacemark) -> String? {
+        let country = placemark.country
+        let countryRegion = placemark.administrativeArea
+        let countryRegionInfo = placemark.subAdministrativeArea
+        let city = placemark.locality
+        let cityDistrict = placemark.subLocality
+        let street = placemark.thoroughfare
+        let houseNumber = placemark.subThoroughfare
+        let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
+            .compactMap(\.self)
+            .joined(separator: ", ")
+        return fullAddress.isEmpty ? nil : fullAddress
+    }
+}
+
 private extension SWAddress {
     private func city(with id: Int, in countryID: Int) throws -> City? {
         let country = try countries().first(where: { $0.id == String(countryID) })
