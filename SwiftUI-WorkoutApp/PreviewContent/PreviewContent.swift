@@ -149,8 +149,15 @@ extension Int {
 }
 
 extension NoParksFoundModel {
-    static let preview = Self(
+    static let previewWithFilter = Self(
         isFilterEdited: true,
+        isFilteredParksEmpty: true,
+        didParksManagerLoad: true,
+        isLoading: false
+    )
+    
+    static let previewWithoutFilter = Self(
+        isFilterEdited: false,
         isFilteredParksEmpty: true,
         didParksManagerLoad: true,
         isLoading: false

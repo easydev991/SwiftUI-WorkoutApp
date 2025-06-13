@@ -1427,12 +1427,12 @@
         }
       }
     },
-    "Не нашли площадки для этого города с выбранными фильтрами" : {
+    "Не нашли площадки для этого города" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No parks found for this city with the selected filters"
+            "value" : "No parks found for this city"
           }
         }
       }
