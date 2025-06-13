@@ -61,12 +61,10 @@ extension ParksMapScreen {
 extension ParksMapScreen.ViewModel {
     /// `true` - регион пользователя установлен, `false` - не установлен
     var isRegionSet: Bool {
-        region.center.latitude != .zero && region.center.longitude != .zero
-    }
-
-    /// `true` - прячем карту, `false` - не прячем
-    var shouldHideMap: Bool {
-        !isRegionSet && ignoreUserLocation
+        region.center.latitude != 0.0 &&
+            region.center.longitude != 0.0 &&
+            region.span.latitudeDelta > 0.0 &&
+            region.span.longitudeDelta > 0.0
     }
 }
 

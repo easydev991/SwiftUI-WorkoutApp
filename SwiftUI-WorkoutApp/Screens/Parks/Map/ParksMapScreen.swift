@@ -162,8 +162,7 @@ private extension ParksMapScreen {
                     }
                 }
             )
-            .opacity(viewModel.shouldHideMap ? 0 : 1)
-            .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
+            .overlay(alignment: .bottom) {
                 LocationSettingReminderView(
                     message: viewModel.locationErrorMessage,
                     isHidden: !viewModel.ignoreUserLocation
