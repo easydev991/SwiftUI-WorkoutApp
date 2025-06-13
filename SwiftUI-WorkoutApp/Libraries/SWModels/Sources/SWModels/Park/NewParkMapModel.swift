@@ -11,6 +11,13 @@ public struct NewParkMapModel: Sendable, Equatable {
         .init(latitude: latitude, longitude: longitude)
     }
 
+    /// Пустая ли модель
+    ///
+    /// Город не проверяем, потому что может не получиться его определить
+    public var isEmpty: Bool {
+        address.isEmpty || latitude == 0 || longitude == 0
+    }
+
     public init(address: String, coordinate: CLLocationCoordinate2D, cityId: Int) {
         self.address = address
         self.latitude = coordinate.latitude

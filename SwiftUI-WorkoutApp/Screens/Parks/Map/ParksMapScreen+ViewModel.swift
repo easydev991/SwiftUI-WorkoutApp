@@ -18,6 +18,10 @@ extension ParksMapScreen {
         @Published private(set) var locationErrorMessage = ""
         /// Модель с данными для создания новой площадки
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
+        /// Можно ли создавать новую площадку
+        var canCreateNewPark: Bool {
+            locationErrorMessage.isEmpty && !newParkMapModel.isEmpty
+        }
         /// Город для фильтра списка площадок
         @AppStorage("selectedCityFilter") private(set) var selectedCity: City?
         var cityFilterButtonTitle: String {
@@ -84,7 +88,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
             newParkMapModel.longitude = coordinate.longitude
         }
         guard oldCoordinates.differs(from: newCoordinates) || newParkMapModel.address.isEmpty else { return }
-        CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, error in
+        CLGeocoder().reverseGeocodeLocation(location, preferredLocale: .init(identifier: "ru_RU")) { [weak self] places, error in
             guard let self, let target = places?.first else { return }
             if let error {
                 let message = error.localizedDescription

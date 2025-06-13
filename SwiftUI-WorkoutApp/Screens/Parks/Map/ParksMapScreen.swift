@@ -81,7 +81,7 @@ private extension ParksMapScreen {
         /// Поиск города в списке городов
         case searchCity([City])
         /// Создание новой площадки
-        case createNewPark
+        case createNewPark(NewParkMapModel)
         /// Площадка для открытия детального экрана
         case parkDetails(Park)
     }
@@ -247,13 +247,12 @@ private extension ParksMapScreen {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
-                sheetItem = .createNewPark
+                sheetItem = .createNewPark(viewModel.newParkMapModel)
             } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .opacity(isLoading ? 0 : 1)
-            .disabled(!viewModel.locationErrorMessage.isEmpty)
+            .disabled(!viewModel.canCreateNewPark || isLoading)
         }
     }
 
@@ -262,10 +261,10 @@ private extension ParksMapScreen {
         switch item {
         case .filters:
             ParkFilterScreen(filter: $defaults.parksFilter)
-        case .createNewPark:
+        case let .createNewPark(model):
             ContentInSheet(title: "Новая площадка", spacing: 0) {
                 ParkFormScreen(
-                    .createNew(viewModel.newParkMapModel),
+                    .createNew(model),
                     refreshClbk: {
                         Task {
                             await checkForRecentUpdates()

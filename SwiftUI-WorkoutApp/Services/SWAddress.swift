@@ -156,7 +156,9 @@ extension SWAddress {
         return uniqueComponents.isEmpty ? nil : uniqueComponents.joined(separator: ", ")
     }
 
-    // TODO: для английского языка проверить геокодер
+    /// Пытается создать идентификатор города по точке на карте
+    /// - Parameter placemarkLocality: Точка на карте
+    /// - Returns: Идентификатор города в случае успеха или `nil`
     static func makeCityId(with placemarkLocality: String?) -> Int? {
         guard let placemarkLocality,
               let city = try? findCity(with: placemarkLocality),
