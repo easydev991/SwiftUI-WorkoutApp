@@ -49,7 +49,7 @@ extension ParksMapScreen {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города: \(newCity.name)")
             } else {
-                resetToUserLocation()
+                resetTo(userCoordinates)
             }
         }
     }
@@ -165,7 +165,7 @@ private extension ParksMapScreen.ViewModel {
         }
     }
 
-    func resetToUserLocation() {
+    func resetTo(_ userCoordinates: (Double, Double)) {
         // Проверяем, есть ли координаты пользователя из профиля
         if userCoordinates != (0, 0) {
             region = MKCoordinateRegion(
