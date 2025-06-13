@@ -14,13 +14,13 @@ struct RegionOrganizer {
     /// Про тестирование: https://stackoverflow.com/a/51903928/11830041
     @MainActor
     func updateRegionIfNeeded(for mapView: MKMapView) {
-        let oldCoordinates = LocationCoordinates(old.center)
-        let newCoordinates = LocationCoordinates(new.center)
-        guard newCoordinates.isSpecified, isSpanSpecified else {
+        let oldCoordinate = LocationCoordinate(old.center)
+        let newCoordinate = LocationCoordinate(new.center)
+        guard newCoordinate.isSpecified, isSpanSpecified else {
             logger.debug("Новый регион не настроен, не обновляем регион")
             return
         }
-        guard newCoordinates.differs(from: oldCoordinates) || isSpanDifferent else {
+        guard newCoordinate != oldCoordinate || isSpanDifferent else {
             logger.debug("Новый регион совпадает с предыдущим, не обновляем регион")
             return
         }

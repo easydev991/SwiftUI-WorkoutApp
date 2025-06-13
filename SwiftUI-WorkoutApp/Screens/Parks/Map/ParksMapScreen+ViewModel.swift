@@ -22,6 +22,7 @@ extension ParksMapScreen {
         var canCreateNewPark: Bool {
             locationErrorMessage.isEmpty && !newParkMapModel.isEmpty
         }
+
         /// Город для фильтра списка площадок
         @AppStorage("selectedCityFilter") private(set) var selectedCity: City?
         var cityFilterButtonTitle: String {
@@ -36,19 +37,19 @@ extension ParksMapScreen {
         @Published private(set) var region = MKCoordinateRegion()
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
-        @Published private var userCoordinates: (Double, Double) = (0, 0)
+        @Published private var userCoordinate: (Double, Double) = (0, 0)
 
         override init() {
             super.init()
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             manager.startUpdatingLocation()
-            subscribeToUserCoordinates()
+            subscribeToUserCoordinate()
             updateSelectedCity(selectedCity)
         }
 
         func userInfoDidChange(_ info: UserResponse?) {
-            userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
+            userCoordinate = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
         }
 
         func updateSelectedCity(_ newCity: City?) {
@@ -57,7 +58,7 @@ extension ParksMapScreen {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
-                resetTo(userCoordinates)
+                resetTo(userCoordinate)
             }
         }
     }
@@ -80,14 +81,14 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         if !isRegionSet {
             region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
-        let oldCoordinates = LocationCoordinates(region.center)
-        let newCoordinates = LocationCoordinates(coordinate)
-        let newParkCoordinates = LocationCoordinates(newParkMapModel.coordinate)
-        if newCoordinates.differs(from: newParkCoordinates) {
+        let oldCoordinate = LocationCoordinate(region.center)
+        let newCoordinate = LocationCoordinate(coordinate)
+        let newParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
+        if newCoordinate != newParkCoordinate {
             newParkMapModel.latitude = coordinate.latitude
             newParkMapModel.longitude = coordinate.longitude
         }
-        guard oldCoordinates.differs(from: newCoordinates) || newParkMapModel.address.isEmpty else { return }
+        guard oldCoordinate != newCoordinate || newParkMapModel.address.isEmpty else { return }
         CLGeocoder().reverseGeocodeLocation(location, preferredLocale: .init(identifier: "ru_RU")) { [weak self] places, error in
             guard let self, let target = places?.first else { return }
             if let error {
@@ -125,9 +126,9 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
 }
 
 private extension ParksMapScreen.ViewModel {
-    func subscribeToUserCoordinates() {
+    func subscribeToUserCoordinate() {
         // Реагируем на изменение `userCoordinates`, если город не выбран
-        cancellable = $userCoordinates
+        cancellable = $userCoordinate
             .dropFirst()
             .removeDuplicates { old, new in
                 old.0 == new.0 && old.1 == new.1
@@ -145,7 +146,7 @@ private extension ParksMapScreen.ViewModel {
         locationErrorMessage = permissionDenied
             ? Strings.Alert.locationPermissionDenied
             : Strings.Alert.needLocationPermission
-        resetTo(userCoordinates)
+        resetTo(userCoordinate)
     }
 
     /// Обновляет адрес для новой площадки, если нужно
@@ -173,15 +174,15 @@ private extension ParksMapScreen.ViewModel {
         }
     }
 
-    func resetTo(_ userCoordinates: (Double, Double)) {
-        guard userCoordinates != (0, 0) else {
+    func resetTo(_ userCoordinate: (Double, Double)) {
+        guard userCoordinate != (0, 0) else {
             ignoreUserLocation = true
             return
         }
         region = .init(
-            center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
+            center: .init(latitude: userCoordinate.0, longitude: userCoordinate.1),
             span: defaultCoordinateSpan
         )
-        logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinates.0), \(userCoordinates.1)")
+        logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinate.0), \(userCoordinate.1)")
     }
 }
