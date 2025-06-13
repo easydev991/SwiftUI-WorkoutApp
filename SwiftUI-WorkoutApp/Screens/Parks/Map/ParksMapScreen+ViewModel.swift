@@ -42,7 +42,7 @@ extension ParksMapScreen {
             subscribeToUserCoordinates()
         }
 
-        func updateUserCountryAndCity(with info: UserResponse?) {
+        func userInfoDidChange(_ info: UserResponse?) {
             userCoordinates = SWAddress(info?.countryID, info?.cityID)?.coordinates ?? (0, 0)
         }
 
