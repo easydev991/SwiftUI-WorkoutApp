@@ -17,6 +17,6 @@ public struct LocationCoordinates {
 
     /// Отличаются ли координаты от другой модели
     public func differs(from model: Self) -> Bool {
-        lat != model.lat && lon != model.lon
+        lat != model.lat || lon != model.lon
     }
 }
