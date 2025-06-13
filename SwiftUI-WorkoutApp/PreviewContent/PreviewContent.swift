@@ -155,7 +155,7 @@ extension NoParksFoundModel {
         didParksManagerLoad: true,
         isLoading: false
     )
-    
+
     static let previewWithoutFilter = Self(
         isFilterEdited: false,
         isFilteredParksEmpty: true,
