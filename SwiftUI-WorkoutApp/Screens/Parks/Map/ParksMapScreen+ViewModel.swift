@@ -132,14 +132,7 @@ private extension ParksMapScreen.ViewModel {
         locationErrorMessage = permissionDenied
             ? Strings.Alert.locationPermissionDenied
             : Strings.Alert.needLocationPermission
-        guard userCoordinates != (0, 0) else {
-            ignoreUserLocation = true
-            return
-        }
-        region = .init(
-            center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
-            span: defaultCoordinateSpan
-        )
+        resetTo(userCoordinates)
     }
 
     /// Обновляет старый адрес, если нужно
@@ -168,17 +161,14 @@ private extension ParksMapScreen.ViewModel {
     }
 
     func resetTo(_ userCoordinates: (Double, Double)) {
-        // Проверяем, есть ли координаты пользователя из профиля
-        if userCoordinates != (0, 0) {
-            region = .init(
-                center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
-                span: defaultCoordinateSpan
-            )
-            logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinates.0), \(userCoordinates.1)")
-        } else {
-            // Если координат пользователя нет, запрашиваем текущее местоположение
-            manager.requestLocation()
-            logger.debug("Запрошено обновление текущего местоположения")
+        guard userCoordinates != (0, 0) else {
+            ignoreUserLocation = true
+            return
         }
+        region = .init(
+            center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
+            span: defaultCoordinateSpan
+        )
+        logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinates.0), \(userCoordinates.1)")
     }
 }
