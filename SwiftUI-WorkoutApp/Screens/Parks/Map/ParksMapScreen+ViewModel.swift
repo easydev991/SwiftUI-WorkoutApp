@@ -16,7 +16,8 @@ extension ParksMapScreen {
         /// Менеджер локации
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
-        @Published private(set) var addressString = ""
+        /// Модель с данными для создания новой площадки
+        @Published private(set) var newParkMapModel = NewParkMapModel.empty
         /// Город для фильтра списка площадок
         @AppStorage("selectedCityFilter") private(set) var selectedCity: City?
         var cityFilterButtonTitle: String {
@@ -71,15 +72,27 @@ extension ParksMapScreen.ViewModel {
 extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        let coordinate = location.coordinate
         if !isRegionSet {
-            region = .init(center: location.coordinate, span: defaultCoordinateSpan)
+            region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
         let oldCoordinates = LocationCoordinates(region.center)
-        let newCoordinates = LocationCoordinates(location.coordinate)
-        guard oldCoordinates.differs(from: newCoordinates) || addressString.isEmpty else { return }
-        CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, _ in
+        let newCoordinates = LocationCoordinates(coordinate)
+        let newParkCoordinates = LocationCoordinates(newParkMapModel.coordinate)
+        if newCoordinates.differs(from: newParkCoordinates) {
+            newParkMapModel.latitude = coordinate.latitude
+            newParkMapModel.longitude = coordinate.longitude
+        }
+        guard oldCoordinates.differs(from: newCoordinates) || newParkMapModel.address.isEmpty else { return }
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] places, error in
             guard let self, let target = places?.first else { return }
+            if let error {
+                let message = error.localizedDescription
+                logger.error("\(message)")
+                assertionFailure(message)
+            }
             updateAddressIfNeeded(placemark: target)
+            updateCityIfNeeded(placemark: target)
         }
     }
 
@@ -131,16 +144,28 @@ private extension ParksMapScreen.ViewModel {
         resetTo(userCoordinates)
     }
 
-    /// Обновляет старый адрес, если нужно
+    /// Обновляет адрес для новой площадки, если нужно
     ///
     /// - Новый адрес должен отличаться от старого
     /// - Адрес включает все доступные данные, полученные из `placemark`
-    /// - Адрес используется при создании новой площадки
+    /// - Parameter placemark: Точка на карте
     func updateAddressIfNeeded(placemark: CLPlacemark) {
         let fullAddress = SWAddress.makeAddress(for: placemark)
-        if let fullAddress, fullAddress != addressString {
-            addressString = fullAddress
-            logger.debug("Местоположение пользователя: \(fullAddress)")
+        if let fullAddress, fullAddress != newParkMapModel.address {
+            newParkMapModel.address = fullAddress
+            logger.debug("Адрес для площадки: \(fullAddress)")
+        }
+    }
+
+    /// Обновляет идентификатор города для новой площадки, если нужно
+    ///
+    /// Новый идентификатор должен отличаться от старого
+    /// - Parameter placemark: Точка на карте
+    func updateCityIfNeeded(placemark: CLPlacemark) {
+        if let cityId = SWAddress.makeCityId(with: placemark.locality),
+           cityId != newParkMapModel.cityId {
+            newParkMapModel.cityId = cityId
+            logger.debug("Идентификатор города для площадки: \(cityId)")
         }
     }
 

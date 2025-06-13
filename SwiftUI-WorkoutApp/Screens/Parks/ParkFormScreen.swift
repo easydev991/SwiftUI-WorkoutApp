@@ -22,12 +22,12 @@ struct ParkFormScreen: View {
     init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
         self.mode = mode
         switch mode {
-        case let .createNew(address, coordinate, cityID):
+        case let .createNew(model):
             self.oldParkForm = .init(
-                address: address,
-                latitude: coordinate.latitude,
-                longitude: coordinate.longitude,
-                cityID: cityID
+                address: model.address,
+                latitude: model.coordinate.latitude,
+                longitude: model.coordinate.longitude,
+                cityID: model.cityId
             )
             _parkForm = .init(initialValue: oldParkForm)
         case let .editExisting(park):
@@ -54,11 +54,7 @@ struct ParkFormScreen: View {
 
 extension ParkFormScreen {
     enum Mode {
-        case createNew(
-            address: String,
-            coordinate: CLLocationCoordinate2D,
-            cityID: Int
-        )
+        case createNew(NewParkMapModel)
         case editExisting(Park)
 
         var parkID: Int? {

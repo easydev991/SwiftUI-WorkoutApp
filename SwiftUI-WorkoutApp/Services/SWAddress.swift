@@ -8,7 +8,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
-    private let storage = SWFileManager(fileName: "CountriesAndCities.json")
+    private static let storage = SWFileManager(fileName: "CountriesAndCities.json")
     private let countryID: Int
     private let cityID: Int
 
@@ -43,7 +43,7 @@ extension SWAddress {
     /// Страна и город
     var address: String {
         guard countryID != 0, cityID != 0,
-              let country = try? countries().first(where: { $0.id == String(countryID) })
+              let country = try? Self.countries().first(where: { $0.id == String(countryID) })
         else { return "" }
         if let cityName = country.cities.first(where: { $0.id == String(cityID) })?.name {
             return country.name + ", " + cityName
@@ -55,7 +55,7 @@ extension SWAddress {
     /// Координаты для страны/города (широта, долгота)
     var coordinates: (Double, Double) {
         guard countryID != 0, cityID != 0,
-              let city = try? city(with: cityID, in: countryID),
+              let city = try? Self.city(with: cityID, in: countryID),
               let latitude = Double(city.lat),
               let longitude = Double(city.lon)
         else { return (0, 0) }
@@ -65,7 +65,7 @@ extension SWAddress {
     /// Название города
     var cityName: String? {
         do {
-            return try city(with: cityID, in: countryID)?.name
+            return try Self.city(with: cityID, in: countryID)?.name
         } catch {
             logger.error("Не смогли получить название города, \(error.localizedDescription, privacy: .public)")
             return nil
@@ -76,7 +76,7 @@ extension SWAddress {
     ///
     /// - Parameter countries: Страны/города для сохранения
     func save(_ countries: [Country]) throws {
-        try storage.save(countries)
+        try Self.storage.save(countries)
         logger.debug("Успешно сохранили список стран (\(countries.count) шт.)")
     }
 }
@@ -92,7 +92,7 @@ extension SWAddress {
     }
 
     /// Возвращает сохраненный в памяти справочник стран/городов
-    func countries() throws -> [Country] {
+    static func countries() throws -> [Country] {
         if storage.documentExists {
             try storage.get()
         } else {
@@ -105,11 +105,11 @@ extension SWAddress {
     }
 
     /// Возвращает сохраненный в памяти список всех городов
-    func cities() throws -> [City] {
+    static func cities() throws -> [City] {
         try countries().flatMap(\.cities)
     }
 
-    func findCity(with name: String) throws -> City {
+    static func findCity(with name: String) throws -> City {
         let storedCities = try cities()
         guard let storedCity = storedCities.first(where: { $0.name.lowercased() == name.lowercased() }) else {
             throw AddressError.failedToFindCityByName(name)
@@ -136,22 +136,43 @@ extension SWAddress {
     ///
     /// Используется для адреса новой площадки
     static func makeAddress(for placemark: CLPlacemark) -> String? {
-        let country = placemark.country
-        let countryRegion = placemark.administrativeArea
-        let countryRegionInfo = placemark.subAdministrativeArea
-        let city = placemark.locality
-        let cityDistrict = placemark.subLocality
-        let street = placemark.thoroughfare
-        let houseNumber = placemark.subThoroughfare
-        let fullAddress = [country, countryRegion, countryRegionInfo, city, cityDistrict, street, houseNumber]
-            .compactMap(\.self)
-            .joined(separator: ", ")
-        return fullAddress.isEmpty ? nil : fullAddress
+        let components = [
+            placemark.country,
+            placemark.administrativeArea,
+            placemark.subAdministrativeArea,
+            placemark.locality,
+            placemark.subLocality,
+            placemark.thoroughfare,
+            placemark.subThoroughfare
+        ].compactMap(\.self)
+        // Удаление дубликатов с сохранением порядка
+        var uniqueComponents = [String]()
+        var seen = Set<String>()
+        for component in components {
+            guard !seen.contains(component) else { continue }
+            seen.insert(component)
+            uniqueComponents.append(component)
+        }
+        return uniqueComponents.isEmpty ? nil : uniqueComponents.joined(separator: ", ")
+    }
+
+    // TODO: для английского языка проверить геокодер
+    static func makeCityId(with placemarkLocality: String?) -> Int? {
+        guard let placemarkLocality,
+              let city = try? findCity(with: placemarkLocality),
+              let cityId = Int(city.id)
+        else {
+            let message = "Не смогли найти город в справочнике с названием \(placemarkLocality ?? "неизвестно")"
+            logger.error("\(message)")
+            assertionFailure(message)
+            return nil
+        }
+        return cityId
     }
 }
 
 private extension SWAddress {
-    private func city(with id: Int, in countryID: Int) throws -> City? {
+    static func city(with id: Int, in countryID: Int) throws -> City? {
         let country = try countries().first(where: { $0.id == String(countryID) })
         return country?.cities.first(where: { $0.id == String(id) })
     }

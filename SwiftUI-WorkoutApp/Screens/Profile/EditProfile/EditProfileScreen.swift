@@ -291,7 +291,7 @@ private extension EditProfileScreen {
 
         /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
         init() throws {
-            let allCountries = try SWAddress().countries()
+            let allCountries = try SWAddress.countries()
             self.init(countries: allCountries)
         }
 

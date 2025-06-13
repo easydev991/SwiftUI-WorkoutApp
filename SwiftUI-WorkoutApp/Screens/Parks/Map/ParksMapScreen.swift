@@ -116,7 +116,7 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var searchCityButton: some View {
-        if let storedCities = try? SWAddress().cities() {
+        if let storedCities = try? SWAddress.cities() {
             SWTextFieldSearchButton(
                 .init(viewModel.cityFilterButtonTitle),
                 showClearButton: viewModel.canClearCityFilter,
@@ -173,7 +173,7 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var noParksFoundView: some View {
-        if let storedCities = try? SWAddress().cities() {
+        if let storedCities = try? SWAddress.cities() {
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
@@ -265,11 +265,7 @@ private extension ParksMapScreen {
         case .createNewPark:
             ContentInSheet(title: "Новая площадка", spacing: 0) {
                 ParkFormScreen(
-                    .createNew(
-                        address: viewModel.addressString,
-                        coordinate: viewModel.region.center,
-                        cityID: defaults.mainUserCityID
-                    ),
+                    .createNew(viewModel.newParkMapModel),
                     refreshClbk: {
                         Task {
                             await checkForRecentUpdates()
