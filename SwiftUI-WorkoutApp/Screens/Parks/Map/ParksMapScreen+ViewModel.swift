@@ -1,4 +1,5 @@
 import ClusteringMapView
+import Combine
 import MapKit.MKGeometry
 import OSLog
 import SwiftUI // для использования @AppStorage
@@ -11,6 +12,7 @@ extension ParksMapScreen {
             category: String(describing: ViewModel.self)
         )
         private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        private var cancellable: AnyCancellable?
         /// Менеджер локации
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
@@ -29,7 +31,7 @@ extension ParksMapScreen {
         @Published private(set) var region = MKCoordinateRegion()
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
-        private var userCoordinates: (Double, Double) = (0, 0)
+        @Published private var userCoordinates: (Double, Double) = (0, 0)
 
         override init() {
             super.init()
@@ -37,6 +39,7 @@ extension ParksMapScreen {
             manager.requestWhenInUseAuthorization()
             manager.startUpdatingLocation()
             updateSelectedCity(selectedCity)
+            subscribeToUserCoordinates()
         }
 
         func updateUserCountryAndCity(with info: UserResponse?) {
@@ -47,7 +50,7 @@ extension ParksMapScreen {
             selectedCity = newCity
             if let newCity, let coordinate = newCity.coordinate {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
-                logger.debug("Регион карты обновлен для города: \(newCity.name)")
+                logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
                 resetTo(userCoordinates)
             }
@@ -109,6 +112,19 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
 }
 
 private extension ParksMapScreen.ViewModel {
+    func subscribeToUserCoordinates() {
+        // Реагируем на изменение `userCoordinates`, если город не выбран
+        cancellable = $userCoordinates
+            .dropFirst()
+            .filter { [weak self] _ in
+                self?.selectedCity == nil
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newCoordinates in
+                self?.resetTo(newCoordinates)
+            }
+    }
+
     func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Strings.Alert.locationPermissionDenied
@@ -168,11 +184,11 @@ private extension ParksMapScreen.ViewModel {
     func resetTo(_ userCoordinates: (Double, Double)) {
         // Проверяем, есть ли координаты пользователя из профиля
         if userCoordinates != (0, 0) {
-            region = MKCoordinateRegion(
+            region = .init(
                 center: .init(latitude: userCoordinates.0, longitude: userCoordinates.1),
                 span: defaultCoordinateSpan
             )
-            logger.debug("Регион карты сброшен к координатам пользователя из профиля")
+            logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinates.0), \(userCoordinates.1)")
         } else {
             // Если координат пользователя нет, запрашиваем текущее местоположение
             manager.requestLocation()

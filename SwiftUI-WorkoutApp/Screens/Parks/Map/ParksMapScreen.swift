@@ -37,7 +37,7 @@ struct ParksMapScreen: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
-            .task(id: defaults.isAuthorized) {
+            .task(id: defaults.mainUserCityID) {
                 viewModel.updateUserCountryAndCity(with: defaults.mainUserInfo)
             }
             .task { await askForParks() }
