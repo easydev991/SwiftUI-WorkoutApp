@@ -1,15 +1,16 @@
 import SWDesignSystem
 import SwiftUI
+import SWModels
 
 extension ParksMapScreen {
     struct NoParksFoundView: View {
         let openCities: () -> Void
         let openFilter: () -> Void
-        let isHidden: Bool
+        let model: NoParksFoundModel
 
         var body: some View {
             ZStack {
-                if !isHidden {
+                if model.showNoParksFound {
                     VStack(spacing: 12) {
                         titleView
                         openCitiesButton
@@ -20,7 +21,7 @@ extension ParksMapScreen {
                     .transition(.scale(scale: 0.5).combined(with: .opacity))
                 }
             }
-            .animation(.default, value: isHidden)
+            .animation(.default, value: model.showNoParksFound)
         }
     }
 }
@@ -53,7 +54,7 @@ private extension ParksMapScreen.NoParksFoundView {
         openFilter: {
             print("открыть фильтры")
         },
-        isHidden: false
+        model: .preview
     )
 }
 #endif

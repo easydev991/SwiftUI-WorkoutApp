@@ -147,4 +147,13 @@ extension JournalEntryResponse {
 extension Int {
     static var previewUserID: Self { 30 }
 }
+
+extension NoParksFoundModel {
+    static let preview = Self(
+        isFilterEdited: true,
+        isFilteredParksEmpty: true,
+        didParksManagerLoad: true,
+        isLoading: false
+    )
+}
 #endif
