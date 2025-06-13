@@ -162,23 +162,6 @@ private extension ParksMapScreen.ViewModel {
             addressString = fullAddress
             logger.debug("Местоположение пользователя: \(fullAddress)")
         }
-        guard selectedCity == nil else {
-            let cityName = selectedCity!.name
-            logger.debug("Город для фильтра площадок уже определен: \(cityName)")
-            return
-        }
-        guard let cityName = placemark.locality else {
-            logger.error("Не удалось определить название города: \(placemark.debugDescription, privacy: .public)")
-            return
-        }
-        do {
-            let storedCity = try SWAddress().findCity(with: cityName)
-            logger.debug("Город пользователя для фильтра списка площадок: \(storedCity.name)")
-            updateSelectedCity(storedCity)
-        } catch {
-            logger.error("Не удалось найти город \(cityName) в списке сохраненных городов, ошибка: \(error.localizedDescription)")
-            updateSelectedCity(.defaultCity)
-        }
     }
 
     func resetTo(_ userCoordinates: (Double, Double)) {
