@@ -204,7 +204,7 @@ private extension ParksMapScreen {
             }
             return
         }
-        await getUpdatedParks(from: parksManager.lastParksUpdateDateString)
+        await getUpdatedParks()
     }
 
     func deletePark(id: Int) {
@@ -232,11 +232,10 @@ private extension ParksMapScreen {
         await getUpdatedParks(from: DateFormatterService.fiveMinutesAgoDateString)
     }
 
-    func getUpdatedParks(from dateString: String) async {
+    func getUpdatedParks(from dateString: String? = nil) async {
         isLoading = true
         do {
-            let updatedParks = try await SWClient(with: defaults).getUpdatedParks(from: dateString)
-            try parksManager.updateDefaultList(with: updatedParks)
+            try await parksManager.getUpdatedParks(with: defaults, from: dateString)
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {
