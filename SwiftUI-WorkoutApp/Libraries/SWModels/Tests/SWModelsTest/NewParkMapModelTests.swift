@@ -15,6 +15,7 @@ struct NewParkMapModelTests {
         #expect(model.latitude == coordinate.latitude)
         #expect(model.longitude == coordinate.longitude)
         #expect(model.cityId == cityId)
+        #expect(!model.isEmpty)
     }
 
     @Test("Проверка свойства coordinate")
@@ -67,6 +68,16 @@ struct NewParkMapModelTests {
             address: "Парк Горького",
             coordinate: .init(latitude: 55.7297, longitude: 0),
             cityId: 1
+        )
+        #expect(sut.isEmpty)
+    }
+
+    @Test("Проверка свойства isEmpty для модели с нулевым городом")
+    func isEmptyWithZeroCityId() {
+        let sut = SUT(
+            address: "Парк Горького",
+            coordinate: .init(latitude: 55.7297, longitude: 37.6014),
+            cityId: 0
         )
         #expect(sut.isEmpty)
     }

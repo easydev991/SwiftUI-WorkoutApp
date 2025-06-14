@@ -1,7 +1,7 @@
 import CoreLocation
 
 /// Модель для удобной работы с координатами
-public struct LocationCoordinate {
+public struct LocationCoordinate: Sendable {
     public let lat: Double
     public let lon: Double
 

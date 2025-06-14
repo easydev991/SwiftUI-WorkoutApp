@@ -53,13 +53,13 @@ extension SWAddress {
     }
 
     /// Координаты для страны/города (широта, долгота)
-    var coordinate: (Double, Double)? {
+    var coordinate: (lat: Double, lon: Double)? {
         guard countryId != 0, cityId != 0,
               let city = try? Self.city(with: cityId, in: countryId),
-              let latitude = Double(city.lat),
-              let longitude = Double(city.lon)
+              let lat = Double(city.lat),
+              let lon = Double(city.lon)
         else { return nil }
-        return (latitude, longitude)
+        return (lat, lon)
     }
 
     /// Название города

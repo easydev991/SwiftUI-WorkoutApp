@@ -35,6 +35,7 @@ extension ParksMapScreen {
 
         var canClearCityFilter: Bool { selectedCity != nil }
         @Published private(set) var region = MKCoordinateRegion()
+        /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
         @Published private var userCoordinate: (Double, Double) = (0, 0)
@@ -49,11 +50,16 @@ extension ParksMapScreen {
         }
 
         func userInfoDidChange(_ info: UserResponse?) {
-            guard let info, let newCoordinate = SWAddress(info.countryId, info.cityId)?.coordinate else {
+            guard let countryId = info?.countryId, let cityId = info?.cityId,
+                  let newCoordinate = SWAddress(countryId, cityId).coordinate else {
                 userCoordinate = (0, 0)
+                newParkMapModel.cityId = 0
                 return
             }
-            userCoordinate = newCoordinate
+            userCoordinate = (newCoordinate.lat, newCoordinate.lon)
+            // Сохраняем город пользователя для новой площадки на случай,
+            // если не получится определить город по локации с помощью CLGeocoder
+            newParkMapModel.cityId = cityId
         }
 
         func updateSelectedCity(_ newCity: City?) {
@@ -62,19 +68,9 @@ extension ParksMapScreen {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
-                resetTo(userCoordinate)
+                resetMapRegionTo(userCoordinate)
             }
         }
-    }
-}
-
-extension ParksMapScreen.ViewModel {
-    /// `true` - регион пользователя установлен, `false` - не установлен
-    var isRegionSet: Bool {
-        region.center.latitude != 0.0 &&
-            region.center.longitude != 0.0 &&
-            region.span.latitudeDelta > 0.0 &&
-            region.span.longitudeDelta > 0.0
     }
 }
 
@@ -82,7 +78,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
     func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         let coordinate = location.coordinate
-        if !isRegionSet {
+        if !region.isSpecified {
             region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
         let oldCoordinate = LocationCoordinate(region.center)
@@ -123,7 +119,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
     }
 
     func locationManager(_: CLLocationManager, didFailWithError _: Error) {
-        if !ignoreUserLocation, !isRegionSet {
+        if !ignoreUserLocation, !region.isSpecified {
             setupDefaultLocation(permissionDenied: false)
         }
     }
@@ -142,7 +138,7 @@ private extension ParksMapScreen.ViewModel {
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newCoordinates in
-                self?.resetTo(newCoordinates)
+                self?.resetMapRegionTo(newCoordinates)
             }
     }
 
@@ -150,7 +146,7 @@ private extension ParksMapScreen.ViewModel {
         locationErrorMessage = permissionDenied
             ? Strings.Alert.locationPermissionDenied
             : Strings.Alert.needLocationPermission
-        resetTo(userCoordinate)
+        resetMapRegionTo(userCoordinate)
     }
 
     /// Обновляет адрес для новой площадки, если нужно
@@ -178,7 +174,11 @@ private extension ParksMapScreen.ViewModel {
         }
     }
 
-    func resetTo(_ userCoordinate: (Double, Double)) {
+    /// Сбрасывает регион карты на точку пользователя из профиля
+    ///
+    /// Предварительно вычисляем широту и долготу при помощи  `SWAddress` на основе справочника стран/городов
+    /// - Parameter userCoordinate: Широта и долгота по данным профиля
+    func resetMapRegionTo(_ userCoordinate: (Double, Double)) {
         guard userCoordinate != (0, 0) else {
             ignoreUserLocation = true
             return
@@ -188,5 +188,6 @@ private extension ParksMapScreen.ViewModel {
             span: defaultCoordinateSpan
         )
         logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinate.0), \(userCoordinate.1)")
+        ignoreUserLocation = false
     }
 }
