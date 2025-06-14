@@ -19,6 +19,7 @@ struct ParticipantsScreen: View {
             }
             .padding()
         }
+        .background(Color.swBackground)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
     }
