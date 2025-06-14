@@ -19,6 +19,7 @@ struct ParticipantsScreen: View {
             }
             .padding()
         }
+        .background(Color.swBackground)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -29,7 +30,7 @@ struct ParticipantsScreen: View {
                 .init(
                     imageURL: user.avatarURL,
                     name: user.userName ?? "",
-                    address: SWAddress(user.countryID, user.cityID)?.address ?? ""
+                    address: SWAddress(user.countryId, user.cityId)?.address ?? ""
                 )
             )
         )

@@ -10,11 +10,11 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
     public var eventDescription: String?
     public let fullAddress: String?
     public var beginDate: String?
-    public var countryID, cityID: Int?
+    public var countryId, cityId: Int?
     public let commentsCount: Int?
     public var commentsOptional: [CommentResponse]?
     public let previewImageStringURL: String?
-    public var parkID: Int?
+    public var parkId: Int?
     public let latitude, longitude: String?
     /// Количество участников
     public let participantsCount: Int?
@@ -35,10 +35,10 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         case previewImageStringURL = "preview"
         case eventDescription = "description"
         case beginDate = "begin_date"
-        case countryID = "country_id"
-        case cityID = "city_id"
+        case countryId = "country_id"
+        case cityId = "city_id"
         case commentsCount = "comment_count"
-        case parkID = "area_id"
+        case parkId = "area_id"
         case participantsCount = "user_count"
         case isCurrent = "is_current"
         case photosOptional = "photos"
@@ -53,12 +53,12 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         eventDescription: String? = nil,
         fullAddress: String? = nil,
         beginDate: String? = nil,
-        countryID: Int? = nil,
-        cityID: Int? = nil,
+        countryId: Int? = nil,
+        cityId: Int? = nil,
         commentsCount: Int? = nil,
         commentsOptional: [CommentResponse]? = nil,
         previewImageStringURL: String? = nil,
-        parkID: Int? = nil,
+        parkId: Int? = nil,
         latitude: String? = nil,
         longitude: String? = nil,
         participantsCount: Int? = nil,
@@ -73,12 +73,12 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
         self.eventDescription = eventDescription
         self.fullAddress = fullAddress
         self.beginDate = beginDate
-        self.countryID = countryID
-        self.cityID = cityID
+        self.countryId = countryId
+        self.cityId = cityId
         self.commentsCount = commentsCount
         self.commentsOptional = commentsOptional
         self.previewImageStringURL = previewImageStringURL
-        self.parkID = parkID
+        self.parkId = parkId
         self.latitude = latitude
         self.longitude = longitude
         self.participantsCount = participantsCount
@@ -115,12 +115,12 @@ public extension EventResponse {
     var park: Park {
         get {
             .init(
-                id: parkID ?? 0,
-                typeID: 0,
-                sizeID: 0,
+                id: parkId ?? 0,
+                typeId: 0,
+                sizeId: 0,
                 address: fullAddress,
                 author: author,
-                cityID: cityID,
+                cityId: cityId,
                 commentsCount: nil,
                 createDate: nil,
                 latitude: latitude ?? "",
@@ -186,7 +186,7 @@ public extension EventResponse {
         set { trainHereOptional = newValue }
     }
 
-    var authorID: Int {
+    var authorId: Int {
         author?.id ?? 0
     }
 
@@ -217,12 +217,12 @@ public extension EventResponse {
             eventDescription: nil,
             fullAddress: nil,
             beginDate: nil,
-            countryID: nil,
-            cityID: nil,
+            countryId: nil,
+            cityId: nil,
             commentsCount: nil,
             commentsOptional: nil,
             previewImageStringURL: nil,
-            parkID: nil,
+            parkId: nil,
             latitude: nil,
             longitude: nil,
             participantsCount: nil,

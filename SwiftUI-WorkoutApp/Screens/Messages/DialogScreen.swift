@@ -93,7 +93,7 @@ private extension DialogScreen {
             LazyVStack(spacing: 6) {
                 ForEach(messages) { message in
                     ChatBubbleRowView(
-                        messageType: message.userID == defaults.mainUserInfo?.id
+                        messageType: message.userId == defaults.mainUserInfo?.id
                             ? .sent
                             : .incoming,
                         message: message.formattedMessage,
@@ -155,8 +155,8 @@ private extension DialogScreen {
     func markAsRead() async {
         guard dialog.hasUnreadMessages else { return }
         do {
-            let userID = dialog.anotherUserID ?? 0
-            if try await SWClient(with: defaults).markAsRead(from: userID) {
+            let userId = dialog.anotherUserId ?? 0
+            if try await SWClient(with: defaults).markAsRead(from: userId) {
                 markedAsReadClbk(dialog)
             }
         } catch {
@@ -182,8 +182,8 @@ private extension DialogScreen {
         isMessageBarFocused = false
         sendMessageTask = Task(priority: .userInitiated) {
             do {
-                let userID = dialog.anotherUserID ?? 0
-                if try await SWClient(with: defaults).sendMessage(newMessage, to: userID) {
+                let userId = dialog.anotherUserId ?? 0
+                if try await SWClient(with: defaults).sendMessage(newMessage, to: userId) {
                     newMessage = ""
                     await askForMessages(refresh: true)
                 }

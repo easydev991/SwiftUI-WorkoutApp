@@ -22,8 +22,8 @@ struct EventFormTests {
     }
 
     @Test
-    func isNotReadyToCreate_parkID() {
-        let form = makeForm(parkID: 0)
+    func isNotReadyToCreate_parkId() {
+        let form = makeForm(parkId: 0)
         #expect(!form.isReadyToCreate)
     }
 
@@ -85,8 +85,8 @@ struct EventFormTests {
     }
 
     @Test
-    func isReadyToUpdate_parkID() {
-        let oldForm = makeForm(parkID: 123)
+    func isReadyToUpdate_parkId() {
+        let oldForm = makeForm(parkId: 123)
         let newForm = makeForm()
         #expect(newForm.isReadyToUpdate(old: oldForm))
     }
@@ -115,7 +115,7 @@ private extension EventFormTests {
         title: String = "title",
         description: String = "description",
         date: Date = .now,
-        parkID: Int = 1,
+        parkId: Int = 1,
         parkName: String = "Площадка № 1",
         photosCount: Int = 0,
         newMediaFiles: [MediaFile] = []
@@ -124,7 +124,7 @@ private extension EventFormTests {
             title: title,
             description: description,
             date: date,
-            parkID: parkID,
+            parkId: parkId,
             parkName: parkName,
             photosCount: photosCount,
             newMediaFiles: newMediaFiles

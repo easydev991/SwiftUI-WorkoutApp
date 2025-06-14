@@ -16,10 +16,10 @@ struct JournalEntriesScreen: View {
     @State private var deleteEntryTask: Task<Void, Never>?
     @State private var updateEntriesTask: Task<Void, Never>?
     private let currentJournal: JournalResponse
-    private let userID: Int
+    private let userId: Int
 
-    init(for userID: Int, in journal: JournalResponse) {
-        self.userID = userID
+    init(for userId: Int, in journal: JournalResponse) {
+        self.userId = userId
         self.currentJournal = journal
     }
 
@@ -35,10 +35,10 @@ struct JournalEntriesScreen: View {
         .sheet(item: $editEntry) {
             TextEntryScreen(
                 mode: .editJournalEntry(
-                    ownerId: userID,
+                    ownerId: userId,
                     editInfo: .init(
-                        parentObjectID: currentJournal.id,
-                        entryID: $0.id,
+                        parentObjectId: currentJournal.id,
+                        entryId: $0.id,
                         oldEntry: $0.formattedMessage
                     )
                 ),
@@ -99,7 +99,7 @@ private extension JournalEntriesScreen {
     }
 
     var mainUserId: Int? { defaults.mainUserInfo?.id }
-    var isMainUser: Bool { userID == mainUserId }
+    var isMainUser: Bool { userId == mainUserId }
 
     @ViewBuilder
     var contentView: some View {
@@ -118,8 +118,8 @@ private extension JournalEntriesScreen {
                                 showDeleteDialog = true
                             }
                         ),
-                        mainUserID: mainUserId,
-                        isJournalOwner: isMainUser && mainUserId == currentJournal.ownerID
+                        mainUserId: mainUserId,
+                        isJournalOwner: isMainUser && mainUserId == currentJournal.ownerId
                     )
                 }
             }
@@ -143,7 +143,7 @@ private extension JournalEntriesScreen {
     @ViewBuilder
     var addEntryButtonIfNeeded: some View {
         let canCreateEntry = JournalAccess.canCreateEntry(
-            journalOwnerId: userID,
+            journalOwnerId: userId,
             journalCommentAccess: currentJournal.commentAccessType,
             mainUserId: defaults.mainUserInfo?.id,
             mainUserFriendsIds: defaults.friendsIdsList
@@ -157,7 +157,7 @@ private extension JournalEntriesScreen {
             .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryScreen(
                     mode: .newForJournal(
-                        ownerId: userID,
+                        ownerId: userId,
                         journalId: currentJournal.id
                     ),
                     refreshClbk: { updateEntries() }
@@ -210,8 +210,8 @@ private extension JournalEntriesScreen {
         }
         do {
             let entries = try await SWClient(with: defaults).getJournalEntries(
-                for: userID,
-                journalID: currentJournal.id
+                for: userId,
+                journalId: currentJournal.id
             )
             currentState = .ready(entries)
         } catch {
@@ -221,18 +221,18 @@ private extension JournalEntriesScreen {
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
-            guard let entryID = entryIdToDelete else { return }
+            guard let entryId = entryIdToDelete else { return }
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             guard case let .ready(entries) = currentState else { return }
             deleteEntryTask = Task {
                 currentState = .deleteEntryAction(entries)
                 do {
                     try await SWClient(with: defaults).deleteEntry(
-                        from: .journal(ownerId: userID, journalId: currentJournal.id),
-                        entryID: entryID
+                        from: .journal(ownerId: userId, journalId: currentJournal.id),
+                        entryId: entryId
                     )
                     defaults.setUserNeedUpdate(true)
-                    let updatedList = entries.filter { $0.id != entryID }
+                    let updatedList = entries.filter { $0.id != entryId }
                     currentState = .ready(updatedList)
                 } catch {
                     currentState = .ready(entries)

@@ -32,8 +32,10 @@ struct SettingsScreen: View {
                     }
                     dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
-                        workoutShopButton
-                        githubButton
+                        VStack(spacing: 4) {
+                            workoutShopButton
+                            githubButton
+                        }
                     }
                     #if DEBUG
                     dividerView

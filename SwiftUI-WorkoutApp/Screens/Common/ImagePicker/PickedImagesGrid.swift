@@ -1,4 +1,4 @@
-import ImagePicker
+import LegacyImagePicker
 import SWDesignSystem
 import SwiftUI
 
@@ -41,7 +41,7 @@ struct PickedImagesGrid: View {
                     .sheet(isPresented: $showImagePicker) {
                         processExtraImages()
                     } content: {
-                        ImagePicker(
+                        LegacyImagePicker(
                             pickedImages: $images,
                             selectionLimit: selectionLimit,
                             compressionQuality: 0

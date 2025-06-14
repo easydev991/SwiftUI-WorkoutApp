@@ -1,5 +1,4 @@
 import CoreLocation.CLLocation
-import ImagePicker
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -23,12 +22,12 @@ struct ParkFormScreen: View {
     init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
         self.mode = mode
         switch mode {
-        case let .createNew(address, coordinate, cityID):
+        case let .createNew(model):
             self.oldParkForm = .init(
-                address: address,
-                latitude: coordinate.latitude,
-                longitude: coordinate.longitude,
-                cityID: cityID
+                address: model.address,
+                latitude: model.coordinate.latitude,
+                longitude: model.coordinate.longitude,
+                cityId: model.cityId
             )
             _parkForm = .init(initialValue: oldParkForm)
         case let .editExisting(park):
@@ -55,14 +54,10 @@ struct ParkFormScreen: View {
 
 extension ParkFormScreen {
     enum Mode {
-        case createNew(
-            address: String,
-            coordinate: CLLocationCoordinate2D,
-            cityID: Int
-        )
+        case createNew(NewParkMapModel)
         case editExisting(Park)
 
-        var parkID: Int? {
+        var parkId: Int? {
             switch self {
             case .createNew: nil
             case let .editExisting(park): park.id
@@ -108,9 +103,9 @@ private extension ParkFormScreen {
 
     var typePicker: some View {
         Menu {
-            Picker("", selection: $parkForm.typeID) {
+            Picker("", selection: $parkForm.typeId) {
                 ForEach(ParkGrade.allCases.map(\.rawValue), id: \.self) {
-                    Text(ParkGrade(rawValue: $0).description)
+                    Text(ParkGrade(code: $0).description)
                 }
             }
         } label: {
@@ -123,9 +118,9 @@ private extension ParkFormScreen {
 
     var sizePicker: some View {
         Menu {
-            Picker("", selection: $parkForm.sizeID) {
+            Picker("", selection: $parkForm.sizeId) {
                 ForEach(ParkSize.allCases.map(\.rawValue), id: \.self) {
-                    Text(ParkSize(rawValue: $0).description)
+                    Text(ParkSize(code: $0).description)
                 }
             }
         } label: {
@@ -161,7 +156,7 @@ private extension ParkFormScreen {
             saveParkTask = Task {
                 do {
                     let newPark = try await SWClient(with: defaults)
-                        .savePark(id: mode.parkID, form: parkForm)
+                        .savePark(id: mode.parkId, form: parkForm)
                     if newPark.id != 0 {
                         dismiss()
                         refreshClbk()
@@ -177,7 +172,7 @@ private extension ParkFormScreen {
     }
 
     var isFormReady: Bool {
-        mode.parkID == nil
+        mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
     }

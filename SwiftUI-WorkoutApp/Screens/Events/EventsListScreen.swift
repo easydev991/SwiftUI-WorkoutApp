@@ -55,6 +55,12 @@ struct EventsListScreen: View {
                     rightBarButton
                 }
             }
+            .sheet(item: $selectedEvent) { event in
+                NavigationView {
+                    EventDetailsScreen(event: event) { removeEvent(id: $0) }
+                }
+                .navigationViewStyle(.stack)
+            }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -125,7 +131,7 @@ private extension EventsListScreen {
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,
                             dateTimeText: event.eventDateString,
-                            locationText: SWAddress(event.countryID, event.cityID)?.cityName
+                            locationText: SWAddress(event.countryId, event.cityId)?.cityName
                         )
                     }
                     .accessibilityIdentifier("EventViewCell")
@@ -134,12 +140,6 @@ private extension EventsListScreen {
             .padding()
         }
         .opacity(isLoading ? 0 : 1)
-        .sheet(item: $selectedEvent) { event in
-            NavigationView {
-                EventDetailsScreen(event: event) { removeEvent(id: $0) }
-            }
-            .navigationViewStyle(.stack)
-        }
     }
 
     @ViewBuilder

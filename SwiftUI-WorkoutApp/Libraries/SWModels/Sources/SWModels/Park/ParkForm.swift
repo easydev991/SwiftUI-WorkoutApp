@@ -3,9 +3,9 @@ public struct ParkForm: Codable, Sendable {
     public var address: String
     public var latitude: String
     public var longitude: String
-    public var cityID: Int
-    public var typeID: Int
-    public var sizeID: Int
+    public var cityId: Int
+    public var typeId: Int
+    public var sizeId: Int
     public let photosCount: Int
     public var newMediaFiles = [MediaFile]()
 
@@ -13,9 +13,9 @@ public struct ParkForm: Codable, Sendable {
         self.address = park.address ?? ""
         self.latitude = park.latitude
         self.longitude = park.longitude
-        self.cityID = park.cityID ?? 0
-        self.typeID = park.typeID
-        self.sizeID = park.sizeID
+        self.cityId = park.cityId ?? 0
+        self.typeId = park.typeId
+        self.sizeId = park.sizeId
         self.photosCount = park.photos.count
     }
 
@@ -23,27 +23,27 @@ public struct ParkForm: Codable, Sendable {
         address: String,
         latitude: Double,
         longitude: Double,
-        cityID: Int
+        cityId: Int
     ) {
         self.address = address
         self.latitude = latitude.description
         self.longitude = longitude.description
-        self.cityID = cityID
-        self.typeID = ParkGrade.soviet.rawValue
-        self.sizeID = ParkSize.small.rawValue
+        self.cityId = cityId
+        self.typeId = ParkGrade.soviet.rawValue
+        self.sizeId = ParkSize.small.rawValue
         self.photosCount = 0
     }
 }
 
 public extension ParkForm {
     var gradeString: String {
-        get { ParkGrade(rawValue: typeID).description }
-        set { typeID = Int(newValue) ?? 0 }
+        get { ParkGrade(code: typeId).description }
+        set { typeId = Int(newValue) ?? 0 }
     }
 
     var sizeString: String {
-        get { ParkSize(rawValue: sizeID).description }
-        set { sizeID = Int(newValue) ?? 0 }
+        get { ParkSize(code: sizeId).description }
+        set { sizeId = Int(newValue) ?? 0 }
     }
 
     /// Сколько еще фотографий можно добавить с учетом имеющихся
@@ -56,7 +56,7 @@ public extension ParkForm {
         !address.isEmpty
             && !latitude.isEmpty
             && !longitude.isEmpty
-            && cityID != .zero
+            && cityId != .zero
             && !newMediaFiles.isEmpty
     }
 
@@ -72,9 +72,9 @@ extension ParkForm: Equatable {
         lhs.address == rhs.address
             && lhs.latitude == rhs.latitude
             && lhs.longitude == rhs.longitude
-            && lhs.cityID == rhs.cityID
-            && lhs.typeID == rhs.typeID
-            && lhs.sizeID == rhs.sizeID
+            && lhs.cityId == rhs.cityId
+            && lhs.typeId == rhs.typeId
+            && lhs.sizeId == rhs.sizeId
             && lhs.newMediaFiles == rhs.newMediaFiles
     }
 }

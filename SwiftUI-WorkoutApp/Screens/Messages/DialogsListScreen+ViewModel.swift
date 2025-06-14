@@ -31,10 +31,10 @@ extension DialogsListScreen {
 
         func deleteDialog(at index: Int?, defaults: DefaultsService) async throws {
             guard let index, let dialogs = currentState.dialogs, currentState.isReadyAndNotEmpty else { return }
-            let dialogID = dialogs[index].id
-            let updatedDialogs = dialogs.filter { $0.id != dialogID }
+            let dialogId = dialogs[index].id
+            let updatedDialogs = dialogs.filter { $0.id != dialogId }
             currentState = .deleteDialog(updatedDialogs)
-            if try await SWClient(with: defaults).deleteDialog(dialogID) {
+            if try await SWClient(with: defaults).deleteDialog(dialogId) {
                 currentState = .ready(updatedDialogs)
                 updateUnreadMessagesCount(with: defaults)
             }

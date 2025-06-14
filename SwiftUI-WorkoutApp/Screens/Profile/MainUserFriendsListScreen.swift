@@ -131,7 +131,7 @@ private extension MainUserFriendsListScreen {
                 .init(
                     imageURL: model.avatarURL,
                     name: model.userName ?? "",
-                    address: SWAddress(model.countryID, model.cityID)?.address ?? ""
+                    address: SWAddress(model.countryId, model.cityId)?.address ?? ""
                 )
             )
         )
@@ -158,13 +158,13 @@ private extension MainUserFriendsListScreen {
         }
     }
 
-    func respondToFriendRequest(from userID: Int, accept: Bool) {
+    func respondToFriendRequest(from userId: Int, accept: Bool) {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         guard case let .ready(requests, friends) = currentState else { return }
         currentState = .friendRequestAction(friendRequests: requests, friends: friends)
         Task {
             do {
-                try await client.respondToFriendRequest(from: userID, accept: accept)
+                try await client.respondToFriendRequest(from: userId, accept: accept)
                 defaults.setUserNeedUpdate(true)
                 try await getFriendsAndRequests()
             } catch {

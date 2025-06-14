@@ -113,7 +113,7 @@ private extension WorkoutAppUITests {
     var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
     var firstParkCell: XCUIElement { app.buttons["ParkViewCell"].firstMatch }
     var pastEventsPickerButton: XCUIElement {
-        app.segmentedControls.firstMatch.buttons.element(for: "Прошедшие")
+        app.segmentedControls.firstMatch.buttons.element(boundBy: 1)
     }
 
     var firstEventViewCell: XCUIElement { app.buttons["EventViewCell"].firstMatch }

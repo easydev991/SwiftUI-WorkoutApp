@@ -115,17 +115,26 @@ struct SwiftUI_WorkoutAppApp: App {
     }
 
     private func updateAppIconBadgeIfNeeded(_ isAuthorized: Bool) {
+        let center = UNUserNotificationCenter.current()
         guard isAuthorized else {
-            UIApplication.shared.applicationIconBadgeNumber = 0
+            if #available(iOS 16.0, *) {
+                center.setBadgeCount(0)
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            }
             return
         }
         badgeUpdateTask?.cancel()
         badgeUpdateTask = Task {
-            let center = UNUserNotificationCenter.current()
             let granted = try? await center.requestAuthorization(options: [.badge])
             guard granted == true else { return }
-            guard UIApplication.shared.applicationIconBadgeNumber != defaults.appIconBadgeCount else { return }
-            UIApplication.shared.applicationIconBadgeNumber = defaults.appIconBadgeCount
+            let appIconBadgeCount = defaults.appIconBadgeCount
+            guard UIApplication.shared.applicationIconBadgeNumber != appIconBadgeCount else { return }
+            if #available(iOS 16.0, *) {
+                try? await center.setBadgeCount(appIconBadgeCount)
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = appIconBadgeCount
+            }
         }
     }
 }

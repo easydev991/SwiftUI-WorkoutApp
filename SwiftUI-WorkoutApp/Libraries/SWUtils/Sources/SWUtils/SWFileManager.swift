@@ -1,7 +1,7 @@
 import Foundation
 
 /// Обертка над `FileManager`
-public struct SWFileManager {
+public struct SWFileManager: Sendable {
     private var documentDirectoryURL: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }

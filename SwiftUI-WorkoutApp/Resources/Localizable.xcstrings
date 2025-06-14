@@ -427,6 +427,26 @@
         }
       }
     },
+    "Выбери город" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a city"
+          }
+        }
+      }
+    },
+    "Выбрать другой город" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose another city"
+          }
+        }
+      }
+    },
     "Выбрать из галереи" : {
       "localizations" : {
         "en" : {
@@ -1407,6 +1427,16 @@
         }
       }
     },
+    "Не нашли площадки для этого города" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No parks found for this city"
+          }
+        }
+      }
+    },
     "Не указан" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1694,6 +1724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открыть список друзей"
+          }
+        }
+      }
+    },
+    "Изменить фильтры" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change filters"
           }
         }
       }
@@ -2088,6 +2128,22 @@
         }
       }
     },
+    "Применить" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Применить"
+          }
+        }
+      }
+    },
     "Профиль" : {
       "localizations" : {
         "en" : {
@@ -2215,18 +2271,18 @@
         }
       }
     },
-    "Сбросить фильтры" : {
+    "Сбросить" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset filters"
+            "value" : "Reset"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сбросить фильтры"
+            "value" : "Сбросить"
           }
         }
       }

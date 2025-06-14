@@ -5,7 +5,7 @@ import SWUtils
 public struct EventForm: Codable, Sendable, Equatable {
     public var title, description: String
     public var date: Date
-    public var parkID: Int
+    public var parkId: Int
     public var parkName: String
     public let photosCount: Int
     public var newMediaFiles: [MediaFile]
@@ -15,7 +15,7 @@ public struct EventForm: Codable, Sendable, Equatable {
         title: String = "",
         description: String = "",
         date: Date = .now,
-        parkID: Int = 0,
+        parkId: Int = 0,
         parkName: String? = nil,
         photosCount: Int = 0,
         newMediaFiles: [MediaFile] = []
@@ -23,7 +23,7 @@ public struct EventForm: Codable, Sendable, Equatable {
         self.title = title
         self.description = description
         self.date = date
-        self.parkID = parkID
+        self.parkId = parkId
         self.parkName = parkName ?? "Выбрать площадку"
         self.photosCount = photosCount
         self.newMediaFiles = newMediaFiles
@@ -32,21 +32,21 @@ public struct EventForm: Codable, Sendable, Equatable {
     /// Инициализатор для создания формы на основе существующего мероприятия
     public init(_ event: EventResponse?) {
         let park = event?.park
-        let parkID = park?.id ?? event?.parkID
+        let parkId = park?.id ?? event?.parkId
         let parkName = park?.longTitle ?? park?.title
         self.init(
             title: event?.formattedTitle ?? "",
             description: event?.formattedDescription ?? "",
             date: DateFormatterService.dateFromIsoString(event?.beginDate),
-            parkID: parkID ?? 0,
+            parkId: parkId ?? 0,
             parkName: parkName ?? "Выбрать площадку",
             photosCount: event?.photos.count ?? 0
         )
     }
 
-    public init(_ parkID: Int, _ parkName: String) {
+    public init(_ parkId: Int, _ parkName: String) {
         self.init(
-            parkID: parkID,
+            parkId: parkId,
             parkName: parkName
         )
     }
@@ -69,7 +69,7 @@ public extension EventForm {
 
     /// Готовность формы к созданию нового мероприятия
     var isReadyToCreate: Bool {
-        !title.isEmpty && !description.isEmpty && parkID != 0
+        !title.isEmpty && !description.isEmpty && parkId != 0
     }
 
     /// Готовность формы к отправке обновлений по мероприятию

@@ -5,7 +5,7 @@ import SWModels
 /// Секция с заявками на добавление в друзья
 struct FriendRequestsView: View {
     let friendRequests: [UserResponse]
-    let action: (_ userID: Int, _ accept: Bool) -> Void
+    let action: (_ userId: Int, _ accept: Bool) -> Void
 
     var body: some View {
         if !friendRequests.isEmpty {
@@ -17,7 +17,7 @@ struct FriendRequestsView: View {
                                 .init(
                                     imageURL: item.avatarURL,
                                     name: item.userName ?? "",
-                                    address: SWAddress(item.countryID, item.cityID)?.address ?? ""
+                                    address: SWAddress(item.countryId, item.cityId)?.address ?? ""
                                 ),
                                 .init(
                                     accept: { action(item.id, true) },

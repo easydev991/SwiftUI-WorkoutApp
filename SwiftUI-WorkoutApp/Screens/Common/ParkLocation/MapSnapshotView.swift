@@ -35,7 +35,7 @@ extension MapSnapshotView {
         let latitude: Double
         let longitude: Double
 
-        var coordinate: CLLocationCoordinate2D {
+        var coordinate2D: CLLocationCoordinate2D {
             .init(latitude: latitude, longitude: longitude)
         }
 
@@ -49,11 +49,13 @@ private extension MapSnapshotView {
     func makeContentView(width: CGFloat) -> some View {
         ZStack {
             if let snapshotImage {
-                Image(uiImage: snapshotImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: width, height: height)
-                    .transition(.opacity.combined(with: .scale))
+                NavigationLink(destination: SingleParkMapScreen(lat: mapModel.latitude, lon: mapModel.longitude)) {
+                    Image(uiImage: snapshotImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: width, height: height)
+                        .transition(.opacity.combined(with: .scale))
+                }
             } else {
                 Image.defaultWorkout
                     .resizable()
@@ -80,7 +82,7 @@ private extension MapSnapshotView {
         let regionRadius: CLLocationDistance = 1000
         let options = MKMapSnapshotter.Options()
         options.region = .init(
-            center: mapModel.coordinate,
+            center: mapModel.coordinate2D,
             latitudinalMeters: regionRadius,
             longitudinalMeters: regionRadius
         )
@@ -93,7 +95,7 @@ private extension MapSnapshotView {
             let image = await withCheckedContinuation { continuation in
                 let result = UIGraphicsImageRenderer(size: options.size).image { _ in
                     snapshot.image.draw(at: .zero)
-                    let point = snapshot.point(for: mapModel.coordinate)
+                    let point = snapshot.point(for: mapModel.coordinate2D)
                     let annotationView = MKMarkerAnnotationView(
                         annotation: nil,
                         reuseIdentifier: nil
@@ -123,7 +125,7 @@ private extension MapSnapshotView {
 
 #if DEBUG
 #Preview {
-    VStack {
+    NavigationView {
         MapSnapshotView(
             mapModel: .init(
                 latitude: 55.687001,

@@ -17,7 +17,7 @@ struct JournalsListScreen: View {
     @State private var updateListTask: Task<Void, Never>?
     @State private var saveJournalTask: Task<Void, Never>?
     @State private var deleteJournalTask: Task<Void, Never>?
-    let userID: Int
+    let userId: Int
 
     var body: some View {
         ScrollView {
@@ -130,7 +130,7 @@ private extension JournalsListScreen {
             LazyVStack(spacing: 12) {
                 ForEach(journals) { journal in
                     NavigationLink {
-                        JournalEntriesScreen(for: userID, in: journal)
+                        JournalEntriesScreen(for: userId, in: journal)
                     } label: {
                         JournalCell(
                             model: .init(journalResponse: journal),
@@ -138,8 +138,8 @@ private extension JournalsListScreen {
                                 setupClbk: { setupJournalToEdit(journal) },
                                 deleteClbk: { initiateDeletion(for: journal.id) }
                             ),
-                            mainUserID: defaults.mainUserInfo?.id,
-                            isJournalOwner: journal.ownerID == defaults.mainUserInfo?.id
+                            mainUserId: defaults.mainUserInfo?.id,
+                            isJournalOwner: journal.ownerId == defaults.mainUserInfo?.id
                         )
                     }
                 }
@@ -152,7 +152,7 @@ private extension JournalsListScreen {
     }
 
     var isMainUser: Bool {
-        userID == defaults.mainUserInfo?.id
+        userId == defaults.mainUserInfo?.id
     }
 
     var showAddJournalButton: Bool {
@@ -175,17 +175,17 @@ private extension JournalsListScreen {
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-            guard let journalID = journalIdToDelete else { return }
+            guard let journalId = journalIdToDelete else { return }
             guard case let .ready(journals) = currentState else { return }
             deleteJournalTask = Task {
                 currentState = .deleteJournalAction(journals)
                 do {
                     try await SWClient(with: defaults).deleteJournal(
-                        with: journalID,
+                        with: journalId,
                         for: defaults.mainUserInfo?.id
                     )
                     defaults.setUserNeedUpdate(true)
-                    let updatedList = journals.filter { $0.id != journalID }
+                    let updatedList = journals.filter { $0.id != journalId }
                     currentState = .ready(updatedList)
                 } catch {
                     currentState = .ready(journals)
@@ -224,7 +224,7 @@ private extension JournalsListScreen {
             currentState = .loading
         }
         do {
-            let journals = try await SWClient(with: defaults).getJournals(for: userID)
+            let journals = try await SWClient(with: defaults).getJournals(for: userId)
             currentState = .ready(journals)
         } catch {
             currentState = .error(.common(message: error.localizedDescription))
@@ -262,8 +262,8 @@ private extension JournalsListScreen {
         }
     }
 
-    func initiateDeletion(for journalID: Int) {
-        journalIdToDelete = journalID
+    func initiateDeletion(for journalId: Int) {
+        journalIdToDelete = journalId
         showDeleteDialog.toggle()
     }
 
@@ -274,7 +274,7 @@ private extension JournalsListScreen {
 
 #if DEBUG
 #Preview {
-    JournalsListScreen(userID: .previewUserID)
+    JournalsListScreen(userId: .previewUserId)
         .environmentObject(DefaultsService())
 }
 #endif
