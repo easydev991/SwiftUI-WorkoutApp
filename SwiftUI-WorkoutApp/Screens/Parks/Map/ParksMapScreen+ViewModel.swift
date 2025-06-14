@@ -64,7 +64,7 @@ extension ParksMapScreen {
 
         func updateSelectedCity(_ newCity: City?) {
             selectedCity = newCity
-            if let newCity, let coordinate = newCity.coordinate {
+            if let newCity, let coordinate = newCity.coordinate2d {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
@@ -181,13 +181,15 @@ private extension ParksMapScreen.ViewModel {
     func resetMapRegionTo(_ userCoordinate: (Double, Double)) {
         guard userCoordinate != (0, 0) else {
             ignoreUserLocation = true
+            updateSelectedCity(.defaultCity)
+            logger.debug("Регион карты сброшен к координатам Москвы (пользователь не авторизовался)")
             return
         }
         region = .init(
             center: .init(latitude: userCoordinate.0, longitude: userCoordinate.1),
             span: defaultCoordinateSpan
         )
-        logger.debug("Регион карты сброшен к координатам пользователя из профиля: \(userCoordinate.0), \(userCoordinate.1)")
+        logger.debug("Регион карты сброшен к координатам: \(userCoordinate.0), \(userCoordinate.1)")
         ignoreUserLocation = false
     }
 }

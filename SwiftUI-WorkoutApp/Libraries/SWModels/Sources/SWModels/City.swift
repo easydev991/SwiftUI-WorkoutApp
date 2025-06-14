@@ -25,7 +25,7 @@ public struct City: Codable, Identifiable, Hashable, Sendable {
 
 public extension City {
     /// Координаты города как `CLLocationCoordinate2D`
-    var coordinate: CLLocationCoordinate2D? {
+    var coordinate2d: CLLocationCoordinate2D? {
         guard let latitude = Double(lat), let longitude = Double(lon) else {
             assertionFailure("Не смогли определить координаты города \(name): lat \(lat), lon \(lon)")
             return nil
