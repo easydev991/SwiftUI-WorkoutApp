@@ -24,6 +24,15 @@ struct ParksListScreen: View {
         }
         .loadingOverlay(if: currentState.isLoading)
         .background(Color.swBackground)
+        .onChange(of: currentState) { newState in
+            if newState.isReadyAndEmpty {
+                dismiss()
+            }
+        }
+        .task { await askForParks() }
+        .refreshable {
+            await askForParks(refresh: true)
+        }
         .sheet(item: $selectedPark) { park in
             NavigationView {
                 ParkDetailScreen(
@@ -33,15 +42,6 @@ struct ParksListScreen: View {
                 )
             }
             .navigationViewStyle(.stack)
-        }
-        .onChange(of: currentState) { newState in
-            if newState.isReadyAndEmpty {
-                dismiss()
-            }
-        }
-        .task { await askForParks() }
-        .refreshable {
-            await askForParks(refresh: true)
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

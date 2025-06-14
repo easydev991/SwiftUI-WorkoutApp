@@ -46,12 +46,6 @@ struct EventDetailsScreen: View {
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
-        .background {
-            NavigationLink(
-                destination: lazyDestination,
-                isActive: $navigationDestination.mappedToBool()
-            )
-        }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .sheet(item: $sheetItem, content: makeSheetContent)
@@ -68,6 +62,12 @@ struct EventDetailsScreen: View {
                 }
                 shareButton
             }
+        }
+        .background {
+            NavigationLink(
+                destination: lazyDestination,
+                isActive: $navigationDestination.mappedToBool()
+            )
         }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
