@@ -45,17 +45,11 @@ struct ParkDetailScreen: View {
             .padding(.top, 8)
             .padding([.horizontal, .bottom])
         }
-        .background {
-            NavigationLink(
-                destination: lazyDestination,
-                isActive: $navigationDestination.mappedToBool()
-            )
-        }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .sheet(item: $sheetItem, content: makeSheetContent)
         .task { await askForInfo() }
         .refreshable { await askForInfo(refresh: true) }
+        .sheet(item: $sheetItem, content: makeSheetContent)
         .onChange(of: defaults.isAuthorized) { isAuth in
             if !isAuth { dismiss() }
         }
@@ -72,6 +66,12 @@ struct ParkDetailScreen: View {
                 }
                 shareButton
             }
+        }
+        .background {
+            NavigationLink(
+                destination: lazyDestination,
+                isActive: $navigationDestination.mappedToBool()
+            )
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
