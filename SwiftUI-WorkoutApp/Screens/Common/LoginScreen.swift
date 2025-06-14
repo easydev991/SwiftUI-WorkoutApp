@@ -104,7 +104,7 @@ private extension LoginScreen {
                 let model = AuthData(login: credentials.login, password: credentials.password)
                 let userId = try await client.logIn(with: model.token)
                 defaults.saveAuthData(model)
-                let result = try await client.getSocialUpdates(userID: userId)
+                let result = try await client.getSocialUpdates(userId: userId)
                 try defaults.saveFriendsIds(result.friends.map(\.id))
                 try defaults.saveFriendRequests(result.friendRequests)
                 try defaults.saveBlacklist(result.blacklist)

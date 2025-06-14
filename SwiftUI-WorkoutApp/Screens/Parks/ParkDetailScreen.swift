@@ -120,7 +120,7 @@ private extension ParkDetailScreen {
                 isLoading = true
                 deleteParkTask = Task {
                     do {
-                        if try await SWClient(with: defaults).delete(parkID: park.id) {
+                        if try await SWClient(with: defaults).delete(parkId: park.id) {
                             defaults.setUserNeedUpdate(true)
                             onDelete(park.id)
                         }
@@ -213,8 +213,8 @@ private extension ParkDetailScreen {
             TextEntryScreen(
                 mode: .editPark(
                     .init(
-                        parentObjectID: parkId,
-                        entryID: commentId,
+                        parentObjectId: parkId,
+                        entryId: commentId,
                         oldEntry: commentBody
                     )
                 ),
@@ -272,7 +272,7 @@ private extension ParkDetailScreen {
                             .init(
                                 imageURL: user.avatarURL,
                                 name: user.userName ?? "",
-                                address: SWAddress(user.countryID, user.cityID)?.address ?? ""
+                                address: SWAddress(user.countryId, user.cityId)?.address ?? ""
                             )
                         )
                     )
@@ -366,7 +366,7 @@ private extension ParkDetailScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                if try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryID: id) {
+                if try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryId: id) {
                     park.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
@@ -382,7 +382,7 @@ private extension ParkDetailScreen {
         deletePhotoTask = Task {
             do {
                 if try await SWClient(with: defaults).deletePhoto(
-                    from: .park(.init(containerID: park.id, photoID: id))
+                    from: .park(.init(containerId: park.id, photoId: id))
                 ) {
                     park.photos = park.removePhotoById(id)
                 }
@@ -417,7 +417,7 @@ private extension ParkDetailScreen {
 
     var isParkAuthor: Bool {
         defaults.isAuthorized
-            ? park.authorID == defaults.mainUserInfo?.id
+            ? park.authorId == defaults.mainUserInfo?.id
             : false
     }
 

@@ -126,8 +126,8 @@ private extension UserDetailsScreen {
         isLoading = true
         friendActionTask = Task {
             do {
-                try await SWClient(with: defaults).friendAction(userID: user.id, option: socialActions.friend)
-                defaults.updateFriendIds(friendID: user.id, action: socialActions.friend)
+                try await SWClient(with: defaults).friendAction(userId: user.id, option: socialActions.friend)
+                defaults.updateFriendIds(friendId: user.id, action: socialActions.friend)
                 switch socialActions.friend {
                 case .add:
                     socialActions.isFriendRequestSent = true
@@ -196,7 +196,7 @@ private extension UserDetailsScreen {
 
     func makeUserInfo() async {
         do {
-            user = try await SWClient(with: defaults).getUserByID(user.id)
+            user = try await SWClient(with: defaults).getUserById(user.id)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }

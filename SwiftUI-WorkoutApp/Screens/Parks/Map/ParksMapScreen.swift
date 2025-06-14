@@ -17,11 +17,11 @@ struct ParksMapScreen: View {
     /// Отфильтрованные по выбранному городу и активным фильтрам площадки
     private var filteredParks: [Park] {
         let regularParks = parksManager.fullList.filter { park in
-            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeID)
-                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeID)
+            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeId)
+                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeId)
         }
         return if let selectedCity = viewModel.selectedCity {
-            regularParks.filter { $0.cityID == Int(selectedCity.id) }
+            regularParks.filter { $0.cityId == Int(selectedCity.id) }
         } else {
             regularParks
         }
@@ -37,7 +37,7 @@ struct ParksMapScreen: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
-            .task(id: defaults.mainUserCityID) {
+            .task(id: defaults.mainUserCityId) {
                 viewModel.userInfoDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }

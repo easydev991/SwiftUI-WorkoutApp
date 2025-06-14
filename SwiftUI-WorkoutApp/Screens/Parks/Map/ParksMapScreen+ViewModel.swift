@@ -49,7 +49,7 @@ extension ParksMapScreen {
         }
 
         func userInfoDidChange(_ info: UserResponse?) {
-            guard let info, let newCoordinate = SWAddress(info.countryID, info.cityID)?.coordinate else {
+            guard let info, let newCoordinate = SWAddress(info.countryId, info.cityId)?.coordinate else {
                 userCoordinate = (0, 0)
                 return
             }

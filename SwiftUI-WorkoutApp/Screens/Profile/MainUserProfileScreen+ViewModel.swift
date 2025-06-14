@@ -22,7 +22,7 @@ extension MainUserProfileScreen {
             if !refresh || defaults.needUpdateUser {
                 currentState = .loading
             }
-            let result = try await SWClient(with: defaults).getSocialUpdates(userID: userId)
+            let result = try await SWClient(with: defaults).getSocialUpdates(userId: userId)
             try defaults.saveFriendsIds(result.friends.map(\.id))
             try defaults.saveFriendRequests(result.friendRequests)
             try defaults.saveBlacklist(result.blacklist)

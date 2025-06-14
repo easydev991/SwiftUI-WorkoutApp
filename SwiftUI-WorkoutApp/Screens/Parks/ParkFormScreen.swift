@@ -27,7 +27,7 @@ struct ParkFormScreen: View {
                 address: model.address,
                 latitude: model.coordinate.latitude,
                 longitude: model.coordinate.longitude,
-                cityID: model.cityId
+                cityId: model.cityId
             )
             _parkForm = .init(initialValue: oldParkForm)
         case let .editExisting(park):
@@ -57,7 +57,7 @@ extension ParkFormScreen {
         case createNew(NewParkMapModel)
         case editExisting(Park)
 
-        var parkID: Int? {
+        var parkId: Int? {
             switch self {
             case .createNew: nil
             case let .editExisting(park): park.id
@@ -103,7 +103,7 @@ private extension ParkFormScreen {
 
     var typePicker: some View {
         Menu {
-            Picker("", selection: $parkForm.typeID) {
+            Picker("", selection: $parkForm.typeId) {
                 ForEach(ParkGrade.allCases.map(\.rawValue), id: \.self) {
                     Text(ParkGrade(code: $0).description)
                 }
@@ -118,7 +118,7 @@ private extension ParkFormScreen {
 
     var sizePicker: some View {
         Menu {
-            Picker("", selection: $parkForm.sizeID) {
+            Picker("", selection: $parkForm.sizeId) {
                 ForEach(ParkSize.allCases.map(\.rawValue), id: \.self) {
                     Text(ParkSize(code: $0).description)
                 }
@@ -156,7 +156,7 @@ private extension ParkFormScreen {
             saveParkTask = Task {
                 do {
                     let newPark = try await SWClient(with: defaults)
-                        .savePark(id: mode.parkID, form: parkForm)
+                        .savePark(id: mode.parkId, form: parkForm)
                     if newPark.id != 0 {
                         dismiss()
                         refreshClbk()
@@ -172,7 +172,7 @@ private extension ParkFormScreen {
     }
 
     var isFormReady: Bool {
-        mode.parkID == nil
+        mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
     }

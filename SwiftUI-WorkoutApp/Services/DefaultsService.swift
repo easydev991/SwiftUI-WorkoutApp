@@ -53,8 +53,8 @@ final class DefaultsService: ObservableObject, AuthHelper {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
 
-    var mainUserCityID: Int {
-        mainUserInfo?.cityID ?? 0
+    var mainUserCityId: Int {
+        mainUserInfo?.cityId ?? 0
     }
 
     var blacklistedUsers: [UserResponse] {
@@ -149,12 +149,12 @@ final class DefaultsService: ObservableObject, AuthHelper {
     ///
     /// Если друга удаляют, то удаляем его `id` из списка сохраненных друзей
     /// - Parameters:
-    ///   - friendID: `id` друга
+    ///   - friendId: `id` друга
     ///   - action: действие с другом (отправка заявки/удаление)
-    func updateFriendIds(friendID: Int, action: FriendAction) {
+    func updateFriendIds(friendId: Int, action: FriendAction) {
         var newList = friendsIdsList
         guard case .remove = action else { return }
-        newList.removeAll(where: { $0 == friendID })
+        newList.removeAll(where: { $0 == friendId })
         try? saveFriendsIds(newList)
     }
 

@@ -5,7 +5,7 @@ import SWUtils
 public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
     public let id: Int
     public let userName, fullName, email, imageStringURL: String?
-    public let cityID, countryID, genderCode, friendsCount, journalsCount: Int?
+    public let cityId, countryId, genderCode, friendsCount, journalsCount: Int?
     public let addedParks: [Park]?
     /// Пример: "1990-11-25"
     let birthDateIsoString: String?
@@ -15,8 +15,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         case id
         case userName = "name"
         case imageStringURL = "image"
-        case cityID = "city_id"
-        case countryID = "country_id"
+        case cityId = "city_id"
+        case countryId = "country_id"
         case genderCode = "gender"
         case birthDateIsoString = "birth_date"
         case fullName = "fullname"
@@ -34,8 +34,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         email: String? = nil,
         imageStringURL: String? = nil,
         birthDateIsoString: String? = nil,
-        cityID: Int? = nil,
-        countryID: Int? = nil,
+        cityId: Int? = nil,
+        countryId: Int? = nil,
         genderCode: Int? = nil,
         friendsCount: Int? = nil,
         journalsCount: Int? = nil,
@@ -48,8 +48,8 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
         self.email = email
         self.imageStringURL = imageStringURL
         self.birthDateIsoString = birthDateIsoString
-        self.cityID = cityID
-        self.countryID = countryID
+        self.cityId = cityId
+        self.countryId = countryId
         self.genderCode = genderCode
         self.friendsCount = friendsCount
         self.journalsCount = journalsCount
@@ -59,7 +59,7 @@ public struct UserResponse: Codable, Identifiable, Hashable, Sendable {
 
     public init(dialog: DialogResponse) {
         self.init(
-            id: dialog.anotherUserID ?? 0,
+            id: dialog.anotherUserId ?? 0,
             userName: dialog.anotherUserName,
             imageStringURL: dialog.anotherUserImageURL?.absoluteString
         )
@@ -163,7 +163,7 @@ public extension UserResponse {
             && avatarURL != nil
             && userName != ""
             && age != 0
-            && countryID != 0
+            && countryId != 0
     }
 
     static var emptyValue: UserResponse {
@@ -174,8 +174,8 @@ public extension UserResponse {
             email: nil,
             imageStringURL: nil,
             birthDateIsoString: nil,
-            cityID: nil,
-            countryID: nil,
+            cityId: nil,
+            countryId: nil,
             genderCode: nil,
             friendsCount: nil,
             journalsCount: nil,

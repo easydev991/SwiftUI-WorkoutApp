@@ -6,7 +6,7 @@ struct JournalCell: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     let model: JournalCommonInfo
     let mode: Mode
-    let mainUserID: Int?
+    let mainUserId: Int?
     let isJournalOwner: Bool
 
     var body: some View {
@@ -41,7 +41,7 @@ private extension JournalCell {
     typealias OptionButton = JournalRowView.Model.GenericButtonModel
     var menuOptions: [OptionButton] {
         guard isNetworkConnected else { return [] }
-        let isEntryByMainUser = model.authorID == mainUserID
+        let isEntryByMainUser = model.authorId == mainUserId
         switch mode {
         case let .root(setupClbk, deleteClbk):
             return isEntryByMainUser
@@ -72,7 +72,7 @@ private extension JournalCell {
     JournalCell(
         model: .init(journalEntryResponse: .preview),
         mode: .root(setupClbk: {}, deleteClbk: {}),
-        mainUserID: nil,
+        mainUserId: nil,
         isJournalOwner: true
     )
 }

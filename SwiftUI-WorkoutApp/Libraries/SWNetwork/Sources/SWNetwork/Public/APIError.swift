@@ -8,7 +8,7 @@ public enum APIError: Error, LocalizedError, Equatable {
     case notFound
     case payloadTooLarge
     case serverError
-    case invalidUserID
+    case invalidUserId
     case customError(code: Int, message: String)
     case decodingError
     case notConnectedToInternet
@@ -72,7 +72,7 @@ public enum APIError: Error, LocalizedError, Equatable {
             NSLocalizedString("Error.PayloadTooLarge", bundle: .module, comment: "Объем данных для загрузки на сервер превышает лимит")
         case .serverError:
             NSLocalizedString("Error.ServerError", bundle: .module, comment: "Внутренняя ошибка сервера")
-        case .invalidUserID:
+        case .invalidUserId:
             NSLocalizedString("Error.InvalidUserID", bundle: .module, comment: "Некорректный идентификатор пользователя")
         case let .customError(code, error):
             "\(code), \(error)"

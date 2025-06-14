@@ -11,7 +11,7 @@ extension ProfileViews {
             imageURL: user.avatarURL,
             login: user.userName ?? "",
             genderWithAge: user.genderWithAge,
-            countryAndCity: SWAddress(user.countryID, user.cityID)?.address ?? ""
+            countryAndCity: SWAddress(user.countryId, user.cityId)?.address ?? ""
         )
         .padding(24)
     }
@@ -49,7 +49,7 @@ extension ProfileViews {
     static func makeUsedParks(for user: UserResponse) -> some View {
         if user.hasUsedParks {
             NavigationLink {
-                ParksListScreen(mode: .usedBy(userID: user.id))
+                ParksListScreen(mode: .usedBy(userId: user.id))
             } label: {
                 FormRowView(
                     title: "Где тренируется",
@@ -86,7 +86,7 @@ extension ProfileViews {
     ) -> some View {
         if user.hasJournals || isMainUser {
             NavigationLink {
-                JournalsListScreen(userID: user.id)
+                JournalsListScreen(userId: user.id)
                     .navigationTitle("Дневники")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {

@@ -40,8 +40,8 @@ public struct MainUserForm: Codable, Equatable, Sendable {
             password: "",
             birthDate: user.birthDate,
             gender: user.genderCode ?? 0,
-            country: .init(cities: [], id: (user.countryID ?? 0).description, name: ""),
-            city: .init(id: (user.cityID ?? 0).description)
+            country: .init(cities: [], id: (user.countryId ?? 0).description, name: ""),
+            city: .init(id: (user.cityId ?? 0).description)
         )
     }
 }

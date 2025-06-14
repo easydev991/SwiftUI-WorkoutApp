@@ -27,8 +27,8 @@ struct ParkFormTests {
     }
 
     @Test
-    func isNotReadyToCreate_cityID() {
-        let form = makeForm(cityID: 0)
+    func isNotReadyToCreate_cityId() {
+        let form = makeForm(cityId: 0)
         #expect(!form.isReadyToCreate)
     }
 
@@ -80,22 +80,22 @@ struct ParkFormTests {
     }
 
     @Test
-    func isReadyToUpdate_cityID() {
-        let oldForm = makeForm(cityID: 123)
+    func isReadyToUpdate_cityId() {
+        let oldForm = makeForm(cityId: 123)
         let newForm = makeForm()
         #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
     @Test
-    func isReadyToUpdate_typeID() {
-        let oldForm = makeForm(typeID: 123)
+    func isReadyToUpdate_typeId() {
+        let oldForm = makeForm(typeId: 123)
         let newForm = makeForm()
         #expect(newForm.isReadyToUpdate(old: oldForm))
     }
 
     @Test
-    func isReadyToUpdate_sizeID() {
-        let oldForm = makeForm(sizeID: 123)
+    func isReadyToUpdate_sizeId() {
+        let oldForm = makeForm(sizeId: 123)
         let newForm = makeForm()
         #expect(newForm.isReadyToUpdate(old: oldForm))
     }
@@ -119,19 +119,19 @@ private extension ParkFormTests {
         address: String = "address",
         latitude: String = "latitude",
         longitude: String = "longitude",
-        cityID: Int = 1,
-        typeID: Int = 1,
-        sizeID: Int = 1,
+        cityId: Int = 1,
+        typeId: Int = 1,
+        sizeId: Int = 1,
         photosCount _: Int = 1,
         newMediaFiles: [MediaFile] = [.init(imageData: .init(), forKey: "1")]
     ) -> ParkForm {
         let park = Park(
             id: 1,
-            typeID: typeID,
-            sizeID: sizeID,
+            typeId: typeId,
+            sizeId: sizeId,
             address: address,
             author: nil,
-            cityID: cityID,
+            cityId: cityId,
             commentsCount: nil,
             createDate: nil,
             latitude: latitude,

@@ -53,7 +53,7 @@ extension TextEntryScreen {
         case editJournalEntry(ownerId: Int, editInfo: EditInfo)
 
         struct EditInfo {
-            let parentObjectID, entryID: Int
+            let parentObjectId, entryId: Int
             let oldEntry: String
         }
     }
@@ -105,20 +105,20 @@ private extension TextEntryScreen {
                     )
                 case let .editPark(info):
                     try await client.editEntry(
-                        for: .park(id: info.parentObjectID),
-                        entryID: info.entryID,
+                        for: .park(id: info.parentObjectId),
+                        entryId: info.entryId,
                         newEntryText: entryText
                     )
                 case let .editEvent(info):
                     try await client.editEntry(
-                        for: .event(id: info.parentObjectID),
-                        entryID: info.entryID,
+                        for: .event(id: info.parentObjectId),
+                        entryId: info.entryId,
                         newEntryText: entryText
                     )
                 case let .editJournalEntry(ownerId, info):
                     try await client.editEntry(
-                        for: .journal(ownerId: ownerId, journalId: info.parentObjectID),
-                        entryID: info.entryID,
+                        for: .journal(ownerId: ownerId, journalId: info.parentObjectId),
+                        entryId: info.entryId,
                         newEntryText: entryText
                     )
                 }

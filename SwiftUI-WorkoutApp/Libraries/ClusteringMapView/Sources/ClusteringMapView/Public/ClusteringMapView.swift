@@ -75,8 +75,8 @@ public struct ClusteringMapView: UIViewRepresentable {
 
 public extension ClusteringMapView {
     final class Coordinator: NSObject, MKMapViewDelegate {
-        private let annotationID = "RegularAnnotation"
-        private let clusterID = "Cluster"
+        private let annotationId = "RegularAnnotation"
+        private let clusterId = "Cluster"
         private let parent: ClusteringMapView
 
         init(_ parent: ClusteringMapView) { self.parent = parent }
@@ -98,14 +98,14 @@ public extension ClusteringMapView {
             switch annotation {
             case is MKUserLocation: return nil
             case is MKClusterAnnotation:
-                view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterID) as? MKMarkerAnnotationView
-                    ?? .init(annotation: annotation, reuseIdentifier: clusterID)
+                view = mapView.dequeueReusableAnnotationView(withIdentifier: clusterId) as? MKMarkerAnnotationView
+                    ?? .init(annotation: annotation, reuseIdentifier: clusterId)
                 view.markerTintColor = parent.markerColors.cluster
             default:
-                view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationID) as? MKMarkerAnnotationView
-                    ?? .init(annotation: annotation, reuseIdentifier: annotationID)
+                view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationId) as? MKMarkerAnnotationView
+                    ?? .init(annotation: annotation, reuseIdentifier: annotationId)
                 view.canShowCallout = true
-                view.clusteringIdentifier = clusterID
+                view.clusteringIdentifier = clusterId
                 view.markerTintColor = parent.markerColors.regular
                 view.titleVisibility = .visible
                 view.subtitleVisibility = .adaptive

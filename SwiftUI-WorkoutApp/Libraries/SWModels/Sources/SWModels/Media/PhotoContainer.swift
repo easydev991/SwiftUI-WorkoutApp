@@ -5,11 +5,11 @@ public enum PhotoContainer: Sendable {
     case event(Input), park(Input)
 
     public struct Input: Sendable {
-        public let containerID, photoID: Int
+        public let containerId, photoId: Int
 
-        public init(containerID: Int, photoID: Int) {
-            self.containerID = containerID
-            self.photoID = photoID
+        public init(containerId: Int, photoId: Int) {
+            self.containerId = containerId
+            self.photoId = photoId
         }
     }
 }
