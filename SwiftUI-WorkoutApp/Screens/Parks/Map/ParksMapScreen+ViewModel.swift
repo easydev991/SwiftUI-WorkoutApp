@@ -64,7 +64,7 @@ extension ParksMapScreen {
 
         func updateSelectedCity(_ newCity: City?) {
             selectedCity = newCity
-            if let newCity, let coordinate = newCity.coordinate2d {
+            if let newCity, let coordinate = newCity.coordinate2D {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
