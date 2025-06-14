@@ -28,11 +28,11 @@ extension Park {
     static var preview: Park {
         .init(
             id: 3,
-            typeID: 6,
-            sizeID: 2,
+            typeId: 6,
+            sizeId: 2,
             address: "м. Партизанская, улица 2-я Советская",
             author: .preview,
-            cityID: 1,
+            cityId: 1,
             commentsCount: 1,
             createDate: "2011-03-07T22:55:15+03:00",
             latitude: "55.795396",
@@ -57,8 +57,8 @@ extension UserResponse {
             email: "test@mail.ru",
             imageStringURL: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg",
             birthDateIsoString: "1990-11-25",
-            cityID: 1,
-            countryID: 17,
+            cityId: 1,
+            countryId: 17,
             genderCode: 1,
             friendsCount: 5,
             journalsCount: 2,
@@ -76,11 +76,11 @@ extension EventResponse {
             eventDescription: "!!! ВРЕМЯ ТРЕНИРОВКИ - 12:00",
             fullAddress: nil,
             beginDate: "2022-10-16T09:00:00+00:00",
-            countryID: 17,
-            cityID: 1,
+            countryId: 17,
+            cityId: 1,
             commentsCount: 2,
             previewImageStringURL: "https://workout.su/thumbs/6_100x100_FFFFFF//uploads/userfiles/2022/10/2022-10-12-21-10-42-skz.jpg",
-            parkID: 5464,
+            parkId: 5464,
             latitude: "55.72681766162947",
             longitude: "37.50063106774381",
             participantsCount: 3,
@@ -105,7 +105,7 @@ extension DialogResponse {
             anotherUserName: "WasD",
             lastMessageText: "Ошибка 500 это про пустые ответы? Я написал серверным.",
             lastMessageDate: "2022-05-14T17:35:45+00:00",
-            anotherUserID: 30,
+            anotherUserId: 30,
             unreadCountOptional: 5
         )
     }
@@ -122,7 +122,7 @@ extension JournalResponse {
             lastMessageDate: "2022-05-22T09:48:29+03:00",
             lastMessageText: "Test last message",
             itemsCount: 2,
-            ownerID: 10367,
+            ownerId: 10367,
             viewAccess: 2,
             commentAccess: 2
         )
@@ -133,8 +133,8 @@ extension JournalEntryResponse {
     static var preview: JournalEntryResponse {
         .init(
             id: 0,
-            journalID: 0,
-            authorID: 10367,
+            journalId: 0,
+            authorId: 10367,
             authorName: "ninenineone",
             message: "Test text",
             createDate: "2011-03-16T12:55:29+03:00",
@@ -145,12 +145,19 @@ extension JournalEntryResponse {
 }
 
 extension Int {
-    static var previewUserID: Self { 30 }
+    static var previewUserId: Self { 30 }
 }
 
 extension NoParksFoundModel {
-    static let preview = Self(
+    static let previewWithFilter = Self(
         isFilterEdited: true,
+        isFilteredParksEmpty: true,
+        didParksManagerLoad: true,
+        isLoading: false
+    )
+
+    static let previewWithoutFilter = Self(
+        isFilterEdited: false,
         isFilteredParksEmpty: true,
         didParksManagerLoad: true,
         isLoading: false

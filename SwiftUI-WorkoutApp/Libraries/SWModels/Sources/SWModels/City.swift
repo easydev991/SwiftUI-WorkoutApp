@@ -1,3 +1,5 @@
+import CoreLocation
+
 public struct City: Codable, Identifiable, Hashable, Sendable {
     public let id, name, lat, lon: String
 
@@ -18,5 +20,16 @@ public struct City: Codable, Identifiable, Hashable, Sendable {
     /// Москва
     public static var defaultCity: Self {
         .init(id: "1", name: "Москва", lat: "55.753215", lon: "37.622504")
+    }
+}
+
+public extension City {
+    /// Координаты города как `CLLocationCoordinate2D`
+    var coordinate2d: CLLocationCoordinate2D? {
+        guard let latitude = Double(lat), let longitude = Double(lon) else {
+            assertionFailure("Не смогли определить координаты города \(name): lat \(lat), lon \(lon)")
+            return nil
+        }
+        return .init(latitude: latitude, longitude: longitude)
     }
 }

@@ -125,7 +125,7 @@ private extension EventsListScreen {
                             imageURL: event.previewImageURL,
                             title: event.formattedTitle,
                             dateTimeText: event.eventDateString,
-                            locationText: SWAddress(event.countryID, event.cityID)?.cityName
+                            locationText: SWAddress(event.countryId, event.cityId)?.cityName
                         )
                     }
                     .accessibilityIdentifier("EventViewCell")

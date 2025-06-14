@@ -55,7 +55,7 @@ enum Endpoint {
 
     // MARK: Удалить пользователя из списка друзей
     /// **DELETE**  ${API}/friends/<user_id>
-    case deleteFriend(_ friendID: Int)
+    case deleteFriend(_ friendId: Int)
 
     // MARK: Получить черный список пользователей
     /// **GET** ${API}/blacklist
@@ -63,11 +63,11 @@ enum Endpoint {
 
     // MARK: Добавить пользователя в черный список
     /// **POST** ${API}/blacklist/<user_id>
-    case addToBlacklist(_ userID: Int)
+    case addToBlacklist(_ userId: Int)
 
     // MARK: Удалить пользователя из черного списка
     /// **DELETE** ${API}/blacklist/<user_id>
-    case deleteFromBlacklist(_ userID: Int)
+    case deleteFromBlacklist(_ userId: Int)
 
     // MARK: Найти пользователей по логину
     /// **GET** ${API}/users/search?name=<user_login>
@@ -105,31 +105,31 @@ enum Endpoint {
 
     // MARK: Удалить площадку
     /// **DELETE** ${API}/areas/<area_id>
-    case deletePark(_ parkID: Int)
+    case deletePark(_ parkId: Int)
 
     // MARK: Добавить комментарий для площадки
     /// **POST** ${API}/areas/<area_id>/comments
-    case addCommentToPark(parkID: Int, comment: String)
+    case addCommentToPark(parkId: Int, comment: String)
 
     // MARK: Изменить свой комментарий для площадки
     /// **POST** ${API}/areas/<area_id>/comments/<comment_id>
-    case editParkComment(parkID: Int, commentID: Int, newComment: String)
+    case editParkComment(parkId: Int, commentId: Int, newComment: String)
 
     // MARK: Удалить свой комментарий для площадки
     /// **DELETE** ${API}/areas/<area_id>/comments/<comment_id>
-    case deleteParkComment(_ parkID: Int, commentID: Int)
+    case deleteParkComment(_ parkId: Int, commentId: Int)
 
     // MARK: Получить список площадок, где тренируется пользователь
     /// **GET** ${API}/users/<user_id>/areas
-    case getParksForUser(_ userID: Int)
+    case getParksForUser(_ userId: Int)
 
     // MARK: Сообщить, что пользователь тренируется на площадке
     /// **POST** ${API}/areas/<area_id>/train
-    case postTrainHere(_ parkID: Int)
+    case postTrainHere(_ parkId: Int)
 
     // MARK: Сообщить, что пользователь не тренируется на площадке
     /// **DELETE** ${API}/areas/<area_id>/train
-    case deleteTrainHere(_ parkID: Int)
+    case deleteTrainHere(_ parkId: Int)
 
     // MARK: Получить список предстоящих мероприятий
     /// **GET** ${API}/trainings/current
@@ -161,27 +161,27 @@ enum Endpoint {
 
     // MARK: Сообщить, что пользователь пойдет на мероприятие
     /// **POST** ${API}/trainings/<event_id>/go
-    case postGoToEvent(_ eventID: Int)
+    case postGoToEvent(_ eventId: Int)
 
     // MARK: Сообщить, что пользователь не пойдет на мероприятие
     /// **DELETE** ${API}/trainings/<event_id>/go
-    case deleteGoToEvent(_ eventID: Int)
+    case deleteGoToEvent(_ eventId: Int)
 
     // MARK: Добавить комментарий для мероприятия
     /// **POST** ${API}/trainings/<event_id>/comments
-    case addCommentToEvent(eventID: Int, comment: String)
+    case addCommentToEvent(eventId: Int, comment: String)
 
     // MARK: Удалить свой комментарий для мероприятия
     /// **DELETE** ${API}/trainings/<event_id>/comments/<comment_id>
-    case deleteEventComment(_ eventID: Int, commentID: Int)
+    case deleteEventComment(_ eventId: Int, commentId: Int)
 
     // MARK: Изменить свой комментарий для мероприятия
     /// **POST** ${API}/trainings/<event_id>/comments/<comment_id>
-    case editEventComment(eventID: Int, commentID: Int, newComment: String)
+    case editEventComment(eventId: Int, commentId: Int, newComment: String)
 
     // MARK: Удалить мероприятие
     /// **DELETE** ${API}/trainings/<event_id>
-    case deleteEvent(_ eventID: Int)
+    case deleteEvent(_ eventId: Int)
 
     // MARK: Получить список диалогов
     /// **GET** ${API}/dialogs
@@ -189,11 +189,11 @@ enum Endpoint {
 
     // MARK: Получить сообщения в диалоге
     /// **GET** ${API}/dialogs/<dialog_id>/messages
-    case getMessages(dialogID: Int)
+    case getMessages(dialogId: Int)
 
     // MARK: Отправить сообщение пользователю
     /// **POST** ${API}/messages/<user_id>
-    case sendMessageTo(_ message: String, _ userID: Int)
+    case sendMessageTo(_ message: String, _ userId: Int)
 
     // MARK: Отметить сообщения как прочитанные
     /// **POST** ${API}/messages/mark_as_read
@@ -205,47 +205,47 @@ enum Endpoint {
 
     // MARK: Получить список дневников пользователя
     /// **GET** ${API}/users/<user_id>/journals
-    case getJournals(userID: Int)
+    case getJournals(userId: Int)
 
     // MARK: Получить дневник пользователя
     /// **GET** ${API}/users/<user_id>/journals/<journal_id>
-    case getJournal(userID: Int, journalID: Int)
+    case getJournal(userId: Int, journalId: Int)
 
     // MARK: Изменить настройки дневника
     /// **PUT** ${API}/users/<user_id>/journals/<journal_id>
-    case editJournalSettings(userID: Int, journalID: Int, title: String, viewAccess: Int, commentAccess: Int)
+    case editJournalSettings(userId: Int, journalId: Int, title: String, viewAccess: Int, commentAccess: Int)
 
     // MARK: Создать новый дневник
     /// **POST** ${API}/users/<user_id>/journals
-    case createJournal(userID: Int, title: String)
+    case createJournal(userId: Int, title: String)
 
     // MARK: Получить записи из дневника пользователя
     /// **GET** ${API}/users/<user_id>/journals/<journal_id>/messages
-    case getJournalEntries(userID: Int, journalID: Int)
+    case getJournalEntries(userId: Int, journalId: Int)
 
     // MARK: Сохранить новую запись в дневнике пользователя
     /// **POST** ${API}/users/<user_id>/journals/<journal_id>/messages
-    case saveJournalEntry(userID: Int, journalID: Int, message: String)
+    case saveJournalEntry(userId: Int, journalId: Int, message: String)
 
     // MARK: Изменить запись в дневнике пользователя
     /// **PUT** ${API}/users/<user_id>/journals/<journal_id>/messages/<entry_id>
-    case editEntry(userID: Int, journalID: Int, entryID: Int, newEntryText: String)
+    case editEntry(userId: Int, journalId: Int, entryId: Int, newEntryText: String)
 
     // MARK: Удалить запись в дневнике пользователя
     /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>/messages/<entry_id>
-    case deleteEntry(userID: Int, journalID: Int, entryID: Int)
+    case deleteEntry(userId: Int, journalId: Int, entryId: Int)
 
     // MARK: Удалить дневник пользователя
     /// **DELETE** ${API}/users/<user_id>/journals/<journal_id>
-    case deleteJournal(userID: Int, journalID: Int)
+    case deleteJournal(userId: Int, journalId: Int)
 
     // MARK: Удалить фото мероприятия
     /// **DELETE** ${API}/trainings/<event_id>/photos/<photo_id>
-    case deleteEventPhoto(eventID: Int, photoID: Int)
+    case deleteEventPhoto(eventId: Int, photoId: Int)
 
     // MARK: Удалить фото площадки
     /// **DELETE** ${API}/areas/<area_id>/photos/<photo_id>
-    case deleteParkPhoto(parkID: Int, photoID: Int)
+    case deleteParkPhoto(parkId: Int, photoId: Int)
 }
 
 extension Endpoint {
@@ -257,8 +257,8 @@ extension Endpoint {
             "/auth/login"
         case .resetPassword:
             "/auth/reset"
-        case let .editUser(userID, _):
-            "/users/\(userID)"
+        case let .editUser(userId, _):
+            "/users/\(userId)"
         case .changePassword:
             "/auth/changepass"
         case .deleteUser:
@@ -269,17 +269,17 @@ extension Endpoint {
             "/users/\(id)/friends"
         case .getFriendRequests:
             "/friends/requests"
-        case let .acceptFriendRequest(userID),
-             let .declineFriendRequest(userID):
-            "/friends/\(userID)/accept"
-        case let .sendFriendRequest(userID),
-             let .deleteFriend(userID):
-            "/friends/\(userID)"
+        case let .acceptFriendRequest(userId),
+             let .declineFriendRequest(userId):
+            "/friends/\(userId)/accept"
+        case let .sendFriendRequest(userId),
+             let .deleteFriend(userId):
+            "/friends/\(userId)"
         case .getBlacklist:
             "/blacklist"
-        case let .addToBlacklist(userID),
-             let .deleteFromBlacklist(userID):
-            "/blacklist/\(userID)"
+        case let .addToBlacklist(userId),
+             let .deleteFromBlacklist(userId):
+            "/blacklist/\(userId)"
         case .findUsers:
             "/users/search"
         case .getCountries:
@@ -294,16 +294,16 @@ extension Endpoint {
              let .editPark(id, _),
              let .deletePark(id):
             "/areas/\(id)"
-        case let .addCommentToPark(parkID, _):
-            "/areas/\(parkID)/comments"
-        case let .editParkComment(parkID, commentID, _):
-            "/areas/\(parkID)/comments/\(commentID)"
-        case let .deleteParkComment(parkID, commentID):
-            "/areas/\(parkID)/comments/\(commentID)"
-        case let .getParksForUser(userID):
-            "/users/\(userID)/areas"
-        case let .postTrainHere(parkID), let .deleteTrainHere(parkID):
-            "/areas/\(parkID)/train"
+        case let .addCommentToPark(parkId, _):
+            "/areas/\(parkId)/comments"
+        case let .editParkComment(parkId, commentId, _):
+            "/areas/\(parkId)/comments/\(commentId)"
+        case let .deleteParkComment(parkId, commentId):
+            "/areas/\(parkId)/comments/\(commentId)"
+        case let .getParksForUser(userId):
+            "/users/\(userId)/areas"
+        case let .postTrainHere(parkId), let .deleteTrainHere(parkId):
+            "/areas/\(parkId)/train"
         case .getFutureEvents:
             "/trainings/current"
         case .getPastEvents:
@@ -316,39 +316,39 @@ extension Endpoint {
             "/trainings/\(id)/go"
         case let .addCommentToEvent(id, _):
             "/trainings/\(id)/comments"
-        case let .deleteEventComment(eventID, commentID):
-            "/trainings/\(eventID)/comments/\(commentID)"
-        case let .editEventComment(eventID, commentID, _):
-            "/trainings/\(eventID)/comments/\(commentID)"
+        case let .deleteEventComment(eventId, commentId):
+            "/trainings/\(eventId)/comments/\(commentId)"
+        case let .editEventComment(eventId, commentId, _):
+            "/trainings/\(eventId)/comments/\(commentId)"
         case let .deleteEvent(id), let .editEvent(id, _):
             "/trainings/\(id)"
         case .getDialogs:
             "/dialogs"
-        case let .getMessages(dialogID):
-            "/dialogs/\(dialogID)/messages"
-        case let .sendMessageTo(_, userID):
-            "/messages/\(userID)"
+        case let .getMessages(dialogId):
+            "/dialogs/\(dialogId)/messages"
+        case let .sendMessageTo(_, userId):
+            "/messages/\(userId)"
         case .markAsRead:
             "/messages/mark_as_read"
-        case let .deleteDialog(dialogID):
-            "/dialogs/\(dialogID)"
-        case let .getJournals(userID),
-             let .createJournal(userID, _):
-            "/users/\(userID)/journals"
-        case let .getJournal(userID, journalID),
-             let .deleteJournal(userID, journalID),
-             let .editJournalSettings(userID, journalID, _, _, _):
-            "/users/\(userID)/journals/\(journalID)"
-        case let .getJournalEntries(userID, journalID),
-             let .saveJournalEntry(userID, journalID, _):
-            "/users/\(userID)/journals/\(journalID)/messages"
-        case let .editEntry(userID, journalID, entryID, _),
-             let .deleteEntry(userID, journalID, entryID):
-            "/users/\(userID)/journals/\(journalID)/messages/\(entryID)"
-        case let .deleteEventPhoto(eventID, photoID):
-            "/trainings/\(eventID)/photos/\(photoID)"
-        case let .deleteParkPhoto(parkID, photoID):
-            "/areas/\(parkID)/photos/\(photoID)"
+        case let .deleteDialog(dialogId):
+            "/dialogs/\(dialogId)"
+        case let .getJournals(userId),
+             let .createJournal(userId, _):
+            "/users/\(userId)/journals"
+        case let .getJournal(userId, journalId),
+             let .deleteJournal(userId, journalId),
+             let .editJournalSettings(userId, journalId, _, _, _):
+            "/users/\(userId)/journals/\(journalId)"
+        case let .getJournalEntries(userId, journalId),
+             let .saveJournalEntry(userId, journalId, _):
+            "/users/\(userId)/journals/\(journalId)/messages"
+        case let .editEntry(userId, journalId, entryId, _),
+             let .deleteEntry(userId, journalId, entryId):
+            "/users/\(userId)/journals/\(journalId)/messages/\(entryId)"
+        case let .deleteEventPhoto(eventId, photoId):
+            "/trainings/\(eventId)/photos/\(photoId)"
+        case let .deleteParkPhoto(parkId, photoId):
+            "/areas/\(parkId)/photos/\(photoId)"
         }
     }
 
@@ -400,18 +400,18 @@ extension Endpoint {
 
     enum ParameterKey: String {
         case name, fullname, email, password, comment, message, title, description, date, address, latitude, longitude, image
-        case areaID = "area_id"
+        case areaId = "area_id"
         case viewAccess = "view_access"
         case commentAccess = "comment_access"
         case genderCode = "gender"
         case usernameOrEmail = "username_or_email"
         case newPassword = "new_password"
-        case countryID = "country_id"
-        case cityID = "city_id"
+        case countryId = "country_id"
+        case cityId = "city_id"
         case birthDate = "birth_date"
-        case fromUserID = "from_user_id"
-        case typeID = "type_id"
-        case classID = "class_id"
+        case fromUserId = "from_user_id"
+        case typeId = "type_id"
+        case classId = "class_id"
     }
 
     var bodyParts: BodyMaker.Parts? {
@@ -438,8 +438,8 @@ extension Endpoint {
                 ParameterKey.email.rawValue: form.email,
                 ParameterKey.password.rawValue: form.password,
                 ParameterKey.genderCode.rawValue: form.genderCode.description,
-                ParameterKey.countryID.rawValue: form.country.id,
-                ParameterKey.cityID.rawValue: form.city.id,
+                ParameterKey.countryId.rawValue: form.country.id,
+                ParameterKey.cityId.rawValue: form.city.id,
                 ParameterKey.birthDate.rawValue: form.birthDateIsoString
             ], nil)
         case let .editUser(_, form):
@@ -448,8 +448,8 @@ extension Endpoint {
                 ParameterKey.fullname.rawValue: form.fullName,
                 ParameterKey.email.rawValue: form.email,
                 ParameterKey.genderCode.rawValue: form.genderCode.description,
-                ParameterKey.countryID.rawValue: form.country.id,
-                ParameterKey.cityID.rawValue: form.city.id,
+                ParameterKey.countryId.rawValue: form.country.id,
+                ParameterKey.cityId.rawValue: form.city.id,
                 ParameterKey.birthDate.rawValue: form.birthDateIsoString
             ]
             let mediaFiles: [BodyMaker.MediaFile]? = if let image = form.image {
@@ -479,8 +479,8 @@ extension Endpoint {
             return .init([ParameterKey.comment.rawValue: comment], nil)
         case let .sendMessageTo(message, _):
             return .init([ParameterKey.message.rawValue: message], nil)
-        case let .markAsRead(userID):
-            return .init([ParameterKey.fromUserID.rawValue: userID.description], nil)
+        case let .markAsRead(userId):
+            return .init([ParameterKey.fromUserId.rawValue: userId.description], nil)
         case let .createJournal(_, title):
             return .init([ParameterKey.title.rawValue: title], nil)
         case let .saveJournalEntry(_, _, message),
@@ -500,7 +500,7 @@ extension Endpoint {
                 ParameterKey.title.rawValue: form.title,
                 ParameterKey.description.rawValue: form.description,
                 ParameterKey.date.rawValue: form.dateIsoString,
-                ParameterKey.areaID.rawValue: form.parkID.description
+                ParameterKey.areaId.rawValue: form.parkId.description
             ]
             let mediaFiles: [BodyMaker.MediaFile]? = form.newMediaFiles.isEmpty
                 ? nil
@@ -518,9 +518,9 @@ extension Endpoint {
                 ParameterKey.address.rawValue: form.address,
                 ParameterKey.latitude.rawValue: form.latitude,
                 ParameterKey.longitude.rawValue: form.longitude,
-                ParameterKey.cityID.rawValue: form.cityID.description,
-                ParameterKey.typeID.rawValue: form.typeID.description,
-                ParameterKey.classID.rawValue: form.sizeID.description
+                ParameterKey.cityId.rawValue: form.cityId.description,
+                ParameterKey.typeId.rawValue: form.typeId.description,
+                ParameterKey.classId.rawValue: form.sizeId.description
             ]
             let mediaFiles: [BodyMaker.MediaFile]? = form.newMediaFiles.isEmpty
                 ? nil

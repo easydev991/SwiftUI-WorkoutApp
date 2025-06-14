@@ -1,7 +1,7 @@
 import Foundation
 
 public struct JournalCommonInfo {
-    public let authorID: Int?
+    public let authorId: Int?
     // `URL` картинки
     public let imageURL: URL?
     /// Заголовок отображаемой записи
@@ -12,7 +12,7 @@ public struct JournalCommonInfo {
     public let formattedMessage: String
 
     public init(journalResponse: JournalResponse) {
-        self.authorID = journalResponse.ownerID
+        self.authorId = journalResponse.ownerId
         self.imageURL = journalResponse.imageURL
         self.entryTitle = journalResponse.title
         self.entryDateString = journalResponse.lastMessageDateString
@@ -20,7 +20,7 @@ public struct JournalCommonInfo {
     }
 
     public init(journalEntryResponse: JournalEntryResponse) {
-        self.authorID = journalEntryResponse.authorID
+        self.authorId = journalEntryResponse.authorId
         self.imageURL = journalEntryResponse.imageURL
         self.entryTitle = journalEntryResponse.authorName ?? ""
         self.entryDateString = journalEntryResponse.messageDateString

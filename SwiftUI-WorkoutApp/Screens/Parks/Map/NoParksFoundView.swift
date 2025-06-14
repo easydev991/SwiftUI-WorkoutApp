@@ -14,7 +14,9 @@ extension ParksMapScreen {
                     VStack(spacing: 12) {
                         titleView
                         openCitiesButton
-                        openFilterButton
+                        if model.isFilterEdited {
+                            openFilterButton
+                        }
                     }
                     .insideCardBackground()
                     .padding()
@@ -28,7 +30,7 @@ extension ParksMapScreen {
 
 private extension ParksMapScreen.NoParksFoundView {
     var titleView: some View {
-        Text("Не нашли площадки для этого города с выбранными фильтрами")
+        Text("Не нашли площадки для этого города")
             .foregroundStyle(Color.swMainText)
             .multilineTextAlignment(.center)
             .padding(.bottom, 8)
@@ -36,7 +38,12 @@ private extension ParksMapScreen.NoParksFoundView {
 
     var openCitiesButton: some View {
         Button("Выбрать другой город", action: openCities)
-            .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
+            .buttonStyle(
+                SWButtonStyle(
+                    mode: model.isFilterEdited ? .tinted : .filled,
+                    size: .large
+                )
+            )
     }
 
     var openFilterButton: some View {
@@ -46,7 +53,7 @@ private extension ParksMapScreen.NoParksFoundView {
 }
 
 #if DEBUG
-#Preview {
+#Preview("С фильтрами") {
     ParksMapScreen.NoParksFoundView(
         openCities: {
             print("открыть выбор городов")
@@ -54,7 +61,19 @@ private extension ParksMapScreen.NoParksFoundView {
         openFilter: {
             print("открыть фильтры")
         },
-        model: .preview
+        model: .previewWithFilter
+    )
+}
+
+#Preview("Без фильтров") {
+    ParksMapScreen.NoParksFoundView(
+        openCities: {
+            print("открыть выбор городов")
+        },
+        openFilter: {
+            print("открыть фильтры")
+        },
+        model: .previewWithoutFilter
     )
 }
 #endif

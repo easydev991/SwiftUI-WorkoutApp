@@ -1,5 +1,5 @@
 public struct NoParksFoundModel: Sendable {
-    let isFilterEdited: Bool
+    public let isFilterEdited: Bool
     let isFilteredParksEmpty: Bool
     let didParksManagerLoad: Bool
     let isLoading: Bool
@@ -23,6 +23,6 @@ public struct NoParksFoundModel: Sendable {
     }
 
     public var showNoParksFound: Bool {
-        isFilterEdited && isFilteredParksEmpty && didParksManagerLoad && !isLoading
+        isFilteredParksEmpty && didParksManagerLoad && !isLoading
     }
 }

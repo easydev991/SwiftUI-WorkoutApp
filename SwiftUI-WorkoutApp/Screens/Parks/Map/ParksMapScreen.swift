@@ -17,11 +17,11 @@ struct ParksMapScreen: View {
     /// Отфильтрованные по выбранному городу и активным фильтрам площадки
     private var filteredParks: [Park] {
         let regularParks = parksManager.fullList.filter { park in
-            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeID)
-                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeID)
+            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeId)
+                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeId)
         }
         return if let selectedCity = viewModel.selectedCity {
-            regularParks.filter { $0.cityID == Int(selectedCity.id) }
+            regularParks.filter { $0.cityId == Int(selectedCity.id) }
         } else {
             regularParks
         }
@@ -37,8 +37,8 @@ struct ParksMapScreen: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
-            .onChange(of: defaults.mainUserCityID) { _ in
-                viewModel.updateUserCountryAndCity(with: defaults.mainUserInfo)
+            .task(id: defaults.mainUserCityId) {
+                viewModel.userInfoDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
@@ -81,7 +81,7 @@ private extension ParksMapScreen {
         /// Поиск города в списке городов
         case searchCity([City])
         /// Создание новой площадки
-        case createNewPark
+        case createNewPark(NewParkMapModel)
         /// Площадка для открытия детального экрана
         case parkDetails(Park)
     }
@@ -116,7 +116,7 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var searchCityButton: some View {
-        if let storedCities = try? SWAddress().cities() {
+        if let storedCities = try? SWAddress.cities() {
             SWTextFieldSearchButton(
                 .init(viewModel.cityFilterButtonTitle),
                 showClearButton: viewModel.canClearCityFilter,
@@ -162,11 +162,10 @@ private extension ParksMapScreen {
                     }
                 }
             )
-            .opacity(viewModel.shouldHideMap ? 0 : 1)
-            .overlay(alignment: viewModel.isRegionSet ? .bottom : .center) {
+            .overlay(alignment: .bottom) {
                 LocationSettingReminderView(
                     message: viewModel.locationErrorMessage,
-                    isHidden: !viewModel.ignoreUserLocation
+                    isHidden: viewModel.locationErrorMessage.isEmpty
                 )
             }
         }
@@ -174,7 +173,7 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var noParksFoundView: some View {
-        if let storedCities = try? SWAddress().cities() {
+        if let storedCities = try? SWAddress.cities() {
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
@@ -248,13 +247,12 @@ private extension ParksMapScreen {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
-                sheetItem = .createNewPark
+                sheetItem = .createNewPark(viewModel.newParkMapModel)
             } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .opacity(isLoading ? 0 : 1)
-            .disabled(!viewModel.locationErrorMessage.isEmpty)
+            .disabled(!viewModel.canCreateNewPark || isLoading)
         }
     }
 
@@ -263,14 +261,10 @@ private extension ParksMapScreen {
         switch item {
         case .filters:
             ParkFilterScreen(filter: $defaults.parksFilter)
-        case .createNewPark:
+        case let .createNewPark(model):
             ContentInSheet(title: "Новая площадка", spacing: 0) {
                 ParkFormScreen(
-                    .createNew(
-                        address: viewModel.addressString,
-                        coordinate: viewModel.region.center,
-                        cityID: defaults.mainUserCityID
-                    ),
+                    .createNew(model),
                     refreshClbk: {
                         Task {
                             await checkForRecentUpdates()

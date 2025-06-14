@@ -8,12 +8,12 @@ public struct DialogResponse: Codable, Identifiable, Sendable, Equatable {
     public let anotherUserName: String?
     public let lastMessageText: String?
     public let lastMessageDate: String?
-    public let anotherUserID: Int?
+    public let anotherUserId: Int?
     public var unreadCountOptional: Int?
 
     public enum CodingKeys: String, CodingKey {
         case id = "dialog_id"
-        case anotherUserID = "user_id"
+        case anotherUserId = "user_id"
         case lastMessageText = "last_message_text"
         case lastMessageDate = "last_message_date"
         case anotherUserName = "name"
@@ -27,7 +27,7 @@ public struct DialogResponse: Codable, Identifiable, Sendable, Equatable {
         anotherUserName: String? = nil,
         lastMessageText: String? = nil,
         lastMessageDate: String? = nil,
-        anotherUserID: Int? = nil,
+        anotherUserId: Int? = nil,
         unreadCountOptional: Int? = nil
     ) {
         self.id = id
@@ -35,7 +35,7 @@ public struct DialogResponse: Codable, Identifiable, Sendable, Equatable {
         self.anotherUserName = anotherUserName
         self.lastMessageText = lastMessageText
         self.lastMessageDate = lastMessageDate
-        self.anotherUserID = anotherUserID
+        self.anotherUserId = anotherUserId
         self.unreadCountOptional = unreadCountOptional
     }
 }

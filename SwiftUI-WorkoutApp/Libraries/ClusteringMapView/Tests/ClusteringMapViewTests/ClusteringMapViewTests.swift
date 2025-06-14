@@ -18,14 +18,14 @@ struct ClusteringMapViewTests {
     }
 
     @Test
-    func locationCoordinatesIsNotSpecified() {
-        let sut = LocationCoordinates(.init(latitude: 0, longitude: 0))
+    func locationCoordinateIsNotSpecified() {
+        let sut = LocationCoordinate(.init(latitude: 0, longitude: 0))
         #expect(!sut.isSpecified)
     }
 
     @Test
-    func locationCoordinatesIsSpecified() {
-        let sut = LocationCoordinates(
+    func locationCoordinateIsSpecified() {
+        let sut = LocationCoordinate(
             .init(
                 latitude: Double.random(in: 10 ... 100),
                 longitude: Double.random(in: 10 ... 100)
@@ -36,16 +36,16 @@ struct ClusteringMapViewTests {
 
     @Test
     func locationsAreEqual() {
-        let firstLocation = LocationCoordinates(.init(latitude: 0, longitude: 0))
-        let secondLocation = LocationCoordinates(.init(latitude: 0, longitude: 0))
-        #expect(!firstLocation.differs(from: secondLocation))
+        let firstLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
+        let secondLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
+        #expect(firstLocation == secondLocation)
     }
 
     @Test
     func locationsDiffer() {
-        let firstLocation = LocationCoordinates(.init(latitude: 0, longitude: 0))
-        let secondLocation = LocationCoordinates(.init(latitude: 1, longitude: 1))
-        #expect(firstLocation.differs(from: secondLocation))
+        let firstLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
+        let secondLocation = LocationCoordinate(.init(latitude: 1, longitude: 1))
+        #expect(firstLocation != secondLocation)
     }
 }
 

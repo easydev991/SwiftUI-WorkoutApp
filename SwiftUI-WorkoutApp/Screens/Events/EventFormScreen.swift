@@ -27,8 +27,8 @@ struct EventFormScreen: View {
         switch mode {
         case let .editExisting(event):
             self.oldEventForm = .init(event)
-        case let .createForSelected(parkID, parkName):
-            self.oldEventForm = .init(parkID, parkName)
+        case let .createForSelected(parkId, parkName):
+            self.oldEventForm = .init(parkId, parkName)
         case .regularCreate:
             self.oldEventForm = .emptyValue
         }
@@ -55,11 +55,11 @@ extension EventFormScreen {
         /// Для экрана "Мероприятия"
         case regularCreate
         /// Для детальной страницы площадки
-        case createForSelected(_ parkID: Int, _ parkName: String)
+        case createForSelected(_ parkId: Int, _ parkName: String)
         /// Для редактирования мероприятия
         case editExisting(EventResponse)
 
-        var eventID: Int? {
+        var eventId: Int? {
             if case let .editExisting(eventResponse) = self {
                 eventResponse.id
             } else {
@@ -135,13 +135,13 @@ private extension EventFormScreen {
 
     /// Площадки, где тренируется пользователь
     ///
-    /// `canShowParkPicker` проверяет на существование `userID`
+    /// `canShowParkPicker` проверяет на существование `userId`
     var userParksScreen: some View {
         ParksListScreen(
             mode: .event(
-                userID: defaults.mainUserInfo?.id ?? 0,
+                userId: defaults.mainUserInfo?.id ?? 0,
                 didSelectPark: { id, name in
-                    eventForm.parkID = id
+                    eventForm.parkId = id
                     eventForm.parkName = name
                 }
             )
@@ -196,7 +196,7 @@ private extension EventFormScreen {
             saveEventTask = Task {
                 do {
                     let savedEvent = try await SWClient(with: defaults)
-                        .saveEvent(id: mode.eventID, form: eventForm)
+                        .saveEvent(id: mode.eventId, form: eventForm)
                     if savedEvent.id != .zero {
                         refreshClbk?()
                         dismiss()
@@ -219,7 +219,7 @@ private extension EventFormScreen {
         }
     }
 
-    /// Не показываем пикер площадок, если `userID` для основного пользователя отсутствует
+    /// Не показываем пикер площадок, если `userId` для основного пользователя отсутствует
     var canShowParkPicker: Bool {
         guard let userInfo = defaults.mainUserInfo else { return false }
         switch mode {

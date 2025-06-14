@@ -250,8 +250,8 @@ private extension EditProfileScreen {
         isLoading = true
         editUserTask = Task {
             do {
-                let userID = defaults.mainUserInfo?.id ?? 0
-                let result = try await SWClient(with: defaults).editUser(userID, model: userForm)
+                let userId = defaults.mainUserInfo?.id ?? 0
+                let result = try await SWClient(with: defaults).editUser(userId, model: userForm)
                 try Task.checkCancellation()
                 try defaults.saveUserInfo(result)
                 let password = try defaults.getUserPassword()
@@ -291,7 +291,7 @@ private extension EditProfileScreen {
 
         /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
         init() throws {
-            let allCountries = try SWAddress().countries()
+            let allCountries = try SWAddress.countries()
             self.init(countries: allCountries)
         }
 

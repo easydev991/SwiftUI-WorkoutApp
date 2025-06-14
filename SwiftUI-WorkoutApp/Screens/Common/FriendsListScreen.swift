@@ -44,7 +44,7 @@ extension FriendsListScreen {
         /// Друзья пользователя с указанным `id` для чата
         ///
         /// При нажатии на друга откроется окно отправки сообщения
-        case chat(userID: Int)
+        case chat(userId: Int)
 
         var userId: Int {
             switch self {
@@ -120,7 +120,7 @@ private extension FriendsListScreen {
                 .init(
                     imageURL: model.avatarURL,
                     name: model.userName ?? "",
-                    address: SWAddress(model.countryID, model.cityID)?.address ?? ""
+                    address: SWAddress(model.countryId, model.cityId)?.address ?? ""
                 )
             )
         )
@@ -136,11 +136,11 @@ private extension FriendsListScreen {
         )
     }
 
-    func sendMessage(to userID: Int) {
+    func sendMessage(to userId: Int) {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                try await client.sendMessage(messagingModel.message, to: userID)
+                try await client.sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
@@ -182,7 +182,7 @@ private extension FriendsListScreen {
 
 #if DEBUG
 #Preview {
-    FriendsListScreen(mode: .user(id: .previewUserID))
+    FriendsListScreen(mode: .user(id: .previewUserId))
         .environmentObject(DefaultsService())
         .environment(\.isNetworkConnected, true)
 }

@@ -5,7 +5,7 @@ import SWUtils
 public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     public var titleOptional, lastMessageImage, createDate, modifyDate, lastMessageDate, lastMessageText: String?
-    public let itemsCount, ownerID: Int?
+    public let itemsCount, ownerId: Int?
     public var viewAccess, commentAccess: Int?
 
     public enum CodingKeys: String, CodingKey {
@@ -15,7 +15,7 @@ public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {
         case lastMessageImage = "last_message_image"
         case createDate = "create_date"
         case modifyDate = "modify_date"
-        case ownerID = "user_id"
+        case ownerId = "user_id"
         case viewAccess = "view_access"
         case lastMessageDate = "last_message_date"
         case lastMessageText = "last_message_text"
@@ -31,7 +31,7 @@ public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {
         lastMessageDate: String? = nil,
         lastMessageText: String? = nil,
         itemsCount: Int? = nil,
-        ownerID: Int? = nil,
+        ownerId: Int? = nil,
         viewAccess: Int? = nil,
         commentAccess: Int? = nil
     ) {
@@ -43,7 +43,7 @@ public struct JournalResponse: Codable, Identifiable, Equatable, Sendable {
         self.lastMessageDate = lastMessageDate
         self.lastMessageText = lastMessageText
         self.itemsCount = itemsCount
-        self.ownerID = ownerID
+        self.ownerId = ownerId
         self.viewAccess = viewAccess
         self.commentAccess = commentAccess
     }

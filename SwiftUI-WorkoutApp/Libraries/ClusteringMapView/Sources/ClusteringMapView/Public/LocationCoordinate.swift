@@ -1,7 +1,7 @@
 import CoreLocation
 
 /// Модель для удобной работы с координатами
-public struct LocationCoordinates {
+public struct LocationCoordinate: Sendable {
     public let lat: Double
     public let lon: Double
 
@@ -14,9 +14,10 @@ public struct LocationCoordinates {
     public var isSpecified: Bool {
         lat != 0 && lon != 0
     }
+}
 
-    /// Отличаются ли координаты от другой модели
-    public func differs(from model: Self) -> Bool {
-        lat != model.lat && lon != model.lon
+extension LocationCoordinate: Equatable {
+    public static func == (lhs: LocationCoordinate, rhs: LocationCoordinate) -> Bool {
+        lhs.lat == rhs.lat && lhs.lon == rhs.lon
     }
 }

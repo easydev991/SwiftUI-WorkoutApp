@@ -88,7 +88,7 @@ private extension SearchUsersScreen {
                 .init(
                     imageURL: model.avatarURL,
                     name: model.userName ?? "",
-                    address: SWAddress(model.countryID, model.cityID)?.address ?? ""
+                    address: SWAddress(model.countryId, model.cityId)?.address ?? ""
                 )
             )
         )
@@ -104,11 +104,11 @@ private extension SearchUsersScreen {
         )
     }
 
-    func sendMessage(to userID: Int) {
+    func sendMessage(to userId: Int) {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userID)
+                try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)

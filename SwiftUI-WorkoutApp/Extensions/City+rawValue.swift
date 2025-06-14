@@ -6,7 +6,7 @@ extension City: @retroactive RawRepresentable {
 
     public init?(rawValue: String) {
         do {
-            self = try SWAddress().findCity(with: rawValue)
+            self = try SWAddress.findCity(with: rawValue)
         } catch {
             return nil
         }

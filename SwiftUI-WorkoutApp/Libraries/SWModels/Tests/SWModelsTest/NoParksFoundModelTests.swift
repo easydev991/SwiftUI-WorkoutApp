@@ -15,17 +15,6 @@ struct NoParksFoundModelTests {
         #expect(model.showNoParksFound)
     }
 
-    @Test("Фильтр не настроен - возвращает false")
-    func filterNotEdited_returnsFalse() {
-        let model = SUT(
-            isFilterEdited: false,
-            isFilteredParksEmpty: true,
-            didParksManagerLoad: true,
-            isLoading: false
-        )
-        #expect(!model.showNoParksFound)
-    }
-
     @Test("Список площадок не пустой - возвращает false")
     func parksNotEmpty_returnsFalse() {
         let model = SUT(

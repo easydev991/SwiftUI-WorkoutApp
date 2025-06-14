@@ -4,10 +4,10 @@ import SWUtils
 
 /// Модель данных спортивной площадки
 public struct Park: Codable, Identifiable, Hashable, Sendable {
-    public let id, typeID, sizeID: Int
+    public let id, typeId, sizeId: Int
     public let address: String?
     public let author: UserResponse?
-    public let cityID, commentsCount: Int?
+    public let cityId, commentsCount: Int?
     public let createDate: String?
     public let latitude, longitude: String
     public let name: String?
@@ -26,8 +26,8 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     private var trainHereOptional: Bool?
     public var title: String? { "Площадка № \(id)" }
     public var subtitle: String {
-        let grade = ParkGrade(rawValue: typeID)?.description
-        let size = ParkSize(rawValue: sizeID)?.description
+        let grade = ParkGrade(rawValue: typeId)?.description
+        let size = ParkSize(rawValue: sizeId)?.description
         return [grade, size].compactMap(\.self).joined(separator: " / ")
     }
 
@@ -37,7 +37,7 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         shortTitle + " " + subtitle
     }
 
-    public var authorID: Int {
+    public var authorId: Int {
         author?.id ?? 0
     }
 
@@ -68,26 +68,26 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
 
     public enum CodingKeys: String, CodingKey {
         case address, author
-        case cityID = "city_id"
-        case sizeID = "class_id"
+        case cityId = "city_id"
+        case sizeId = "class_id"
         case commentsCount = "comments_count"
         case createDate = "create_date"
         case id, latitude, longitude, name, preview
         case usersTrainHereCount = "trainings"
         case commentsOptional = "comments"
         case photosOptional = "photos"
-        case typeID = "type_id"
+        case typeId = "type_id"
         case trainHereOptional = "train_here"
         case usersTrainHere = "users_train_here"
     }
 
     public init(
         id: Int,
-        typeID: Int,
-        sizeID: Int,
+        typeId: Int,
+        sizeId: Int,
         address: String?,
         author: UserResponse?,
-        cityID: Int?,
+        cityId: Int?,
         commentsCount: Int?,
         createDate: String?,
         latitude: String,
@@ -101,11 +101,11 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         trainHere: Bool?
     ) {
         self.id = id
-        self.typeID = typeID
-        self.sizeID = sizeID
+        self.typeId = typeId
+        self.sizeId = sizeId
         self.address = address
         self.author = author
-        self.cityID = cityID
+        self.cityId = cityId
         self.commentsCount = commentsCount
         self.createDate = createDate
         self.latitude = latitude
@@ -232,11 +232,11 @@ public extension Park {
     static var emptyValue: Park {
         .init(
             id: 0,
-            typeID: 0,
-            sizeID: 0,
+            typeId: 0,
+            sizeId: 0,
             address: nil,
             author: .emptyValue,
-            cityID: nil,
+            cityId: nil,
             commentsCount: nil,
             createDate: nil,
             latitude: "",

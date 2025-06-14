@@ -115,7 +115,7 @@ private extension EventDetailsScreen {
                 isLoading = true
                 deleteEventTask = Task {
                     do {
-                        if try await SWClient(with: defaults).delete(eventID: event.id) {
+                        if try await SWClient(with: defaults).delete(eventId: event.id) {
                             onDelete(event.id)
                         }
                     } catch {
@@ -129,7 +129,7 @@ private extension EventDetailsScreen {
     }
 
     var headerAndMapSection: some View {
-        let shortAddress = SWAddress(event.countryID, event.cityID)?.address ?? ""
+        let shortAddress = SWAddress(event.countryId, event.cityId)?.address ?? ""
         return VStack(spacing: 0) {
             Group {
                 Text(event.formattedTitle)
@@ -282,7 +282,7 @@ private extension EventDetailsScreen {
                             .init(
                                 imageURL: user.avatarURL,
                                 name: user.userName ?? "",
-                                address: SWAddress(user.countryID, user.cityID)?.address ?? ""
+                                address: SWAddress(user.countryId, user.cityId)?.address ?? ""
                             )
                         )
                     )
@@ -351,8 +351,8 @@ private extension EventDetailsScreen {
             TextEntryScreen(
                 mode: .editEvent(
                     .init(
-                        parentObjectID: event.id,
-                        entryID: comment.id,
+                        parentObjectId: event.id,
+                        entryId: comment.id,
                         oldEntry: comment.formattedBody
                     )
                 ),
@@ -387,7 +387,7 @@ private extension EventDetailsScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                if try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryID: id) {
+                if try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryId: id) {
                     event.comments.removeAll(where: { $0.id == id })
                 }
             } catch {
@@ -403,7 +403,7 @@ private extension EventDetailsScreen {
         deletePhotoTask = Task {
             do {
                 if try await SWClient(with: defaults).deletePhoto(
-                    from: .event(.init(containerID: event.id, photoID: id))
+                    from: .event(.init(containerId: event.id, photoId: id))
                 ) {
                     event.photos = event.removePhotoById(id)
                 }
@@ -438,7 +438,7 @@ private extension EventDetailsScreen {
 
     var isEventAuthor: Bool {
         defaults.isAuthorized
-            ? event.authorID == defaults.mainUserInfo?.id
+            ? event.authorId == defaults.mainUserInfo?.id
             : false
     }
 

@@ -56,9 +56,9 @@ struct ParksListScreen: View {
 extension ParksListScreen {
     enum Mode {
         /// Площадки, где тренируется пользователь
-        case usedBy(userID: Int)
+        case usedBy(userId: Int)
         /// Площадки, где тренируется пользователь, для создания мероприятия
-        case event(userID: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
+        case event(userId: Int, didSelectPark: (_ id: Int, _ name: String) -> Void)
     }
 }
 
@@ -152,7 +152,7 @@ private extension ParksListScreen {
 
     func askForParks(refresh: Bool = false) async {
         switch mode {
-        case let .usedBy(userID), let .event(userID, _):
+        case let .usedBy(userId), let .event(userId, _):
             guard currentState.shouldLoad || refresh else { return }
             guard isNetworkConnected else {
                 if currentState.isReadyAndNotEmpty {
@@ -166,8 +166,8 @@ private extension ParksListScreen {
                 currentState = .loading
             }
             do {
-                let parks = try await SWClient(with: defaults).getParksForUser(userID)
-                let isMainUser = userID == defaults.mainUserInfo?.id
+                let parks = try await SWClient(with: defaults).getParksForUser(userId)
+                let isMainUser = userId == defaults.mainUserInfo?.id
                 if isMainUser { defaults.setUserNeedUpdate(false) }
                 currentState = .ready(parks)
             } catch {
@@ -202,7 +202,7 @@ private extension ParksListScreen {
 
 #if DEBUG
 #Preview {
-    ParksListScreen(mode: .usedBy(userID: .previewUserID))
+    ParksListScreen(mode: .usedBy(userId: .previewUserId))
         .environmentObject(DefaultsService())
         .environmentObject(ParksManager())
 }

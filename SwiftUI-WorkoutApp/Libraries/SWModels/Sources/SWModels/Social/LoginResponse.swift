@@ -1,5 +1,5 @@
 public struct LoginResponse: Codable {
-    public let userID: Int
+    public let userId: Int
 
-    public enum CodingKeys: String, CodingKey { case userID = "user_id" }
+    public enum CodingKeys: String, CodingKey { case userId = "user_id" }
 }
