@@ -53,12 +53,12 @@ extension SWAddress {
     }
 
     /// Координаты для страны/города (широта, долгота)
-    var coordinates: (Double, Double) {
+    var coordinate: (Double, Double)? {
         guard countryID != 0, cityID != 0,
               let city = try? Self.city(with: cityID, in: countryID),
               let latitude = Double(city.lat),
               let longitude = Double(city.lon)
-        else { return (0, 0) }
+        else { return nil }
         return (latitude, longitude)
     }
 
