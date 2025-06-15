@@ -49,6 +49,13 @@ extension ParksMapScreen {
             updateSelectedCity(selectedCity)
         }
 
+        /// Обрабатывает изменение данных пользователя
+        ///
+        /// - Вызывается для настройки `userCoordinate` (для региона без выбранного города) и `cityId` (для новой площадки).
+        /// - При изменении любого `Published`-свойства вьюмодели происходит перерисовка карты,
+        /// в том числе может обновиться регион - нам это не нужно, поэтому закрываем все обновления
+        /// свойств вьюмодели явными проверками на отличия от старых значений
+        /// - Parameter info: Данные профиля пользователя
         func userInfoDidChange(_ info: UserResponse?) {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
