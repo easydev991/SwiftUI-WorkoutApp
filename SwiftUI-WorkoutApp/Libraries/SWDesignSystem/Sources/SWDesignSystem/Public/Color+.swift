@@ -23,6 +23,8 @@ public extension Color {
     static let swDisabledButtonText = Color(.swDisabledButtonText)
     /// `tinted`-кнопки
     static let swTintedButton = Color(.swTintedButton)
+    /// Цвет текста в `tinted`-кнопке
+    static let swTintedButtonText = Color(.swTintedButtonText)
     /// Нажатые `tinted`-кнопки
     static let swTintedButtonPressed = Color(.swTintedButtonPressed)
     /// Цвет кнопки добавления фото
@@ -42,7 +44,7 @@ public extension Color {
     let colors: [Color] = [
         .swBackground, .swCardBackground, .swSmallElements, .swSeparators,
         .swMainText, .swAccent, .swFilledButtonText, .swFilledButtonPressed,
-        .swDisabledButton, .swDisabledButtonText, .swTintedButton,
+        .swDisabledButton, .swDisabledButtonText, .swTintedButton, .swTintedButtonText,
         .swTintedButtonPressed, .swAddPhotoButton, .swError, .swTabBar
     ]
     return ScrollView {

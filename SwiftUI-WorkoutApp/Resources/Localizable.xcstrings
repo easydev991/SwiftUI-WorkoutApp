@@ -996,12 +996,34 @@
         }
       }
     },
+    "Изменить фильтры" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change filters"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить фильтры"
+          }
+        }
+      }
+    },
     "Изменить фотографию" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change profile photo"
+            "value" : "Change photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить фотографию"
           }
         }
       }
@@ -1728,16 +1750,6 @@
         }
       }
     },
-    "Изменить фильтры" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change filters"
-          }
-        }
-      }
-    },
     "Отмена" : {
       "localizations" : {
         "en" : {
@@ -1949,6 +1961,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Площадка № %lld"
+          }
+        }
+      }
+    },
+    "Площадка на миникарте" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Park on a minimap"
           }
         }
       }
@@ -2413,6 +2435,16 @@
         }
       }
     },
+    "Сообщить об ошибке" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report an error"
+          }
+        }
+      }
+    },
     "Сохранить" : {
       "localizations" : {
         "en" : {
@@ -2745,6 +2777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Фото"
+          }
+        }
+      }
+    },
+    "Фото профиля" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile photo"
           }
         }
       }

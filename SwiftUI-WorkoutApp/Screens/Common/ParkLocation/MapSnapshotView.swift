@@ -27,6 +27,7 @@ struct MapSnapshotView: View {
                 }
         }
         .frame(height: height)
+        .accessibilityLabel(Text("Площадка на миникарте"))
     }
 }
 

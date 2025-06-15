@@ -16,7 +16,7 @@ public struct JournalRowView: View {
                     titleView
                     dateTextView
                 }
-                .lineLimit(1)
+                .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 menuButtonIfNeeded
             }

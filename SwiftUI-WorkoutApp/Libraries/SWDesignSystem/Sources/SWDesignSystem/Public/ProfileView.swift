@@ -32,12 +32,13 @@ public struct ProfileView: View {
         VStack(spacing: 12) {
             CachedImage(url: imageURL, mode: .profileAvatar)
                 .borderedRoundedRectClipShape()
+                .accessibilityLabel(Text("ProfilePhoto"))
             VStack(spacing: 8) {
                 Text(login)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Color.swMainText)
-                    .font(.system(size: 22, weight: .bold))
+                    .font(.title2.bold())
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         Icons.Regular.person.view
