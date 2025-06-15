@@ -9,7 +9,7 @@ final class TabViewModel: ObservableObject {
 
 extension TabViewModel {
     enum Tab: Int, Hashable, CaseIterable {
-        case map = 0, events, messages, profile, settings
+        case map = 0, events, messages, profile, more
 
         private var accessibilityId: String {
             switch self {
@@ -17,7 +17,7 @@ extension TabViewModel {
             case .events: "events"
             case .messages: "messages"
             case .profile: "profile"
-            case .settings: "settings"
+            case .more: "more"
             }
         }
 
@@ -31,7 +31,7 @@ extension TabViewModel {
                 "Сообщения"
             case .profile:
                 "Профиль"
-            case .settings:
+            case .more:
                 "Ещё"
             }
         }
@@ -47,7 +47,7 @@ extension TabViewModel {
                 Icons.Tabbar.messages.view
             case .profile:
                 Icons.Tabbar.profile.view
-            case .settings:
+            case .more:
                 Icons.Tabbar.settings.view
             }
         }
@@ -72,8 +72,8 @@ extension TabViewModel {
                 DialogsListScreen()
             case .profile:
                 MainUserProfileScreen()
-            case .settings:
-                SettingsScreen()
+            case .more:
+                MoreScreen()
             }
         }
     }
