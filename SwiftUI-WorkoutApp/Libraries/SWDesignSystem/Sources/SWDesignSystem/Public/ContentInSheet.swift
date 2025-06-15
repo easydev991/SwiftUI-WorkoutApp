@@ -29,7 +29,6 @@ public struct ContentInSheet<Content: View>: View {
 private extension ContentInSheet {
     var headerForSheet: some View {
         Text(title)
-            .lineLimit(1)
             .font(.headline)
             .foregroundStyle(Color.swMainText)
             .frame(maxWidth: .infinity)

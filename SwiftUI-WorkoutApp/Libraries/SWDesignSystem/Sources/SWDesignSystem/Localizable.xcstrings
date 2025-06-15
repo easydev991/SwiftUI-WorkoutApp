@@ -127,6 +127,22 @@
         }
       }
     },
+    "ProfilePhoto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile photo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото профиля"
+          }
+        }
+      }
+    },
     "Report" : {
       "localizations" : {
         "ru" : {

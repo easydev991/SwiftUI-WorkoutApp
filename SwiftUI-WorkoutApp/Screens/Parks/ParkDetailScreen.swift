@@ -303,6 +303,7 @@ private extension ParkDetailScreen {
         Button(action: { dialogs.showFeedback.toggle() }) {
             Icons.Regular.exclamationArrowCircle.view
         }
+        .accessibilityLabel(Text("Сообщить об ошибке"))
         .confirmationDialog(
             .init(Strings.Alert.parkFeedback),
             isPresented: $dialogs.showFeedback,

@@ -68,7 +68,6 @@ private extension ParkRowView {
         Text(text)
             .foregroundStyle(Color.swSmallElements)
             .font(.subheadline)
-            .lineLimit(2)
             .multilineTextAlignment(.leading)
     }
 }

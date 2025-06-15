@@ -95,18 +95,21 @@ private extension EditProfileScreen {
 
     var avatarPicker: some View {
         VStack(spacing: 20) {
-            if let model = newAvatarImageModel {
-                Image(uiImage: model.uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 150, height: 150)
-                    .clipShape(.rect(cornerRadius: 12))
-                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
-                    .id(model.id)
-            } else {
-                CachedImage(url: defaults.mainUserInfo?.avatarURL, mode: .profileAvatar)
-                    .transition(.scale.combined(with: .slide).combined(with: .opacity))
+            Group {
+                if let model = newAvatarImageModel {
+                    Image(uiImage: model.uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 150)
+                        .clipShape(.rect(cornerRadius: 12))
+                        .transition(.scale.combined(with: .slide).combined(with: .opacity))
+                        .id(model.id)
+                } else {
+                    CachedImage(url: defaults.mainUserInfo?.avatarURL, mode: .profileAvatar)
+                        .transition(.scale.combined(with: .slide).combined(with: .opacity))
+                }
             }
+            .accessibilityLabel(Text("Фото профиля"))
             Button("Изменить фотографию") { showImagePickerDialog.toggle() }
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large, maxWidth: nil))
                 .padding(.bottom, 8)

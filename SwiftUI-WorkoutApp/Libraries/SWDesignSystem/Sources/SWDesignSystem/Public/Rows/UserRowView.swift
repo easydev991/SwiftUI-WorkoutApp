@@ -76,7 +76,7 @@ private extension UserRowView {
                 userNameView
                 addressViewIfAvailable
             }
-            .lineLimit(1)
+            .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .insideCardBackground()

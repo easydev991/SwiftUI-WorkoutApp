@@ -63,7 +63,7 @@ public struct SWButtonStyle: ButtonStyle {
         case .filled:
             return .swFilledButtonText
         case .tinted:
-            return .swAccent
+            return .swTintedButtonText
         }
     }
 
