@@ -161,12 +161,19 @@ make screenshots
 6. Если тесты падают с ошибкой при запуске через `fastlane`, нужно убедиться, что при ручном запуске тестов из `Xcode` они успешно проходят во всех локализациях, используемых для создания скриншотов
 7. Готовые скриншоты сохраняются в папке [screenshots](./fastlane/screenshots)
 
-| Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
-| --- | --- | --- | --- | --- |
-| <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-1-sportsGroundsList.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-2-sportsGroundDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-3-pastEvents.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-4-eventDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-5-profile.png"> |
+#### iPhone
+| Карта с площадками | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
+| --- | --- | --- | --- | --- | --- |
+| <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-0-parksMap.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-1-parksList.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-2-parkDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-3-pastEvents.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-4-eventDetails.png"> | <img src="./fastlane/screenshots/ru/iPhone 16 Pro Max-5-profile.png"> |
+
+#### iPad
+| Карта с площадками | Список площадок | Площадка | Прошедшие мероприятия | Мероприятие | Профиль |
+| --- | --- | --- | --- | --- | --- |
+| <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-0-parksMap.png"> | <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-1-parksList.png"> | <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-2-parkDetails.png"> | <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-3-pastEvents.png"> | <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-4-eventDetails.png"> | <img src="./fastlane/screenshots/ru/iPad Pro 13-inch (M4)-5-profile.png"> |
 
 #### Модели девайсов, используемые для скриншотов
-По состоянию на 2025 год Apple берет за основу скриншоты для диагонали 6.9 (или 6.7) дюймов и масштабирует их под все остальные размеры экранов, то есть можно использовать для скриншотов только один девайс:
+По состоянию на 2025 год Apple берет за основу скриншоты для диагонали 6.9 (или 6.7) дюймов для айфона (13 дюймов для айпада) и масштабирует их под все остальные размеры экранов, то есть можно использовать для скриншотов по одному девайсу на платформу:
 - iPhone 16 Pro Max
+- iPad Pro 13-inch
 
-Список всех существующих девайсов есть [тут](https://www.ios-resolution.com).
+Список всех существующих девайсов есть [тут](https://iosref.com/res).

@@ -51,6 +51,7 @@ struct SwiftUI_WorkoutAppApp: App {
                 unreadCount: defaults.unreadMessagesCount,
                 friendRequestsCount: defaults.friendRequestsList.count
             )
+            .environment(\.horizontalSizeClass, .compact)
             .environmentObject(tabViewModel)
             .environmentObject(defaults)
             .environmentObject(parksManager)

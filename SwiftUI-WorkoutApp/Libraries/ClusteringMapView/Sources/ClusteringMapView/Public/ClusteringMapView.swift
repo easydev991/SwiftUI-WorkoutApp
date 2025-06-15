@@ -53,7 +53,7 @@ public struct ClusteringMapView: UIViewRepresentable {
         view.cameraZoomRange = cameraZoomRange
         addTrackingButtonIfNeeded(to: view)
         if ClusteringMapView.storedMapView == nil {
-            // Если не сохранить карту, будут создаваться дубли
+            // Если не сохранить карту, могут создаваться дубли
             ClusteringMapView.storedMapView = view
         }
         return view
