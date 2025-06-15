@@ -4,7 +4,7 @@ import OSLog
 struct RegionOrganizer {
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
-        category: "RegionOrganizer"
+        category: String(describing: RegionOrganizer.self)
     )
     let old: MKCoordinateRegion
     let new: MKCoordinateRegion
@@ -14,27 +14,18 @@ struct RegionOrganizer {
     /// Про тестирование: https://stackoverflow.com/a/51903928/11830041
     @MainActor
     func updateRegionIfNeeded(for mapView: MKMapView) {
-        let oldCoordinate = LocationCoordinate(old.center)
-        let newCoordinate = LocationCoordinate(new.center)
-        guard newCoordinate.isSpecified, isSpanSpecified else {
+        logger.debug("Собираемся обновить регион")
+        let oldCoordinate = LocationCoordinate(old)
+        let newCoordinate = LocationCoordinate(new)
+        guard newCoordinate.isSpecified else {
             logger.debug("Новый регион не настроен, не обновляем регион")
             return
         }
-        guard newCoordinate != oldCoordinate || isSpanDifferent else {
+        guard newCoordinate != oldCoordinate else {
             logger.debug("Новый регион совпадает с предыдущим, не обновляем регион")
             return
         }
         mapView.setRegion(new, animated: true)
-    }
-}
-
-private extension RegionOrganizer {
-    var isSpanSpecified: Bool {
-        old.span.latitudeDelta != 0 || old.span.longitudeDelta != 0
-    }
-
-    var isSpanDifferent: Bool {
-        old.span.latitudeDelta != new.span.latitudeDelta ||
-            old.span.longitudeDelta != new.span.longitudeDelta
+        logger.debug("Обновили регион")
     }
 }

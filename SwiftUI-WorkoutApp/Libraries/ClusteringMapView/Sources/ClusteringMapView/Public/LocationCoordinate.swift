@@ -1,13 +1,18 @@
-import CoreLocation
+import MapKit
 
 /// Модель для удобной работы с координатами
 public struct LocationCoordinate: Sendable {
     public let lat: Double
     public let lon: Double
 
-    public init(_ regionCenter: CLLocationCoordinate2D) {
-        self.lat = Double(regionCenter.latitude).rounded()
-        self.lon = Double(regionCenter.longitude).rounded()
+    public init(_ center: CLLocationCoordinate2D) {
+        self.lat = center.latitude.rounded(to: 2)
+        self.lon = center.longitude.rounded(to: 2)
+    }
+
+    public init(_ region: MKCoordinateRegion) {
+        self.lat = region.center.latitude.rounded(to: 2)
+        self.lon = region.center.longitude.rounded(to: 2)
     }
 
     /// Установлены ли координаты локации
