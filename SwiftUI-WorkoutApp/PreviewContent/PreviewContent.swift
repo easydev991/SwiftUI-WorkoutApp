@@ -163,4 +163,13 @@ extension NoParksFoundModel {
         isLoading: false
     )
 }
+
+extension NoParksFoundModel {
+    static let preview = Self(
+        isFilterEdited: true,
+        isFilteredParksEmpty: true,
+        didParksManagerLoad: true,
+        isLoading: false
+    )
+}
 #endif

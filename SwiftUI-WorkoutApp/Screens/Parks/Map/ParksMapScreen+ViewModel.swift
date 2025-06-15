@@ -49,17 +49,32 @@ extension ParksMapScreen {
             updateSelectedCity(selectedCity)
         }
 
-        func userInfoDidChange(_ info: UserResponse?) {
+        /// Обрабатывает изменение данных пользователя
+        ///
+        /// - Вызывается для настройки `userCoordinate` (для региона без выбранного города) и `cityId` (для новой площадки).
+        /// - При изменении любого `Published`-свойства вьюмодели происходит перерисовка карты,
+        /// в том числе может обновиться регион - нам это не нужно, поэтому закрываем все обновления
+        /// свойств вьюмодели явными проверками на отличия от старых значений
+        /// - Parameter info: Данные профиля пользователя
+        func userCityDidChange(_ info: UserResponse?) {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
-                  let newCoordinate = SWAddress(countryId, cityId).coordinate else {
-                userCoordinate = (0, 0)
-                newParkMapModel.cityId = 0
+                  let newCoordinate = SWAddress(countryId, cityId).coordinate
+            else {
+                if userCoordinate != (0, 0) {
+                    userCoordinate = (0, 0)
+                    newParkMapModel.cityId = 0
+                }
                 return
             }
-            userCoordinate = (newCoordinate.lat, newCoordinate.lon)
-            // Сохраняем город пользователя для новой площадки на случай,
-            // если не получится определить город по локации с помощью CLGeocoder
-            newParkMapModel.cityId = cityId
+            let newUserCoordinate = (newCoordinate.lat, newCoordinate.lon)
+            if userCoordinate != newUserCoordinate {
+                userCoordinate = newUserCoordinate
+            }
+            if newParkMapModel.cityId != cityId {
+                // Сохраняем город пользователя для новой площадки на случай,
+                // если не получится определить город по локации с помощью CLGeocoder
+                newParkMapModel.cityId = cityId
+            }
         }
 
         func updateSelectedCity(_ newCity: City?) {
@@ -181,8 +196,13 @@ private extension ParksMapScreen.ViewModel {
     func resetMapRegionTo(_ userCoordinate: (Double, Double)) {
         guard userCoordinate != (0, 0) else {
             ignoreUserLocation = true
-            updateSelectedCity(.defaultCity)
-            logger.debug("Регион карты сброшен к координатам Москвы (пользователь не авторизовался)")
+            if let coordinate2D = City.defaultCity.coordinate2D {
+                region = .init(
+                    center: coordinate2D,
+                    span: defaultCoordinateSpan
+                )
+                logger.debug("Регион карты сброшен к координатам Москвы (пользователь не авторизовался)")
+            }
             return
         }
         region = .init(

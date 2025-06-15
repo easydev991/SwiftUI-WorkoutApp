@@ -37,8 +37,11 @@ struct ParksMapScreen: View {
             }
             .loadingOverlay(if: isLoading)
             .background(Color.swBackground)
-            .task(id: defaults.mainUserCityId) {
-                viewModel.userInfoDidChange(defaults.mainUserInfo)
+            .onFirstAppear {
+                viewModel.userCityDidChange(defaults.mainUserInfo)
+            }
+            .onChange(of: defaults.mainUserCityId) { _ in
+                viewModel.userCityDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
