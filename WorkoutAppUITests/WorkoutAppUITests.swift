@@ -25,31 +25,36 @@ final class WorkoutAppUITests: XCTestCase {
     func testMakeScreenshots() {
         handleLocationAlert()
         handleNotificationAlert()
+        checkMap()
         checkParks()
         checkEvents()
         checkProfile()
     }
 
-    private func checkParks() {
+    private func checkMap() {
         waitForServerResponse()
+        snapshot("0-parksMap")
+    }
+
+    private func checkParks() {
         waitAndTapOrFail(timeout: 10, element: parksListPickerButton)
         waitForServerResponse()
-        snapshot("1-sportsGroundsList")
+        snapshot("1-parksList")
 
         waitAndTapOrFail(timeout: 10, element: firstParkCell)
         waitForServerResponse()
-        snapshot("2-sportsGroundDetails")
+        snapshot("2-parkDetails")
         waitAndTapOrFail(timeout: 5, element: closeButton)
     }
 
     private func checkEvents() {
         waitAndTapOrFail(timeout: 10, element: eventsTabButton)
         waitAndTapOrFail(timeout: 10, element: pastEventsPickerButton)
-        waitForServerResponse()
+        waitForServerResponse(10)
         snapshot("3-pastEvents")
 
         waitAndTapOrFail(timeout: 10, element: firstEventViewCell)
-        waitForServerResponse()
+        waitForServerResponse(10)
         snapshot("4-eventDetails")
         waitAndTapOrFail(timeout: 5, element: closeButton)
     }
@@ -98,11 +103,11 @@ private extension WorkoutAppUITests {
 
     var tabbar: XCUIElement { app.tabBars.firstMatch }
     var parksListPickerButton: XCUIElement {
-        app.segmentedControls.firstMatch.buttons.element(for: "Список")
+        app.segmentedControls.firstMatch.buttons.element(boundBy: 1)
     }
 
-    var profileTabButton: XCUIElement { tabbar.buttons.element(for: "Профиль") }
-    var eventsTabButton: XCUIElement { tabbar.buttons.element(for: "Мероприятия") }
+    var profileTabButton: XCUIElement { tabbar.buttons.element(boundBy: 3) }
+    var eventsTabButton: XCUIElement { tabbar.buttons.element(boundBy: 1) }
     var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
     var loginField: XCUIElement { app.textFields["loginField"] }
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
