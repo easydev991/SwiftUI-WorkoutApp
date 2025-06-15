@@ -51,15 +51,23 @@ extension ParksMapScreen {
 
         func userInfoDidChange(_ info: UserResponse?) {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
-                  let newCoordinate = SWAddress(countryId, cityId).coordinate else {
-                userCoordinate = (0, 0)
-                newParkMapModel.cityId = 0
+                  let newCoordinate = SWAddress(countryId, cityId).coordinate
+            else {
+                if userCoordinate != (0, 0) {
+                    userCoordinate = (0, 0)
+                    newParkMapModel.cityId = 0
+                }
                 return
             }
-            userCoordinate = (newCoordinate.lat, newCoordinate.lon)
-            // Сохраняем город пользователя для новой площадки на случай,
-            // если не получится определить город по локации с помощью CLGeocoder
-            newParkMapModel.cityId = cityId
+            let newUserCoordinate = (newCoordinate.lat, newCoordinate.lon)
+            if userCoordinate != newUserCoordinate {
+                userCoordinate = newUserCoordinate
+            }
+            if newParkMapModel.cityId != cityId {
+                // Сохраняем город пользователя для новой площадки на случай,
+                // если не получится определить город по локации с помощью CLGeocoder
+                newParkMapModel.cityId = cityId
+            }
         }
 
         func updateSelectedCity(_ newCity: City?) {
