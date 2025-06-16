@@ -48,7 +48,7 @@ public struct SectionView<Content: View>: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             if let header {
                 SectionSupplementaryView(header.title, mode: header.mode)
             }

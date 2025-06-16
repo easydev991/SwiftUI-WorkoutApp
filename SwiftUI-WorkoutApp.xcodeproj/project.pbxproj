@@ -433,8 +433,10 @@
 		6798AA49280AEDCA00DB76F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon1 AppIcon2 AppIcon3 AppIcon4 AppIcon5 AppIcon6 AppIcon7 AppIcon8 AppIcon9 AppIcon10";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = YES;
 				CLANG_ANALYZER_OSOBJECT_C_STYLE_CAST = YES;
@@ -466,7 +468,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.10.0;
+				MARKETING_VERSION = 3.11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -484,8 +486,10 @@
 		6798AA4A280AEDCA00DB76F1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon1 AppIcon2 AppIcon3 AppIcon4 AppIcon5 AppIcon6 AppIcon7 AppIcon8 AppIcon9 AppIcon10";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = YES;
 				CLANG_ANALYZER_OSOBJECT_C_STYLE_CAST = YES;
@@ -517,7 +521,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.10.0;
+				MARKETING_VERSION = 3.11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.FGU.WorkOut;
 				PRODUCT_NAME = WorkoutApp;
 				RUN_CLANG_STATIC_ANALYZER = YES;

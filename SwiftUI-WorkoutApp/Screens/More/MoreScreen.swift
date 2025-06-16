@@ -4,7 +4,7 @@ import SWModels
 import SWUtils
 
 /// Экран с настройками и общей информацией о приложении
-struct SettingsScreen: View {
+struct MoreScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.locale) private var locale
     @State private var showLanguageAlert = false
@@ -17,6 +17,7 @@ struct SettingsScreen: View {
                         VStack(spacing: 0) {
                             appThemeButton
                             languagePicker
+                            appIconButton
                         }
                     }
                     dividerView
@@ -57,7 +58,7 @@ struct SettingsScreen: View {
     }
 }
 
-private extension SettingsScreen {
+private extension MoreScreen {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id1035159361?action=write-review")!
         static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
@@ -68,7 +69,7 @@ private extension SettingsScreen {
     }
 }
 
-private extension SettingsScreen {
+private extension MoreScreen {
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
@@ -114,6 +115,15 @@ private extension SettingsScreen {
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
+        }
+    }
+
+    var appIconButton: some View {
+        NavigationLink(destination: AppIconScreen()) {
+            ListRowView(
+                leadingContent: .text("Иконка приложения"),
+                trailingContent: .chevron
+            )
         }
     }
 
@@ -199,7 +209,7 @@ private extension SettingsScreen {
 
 #if DEBUG
 #Preview {
-    SettingsScreen()
+    MoreScreen()
         .environmentObject(DefaultsService())
 }
 #endif

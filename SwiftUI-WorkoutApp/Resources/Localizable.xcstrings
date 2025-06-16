@@ -828,6 +828,16 @@
         }
       }
     },
+    "Другие иконки" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other icons"
+          }
+        }
+      }
+    },
     "Друзья" : {
       "localizations" : {
         "en" : {
@@ -1024,6 +1034,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Изменить фотографию"
+          }
+        }
+      }
+    },
+    "Иконка приложения" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App icon"
           }
         }
       }
@@ -1428,6 +1448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
           }
         }
       }
@@ -2557,6 +2583,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Твои площадки"
+          }
+        }
+      }
+    },
+    "Текущая иконка" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current icon"
           }
         }
       }
