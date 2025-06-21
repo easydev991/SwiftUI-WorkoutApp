@@ -44,6 +44,12 @@ struct ParksMapScreen: View {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }
+            .onAppear {
+                viewModel.setActive(true)
+            }
+            .onDisappear {
+                viewModel.setActive(false)
+            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {

@@ -11,8 +11,17 @@ extension ParksMapScreen {
             subsystem: Bundle.main.bundleIdentifier!,
             category: String(describing: ViewModel.self)
         )
+        /// `true` - таймер отслеживания локации актиуен,  `false` - неактивен
+        ///
+        /// Местоположение пользователя отслеживается каждые 10 секунд по таймеру,
+        /// чтобы снизить нагрузку на аккумулятор
+        private var isLocationTrackingActive = false
+        private let locationTrackingInterval: TimeInterval = 10
+        /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
+        private var lastUserLocation: CLLocation?
         private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        private var cancellable: AnyCancellable?
+        private var userCoordinateCancellable: AnyCancellable?
+        private var locationTrackingCancellable: AnyCancellable?
         /// Менеджер локации
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
@@ -44,7 +53,6 @@ extension ParksMapScreen {
             super.init()
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
-            manager.startUpdatingLocation()
             subscribeToUserCoordinate()
             updateSelectedCity(selectedCity)
         }
@@ -86,6 +94,16 @@ extension ParksMapScreen {
                 resetMapRegionTo(userCoordinate)
             }
         }
+
+        /// Включает или выключает вьюмодель для работы
+        func setActive(_ active: Bool) {
+            isLocationTrackingActive = active
+            if active {
+                startPeriodicLocationUpdates()
+            } else {
+                stopPeriodicLocationUpdates()
+            }
+        }
     }
 }
 
@@ -96,14 +114,24 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         if !region.isSpecified {
             region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
-        let oldCoordinate = LocationCoordinate(region.center)
+        if let lastUserLocation, lastUserLocation.distance(from: location) < 5 {
+            logger.info("Пропускаем обновление локации - расстояние меньше 5 метров")
+            return
+        }
+        lastUserLocation = location
+        logger.debug("Сохраняем новую локацию пользователя")
         let newCoordinate = LocationCoordinate(coordinate)
         let newParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
         if newCoordinate != newParkCoordinate {
-            newParkMapModel.latitude = coordinate.latitude
-            newParkMapModel.longitude = coordinate.longitude
+            logger.debug("Сохраняем координаты для newParkMapModel")
+            newParkMapModel = .init(
+                oldModel: newParkMapModel,
+                newLatitude: coordinate.latitude,
+                newLongitude: coordinate.longitude
+            )
         }
-        guard oldCoordinate != newCoordinate || newParkMapModel.address.isEmpty else { return }
+        guard newParkMapModel.address.isEmpty else { return }
+        logger.debug("Запускаем CLGeocoder...")
         CLGeocoder().reverseGeocodeLocation(location, preferredLocale: .init(identifier: "ru_RU")) { [weak self] places, error in
             guard let self, let target = places?.first else { return }
             if let error {
@@ -111,6 +139,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 logger.error("\(message)")
                 assertionFailure(message)
             }
+            logger.debug("CLGeocoder закончил работу")
             updateAddressIfNeeded(placemark: target)
             updateCityIfNeeded(placemark: target)
         }
@@ -143,7 +172,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
 private extension ParksMapScreen.ViewModel {
     func subscribeToUserCoordinate() {
         // Реагируем на изменение `userCoordinates`, если город не выбран
-        cancellable = $userCoordinate
+        userCoordinateCancellable = $userCoordinate
             .dropFirst()
             .removeDuplicates { old, new in
                 old.0 == new.0 && old.1 == new.1
@@ -162,6 +191,28 @@ private extension ParksMapScreen.ViewModel {
             ? Strings.Alert.locationPermissionDenied
             : Strings.Alert.needLocationPermission
         resetMapRegionTo(userCoordinate)
+    }
+
+    func startPeriodicLocationUpdates() {
+        guard isLocationTrackingActive else { return }
+        logger.info("Запустили таймер для отслеживание локации")
+        locationTrackingCancellable = Timer.publish(
+            every: locationTrackingInterval,
+            on: .main,
+            in: .common
+        )
+        .autoconnect()
+        .sink { [weak self] _ in
+            guard let self, isLocationTrackingActive else { return }
+            logger.debug("Запрашиваем новую локацию")
+            manager.requestLocation()
+        }
+    }
+
+    func stopPeriodicLocationUpdates() {
+        logger.info("Остановили отслеживание локации")
+        locationTrackingCancellable?.cancel()
+        locationTrackingCancellable = nil
     }
 
     /// Обновляет адрес для новой площадки, если нужно
