@@ -45,10 +45,10 @@ struct ParksMapScreen: View {
             }
             .task { await askForParks() }
             .onAppear {
-                viewModel.setActive(true)
+                viewModel.setLocationTracking(true)
             }
             .onDisappear {
-                viewModel.setActive(false)
+                viewModel.setLocationTracking(false)
             }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
