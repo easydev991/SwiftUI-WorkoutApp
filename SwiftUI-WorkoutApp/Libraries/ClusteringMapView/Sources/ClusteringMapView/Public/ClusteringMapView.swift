@@ -5,6 +5,8 @@ import SwiftUI
 public struct ClusteringMapView: UIViewRepresentable {
     private static var storedMapView: MKMapView?
     private let region: MKCoordinateRegion
+    private let shouldUpdateRegion: Bool
+    private let onRegionUpdated: () -> Void
     private let cameraZoomRange: MKMapView.CameraZoomRange?
     private let hideTrackingButton: Bool
     private let showsUserLocation: Bool
@@ -15,6 +17,8 @@ public struct ClusteringMapView: UIViewRepresentable {
     /// Инициализатор
     /// - Parameters:
     ///   - region: Регион для отображения
+    ///   - shouldUpdateRegion: Нужно ли обновить регион. Используется во избежание лишних обновлений в методе `updateUIView`
+    ///   - onRegionUpdated: Сообщает о факте изменения региона карты из метода `updateUIView`
     ///   - cameraZoomRange: Диапазон зума карты (мин/макс), по умолчанию 500/5000000
     ///   - showTrackingButton: Нужно ли показывать справа сверху кнопку трекинга локации
     ///   - showsUserLocation: Нужно ли показывать текущую локацию пользователя, по умолчанию `true`
@@ -23,6 +27,8 @@ public struct ClusteringMapView: UIViewRepresentable {
     ///   - didSelect: Возвращает аннотацию, чью карточку с информацией нажал пользователь
     public init(
         region: MKCoordinateRegion,
+        shouldUpdateRegion: Bool,
+        onRegionUpdated: @escaping () -> Void,
         cameraZoomRange: MKMapView.CameraZoomRange? = .init(
             minCenterCoordinateDistance: 500,
             maxCenterCoordinateDistance: 5000000
@@ -34,6 +40,8 @@ public struct ClusteringMapView: UIViewRepresentable {
         didSelect: @escaping (any MKAnnotation) -> Void
     ) {
         self.region = region
+        self.shouldUpdateRegion = shouldUpdateRegion
+        self.onRegionUpdated = onRegionUpdated
         self.cameraZoomRange = cameraZoomRange
         self.hideTrackingButton = hideTrackingButton
         self.showsUserLocation = showsUserLocation
@@ -61,10 +69,13 @@ public struct ClusteringMapView: UIViewRepresentable {
 
     public func updateUIView(_ mapView: MKMapView, context _: Context) {
         setTrackingButton(hideTrackingButton, on: mapView)
-        RegionOrganizer(old: mapView.region, new: region)
-            .updateRegionIfNeeded(for: mapView)
-        AnnotationsOrganizer(old: mapView.annotations, new: annotations)
-            .updateAnnotationsIfNeeded(for: mapView)
+        if shouldUpdateRegion {
+            RegionOrganizer(old: mapView.region, new: region).updateIfNeeded(for: mapView)
+            DispatchQueue.main.async {
+                onRegionUpdated()
+            }
+        }
+        AnnotationsOrganizer(old: mapView.annotations, new: annotations).updateIfNeeded(for: mapView)
         if mapView.showsUserLocation != showsUserLocation {
             mapView.showsUserLocation = showsUserLocation
         }

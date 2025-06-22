@@ -13,7 +13,7 @@ struct RegionOrganizer {
     ///
     /// Про тестирование: https://stackoverflow.com/a/51903928/11830041
     @MainActor
-    func updateRegionIfNeeded(for mapView: MKMapView) {
+    func updateIfNeeded(for mapView: MKMapView) {
         logger.debug("Собираемся обновить регион")
         let oldCoordinate = LocationCoordinate(old)
         let newCoordinate = LocationCoordinate(new)

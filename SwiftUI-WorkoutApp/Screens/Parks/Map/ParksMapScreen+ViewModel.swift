@@ -9,12 +9,27 @@ extension ParksMapScreen {
     final class ViewModel: NSObject, ObservableObject {
         private let logger = Logger(
             subsystem: Bundle.main.bundleIdentifier!,
-            category: String(describing: ViewModel.self)
+            category: "ParksMapScreenViewModel"
         )
+        /// `true` - таймер отслеживания локации актиуен,  `false` - неактивен
+        ///
+        /// Местоположение пользователя отслеживается каждые 10 секунд по таймеру,
+        /// чтобы снизить нагрузку на аккумулятор
+        private var isLocationTrackingActive = false
+        private let locationTrackingInterval: TimeInterval = 10
+        /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
+        private var lastUserLocation: CLLocation?
         private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        private var cancellable: AnyCancellable?
+        /// Подписки, которые должны работать всегда, пока существует вьюмодель
+        private var persistentCancellables = Set<AnyCancellable>()
+        private var locationTrackingCancellable: AnyCancellable?
         /// Менеджер локации
         private let manager = CLLocationManager()
+        /// Нужно ли обновлять регион карты
+        ///
+        /// Используется для выборочного обновления региона
+        /// внутри `ClusteringMapView` в методе `updateUIView`
+        @Published private(set) var shouldUpdateRegion = false
         @Published private(set) var locationErrorMessage = ""
         /// Модель с данными для создания новой площадки
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
@@ -35,17 +50,20 @@ extension ParksMapScreen {
 
         var canClearCityFilter: Bool { selectedCity != nil }
         @Published private(set) var region = MKCoordinateRegion()
+        /// Предыдущее значение региона для отслеживания изменений
+        private var previousRegion: MKCoordinateRegion?
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
-        @Published private var userCoordinate: (Double, Double) = (0, 0)
+        @Published private var userCityCoordinate = LocationCoordinate.empty
 
         override init() {
             super.init()
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
-            manager.startUpdatingLocation()
-            subscribeToUserCoordinate()
+            setupUserCityCoordinateObserver()
+            setupAppLifecycleObservers()
+            setupRegionChangeObserver()
             updateSelectedCity(selectedCity)
         }
 
@@ -60,30 +78,49 @@ extension ParksMapScreen {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
             else {
-                if userCoordinate != (0, 0) {
-                    userCoordinate = (0, 0)
-                    newParkMapModel.cityId = 0
-                }
+                userCityCoordinate = .empty
+                newParkMapModel.cityId = 0
                 return
             }
-            let newUserCoordinate = (newCoordinate.lat, newCoordinate.lon)
-            if userCoordinate != newUserCoordinate {
-                userCoordinate = newUserCoordinate
-            }
-            if newParkMapModel.cityId != cityId {
-                // Сохраняем город пользователя для новой площадки на случай,
-                // если не получится определить город по локации с помощью CLGeocoder
-                newParkMapModel.cityId = cityId
-            }
+            userCityCoordinate = .init(
+                latitude: newCoordinate.lat,
+                longitude: newCoordinate.lon
+            )
+            // Сохраняем город пользователя для новой площадки на случай,
+            // если не получится определить город по локации с помощью CLGeocoder
+            newParkMapModel.cityId = cityId
         }
 
+        /// Обновляет выбранный город для фильтра площадок
+        /// - Parameter newCity: Новый город. Если передать `nil`, сбросит фильтр по городу
         func updateSelectedCity(_ newCity: City?) {
             selectedCity = newCity
             if let newCity, let coordinate = newCity.coordinate2D {
                 region = .init(center: coordinate, span: defaultCoordinateSpan)
                 logger.debug("Регион карты обновлен для города \(newCity.name): \(coordinate.latitude), \(coordinate.longitude)")
             } else {
-                resetMapRegionTo(userCoordinate)
+                resetMapRegionTo(userCityCoordinate)
+            }
+        }
+
+        /// Включает или выключает вьюмодель для работы
+        func setActive(_ active: Bool) {
+            guard isLocationTrackingActive != active else {
+                return
+            }
+            isLocationTrackingActive = active
+            if active {
+                startPeriodicLocationUpdates()
+            } else {
+                stopPeriodicLocationUpdates()
+            }
+        }
+
+        /// Сбрасывает флаг обновления региона
+        func resetRegionUpdateFlag() {
+            if shouldUpdateRegion {
+                logger.debug("Сбрасываем флаг обновления региона")
+                shouldUpdateRegion = false
             }
         }
     }
@@ -96,14 +133,24 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         if !region.isSpecified {
             region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
-        let oldCoordinate = LocationCoordinate(region.center)
+        if let lastUserLocation, lastUserLocation.distance(from: location) < 5 {
+            logger.info("Пропускаем обновление локации - расстояние меньше 5 метров")
+            return
+        }
+        logger.debug("Сохраняем новую локацию пользователя")
+        lastUserLocation = location
         let newCoordinate = LocationCoordinate(coordinate)
         let newParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
         if newCoordinate != newParkCoordinate {
-            newParkMapModel.latitude = coordinate.latitude
-            newParkMapModel.longitude = coordinate.longitude
+            logger.debug("Сохраняем координаты для newParkMapModel")
+            newParkMapModel = .init(
+                oldModel: newParkMapModel,
+                newLatitude: coordinate.latitude,
+                newLongitude: coordinate.longitude
+            )
         }
-        guard oldCoordinate != newCoordinate || newParkMapModel.address.isEmpty else { return }
+        guard newParkMapModel.address.isEmpty else { return }
+        logger.debug("Запускаем CLGeocoder...")
         CLGeocoder().reverseGeocodeLocation(location, preferredLocale: .init(identifier: "ru_RU")) { [weak self] places, error in
             guard let self, let target = places?.first else { return }
             if let error {
@@ -111,6 +158,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 logger.error("\(message)")
                 assertionFailure(message)
             }
+            logger.debug("CLGeocoder закончил работу")
             updateAddressIfNeeded(placemark: target)
             updateCityIfNeeded(placemark: target)
         }
@@ -141,27 +189,86 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
 }
 
 private extension ParksMapScreen.ViewModel {
-    func subscribeToUserCoordinate() {
-        // Реагируем на изменение `userCoordinates`, если город не выбран
-        cancellable = $userCoordinate
+    /// Настраивает отслеживание изменений региона для управления флагом
+    func setupRegionChangeObserver() {
+        $region
             .dropFirst()
             .removeDuplicates { old, new in
-                old.0 == new.0 && old.1 == new.1
+                LocationCoordinate(old) == LocationCoordinate(new)
             }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newRegion in
+                guard let self else { return }
+                if newRegion.isSpecified {
+                    logger.debug("Регион изменился программно, устанавливаем флаг обновления")
+                    shouldUpdateRegion = true
+                }
+            }
+            .store(in: &persistentCancellables)
+    }
+
+    func setupUserCityCoordinateObserver() {
+        // Реагируем на изменение `userCityCoordinates`, если город не выбран
+        $userCityCoordinate
+            .dropFirst()
+            .removeDuplicates()
             .filter { [weak self] _ in
                 self?.selectedCity == nil
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newCoordinates in
-                self?.resetMapRegionTo(newCoordinates)
+                guard let self else { return }
+                resetMapRegionTo(newCoordinates)
             }
+            .store(in: &persistentCancellables)
+    }
+
+    /// Подписываемся на события сворачивания/разворачивания приложения,
+    /// чтобы включать и выключать отслеживание локации
+    func setupAppLifecycleObservers() {
+        let center = NotificationCenter.default
+        center.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in
+                self?.stopPeriodicLocationUpdates()
+            }
+            .store(in: &persistentCancellables)
+        center.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                self?.startPeriodicLocationUpdates()
+            }
+            .store(in: &persistentCancellables)
     }
 
     func setupDefaultLocation(permissionDenied: Bool) {
         locationErrorMessage = permissionDenied
             ? Strings.Alert.locationPermissionDenied
             : Strings.Alert.needLocationPermission
-        resetMapRegionTo(userCoordinate)
+        resetMapRegionTo(userCityCoordinate)
+    }
+
+    func startPeriodicLocationUpdates() {
+        guard isLocationTrackingActive else { return }
+        stopPeriodicLocationUpdates()
+        logger.debug("Запустили таймер для отслеживание локации")
+        locationTrackingCancellable = Timer.publish(
+            every: locationTrackingInterval,
+            on: .main,
+            in: .common
+        )
+        .autoconnect()
+        .sink { [weak self] _ in
+            guard let self, isLocationTrackingActive else { return }
+            logger.debug("Запрашиваем новую локацию")
+            manager.requestLocation()
+        }
+    }
+
+    func stopPeriodicLocationUpdates() {
+        if locationTrackingCancellable != nil {
+            logger.debug("Остановили отслеживание локации")
+            locationTrackingCancellable?.cancel()
+            locationTrackingCancellable = nil
+        }
     }
 
     /// Обновляет адрес для новой площадки, если нужно
@@ -191,25 +298,28 @@ private extension ParksMapScreen.ViewModel {
 
     /// Сбрасывает регион карты на точку пользователя из профиля
     ///
-    /// Предварительно вычисляем широту и долготу при помощи  `SWAddress` на основе справочника стран/городов
+    /// Предварительно вычисляем широту и долготу при помощи  `SWAddress` на основе справочника стран/городов.
     /// - Parameter userCoordinate: Широта и долгота по данным профиля
-    func resetMapRegionTo(_ userCoordinate: (Double, Double)) {
-        guard userCoordinate != (0, 0) else {
-            ignoreUserLocation = true
-            if let coordinate2D = City.defaultCity.coordinate2D {
-                region = .init(
-                    center: coordinate2D,
-                    span: defaultCoordinateSpan
-                )
-                logger.debug("Регион карты сброшен к координатам Москвы (пользователь не авторизовался)")
+    func resetMapRegionTo(_ userCoordinate: LocationCoordinate) {
+        guard userCoordinate.isSpecified else {
+            let newCenter: CLLocationCoordinate2D? = if let lastUserLocation {
+                lastUserLocation.coordinate
+            } else if let defaultLocation = City.defaultCity.coordinate2D {
+                defaultLocation
+            } else {
+                nil
+            }
+            if let newCenter {
+                region = .init(center: newCenter, span: defaultCoordinateSpan)
+                logger.debug("Регион карты сброшен, пользователь не авторизовался: \(newCenter.latitude), \(newCenter.longitude)")
             }
             return
         }
         region = .init(
-            center: .init(latitude: userCoordinate.0, longitude: userCoordinate.1),
+            center: userCoordinate.coordinate,
             span: defaultCoordinateSpan
         )
-        logger.debug("Регион карты сброшен к координатам: \(userCoordinate.0), \(userCoordinate.1)")
+        logger.debug("Регион карты сброшен на координаты: \(userCoordinate.lat), \(userCoordinate.lon)")
         ignoreUserLocation = false
     }
 }

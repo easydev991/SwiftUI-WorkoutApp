@@ -13,14 +13,16 @@ struct ClusteringMapViewTests {
 
         let newAnnotations = TestAnnotation.makeList(of: 30)
         let sut = AnnotationsOrganizer(old: initialAnnotations, new: newAnnotations)
-        sut.updateAnnotationsIfNeeded(for: mapView)
+        sut.updateIfNeeded(for: mapView)
         #expect(mapView.annotations.count == newAnnotations.count)
     }
 
     @Test
     func locationCoordinateIsNotSpecified() {
-        let sut = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        #expect(!sut.isSpecified)
+        let sut1 = LocationCoordinate(.init(latitude: 0, longitude: 0))
+        let sut2 = LocationCoordinate.empty
+        #expect(!sut1.isSpecified)
+        #expect(!sut2.isSpecified)
     }
 
     @Test
@@ -36,9 +38,12 @@ struct ClusteringMapViewTests {
 
     @Test
     func locationsAreEqual() {
-        let firstLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        let secondLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        #expect(firstLocation == secondLocation)
+        let location1 = LocationCoordinate.empty
+        let location2 = LocationCoordinate.empty
+        let location3 = LocationCoordinate(.init(latitude: 12, longitude: 14))
+        let location4 = LocationCoordinate(.init(latitude: 12, longitude: 14))
+        #expect(location1 == location2)
+        #expect(location3 == location4)
     }
 
     @Test
@@ -46,6 +51,18 @@ struct ClusteringMapViewTests {
         let firstLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
         let secondLocation = LocationCoordinate(.init(latitude: 1, longitude: 1))
         #expect(firstLocation != secondLocation)
+    }
+
+    @Test
+    func initializeWithLatLon() {
+        let latitude = Double.random(in: 10 ... 100)
+        let longitude = Double.random(in: 10 ... 100)
+        let sut = LocationCoordinate(latitude: latitude, longitude: longitude)
+        #expect(sut.isSpecified)
+        #expect(sut.lat == latitude)
+        #expect(sut.lon == longitude)
+        #expect(sut.coordinate.latitude == latitude)
+        #expect(sut.coordinate.longitude == longitude)
     }
 }
 

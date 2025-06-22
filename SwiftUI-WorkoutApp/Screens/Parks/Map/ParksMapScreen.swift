@@ -44,6 +44,12 @@ struct ParksMapScreen: View {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }
+            .onAppear {
+                viewModel.setActive(true)
+            }
+            .onDisappear {
+                viewModel.setActive(false)
+            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -155,6 +161,8 @@ private extension ParksMapScreen {
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
+                shouldUpdateRegion: viewModel.shouldUpdateRegion,
+                onRegionUpdated: viewModel.resetRegionUpdateFlag,
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredParks.map(\.annotation),
                 didSelect: { annotation in

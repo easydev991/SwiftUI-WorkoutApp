@@ -5,20 +5,31 @@ public struct LocationCoordinate: Sendable {
     public let lat: Double
     public let lon: Double
 
+    public var coordinate: CLLocationCoordinate2D {
+        .init(latitude: lat, longitude: lon)
+    }
+
     public init(_ center: CLLocationCoordinate2D) {
-        self.lat = center.latitude.rounded(to: 2)
-        self.lon = center.longitude.rounded(to: 2)
+        self.lat = center.latitude
+        self.lon = center.longitude
     }
 
     public init(_ region: MKCoordinateRegion) {
-        self.lat = region.center.latitude.rounded(to: 2)
-        self.lon = region.center.longitude.rounded(to: 2)
+        self.lat = region.center.latitude
+        self.lon = region.center.longitude
+    }
+
+    public init(latitude: Double, longitude: Double) {
+        self.lat = latitude
+        self.lon = longitude
     }
 
     /// Установлены ли координаты локации
     public var isSpecified: Bool {
         lat != 0 && lon != 0
     }
+
+    public static let empty = Self(.init(latitude: 0, longitude: 0))
 }
 
 extension LocationCoordinate: Equatable {
