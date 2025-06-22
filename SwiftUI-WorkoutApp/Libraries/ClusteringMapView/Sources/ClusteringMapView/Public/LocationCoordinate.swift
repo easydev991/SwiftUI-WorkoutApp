@@ -19,6 +19,11 @@ public struct LocationCoordinate: Sendable {
         self.lon = region.center.longitude
     }
 
+    public init(latitude: Double, longitude: Double) {
+        self.lat = latitude
+        self.lon = longitude
+    }
+
     /// Установлены ли координаты локации
     public var isSpecified: Bool {
         lat != 0 && lon != 0

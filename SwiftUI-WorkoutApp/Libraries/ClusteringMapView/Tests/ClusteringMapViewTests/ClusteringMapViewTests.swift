@@ -52,6 +52,18 @@ struct ClusteringMapViewTests {
         let secondLocation = LocationCoordinate(.init(latitude: 1, longitude: 1))
         #expect(firstLocation != secondLocation)
     }
+
+    @Test
+    func initializeWithLatLon() {
+        let latitude = Double.random(in: 10 ... 100)
+        let longitude = Double.random(in: 10 ... 100)
+        let sut = LocationCoordinate(latitude: latitude, longitude: longitude)
+        #expect(sut.isSpecified)
+        #expect(sut.lat == latitude)
+        #expect(sut.lon == longitude)
+        #expect(sut.coordinate.latitude == latitude)
+        #expect(sut.coordinate.longitude == longitude)
+    }
 }
 
 // Вспомогательный класс для тестовых аннотаций

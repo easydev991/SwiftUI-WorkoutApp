@@ -83,10 +83,8 @@ extension ParksMapScreen {
                 return
             }
             userCityCoordinate = .init(
-                .init(
-                    latitude: newCoordinate.lat,
-                    longitude: newCoordinate.lon
-                )
+                latitude: newCoordinate.lat,
+                longitude: newCoordinate.lon
             )
             // Сохраняем город пользователя для новой площадки на случай,
             // если не получится определить город по локации с помощью CLGeocoder

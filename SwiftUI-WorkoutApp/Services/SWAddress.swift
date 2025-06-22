@@ -164,9 +164,7 @@ extension SWAddress {
               let city = try? findCity(with: placemarkLocality),
               let cityId = Int(city.id)
         else {
-            let message = "Не смогли найти город в справочнике с названием \(placemarkLocality ?? "неизвестно")"
-            logger.error("\(message)")
-            assertionFailure(message)
+            logger.error("Не смогли найти город в справочнике с названием \(placemarkLocality ?? "неизвестно")")
             return nil
         }
         return cityId
