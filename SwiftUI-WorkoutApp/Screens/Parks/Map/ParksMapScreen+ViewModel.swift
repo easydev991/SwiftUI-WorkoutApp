@@ -133,10 +133,6 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         if !region.isSpecified {
             region = .init(center: coordinate, span: defaultCoordinateSpan)
         }
-        if let lastUserLocation, lastUserLocation.distance(from: location) < 5 {
-            logger.info("Пропускаем обновление локации - расстояние меньше 5 метров")
-            return
-        }
         logger.debug("Сохраняем новую локацию пользователя")
         lastUserLocation = location
         let newCoordinate = LocationCoordinate(coordinate)
