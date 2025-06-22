@@ -13,7 +13,7 @@ struct ClusteringMapViewTests {
 
         let newAnnotations = TestAnnotation.makeList(of: 30)
         let sut = AnnotationsOrganizer(old: initialAnnotations, new: newAnnotations)
-        sut.updateAnnotationsIfNeeded(for: mapView)
+        sut.updateIfNeeded(for: mapView)
         #expect(mapView.annotations.count == newAnnotations.count)
     }
 

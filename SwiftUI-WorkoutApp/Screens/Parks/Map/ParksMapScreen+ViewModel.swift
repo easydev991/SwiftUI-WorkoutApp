@@ -194,7 +194,6 @@ private extension ParksMapScreen.ViewModel {
             .removeDuplicates { old, new in
                 LocationCoordinate(old) == LocationCoordinate(new)
             }
-            .debounce(for: .milliseconds(50), scheduler: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newRegion in
                 guard let self else { return }
@@ -218,7 +217,8 @@ private extension ParksMapScreen.ViewModel {
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newCoordinates in
-                self?.resetMapRegionTo(newCoordinates)
+                guard let self else { return }
+                resetMapRegionTo(newCoordinates)
             }
             .store(in: &persistentCancellables)
     }

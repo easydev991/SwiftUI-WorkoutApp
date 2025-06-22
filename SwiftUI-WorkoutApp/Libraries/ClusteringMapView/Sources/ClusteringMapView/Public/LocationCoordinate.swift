@@ -6,13 +6,13 @@ public struct LocationCoordinate: Sendable {
     public let lon: Double
 
     public init(_ center: CLLocationCoordinate2D) {
-        self.lat = center.latitude.rounded(to: 2)
-        self.lon = center.longitude.rounded(to: 2)
+        self.lat = center.latitude
+        self.lon = center.longitude
     }
 
     public init(_ region: MKCoordinateRegion) {
-        self.lat = region.center.latitude.rounded(to: 2)
-        self.lon = region.center.longitude.rounded(to: 2)
+        self.lat = region.center.latitude
+        self.lon = region.center.longitude
     }
 
     /// Установлены ли координаты локации
