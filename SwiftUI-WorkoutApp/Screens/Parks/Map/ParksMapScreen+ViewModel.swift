@@ -9,7 +9,7 @@ extension ParksMapScreen {
     final class ViewModel: NSObject, ObservableObject {
         private let logger = Logger(
             subsystem: Bundle.main.bundleIdentifier!,
-            category: String(describing: ViewModel.self)
+            category: "ParksMapScreenViewModel"
         )
         /// `true` - таймер отслеживания локации актиуен,  `false` - неактивен
         ///
@@ -22,6 +22,7 @@ extension ParksMapScreen {
         private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         private var userCoordinateCancellable: AnyCancellable?
         private var locationTrackingCancellable: AnyCancellable?
+        private var appLifecycleCancellables = Set<AnyCancellable>()
         /// Менеджер локации
         private let manager = CLLocationManager()
         @Published private(set) var locationErrorMessage = ""
@@ -54,6 +55,7 @@ extension ParksMapScreen {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             subscribeToUserCoordinate()
+            setupAppLifecycleObservers()
             updateSelectedCity(selectedCity)
         }
 
@@ -97,6 +99,10 @@ extension ParksMapScreen {
 
         /// Включает или выключает вьюмодель для работы
         func setActive(_ active: Bool) {
+            guard isLocationTrackingActive != active else {
+                logger.info("Предотвратили лишний вызов setActive")
+                return
+            }
             isLocationTrackingActive = active
             if active {
                 startPeriodicLocationUpdates()
@@ -184,6 +190,22 @@ private extension ParksMapScreen.ViewModel {
             .sink { [weak self] newCoordinates in
                 self?.resetMapRegionTo(newCoordinates)
             }
+    }
+
+    /// Подписываемся на события сворачивания/разворачивания приложения,
+    /// чтобы включать и выключать отслеживание локации
+    func setupAppLifecycleObservers() {
+        let center = NotificationCenter.default
+        center.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in
+                self?.stopPeriodicLocationUpdates()
+            }
+            .store(in: &appLifecycleCancellables)
+        center.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                self?.startPeriodicLocationUpdates()
+            }
+            .store(in: &appLifecycleCancellables)
     }
 
     func setupDefaultLocation(permissionDenied: Bool) {
