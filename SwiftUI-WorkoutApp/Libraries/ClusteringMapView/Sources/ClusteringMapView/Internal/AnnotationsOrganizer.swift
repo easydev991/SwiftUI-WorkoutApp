@@ -6,7 +6,7 @@ struct AnnotationsOrganizer {
 
     /// Обновляет аннотации на карте, если нужно
     @MainActor
-    func updateAnnotationsIfNeeded(for mapView: MKMapView) {
+    func updateIfNeeded(for mapView: MKMapView) {
         guard !canSkipUpdate, hasDifferences else { return }
         if !old.isEmpty {
             mapView.removeAnnotations(old)

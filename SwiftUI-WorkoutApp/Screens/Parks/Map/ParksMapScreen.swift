@@ -161,6 +161,8 @@ private extension ParksMapScreen {
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
+                shouldUpdateRegion: viewModel.shouldUpdateRegion,
+                onRegionUpdated: viewModel.resetRegionUpdateFlag,
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: filteredParks.map(\.annotation),
                 didSelect: { annotation in
