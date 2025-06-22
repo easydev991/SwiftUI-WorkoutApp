@@ -55,7 +55,7 @@ extension ParksMapScreen {
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Координаты города в профиле авторизованного пользователя
-        @Published private var userCityCoordinate: (Double, Double) = (0, 0)
+        @Published private var userCityCoordinate = LocationCoordinate.empty
 
         override init() {
             super.init()
@@ -78,12 +78,16 @@ extension ParksMapScreen {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
             else {
-                userCityCoordinate = (0, 0)
+                userCityCoordinate = .empty
                 newParkMapModel.cityId = 0
                 return
             }
-            let newUserCityCoordinate = (newCoordinate.lat, newCoordinate.lon)
-            userCityCoordinate = newUserCityCoordinate
+            userCityCoordinate = .init(
+                .init(
+                    latitude: newCoordinate.lat,
+                    longitude: newCoordinate.lon
+                )
+            )
             // Сохраняем город пользователя для новой площадки на случай,
             // если не получится определить город по локации с помощью CLGeocoder
             newParkMapModel.cityId = cityId
@@ -206,12 +210,10 @@ private extension ParksMapScreen.ViewModel {
     }
 
     func setupUserCityCoordinateObserver() {
-        // Реагируем на изменение `userCoordinates`, если город не выбран
+        // Реагируем на изменение `userCityCoordinates`, если город не выбран
         $userCityCoordinate
             .dropFirst()
-            .removeDuplicates { old, new in
-                old.0 == new.0 && old.1 == new.1
-            }
+            .removeDuplicates()
             .filter { [weak self] _ in
                 self?.selectedCity == nil
             }
@@ -300,8 +302,8 @@ private extension ParksMapScreen.ViewModel {
     ///
     /// Предварительно вычисляем широту и долготу при помощи  `SWAddress` на основе справочника стран/городов.
     /// - Parameter userCoordinate: Широта и долгота по данным профиля
-    func resetMapRegionTo(_ userCoordinate: (Double, Double)) {
-        guard userCoordinate != (0, 0) else {
+    func resetMapRegionTo(_ userCoordinate: LocationCoordinate) {
+        guard userCoordinate.isSpecified else {
             let newCenter: CLLocationCoordinate2D? = if let lastUserLocation {
                 lastUserLocation.coordinate
             } else if let defaultLocation = City.defaultCity.coordinate2D {
@@ -311,15 +313,15 @@ private extension ParksMapScreen.ViewModel {
             }
             if let newCenter {
                 region = .init(center: newCenter, span: defaultCoordinateSpan)
-                logger.debug("Регион карты сброшен (пользователь не авторизовался)")
+                logger.debug("Регион карты сброшен, пользователь не авторизовался: \(newCenter.latitude), \(newCenter.longitude)")
             }
             return
         }
         region = .init(
-            center: .init(latitude: userCoordinate.0, longitude: userCoordinate.1),
+            center: userCoordinate.coordinate,
             span: defaultCoordinateSpan
         )
-        logger.debug("Регион карты сброшен к координатам: \(userCoordinate.0), \(userCoordinate.1)")
+        logger.debug("Регион карты сброшен на координаты: \(userCoordinate.lat), \(userCoordinate.lon)")
         ignoreUserLocation = false
     }
 }

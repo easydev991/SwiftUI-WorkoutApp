@@ -19,8 +19,10 @@ struct ClusteringMapViewTests {
 
     @Test
     func locationCoordinateIsNotSpecified() {
-        let sut = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        #expect(!sut.isSpecified)
+        let sut1 = LocationCoordinate(.init(latitude: 0, longitude: 0))
+        let sut2 = LocationCoordinate.empty
+        #expect(!sut1.isSpecified)
+        #expect(!sut2.isSpecified)
     }
 
     @Test
@@ -36,9 +38,12 @@ struct ClusteringMapViewTests {
 
     @Test
     func locationsAreEqual() {
-        let firstLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        let secondLocation = LocationCoordinate(.init(latitude: 0, longitude: 0))
-        #expect(firstLocation == secondLocation)
+        let location1 = LocationCoordinate.empty
+        let location2 = LocationCoordinate.empty
+        let location3 = LocationCoordinate(.init(latitude: 12, longitude: 14))
+        let location4 = LocationCoordinate(.init(latitude: 12, longitude: 14))
+        #expect(location1 == location2)
+        #expect(location3 == location4)
     }
 
     @Test

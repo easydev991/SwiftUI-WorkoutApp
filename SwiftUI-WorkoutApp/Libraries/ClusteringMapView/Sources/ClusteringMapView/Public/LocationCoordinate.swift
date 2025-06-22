@@ -5,6 +5,10 @@ public struct LocationCoordinate: Sendable {
     public let lat: Double
     public let lon: Double
 
+    public var coordinate: CLLocationCoordinate2D {
+        .init(latitude: lat, longitude: lon)
+    }
+
     public init(_ center: CLLocationCoordinate2D) {
         self.lat = center.latitude
         self.lon = center.longitude
@@ -19,6 +23,8 @@ public struct LocationCoordinate: Sendable {
     public var isSpecified: Bool {
         lat != 0 && lon != 0
     }
+
+    public static let empty = Self(.init(latitude: 0, longitude: 0))
 }
 
 extension LocationCoordinate: Equatable {
