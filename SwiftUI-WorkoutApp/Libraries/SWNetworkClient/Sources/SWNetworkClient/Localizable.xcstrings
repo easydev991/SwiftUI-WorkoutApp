@@ -32,6 +32,22 @@
           }
         }
       }
+    },
+    "ClientError.NotFound" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The requested resource is not found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрашиваемый ресурс не найден"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
