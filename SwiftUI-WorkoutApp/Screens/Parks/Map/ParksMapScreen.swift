@@ -223,6 +223,8 @@ private extension ParksMapScreen {
     }
 
     private func loadInitialParks() async throws {
+        isLoading = true
+        defer { isLoading = false }
         let client = SWClient(with: defaults)
         var page = 1
         let pageSize = 1000
