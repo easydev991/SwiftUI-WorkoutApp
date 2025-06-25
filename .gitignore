@@ -11,6 +11,7 @@ fastlane/screenshots/screenshots.html
 # Swift build artifacts
 .build/
 buildServer.json
+build_sim.log
 
 # VSCode/Cursor settings (personal preferences)
 .vscode/

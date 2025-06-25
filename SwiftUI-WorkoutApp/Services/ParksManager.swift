@@ -19,6 +19,8 @@ final class ParksManager: ObservableObject {
     @Published private(set) var fullList = [Park]()
     /// Загружены ли данные
     @Published private(set) var didLoad = false
+    /// Состояние загрузки
+    @Published private(set) var isLoading = false
     /// Нужно ли обновить список площадок
     ///
     /// Обновляем, если прошло больше дня с момента предыдущего обновления
@@ -31,33 +33,6 @@ final class ParksManager: ObservableObject {
         $fullList
             .map { !$0.isEmpty }
             .assign(to: &$didLoad)
-    }
-
-    /// Подготавливает дефолтный список площадок при загрузке приложения
-    ///
-    /// Достает список площадок из `JSON-файла` в памяти приложения
-    func makeDefaultList() throws {
-        fullList = if swStorage.documentExists {
-            try swStorage.get()
-        } else {
-            try Bundle.main.decodeJson(
-                [Park].self,
-                fileName: "oldParks",
-                extension: "json"
-            )
-        }
-    }
-
-    /// Загружает обновленный список площадок
-    /// - Parameters:
-    ///   - authHelper: Содержит токен авторизации и умеет делать логаут
-    ///   - dateString: Дата, с которой нужно загрузить обновленные площадки.
-    ///   Если передать `nil`, использует дефолтную дату (предыдущее ручное обновление площадок)
-    func getUpdatedParks(with authHelper: AuthHelper, from dateString: String? = nil) async throws {
-        let updatedParks = try await SWClient(with: authHelper).getUpdatedParks(
-            from: dateString ?? lastParksUpdateDateString
-        )
-        try updateDefaultList(with: updatedParks)
     }
 
     /// Обновляет выбранную площадку
@@ -88,9 +63,136 @@ final class ParksManager: ObservableObject {
         fullList.removeAll(where: { $0.id == id })
         try saveParksInMemory()
     }
+
+    // MARK: - Новые методы для рефакторинга
+
+    /// Основная логика загрузки и обновления площадок
+    /// - Parameter refresh: Принудительное обновление
+    func loadParksIfNeeded(refresh: Bool = false) async throws {
+        // Если список не пустой и не требуется обновление, выходим
+        if !fullList.isEmpty, !refresh { return }
+
+        // Загружаем сохранённые площадки из памяти (если есть)
+        try? makeDefaultList()
+
+        // Если после загрузки из памяти список всё ещё пустой, загружаем с сервера
+        if fullList.isEmpty {
+            do {
+                try await loadInitialParks()
+            } catch {
+                // Ошибка загрузки с сервера - обрабатывается в UI
+                throw error
+            }
+        }
+
+        // Проверяем, нужны ли обновления
+        try await updateParksIfNeeded()
+    }
+
+    /// Проверяет, нужно ли обновление площадок, и выполняет его при необходимости
+    private func updateParksIfNeeded() async throws {
+        if needUpdateDefaultList {
+            try await updateParks()
+        }
+    }
+
+    /// Постраничная загрузка площадок с сервера
+    private func loadInitialParks() async throws {
+        isLoading = true
+        defer { isLoading = false }
+
+        let client = SWClient(with: DefaultsService())
+        var page = 1
+        let pageSize = 1000
+        var allParks = fullList // Используем уже загруженные из makeDefaultList
+        var batchSize = 0
+        let batchThreshold = 3000 // Обновляем каждые ~3000 площадок
+
+        while true {
+            let parksPage = try await client.getParksPageByPage(page: page, pageSize: pageSize)
+            if parksPage.isEmpty {
+                break
+            }
+
+            // Добавляем новые площадки, фильтруя дубликаты по id
+            for newPark in parksPage {
+                if !allParks.contains(where: { $0.id == newPark.id }) {
+                    allParks.append(newPark)
+                    batchSize += 1
+                }
+            }
+
+            // Обновляем UI и сохраняем в файл батчами
+            if batchSize >= batchThreshold {
+                fullList = allParks
+                try saveParksInMemory()
+                batchSize = 0
+            }
+
+            page += 1
+        }
+
+        // Сохраняем оставшиеся площадки
+        if batchSize > 0 {
+            fullList = allParks
+            try saveParksInMemory()
+        }
+    }
+
+    /// Обновление площадок с сервера
+    private func updateParks(from dateString: String? = nil) async throws {
+        isLoading = true
+        defer { isLoading = false }
+        try await getUpdatedParks(with: DefaultsService(), from: dateString)
+    }
+
+    /// Проверка недавних обновлений (за последние 5 минут)
+    func checkForRecentUpdates() async throws {
+        DefaultsService().setUserNeedUpdate(true)
+        try await updateParks(from: DateFormatterService.fiveMinutesAgoDateString)
+    }
+
+    /// Асинхронное удаление площадки
+    func deleteParkAsync(id: Int) async throws {
+        try deletePark(with: id)
+    }
+
+    /// Асинхронное обновление площадки
+    func updateParkAsync(_ park: Park) async throws {
+        try manuallyUpdatePark(park)
+    }
 }
 
 private extension ParksManager {
+    /// Подготавливает дефолтный список площадок при загрузке приложения
+    ///
+    /// Пытается загрузить сохраненный список площадок из памяти приложения
+    func makeDefaultList() throws {
+        fullList = if swStorage.documentExists {
+            try swStorage.get()
+        } else {
+            []
+        }
+    }
+
+    /// Загружает обновленный список площадок
+    /// - Parameters:
+    ///   - authHelper: Содержит токен авторизации и умеет делать логаут
+    ///   - dateString: Дата, с которой нужно загрузить обновленные площадки.
+    ///   Если передать `nil`, использует дефолтную дату (предыдущее ручное обновление площадок)
+    func getUpdatedParks(with authHelper: AuthHelper, from dateString: String? = nil) async throws {
+        let updatedParks = try await SWClient(with: authHelper).getUpdatedParks(
+            from: dateString ?? lastParksUpdateDateString
+        )
+        try updateDefaultList(with: updatedParks)
+    }
+
+    /// Публичный метод для массового присваивания fullList и сохранения
+    func setFullList(_ parks: [Park]) throws {
+        fullList = parks
+        try saveParksInMemory()
+    }
+
     /// Обновляем дефолтный список площадок
     func updateDefaultList(with updatedParks: [Park]) throws {
         guard !updatedParks.isEmpty else { return }
