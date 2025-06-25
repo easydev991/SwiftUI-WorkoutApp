@@ -205,20 +205,43 @@ private extension ParksMapScreen {
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
         if !filteredParks.isEmpty, !refresh { return }
+
         guard !parksManager.fullList.isEmpty else {
-            // Заполняем дефолтный список площадок контентом из `json`-файла
+            // Загружаем полный список площадок с нуля
             do {
-                try parksManager.makeDefaultList()
+                try await loadInitialParks()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
-            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-            if parksManager.needUpdateDefaultList {
-                await askForParks(refresh: true)
-            }
             return
         }
-        await getUpdatedParks()
+
+        // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
+        if parksManager.needUpdateDefaultList {
+            await getUpdatedParks()
+        }
+    }
+
+    private func loadInitialParks() async throws {
+        let client = SWClient(with: defaults)
+        var page = 1
+        let pageSize = 1000
+        var allParks: [Park] = []
+
+        while true {
+            let parksPage = try await client.getParksPageByPage(page: page, pageSize: pageSize)
+            if parksPage.isEmpty {
+                break
+            }
+            allParks.append(contentsOf: parksPage)
+            page += 1
+        }
+
+        do {
+            try parksManager.setFullList(allParks)
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
     }
 
     func deletePark(id: Int) {

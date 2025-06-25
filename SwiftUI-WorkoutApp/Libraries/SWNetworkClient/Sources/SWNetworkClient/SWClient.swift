@@ -197,6 +197,16 @@ public struct SWClient: Sendable {
         return try await makeResult(for: endpoint)
     }
 
+    /// Загружает список площадок постранично
+    /// - Parameters:
+    ///   - page: Номер страницы (начиная с 1)
+    ///   - pageSize: Количество элементов на странице
+    /// - Returns: Список площадок для указанной страницы
+    public func getParksPageByPage(page: Int, pageSize: Int) async throws -> [Park] {
+        let endpoint = Endpoint.getParksPageByPage(page: page, pageSize: pageSize)
+        return try await makeResult(for: endpoint)
+    }
+
     /// Загружает список всех площадок, обновленных после указанной даты
     /// - Parameter stringDate: дата отсечки для поиска обновленных площадок
     /// - Returns: Список обновленных площадок

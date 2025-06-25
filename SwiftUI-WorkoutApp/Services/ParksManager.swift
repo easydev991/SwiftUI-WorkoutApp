@@ -35,16 +35,12 @@ final class ParksManager: ObservableObject {
 
     /// Подготавливает дефолтный список площадок при загрузке приложения
     ///
-    /// Достает список площадок из `JSON-файла` в памяти приложения
+    /// Пытается загрузить сохраненный список площадок из памяти приложения
     func makeDefaultList() throws {
         fullList = if swStorage.documentExists {
             try swStorage.get()
         } else {
-            try Bundle.main.decodeJson(
-                [Park].self,
-                fileName: "oldParks",
-                extension: "json"
-            )
+            []
         }
     }
 
@@ -86,6 +82,12 @@ final class ParksManager: ObservableObject {
     /// Используется при ручном удалении площадки с детального экрана площадки
     func deletePark(with id: Int) throws {
         fullList.removeAll(where: { $0.id == id })
+        try saveParksInMemory()
+    }
+
+    /// Публичный метод для массового присваивания fullList и сохранения
+    func setFullList(_ parks: [Park]) throws {
+        fullList = parks
         try saveParksInMemory()
     }
 }

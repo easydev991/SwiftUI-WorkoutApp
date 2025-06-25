@@ -83,6 +83,10 @@ enum Endpoint {
     /// Возвращает список с кратким набором полей, т.к. при запросе всех данных сервер не справляется с нагрузкой
     case getAllParks
 
+    // MARK: Получить список площадок постранично
+    /// **GET** ${API}/areas?fields=short&page_size=${pageSize}&page=${page}
+    case getParksPageByPage(page: Int, pageSize: Int)
+
     // MARK: Получить список площадок, обновленных после указанной даты
     /// **GET** ${API}/areas/last/<date>
     case getUpdatedParks(from: String)
@@ -284,7 +288,7 @@ extension Endpoint {
             "/users/search"
         case .getCountries:
             "/countries"
-        case .getAllParks:
+        case .getAllParks, .getParksPageByPage:
             "/areas"
         case let .getUpdatedParks(date):
             "/areas/last/\(date)"
@@ -363,7 +367,7 @@ extension Endpoint {
              .createPark, .editPark:
             .post
         case .getUser, .getFriendsForUser, .getFriendRequests,
-             .getAllParks, .getPark,
+             .getAllParks, .getParksPageByPage, .getPark,
              .findUsers, .getParksForUser, .getBlacklist,
              .getFutureEvents, .getPastEvents, .getEvent,
              .getDialogs, .getMessages, .getJournals,
@@ -393,6 +397,11 @@ extension Endpoint {
     var queryItems: [URLQueryItem] {
         switch self {
         case .getAllParks: [.init(name: "fields", value: "short")]
+        case let .getParksPageByPage(page, pageSize): [
+                .init(name: "fields", value: "short"),
+                .init(name: "page_size", value: String(pageSize)),
+                .init(name: "page", value: String(page))
+            ]
         case let .findUsers(name): [.init(name: "name", value: name)]
         default: []
         }
@@ -427,7 +436,7 @@ extension Endpoint {
              .deleteEventComment, .deleteEvent, .getDialogs,
              .getMessages, .deleteDialog, .getJournals,
              .getJournal, .getJournalEntries, .deleteEntry,
-             .deleteJournal, .getAllParks,
+             .deleteJournal, .getAllParks, .getParksPageByPage,
              .getUpdatedParks, .deletePark,
              .deleteEventPhoto, .deleteParkPhoto:
             return nil
