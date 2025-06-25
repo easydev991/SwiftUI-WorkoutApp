@@ -11,7 +11,6 @@ struct ParksMapScreen: View {
     @EnvironmentObject private var parksManager: ParksManager
     @StateObject private var viewModel = ViewModel()
     @State private var presentation = Presentation.map
-    @State private var isLoading = false
     @State private var sheetItem: SheetItem?
 
     /// Отфильтрованные по выбранному городу и активным фильтрам площадки
@@ -35,37 +34,39 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading || viewModel.newParkState.isProcessingNewPark)
+            .loadingOverlay(if: parksManager.isLoading)
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
-            .onChange(of: sheetItem) { [oldItem = sheetItem] newValue in
-                if case .createNewPark = oldItem, newValue == nil {
-                    viewModel.finishCreatingNewPark()
-                }
-            }
             .onChange(of: defaults.mainUserCityId) { _ in
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
-            .onChange(of: viewModel.newParkState) { newState in
-                if case let .ready(model) = newState {
-                    sheetItem = .createNewPark(model)
+            .task {
+                do {
+                    try await parksManager.loadParksIfNeeded()
+                } catch {
+                    SWAlert.shared.presentDefaultUIKit(error)
                 }
             }
-            .task { await askForParks() }
+            .onAppear {
+                viewModel.setLocationTracking(true)
+            }
+            .onDisappear {
+                viewModel.setLocationTracking(false)
+            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Group {
                         filterButton
                         Button {
-                            Task { await askForParks(refresh: true) }
+                            onRefresh()
                         } label: {
                             Icons.Regular.refresh.view
                         }
                     }
-                    .disabled(isLoading)
+                    .disabled(parksManager.isLoading)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     rightBarButton
@@ -76,10 +77,28 @@ struct ParksMapScreen: View {
         }
         .navigationViewStyle(.stack)
     }
+
+    private func onRefresh() {
+        Task {
+            do {
+                try await parksManager.loadParksIfNeeded(refresh: true)
+            } catch {
+                SWAlert.shared.presentDefaultUIKit(error)
+            }
+        }
+    }
+
+    private func onCheckForRecentUpdates() async {
+        do {
+            try await parksManager.checkForRecentUpdates()
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+    }
 }
 
 private extension ParksMapScreen {
-    enum SheetItem: Identifiable, Equatable {
+    enum SheetItem: Identifiable {
         var id: String {
             switch self {
             case .filters: "filters"
@@ -196,101 +215,22 @@ private extension ParksMapScreen {
                     isFilterEdited: defaults.parksFilter.isEdited,
                     isFilteredParksEmpty: filteredParks.isEmpty,
                     didParksManagerLoad: parksManager.didLoad,
-                    isLoading: isLoading
+                    isLoading: parksManager.isLoading
                 )
             )
         }
     }
 
-    /// Заполняем/обновляем дефолтный список площадок
-    func askForParks(refresh: Bool = false) async {
-        if !filteredParks.isEmpty, !refresh { return }
-
-        guard !parksManager.fullList.isEmpty else {
-            // Загружаем полный список площадок с нуля
-            do {
-                try await loadInitialParks()
-            } catch {
-                SWAlert.shared.presentDefaultUIKit(error)
-            }
-            return
-        }
-
-        // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
-        if parksManager.needUpdateDefaultList {
-            await getUpdatedParks()
-        }
-    }
-
-    private func loadInitialParks() async throws {
-        isLoading = true
-        defer { isLoading = false }
-        let client = SWClient(with: defaults)
-        var page = 1
-        let pageSize = 1000
-        var allParks: [Park] = []
-
-        while true {
-            let parksPage = try await client.getParksPageByPage(page: page, pageSize: pageSize)
-            if parksPage.isEmpty {
-                break
-            }
-            allParks.append(contentsOf: parksPage)
-            page += 1
-        }
-
-        do {
-            try parksManager.setFullList(allParks)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
-    }
-
-    func deletePark(id: Int) {
-        sheetItem = nil
-        do {
-            try parksManager.deletePark(with: id)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
-    }
-
-    func updatePark(_ park: Park) {
-        do {
-            try parksManager.manuallyUpdatePark(park)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
-    }
-
-    /// Проверяем недавние обновления списка площадок
-    ///
-    /// Запрашиваем обновление за прошедшие 5 минут
-    func checkForRecentUpdates() async {
-        defaults.setUserNeedUpdate(true)
-        await getUpdatedParks(from: DateFormatterService.fiveMinutesAgoDateString)
-    }
-
-    func getUpdatedParks(from dateString: String? = nil) async {
-        isLoading = true
-        do {
-            try await parksManager.getUpdatedParks(with: defaults, from: dateString)
-        } catch ClientError.noConnection {
-            SWAlert.shared.presentNoConnection(false)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
-        }
-        isLoading = false
-    }
-
     @ViewBuilder
     var rightBarButton: some View {
         if defaults.isAuthorized {
-            Button(action: viewModel.requestLocationForNewPark) {
+            Button {
+                sheetItem = .createNewPark(viewModel.newParkMapModel)
+            } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
-            .disabled(!viewModel.canCreateNewPark || isLoading)
+            .disabled(!viewModel.canCreateNewPark || parksManager.isLoading)
         }
     }
 
@@ -305,12 +245,11 @@ private extension ParksMapScreen {
                     .createNew(model),
                     refreshClbk: {
                         Task {
-                            await checkForRecentUpdates()
+                            await onCheckForRecentUpdates()
                         }
                     }
                 )
             }
-            .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
             NavigationView {
                 ItemListScreen(
@@ -334,8 +273,25 @@ private extension ParksMapScreen {
             NavigationView {
                 ParkDetailScreen(
                     park: park,
-                    onEdit: updatePark,
-                    onDelete: deletePark
+                    onEdit: { park in
+                        Task {
+                            do {
+                                try await parksManager.updateParkAsync(park)
+                            } catch {
+                                SWAlert.shared.presentDefaultUIKit(error)
+                            }
+                        }
+                    },
+                    onDelete: { id in
+                        sheetItem = nil
+                        Task {
+                            do {
+                                try await parksManager.deleteParkAsync(id: id)
+                            } catch {
+                                SWAlert.shared.presentDefaultUIKit(error)
+                            }
+                        }
+                    }
                 )
             }
             .navigationViewStyle(.stack)
