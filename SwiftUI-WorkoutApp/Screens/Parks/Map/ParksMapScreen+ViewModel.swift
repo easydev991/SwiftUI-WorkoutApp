@@ -84,7 +84,7 @@ extension ParksMapScreen {
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
             else {
                 userCityCoordinate = .empty
-                newParkMapModel.cityId = 0
+                internalNewParkMapModel.cityId = 0
                 return
             }
             userCityCoordinate = .init(
@@ -93,7 +93,7 @@ extension ParksMapScreen {
             )
             // Сохраняем город пользователя для новой площадки на случай,
             // если не получится определить город по локации с помощью CLGeocoder
-            newParkMapModel.cityId = cityId
+            internalNewParkMapModel.cityId = cityId
         }
 
         /// Обновляет выбранный город для фильтра площадок
@@ -117,6 +117,9 @@ extension ParksMapScreen {
         
         /// Флаг процесса запроса локации для новой площадки
         @Published private(set) var isRequestingLocationForNewPark = false
+        
+        /// Флаг процесса создания новой площадки (включает запрос локации + открытый экран)
+        @Published private(set) var isCreatingNewPark = false
 
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
@@ -125,15 +128,33 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки и выполняет геокодирование
         func requestLocationForNewPark() {
+            newParkMapModel = .empty
+            isRequestingLocationForNewPark = true
+            isCreatingNewPark = true
+            
             let now = Date()
             let shouldRequestLocation = lastUserLocation == nil ||
                 lastLocationRequestTime.map { now.timeIntervalSince($0) > 10 } ?? true
             if shouldRequestLocation {
-                // Запрашиваем новую локацию, если её нет или прошло больше 10 секунд
                 lastLocationRequestTime = now
                 manager.requestLocation()
+            } else {
+                // Если локация актуальная, сразу завершаем процесс
+                finishLocationRequestForNewPark()
             }
-            performGeocodingIfNeeded()
+        }
+        
+        /// Завершает процесс запроса локации для новой площадки  
+        func finishLocationRequestForNewPark() {
+            newParkMapModel = internalNewParkMapModel
+            isRequestingLocationForNewPark = false
+            logger.debug("Завершили запрос локации для новой площадки")
+        }
+        
+        /// Завершает процесс создания новой площадки (вызывается при закрытии экрана)
+        func finishCreatingNewPark() {
+            isCreatingNewPark = false
+            logger.debug("Завершили создание новой площадки")
         }
     }
 }
@@ -149,11 +170,11 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         logger.debug("Сохраняем новую локацию пользователя")
         lastUserLocation = location
         let newCoordinate = LocationCoordinate(coordinate)
-        let newParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
+        let newParkCoordinate = LocationCoordinate(internalNewParkMapModel.coordinate)
         if newCoordinate != newParkCoordinate {
             logger.debug("Сохраняем координаты для newParkMapModel")
-            newParkMapModel = .init(
-                oldModel: newParkMapModel,
+            internalNewParkMapModel = .init(
+                oldModel: internalNewParkMapModel,
                 newLatitude: coordinate.latitude,
                 newLongitude: coordinate.longitude
             )
@@ -270,8 +291,8 @@ private extension ParksMapScreen.ViewModel {
             return
         }
         let distanceFromLastGeocode = lastGeocodedLocation?.distance(from: lastUserLocation) ?? 1000
-        let isCityEmpty = newParkMapModel.cityId == 0
-        let isAddressEmpty = newParkMapModel.address.isEmpty
+        let isCityEmpty = internalNewParkMapModel.cityId == 0
+        let isAddressEmpty = internalNewParkMapModel.address.isEmpty
         let shouldUpdateAddress = isCityEmpty || isAddressEmpty
         let movedSignificantly = distanceFromLastGeocode > 50
         guard shouldUpdateAddress || movedSignificantly else {
@@ -303,8 +324,8 @@ private extension ParksMapScreen.ViewModel {
     /// - Parameter placemark: Точка на карте
     func updateAddressIfNeeded(placemark: CLPlacemark) {
         let fullAddress = SWAddress.makeAddress(for: placemark)
-        if let fullAddress, fullAddress != newParkMapModel.address {
-            newParkMapModel.address = fullAddress
+        if let fullAddress, fullAddress != internalNewParkMapModel.address {
+            internalNewParkMapModel.address = fullAddress
             logger.debug("Адрес для площадки: \(fullAddress)")
         }
     }
@@ -315,8 +336,8 @@ private extension ParksMapScreen.ViewModel {
     /// - Parameter placemark: Точка на карте
     func updateCityIfNeeded(placemark: CLPlacemark) {
         if let cityId = SWAddress.makeCityId(with: placemark.locality),
-           cityId != newParkMapModel.cityId {
-            newParkMapModel.cityId = cityId
+           cityId != internalNewParkMapModel.cityId {
+            internalNewParkMapModel.cityId = cityId
             logger.debug("Идентификатор города для площадки: \(cityId)")
         }
     }
