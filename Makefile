@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane update update_fastlane update_swiftformat format screenshots
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor update update_fastlane update_swiftformat format screenshots
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -192,6 +192,52 @@ setup_fastlane:
 	else \
 		printf "$(GREEN)fastlane уже инициализирован$(RESET)\n"; \
 	fi; \
+	'
+
+## setup_cursor: Настроить языковой сервер Swift для работы в Cursor
+setup_cursor:
+	@bash -c '\
+	set -e; \
+	printf "$(YELLOW)🔧 Настройка языкового сервера Swift для Cursor...$(RESET)\n"; \
+	\
+	printf "$(YELLOW)Проверка наличия Xcode Command Line Tools...$(RESET)\n"; \
+	if ! xcode-select -p >/dev/null 2>&1; then \
+		printf "$(RED)❌ Xcode Command Line Tools не установлены$(RESET)\n"; \
+		printf "$(YELLOW)Установите их командой:$(RESET)\n"; \
+		printf "  xcode-select --install\n"; \
+		exit 1; \
+	else \
+		printf "$(GREEN)Xcode Command Line Tools установлены$(RESET)\n"; \
+	fi; \
+	\
+	printf "$(YELLOW)Проверка наличия xcode-build-server...$(RESET)\n"; \
+	if ! command -v xcode-build-server >/dev/null 2>&1; then \
+		printf "$(YELLOW)xcode-build-server не установлен. Устанавливаю через Homebrew...$(RESET)\n"; \
+		brew install xcode-build-server; \
+		printf "$(GREEN)xcode-build-server успешно установлен$(RESET)\n"; \
+	else \
+		printf "$(GREEN)xcode-build-server уже установлен$(RESET)\n"; \
+	fi; \
+	\
+	printf "$(YELLOW)Проверка наличия sourcekit-lsp...$(RESET)\n"; \
+	if ! command -v sourcekit-lsp >/dev/null 2>&1; then \
+		printf "$(RED)❌ sourcekit-lsp не найден$(RESET)\n"; \
+		printf "$(YELLOW)Обычно он устанавливается с Xcode Command Line Tools$(RESET)\n"; \
+		exit 1; \
+	else \
+		printf "$(GREEN)sourcekit-lsp найден$(RESET)\n"; \
+	fi; \
+	\
+	printf "$(YELLOW)📝 Генерация buildServer.json...$(RESET)\n"; \
+	xcode-build-server config -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp; \
+	printf "$(GREEN)buildServer.json создан$(RESET)\n"; \
+	\
+	printf "$(YELLOW)🔨 Выполнение легкой сборки для инициализации индекса...$(RESET)\n"; \
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -destination "platform=iOS Simulator,name=iPhone 16 Pro" -quiet clean build CODE_SIGNING_ALLOWED=NO || printf "$(YELLOW)Сборка завершилась с предупреждениями, но это нормально$(RESET)\n"; \
+	\
+	printf "$(GREEN)✅ Готово!$(RESET)\n"; \
+	printf "$(YELLOW)💡 Перезапустите Cursor для активации подсказок Swift$(RESET)\n"; \
+	printf "$(YELLOW)   Больше никаких действий не требуется!$(RESET)\n"; \
 	'
 
 ## update: Обновить fastlane и swiftformat (вызывает update_bundle и update_swiftformat)
