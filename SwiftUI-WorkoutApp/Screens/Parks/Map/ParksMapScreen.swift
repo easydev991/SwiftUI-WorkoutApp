@@ -44,12 +44,6 @@ struct ParksMapScreen: View {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
             .task { await askForParks() }
-            .onAppear {
-                viewModel.setLocationTracking(true)
-            }
-            .onDisappear {
-                viewModel.setLocationTracking(false)
-            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -258,6 +252,8 @@ private extension ParksMapScreen {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
+                // Запрашиваем локацию и геокодирование для новой площадки
+                viewModel.requestLocationForNewPark()
                 sheetItem = .createNewPark(viewModel.newParkMapModel)
             } label: {
                 Icons.Regular.plus.view

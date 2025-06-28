@@ -19,8 +19,6 @@ extension ParksMapScreen {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             setupUserCityCoordinateObserver()
-            setupUserLocationObserver()
-            setupAppLifecycleObservers()
             setupRegionChangeObserver()
             updateSelectedCity(selectedCity)
         }
@@ -28,36 +26,16 @@ extension ParksMapScreen {
         // MARK: - Трекинг локации
         /// Менеджер локации
         private let manager = CLLocationManager()
-        /// `true` - таймер отслеживания локации активен, `false` - неактивен
-        ///
-        /// Местоположение пользователя отслеживается каждые 10 секунд по таймеру,
-        /// чтобы снизить нагрузку на аккумулятор
-        private var isLocationTrackingActive = false
-        private let locationTrackingInterval: TimeInterval = 10
-        private var locationTrackingCancellable: AnyCancellable?
         /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
         @Published private var lastUserLocation: CLLocation?
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Сообщение об ошибке, связанное с локацией
         @Published private(set) var locationErrorMessage = ""
-        /// Включает или выключает определение локации пользователя
-        func setLocationTracking(_ active: Bool) {
-            guard isLocationTrackingActive != active else { return }
-            isLocationTrackingActive = active
-            if active {
-                startPeriodicLocationUpdates()
-            } else {
-                stopPeriodicLocationUpdates()
-            }
-        }
 
         // MARK: - Геокодирование
-        /// Запускаем геокодирование не чаще раза в минуту
-        private let geocodingInterval: TimeInterval = 60
         /// Последняя локация, для которой выполнялось геокодирование
         private var lastGeocodedLocation: CLLocation?
-        private var geocodingCancellable: AnyCancellable?
 
         // MARK: - Регион карты
         @Published private(set) var region = MKCoordinateRegion()
@@ -134,7 +112,18 @@ extension ParksMapScreen {
 
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
-            locationErrorMessage.isEmpty && !newParkMapModel.isEmpty
+            locationErrorMessage.isEmpty
+        }
+
+        /// Запрашивает локацию для создания новой площадки и выполняет геокодирование
+        func requestLocationForNewPark() {
+            if lastUserLocation == nil {
+                // Получаем локацию один раз, если её ещё нет
+                manager.requestLocation()
+            } else {
+                // Если локация уже есть, сразу выполняем геокодирование
+                performGeocodingIfNeeded()
+            }
         }
     }
 }
@@ -158,6 +147,8 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 newLatitude: coordinate.latitude,
                 newLongitude: coordinate.longitude
             )
+            // Выполняем геокодирование после обновления координат
+            performGeocodingIfNeeded()
         }
     }
 
@@ -220,32 +211,6 @@ private extension ParksMapScreen.ViewModel {
             }
             .store(in: &persistentCancellables)
     }
-
-    /// Подписываемся на события сворачивания/разворачивания приложения, чтобы включать и выключать отслеживание локации
-    func setupAppLifecycleObservers() {
-        let center = NotificationCenter.default
-        center.publisher(for: UIApplication.didEnterBackgroundNotification)
-            .sink { [weak self] _ in
-                self?.stopPeriodicLocationUpdates()
-                self?.stopGeocodingTimer()
-            }
-            .store(in: &persistentCancellables)
-        center.publisher(for: UIApplication.willEnterForegroundNotification)
-            .sink { [weak self] _ in
-                self?.startPeriodicLocationUpdates()
-            }
-            .store(in: &persistentCancellables)
-    }
-
-    func setupUserLocationObserver() {
-        $lastUserLocation
-            .compactMap(\.self)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.startGeocodingTimer()
-            }
-            .store(in: &persistentCancellables)
-    }
 }
 
 // MARK: - Работа с регионом
@@ -285,63 +250,8 @@ private extension ParksMapScreen.ViewModel {
     }
 }
 
-// MARK: - Трекинг локации
-private extension ParksMapScreen.ViewModel {
-    func startPeriodicLocationUpdates() {
-        guard isLocationTrackingActive else { return }
-        stopPeriodicLocationUpdates()
-        logger.debug("Запустили таймер для отслеживание локации")
-        locationTrackingCancellable = Timer.publish(
-            every: locationTrackingInterval,
-            on: .main,
-            in: .common
-        )
-        .autoconnect()
-        .sink { [weak self] _ in
-            guard let self, isLocationTrackingActive else { return }
-            logger.debug("Запрашиваем новую локацию")
-            manager.requestLocation()
-        }
-    }
-
-    func stopPeriodicLocationUpdates() {
-        if locationTrackingCancellable != nil {
-            logger.debug("Остановили отслеживание локации")
-            locationTrackingCancellable?.cancel()
-            locationTrackingCancellable = nil
-        }
-    }
-}
-
 // MARK: - Геокодирование
 private extension ParksMapScreen.ViewModel {
-    /// Запускает таймер геокодирования при получении новой локации
-    func startGeocodingTimer() {
-        stopGeocodingTimer()
-        // Выполняем геокодирование сразу для новой локации
-        performGeocodingIfNeeded()
-        // Запускаем таймер для повторного геокодирования
-        logger.debug("Запустили таймер для геокодирования")
-        geocodingCancellable = Timer.publish(
-            every: geocodingInterval,
-            on: .main,
-            in: .common
-        )
-        .autoconnect()
-        .sink { [weak self] _ in
-            self?.performGeocodingIfNeeded()
-        }
-    }
-
-    /// Останавливает таймер геокодирования
-    func stopGeocodingTimer() {
-        if geocodingCancellable != nil {
-            logger.debug("Остановили таймер геокодирования")
-            geocodingCancellable?.cancel()
-            geocodingCancellable = nil
-        }
-    }
-
     /// Выполняет геокодирование, если есть актуальная локация и это необходимо
     func performGeocodingIfNeeded() {
         guard let lastUserLocation else {
