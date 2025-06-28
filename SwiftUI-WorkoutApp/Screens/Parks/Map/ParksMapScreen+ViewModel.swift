@@ -28,6 +28,8 @@ extension ParksMapScreen {
         private let manager = CLLocationManager()
         /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
         @Published private var lastUserLocation: CLLocation?
+        /// Время последнего запроса локации
+        private var lastLocationRequestTime: Date?
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Сообщение об ошибке, связанное с локацией
@@ -117,13 +119,15 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки и выполняет геокодирование
         func requestLocationForNewPark() {
-            if lastUserLocation == nil {
-                // Получаем локацию один раз, если её ещё нет
+            let now = Date()
+            let shouldRequestLocation = lastUserLocation == nil ||
+                lastLocationRequestTime.map { now.timeIntervalSince($0) > 10 } ?? true
+            if shouldRequestLocation {
+                // Запрашиваем новую локацию, если её нет или прошло больше 10 секунд
+                lastLocationRequestTime = now
                 manager.requestLocation()
-            } else {
-                // Если локация уже есть, сразу выполняем геокодирование
-                performGeocodingIfNeeded()
             }
+            performGeocodingIfNeeded()
         }
     }
 }
@@ -159,6 +163,7 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationErrorMessage = ""
             ignoreUserLocation = false
+            lastLocationRequestTime = Date()
             manager.requestLocation()
         case .restricted, .denied:
             setupDefaultLocation(permissionDenied: true)
