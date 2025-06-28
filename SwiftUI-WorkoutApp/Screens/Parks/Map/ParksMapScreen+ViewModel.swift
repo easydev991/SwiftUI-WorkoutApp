@@ -109,12 +109,18 @@ extension ParksMapScreen {
         }
 
         // MARK: - Новая площадка
-        /// Модель с данными для создания новой площадки
+        /// Модель с актуальными данными, обновляется сразу при получении локации
+        private var internalNewParkMapModel = NewParkMapModel.empty
+        
+        /// Модель для UI, обновляется только после завершения `requestLocationForNewPark`
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
+        
+        /// Флаг процесса запроса локации для новой площадки
+        @Published private(set) var isRequestingLocationForNewPark = false
 
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
-            locationErrorMessage.isEmpty
+            locationErrorMessage.isEmpty && !isRequestingLocationForNewPark
         }
 
         /// Запрашивает локацию для создания новой площадки и выполняет геокодирование

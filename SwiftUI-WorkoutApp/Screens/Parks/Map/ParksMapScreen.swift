@@ -35,13 +35,18 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading)
+            .loadingOverlay(if: isLoading || viewModel.isRequestingLocationForNewPark)
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
             .onChange(of: defaults.mainUserCityId) { _ in
                 viewModel.userCityDidChange(defaults.mainUserInfo)
+            }
+            .onChange(of: viewModel.newParkMapModel) { newModel in
+                if !newModel.isEmpty {
+                    sheetItem = .createNewPark(newModel)
+                }
             }
             .task { await askForParks() }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
@@ -251,11 +256,7 @@ private extension ParksMapScreen {
     @ViewBuilder
     var rightBarButton: some View {
         if defaults.isAuthorized {
-            Button {
-                // Запрашиваем локацию и геокодирование для новой площадки
-                viewModel.requestLocationForNewPark()
-                sheetItem = .createNewPark(viewModel.newParkMapModel)
-            } label: {
+            Button(action: viewModel.requestLocationForNewPark) {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
