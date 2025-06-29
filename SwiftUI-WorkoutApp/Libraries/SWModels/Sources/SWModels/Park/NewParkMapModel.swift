@@ -96,6 +96,17 @@ public struct NewParkMapModel: Sendable, Equatable {
         )
     }
 
+    /// Создает модель с обнуленным адресом для принудительного геокодирования
+    /// - Returns: Модель с пустым адресом, остальные поля не изменяются
+    public func withoutAddress() -> Self {
+        Self(
+            coordinate: coordinate,
+            lastLocationRequestDate: lastLocationRequestDate,
+            address: "",
+            cityId: cityId
+        )
+    }
+
     public static let empty = Self(
         coordinate: .init(latitude: 0, longitude: 0),
         lastLocationRequestDate: nil,
