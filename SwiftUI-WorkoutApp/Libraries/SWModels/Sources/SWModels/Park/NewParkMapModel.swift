@@ -19,9 +19,12 @@ public struct NewParkMapModel: Sendable, Equatable {
     /// Нужно ли запрашивать новую локацию
     public var shouldRequestLocation: Bool {
         let hasValidCoordinates = latitude != 0 && longitude != 0
-        let shouldRequest = lastLocationRequestDate == nil ||
-            Date().timeIntervalSince(lastLocationRequestDate!) > 10
-        return hasValidCoordinates && shouldRequest
+        let shouldRequest: Bool = if let lastDate = lastLocationRequestDate {
+            Date().timeIntervalSince(lastDate) > 10
+        } else {
+            true
+        }
+        return !hasValidCoordinates || shouldRequest
     }
 
     /// Инициализатор

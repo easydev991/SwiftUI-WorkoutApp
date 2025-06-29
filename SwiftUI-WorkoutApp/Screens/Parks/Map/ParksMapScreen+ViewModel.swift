@@ -20,7 +20,6 @@ extension ParksMapScreen {
             manager.requestWhenInUseAuthorization()
             setupUserCityCoordinateObserver()
             setupRegionChangeObserver()
-            setupCreatingNewParkObserver()
             updateSelectedCity(selectedCity)
         }
 
@@ -81,7 +80,11 @@ extension ParksMapScreen {
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
             else {
                 userCityCoordinate = .empty
-                internalNewParkMapModel.cityId = 0
+                newParkMapModel = NewParkMapModel(
+                    coordinate: newParkMapModel.coordinate,
+                    cityId: 0,
+                    lastLocationRequestDate: newParkMapModel.lastLocationRequestDate
+                )
                 return
             }
             userCityCoordinate = .init(
@@ -89,7 +92,11 @@ extension ParksMapScreen {
                 longitude: newCoordinate.lon
             )
             // Сохраняем город пользователя для новой площадки как fallback значение
-            internalNewParkMapModel.cityId = cityId
+            newParkMapModel = NewParkMapModel(
+                coordinate: newParkMapModel.coordinate,
+                cityId: cityId,
+                lastLocationRequestDate: newParkMapModel.lastLocationRequestDate
+            )
         }
 
         /// Обновляет выбранный город для фильтра площадок
@@ -105,10 +112,7 @@ extension ParksMapScreen {
         }
 
         // MARK: - Новая площадка
-        /// Модель с актуальными данными, обновляется сразу при получении локации
-        private var internalNewParkMapModel = NewParkMapModel.empty
-
-        /// Модель для UI, обновляется только после завершения `requestLocationForNewPark`
+        /// Модель новой площадки
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
 
         /// Флаг процесса запроса локации для новой площадки
@@ -124,23 +128,17 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
-            newParkMapModel = .empty
             isRequestingLocationForNewPark = true
             isCreatingNewPark = true
 
             let now = Date()
 
-            // Проверяем нужно ли запрашивать новую локацию
-            let shouldRequestLocation = lastUserLocation == nil ||
-                lastLocationRequestTime.map { now.timeIntervalSince($0) > 10 } ?? true
+            // Используем логику из модели для определения нужности запроса локации
+            let shouldRequestLocation = lastUserLocation == nil || newParkMapModel.shouldRequestLocation
 
             if shouldRequestLocation {
                 // Обновляем дату запроса в модели
-                internalNewParkMapModel = NewParkMapModel(
-                    coordinate: internalNewParkMapModel.coordinate,
-                    cityId: internalNewParkMapModel.cityId,
-                    lastLocationRequestDate: now
-                )
+                newParkMapModel = newParkMapModel.updatingLastLocationRequestDate(now)
                 lastLocationRequestTime = now
                 manager.requestLocation()
             } else {
@@ -151,7 +149,6 @@ extension ParksMapScreen {
 
         /// Завершает процесс запроса локации для новой площадки
         func finishLocationRequestForNewPark() {
-            newParkMapModel = internalNewParkMapModel
             isRequestingLocationForNewPark = false
             logger.debug("Завершили запрос локации для новой площадки")
         }
@@ -175,11 +172,11 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         logger.debug("Сохраняем новую локацию пользователя")
         lastUserLocation = location
         let newCoordinate = LocationCoordinate(coordinate)
-        let newParkCoordinate = LocationCoordinate(internalNewParkMapModel.coordinate)
-        if newCoordinate != newParkCoordinate {
+        let currentParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
+        if newCoordinate != currentParkCoordinate {
             logger.debug("Сохраняем координаты для newParkMapModel")
-            internalNewParkMapModel = .init(
-                oldModel: internalNewParkMapModel,
+            newParkMapModel = .init(
+                oldModel: newParkMapModel,
                 newLatitude: coordinate.latitude,
                 newLongitude: coordinate.longitude
             )
@@ -247,21 +244,6 @@ private extension ParksMapScreen.ViewModel {
             .sink { [weak self] newCoordinates in
                 guard let self else { return }
                 resetMapRegionTo(newCoordinates)
-            }
-            .store(in: &persistentCancellables)
-    }
-
-    /// Сбрасываем модель новой площадки при завершении создания
-    func setupCreatingNewParkObserver() {
-        $isCreatingNewPark
-            .dropFirst()
-            .removeDuplicates()
-            .filter { !$0 } // Срабатывает когда isCreatingNewPark становится false
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                logger.debug("Сбрасываем модель новой площадки после завершения создания")
-                newParkMapModel = .empty
             }
             .store(in: &persistentCancellables)
     }
