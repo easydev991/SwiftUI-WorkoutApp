@@ -3,7 +3,6 @@ import SwiftUI
 
 /// `MKMapView` в обертке для `SwiftUI` с базовыми настройками
 public struct ClusteringMapView: UIViewRepresentable {
-    private static var storedMapView: MKMapView?
     private let region: MKCoordinateRegion
     private let shouldUpdateRegion: Bool
     private let onRegionUpdated: () -> Void
@@ -47,18 +46,10 @@ public struct ClusteringMapView: UIViewRepresentable {
     }
 
     public func makeUIView(context: Context) -> MKMapView {
-        let view = if let storedView = ClusteringMapView.storedMapView {
-            storedView
-        } else {
-            MKMapView()
-        }
+        let view = MKMapView()
         view.delegate = context.coordinator
         view.cameraZoomRange = cameraZoomRange
         addTrackingButtonIfNeeded(to: view)
-        if ClusteringMapView.storedMapView == nil {
-            // Если не сохранить карту, могут создаваться дубли
-            ClusteringMapView.storedMapView = view
-        }
         return view
     }
 
