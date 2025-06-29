@@ -82,7 +82,6 @@ extension ParksMapScreen {
                 userCityCoordinate = .empty
                 newParkMapModel = NewParkMapModel(
                     coordinate: newParkMapModel.coordinate,
-                    cityId: 0,
                     lastLocationRequestDate: newParkMapModel.lastLocationRequestDate
                 )
                 return
@@ -91,10 +90,9 @@ extension ParksMapScreen {
                 latitude: newCoordinate.lat,
                 longitude: newCoordinate.lon
             )
-            // Сохраняем город пользователя для новой площадки как fallback значение
+            // Обновляем координаты для новой площадки как fallback значение
             newParkMapModel = NewParkMapModel(
                 coordinate: newParkMapModel.coordinate,
-                cityId: cityId,
                 lastLocationRequestDate: newParkMapModel.lastLocationRequestDate
             )
         }

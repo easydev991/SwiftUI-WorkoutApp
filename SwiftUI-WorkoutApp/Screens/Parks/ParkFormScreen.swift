@@ -29,7 +29,7 @@ struct ParkFormScreen: View {
                 address: "", // Будет заполнено через GeocodingService
                 latitude: model.coordinate.latitude,
                 longitude: model.coordinate.longitude,
-                cityId: model.cityId
+                cityId: 0 // Будет заполнено через GeocodingService
             )
             _parkForm = .init(initialValue: oldParkForm)
         case let .editExisting(park):

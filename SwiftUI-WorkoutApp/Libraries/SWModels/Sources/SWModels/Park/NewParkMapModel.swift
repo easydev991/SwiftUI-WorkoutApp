@@ -4,7 +4,6 @@ import Foundation
 public struct NewParkMapModel: Sendable, Equatable {
     public var latitude: Double
     public var longitude: Double
-    public var cityId: Int
     public var lastLocationRequestDate: Date?
 
     public var coordinate: CLLocationCoordinate2D {
@@ -13,7 +12,7 @@ public struct NewParkMapModel: Sendable, Equatable {
 
     /// Пустая ли модель
     public var isEmpty: Bool {
-        latitude == 0 || longitude == 0 || cityId == 0
+        latitude == 0 || longitude == 0
     }
 
     /// Нужно ли запрашивать новую локацию
@@ -30,18 +29,16 @@ public struct NewParkMapModel: Sendable, Equatable {
     /// Инициализатор
     /// - Parameters:
     ///   - coordinate: Координаты местонахождения пользователя
-    ///   - cityId: Идентификатор города местонахождения пользователя
     ///   - lastLocationRequestDate: Дата последнего запроса локации
-    public init(coordinate: CLLocationCoordinate2D, cityId: Int, lastLocationRequestDate: Date? = nil) {
+    public init(coordinate: CLLocationCoordinate2D, lastLocationRequestDate: Date? = nil) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
-        self.cityId = cityId
         self.lastLocationRequestDate = lastLocationRequestDate
     }
 
     /// Инициализатор для обновления координат
     ///
-    /// Копирует из старой модели идентификатор города и дату запроса,
+    /// Копирует из старой модели дату запроса,
     /// но сохраняет обновленные координаты
     /// - Parameters:
     ///   - oldModel: Старая модель
@@ -50,7 +47,6 @@ public struct NewParkMapModel: Sendable, Equatable {
     public init(oldModel: Self, newLatitude: Double, newLongitude: Double) {
         self.init(
             coordinate: .init(latitude: newLatitude, longitude: newLongitude),
-            cityId: oldModel.cityId,
             lastLocationRequestDate: oldModel.lastLocationRequestDate
         )
     }
@@ -61,14 +57,12 @@ public struct NewParkMapModel: Sendable, Equatable {
     public func updatingLastLocationRequestDate(_ date: Date) -> Self {
         Self(
             coordinate: coordinate,
-            cityId: cityId,
             lastLocationRequestDate: date
         )
     }
 
     public static let empty = Self(
         coordinate: .init(latitude: 0, longitude: 0),
-        cityId: 0,
         lastLocationRequestDate: nil
     )
 }
