@@ -35,7 +35,6 @@ extension ParksMapScreen {
         /// Сообщение об ошибке, связанное с локацией
         @Published private(set) var locationErrorMessage = ""
 
-
         // MARK: - Регион карты
         @Published private(set) var region = MKCoordinateRegion()
         /// Предыдущее значение региона для отслеживания изменений
@@ -107,13 +106,13 @@ extension ParksMapScreen {
         // MARK: - Новая площадка
         /// Модель с актуальными данными, обновляется сразу при получении локации
         private var internalNewParkMapModel = NewParkMapModel.empty
-        
+
         /// Модель для UI, обновляется только после завершения `requestLocationForNewPark`
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
-        
+
         /// Флаг процесса запроса локации для новой площадки
         @Published private(set) var isRequestingLocationForNewPark = false
-        
+
         /// Флаг процесса создания новой площадки (включает запрос локации + открытый экран)
         @Published private(set) var isCreatingNewPark = false
 
@@ -127,7 +126,7 @@ extension ParksMapScreen {
             newParkMapModel = .empty
             isRequestingLocationForNewPark = true
             isCreatingNewPark = true
-            
+
             let now = Date()
             let shouldRequestLocation = lastUserLocation == nil ||
                 lastLocationRequestTime.map { now.timeIntervalSince($0) > 10 } ?? true
@@ -139,14 +138,14 @@ extension ParksMapScreen {
                 finishLocationRequestForNewPark()
             }
         }
-        
-        /// Завершает процесс запроса локации для новой площадки  
+
+        /// Завершает процесс запроса локации для новой площадки
         func finishLocationRequestForNewPark() {
             newParkMapModel = internalNewParkMapModel
             isRequestingLocationForNewPark = false
             logger.debug("Завершили запрос локации для новой площадки")
         }
-        
+
         /// Завершает процесс создания новой площадки (вызывается при закрытии экрана)
         func finishCreatingNewPark() {
             isCreatingNewPark = false
@@ -275,5 +274,3 @@ private extension ParksMapScreen.ViewModel {
         ignoreUserLocation = false
     }
 }
-
-
