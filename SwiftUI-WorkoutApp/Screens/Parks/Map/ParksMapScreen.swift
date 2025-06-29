@@ -285,6 +285,7 @@ private extension ParksMapScreen {
                     }
                 )
             }
+            .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
             NavigationView {
                 ItemListScreen(

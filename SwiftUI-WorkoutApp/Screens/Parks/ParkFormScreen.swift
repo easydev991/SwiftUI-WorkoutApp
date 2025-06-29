@@ -8,6 +8,7 @@ import SWUtils
 struct ParkFormScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
+    @Environment(\.updateGeocodingCache) private var updateGeocodingCache
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var parkForm: ParkForm
@@ -23,10 +24,10 @@ struct ParkFormScreen: View {
         switch mode {
         case let .createNew(model):
             self.oldParkForm = .init(
-                address: "", // Будет заполнено через GeocodingService
+                address: model.address,
                 latitude: model.coordinate.latitude,
                 longitude: model.coordinate.longitude,
-                cityId: 0 // Будет заполнено через GeocodingService
+                cityId: model.cityId
             )
             _parkForm = .init(initialValue: oldParkForm)
         case let .editExisting(park):
@@ -181,13 +182,16 @@ private extension ParkFormScreen {
 
     /// Выполняет геокодирование для новой площадки
     func performGeocodingForNewPark() async {
-        guard case let .createNew(model) = mode else { return }
+        guard case let .createNew(model) = mode, model.shouldPerformGeocode else {
+            return
+        }
         isLoading = true
         do {
             let geocodingService = GeocodingService(coordinate: model.coordinate)
             let result = try await geocodingService.makeAddressAndCityId()
             parkForm.address = result.address
             parkForm.cityId = result.cityId
+            updateGeocodingCache(result.address, result.cityId, model.coordinate)
         } catch {
             parkForm.cityId = defaults.mainUserCityId
             SWAlert.shared.presentDefaultUIKit(error)

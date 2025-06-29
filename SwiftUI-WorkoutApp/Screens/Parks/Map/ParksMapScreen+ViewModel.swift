@@ -84,6 +84,15 @@ extension ParksMapScreen {
                 latitude: newCoordinate.lat,
                 longitude: newCoordinate.lon
             )
+            if let cache = geocodingCache {
+                geocodingCache = GeocodingCache(
+                    coordinate: cache.coordinate,
+                    address: cache.address,
+                    cityId: cityId,
+                    date: cache.date
+                )
+                logger.debug("Обновили cityId в кеше геокодирования на \(cityId)")
+            }
         }
 
         /// Обновляет выбранный город для фильтра площадок
@@ -102,6 +111,9 @@ extension ParksMapScreen {
         /// Состояние создания новой площадки
         @Published private(set) var newParkState = NewParkState.idle(.empty)
 
+        /// Кеш геокодирования
+        private var geocodingCache: GeocodingCache?
+
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
             locationErrorMessage.isEmpty && !newParkState.isProcessingNewPark
@@ -109,7 +121,14 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
-            let currentModel = newParkState.model
+            var currentModel = newParkState.model
+            if let cache = getValidGeocodingCache(for: currentModel.coordinate) {
+                logger.debug("Используем кешированные данные геокодирования")
+                currentModel = currentModel.withGeocodingData(
+                    address: cache.address,
+                    cityId: cache.cityId
+                )
+            }
             if currentModel.shouldRequestLocation {
                 let updatedModel = currentModel.updatingLastLocationRequestDate(.now)
                 newParkState = .locating(updatedModel)
@@ -124,6 +143,15 @@ extension ParksMapScreen {
             newParkState = .idle(newParkState.model)
             logger.debug("Завершили создание новой площадки")
         }
+
+        func updateGeocodingCache(address: String, cityId: Int, coordinate: CLLocationCoordinate2D) {
+            geocodingCache = .init(
+                coordinate: coordinate,
+                address: address,
+                cityId: cityId
+            )
+            logger.debug("Обновили кеш геокодирования")
+        }
     }
 }
 
@@ -137,22 +165,10 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         }
         logger.debug("Сохраняем новую локацию пользователя")
         lastUserLocation = location
-        if case let .locating(currentModel) = newParkState {
-            let newCoordinate = LocationCoordinate(coordinate)
-            let currentParkCoordinate = LocationCoordinate(currentModel.coordinate)
-            guard newCoordinate != currentParkCoordinate else {
-                logger.debug("Координаты не изменились")
-                newParkState = .ready(currentModel)
-                return
-            }
-            logger.debug("Сохраняем координаты для newParkMapModel")
-            let updatedModel = NewParkMapModel(
-                oldModel: currentModel,
-                newLatitude: coordinate.latitude,
-                newLongitude: coordinate.longitude
-            )
-            newParkState = .ready(updatedModel)
+        guard case let .locating(currentModel) = newParkState else {
+            return
         }
+        updateNewParkState(coordinate: coordinate, currentModel: currentModel)
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -250,5 +266,50 @@ private extension ParksMapScreen.ViewModel {
         )
         logger.debug("Регион карты сброшен на координаты: \(userCoordinate.lat), \(userCoordinate.lon)")
         ignoreUserLocation = false
+    }
+}
+
+// MARK: - Геокодирование
+
+private extension ParksMapScreen.ViewModel {
+    func updateNewParkState(
+        coordinate: CLLocationCoordinate2D,
+        currentModel: NewParkMapModel
+    ) {
+        let newCoordinate = LocationCoordinate(coordinate)
+        let currentParkCoordinate = LocationCoordinate(currentModel.coordinate)
+        guard newCoordinate != currentParkCoordinate else {
+            logger.debug("Координаты не изменились")
+            newParkState = .ready(currentModel)
+            return
+        }
+        logger.debug("Сохраняем координаты для newParkMapModel")
+        let updatedModel = NewParkMapModel(
+            oldModel: currentModel,
+            newLatitude: coordinate.latitude,
+            newLongitude: coordinate.longitude
+        )
+        if let cache = getValidGeocodingCache(for: coordinate) {
+            logger.debug("Используем кешированные данные геокодирования для новых координат")
+            let modelWithCache = updatedModel.withGeocodingData(
+                address: cache.address,
+                cityId: cache.cityId
+            )
+            newParkState = .ready(modelWithCache)
+        } else {
+            newParkState = .ready(updatedModel)
+        }
+    }
+
+    func getValidGeocodingCache(for coordinate: CLLocationCoordinate2D) -> GeocodingCache? {
+        guard let cache = geocodingCache else { return nil }
+
+        if cache.isValid(for: coordinate) {
+            return cache
+        } else {
+            geocodingCache = nil
+            logger.debug("Обнулили невалидный кеш геокодирования")
+            return nil
+        }
     }
 }
