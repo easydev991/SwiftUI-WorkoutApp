@@ -89,7 +89,7 @@ private extension ParkFormScreen {
             }
             .padding([.horizontal, .bottom])
         }
-        .loadingOverlay(if: isLoading)
+        .loadingOverlay(if: isLoading || isLoadingAddress)
         .background(Color.swBackground)
         .onDisappear {
             saveParkTask?.cancel()
@@ -107,24 +107,13 @@ private extension ParkFormScreen {
 
     var addressSection: some View {
         SectionView(header: "Адрес", mode: .regular) {
-            if isLoadingAddress {
-                HStack {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                    Text("Определение адреса...")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                }
-                .padding(.vertical, 8)
-            } else {
-                SWTextField(
-                    placeholder: "Адрес площадки",
-                    text: $parkForm.address,
-                    lineLimit: 3,
-                    isFocused: isFocused
-                )
-                .focused($isFocused)
-            }
+            SWTextField(
+                placeholder: "Адрес площадки",
+                text: $parkForm.address,
+                lineLimit: 3,
+                isFocused: isFocused
+            )
+            .focused($isFocused)
         }
         .padding(.top, 22)
     }
