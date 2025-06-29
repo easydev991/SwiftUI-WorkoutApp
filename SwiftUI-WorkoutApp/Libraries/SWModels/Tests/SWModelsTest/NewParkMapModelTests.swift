@@ -212,15 +212,13 @@ struct NewParkMapModelTests {
             coordinate: .init(latitude: 0, longitude: 37.6208),
             cityId: 1
         )
-        #expect(modelWithZeroLatitude.isEmpty)
-
         let modelWithZeroLongitude = SUT(
             coordinate: .init(latitude: 55.7539, longitude: 0),
             cityId: 1
         )
-        #expect(modelWithZeroLongitude.isEmpty)
-
         let emptyModel = SUT.empty
+        #expect(modelWithZeroLatitude.isEmpty)
+        #expect(modelWithZeroLongitude.isEmpty)
         #expect(emptyModel.isEmpty)
     }
 
@@ -262,13 +260,18 @@ struct NewParkMapModelTests {
             cityId: 1,
             lastLocationRequestDate: Date().addingTimeInterval(-15)
         )
-        #expect(!modelWithZeroLatitude.shouldRequestLocation)
-
         let modelWithZeroLongitude = SUT(
             coordinate: .init(latitude: 55.7539, longitude: 0),
             cityId: 1,
             lastLocationRequestDate: Date().addingTimeInterval(-15)
         )
-        #expect(!modelWithZeroLongitude.shouldRequestLocation)
+        let modelWithZeroCoordinates = SUT(
+            coordinate: .init(latitude: 0, longitude: 0),
+            cityId: 1,
+            lastLocationRequestDate: Date().addingTimeInterval(-15)
+        )
+        #expect(modelWithZeroLatitude.shouldRequestLocation)
+        #expect(modelWithZeroLongitude.shouldRequestLocation)
+        #expect(modelWithZeroCoordinates.shouldRequestLocation)
     }
 }
