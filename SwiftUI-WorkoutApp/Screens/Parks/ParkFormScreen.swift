@@ -14,6 +14,8 @@ struct ParkFormScreen: View {
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
     @State private var saveParkTask: Task<Void, Never>?
+    @State private var geocodingTask: Task<Void, Never>?
+    @State private var isLoadingAddress = false
     @FocusState private var isFocused: Bool
     private let oldParkForm: ParkForm
     private let mode: Mode
@@ -24,7 +26,7 @@ struct ParkFormScreen: View {
         switch mode {
         case let .createNew(model):
             self.oldParkForm = .init(
-                address: model.address,
+                address: "", // Будет заполнено через GeocodingService
                 latitude: model.coordinate.latitude,
                 longitude: model.coordinate.longitude,
                 cityId: model.cityId
@@ -63,6 +65,13 @@ extension ParkFormScreen {
             case let .editExisting(park): park.id
             }
         }
+
+        var isCreatingNewPark: Bool {
+            switch self {
+            case .createNew: true
+            case .editExisting: false
+            }
+        }
     }
 }
 
@@ -82,7 +91,15 @@ private extension ParkFormScreen {
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onDisappear { saveParkTask?.cancel() }
+        .onDisappear {
+            saveParkTask?.cancel()
+            geocodingTask?.cancel()
+        }
+        .task {
+            if mode.isCreatingNewPark {
+                await performGeocodingForNewPark()
+            }
+        }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(isLoading)
@@ -90,13 +107,24 @@ private extension ParkFormScreen {
 
     var addressSection: some View {
         SectionView(header: "Адрес", mode: .regular) {
-            SWTextField(
-                placeholder: "Адрес площадки",
-                text: $parkForm.address,
-                lineLimit: 3,
-                isFocused: isFocused
-            )
-            .focused($isFocused)
+            if isLoadingAddress {
+                HStack {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Определение адреса...")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding(.vertical, 8)
+            } else {
+                SWTextField(
+                    placeholder: "Адрес площадки",
+                    text: $parkForm.address,
+                    lineLimit: 3,
+                    isFocused: isFocused
+                )
+                .focused($isFocused)
+            }
         }
         .padding(.top, 22)
     }
@@ -175,6 +203,33 @@ private extension ParkFormScreen {
         mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
+    }
+
+    /// Выполняет геокодирование для новой площадки
+    func performGeocodingForNewPark() async {
+        guard case let .createNew(model) = mode else { return }
+
+        isLoadingAddress = true
+        geocodingTask = Task {
+            do {
+                let geocodingService = GeocodingService(coordinate: model.coordinate)
+                let result = try await geocodingService.makeAddressAndCityId()
+
+                await MainActor.run {
+                    parkForm.address = result.address
+                    parkForm.cityId = result.cityId
+                    isLoadingAddress = false
+                }
+            } catch {
+                await MainActor.run {
+                    isLoadingAddress = false
+                    // В случае ошибки пользователь может ввести адрес вручную
+                    print("Ошибка геокодирования: \(error)")
+                }
+            }
+        }
+
+        await geocodingTask?.value
     }
 }
 

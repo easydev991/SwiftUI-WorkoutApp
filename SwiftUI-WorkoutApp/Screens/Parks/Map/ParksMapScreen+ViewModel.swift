@@ -121,16 +121,25 @@ extension ParksMapScreen {
             locationErrorMessage.isEmpty && !isRequestingLocationForNewPark
         }
 
-        /// Запрашивает локацию для создания новой площадки и выполняет геокодирование
+        /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
             newParkMapModel = .empty
             isRequestingLocationForNewPark = true
             isCreatingNewPark = true
 
             let now = Date()
+
+            // Проверяем нужно ли запрашивать новую локацию
             let shouldRequestLocation = lastUserLocation == nil ||
                 lastLocationRequestTime.map { now.timeIntervalSince($0) > 10 } ?? true
+
             if shouldRequestLocation {
+                // Обновляем дату запроса в модели
+                internalNewParkMapModel = NewParkMapModel(
+                    coordinate: internalNewParkMapModel.coordinate,
+                    cityId: internalNewParkMapModel.cityId,
+                    lastLocationRequestDate: now
+                )
                 lastLocationRequestTime = now
                 manager.requestLocation()
             } else {
