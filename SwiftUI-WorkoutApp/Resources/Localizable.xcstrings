@@ -53,6 +53,60 @@
         }
       }
     },
+    "GeocodingError.FailedToCreateAddress" : {
+      "comment" : "Не удалось создать адрес автоматически, введите его вручную",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to create address automatically, please enter it manually"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось создать адрес автоматически, введите его вручную"
+          }
+        }
+      }
+    },
+    "GeocodingError.FailedToFindCityId" : {
+      "comment" : "Не удалось определить идентификатор города, будет использован город из профиля",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to determine city ID, will use city from profile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось определить идентификатор города, будет использован город из профиля"
+          }
+        }
+      }
+    },
+    "GeocodingError.NoPlacemarkFound" : {
+      "comment" : "Не удалось найти placemark для определения адреса, введите адрес вручную",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to find placemark to determine address, please enter address manually"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось найти placemark для определения адреса, введите адрес вручную"
+          }
+        }
+      }
+    },
     "Ok" : {
       "localizations" : {
         "en" : {

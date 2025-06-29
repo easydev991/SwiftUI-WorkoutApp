@@ -71,11 +71,20 @@ extension GeocodingService {
         var errorDescription: String? {
             switch self {
             case .noPlacemarkFound:
-                "Не удалось найти placemark для определения адреса, введите адрес вручную"
+                NSLocalizedString(
+                    "GeocodingError.NoPlacemarkFound",
+                    comment: "Не нашли placemark при помощи геокодера"
+                )
             case .failedToCreateAddress:
-                "Не удалось создать адрес автоматически, введите его вручную"
+                NSLocalizedString(
+                    "GeocodingError.FailedToCreateAddress",
+                    comment: "Не удалось создать адрес для placemark"
+                )
             case .failedToFindCityId:
-                "Не удалось определить идентификатор города, будет использован город из профиля"
+                NSLocalizedString(
+                    "GeocodingError.FailedToFindCityId",
+                    comment: "Не удалось определить идентификатор города для placemark"
+                )
             }
         }
     }
