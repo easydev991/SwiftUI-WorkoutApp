@@ -40,6 +40,11 @@ struct ParksMapScreen: View {
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
+            .onChange(of: sheetItem) { [oldItem = sheetItem] newValue in
+                if case .createNewPark = oldItem, newValue == nil {
+                    viewModel.finishCreatingNewPark()
+                }
+            }
             .onChange(of: defaults.mainUserCityId) { _ in
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
@@ -74,7 +79,7 @@ struct ParksMapScreen: View {
 }
 
 private extension ParksMapScreen {
-    enum SheetItem: Identifiable {
+    enum SheetItem: Identifiable, Equatable {
         var id: String {
             switch self {
             case .filters: "filters"
