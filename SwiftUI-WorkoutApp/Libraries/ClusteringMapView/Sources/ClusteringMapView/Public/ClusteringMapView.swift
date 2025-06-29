@@ -9,7 +9,6 @@ public struct ClusteringMapView: UIViewRepresentable {
     private let onRegionUpdated: () -> Void
     private let cameraZoomRange: MKMapView.CameraZoomRange?
     private let hideTrackingButton: Bool
-    private let showsUserLocation: Bool
     private let annotations: [any MKAnnotation]
     private let markerColors: MarkerColors
     private let didSelect: (any MKAnnotation) -> Void
@@ -21,7 +20,6 @@ public struct ClusteringMapView: UIViewRepresentable {
     ///   - onRegionUpdated: Сообщает о факте изменения региона карты из метода `updateUIView`
     ///   - cameraZoomRange: Диапазон зума карты (мин/макс), по умолчанию 500/5000000
     ///   - showTrackingButton: Нужно ли показывать справа сверху кнопку трекинга локации
-    ///   - showsUserLocation: Нужно ли показывать текущую локацию пользователя, по умолчанию `true`
     ///   - annotations: Массив аннотаций (точек) для отображения на карте
     ///   - markerColors: Цвета для маркеров аннотаций, по умолчанию `orange` для кластера и `red` для обычной аннотации
     ///   - didSelect: Возвращает аннотацию, чью карточку с информацией нажал пользователь
@@ -34,7 +32,6 @@ public struct ClusteringMapView: UIViewRepresentable {
             maxCenterCoordinateDistance: 5000000
         ),
         hideTrackingButton: Bool,
-        showsUserLocation: Bool = true,
         annotations: [any MKAnnotation],
         markerColors: MarkerColors = .init(),
         didSelect: @escaping (any MKAnnotation) -> Void
@@ -44,7 +41,6 @@ public struct ClusteringMapView: UIViewRepresentable {
         self.onRegionUpdated = onRegionUpdated
         self.cameraZoomRange = cameraZoomRange
         self.hideTrackingButton = hideTrackingButton
-        self.showsUserLocation = showsUserLocation
         self.annotations = annotations
         self.markerColors = markerColors
         self.didSelect = didSelect
@@ -57,7 +53,6 @@ public struct ClusteringMapView: UIViewRepresentable {
             MKMapView()
         }
         view.delegate = context.coordinator
-        view.showsUserLocation = showsUserLocation
         view.cameraZoomRange = cameraZoomRange
         addTrackingButtonIfNeeded(to: view)
         if ClusteringMapView.storedMapView == nil {
@@ -76,9 +71,6 @@ public struct ClusteringMapView: UIViewRepresentable {
             }
         }
         AnnotationsOrganizer(old: mapView.annotations, new: annotations).updateIfNeeded(for: mapView)
-        if mapView.showsUserLocation != showsUserLocation {
-            mapView.showsUserLocation = showsUserLocation
-        }
     }
 
     public func makeCoordinator() -> Coordinator { .init(self) }

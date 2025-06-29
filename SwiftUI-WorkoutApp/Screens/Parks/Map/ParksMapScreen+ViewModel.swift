@@ -19,8 +19,6 @@ extension ParksMapScreen {
             manager.delegate = self
             manager.requestWhenInUseAuthorization()
             setupUserCityCoordinateObserver()
-            setupUserLocationObserver()
-            setupAppLifecycleObservers()
             setupRegionChangeObserver()
             updateSelectedCity(selectedCity)
         }
@@ -28,36 +26,12 @@ extension ParksMapScreen {
         // MARK: - Трекинг локации
         /// Менеджер локации
         private let manager = CLLocationManager()
-        /// `true` - таймер отслеживания локации активен, `false` - неактивен
-        ///
-        /// Местоположение пользователя отслеживается каждые 10 секунд по таймеру,
-        /// чтобы снизить нагрузку на аккумулятор
-        private var isLocationTrackingActive = false
-        private let locationTrackingInterval: TimeInterval = 10
-        private var locationTrackingCancellable: AnyCancellable?
         /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
         @Published private var lastUserLocation: CLLocation?
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Сообщение об ошибке, связанное с локацией
         @Published private(set) var locationErrorMessage = ""
-        /// Включает или выключает определение локации пользователя
-        func setLocationTracking(_ active: Bool) {
-            guard isLocationTrackingActive != active else { return }
-            isLocationTrackingActive = active
-            if active {
-                startPeriodicLocationUpdates()
-            } else {
-                stopPeriodicLocationUpdates()
-            }
-        }
-
-        // MARK: - Геокодирование
-        /// Запускаем геокодирование не чаще раза в минуту
-        private let geocodingInterval: TimeInterval = 60
-        /// Последняя локация, для которой выполнялось геокодирование
-        private var lastGeocodedLocation: CLLocation?
-        private var geocodingCancellable: AnyCancellable?
 
         // MARK: - Регион карты
         @Published private(set) var region = MKCoordinateRegion()
@@ -97,23 +71,28 @@ extension ParksMapScreen {
 
         /// Обрабатывает изменение данных пользователя
         ///
-        /// - Вызывается для настройки `userCoordinate` (для региона без выбранного города) и `cityId` (для новой площадки).
+        /// Вызывается для настройки `userCoordinate` (для региона без выбранного города)
         /// - Parameter info: Данные профиля пользователя
         func userCityDidChange(_ info: UserResponse?) {
             guard let countryId = info?.countryId, let cityId = info?.cityId,
                   let newCoordinate = SWAddress(countryId, cityId).coordinate
             else {
                 userCityCoordinate = .empty
-                newParkMapModel.cityId = 0
                 return
             }
             userCityCoordinate = .init(
                 latitude: newCoordinate.lat,
                 longitude: newCoordinate.lon
             )
-            // Сохраняем город пользователя для новой площадки на случай,
-            // если не получится определить город по локации с помощью CLGeocoder
-            newParkMapModel.cityId = cityId
+            if let cache = geocodingCache {
+                geocodingCache = GeocodingCache(
+                    coordinate: cache.coordinate,
+                    address: cache.address,
+                    cityId: cityId,
+                    date: cache.date
+                )
+                logger.debug("Обновили cityId в кеше геокодирования на \(cityId)")
+            }
         }
 
         /// Обновляет выбранный город для фильтра площадок
@@ -129,12 +108,49 @@ extension ParksMapScreen {
         }
 
         // MARK: - Новая площадка
-        /// Модель с данными для создания новой площадки
-        @Published private(set) var newParkMapModel = NewParkMapModel.empty
+        /// Состояние создания новой площадки
+        @Published private(set) var newParkState = NewParkState.idle(.empty)
+
+        /// Кеш геокодирования
+        private var geocodingCache: GeocodingCache?
 
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
-            locationErrorMessage.isEmpty && !newParkMapModel.isEmpty
+            locationErrorMessage.isEmpty && !newParkState.isProcessingNewPark
+        }
+
+        /// Запрашивает локацию для создания новой площадки
+        func requestLocationForNewPark() {
+            var currentModel = newParkState.model
+            if let cache = getValidGeocodingCache(for: currentModel.coordinate) {
+                logger.debug("Используем кешированные данные геокодирования")
+                currentModel = currentModel.withGeocodingData(
+                    address: cache.address,
+                    cityId: cache.cityId
+                )
+            }
+            if currentModel.shouldRequestLocation {
+                let updatedModel = currentModel.updatingLastLocationRequestDate(.now)
+                newParkState = .locating(updatedModel)
+                manager.requestLocation()
+            } else {
+                newParkState = .ready(currentModel)
+            }
+        }
+
+        /// Завершает процесс создания новой площадки (вызывается при закрытии экрана)
+        func finishCreatingNewPark() {
+            newParkState = .idle(newParkState.model)
+            logger.debug("Завершили создание новой площадки")
+        }
+
+        func updateGeocodingCache(address: String, cityId: Int, coordinate: CLLocationCoordinate2D) {
+            geocodingCache = .init(
+                coordinate: coordinate,
+                address: address,
+                cityId: cityId
+            )
+            logger.debug("Обновили кеш геокодирования")
         }
     }
 }
@@ -149,16 +165,10 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         }
         logger.debug("Сохраняем новую локацию пользователя")
         lastUserLocation = location
-        let newCoordinate = LocationCoordinate(coordinate)
-        let newParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
-        if newCoordinate != newParkCoordinate {
-            logger.debug("Сохраняем координаты для newParkMapModel")
-            newParkMapModel = .init(
-                oldModel: newParkMapModel,
-                newLatitude: coordinate.latitude,
-                newLongitude: coordinate.longitude
-            )
+        guard case let .locating(currentModel) = newParkState else {
+            return
         }
+        updateNewParkState(coordinate: coordinate, currentModel: currentModel)
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -220,32 +230,6 @@ private extension ParksMapScreen.ViewModel {
             }
             .store(in: &persistentCancellables)
     }
-
-    /// Подписываемся на события сворачивания/разворачивания приложения, чтобы включать и выключать отслеживание локации
-    func setupAppLifecycleObservers() {
-        let center = NotificationCenter.default
-        center.publisher(for: UIApplication.didEnterBackgroundNotification)
-            .sink { [weak self] _ in
-                self?.stopPeriodicLocationUpdates()
-                self?.stopGeocodingTimer()
-            }
-            .store(in: &persistentCancellables)
-        center.publisher(for: UIApplication.willEnterForegroundNotification)
-            .sink { [weak self] _ in
-                self?.startPeriodicLocationUpdates()
-            }
-            .store(in: &persistentCancellables)
-    }
-
-    func setupUserLocationObserver() {
-        $lastUserLocation
-            .compactMap(\.self)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.startGeocodingTimer()
-            }
-            .store(in: &persistentCancellables)
-    }
 }
 
 // MARK: - Работа с регионом
@@ -285,118 +269,47 @@ private extension ParksMapScreen.ViewModel {
     }
 }
 
-// MARK: - Трекинг локации
-private extension ParksMapScreen.ViewModel {
-    func startPeriodicLocationUpdates() {
-        guard isLocationTrackingActive else { return }
-        stopPeriodicLocationUpdates()
-        logger.debug("Запустили таймер для отслеживание локации")
-        locationTrackingCancellable = Timer.publish(
-            every: locationTrackingInterval,
-            on: .main,
-            in: .common
-        )
-        .autoconnect()
-        .sink { [weak self] _ in
-            guard let self, isLocationTrackingActive else { return }
-            logger.debug("Запрашиваем новую локацию")
-            manager.requestLocation()
-        }
-    }
-
-    func stopPeriodicLocationUpdates() {
-        if locationTrackingCancellable != nil {
-            logger.debug("Остановили отслеживание локации")
-            locationTrackingCancellable?.cancel()
-            locationTrackingCancellable = nil
-        }
-    }
-}
-
 // MARK: - Геокодирование
+
 private extension ParksMapScreen.ViewModel {
-    /// Запускает таймер геокодирования при получении новой локации
-    func startGeocodingTimer() {
-        stopGeocodingTimer()
-        // Выполняем геокодирование сразу для новой локации
-        performGeocodingIfNeeded()
-        // Запускаем таймер для повторного геокодирования
-        logger.debug("Запустили таймер для геокодирования")
-        geocodingCancellable = Timer.publish(
-            every: geocodingInterval,
-            on: .main,
-            in: .common
+    func updateNewParkState(
+        coordinate: CLLocationCoordinate2D,
+        currentModel: NewParkMapModel
+    ) {
+        let newCoordinate = LocationCoordinate(coordinate)
+        let currentParkCoordinate = LocationCoordinate(currentModel.coordinate)
+        guard newCoordinate != currentParkCoordinate else {
+            logger.debug("Координаты не изменились")
+            newParkState = .ready(currentModel)
+            return
+        }
+        logger.debug("Сохраняем координаты для newParkMapModel")
+        let updatedModel = NewParkMapModel(
+            oldModel: currentModel,
+            newLatitude: coordinate.latitude,
+            newLongitude: coordinate.longitude
         )
-        .autoconnect()
-        .sink { [weak self] _ in
-            self?.performGeocodingIfNeeded()
+        if let cache = getValidGeocodingCache(for: coordinate) {
+            logger.debug("Используем кешированные данные геокодирования для новых координат")
+            let modelWithCache = updatedModel.withGeocodingData(
+                address: cache.address,
+                cityId: cache.cityId
+            )
+            newParkState = .ready(modelWithCache)
+        } else {
+            newParkState = .ready(updatedModel)
         }
     }
 
-    /// Останавливает таймер геокодирования
-    func stopGeocodingTimer() {
-        if geocodingCancellable != nil {
-            logger.debug("Остановили таймер геокодирования")
-            geocodingCancellable?.cancel()
-            geocodingCancellable = nil
-        }
-    }
+    func getValidGeocodingCache(for coordinate: CLLocationCoordinate2D) -> GeocodingCache? {
+        guard let cache = geocodingCache else { return nil }
 
-    /// Выполняет геокодирование, если есть актуальная локация и это необходимо
-    func performGeocodingIfNeeded() {
-        guard let lastUserLocation else {
-            logger.debug("Нет локации для геокодирования")
-            return
-        }
-        let distanceFromLastGeocode = lastGeocodedLocation?.distance(from: lastUserLocation) ?? 1000
-        let isCityEmpty = newParkMapModel.cityId == 0
-        let isAddressEmpty = newParkMapModel.address.isEmpty
-        let shouldUpdateAddress = isCityEmpty || isAddressEmpty
-        let movedSignificantly = distanceFromLastGeocode > 50
-        guard shouldUpdateAddress || movedSignificantly else {
-            logger.debug("Геокодирование не требуется")
-            return
-        }
-        logger.debug("Запускаем CLGeocoder... (нужен адрес: \(shouldUpdateAddress), далеко прошли: \(movedSignificantly))")
-        lastGeocodedLocation = lastUserLocation
-        CLGeocoder().reverseGeocodeLocation(
-            lastUserLocation,
-            preferredLocale: .init(identifier: "ru_RU")
-        ) { [weak self] places, error in
-            guard let self, let target = places?.first else { return }
-            if let error {
-                let message = error.localizedDescription
-                logger.error("\(message)")
-                assertionFailure(message)
-            }
-            logger.debug("CLGeocoder закончил работу")
-            updateCityIfNeeded(placemark: target)
-            updateAddressIfNeeded(placemark: target)
-        }
-    }
-
-    /// Обновляет адрес для новой площадки, если нужно
-    ///
-    /// - Новый адрес должен отличаться от старого
-    /// - Адрес включает все доступные данные, полученные из `placemark`
-    /// - Parameter placemark: Точка на карте
-    func updateAddressIfNeeded(placemark: CLPlacemark) {
-        let fullAddress = SWAddress.makeAddress(for: placemark)
-        if let fullAddress, fullAddress != newParkMapModel.address {
-            newParkMapModel.address = fullAddress
-            logger.debug("Адрес для площадки: \(fullAddress)")
-        }
-    }
-
-    /// Обновляет идентификатор города для новой площадки, если нужно
-    ///
-    /// Новый идентификатор должен отличаться от старого
-    /// - Parameter placemark: Точка на карте
-    func updateCityIfNeeded(placemark: CLPlacemark) {
-        if let cityId = SWAddress.makeCityId(with: placemark.locality),
-           cityId != newParkMapModel.cityId {
-            newParkMapModel.cityId = cityId
-            logger.debug("Идентификатор города для площадки: \(cityId)")
+        if cache.isValid(for: coordinate) {
+            return cache
+        } else {
+            geocodingCache = nil
+            logger.debug("Обнулили невалидный кеш геокодирования")
+            return nil
         }
     }
 }
