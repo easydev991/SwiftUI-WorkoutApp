@@ -280,7 +280,16 @@ private extension ParksMapScreen.ViewModel {
         let currentParkCoordinate = LocationCoordinate(currentModel.coordinate)
         guard newCoordinate != currentParkCoordinate else {
             logger.debug("Координаты не изменились")
-            newParkState = .ready(currentModel)
+            if let cache = getValidGeocodingCache(for: coordinate) {
+                logger.debug("Используем кешированные данные геокодирования для неизменившихся координат")
+                let modelWithCache = currentModel.withGeocodingData(
+                    address: cache.address,
+                    cityId: cache.cityId
+                )
+                newParkState = .ready(modelWithCache)
+            } else {
+                newParkState = .ready(currentModel)
+            }
             return
         }
         logger.debug("Сохраняем координаты для newParkMapModel")
