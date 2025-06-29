@@ -122,18 +122,18 @@ extension ParksMapScreen {
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
             var currentModel = newParkState.model.withoutAddress()
-            if let cache = getValidGeocodingCache(for: currentModel.coordinate) {
-                logger.debug("Используем кешированные данные геокодирования")
-                currentModel = currentModel.withGeocodingData(
-                    address: cache.address,
-                    cityId: cache.cityId
-                )
-            }
             if currentModel.shouldRequestLocation {
                 let updatedModel = currentModel.updatingLastLocationRequestDate(.now)
                 newParkState = .locating(updatedModel)
                 manager.requestLocation()
             } else {
+                if let cache = getValidGeocodingCache(for: currentModel.coordinate) {
+                    logger.debug("Используем кешированные данные геокодирования")
+                    currentModel = currentModel.withGeocodingData(
+                        address: cache.address,
+                        cityId: cache.cityId
+                    )
+                }
                 newParkState = .ready(currentModel)
             }
         }
@@ -284,8 +284,9 @@ private extension ParksMapScreen.ViewModel {
             return
         }
         logger.debug("Сохраняем координаты для newParkMapModel")
+        let withoutAddress = currentModel.withoutAddress()
         let updatedModel = NewParkMapModel(
-            oldModel: currentModel,
+            oldModel: withoutAddress,
             newLatitude: coordinate.latitude,
             newLongitude: coordinate.longitude
         )
