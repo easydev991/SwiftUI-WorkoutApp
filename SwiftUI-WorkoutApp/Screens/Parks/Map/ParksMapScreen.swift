@@ -35,7 +35,7 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading || viewModel.isRequestingLocationForNewPark)
+            .loadingOverlay(if: isLoading || viewModel.isCreatingNewPark)
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)

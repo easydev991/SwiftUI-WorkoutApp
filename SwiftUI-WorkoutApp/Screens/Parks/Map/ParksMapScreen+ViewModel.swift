@@ -28,8 +28,6 @@ extension ParksMapScreen {
         private let manager = CLLocationManager()
         /// Крайняя локация пользователя, которую мы определили и сохранили в этом сеансе
         @Published private var lastUserLocation: CLLocation?
-        /// Время последнего запроса локации
-        private var lastLocationRequestTime: Date?
         /// Влияет на доступность кнопки отслеживания локации на карте
         @Published private(set) var ignoreUserLocation = false
         /// Сообщение об ошибке, связанное с локацией
@@ -113,20 +111,16 @@ extension ParksMapScreen {
         /// Модель новой площадки
         @Published private(set) var newParkMapModel = NewParkMapModel.empty
 
-        /// Флаг процесса запроса локации для новой площадки
-        @Published private(set) var isRequestingLocationForNewPark = false
-
         /// Флаг процесса создания новой площадки (включает запрос локации + открытый экран)
         @Published private(set) var isCreatingNewPark = false
 
         /// Можно ли создавать новую площадку
         var canCreateNewPark: Bool {
-            locationErrorMessage.isEmpty && !isRequestingLocationForNewPark
+            locationErrorMessage.isEmpty && !isCreatingNewPark
         }
 
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
-            isRequestingLocationForNewPark = true
             isCreatingNewPark = true
 
             let now = Date()
@@ -135,18 +129,8 @@ extension ParksMapScreen {
             if newParkMapModel.shouldRequestLocation {
                 // Обновляем дату запроса в модели
                 newParkMapModel = newParkMapModel.updatingLastLocationRequestDate(now)
-                lastLocationRequestTime = now
                 manager.requestLocation()
-            } else {
-                // Если локация актуальная, сразу завершаем процесс
-                finishLocationRequestForNewPark()
             }
-        }
-
-        /// Завершает процесс запроса локации для новой площадки
-        func finishLocationRequestForNewPark() {
-            isRequestingLocationForNewPark = false
-            logger.debug("Завершили запрос локации для новой площадки")
         }
 
         /// Завершает процесс создания новой площадки (вызывается при закрытии экрана)
@@ -177,10 +161,6 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 newLongitude: coordinate.longitude
             )
         }
-        // Завершаем процесс запроса локации для новой площадки, если он активен
-        if isRequestingLocationForNewPark {
-            finishLocationRequestForNewPark()
-        }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -190,7 +170,6 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationErrorMessage = ""
             ignoreUserLocation = false
-            lastLocationRequestTime = Date()
             manager.requestLocation()
         case .restricted, .denied:
             setupDefaultLocation(permissionDenied: true)
