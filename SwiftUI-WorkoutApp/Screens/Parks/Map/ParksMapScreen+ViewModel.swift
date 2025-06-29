@@ -20,6 +20,7 @@ extension ParksMapScreen {
             manager.requestWhenInUseAuthorization()
             setupUserCityCoordinateObserver()
             setupRegionChangeObserver()
+            setupCreatingNewParkObserver()
             updateSelectedCity(selectedCity)
         }
 
@@ -246,6 +247,21 @@ private extension ParksMapScreen.ViewModel {
             .sink { [weak self] newCoordinates in
                 guard let self else { return }
                 resetMapRegionTo(newCoordinates)
+            }
+            .store(in: &persistentCancellables)
+    }
+
+    /// Сбрасываем модель новой площадки при завершении создания
+    func setupCreatingNewParkObserver() {
+        $isCreatingNewPark
+            .dropFirst()
+            .removeDuplicates()
+            .filter { !$0 } // Срабатывает когда isCreatingNewPark становится false
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                logger.debug("Сбрасываем модель новой площадки после завершения создания")
+                newParkMapModel = .empty
             }
             .store(in: &persistentCancellables)
     }
