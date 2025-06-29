@@ -239,4 +239,68 @@ struct NewParkMapModelTests {
         #expect(modelWithZeroLongitude.shouldRequestLocation)
         #expect(modelWithZeroCoordinates.shouldRequestLocation)
     }
+
+    @Test("Проверка метода withoutAddress - обнуляет адрес но сохраняет остальные данные")
+    func withoutAddressResetsAddressButPreservesOtherData() {
+        let coordinate = CLLocationCoordinate2D(latitude: 55.7539, longitude: 37.6208)
+        let date = Date()
+        let originalModel = SUT(
+            coordinate: coordinate,
+            lastLocationRequestDate: date,
+            address: "Москва, Красная площадь",
+            cityId: 1
+        )
+        let modelWithoutAddress = originalModel.withoutAddress()
+        #expect(modelWithoutAddress.address.isEmpty)
+        #expect(modelWithoutAddress.coordinate.latitude == coordinate.latitude)
+        #expect(modelWithoutAddress.coordinate.longitude == coordinate.longitude)
+        #expect(modelWithoutAddress.lastLocationRequestDate == date)
+        #expect(modelWithoutAddress.cityId == 1)
+    }
+
+    @Test("Проверка метода withoutAddress с пустым адресом")
+    func withoutAddressWithEmptyAddress() {
+        let coordinate = CLLocationCoordinate2D(latitude: 55.7539, longitude: 37.6208)
+        let originalModel = SUT(
+            coordinate: coordinate,
+            address: "",
+            cityId: 5
+        )
+        let modelWithoutAddress = originalModel.withoutAddress()
+        #expect(modelWithoutAddress.address.isEmpty)
+        #expect(modelWithoutAddress.coordinate.latitude == coordinate.latitude)
+        #expect(modelWithoutAddress.coordinate.longitude == coordinate.longitude)
+        #expect(modelWithoutAddress.cityId == 5)
+        #expect(modelWithoutAddress.lastLocationRequestDate == nil)
+    }
+
+    @Test("Проверка shouldPerformGeocode после withoutAddress")
+    func shouldPerformGeocodeAfterWithoutAddress() {
+        let originalModel = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "Москва, Красная площадь",
+            cityId: 1
+        )
+        #expect(!originalModel.shouldPerformGeocode, "Изначально геокодирование не требуется")
+        let modelWithoutAddress = originalModel.withoutAddress()
+        #expect(modelWithoutAddress.shouldPerformGeocode, "После обнуления адреса геокодирование требуется")
+    }
+
+    @Test("Проверка withoutAddress не влияет на isEmpty")
+    func withoutAddressDoesNotAffectIsEmpty() {
+        let nonEmptyModel = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "Тестовый адрес",
+            cityId: 1
+        )
+        let emptyModel = SUT(
+            coordinate: .init(latitude: 0, longitude: 0),
+            address: "Тестовый адрес",
+            cityId: 1
+        )
+        #expect(!nonEmptyModel.isEmpty)
+        #expect(!nonEmptyModel.withoutAddress().isEmpty)
+        #expect(emptyModel.isEmpty)
+        #expect(emptyModel.withoutAddress().isEmpty)
+    }
 }

@@ -121,7 +121,7 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
-            var currentModel = newParkState.model
+            var currentModel = newParkState.model.withoutAddress()
             if let cache = getValidGeocodingCache(for: currentModel.coordinate) {
                 logger.debug("Используем кешированные данные геокодирования")
                 currentModel = currentModel.withGeocodingData(
