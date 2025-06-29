@@ -35,7 +35,7 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading || viewModel.isCreatingNewPark)
+            .loadingOverlay(if: isLoading || viewModel.newParkState.isProcessingNewPark)
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
@@ -48,9 +48,9 @@ struct ParksMapScreen: View {
             .onChange(of: defaults.mainUserCityId) { _ in
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
-            .onChange(of: viewModel.newParkMapModel) { newModel in
-                if !newModel.isEmpty {
-                    sheetItem = .createNewPark(newModel)
+            .onChange(of: viewModel.newParkState) { newState in
+                if case let .ready(model) = newState {
+                    sheetItem = .createNewPark(model)
                 }
             }
             .task { await askForParks() }

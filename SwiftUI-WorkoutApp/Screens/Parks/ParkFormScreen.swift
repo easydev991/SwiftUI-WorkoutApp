@@ -1,4 +1,3 @@
-import CoreLocation.CLLocation
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -14,8 +13,6 @@ struct ParkFormScreen: View {
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
     @State private var saveParkTask: Task<Void, Never>?
-    @State private var geocodingTask: Task<Void, Never>?
-    @State private var isLoadingAddress = false
     @FocusState private var isFocused: Bool
     private let oldParkForm: ParkForm
     private let mode: Mode
@@ -65,13 +62,6 @@ extension ParkFormScreen {
             case let .editExisting(park): park.id
             }
         }
-
-        var isCreatingNewPark: Bool {
-            switch self {
-            case .createNew: true
-            case .editExisting: false
-            }
-        }
     }
 }
 
@@ -89,16 +79,11 @@ private extension ParkFormScreen {
             }
             .padding([.horizontal, .bottom])
         }
-        .loadingOverlay(if: isLoading || isLoadingAddress)
+        .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
-        .onDisappear {
-            saveParkTask?.cancel()
-            geocodingTask?.cancel()
-        }
+        .onDisappear { saveParkTask?.cancel() }
         .task {
-            if mode.isCreatingNewPark {
-                await performGeocodingForNewPark()
-            }
+            await performGeocodingForNewPark()
         }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
@@ -197,28 +182,17 @@ private extension ParkFormScreen {
     /// Выполняет геокодирование для новой площадки
     func performGeocodingForNewPark() async {
         guard case let .createNew(model) = mode else { return }
-
-        isLoadingAddress = true
-        geocodingTask = Task {
-            do {
-                let geocodingService = GeocodingService(coordinate: model.coordinate)
-                let result = try await geocodingService.makeAddressAndCityId()
-
-                await MainActor.run {
-                    parkForm.address = result.address
-                    parkForm.cityId = result.cityId
-                    isLoadingAddress = false
-                }
-            } catch {
-                await MainActor.run {
-                    isLoadingAddress = false
-                    // В случае ошибки пользователь может ввести адрес вручную
-                    print("Ошибка геокодирования: \(error)")
-                }
-            }
+        isLoading = true
+        do {
+            let geocodingService = GeocodingService(coordinate: model.coordinate)
+            let result = try await geocodingService.makeAddressAndCityId()
+            parkForm.address = result.address
+            parkForm.cityId = result.cityId
+        } catch {
+            parkForm.cityId = defaults.mainUserCityId
+            SWAlert.shared.presentDefaultUIKit(error)
         }
-
-        await geocodingTask?.value
+        isLoading = false
     }
 }
 
