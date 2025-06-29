@@ -183,6 +183,10 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 newLongitude: coordinate.longitude
             )
         }
+        // Завершаем процесс запроса локации для новой площадки, если он активен
+        if isRequestingLocationForNewPark {
+            finishLocationRequestForNewPark()
+        }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
