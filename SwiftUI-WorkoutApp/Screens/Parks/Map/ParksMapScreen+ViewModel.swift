@@ -121,14 +121,10 @@ extension ParksMapScreen {
 
         /// Запрашивает локацию для создания новой площадки
         func requestLocationForNewPark() {
-            isCreatingNewPark = true
-
-            let now = Date()
-
-            // Используем логику из модели для определения нужности запроса локации
             if newParkMapModel.shouldRequestLocation {
+                isCreatingNewPark = true
                 // Обновляем дату запроса в модели
-                newParkMapModel = newParkMapModel.updatingLastLocationRequestDate(now)
+                newParkMapModel = newParkMapModel.updatingLastLocationRequestDate(.now)
                 manager.requestLocation()
             }
         }
@@ -153,14 +149,15 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
         lastUserLocation = location
         let newCoordinate = LocationCoordinate(coordinate)
         let currentParkCoordinate = LocationCoordinate(newParkMapModel.coordinate)
-        if newCoordinate != currentParkCoordinate {
-            logger.debug("Сохраняем координаты для newParkMapModel")
-            newParkMapModel = .init(
-                oldModel: newParkMapModel,
-                newLatitude: coordinate.latitude,
-                newLongitude: coordinate.longitude
-            )
+        guard isCreatingNewPark, newCoordinate != currentParkCoordinate else {
+            return
         }
+        logger.debug("Сохраняем координаты для newParkMapModel")
+        newParkMapModel = .init(
+            oldModel: newParkMapModel,
+            newLatitude: coordinate.latitude,
+            newLongitude: coordinate.longitude
+        )
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
