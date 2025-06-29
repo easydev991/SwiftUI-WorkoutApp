@@ -134,9 +134,7 @@ extension ParksMapScreen {
             let now = Date()
 
             // Используем логику из модели для определения нужности запроса локации
-            let shouldRequestLocation = lastUserLocation == nil || newParkMapModel.shouldRequestLocation
-
-            if shouldRequestLocation {
+            if newParkMapModel.shouldRequestLocation {
                 // Обновляем дату запроса в модели
                 newParkMapModel = newParkMapModel.updatingLastLocationRequestDate(now)
                 lastLocationRequestTime = now
