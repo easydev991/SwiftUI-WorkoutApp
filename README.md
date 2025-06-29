@@ -91,6 +91,24 @@ make setup
 5. Запускаем в папке с проектом файл `SwiftUI-WorkoutApp.xcodeproj`
 6. Проект готов к работе!
 
+### Настройка языкового сервера Swift для Cursor
+Если вы используете Cursor для разработки, вы можете настроить языковой сервер Swift для получения подсказок, автодополнения и навигации по коду.
+
+#### Способ 1: SweetPad
+1. Открываем Cursor
+2. Устанавливаем расширение [SweetPad](https://marketplace.visualstudio.com/items?itemName=sweetpad.sweetpad) в Cursor
+3. Открываем Command Palette (`Cmd + Shift + P`)
+4. Выполняем команду `SweetPad: Generate Build Server Config`
+5. Перезапускаем Cursor
+
+#### Способ 2: Команда в Makefile
+
+Если вы не используете `SweetPad`, можно воспользоваться командой:
+```shell
+make setup_cursor
+```
+Эта команда автоматически установит необходимые инструменты и настроит языковой сервер.
+
 ### Форматирование кода
 - Используем [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) для форматирования кода
 - Правила форматирования перечислены в файле [.swiftformat](.swiftformat)

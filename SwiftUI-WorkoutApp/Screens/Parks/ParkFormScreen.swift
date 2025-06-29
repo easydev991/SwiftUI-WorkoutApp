@@ -1,4 +1,3 @@
-import CoreLocation.CLLocation
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -9,6 +8,7 @@ import SWUtils
 struct ParkFormScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
+    @Environment(\.updateGeocodingCache) private var updateGeocodingCache
     @EnvironmentObject private var defaults: DefaultsService
     @State private var isLoading = false
     @State private var parkForm: ParkForm
@@ -83,6 +83,9 @@ private extension ParkFormScreen {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .onDisappear { saveParkTask?.cancel() }
+        .task {
+            await performGeocodingForNewPark()
+        }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(isLoading)
@@ -175,6 +178,25 @@ private extension ParkFormScreen {
         mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
+    }
+
+    /// Выполняет геокодирование для новой площадки
+    func performGeocodingForNewPark() async {
+        guard case let .createNew(model) = mode, model.shouldPerformGeocode else {
+            return
+        }
+        isLoading = true
+        do {
+            let geocodingService = GeocodingService(coordinate: model.coordinate)
+            let result = try await geocodingService.makeAddressAndCityId()
+            parkForm.address = result.address
+            parkForm.cityId = result.cityId
+            updateGeocodingCache(result.address, result.cityId, model.coordinate)
+        } catch {
+            parkForm.cityId = defaults.mainUserCityId
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+        isLoading = false
     }
 }
 

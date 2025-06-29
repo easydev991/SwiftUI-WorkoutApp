@@ -526,6 +526,8 @@ private extension SWClient {
             throw ClientError.forceLogout
         } catch APIError.notConnectedToInternet {
             throw ClientError.noConnection
+        } catch APIError.notFound {
+            throw ClientError.notFound
         } catch {
             throw error
         }
@@ -543,6 +545,8 @@ private extension SWClient {
             throw ClientError.forceLogout
         } catch APIError.notConnectedToInternet {
             throw ClientError.noConnection
+        } catch APIError.notFound {
+            throw ClientError.notFound
         } catch {
             throw error
         }

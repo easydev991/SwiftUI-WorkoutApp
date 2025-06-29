@@ -2,9 +2,12 @@ import CoreLocation
 import Foundation
 
 public struct NewParkMapModel: Sendable, Equatable {
-    public var address: String
     public var latitude: Double
     public var longitude: Double
+    public var lastLocationRequestDate: Date?
+    /// Адрес площадки, полученный при помощи геокодирования
+    public var address: String
+    /// Идентификатор города, полученные при помощи геокодирования
     public var cityId: Int
 
     public var coordinate: CLLocationCoordinate2D {
@@ -13,24 +16,46 @@ public struct NewParkMapModel: Sendable, Equatable {
 
     /// Пустая ли модель
     public var isEmpty: Bool {
-        address.isEmpty || latitude == 0 || longitude == 0 || cityId == 0
+        latitude == 0 || longitude == 0
+    }
+
+    /// Нужно ли запрашивать новую локацию
+    public var shouldRequestLocation: Bool {
+        let shouldRequest: Bool = if let lastDate = lastLocationRequestDate {
+            Date().timeIntervalSince(lastDate) > 10
+        } else {
+            true
+        }
+        return isEmpty || shouldRequest
+    }
+
+    /// Нужно ли выполнять геокодирование
+    public var shouldPerformGeocode: Bool {
+        address.isEmpty || cityId == 0
     }
 
     /// Инициализатор
     /// - Parameters:
-    ///   - address: Точный адрес местонахождения пользователя
     ///   - coordinate: Координаты местонахождения пользователя
-    ///   - cityId: Идентификатор города местонахождения пользователя
-    public init(address: String, coordinate: CLLocationCoordinate2D, cityId: Int) {
-        self.address = address
+    ///   - lastLocationRequestDate: Дата последнего запроса локации
+    ///   - address: Адрес площадки
+    ///   - cityId: Идентификатор города
+    public init(
+        coordinate: CLLocationCoordinate2D,
+        lastLocationRequestDate: Date? = nil,
+        address: String = "",
+        cityId: Int = 0
+    ) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
+        self.lastLocationRequestDate = lastLocationRequestDate
+        self.address = address
         self.cityId = cityId
     }
 
     /// Инициализатор для обновления координат
     ///
-    /// Копирует из старой модели адрес и идентификатор города,
+    /// Копирует из старой модели дату запроса, адрес и cityId,
     /// но сохраняет обновленные координаты
     /// - Parameters:
     ///   - oldModel: Старая модель
@@ -38,15 +63,43 @@ public struct NewParkMapModel: Sendable, Equatable {
     ///   - newLongitude: Новая долгота
     public init(oldModel: Self, newLatitude: Double, newLongitude: Double) {
         self.init(
-            address: oldModel.address,
             coordinate: .init(latitude: newLatitude, longitude: newLongitude),
+            lastLocationRequestDate: oldModel.lastLocationRequestDate,
+            address: oldModel.address,
             cityId: oldModel.cityId
         )
     }
 
+    /// Обновляет дату последнего запроса локации
+    /// - Parameter date: Новая дата запроса
+    /// - Returns: Обновленная модель
+    public func updatingLastLocationRequestDate(_ date: Date) -> Self {
+        Self(
+            coordinate: coordinate,
+            lastLocationRequestDate: date,
+            address: address,
+            cityId: cityId
+        )
+    }
+
+    /// Создает модель с данными геокодирования
+    /// - Parameters:
+    ///   - address: Адрес площадки
+    ///   - cityId: Идентификатор города
+    /// - Returns: Обновленная модель
+    public func withGeocodingData(address: String, cityId: Int) -> Self {
+        Self(
+            coordinate: coordinate,
+            lastLocationRequestDate: lastLocationRequestDate,
+            address: address,
+            cityId: cityId
+        )
+    }
+
     public static let empty = Self(
-        address: "",
         coordinate: .init(latitude: 0, longitude: 0),
+        lastLocationRequestDate: nil,
+        address: "",
         cityId: 0
     )
 }
