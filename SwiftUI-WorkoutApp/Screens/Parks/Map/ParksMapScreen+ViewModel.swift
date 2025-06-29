@@ -35,9 +35,6 @@ extension ParksMapScreen {
         /// Сообщение об ошибке, связанное с локацией
         @Published private(set) var locationErrorMessage = ""
 
-        // MARK: - Геокодирование
-        /// Последняя локация, для которой выполнялось геокодирование
-        private var lastGeocodedLocation: CLLocation?
 
         // MARK: - Регион карты
         @Published private(set) var region = MKCoordinateRegion()
@@ -91,8 +88,7 @@ extension ParksMapScreen {
                 latitude: newCoordinate.lat,
                 longitude: newCoordinate.lon
             )
-            // Сохраняем город пользователя для новой площадки на случай,
-            // если не получится определить город по локации с помощью CLGeocoder
+            // Сохраняем город пользователя для новой площадки как fallback значение
             internalNewParkMapModel.cityId = cityId
         }
 
@@ -178,8 +174,6 @@ extension ParksMapScreen.ViewModel: CLLocationManagerDelegate {
                 newLatitude: coordinate.latitude,
                 newLongitude: coordinate.longitude
             )
-            // Выполняем геокодирование после обновления координат
-            performGeocodingIfNeeded()
         }
     }
 
@@ -282,63 +276,4 @@ private extension ParksMapScreen.ViewModel {
     }
 }
 
-// MARK: - Геокодирование
-private extension ParksMapScreen.ViewModel {
-    /// Выполняет геокодирование, если есть актуальная локация и это необходимо
-    func performGeocodingIfNeeded() {
-        guard let lastUserLocation else {
-            logger.debug("Нет локации для геокодирования")
-            return
-        }
-        let distanceFromLastGeocode = lastGeocodedLocation?.distance(from: lastUserLocation) ?? 1000
-        let isCityEmpty = internalNewParkMapModel.cityId == 0
-        let isAddressEmpty = internalNewParkMapModel.address.isEmpty
-        let shouldUpdateAddress = isCityEmpty || isAddressEmpty
-        let movedSignificantly = distanceFromLastGeocode > 50
-        guard shouldUpdateAddress || movedSignificantly else {
-            logger.debug("Геокодирование не требуется")
-            return
-        }
-        logger.debug("Запускаем CLGeocoder... (нужен адрес: \(shouldUpdateAddress), далеко прошли: \(movedSignificantly))")
-        lastGeocodedLocation = lastUserLocation
-        CLGeocoder().reverseGeocodeLocation(
-            lastUserLocation,
-            preferredLocale: .init(identifier: "ru_RU")
-        ) { [weak self] places, error in
-            guard let self, let target = places?.first else { return }
-            if let error {
-                let message = error.localizedDescription
-                logger.error("\(message)")
-                assertionFailure(message)
-            }
-            logger.debug("CLGeocoder закончил работу")
-            updateCityIfNeeded(placemark: target)
-            updateAddressIfNeeded(placemark: target)
-        }
-    }
 
-    /// Обновляет адрес для новой площадки, если нужно
-    ///
-    /// - Новый адрес должен отличаться от старого
-    /// - Адрес включает все доступные данные, полученные из `placemark`
-    /// - Parameter placemark: Точка на карте
-    func updateAddressIfNeeded(placemark: CLPlacemark) {
-        let fullAddress = SWAddress.makeAddress(for: placemark)
-        if let fullAddress, fullAddress != internalNewParkMapModel.address {
-            internalNewParkMapModel.address = fullAddress
-            logger.debug("Адрес для площадки: \(fullAddress)")
-        }
-    }
-
-    /// Обновляет идентификатор города для новой площадки, если нужно
-    ///
-    /// Новый идентификатор должен отличаться от старого
-    /// - Parameter placemark: Точка на карте
-    func updateCityIfNeeded(placemark: CLPlacemark) {
-        if let cityId = SWAddress.makeCityId(with: placemark.locality),
-           cityId != internalNewParkMapModel.cityId {
-            internalNewParkMapModel.cityId = cityId
-            logger.debug("Идентификатор города для площадки: \(cityId)")
-        }
-    }
-}
