@@ -20,7 +20,6 @@ extension ParksMapScreen {
             manager.requestWhenInUseAuthorization()
             setupUserCityCoordinateObserver()
             setupRegionChangeObserver()
-            updateSelectedCity(selectedCity)
         }
 
         // MARK: - Трекинг локации
