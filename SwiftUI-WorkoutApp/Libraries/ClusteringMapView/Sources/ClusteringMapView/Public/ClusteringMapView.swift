@@ -49,6 +49,9 @@ public struct ClusteringMapView: UIViewRepresentable {
         let view = MKMapView()
         view.delegate = context.coordinator
         view.cameraZoomRange = cameraZoomRange
+        if LocationCoordinate(region).isSpecified {
+            view.setRegion(region, animated: false)
+        }
         addTrackingButtonIfNeeded(to: view)
         return view
     }
