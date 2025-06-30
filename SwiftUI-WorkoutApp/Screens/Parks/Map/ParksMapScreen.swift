@@ -34,7 +34,7 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: parksManager.isLoading)
+            .loadingOverlay(if: parksManager.isLoading || viewModel.newParkState.isProcessingNewPark)
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
@@ -42,18 +42,22 @@ struct ParksMapScreen: View {
             .onChange(of: defaults.mainUserCityId) { _ in
                 viewModel.userCityDidChange(defaults.mainUserInfo)
             }
+            .onChange(of: sheetItem) { [oldItem = sheetItem] newValue in
+                if case .createNewPark = oldItem, newValue == nil {
+                    viewModel.finishCreatingNewPark()
+                }
+            }
+            .onChange(of: viewModel.newParkState) { newState in
+                if case let .ready(model) = newState {
+                    sheetItem = .createNewPark(model)
+                }
+            }
             .task {
                 do {
                     try await parksManager.loadParksIfNeeded()
                 } catch {
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
-            }
-            .onAppear {
-                viewModel.setLocationTracking(true)
-            }
-            .onDisappear {
-                viewModel.setLocationTracking(false)
             }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
@@ -98,7 +102,7 @@ struct ParksMapScreen: View {
 }
 
 private extension ParksMapScreen {
-    enum SheetItem: Identifiable {
+    enum SheetItem: Identifiable, Equatable {
         var id: String {
             switch self {
             case .filters: "filters"
@@ -224,9 +228,7 @@ private extension ParksMapScreen {
     @ViewBuilder
     var rightBarButton: some View {
         if defaults.isAuthorized {
-            Button {
-                sheetItem = .createNewPark(viewModel.newParkMapModel)
-            } label: {
+            Button(action: viewModel.requestLocationForNewPark) {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
@@ -250,6 +252,7 @@ private extension ParksMapScreen {
                     }
                 )
             }
+            .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
             NavigationView {
                 ItemListScreen(
