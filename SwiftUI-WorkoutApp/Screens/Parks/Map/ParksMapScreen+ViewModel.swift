@@ -92,6 +92,7 @@ extension ParksMapScreen {
                 )
                 logger.debug("Обновили cityId в кеше геокодирования на \(cityId)")
             }
+            updateSelectedCity(selectedCity)
         }
 
         /// Обновляет выбранный город для фильтра площадок
@@ -259,11 +260,13 @@ private extension ParksMapScreen.ViewModel {
             }
             return
         }
-        region = .init(
-            center: userCoordinate.coordinate,
-            span: defaultCoordinateSpan
-        )
-        logger.debug("Регион карты сброшен на координаты: \(userCoordinate.lat), \(userCoordinate.lon)")
+        if LocationCoordinate(region.center) != userCoordinate {
+            region = .init(
+                center: userCoordinate.coordinate,
+                span: defaultCoordinateSpan
+            )
+            logger.debug("Регион карты сброшен на координаты: \(userCoordinate.lat), \(userCoordinate.lon)")
+        }
         ignoreUserLocation = false
     }
 }
