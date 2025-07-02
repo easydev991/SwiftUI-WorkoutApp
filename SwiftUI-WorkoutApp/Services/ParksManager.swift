@@ -104,9 +104,6 @@ final class ParksManager: ObservableObject {
         let client = SWClient(with: DefaultsService())
         var page = 1
         let pageSize = 500
-        var allParks = fullList // Используем уже загруженные из makeDefaultList
-        var batchSize = 0
-        let batchThreshold = 3000 // Обновляем каждые ~3000 площадок
 
         while true {
             let parksPage = try await client.getParksPageByPage(page: page, pageSize: pageSize)
@@ -116,26 +113,15 @@ final class ParksManager: ObservableObject {
 
             // Добавляем новые площадки, фильтруя дубликаты по id
             for newPark in parksPage {
-                if !allParks.contains(where: { $0.id == newPark.id }) {
-                    allParks.append(newPark)
-                    batchSize += 1
+                if !fullList.contains(where: { $0.id == newPark.id }) {
+                    fullList.append(newPark)
                 }
             }
 
-            // Обновляем UI и сохраняем в файл батчами
-            if batchSize >= batchThreshold {
-                fullList = allParks
-                try saveParksInMemory()
-                batchSize = 0
-            }
+            // Сохраняем обновлённый список после каждой страницы
+            try saveParksInMemory()
 
             page += 1
-        }
-
-        // Сохраняем оставшиеся площадки
-        if batchSize > 0 {
-            fullList = allParks
-            try saveParksInMemory()
         }
     }
 
