@@ -71,71 +71,31 @@ final class ParksManager: ObservableObject {
     func loadParksIfNeeded(refresh: Bool = false) async throws {
         // Если список не пустой и не требуется обновление, выходим
         if !fullList.isEmpty, !refresh { return }
-
         // Загружаем сохранённые площадки из памяти (если есть)
         try? makeDefaultList()
-
         // Если после загрузки из памяти список всё ещё пустой, загружаем с сервера
         if fullList.isEmpty {
-            do {
-                try await loadInitialParks()
-            } catch {
-                // Ошибка загрузки с сервера - обрабатывается в UI
-                throw error
-            }
+            try await loadInitialParks()
         }
-
         // Проверяем, нужны ли обновления
-        try await updateParksIfNeeded()
-    }
-
-    /// Проверяет, нужно ли обновление площадок, и выполняет его при необходимости
-    private func updateParksIfNeeded() async throws {
-        if needUpdateDefaultList {
-            try await updateParks()
-        }
+        guard needUpdateDefaultList else { return }
+        try await updateParks()
     }
 
     /// Постраничная загрузка площадок с сервера
     private func loadInitialParks() async throws {
         isLoading = true
         defer { isLoading = false }
-
         let client = SWClient(with: DefaultsService())
         var page = 1
-        let pageSize = 1000
-        var allParks = fullList // Используем уже загруженные из makeDefaultList
-        var batchSize = 0
-        let batchThreshold = 3000 // Обновляем каждые ~3000 площадок
-
+        let pageSize = 500
         while true {
             let parksPage = try await client.getParksPageByPage(page: page, pageSize: pageSize)
             if parksPage.isEmpty {
                 break
             }
-
-            // Добавляем новые площадки, фильтруя дубликаты по id
-            for newPark in parksPage {
-                if !allParks.contains(where: { $0.id == newPark.id }) {
-                    allParks.append(newPark)
-                    batchSize += 1
-                }
-            }
-
-            // Обновляем UI и сохраняем в файл батчами
-            if batchSize >= batchThreshold {
-                fullList = allParks
-                try saveParksInMemory()
-                batchSize = 0
-            }
-
+            fullList.append(contentsOf: parksPage)
             page += 1
-        }
-
-        // Сохраняем оставшиеся площадки
-        if batchSize > 0 {
-            fullList = allParks
-            try saveParksInMemory()
         }
     }
 
