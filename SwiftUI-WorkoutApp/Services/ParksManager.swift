@@ -100,7 +100,6 @@ final class ParksManager: ObservableObject {
     private func loadInitialParks() async throws {
         isLoading = true
         defer { isLoading = false }
-
         let client = SWClient(with: DefaultsService())
         var page = 1
         let pageSize = 500
@@ -110,13 +109,7 @@ final class ParksManager: ObservableObject {
             if parksPage.isEmpty {
                 break
             }
-
-            // Добавляем новые площадки, фильтруя дубликаты по id
-            for newPark in parksPage {
-                if !fullList.contains(where: { $0.id == newPark.id }) {
-                    fullList.append(newPark)
-                }
-            }
+            fullList.append(contentsOf: parksPage)
             page += 1
         }
     }
