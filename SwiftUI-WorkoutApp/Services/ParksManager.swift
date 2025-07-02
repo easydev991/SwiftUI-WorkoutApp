@@ -117,10 +117,6 @@ final class ParksManager: ObservableObject {
                     fullList.append(newPark)
                 }
             }
-
-            // Сохраняем обновлённый список после каждой страницы
-            try saveParksInMemory()
-
             page += 1
         }
     }
