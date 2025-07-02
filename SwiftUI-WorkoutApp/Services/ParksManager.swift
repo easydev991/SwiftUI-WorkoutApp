@@ -103,7 +103,7 @@ final class ParksManager: ObservableObject {
 
         let client = SWClient(with: DefaultsService())
         var page = 1
-        let pageSize = 1000
+        let pageSize = 500
         var allParks = fullList // Используем уже загруженные из makeDefaultList
         var batchSize = 0
         let batchThreshold = 3000 // Обновляем каждые ~3000 площадок
