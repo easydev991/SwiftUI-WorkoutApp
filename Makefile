@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor update update_fastlane update_swiftformat format screenshots upload_screenshots testflight fastlane
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor update update_fastlane update_swiftformat format screenshots upload_screenshots testflight fastlane build test
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -361,6 +361,14 @@ fastlane:
 	rbenv shell $(RUBY_VERSION); \
 	bundle exec fastlane; \
 	'
+
+## build: Сборка проекта в терминале
+build:
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
+
+## test: Запускает unit-тесты в терминале
+test:
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' test -testPlan SwiftUI-WorkoutApp
 
 .DEFAULT:
 	@printf "$(RED)Неизвестная команда: 'make $@'\n$(RESET)"
