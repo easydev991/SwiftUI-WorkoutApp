@@ -1,8 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon10.svg",
-      "idiom" : "universal"
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "10.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "10 1.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
