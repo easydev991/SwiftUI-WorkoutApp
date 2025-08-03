@@ -1,4 +1,5 @@
-app_identifier("com.FGU.WorkOut") # The bundle identifier of your app
+app_identifier("com.oleg991.SW-Parks") # The bundle identifier of your app
+itc_team_id("127738690") # Team ID for "Oleg Eremenko"
 # apple_id("[[APPLE_ID]]") # Your Apple Developer Portal username
 
 

@@ -1,5 +1,5 @@
 # A list of devices you want to take the screenshots from
-devices(["iPhone 16 Pro Max", "iPad Pro 13-inch (M4)"])
+devices(["iPhone 15 Pro Max", "iPad Pro (12.9-inch) (6th generation)"])
 
 # A list of languages which should be used. See https://docs.fastlane.tools/actions/snapshot/#available-language-codes
 languages(["en-US", "ru"])
@@ -30,6 +30,10 @@ scheme("WorkoutAppUITests")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
 clear_previous_screenshots(true)
+
+skip_package_dependencies_resolution(true)
+disable_package_automatic_updates(true)
+output_simulator_logs(true)
 
 # For more information about all available options run
 # fastlane action snapshot

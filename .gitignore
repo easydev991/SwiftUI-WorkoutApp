@@ -14,3 +14,7 @@ buildServer.json
 
 # VSCode/Cursor settings (personal preferences)
 .vscode/
+
+# Fastlane
+fastlane/.env
+fastlane/builds/
