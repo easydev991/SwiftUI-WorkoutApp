@@ -109,7 +109,13 @@ private extension WorkoutAppUITests {
     var profileTabButton: XCUIElement { tabbar.buttons.element(boundBy: 3) }
     var eventsTabButton: XCUIElement { tabbar.buttons.element(boundBy: 1) }
     var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
-    var loginField: XCUIElement { app.textFields["loginField"] }
+    var loginField: XCUIElement {
+        let id = "loginField"
+        let oldElement = app.textViews[id]
+        let modernElement = app.textFields[id]
+        return oldElement.exists ? oldElement : modernElement
+    }
+
     var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
     var loginButton: XCUIElement { app.buttons["loginButton"] }
     var searchUsersButton: XCUIElement { app.buttons["searchUsersButton"] }
