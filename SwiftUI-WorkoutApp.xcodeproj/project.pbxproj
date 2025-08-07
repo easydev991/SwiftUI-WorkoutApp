@@ -469,7 +469,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.13.1;
+				MARKETING_VERSION = 3.13.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg991.SW-Parks";
 				PRODUCT_NAME = WorkoutApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -524,7 +524,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.13.1;
+				MARKETING_VERSION = 3.13.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg991.SW-Parks";
 				PRODUCT_NAME = WorkoutApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
