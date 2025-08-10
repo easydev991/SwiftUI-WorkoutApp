@@ -15,15 +15,56 @@ update_fastlane
 
 default_platform(:ios)
 
+require 'shellwords'
+
+# Проектные константы
+APP_SCHEME_FOR_BUILD                  = "SwiftUI-WorkoutApp"
+ARTIFACT_OUTPUT_NAME                  = "SwiftUI-WorkoutApp"
+XCODEPROJECT_FILE_FOR_VERSION_LOOKUP  = "SwiftUI-WorkoutApp.xcodeproj"
+UITESTS_SCHEME_FOR_SCREENSHOTS        = "WorkoutAppUITests"
+APP_IDENTIFIER_FOR_BUILD_NUMBER       = "com.oleg991.SW-Parks"
+
+SECRETS_REPO = "git@github.com:easydev991/ios-fastlane-secrets.git"
+SECRETS_DIR  = "appstoreconnect"
+
+def load_app_store_connect_api_key
+  Dir.mktmpdir("asc-secrets") do |tmp|
+    sh("git clone --depth 1 #{SECRETS_REPO} #{Shellwords.escape(tmp)}")
+    secrets_path = File.join(tmp, SECRETS_DIR)
+
+    key_id    = File.read(File.join(secrets_path, "KEY_ID")).strip
+    issuer_id = File.read(File.join(secrets_path, "ISSUER_ID")).strip
+    p8_path   = Dir[File.join(secrets_path, "AuthKey_*.p8")].first
+    if p8_path.nil?
+      UI.user_error!("Не найден файл приватного ключа AuthKey_*.p8 в #{secrets_path}")
+    end
+    key_p8 = File.read(p8_path)
+
+    return app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      key_content: key_p8,
+      duration: 1200,
+      in_house: false
+    )
+  end
+end
+
+# Кэшируем ключ ASC один раз за запуск команды fastlane
+def asc_key
+  @asc_key ||= load_app_store_connect_api_key
+end
+
 platform :ios do
   desc "Сгенерировать новые локализованные скриншоты"
   lane :screenshots do
-    capture_screenshots(scheme: "WorkoutAppUITests")
+    capture_screenshots(scheme: UITESTS_SCHEME_FOR_SCREENSHOTS)
   end
 
   desc "Загрузить существующие скриншоты в App Store Connect"
   lane :upload_screenshots do
     upload_to_app_store(
+      api_key: asc_key,
       skip_metadata: true,
       skip_screenshots: false,
       force: true,
@@ -31,32 +72,62 @@ platform :ios do
       reject_if_possible: false,
       overwrite_screenshots: true,
       run_precheck_before_submit: false,
-      skip_binary_upload: true
+      skip_binary_upload: true,
+      automatic_release: false
     )
   end
 
-  desc "Выполнить первые 2 команды вместе"
-  lane :make_and_upload_screenshots do
-    screenshots
-    upload_screenshots
+  desc "Получить следующий номер сборки для отправки"
+  lane :get_next_build_number do
+    project_version = get_version_number(
+      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP
+    )
+    latest_build_any = latest_testflight_build_number(
+      api_key: asc_key,
+      app_identifier: APP_IDENTIFIER_FOR_BUILD_NUMBER
+    )
+    latest_tf_version = lane_context[SharedValues::LATEST_TESTFLIGHT_VERSION]
+    if latest_tf_version.to_s == project_version.to_s
+      (latest_build_any.to_i + 1).to_s
+    else
+      "1"
+    end
   end
 
   desc "Собрать и отправить сборку в TestFlight"
-  lane :release do
-    build_app(
-      scheme: "SwiftUI-WorkoutApp",
-      export_method: "app-store",
-      output_directory: "fastlane/builds",
-      export_options: {
-        provisioningProfiles: {
-          "com.oleg991.SW-Parks" => "SwiftUI-WorkoutApp App Store (fastlane)"
-        }
-      }
+  lane :build_and_upload do
+    # Обновляем номер сборки
+    increment_build_number(
+      build_number: get_next_build_number,
+      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP,
+      skip_info_plist: true
     )
+
+    # Собираем приложение
+    build_app(
+      scheme: APP_SCHEME_FOR_BUILD,
+      export_method: "app-store",
+      clean: true,
+      output_directory: "fastlane/builds",
+      output_name: ARTIFACT_OUTPUT_NAME,
+      xcargs: "-allowProvisioningUpdates"
+    )
+
+    # Загружаем в TestFlight
     upload_to_testflight(
       skip_waiting_for_build_processing: true,
-      apple_id: ENV["FASTLANE_APPLE_ID"]
+      distribute_external: false,
+      notify_external_testers: false,
+      api_key: asc_key
     )
+    
+    # После успешной загрузки сбрасываем номер сборки до 1
+    increment_build_number(
+      build_number: "1",
+      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP,
+      skip_info_plist: true
+    )
+    
     # Удаляем файлы сборки после успешной публикации
     clean_build_artifacts
   end

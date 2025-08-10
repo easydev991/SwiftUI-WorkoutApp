@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Проверка форматирования Swift-кода перед push
+if command -v swiftformat >/dev/null 2>&1; then
+  echo "Проверка форматирования Swift-кода..."
+  if ! swiftformat --lint .; then
+    echo "Ошибка: Код не отформатирован. Запустите 'make format' для исправления."
+    exit 1
+  fi
+  echo "Форматирование Swift-кода в порядке."
+else
+  echo "Предупреждение: swiftformat не найден. Установите его с помощью 'brew install swiftformat'."
+fi
