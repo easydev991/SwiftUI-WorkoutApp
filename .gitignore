@@ -16,5 +16,4 @@ buildServer.json
 .vscode/
 
 # Fastlane
-fastlane/.env
 fastlane/builds/

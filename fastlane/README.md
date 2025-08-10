@@ -31,18 +31,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Загрузить существующие скриншоты в App Store Connect
 
-### ios make_and_upload_screenshots
+### ios get_next_build_number
 
 ```sh
-[bundle exec] fastlane ios make_and_upload_screenshots
+[bundle exec] fastlane ios get_next_build_number
 ```
 
-Выполнить первые 2 команды вместе
+Получить следующий номер сборки для отправки
 
-### ios release
+### ios build_and_upload
 
 ```sh
-[bundle exec] fastlane ios release
+[bundle exec] fastlane ios build_and_upload
 ```
 
 Собрать и отправить сборку в TestFlight
