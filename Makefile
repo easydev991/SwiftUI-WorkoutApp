@@ -20,10 +20,13 @@ BUNDLE_EXEC := RBENV_VERSION=$(RUBY_VERSION) bundle exec
 
 ## help: Показать это справочное сообщение
 help:
-	@echo "Доступные команды Makefile: \n"
+	@echo "Доступные команды Makefile:"
+	@echo ""
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | \
-	awk -F ':' '{printf " $(BOLD)%s$(RESET):%s\n", $$1, $$2}' BOLD="$(BOLD)" RESET="$(RESET)" | column -t -s ':'
-	@echo "\nРекомендуется сначала выполнить команду '$(BOLD)make setup$(RESET)'"
+	awk -F ':' '{printf "  $(BOLD)%s$(RESET):%s\n", $$1, $$2}' BOLD="$(BOLD)" RESET="$(RESET)" | column -t -s ':'
+	@echo ""
+	@printf "Рекомендуется сначала выполнить команду '$(BOLD)make setup$(RESET)'"
+	@echo ""
 
 ## setup: Проверить и установить все необходимые инструменты и зависимости для проекта (Homebrew, rbenv, Ruby, Bundler, fastlane, swiftformat)
 setup:
