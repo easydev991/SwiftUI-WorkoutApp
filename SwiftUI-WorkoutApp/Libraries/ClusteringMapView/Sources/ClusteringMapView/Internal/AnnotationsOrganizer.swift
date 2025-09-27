@@ -15,14 +15,14 @@ struct AnnotationsOrganizer {
     }
 
     /// Если нет точек, ничего не делаем
-    private var canSkipUpdate: Bool {
+    var canSkipUpdate: Bool {
         old.isEmpty && new.isEmpty
     }
 
     /// Сравнивает количество старых и новых точек
     ///
     /// Фильтрует точку с пользователем и кластеры
-    private var hasDifferences: Bool {
+    var hasDifferences: Bool {
         let filteredOld = old.filter {
             type(of: $0) != MKClusterAnnotation.self && type(of: $0) != MKUserLocation.self
         }
