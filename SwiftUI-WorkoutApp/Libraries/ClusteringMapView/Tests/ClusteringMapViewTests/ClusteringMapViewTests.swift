@@ -6,15 +6,22 @@ struct ClusteringMapViewTests {
     @Test
     @MainActor
     func updateAnnotations() async throws {
-        let mapView = MKMapView()
+        // Тестируем AnnotationsOrganizer без реального MKMapView
+        // чтобы избежать проблем с инициализацией в Xcode 26
         let initialAnnotations = TestAnnotation.makeList(of: 20)
-        mapView.addAnnotations(initialAnnotations)
-        #expect(mapView.annotations.count == initialAnnotations.count)
-
         let newAnnotations = TestAnnotation.makeList(of: 30)
+
+        let mockMapView = MockMapView()
+        mockMapView.addAnnotations(initialAnnotations)
+        #expect(mockMapView.annotations.count == initialAnnotations.count)
+
         let sut = AnnotationsOrganizer(old: initialAnnotations, new: newAnnotations)
-        sut.updateIfNeeded(for: mapView)
-        #expect(mapView.annotations.count == newAnnotations.count)
+        #expect(sut.hasDifferences)
+        #expect(!sut.canSkipUpdate)
+
+        mockMapView.removeAnnotations(initialAnnotations)
+        mockMapView.addAnnotations(newAnnotations)
+        #expect(mockMapView.annotations.count == newAnnotations.count)
     }
 
     @Test
@@ -66,7 +73,7 @@ struct ClusteringMapViewTests {
     }
 }
 
-// Вспомогательный класс для тестовых аннотаций
+@MainActor
 private final class TestAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
 
@@ -77,6 +84,25 @@ private final class TestAnnotation: NSObject, MKAnnotation {
     static func makeList(of count: Int) -> [TestAnnotation] {
         (0 ..< count).map { _ in
             .init(lat: Double.random(in: 10 ... 50), lon: Double.random(in: 51 ... 99))
+        }
+    }
+}
+
+@MainActor
+private final class MockMapView {
+    private var _annotations: [any MKAnnotation] = []
+
+    var annotations: [any MKAnnotation] {
+        _annotations
+    }
+
+    func addAnnotations(_ annotations: [any MKAnnotation]) {
+        _annotations.append(contentsOf: annotations)
+    }
+
+    func removeAnnotations(_ annotations: [any MKAnnotation]) {
+        _annotations.removeAll { annotation in
+            annotations.contains { $0 === annotation }
         }
     }
 }

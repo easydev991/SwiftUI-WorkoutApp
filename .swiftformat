@@ -10,6 +10,7 @@
 --linebreaks lf
 --ifdef no-indent
 --xcodeindentation enabled
+--trailingCommas never
 
 --funcattributes prev-line
 --typeattributes prev-line

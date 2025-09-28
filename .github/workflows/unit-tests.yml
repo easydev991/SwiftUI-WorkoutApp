@@ -11,14 +11,14 @@ on:
 
 jobs:
   test:
-    runs-on: macos-15
+    runs-on: macos-16
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Select Xcode 16.2
+    - name: Select Xcode 26.0
       run: |
-        sudo xcode-select -s /Applications/Xcode_16.2.app
+        sudo xcode-select -s /Applications/Xcode_26.0.app
         xcodebuild -version
         
     - name: List Available Simulators
@@ -29,5 +29,5 @@ jobs:
         xcodebuild test \
         -scheme "SwiftUI-WorkoutApp" \
         -testPlan "SwiftUI-WorkoutApp" \
-        -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" \
+        -destination "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0" \
         CODE_SIGNING_ALLOWED=NO
