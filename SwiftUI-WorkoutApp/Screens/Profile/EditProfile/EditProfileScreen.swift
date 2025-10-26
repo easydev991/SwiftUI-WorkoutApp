@@ -128,7 +128,7 @@ private extension EditProfileScreen {
         }
         .animation(.default, value: newAvatarImageModel)
         .fullScreenCover(item: $pickerSourceType) { sourceType in
-            SWImagePicker(sourceType: sourceType) {
+            SWImagePicker(sourceType: sourceType, allowsEditing: true) {
                 newAvatarImageModel = .init(uiImage: $0)
                 userForm.image = $0.toMediaFile()
             }
