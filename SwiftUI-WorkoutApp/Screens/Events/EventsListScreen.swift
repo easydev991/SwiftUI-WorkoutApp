@@ -138,6 +138,7 @@ private extension EventsListScreen {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
+            .tint(.accent)
             .sheet(isPresented: $showEventCreationSheet) {
                 NavigationStack {
                     EventFormScreen(

@@ -47,7 +47,6 @@ struct UserDetailsScreen: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 blockUserButton
-                    .disabled(isLoading)
             }
         }
         .onDisappear(perform: cancelTasks)
@@ -92,6 +91,8 @@ private extension UserDetailsScreen {
             )
             .symbolVariant(socialActions.isBlacklisted ? .fill : .none)
         }
+        .tint(.accent)
+        .disabled(isLoading)
         .confirmationDialog(
             socialActions.blacklist.dialogTitle,
             isPresented: $showBlacklistConfirmation,

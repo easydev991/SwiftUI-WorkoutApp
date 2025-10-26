@@ -9,10 +9,10 @@ import SWUtils
 final class ParksManager: ObservableObject {
     /// Дефолтная дата - предыдущее ручное обновление файла `oldParks.json`
     ///
-    /// - При обновлении справочника вручную необходимо обновить тут дату
-    /// - Неудобно, зато спасаемся от ошибок 500 при запросе слишком старых данных
+    /// При обновлении справочника вручную необходимо обновить тут дату -
+    /// это необходимо, чтобы избежать ошибок на сервере (код 500)
     @AppStorage("lastGroundsUpdateDateString")
-    private var lastParksUpdateDateString = "2023-01-12T00:00:00"
+    private var lastParksUpdateDateString = "2025-10-25T00:00:00"
     /// Хранилище файла с площадками
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     /// Все площадки, доступные для отображения на карте
@@ -27,7 +27,6 @@ final class ParksManager: ObservableObject {
     }
 
     init() {
-        // Подписываемся на изменения fullList
         $fullList
             .map { !$0.isEmpty }
             .assign(to: &$didLoad)

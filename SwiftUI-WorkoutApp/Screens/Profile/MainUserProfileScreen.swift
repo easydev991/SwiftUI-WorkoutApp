@@ -46,7 +46,6 @@ private extension MainUserProfileScreen {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 searchUsersButton
-                    .disabled(viewModel.currentState.isLoading)
             }
         }
     }
@@ -79,6 +78,8 @@ private extension MainUserProfileScreen {
         } label: {
             Icons.Regular.magnifyingglass.view
         }
+        .tint(.accent)
+        .disabled(viewModel.currentState.isLoading)
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
             NavigationStack {

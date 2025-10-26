@@ -59,12 +59,9 @@ struct ParksMapScreen: View {
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Group {
                         filterButton
-                        Button {
-                            Task { await askForParks(refresh: true) }
-                        } label: {
-                            Icons.Regular.refresh.view
-                        }
+                        refreshButton
                     }
+                    .tint(.accent)
                     .disabled(isLoading)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -112,6 +109,14 @@ private extension ParksMapScreen {
         } label: {
             Icons.Regular.filter.view
                 .symbolVariant(defaults.parksFilter.isEdited ? .fill : .none)
+        }
+    }
+
+    var refreshButton: some View {
+        Button {
+            Task { await askForParks(refresh: true) }
+        } label: {
+            Icons.Regular.refresh.view
         }
     }
 
@@ -205,13 +210,11 @@ private extension ParksMapScreen {
     func askForParks(refresh: Bool = false) async {
         if !filteredParks.isEmpty, !refresh { return }
         guard !parksManager.fullList.isEmpty else {
-            // Заполняем дефолтный список площадок контентом из `json`-файла
             do {
                 try parksManager.makeDefaultList()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
-            // Если прошло больше одного дня с момента предыдущего обновления, делаем обновление
             if parksManager.needUpdateDefaultList {
                 await askForParks(refresh: true)
             }
@@ -265,6 +268,7 @@ private extension ParksMapScreen {
                     .symbolVariant(.circle)
             }
             .disabled(!viewModel.canCreateNewPark || isLoading)
+            .tint(.accent)
         }
     }
 

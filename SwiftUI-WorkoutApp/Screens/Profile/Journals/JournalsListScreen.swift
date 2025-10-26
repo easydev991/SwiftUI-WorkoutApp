@@ -95,12 +95,15 @@ private extension JournalsListScreen {
         }
     }
 
+    @ViewBuilder
     var addJournalButton: some View {
-        Button(action: showNewJournalSheet) {
-            Icons.Regular.plus.view
-                .symbolVariant(.circle)
+        if showAddJournalButton {
+            Button(action: showNewJournalSheet) {
+                Icons.Regular.plus.view
+                    .symbolVariant(.circle)
+            }
+            .tint(.accent)
         }
-        .opacity(showAddJournalButton ? 1 : 0)
     }
 
     @ViewBuilder

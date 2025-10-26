@@ -56,10 +56,13 @@ struct EventDetailsScreen: View {
                 CloseButton(mode: .text) { dismiss() }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
-                if isEventAuthor {
-                    toolbarMenuButton
+                Group {
+                    if isEventAuthor {
+                        toolbarMenuButton
+                    }
+                    shareButton
                 }
-                shareButton
+                .tint(.accent)
             }
         }
         .navigationTitle("Мероприятие")

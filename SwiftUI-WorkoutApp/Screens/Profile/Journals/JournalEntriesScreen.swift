@@ -140,6 +140,7 @@ private extension JournalEntriesScreen {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
+            .tint(.accent)
             .disabled(currentState.isLoading)
             .sheet(isPresented: $showCreateEntrySheet) {
                 TextEntryScreen(
