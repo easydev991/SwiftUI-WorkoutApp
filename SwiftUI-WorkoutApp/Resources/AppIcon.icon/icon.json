@@ -50,10 +50,21 @@
           "name" : "только город"
         }
       ],
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 0.5
-      },
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "layer-color",
+            "opacity" : 0.5
+          }
+        }
+      ],
       "specular-specializations" : [
         {
           "value" : true
@@ -91,6 +102,12 @@
       ]
     },
     {
+      "blur-material-specializations" : [
+        {
+          "appearance" : "tinted",
+          "value" : null
+        }
+      ],
       "layers" : [
         {
           "fill-specializations" : [
@@ -127,6 +144,13 @@
             "kind" : "none",
             "opacity" : 0.5
           }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "layer-color",
+            "opacity" : 0.5
+          }
         }
       ],
       "specular-specializations" : [
@@ -142,10 +166,21 @@
           "value" : true
         }
       ],
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
-      }
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        }
+      ]
     }
   ],
   "supported-platforms" : {
