@@ -306,10 +306,9 @@ private extension EditProfileScreen {
 
 #if DEBUG
 #Preview {
-    NavigationView {
+    NavigationStack {
         EditProfileScreen()
             .environmentObject(DefaultsService())
     }
-    .navigationViewStyle(.stack)
 }
 #endif

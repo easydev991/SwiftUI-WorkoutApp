@@ -60,7 +60,7 @@ private extension AppIconScreen {
 
 #if DEBUG
 #Preview {
-    NavigationView {
+    NavigationStack {
         AppIconScreen()
     }
 }

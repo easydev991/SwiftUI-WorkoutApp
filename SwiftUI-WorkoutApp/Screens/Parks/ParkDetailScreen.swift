@@ -11,7 +11,6 @@ struct ParkDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
-    @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
     @State private var isLoading = false
     @State private var dialogs = ConfirmationDialogs()
@@ -67,24 +66,21 @@ struct ParkDetailScreen: View {
                 shareButton
             }
         }
-        .background {
-            NavigationLink(
-                destination: lazyDestination,
-                isActive: $navigationDestination.mappedToBool()
-            )
-        }
         .navigationTitle("Площадка")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(
+            for: NavigationDestination.self,
+            destination: makeDestinationView
+        )
     }
 }
 
 private extension ParkDetailScreen {
-    enum NavigationDestination {
+    enum NavigationDestination: Hashable {
         case parkAuthor(UserResponse)
         case parkParticipants([UserResponse])
         case editPark(Park)
         case createEvent(_ parkId: Int, _ parkLongTitle: String)
-        case commentAuthor(UserResponse)
     }
 
     enum SheetItem: Identifiable {
@@ -155,9 +151,10 @@ private extension ParkDetailScreen {
                 appleMapsURL: park.appleMapsURL
             )
             if defaults.isAuthorized {
-                Button("Создать мероприятие") {
-                    navigationDestination = .createEvent(park.id, park.longTitle)
-                }
+                NavigationLink(
+                    "Создать мероприятие",
+                    value: NavigationDestination.createEvent(park.id, park.longTitle)
+                )
                 .buttonStyle(SWButtonStyle(mode: .tinted, size: .large))
             }
         }
@@ -167,9 +164,7 @@ private extension ParkDetailScreen {
     var participantsAndEventSection: some View {
         Group {
             if park.hasParticipants {
-                Button {
-                    navigationDestination = .parkParticipants(park.participants)
-                } label: {
+                NavigationLink(value: NavigationDestination.parkParticipants(park.participants)) {
                     FormRowView(
                         title: "Здесь тренируются",
                         trailingContent: .textWithChevron(
@@ -191,18 +186,16 @@ private extension ParkDetailScreen {
     }
 
     @ViewBuilder
-    var lazyDestination: some View {
-        if let navigationDestination {
-            switch navigationDestination {
-            case let .parkAuthor(user), let .commentAuthor(user):
-                UserDetailsScreen(for: user)
-            case let .parkParticipants(users):
-                ParticipantsScreen(mode: .park(list: users))
-            case let .editPark(park):
-                ParkFormScreen(.editExisting(park)) { refreshAction() }
-            case let .createEvent(parkId, parkLongTitle):
-                EventFormScreen(mode: .createForSelected(parkId, parkLongTitle))
-            }
+    func makeDestinationView(for navigationDestination: NavigationDestination) -> some View {
+        switch navigationDestination {
+        case let .parkAuthor(user):
+            UserDetailsScreen(for: user)
+        case let .parkParticipants(users):
+            ParticipantsScreen(mode: .park(list: users))
+        case let .editPark(park):
+            ParkFormScreen(.editExisting(park)) { refreshAction() }
+        case let .createEvent(parkId, parkLongTitle):
+            EventFormScreen(mode: .createForSelected(parkId, parkLongTitle))
         }
     }
 
@@ -264,9 +257,7 @@ private extension ParkDetailScreen {
     var authorSection: some View {
         if let user = park.author {
             SectionView(headerWithPadding: "Добавил", mode: .regular) {
-                Button {
-                    navigationDestination = .parkAuthor(user)
-                } label: {
+                NavigationLink(value: NavigationDestination.parkAuthor(user)) {
                     UserRowView(
                         mode: .regular(
                             .init(
@@ -291,11 +282,7 @@ private extension ParkDetailScreen {
             editClbk: {
                 sheetItem = .editComment(park.id, $0.id, $0.formattedBody)
             },
-            createCommentClbk: { sheetItem = .createComment(park.id) },
-            openProfile: {
-                guard defaults.isAuthorized else { return }
-                navigationDestination = .commentAuthor($0)
-            }
+            createCommentClbk: { sheetItem = .createComment(park.id) }
         )
     }
 
@@ -321,7 +308,7 @@ private extension ParkDetailScreen {
 
     @ViewBuilder
     var shareButton: some View {
-        if #available(iOS 16.0, *), let url = park.shareLinkURL {
+        if let url = park.shareLinkURL {
             ShareLink(
                 item: url,
                 subject: Text("Площадка"),
@@ -337,7 +324,7 @@ private extension ParkDetailScreen {
     }
 
     var editParkButton: some View {
-        Button { navigationDestination = .editPark(park) } label: {
+        NavigationLink(value: NavigationDestination.editPark(park)) {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }

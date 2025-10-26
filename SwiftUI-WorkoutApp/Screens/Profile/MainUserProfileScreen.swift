@@ -14,7 +14,7 @@ struct MainUserProfileScreen: View {
     @State private var showSearchUsersScreen = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 if defaults.isAuthorized {
                     authorizedContentView
@@ -28,7 +28,6 @@ struct MainUserProfileScreen: View {
             .background(Color.swBackground)
             .navigationTitle("Профиль")
         }
-        .navigationViewStyle(.stack)
         .task { await askForUserInfo() }
     }
 }
@@ -45,9 +44,6 @@ private extension MainUserProfileScreen {
         .background(Color.swBackground)
         .refreshable { await askForUserInfo(refresh: true) }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButtonIfNeeded
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 searchUsersButton
                     .disabled(viewModel.currentState.isLoading)
@@ -77,19 +73,6 @@ private extension MainUserProfileScreen {
         .padding(.horizontal)
     }
 
-    @ViewBuilder
-    var refreshButtonIfNeeded: some View {
-        if !DeviceOSVersionChecker.iOS16Available {
-            Button {
-                guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-                Task { await askForUserInfo(refresh: true) }
-            } label: {
-                Icons.Regular.refresh.view
-            }
-            .disabled(viewModel.currentState.isLoading)
-        }
-    }
-
     var searchUsersButton: some View {
         Button {
             showSearchUsersScreen = true
@@ -98,10 +81,9 @@ private extension MainUserProfileScreen {
         }
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
-            NavigationView {
+            NavigationStack {
                 SearchUsersScreen()
             }
-            .navigationViewStyle(.stack)
         }
     }
 

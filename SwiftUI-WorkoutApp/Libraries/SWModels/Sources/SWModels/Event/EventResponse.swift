@@ -2,7 +2,7 @@ import Foundation
 import SWUtils
 
 /// Модель со всей информацией о мероприятии
-public struct EventResponse: Codable, Identifiable, Equatable, Sendable {
+public struct EventResponse: Codable, Identifiable, Equatable, Sendable, Hashable {
     public let id: Int
     /// Название мероприятия
     public var title: String?

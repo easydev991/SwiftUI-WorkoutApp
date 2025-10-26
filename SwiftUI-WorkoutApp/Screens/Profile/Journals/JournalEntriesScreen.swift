@@ -53,9 +53,6 @@ struct JournalEntriesScreen: View {
         .task { await askForEntries() }
         .refreshable { await askForEntries(refresh: true) }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButtonIfNeeded
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 addEntryButtonIfNeeded
             }
@@ -127,16 +124,6 @@ private extension JournalEntriesScreen {
             CommonErrorView(errorKind: errorKind)
         case .initial, .loading:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var refreshButtonIfNeeded: some View {
-        if !DeviceOSVersionChecker.iOS16Available {
-            Button(action: updateEntries) {
-                Icons.Regular.refresh.view
-            }
-            .disabled(currentState.isLoading)
         }
     }
 

@@ -38,17 +38,8 @@ struct ParkFormScreen: View {
     }
 
     var body: some View {
-        if #available(iOS 16.0, *) {
-            scrollView
-                .scrollDismissesKeyboard(.immediately)
-        } else {
-            scrollView
-                .simultaneousGesture(
-                    DragGesture().onChanged { _ in
-                        isFocused = false
-                    }
-                )
-        }
+        scrollView
+            .scrollDismissesKeyboard(.immediately)
     }
 }
 

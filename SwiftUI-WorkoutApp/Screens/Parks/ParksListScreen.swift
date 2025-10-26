@@ -34,18 +34,12 @@ struct ParksListScreen: View {
             await askForParks(refresh: true)
         }
         .sheet(item: $selectedPark) { park in
-            NavigationView {
+            NavigationStack {
                 ParkDetailScreen(
                     park: park,
                     onEdit: updatePark,
                     onDelete: deletePark
                 )
-            }
-            .navigationViewStyle(.stack)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButtonIfNeeded
             }
         }
         .navigationTitle(mode.title)
@@ -135,18 +129,6 @@ private extension ParksListScreen {
             CommonErrorView(errorKind: errorKind)
         case .initial, .loading:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var refreshButtonIfNeeded: some View {
-        if !DeviceOSVersionChecker.iOS16Available {
-            Button {
-                Task { await askForParks(refresh: true) }
-            } label: {
-                Icons.Regular.refresh.view
-            }
-            .disabled(currentState.isLoading)
         }
     }
 

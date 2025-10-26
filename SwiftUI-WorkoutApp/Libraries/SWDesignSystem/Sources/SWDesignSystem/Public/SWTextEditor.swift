@@ -52,16 +52,10 @@ public struct SWTextEditor: View {
 }
 
 private extension SWTextEditor {
-    @ViewBuilder
     var textEditorView: some View {
-        if #available(iOS 16.0, *) {
-            TextEditor(text: $text)
-                .tint(.swAccent)
-                .scrollContentBackground(.hidden)
-        } else {
-            TextEditor(text: $text)
-                .tint(.swAccent)
-        }
+        TextEditor(text: $text)
+            .tint(.swAccent)
+            .scrollContentBackground(.hidden)
     }
 }
 

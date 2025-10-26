@@ -9,14 +9,13 @@ struct DialogsListScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var viewModel: ViewModel
-    @State private var selectedDialog: DialogResponse?
     @State private var indexToDelete: Int?
     @State private var openFriendList = false
     @State private var refreshTask: Task<Void, Never>?
     @State private var deleteDialogTask: Task<Void, Never>?
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 if defaults.isAuthorized {
                     authorizedContentView
@@ -30,7 +29,6 @@ struct DialogsListScreen: View {
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
         }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -40,12 +38,6 @@ private extension DialogsListScreen {
             .animation(.default, value: viewModel.currentState)
             .loadingOverlay(if: viewModel.currentState.isLoading)
             .background(Color.swBackground)
-            .background(
-                NavigationLink(
-                    destination: lazyDestination,
-                    isActive: $selectedDialog.mappedToBool()
-                )
-            )
             .confirmationDialog(
                 Strings.Alert.deleteDialog,
                 isPresented: $indexToDelete.mappedToBool(),
@@ -57,6 +49,21 @@ private extension DialogsListScreen {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     friendListButton
+                }
+            }
+            .navigationDestination(for: DialogResponse.self) { dialog in
+                DialogScreen(
+                    dialog: dialog,
+                    markedAsReadClbk: { dialog in
+                        viewModel.markAsRead(dialog, defaults: defaults)
+                    }
+                )
+            }
+            .navigationDestination(isPresented: $openFriendList) {
+                if hasFriends, let mainUserId = defaults.mainUserInfo?.id {
+                    FriendsListScreen(mode: .chat(userId: mainUserId))
+                } else {
+                    SearchUsersScreen(mode: .chat)
                 }
             }
     }
@@ -102,15 +109,10 @@ private extension DialogsListScreen {
     }
 
     var friendListButton: some View {
-        NavigationLink(isActive: $openFriendList) {
-            if hasFriends, let mainUserId = defaults.mainUserInfo?.id {
-                FriendsListScreen(mode: .chat(userId: mainUserId))
-            } else {
-                SearchUsersScreen(mode: .chat)
-            }
+        Button {
+            openFriendList.toggle()
         } label: {
-            Icons.Regular.plus.view
-                .symbolVariant(.circle)
+            Icons.Regular.plus.view.symbolVariant(.circle)
         }
         .opacity(hasFriends || viewModel.currentState.isReadyAndNotEmpty ? 1 : 0)
     }
@@ -122,22 +124,8 @@ private extension DialogsListScreen {
         )
     }
 
-    @ViewBuilder
-    var lazyDestination: some View {
-        if let selectedDialog {
-            DialogScreen(
-                dialog: selectedDialog,
-                markedAsReadClbk: { dialog in
-                    viewModel.markAsRead(dialog, defaults: defaults)
-                }
-            )
-        }
-    }
-
     func dialogListItem(_ model: DialogResponse) -> some View {
-        Button {
-            selectedDialog = model
-        } label: {
+        NavigationLink(value: model) {
             DialogRowView(
                 model: .init(
                     avatarURL: model.anotherUserImageURL,

@@ -1,4 +1,3 @@
-import LegacyImagePicker
 import SWDesignSystem
 import SwiftUI
 
@@ -25,30 +24,15 @@ struct PickedImagesGrid: View {
     let processExtraImages: () -> Void
 
     var body: some View {
-        Group {
-            if #available(iOS 16.0, *) {
-                ModernPickedImagesGrid(
-                    imagesArray: imagesArray,
-                    presentedItem: $presentedItem,
-                    images: $images,
-                    showImagePickerDialog: $showImagePickerDialog,
-                    showPhotosPicker: $showImagePicker,
-                    selectionLimit: selectionLimit,
-                    deletePhoto: deletePhoto
-                )
-            } else {
-                commonContentView
-                    .sheet(isPresented: $showImagePicker) {
-                        processExtraImages()
-                    } content: {
-                        LegacyImagePicker(
-                            pickedImages: $images,
-                            selectionLimit: selectionLimit,
-                            compressionQuality: 0
-                        )
-                    }
-            }
-        }
+        ModernPickedImagesGrid(
+            imagesArray: imagesArray,
+            presentedItem: $presentedItem,
+            images: $images,
+            showImagePickerDialog: $showImagePickerDialog,
+            showPhotosPicker: $showImagePicker,
+            selectionLimit: selectionLimit,
+            deletePhoto: deletePhoto
+        )
         .animation(.default, value: images.count)
         .confirmationDialog(
             "",
@@ -97,34 +81,6 @@ extension PickedImagesGrid {
 }
 
 private extension PickedImagesGrid {
-    var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
-
-    /// Одинаковая вьюха для iOS 16 и ниже, но отличается логика
-    /// для работы с выбранными фото, поэтому такое название
-    var commonContentView: some View {
-        SectionView(header: .init(header), mode: .regular) {
-            VStack(alignment: .leading, spacing: 12) {
-                ImagePickerViews.makeSubtitleView(
-                    selectionLimit: selectionLimit,
-                    isEmpty: images.isEmpty
-                )
-                ImagePickerViews.makeGridView(
-                    items: imagesArray,
-                    action: { index, option in
-                        switch option {
-                        case .addImage:
-                            showImagePickerDialog.toggle()
-                        case .deleteImage:
-                            deletePhoto(at: index)
-                        case let .showDetailImage(uiImage):
-                            presentedItem = .viewImage(model: .init(uiImage: uiImage, id: index))
-                        }
-                    }
-                )
-            }
-        }
-    }
-
     func deletePhoto(at index: Int) {
         images.remove(at: index)
         presentedItem = nil

@@ -16,11 +16,7 @@ public struct SWFileManager: Sendable {
 
     /// Проверяет существование сохраненного файла
     public var documentExists: Bool {
-        let path: String = if #available(iOS 16.0, *) {
-            documentDirectoryURL.appendingPathComponent(fileName).path()
-        } else {
-            documentDirectoryURL.appendingPathComponent(fileName).path
-        }
+        let path = documentDirectoryURL.appendingPathComponent(fileName).path()
         return FileManager().fileExists(atPath: path)
     }
 

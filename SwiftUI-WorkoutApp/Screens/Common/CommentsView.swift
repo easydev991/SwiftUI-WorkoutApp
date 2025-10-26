@@ -6,13 +6,13 @@ import SWModels
 struct CommentsView: View {
     @Environment(\.userFlags) private var userFlags
     @Environment(\.isNetworkConnected) private var isNetworkConnected
+    @State private var userModel: UserResponse?
     let mainUserId: Int?
     let items: [CommentResponse]
     let reportClbk: (CommentResponse) -> Void
     let deleteClbk: (Int) -> Void
     let editClbk: (CommentResponse) -> Void
     let createCommentClbk: () -> Void
-    let openProfile: (UserResponse) -> Void
 
     var body: some View {
         VStack(spacing: 16) {
@@ -36,8 +36,8 @@ struct CommentsView: View {
                                     case .delete:
                                         deleteClbk(comment.id)
                                     case .openProfile:
-                                        if let user = comment.user {
-                                            openProfile(user)
+                                        if let user = comment.user, userFlags.isAuthorized {
+                                            userModel = user
                                         }
                                     }
                                 }
@@ -52,6 +52,11 @@ struct CommentsView: View {
                     .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
             }
         }
+        .navigationDestination(isPresented: $userModel.mappedToBool()) {
+            if let userModel {
+                UserDetailsScreen(for: userModel)
+            }
+        }
     }
 }
 
@@ -63,8 +68,7 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        createCommentClbk: {},
-        openProfile: { _ in }
+        createCommentClbk: {}
     )
     .padding(.horizontal)
 }
@@ -76,8 +80,7 @@ struct CommentsView: View {
         reportClbk: { _ in },
         deleteClbk: { _ in },
         editClbk: { _ in },
-        createCommentClbk: {},
-        openProfile: { _ in }
+        createCommentClbk: {}
     )
     .padding(.horizontal)
 }

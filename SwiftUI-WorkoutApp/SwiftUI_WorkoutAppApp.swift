@@ -118,11 +118,7 @@ struct SwiftUI_WorkoutAppApp: App {
     private func updateAppIconBadgeIfNeeded(_ isAuthorized: Bool) {
         let center = UNUserNotificationCenter.current()
         guard isAuthorized else {
-            if #available(iOS 16.0, *) {
-                center.setBadgeCount(0)
-            } else {
-                UIApplication.shared.applicationIconBadgeNumber = 0
-            }
+            center.setBadgeCount(0)
             return
         }
         badgeUpdateTask?.cancel()
@@ -131,11 +127,7 @@ struct SwiftUI_WorkoutAppApp: App {
             guard granted == true else { return }
             let appIconBadgeCount = defaults.appIconBadgeCount
             guard UIApplication.shared.applicationIconBadgeNumber != appIconBadgeCount else { return }
-            if #available(iOS 16.0, *) {
-                try? await center.setBadgeCount(appIconBadgeCount)
-            } else {
-                UIApplication.shared.applicationIconBadgeNumber = appIconBadgeCount
-            }
+            try? await center.setBadgeCount(appIconBadgeCount)
         }
     }
 }
@@ -159,9 +151,6 @@ private extension SwiftUI_WorkoutAppApp {
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         fixAlertAccentColor()
-        if !DeviceOSVersionChecker.iOS16Available {
-            UITextView.appearance().backgroundColor = .clear
-        }
     }
 
     /// Исправляет баг с accentColor у алертов,  [обсуждение](https://developer.apple.com/forums/thread/673147)

@@ -47,9 +47,6 @@ struct JournalsListScreen: View {
         .task { await askForJournals() }
         .refreshable { await askForJournals(refresh: true) }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButton
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 addJournalButton
             }
@@ -96,23 +93,6 @@ private extension JournalsListScreen {
                 false
             }
         }
-    }
-
-    var refreshButton: some View {
-        Button {
-            updateListTask = Task {
-                await askForJournals(refresh: true)
-            }
-        } label: {
-            Icons.Regular.refresh.view
-        }
-        .opacity(refreshButtonOpacity)
-        .disabled(currentState.isLoading)
-    }
-
-    var refreshButtonOpacity: CGFloat {
-        guard !DeviceOSVersionChecker.iOS16Available else { return 0 }
-        return currentState.showEmptyView(isMainUser: isMainUser) ? 1 : 0
     }
 
     var addJournalButton: some View {

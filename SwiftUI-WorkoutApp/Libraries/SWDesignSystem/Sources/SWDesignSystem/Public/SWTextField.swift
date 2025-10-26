@@ -73,11 +73,7 @@ private extension SWTextField {
         if isSecure {
             SecureField(.init(placeholder), text: $text)
         } else {
-            if #available(iOS 16.0, *) {
-                TextField(.init(placeholder), text: $text, axis: .vertical)
-            } else {
-                TextField(.init(placeholder), text: $text)
-            }
+            TextField(.init(placeholder), text: $text, axis: .vertical)
         }
     }
 

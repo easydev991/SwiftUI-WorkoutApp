@@ -28,7 +28,7 @@ struct ParksMapScreen: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 12) {
                 segmentedControl
                 searchCityButton
@@ -74,7 +74,6 @@ struct ParksMapScreen: View {
             .navigationTitle("Площадки (\(filteredParks.count))")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -287,7 +286,7 @@ private extension ParksMapScreen {
             }
             .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
-            NavigationView {
+            NavigationStack {
                 ItemListScreen(
                     mode: .city,
                     allItems: storedCities.map(\.name),
@@ -304,16 +303,14 @@ private extension ParksMapScreen {
                     }
                 }
             }
-            .navigationViewStyle(.stack)
         case let .parkDetails(park):
-            NavigationView {
+            NavigationStack {
                 ParkDetailScreen(
                     park: park,
                     onEdit: updatePark,
                     onDelete: deletePark
                 )
             }
-            .navigationViewStyle(.stack)
         }
     }
 

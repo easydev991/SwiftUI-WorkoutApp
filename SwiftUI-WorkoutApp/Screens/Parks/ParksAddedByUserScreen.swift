@@ -46,14 +46,13 @@ struct ParksAddedByUserScreen: View {
             if updatedParks.isEmpty { dismiss() }
         }
         .sheet(item: $selectedPark) { park in
-            NavigationView {
+            NavigationStack {
                 ParkDetailScreen(
                     park: park,
                     onEdit: updatePark,
                     onDelete: deletePark
                 )
             }
-            .navigationViewStyle(.stack)
         }
         .background(Color.swBackground)
         .navigationTitle("Добавленные")
