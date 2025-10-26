@@ -129,6 +129,7 @@ struct LoggerScreen: View {
                         Icons.Regular.filter.view
                             .symbolVariant(isFilterOn ? .fill : .none)
                     }
+                    .tint(.accent)
                     .disabled(logStore.state.isLoading)
                 }
             }

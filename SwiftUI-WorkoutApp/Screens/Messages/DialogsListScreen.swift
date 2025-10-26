@@ -106,16 +106,20 @@ private extension DialogsListScreen {
         } label: {
             Icons.Regular.refresh.view
         }
+        .tint(.accent)
         .disabled(viewModel.currentState.isLoading)
     }
 
+    @ViewBuilder
     var friendListButton: some View {
-        Button {
-            openFriendList.toggle()
-        } label: {
-            Icons.Regular.plus.view.symbolVariant(.circle)
+        if hasFriends || viewModel.currentState.isReadyAndNotEmpty {
+            Button {
+                openFriendList.toggle()
+            } label: {
+                Icons.Regular.plus.view.symbolVariant(.circle)
+            }
+            .tint(.accent)
         }
-        .opacity(hasFriends || viewModel.currentState.isReadyAndNotEmpty ? 1 : 0)
     }
 
     var emptyContentView: some View {

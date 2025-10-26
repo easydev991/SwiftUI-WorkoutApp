@@ -61,6 +61,7 @@ private extension DialogScreen {
         } label: {
             Icons.Regular.refresh.view
         }
+        .tint(.accent)
         .disabled(isLoading)
     }
 

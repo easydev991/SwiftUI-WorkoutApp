@@ -58,12 +58,15 @@ struct ParkDetailScreen: View {
                 CloseButton(mode: .text) { dismiss() }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
-                if isParkAuthor {
-                    toolbarMenuButton
-                } else {
-                    feedbackButton
+                Group {
+                    if isParkAuthor {
+                        toolbarMenuButton
+                    } else {
+                        feedbackButton
+                    }
+                    shareButton
                 }
-                shareButton
+                .tint(.accent)
             }
         }
         .navigationTitle("Площадка")
