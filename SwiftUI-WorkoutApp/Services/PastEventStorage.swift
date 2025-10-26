@@ -20,13 +20,7 @@ struct PastEventStorage {
         if savedPastEvents.isEmpty {
             try? storage.save(events)
         } else {
-            let needToSave: Bool = if #available(iOS 16.0, *) {
-                !savedPastEvents.contains(events)
-            } else {
-                !events.allSatisfy { event in
-                    savedPastEvents.contains(where: { $0.id == event.id })
-                }
-            }
+            let needToSave = !savedPastEvents.contains(events)
             guard needToSave else { return }
             try? storage.save(events)
         }

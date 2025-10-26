@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6733AB0D2DFAB4FD00DF1493 /* SWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */; };
-		6733AB102DFAB67B00DF1493 /* LegacyImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */; };
 		6733AB132DFAB96300DF1493 /* ClusteringMapView in Frameworks */ = {isa = PBXBuildFile; productRef = 6733AB122DFAB96300DF1493 /* ClusteringMapView */; };
 		67795FB22D1C05D90087132F /* SWModels in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB12D1C05D90087132F /* SWModels */; };
 		67795FB42D1C05D90087132F /* SWNetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 67795FB32D1C05D90087132F /* SWNetworkClient */; };
@@ -37,7 +36,6 @@
 			membershipExceptions = (
 				Libraries/CachedAsyncImage,
 				Libraries/ClusteringMapView,
-				Libraries/LegacyImagePicker,
 				Libraries/SWDesignSystem,
 				Libraries/SWKeychain,
 				Libraries/SWModels,
@@ -87,7 +85,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6733AB102DFAB67B00DF1493 /* LegacyImagePicker in Frameworks */,
 				6733AB132DFAB96300DF1493 /* ClusteringMapView in Frameworks */,
 				67795FB22D1C05D90087132F /* SWModels in Frameworks */,
 				67F2ABAB2D7451C3008F9928 /* SWKeychain in Frameworks */,
@@ -164,7 +161,6 @@
 				67B7EB802D4FED510004A40D /* SWUtils */,
 				67F2ABAA2D7451C3008F9928 /* SWKeychain */,
 				6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */,
-				6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */,
 				6733AB122DFAB96300DF1493 /* ClusteringMapView */,
 			);
 			productName = "SwiftUI-WorkoutApp";
@@ -179,7 +175,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					67138D83297311BD00BBF450 = {
 						CreatedOnToolsVersion = 14.2;
@@ -261,9 +257,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3PHS45582J;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleg991.WorkoutAppUITests;
@@ -285,9 +280,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3PHS45582J;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleg991.WorkoutAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -339,6 +333,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_ACTIVITY_MODE = disable;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -362,6 +357,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -406,6 +402,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_ACTIVITY_MODE = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -422,6 +419,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -449,7 +447,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/PreviewContent";
-				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
@@ -468,8 +465,8 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 3.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg991.SW-Parks";
 				PRODUCT_NAME = WorkoutApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -504,7 +501,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-WorkoutApp/PreviewContent";
-				DEVELOPMENT_TEAM = 3PHS45582J;
 				ENABLE_PREVIEWS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
@@ -523,8 +519,8 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 3.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg991.SW-Parks";
 				PRODUCT_NAME = WorkoutApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -576,10 +572,6 @@
 		6733AB0C2DFAB4FD00DF1493 /* SWDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SWDesignSystem;
-		};
-		6733AB0F2DFAB67B00DF1493 /* LegacyImagePicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LegacyImagePicker;
 		};
 		6733AB122DFAB96300DF1493 /* ClusteringMapView */ = {
 			isa = XCSwiftPackageProductDependency;

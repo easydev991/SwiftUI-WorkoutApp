@@ -164,10 +164,9 @@ private extension BlackListScreen {
 
 #if DEBUG
 #Preview {
-    NavigationView {
+    NavigationStack {
         BlackListScreen()
             .environmentObject(DefaultsService())
     }
-    .navigationViewStyle(.stack)
 }
 #endif

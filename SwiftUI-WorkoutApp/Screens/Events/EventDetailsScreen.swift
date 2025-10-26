@@ -10,7 +10,6 @@ struct EventDetailsScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var calendarManager = CalendarManager()
-    @State private var navigationDestination: NavigationDestination?
     @State private var sheetItem: SheetItem?
     @State private var isLoading = false
     @State private var showDeleteDialog = false
@@ -63,23 +62,20 @@ struct EventDetailsScreen: View {
                 shareButton
             }
         }
-        .background {
-            NavigationLink(
-                destination: lazyDestination,
-                isActive: $navigationDestination.mappedToBool()
-            )
-        }
         .navigationTitle("Мероприятие")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(
+            for: NavigationDestination.self,
+            destination: makeDestinationView
+        )
     }
 }
 
 private extension EventDetailsScreen {
-    enum NavigationDestination {
+    enum NavigationDestination: Hashable {
         case eventAuthor(UserResponse)
         case eventParticipants([UserResponse])
         case editEvent(EventResponse)
-        case commentAuthor(UserResponse)
     }
 
     enum SheetItem: Identifiable {
@@ -214,9 +210,7 @@ private extension EventDetailsScreen {
     var participantsSection: some View {
         Group {
             if event.hasParticipants {
-                Button {
-                    navigationDestination = .eventParticipants(event.participants)
-                } label: {
+                NavigationLink(value: NavigationDestination.eventParticipants(event.participants)) {
                     FormRowView(
                         title: "Участники",
                         trailingContent: .textWithChevron(
@@ -274,9 +268,7 @@ private extension EventDetailsScreen {
     var authorSection: some View {
         if let user = event.author {
             SectionView(headerWithPadding: "Организатор", mode: .regular) {
-                Button {
-                    navigationDestination = .eventAuthor(user)
-                } label: {
+                NavigationLink(value: NavigationDestination.eventAuthor(user)) {
                     UserRowView(
                         mode: .regular(
                             .init(
@@ -299,11 +291,7 @@ private extension EventDetailsScreen {
             reportClbk: reportComment,
             deleteClbk: deleteComment,
             editClbk: { sheetItem = .editComment($0) },
-            createCommentClbk: { sheetItem = .newComment(event.id) },
-            openProfile: {
-                guard defaults.isAuthorized else { return }
-                navigationDestination = .commentAuthor($0)
-            }
+            createCommentClbk: { sheetItem = .newComment(event.id) }
         )
     }
 
@@ -314,28 +302,26 @@ private extension EventDetailsScreen {
     }
 
     var editEventButton: some View {
-        Button { navigationDestination = .editEvent(event) } label: {
+        NavigationLink(value: NavigationDestination.editEvent(event)) {
             Label("Изменить", systemImage: Icons.Regular.pencil.rawValue)
         }
     }
 
     @ViewBuilder
-    var lazyDestination: some View {
-        if let navigationDestination {
-            switch navigationDestination {
-            case let .eventAuthor(user), let .commentAuthor(user):
-                UserDetailsScreen(for: user)
-            case let .eventParticipants(users):
-                ParticipantsScreen(mode: .event(list: users))
-            case let .editEvent(eventToEdit):
-                EventFormScreen(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
-            }
+    func makeDestinationView(for navigationDestination: NavigationDestination) -> some View {
+        switch navigationDestination {
+        case let .eventAuthor(user):
+            UserDetailsScreen(for: user)
+        case let .eventParticipants(users):
+            ParticipantsScreen(mode: .event(list: users))
+        case let .editEvent(eventToEdit):
+            EventFormScreen(mode: .editExisting(eventToEdit), refreshClbk: refreshAction)
         }
     }
 
     @ViewBuilder
     var shareButton: some View {
-        if #available(iOS 16.0, *), let url = event.shareLinkURL {
+        if let url = event.shareLinkURL {
             ShareLink(
                 item: url,
                 subject: Text("Мероприятие"),

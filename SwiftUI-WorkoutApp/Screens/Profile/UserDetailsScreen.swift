@@ -45,9 +45,6 @@ struct UserDetailsScreen: View {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                refreshButtonIfNeeded
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 blockUserButton
                     .disabled(isLoading)
@@ -62,18 +59,6 @@ struct UserDetailsScreen: View {
 }
 
 private extension UserDetailsScreen {
-    @ViewBuilder
-    var refreshButtonIfNeeded: some View {
-        if !DeviceOSVersionChecker.iOS16Available {
-            Button {
-                Task { await askForUserInfo(refresh: true) }
-            } label: {
-                Icons.Regular.refresh.view
-            }
-            .disabled(isLoading)
-        }
-    }
-
     var communicationSection: some View {
         VStack(spacing: 12) {
             Button("Сообщение") { messagingModel.recipient = user }

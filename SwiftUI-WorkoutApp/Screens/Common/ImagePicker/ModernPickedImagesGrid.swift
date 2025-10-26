@@ -4,7 +4,6 @@ import SwiftUI
 import SWUtils
 
 /// Сетка для добавления фотографий с использованием `PhotosPicker`
-@available(iOS 16.0, *)
 struct ModernPickedImagesGrid: View {
     @State private var selectedItems = [PhotosPickerItem]()
     @State private var isLoading = false
@@ -59,7 +58,6 @@ struct ModernPickedImagesGrid: View {
     }
 }
 
-@available(iOS 16.0, *)
 private extension ModernPickedImagesGrid {
     var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
 

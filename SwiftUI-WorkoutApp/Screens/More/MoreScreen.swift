@@ -10,7 +10,7 @@ struct MoreScreen: View {
     @State private var showLanguageAlert = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
                     SectionView(header: "Настройки", mode: .regular) {
@@ -54,7 +54,6 @@ struct MoreScreen: View {
             .navigationTitle("Ещё")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -196,7 +195,7 @@ private extension MoreScreen {
 
     @ViewBuilder
     var shareAppButton: some View {
-        if #available(iOS 16.0, *), let url = Links.appStoreLink {
+        if let url = Links.appStoreLink {
             ShareLink(item: url) {
                 ListRowView(
                     leadingContent: .text("Поделиться приложением"),

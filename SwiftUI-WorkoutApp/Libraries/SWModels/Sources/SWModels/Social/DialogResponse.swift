@@ -2,7 +2,7 @@ import Foundation
 import SWUtils
 
 /// Модель с информацией о диалоге
-public struct DialogResponse: Codable, Identifiable, Sendable, Equatable {
+public struct DialogResponse: Codable, Identifiable, Sendable, Equatable, Hashable {
     public let id: Int
     public let anotherUserImageStringURL: String?
     public let anotherUserName: String?

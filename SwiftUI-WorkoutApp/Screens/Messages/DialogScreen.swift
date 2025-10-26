@@ -23,17 +23,8 @@ struct DialogScreen: View {
     var body: some View {
         ScrollViewReader { proxy in
             VStack {
-                if #available(iOS 16, *) {
-                    makeScrollView(with: proxy)
-                        .scrollDismissesKeyboard(.interactively)
-                } else {
-                    makeScrollView(with: proxy)
-                        .simultaneousGesture(
-                            DragGesture().onChanged { _ in
-                                isMessageBarFocused = false
-                            }
-                        )
-                }
+                makeScrollView(with: proxy)
+                    .scrollDismissesKeyboard(.interactively)
                 sendMessageBar
             }
         }
@@ -55,6 +46,9 @@ struct DialogScreen: View {
         }
         .navigationTitle(dialog.anotherUserName ?? "")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $openAnotherUserProfile) {
+            UserDetailsScreen(from: dialog)
+        }
     }
 }
 
@@ -71,20 +65,14 @@ private extension DialogScreen {
     }
 
     var anotherUserProfileButton: some View {
-        NavigationLink(
-            isActive: $openAnotherUserProfile,
-            destination: { UserDetailsScreen(from: dialog) },
-            label: {
-                CachedImage(
-                    url: dialog.anotherUserImageURL,
-                    mode: .avatarInDialogView,
-                    didTapImage: { _ in
-                        openAnotherUserProfile.toggle()
-                    }
-                )
-                .borderedCircleClipShape()
+        CachedImage(
+            url: dialog.anotherUserImageURL,
+            mode: .avatarInDialogView,
+            didTapImage: { _ in
+                openAnotherUserProfile.toggle()
             }
         )
+        .borderedCircleClipShape()
         .disabled(isLoading)
     }
 
@@ -136,16 +124,10 @@ private extension DialogScreen {
         .padding()
     }
 
-    @ViewBuilder
     var newMessageTextField: some View {
-        if #available(iOS 16.0, *) {
-            TextEditor(text: $newMessage)
-                .tint(.swAccent)
-                .scrollContentBackground(.hidden)
-        } else {
-            TextEditor(text: $newMessage)
-                .accentColor(.swAccent)
-        }
+        TextEditor(text: $newMessage)
+            .tint(.swAccent)
+            .scrollContentBackground(.hidden)
     }
 
     var isSendButtonDisabled: Bool {

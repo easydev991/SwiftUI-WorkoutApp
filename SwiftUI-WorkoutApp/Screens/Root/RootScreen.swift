@@ -15,7 +15,6 @@ struct RootScreen: View {
                     .badge(makeBadgeCount(for: tab))
             }
         }
-        .navigationViewStyle(.stack)
     }
 
     private func makeBadgeCount(for tab: TabViewModel.Tab) -> Int {

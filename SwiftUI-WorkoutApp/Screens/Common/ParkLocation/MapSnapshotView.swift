@@ -126,7 +126,7 @@ private extension MapSnapshotView {
 
 #if DEBUG
 #Preview {
-    NavigationView {
+    NavigationStack {
         MapSnapshotView(
             mapModel: .init(
                 latitude: 55.687001,

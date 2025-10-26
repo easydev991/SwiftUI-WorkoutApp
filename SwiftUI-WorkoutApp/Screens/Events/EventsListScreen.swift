@@ -29,7 +29,7 @@ struct EventsListScreen: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 segmentedControl
                 eventsList
@@ -48,40 +48,23 @@ struct EventsListScreen: View {
             }
             .refreshable { await askForEvents(refresh: true) }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    refreshButton
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     rightBarButton
                 }
             }
             .sheet(item: $selectedEvent) { event in
-                NavigationView {
+                NavigationStack {
                     EventDetailsScreen(event: event) { removeEvent(id: $0) }
                 }
-                .navigationViewStyle(.stack)
             }
             .navigationTitle("Мероприятия")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(.stack)
         .task(id: selectedEventType) { await askForEvents() }
     }
 }
 
 private extension EventsListScreen {
-    var refreshButton: some View {
-        Button {
-            Task { await askForEvents(refresh: true) }
-        } label: {
-            Icons.Regular.refresh.view
-        }
-        .opacity(
-            !isLoading && !DeviceOSVersionChecker.iOS16Available ? 1 : 0
-        )
-        .disabled(isLoading)
-    }
-
     var segmentedControl: some View {
         Picker("Тип мероприятия", selection: $selectedEventType) {
             ForEach(EventType.allCases, id: \.self) {
@@ -156,7 +139,7 @@ private extension EventsListScreen {
                     .symbolVariant(.circle)
             }
             .sheet(isPresented: $showEventCreationSheet) {
-                NavigationView {
+                NavigationStack {
                     EventFormScreen(
                         mode: .regularCreate,
                         refreshClbk: {
@@ -169,7 +152,6 @@ private extension EventsListScreen {
                         }
                     }
                 }
-                .navigationViewStyle(.stack)
             }
         }
     }
