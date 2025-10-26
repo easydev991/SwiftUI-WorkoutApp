@@ -45,7 +45,9 @@ private extension DialogsListScreen {
             ) { deleteDialogButton }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    refreshButton
+                    if viewModel.currentState.isReadyAndEmpty {
+                        refreshButton
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     friendListButton
@@ -104,7 +106,6 @@ private extension DialogsListScreen {
         } label: {
             Icons.Regular.refresh.view
         }
-        .opacity(viewModel.currentState.isReadyAndEmpty ? 1 : 0)
         .disabled(viewModel.currentState.isLoading)
     }
 
