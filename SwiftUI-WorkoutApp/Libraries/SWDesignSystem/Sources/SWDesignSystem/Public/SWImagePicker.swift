@@ -3,25 +3,29 @@ import SwiftUI
 /// Пикер для одной фотографии с возможностью обрезки
 public struct SWImagePicker: UIViewControllerRepresentable {
     private let sourceType: UIImagePickerController.SourceType
+    private let allowsEditing: Bool
     private let completion: (UIImage) -> Void
     @Environment(\.dismiss) private var dismiss
 
     /// Инициализатор
     /// - Parameters:
     ///   - sourceType: Тип источника для пикера, по умолчанию галерея фото
+    ///   - allowsEditing: Возможность обрезать фотографию перед сохранением, по умолчанию `false`
     ///   - completion: Возвращает выбранную фотографию
     public init(
         sourceType: UIImagePickerController.SourceType = .photoLibrary,
+        allowsEditing: Bool = false,
         completion: @escaping (UIImage) -> Void
     ) {
         self.sourceType = sourceType
+        self.allowsEditing = allowsEditing
         self.completion = completion
     }
 
     public func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
-        picker.allowsEditing = true
+        picker.allowsEditing = allowsEditing
         picker.delegate = context.coordinator
         return picker
     }
