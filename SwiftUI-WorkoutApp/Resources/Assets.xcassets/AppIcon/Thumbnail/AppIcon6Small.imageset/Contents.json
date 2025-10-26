@@ -5,12 +5,44 @@
       "scale" : "1x"
     },
     {
-      "filename" : "AppIcon6-iOS-Default-64x642x.png",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "AppIcon7-iOS-Default-64x642x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "AppIcon6-iOS-Default-64x643x.png",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "AppIcon7-iOS-Dark-64x642x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "AppIcon7-iOS-Default-64x643x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "AppIcon7-iOS-Dark-64x643x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

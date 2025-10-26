@@ -2,122 +2,123 @@
   "fill-specializations" : [
     {
       "value" : {
-        "solid" : "extended-gray:1.00000,1.00000"
+        "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
       }
     },
     {
       "appearance" : "dark",
       "value" : {
-        "solid" : "extended-gray:0.00000,1.00000"
+        "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
       }
     }
   ],
   "groups" : [
     {
-      "blend-mode-specializations" : [
-        {
-          "appearance" : "tinted",
-          "value" : "normal"
-        }
-      ],
-      "blur-material-specializations" : [
-        {
-          "value" : null
-        },
-        {
-          "appearance" : "dark",
-          "value" : null
-        },
-        {
-          "appearance" : "tinted",
-          "value" : null
-        }
-      ],
+      "blur-material" : null,
       "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-gray:1.00000,1.00000"
+          },
+          "glass-specializations" : [
+            {
+              "value" : true
+            },
+            {
+              "appearance" : "tinted",
+              "value" : true
+            }
+          ],
+          "image-name" : "6.3.png",
+          "name" : "6.3"
+        },
         {
           "fill-specializations" : [
             {
               "value" : {
-                "linear-gradient" : [
-                  "display-p3:0.34510,0.64314,0.63529,1.00000",
-                  "display-p3:0.36471,0.68235,0.32157,1.00000"
-                ]
+                "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
               }
             },
             {
-              "appearance" : "dark",
+              "appearance" : "tinted",
               "value" : {
-                "linear-gradient" : [
-                  "display-p3:0.34510,0.64314,0.63529,1.00000",
-                  "display-p3:0.36471,0.68235,0.32157,1.00000"
-                ]
+                "solid" : "extended-gray:0.25000,1.00000"
               }
             }
           ],
-          "image-name" : "буквы - рваные.png",
-          "name" : "буквы - рваные"
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "6.2.png",
+          "name" : "6.2"
+        },
+        {
+          "hidden" : false,
+          "image-name" : "6.тень-2.png",
+          "name" : "6.тень-2"
         }
       ],
       "lighting-specializations" : [
+        {
+          "value" : "combined"
+        },
         {
           "appearance" : "tinted",
           "value" : "individual"
         }
       ],
-      "shadow-specializations" : [
-        {
-          "value" : {
-            "kind" : "none",
-            "opacity" : 0.5
-          }
-        },
-        {
-          "appearance" : "dark",
-          "value" : {
-            "kind" : "none",
-            "opacity" : 0.5
-          }
-        },
-        {
-          "appearance" : "tinted",
-          "value" : {
-            "kind" : "layer-color",
-            "opacity" : 0.5
-          }
-        }
-      ],
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 1
+      },
       "specular-specializations" : [
         {
-          "appearance" : "dark",
           "value" : false
         },
         {
           "appearance" : "tinted",
-          "value" : true
+          "value" : false
         }
       ],
-      "translucency-specializations" : [
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material" : null,
+      "layers" : [
         {
-          "value" : {
-            "enabled" : false,
-            "value" : 0.5
-          }
-        },
-        {
-          "appearance" : "dark",
-          "value" : {
-            "enabled" : false,
-            "value" : 0.5
-          }
-        },
-        {
-          "appearance" : "tinted",
-          "value" : {
-            "enabled" : true,
-            "value" : 0.5
-          }
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
+              }
+            }
+          ],
+          "glass-specializations" : [
+            {
+              "value" : false
+            },
+            {
+              "appearance" : "tinted",
+              "value" : true
+            }
+          ],
+          "image-name" : "6.1.png",
+          "name" : "6.1"
         }
-      ]
+      ],
+      "lighting" : "individual",
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
     }
   ],
   "supported-platforms" : {

@@ -2,123 +2,110 @@
   "fill-specializations" : [
     {
       "value" : {
-        "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
+        "solid" : "display-p3:0.44314,0.71373,0.41961,1.00000"
       }
     },
     {
       "appearance" : "dark",
       "value" : {
-        "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
+        "solid" : "display-p3:0.44314,0.71373,0.41961,1.00000"
       }
     }
   ],
   "groups" : [
     {
-      "blur-material" : null,
-      "layers" : [
+      "blend-mode-specializations" : [
         {
-          "fill" : {
-            "solid" : "extended-gray:1.00000,1.00000"
-          },
-          "glass-specializations" : [
-            {
-              "value" : true
-            },
-            {
-              "appearance" : "tinted",
-              "value" : true
-            }
-          ],
-          "image-name" : "6.3.png",
-          "name" : "6.3"
+          "appearance" : "tinted",
+          "value" : "normal"
+        }
+      ],
+      "blur-material-specializations" : [
+        {
+          "value" : null
         },
+        {
+          "appearance" : "dark",
+          "value" : null
+        },
+        {
+          "appearance" : "tinted",
+          "value" : null
+        }
+      ],
+      "layers" : [
         {
           "fill-specializations" : [
             {
               "value" : {
-                "solid" : "display-p3:0.48235,0.73333,0.46667,1.00000"
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "extended-gray:0.00000,1.00000"
               }
             },
             {
               "appearance" : "tinted",
-              "value" : {
-                "solid" : "extended-gray:0.25000,1.00000"
-              }
+              "value" : "automatic"
             }
           ],
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "6.2.png",
-          "name" : "6.2"
-        },
-        {
-          "hidden" : false,
-          "image-name" : "6.тень-2.png",
-          "name" : "6.тень-2"
+          "image-name" : "буквы - заливка.png",
+          "name" : "буквы - заливка"
         }
       ],
-      "lighting-specializations" : [
+      "shadow-specializations" : [
         {
-          "value" : "combined"
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
         },
         {
           "appearance" : "tinted",
-          "value" : "individual"
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
         }
       ],
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 1
-      },
       "specular-specializations" : [
         {
+          "appearance" : "dark",
           "value" : false
+        }
+      ],
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
         },
         {
           "appearance" : "tinted",
-          "value" : false
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
         }
-      ],
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
-      }
-    },
-    {
-      "blur-material" : null,
-      "layers" : [
-        {
-          "fill-specializations" : [
-            {
-              "appearance" : "tinted",
-              "value" : {
-                "solid" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
-              }
-            }
-          ],
-          "glass-specializations" : [
-            {
-              "value" : false
-            },
-            {
-              "appearance" : "tinted",
-              "value" : true
-            }
-          ],
-          "image-name" : "6.1.png",
-          "name" : "6.1"
-        }
-      ],
-      "lighting" : "individual",
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 0.5
-      },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
+      ]
     }
   ],
   "supported-platforms" : {
