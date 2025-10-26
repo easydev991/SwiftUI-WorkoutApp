@@ -31,7 +31,7 @@ private extension AppIconScreen {
         VStack(spacing: 20) {
             let icons = IconVariant.allCases.filter { !$0.isSelected }
             LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 65), spacing: 32, alignment: .leading)],
+                columns: [GridItem(.adaptive(minimum: 64), spacing: 32, alignment: .leading)],
                 spacing: 32
             ) {
                 ForEach(icons, id: \.self) { icon in
@@ -49,10 +49,10 @@ private extension AppIconScreen {
         icon
             .resizable()
             .scaledToFit()
-            .frame(width: 65, height: 65)
-            .clipShape(.rect(cornerRadius: 12))
+            .frame(width: 64, height: 64)
+            .clipShape(.rect(cornerRadius: 16))
             .overlay {
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 16)
                     .stroke(Color.swSeparators, lineWidth: 1)
             }
     }
