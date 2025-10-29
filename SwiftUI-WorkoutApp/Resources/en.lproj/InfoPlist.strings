@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  SwiftUI-WorkoutApp
+
+  Created by Localization.
+*/
+
+"CFBundleDisplayName" = "SW Parks";
+"CFBundleName" = "WorkoutApp";
+"NSCalendarsUsageDescription" = "For adding events to the calendar";
+"NSCameraUsageDescription" = "Needed to take park and profile photos";
+"NSLocationWhenInUseUsageDescription" = "Your location is used to find sports parks nearby";
+"NSPhotoLibraryUsageDescription" = "Needed to choose your profile and park photos";
