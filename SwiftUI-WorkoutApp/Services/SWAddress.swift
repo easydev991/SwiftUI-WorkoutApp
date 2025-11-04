@@ -84,11 +84,11 @@ extension SWAddress {
 extension SWAddress {
     /// Проверяет, нужно ли обновлять справочник стран/городов
     ///
-    /// По статистике Антона справочник на сервере обновляется в среднем раз в месяц
+    /// Обновляем, если прошло больше дня с момента предыдущего обновления
     /// - Parameter lastUpdateDate: Дата предыдущего успешного обновления справочника
     /// - Returns: `true` - нужно обновлять, `false` - не нужно
     func needUpdate(_ lastUpdateDate: Date) -> Bool {
-        DateFormatterService.days(from: lastUpdateDate, to: .now) > 30
+        DateFormatterService.days(from: lastUpdateDate, to: .now) > 1
     }
 
     /// Возвращает сохраненный в памяти справочник стран/городов
