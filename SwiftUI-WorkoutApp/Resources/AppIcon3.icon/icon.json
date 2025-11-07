@@ -82,6 +82,9 @@
       ],
       "specular-specializations" : [
         {
+          "value" : false
+        },
+        {
           "appearance" : "dark",
           "value" : false
         },

@@ -81,14 +81,14 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "kind" : "layer-color",
+            "kind" : "none",
             "opacity" : 0.5
           }
         }
       ],
       "specular-specializations" : [
         {
-          "value" : true
+          "value" : false
         },
         {
           "appearance" : "dark",

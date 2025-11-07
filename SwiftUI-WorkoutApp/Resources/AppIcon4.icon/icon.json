@@ -75,12 +75,15 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "kind" : "layer-color",
+            "kind" : "none",
             "opacity" : 0.5
           }
         }
       ],
       "specular-specializations" : [
+        {
+          "value" : false
+        },
         {
           "appearance" : "dark",
           "value" : false
@@ -108,7 +111,7 @@
           "appearance" : "tinted",
           "value" : {
             "enabled" : true,
-            "value" : 0.5
+            "value" : 0.2
           }
         }
       ]

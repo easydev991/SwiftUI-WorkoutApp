@@ -14,7 +14,15 @@
   ],
   "groups" : [
     {
-      "blur-material" : null,
+      "blur-material-specializations" : [
+        {
+          "value" : null
+        },
+        {
+          "appearance" : "tinted",
+          "value" : 0.5
+        }
+      ],
       "layers" : [
         {
           "fill" : {
@@ -66,23 +74,45 @@
           "value" : "individual"
         }
       ],
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 1
-      },
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "none",
+            "opacity" : 1
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 1
+          }
+        }
+      ],
       "specular-specializations" : [
         {
           "value" : false
         },
         {
           "appearance" : "tinted",
-          "value" : false
+          "value" : true
         }
       ],
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
-      }
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        }
+      ]
     },
     {
       "blur-material" : null,
@@ -114,11 +144,30 @@
         "kind" : "none",
         "opacity" : 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
+      "specular-specializations" : [
+        {
+          "value" : true
+        },
+        {
+          "appearance" : "tinted",
+          "value" : true
+        }
+      ],
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        }
+      ]
     }
   ],
   "supported-platforms" : {
