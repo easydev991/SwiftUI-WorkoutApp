@@ -81,6 +81,27 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
         case usersTrainHere = "users_train_here"
     }
 
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIntOrString(.id)
+        self.typeId = try container.decodeIntOrString(.typeId)
+        self.sizeId = try container.decodeIntOrString(.sizeId)
+        self.cityId = container.decodeIntOrStringIfPresent(.cityId)
+        self.address = try container.decodeIfPresent(String.self, forKey: .address)
+        self.author = try container.decodeIfPresent(UserResponse.self, forKey: .author)
+        self.commentsCount = try container.decodeIfPresent(Int.self, forKey: .commentsCount)
+        self.createDate = try container.decodeIfPresent(String.self, forKey: .createDate)
+        self.latitude = try container.decode(String.self, forKey: .latitude)
+        self.longitude = try container.decode(String.self, forKey: .longitude)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.photosOptional = try container.decodeIfPresent([Photo].self, forKey: .photosOptional)
+        self.preview = try container.decodeIfPresent(String.self, forKey: .preview)
+        self.usersTrainHereCount = try container.decodeIfPresent(Int.self, forKey: .usersTrainHereCount)
+        self.commentsOptional = try container.decodeIfPresent([CommentResponse].self, forKey: .commentsOptional)
+        self.usersTrainHere = try container.decodeIfPresent([UserResponse].self, forKey: .usersTrainHere)
+        self.trainHereOptional = try container.decodeIfPresent(Bool.self, forKey: .trainHereOptional)
+    }
+
     public init(
         id: Int,
         typeId: Int,

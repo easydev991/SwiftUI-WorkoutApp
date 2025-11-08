@@ -217,8 +217,8 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` площадки
     ///   - form: форма с данными о площадке
-    /// - Returns: Обновленная информация о площадке `Park`, но с ошибками, поэтому обрабатываем `ParkResult`
-    public func savePark(id: Int?, form: ParkForm) async throws -> ParkResult {
+    /// - Returns: Обновленная информация о площадке `Park`
+    public func savePark(id: Int?, form: ParkForm) async throws -> Park {
         let endpoint = if let id {
             Endpoint.editPark(id: id, form: form)
         } else {
@@ -331,8 +331,8 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` мероприятия
     ///   - form: форма с данными о мероприятии
-    /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому обрабатываем `EventResult`
-    public func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
+    /// - Returns: Обновленная информация о мероприятии `EventResponse`
+    public func saveEvent(id: Int?, form: EventForm) async throws -> EventResponse {
         let endpoint: Endpoint = if let id {
             .editEvent(id: id, form: form)
         } else {
