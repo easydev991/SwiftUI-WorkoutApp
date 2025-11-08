@@ -123,7 +123,7 @@ private extension JournalEntriesScreen {
         case let .error(errorKind):
             CommonErrorView(errorKind: errorKind)
         case .initial, .loading:
-            EmptyView()
+            Color.swBackground
         }
     }
 
