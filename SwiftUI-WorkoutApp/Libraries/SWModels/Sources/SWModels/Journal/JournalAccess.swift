@@ -17,9 +17,9 @@ public enum JournalAccess: Int, CaseIterable, CustomStringConvertible, Sendable 
 
     public var description: String {
         switch self {
-        case .all: NSLocalizedString("JournalAccess.All", bundle: .module, comment: "Все")
-        case .friends: NSLocalizedString("JournalAccess.Friends", bundle: .module, comment: "Друзья")
-        case .nobody: NSLocalizedString("JournalAccess.Nobody", bundle: .module, comment: "Только я")
+        case .all: String(localized: .journalAccessAll)
+        case .friends: String(localized: .journalAccessFriends)
+        case .nobody: String(localized: .journalAccessNobody)
         }
     }
 

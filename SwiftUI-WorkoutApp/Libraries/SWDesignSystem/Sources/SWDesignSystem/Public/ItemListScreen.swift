@@ -62,9 +62,9 @@ public struct ItemListScreen: View {
         .searchable(
             text: $searchQuery,
             placement: .navigationBarDrawer(displayMode: .always),
-            prompt: Text("Search", bundle: .module)
+            prompt: Text(.search)
         )
-        .navigationTitle(Text(mode.title, bundle: .module))
+        .navigationTitle(mode.localizedTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -72,17 +72,17 @@ public struct ItemListScreen: View {
 public extension ItemListScreen {
     enum Mode {
         case country, city
-        var title: LocalizedStringKey {
+        var localizedTitle: String {
             switch self {
-            case .country: "Pick a country"
-            case .city: "Pick a city"
+            case .country: String(localized: .pickACountry)
+            case .city: String(localized: .pickACity)
             }
         }
 
-        var helpMessage: LocalizedStringKey {
+        var localizedHelpMessage: String {
             switch self {
-            case .country: "Help.CountryNotFound"
-            case .city: "Help.CityNotFound"
+            case .country: String(localized: .helpCountryNotFound)
+            case .city: String(localized: .helpCityNotFound)
             }
         }
     }
@@ -97,12 +97,10 @@ private extension ItemListScreen {
 
     var emptyStateView: some View {
         HStack(spacing: 12) {
-            Text(mode.helpMessage, bundle: .module)
+            Text(mode.localizedHelpMessage)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button {
+            Button(.contactUs) {
                 didTapContactUs(mode)
-            } label: {
-                Text("Contact us", bundle: .module)
             }
             .buttonStyle(
                 SWButtonStyle(mode: .filled, size: .small, maxWidth: nil)

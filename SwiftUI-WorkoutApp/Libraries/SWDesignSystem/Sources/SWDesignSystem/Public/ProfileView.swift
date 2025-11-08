@@ -32,7 +32,7 @@ public struct ProfileView: View {
         VStack(spacing: 12) {
             CachedImage(url: imageURL, mode: .profileAvatar)
                 .borderedRoundedRectClipShape()
-                .accessibilityLabel(Text("ProfilePhoto"))
+                .accessibilityLabel(.profilePhoto)
             VStack(spacing: 8) {
                 Text(login)
                     .lineLimit(2)

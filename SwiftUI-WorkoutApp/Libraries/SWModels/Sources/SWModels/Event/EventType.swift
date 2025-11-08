@@ -7,8 +7,8 @@ public enum EventType: CaseIterable, Equatable, CustomStringConvertible, Sendabl
 
     public var description: String {
         switch self {
-        case .future: NSLocalizedString("EventType.Future", bundle: .module, comment: "")
-        case .past: NSLocalizedString("EventType.Past", bundle: .module, comment: "")
+        case .future: String(localized: .eventTypeFuture)
+        case .past: String(localized: .eventTypePast)
         }
     }
 }

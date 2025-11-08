@@ -3,6 +3,7 @@
   "strings" : {
     "Error.BadRequest" : {
       "comment" : "Запрос содержит ошибку",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20,6 +21,7 @@
     },
     "Error.Decoding" : {
       "comment" : "Не удалось декодировать ответ",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37,6 +39,7 @@
     },
     "Error.InvalidCredentials" : {
       "comment" : "Некорректное имя пользователя или пароль",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54,6 +57,7 @@
     },
     "Error.InvalidUserID" : {
       "comment" : "Некорректный идентификатор пользователя",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -71,6 +75,7 @@
     },
     "Error.NoData" : {
       "comment" : "Сервер не прислал данные для обработки ответа",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -88,6 +93,7 @@
     },
     "Error.NoInternet" : {
       "comment" : "Нет соединения с сетью",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -105,6 +111,7 @@
     },
     "Error.NotFound" : {
       "comment" : "Запрашиваемый ресурс не найден",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -122,6 +129,7 @@
     },
     "Error.PayloadTooLarge" : {
       "comment" : "Объем данных для загрузки на сервер превышает лимит",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -139,6 +147,7 @@
     },
     "Error.ServerError" : {
       "comment" : "Внутренняя ошибка сервера",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -156,6 +165,7 @@
     },
     "Error.Unknown" : {
       "comment" : "Неизвестная ошибка",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {

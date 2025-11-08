@@ -10,11 +10,7 @@ public enum CommonFeedback {
         \(CommonFeedback.question)
         \n
     """
-    private static let question = NSLocalizedString(
-        "Feedback.CommonQuestion",
-        bundle: .module,
-        comment: ""
-    )
+    private static let question = String(localized: .feedbackCommonQuestion)
     static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
     static let appVersion = "App version: \(Constants.appVersion)"
 }

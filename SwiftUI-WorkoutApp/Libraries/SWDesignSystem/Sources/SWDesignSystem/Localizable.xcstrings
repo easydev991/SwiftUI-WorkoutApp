@@ -6,7 +6,14 @@
     },
     "Accept" : {
       "comment" : "Принять заявку на добавление в друзья",
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16,7 +23,14 @@
       }
     },
     "Close" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26,7 +40,14 @@
       }
     },
     "Configure" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36,7 +57,14 @@
       }
     },
     "Contact us" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact us"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46,7 +74,14 @@
       }
     },
     "Decline" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decline"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56,7 +91,14 @@
       }
     },
     "Delete" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -66,7 +108,14 @@
       }
     },
     "Edit" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -76,6 +125,7 @@
       }
     },
     "Help.CityNotFound" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -92,6 +142,7 @@
       }
     },
     "Help.CountryNotFound" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -108,7 +159,14 @@
       }
     },
     "Pick a city" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a city"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -118,7 +176,14 @@
       }
     },
     "Pick a country" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a country"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -128,6 +193,7 @@
       }
     },
     "ProfilePhoto" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -144,7 +210,14 @@
       }
     },
     "Report" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -154,7 +227,14 @@
       }
     },
     "Search" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",

@@ -16,9 +16,9 @@ public enum ParkSize: Int, CaseIterable, CustomStringConvertible, Codable {
 
     public var description: String {
         switch self {
-        case .small: NSLocalizedString("ParkSize.Small", bundle: .module, comment: "")
-        case .medium: NSLocalizedString("ParkSize.Medium", bundle: .module, comment: "")
-        case .large: NSLocalizedString("ParkSize.Large", bundle: .module, comment: "")
+        case .small: String(localized: .parkSizeSmall)
+        case .medium: String(localized: .parkSizeMedium)
+        case .large: String(localized: .parkSizeLarge)
         }
     }
 }

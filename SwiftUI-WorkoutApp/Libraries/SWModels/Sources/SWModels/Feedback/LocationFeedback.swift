@@ -8,11 +8,11 @@ public enum LocationFeedback {
     public var subject: String { CommonFeedback.subject }
 
     public var body: String {
-        let question: String = switch self {
+        let question = switch self {
         case .country:
-            NSLocalizedString("Feedback.Country", bundle: .module, comment: "")
+            String(localized: .feedbackCountry)
         case .city:
-            NSLocalizedString("Feedback.City", bundle: .module, comment: "")
+            String(localized: .feedbackCity)
         }
         return """
         \(CommonFeedback.sysVersion)

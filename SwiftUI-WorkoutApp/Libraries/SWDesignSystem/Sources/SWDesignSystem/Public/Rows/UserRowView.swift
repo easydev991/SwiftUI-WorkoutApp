@@ -89,14 +89,10 @@ private extension UserRowView {
                 userNameView
                 addressViewIfAvailable
                 HStack(spacing: 8) {
-                    Button(action: actions.accept) {
-                        Text("Accept", bundle: .module)
-                    }
-                    .buttonStyle(SWButtonStyle(mode: .filled, size: .small))
-                    Button(action: actions.reject) {
-                        Text("Decline", bundle: .module)
-                    }
-                    .buttonStyle(SWButtonStyle(mode: .tinted, size: .small))
+                    Button(.accept, action: actions.accept)
+                        .buttonStyle(SWButtonStyle(mode: .filled, size: .small))
+                    Button(.decline, action: actions.reject)
+                        .buttonStyle(SWButtonStyle(mode: .tinted, size: .small))
                 }
                 .padding(.top, 6)
             }
