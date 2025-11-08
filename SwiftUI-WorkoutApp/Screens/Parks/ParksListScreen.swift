@@ -169,12 +169,18 @@ private extension ParksListScreen {
 
     func updatePark(_ park: Park) {
         guard case let .ready(parks) = currentState else { return }
-        do {
-            try parksManager.manuallyUpdatePark(park)
-            let updatedParks = try parksManager.getParks(ids: parks.map(\.id))
-            currentState = .ready(updatedParks)
-        } catch {
-            SWAlert.shared.presentDefaultUIKit(error)
+        Task {
+            do {
+                try parksManager.manuallyUpdatePark(park)
+                let updatedParks = try await parksManager.getParks(ids: parks.map(\.id))
+                await MainActor.run {
+                    currentState = .ready(updatedParks)
+                }
+            } catch {
+                await MainActor.run {
+                    SWAlert.shared.presentDefaultUIKit(error)
+                }
+            }
         }
     }
 }

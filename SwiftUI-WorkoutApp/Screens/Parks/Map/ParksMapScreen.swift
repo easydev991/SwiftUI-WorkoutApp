@@ -1,4 +1,5 @@
 import ClusteringMapView
+import MapKit
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -14,18 +15,12 @@ struct ParksMapScreen: View {
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
 
-    /// Отфильтрованные по выбранному городу и активным фильтрам площадки
-    private var filteredParks: [Park] {
-        let regularParks = parksManager.fullList.filter { park in
-            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeId)
-                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeId)
-        }
-        return if let selectedCity = viewModel.selectedCity {
-            regularParks.filter { $0.cityId == Int(selectedCity.id) }
-        } else {
-            regularParks
-        }
-    }
+    // MARK: - Кэшированные данные для оптимизации производительности
+    @State private var cachedFilteredParks: [Park] = []
+    @State private var cachedFilteredParksCount = 0
+    @State private var cachedAnnotations: [any MKAnnotation] = []
+    @State private var cachedCities: [City]?
+    @State private var annotationsTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
@@ -35,7 +30,9 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading || viewModel.newParkState.isProcessingNewPark)
+            .loadingOverlay(
+                if: isLoading || viewModel.newParkState.isProcessingNewPark
+            )
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
@@ -53,7 +50,22 @@ struct ParksMapScreen: View {
                     sheetItem = .createNewPark(model)
                 }
             }
-            .task { await askForParks() }
+            .onChange(of: parksManager.fullList) { _ in
+                updateFilteredParks()
+            }
+            .onChange(of: defaults.parksFilter) { _ in
+                updateFilteredParks()
+            }
+            .onChange(of: viewModel.selectedCity) { _ in
+                updateFilteredParks()
+            }
+            .task {
+                isLoading = true
+                await loadCities()
+                await askForParks()
+                await waitForAnnotationsTask()
+                isLoading = false
+            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -68,7 +80,7 @@ struct ParksMapScreen: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(filteredParks.count))")
+            .navigationTitle("Площадки (\(cachedFilteredParksCount))")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -114,10 +126,16 @@ private extension ParksMapScreen {
 
     var refreshButton: some View {
         Button {
-            Task { await askForParks(refresh: true) }
+            Task {
+                isLoading = true
+                await askForParks(refresh: true)
+                await waitForAnnotationsTask()
+                isLoading = false
+            }
         } label: {
             Icons.Regular.refresh.view
         }
+        .disabled(parksManager.isLoading || isLoading)
     }
 
     var segmentedControl: some View {
@@ -133,11 +151,11 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var searchCityButton: some View {
-        if let storedCities = try? SWAddress.cities() {
+        if let cachedCities {
             SWTextFieldSearchButton(
                 .init(viewModel.cityFilterButtonTitle),
                 showClearButton: viewModel.canClearCityFilter,
-                mainAction: { sheetItem = .searchCity(storedCities) },
+                mainAction: { sheetItem = .searchCity(cachedCities) },
                 clearAction: { viewModel.updateSelectedCity(nil) }
             )
             .padding(.horizontal)
@@ -148,7 +166,7 @@ private extension ParksMapScreen {
     var parksContent: some View {
         switch presentation {
         case .list:
-            List(filteredParks) { park in
+            List(cachedFilteredParks) { park in
                 ParkRowItemView(
                     imageURL: park.previewImageURL,
                     title: park.longTitle,
@@ -165,9 +183,9 @@ private extension ParksMapScreen {
                 shouldUpdateRegion: viewModel.shouldUpdateRegion,
                 onRegionUpdated: viewModel.resetRegionUpdateFlag,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredParks.map(\.annotation),
+                annotations: cachedAnnotations,
                 didSelect: { annotation in
-                    if let park = filteredParks.first(
+                    if let park = cachedFilteredParks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
                         sheetItem = .parkDetails(park)
@@ -185,13 +203,13 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var noParksFoundView: some View {
-        if let storedCities = try? SWAddress.cities() {
+        if let storedCities = cachedCities {
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
                 model: .init(
                     isFilterEdited: defaults.parksFilter.isEdited,
-                    isFilteredParksEmpty: filteredParks.isEmpty,
+                    isFilteredParksEmpty: cachedFilteredParks.isEmpty,
                     didParksManagerLoad: parksManager.didLoad,
                     isLoading: isLoading
                 )
@@ -199,21 +217,40 @@ private extension ParksMapScreen {
         }
     }
 
+    // MARK: - Загрузка данных
+
+    /// Загружает список городов асинхронно в фоновом потоке
+    private func loadCities() async {
+        guard cachedCities == nil else { return }
+        let cities = await Task.detached(priority: .userInitiated) {
+            try? SWAddress.cities()
+        }.value
+        cachedCities = cities
+    }
+
+    /// Ожидает завершения создания аннотаций, если задача запущена
+    private func waitForAnnotationsTask() async {
+        if let task = annotationsTask {
+            await task.value
+        }
+    }
+
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
-        if !filteredParks.isEmpty, !refresh { return }
-        guard !parksManager.fullList.isEmpty else {
-            do {
-                try parksManager.makeDefaultList()
-            } catch {
-                SWAlert.shared.presentDefaultUIKit(error)
-            }
-            if parksManager.needUpdateDefaultList {
-                await askForParks(refresh: true)
-            }
+        if !cachedFilteredParks.isEmpty, !refresh { return }
+        guard parksManager.fullList.isEmpty else {
+            updateFilteredParks()
             return
         }
-        await getUpdatedParks()
+        do {
+            try await parksManager.makeDefaultList()
+            updateFilteredParks()
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+        if parksManager.needUpdateDefaultList {
+            await askForParks(refresh: true)
+        }
     }
 
     func deletePark(id: Int) {
@@ -242,7 +279,6 @@ private extension ParksMapScreen {
     }
 
     func getUpdatedParks(from dateString: String? = nil) async {
-        isLoading = true
         do {
             try await parksManager.getUpdatedParks(with: defaults, from: dateString)
         } catch ClientError.noConnection {
@@ -321,6 +357,55 @@ private extension ParksMapScreen {
             messageBody: body,
             recipients: Constants.feedbackRecipient
         )
+    }
+
+    // MARK: - Обновление кэша
+
+    /// Обновляет кэшированные отфильтрованные площадки и аннотации
+    private func updateFilteredParks() {
+        let allowedSizeIds = Set(defaults.parksFilter.size.map(\.rawValue))
+        let allowedTypeIds = Set(defaults.parksFilter.grade.map(\.rawValue))
+        let regularParks = parksManager.fullList.filter { park in
+            allowedSizeIds.contains(park.sizeId) && allowedTypeIds.contains(park.typeId)
+        }
+        let filtered: [Park]
+        if let selectedCity = viewModel.selectedCity {
+            let cityId = Int(selectedCity.id)
+            filtered = regularParks.filter { $0.cityId == cityId }
+        } else {
+            filtered = regularParks
+        }
+        // Обновляем кэш только если данные изменились
+        let newIdentifiers = Set(filtered.map(\.id))
+        let oldIdentifiers = Set(cachedFilteredParks.map(\.id))
+        if newIdentifiers != oldIdentifiers || cachedFilteredParks.count != filtered.count {
+            cachedFilteredParks = filtered
+            cachedFilteredParksCount = filtered.count
+            updateAnnotations()
+        }
+    }
+
+    /// Обновляет кэшированные аннотации из отфильтрованных площадок
+    /// Создание аннотаций выполняется в фоновом потоке для больших списков
+    private func updateAnnotations() {
+        let parks = cachedFilteredParks
+        // Отменяем предыдущую задачу, если она еще выполняется
+        annotationsTask?.cancel()
+        // Для больших списков создаем аннотации в фоновом потоке, чтобы не блокировать UI
+        annotationsTask = Task.detached(priority: .userInitiated) { [parks] in
+            let newAnnotations = parks.map(\.annotation)
+            guard !Task.isCancelled else { return }
+            let newIdentifiers = Set(newAnnotations.compactMap(\.title))
+            // Обновляем кэш на главном потоке
+            await MainActor.run {
+                guard !Task.isCancelled else { return }
+
+                let oldIdentifiers = Set(self.cachedAnnotations.compactMap(\.title))
+                if newIdentifiers != oldIdentifiers || self.cachedAnnotations.count != newAnnotations.count {
+                    self.cachedAnnotations = newAnnotations
+                }
+            }
+        }
     }
 }
 

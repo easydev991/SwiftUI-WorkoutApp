@@ -19,6 +19,7 @@ final class ParksManager: ObservableObject {
     @Published private(set) var fullList = [Park]()
     /// Загружены ли данные
     @Published private(set) var didLoad = false
+    @Published private(set) var isLoading = false
     /// Нужно ли обновить список площадок
     ///
     /// Обновляем, если прошло больше дня с момента предыдущего обновления
@@ -35,16 +36,22 @@ final class ParksManager: ObservableObject {
     /// Подготавливает дефолтный список площадок при загрузке приложения
     ///
     /// Достает список площадок из `JSON-файла` в памяти приложения
-    func makeDefaultList() throws {
-        fullList = if swStorage.documentExists {
-            try swStorage.get()
-        } else {
-            try Bundle.main.decodeJson(
-                [Park].self,
-                fileName: "oldParks",
-                extension: "json"
-            )
-        }
+    /// Выполняется асинхронно, чтобы не блокировать главный поток
+    func makeDefaultList() async throws {
+        let storage = swStorage
+        let parks: [Park] = try await Task.detached(priority: .userInitiated) {
+            let exists = storage.documentExists
+            if exists {
+                return try storage.get() as [Park]
+            } else {
+                return try Bundle.main.decodeJson(
+                    [Park].self,
+                    fileName: "oldParks",
+                    extension: "json"
+                )
+            }
+        }.value
+        fullList = parks
     }
 
     /// Загружает обновленный список площадок
@@ -53,6 +60,8 @@ final class ParksManager: ObservableObject {
     ///   - dateString: Дата, с которой нужно загрузить обновленные площадки.
     ///   Если передать `nil`, использует дефолтную дату (предыдущее ручное обновление площадок)
     func getUpdatedParks(with authHelper: AuthHelper, from dateString: String? = nil) async throws {
+        isLoading = true
+        defer { isLoading = false }
         let updatedParks = try await SWClient(with: authHelper).getUpdatedParks(
             from: dateString ?? lastParksUpdateDateString
         )
@@ -72,9 +81,9 @@ final class ParksManager: ObservableObject {
     /// Находит площадки с указанными идентификаторами
     /// - Parameter ids: Идентификаторы площадок
     /// - Returns: Список площадок по заданным идентификаторам
-    func getParks(ids: [Int]) throws -> [Park] {
+    func getParks(ids: [Int]) async throws -> [Park] {
         if fullList.isEmpty {
-            try makeDefaultList()
+            try await makeDefaultList()
         }
         let idSet = Set(ids)
         return fullList.filter { idSet.contains($0.id) }

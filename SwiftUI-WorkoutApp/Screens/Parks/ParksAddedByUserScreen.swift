@@ -9,13 +9,7 @@ struct ParksAddedByUserScreen: View {
     @EnvironmentObject private var parksManager: ParksManager
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
-    private var parkList: [Park] {
-        do {
-            return try parksManager.getParks(ids: parkIds)
-        } catch {
-            return []
-        }
-    }
+    @State private var parkList: [Park] = []
 
     private let parkIds: [Int]
 
@@ -35,6 +29,13 @@ struct ParksAddedByUserScreen: View {
         }
         .listStyle(.plain)
         .padding(.vertical)
+        .task {
+            do {
+                parkList = try await parksManager.getParks(ids: parkIds)
+            } catch {
+                parkList = []
+            }
+        }
         .onChange(of: parkList) { updatedParks in
             if updatedParks.isEmpty { dismiss() }
         }

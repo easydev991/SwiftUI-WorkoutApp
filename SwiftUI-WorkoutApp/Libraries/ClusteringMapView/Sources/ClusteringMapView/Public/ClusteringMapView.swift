@@ -1,8 +1,13 @@
 import MapKit
+import OSLog
 import SwiftUI
 
 /// `MKMapView` в обертке для `SwiftUI` с базовыми настройками
 public struct ClusteringMapView: UIViewRepresentable {
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: ClusteringMapView.self)
+    )
     private let region: MKCoordinateRegion
     private let shouldUpdateRegion: Bool
     private let onRegionUpdated: () -> Void
@@ -57,6 +62,10 @@ public struct ClusteringMapView: UIViewRepresentable {
     }
 
     public func updateUIView(_ mapView: MKMapView, context _: Context) {
+        logger
+            .debug(
+                "updateUIView вызван: annotations.count=\(annotations.count), shouldUpdateRegion=\(shouldUpdateRegion), hideTrackingButton=\(hideTrackingButton)"
+            )
         setTrackingButton(hideTrackingButton, on: mapView)
         if shouldUpdateRegion {
             RegionOrganizer(old: mapView.region, new: region).updateIfNeeded(for: mapView)
