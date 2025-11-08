@@ -24,24 +24,17 @@ struct ParksAddedByUserScreen: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(parkList) { park in
-                    Button {
-                        selectedPark = park
-                    } label: {
-                        ParkRowView(
-                            imageURL: park.previewImageURL,
-                            title: park.longTitle,
-                            address: park.address,
-                            usersTrainHereText: park.usersTrainHereText
-                        )
-                    }
-                    .accessibilityIdentifier("ParkViewCell")
-                }
-            }
-            .padding()
+        List(parkList) { park in
+            ParkRowItemView(
+                imageURL: park.previewImageURL,
+                title: park.longTitle,
+                address: park.address,
+                usersTrainHereText: park.usersTrainHereText,
+                action: { selectedPark = park }
+            )
         }
+        .listStyle(.plain)
+        .padding(.vertical)
         .onChange(of: parkList) { updatedParks in
             if updatedParks.isEmpty { dismiss() }
         }

@@ -148,24 +148,17 @@ private extension ParksMapScreen {
     var parksContent: some View {
         switch presentation {
         case .list:
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(filteredParks) { park in
-                        Button {
-                            sheetItem = .parkDetails(park)
-                        } label: {
-                            ParkRowView(
-                                imageURL: park.previewImageURL,
-                                title: park.longTitle,
-                                address: park.address,
-                                usersTrainHereText: park.usersTrainHereText
-                            )
-                        }
-                        .accessibilityIdentifier("ParkViewCell")
-                    }
-                }
-                .padding([.horizontal, .bottom])
+            List(filteredParks) { park in
+                ParkRowItemView(
+                    imageURL: park.previewImageURL,
+                    title: park.longTitle,
+                    address: park.address,
+                    usersTrainHereText: park.usersTrainHereText,
+                    action: { sheetItem = .parkDetails(park) }
+                )
             }
+            .listStyle(.plain)
+            .padding(.bottom)
         case .map:
             ClusteringMapView(
                 region: viewModel.region,

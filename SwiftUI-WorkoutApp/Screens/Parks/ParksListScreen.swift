@@ -17,33 +17,31 @@ struct ParksListScreen: View {
     let mode: Mode
 
     var body: some View {
-        ScrollView {
-            contentView
-                .animation(.default, value: currentState)
-                .frame(maxWidth: .infinity)
-        }
-        .loadingOverlay(if: currentState.isLoading)
-        .background(Color.swBackground)
-        .onChange(of: currentState) { newState in
-            if newState.isReadyAndEmpty {
-                dismiss()
+        contentView
+            .refreshable {
+                await askForParks(refresh: true)
             }
-        }
-        .task { await askForParks() }
-        .refreshable {
-            await askForParks(refresh: true)
-        }
-        .sheet(item: $selectedPark) { park in
-            NavigationStack {
-                ParkDetailScreen(
-                    park: park,
-                    onEdit: updatePark,
-                    onDelete: deletePark
-                )
+            .animation(.default, value: currentState)
+            .frame(maxWidth: .infinity)
+            .loadingOverlay(if: currentState.isLoading)
+            .background(Color.swBackground)
+            .onChange(of: currentState) { newState in
+                if newState.isReadyAndEmpty {
+                    dismiss()
+                }
             }
-        }
-        .navigationTitle(mode.title)
-        .navigationBarTitleDisplayMode(.inline)
+            .task { await askForParks() }
+            .sheet(item: $selectedPark) { park in
+                NavigationStack {
+                    ParkDetailScreen(
+                        park: park,
+                        onEdit: updatePark,
+                        onDelete: deletePark
+                    )
+                }
+            }
+            .navigationTitle(mode.title)
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -103,9 +101,13 @@ private extension ParksListScreen {
     var contentView: some View {
         switch currentState {
         case let .ready(parks):
-            LazyVStack(spacing: 12) {
-                ForEach(parks) { park in
-                    Button {
+            List(parks) { park in
+                ParkRowItemView(
+                    imageURL: park.previewImageURL,
+                    title: park.longTitle,
+                    address: park.address,
+                    usersTrainHereText: park.usersTrainHereText,
+                    action: {
                         switch mode {
                         case let .event(_, callBack):
                             callBack(park.id, park.name ?? park.longTitle)
@@ -113,22 +115,17 @@ private extension ParksListScreen {
                         case .usedBy:
                             selectedPark = park
                         }
-                    } label: {
-                        ParkRowView(
-                            imageURL: park.previewImageURL,
-                            title: park.longTitle,
-                            address: park.address,
-                            usersTrainHereText: park.usersTrainHereText
-                        )
                     }
-                    .accessibilityIdentifier("ParkViewCell")
-                }
+                )
             }
-            .padding()
+            .listStyle(.plain)
+            .padding(.vertical)
         case let .error(errorKind):
-            CommonErrorView(errorKind: errorKind)
+            ScrollView {
+                CommonErrorView(errorKind: errorKind)
+            }
         case .initial, .loading:
-            EmptyView()
+            Color.swBackground.ignoresSafeArea()
         }
     }
 
