@@ -4,8 +4,8 @@ import OSLog
 public protocol SWNetworkProtocol: Sendable {
     /// Делает запрос и возвращает данные в ответе
     func requestData<T: Decodable>(components: RequestComponents) async throws -> T
-    /// Делает запрос и возвращает `true/false` в ответе
-    func requestStatus(components: RequestComponents) async throws -> Bool
+    /// Делает запрос для проверки статуса операции, в случае успеха ничего не возвращает
+    func requestStatus(components: RequestComponents) async throws
 }
 
 public struct SWNetworkService {
@@ -37,33 +37,30 @@ extension SWNetworkService: SWNetworkProtocol {
             guard let response else {
                 throw logUnknownError(request: request, data: data)
             }
-            switch StatusCodeGroup(code: response.statusCode) {
-            case .success:
-                guard let decodedResult = try? decoder.decode(T.self, from: data) else {
+            do {
+                switch StatusCodeGroup(code: response.statusCode) {
+                case .success:
+                    let decodedResult = try decoder.decode(T.self, from: data)
+                    logSuccess(request: request, data: data)
+                    return decodedResult
+                default:
+                    let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
                     throw log(
-                        APIError.decodingError,
+                        APIError(errorInfo, response.statusCode),
                         request: request,
                         data: data,
                         response: response
                     )
                 }
-                logSuccess(request: request, data: data)
-                return decodedResult
-            default:
-                let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
-                throw log(
-                    APIError(errorInfo, response.statusCode),
-                    request: request,
-                    data: data,
-                    response: response
-                )
+            } catch {
+                throw log(error, request: request, data: data, response: response)
             }
         } catch {
             throw handleUrlSession(error, request)
         }
     }
 
-    public func requestStatus(components: RequestComponents) async throws -> Bool {
+    public func requestStatus(components: RequestComponents) async throws {
         guard let request = components.urlRequest else {
             throw APIError.badRequest
         }
@@ -74,17 +71,19 @@ extension SWNetworkService: SWNetworkProtocol {
             }
             if StatusCodeGroup(code: response.statusCode).isSuccess {
                 logSuccess(request: request, data: data)
-                return true
+                return
             }
-            if let errorInfo = try? decoder.decode(ErrorResponse.self, from: data) {
+            do {
+                let errorInfo = try decoder.decode(ErrorResponse.self, from: data)
                 throw log(
                     APIError(errorInfo, response.statusCode),
                     request: request,
                     data: data,
                     response: response
                 )
+            } catch {
+                throw log(error, request: request, data: data, response: response)
             }
-            return false
         } catch {
             throw handleUrlSession(error, request)
         }

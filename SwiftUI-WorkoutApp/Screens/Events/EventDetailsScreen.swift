@@ -114,9 +114,8 @@ private extension EventDetailsScreen {
                 isLoading = true
                 deleteEventTask = Task {
                     do {
-                        if try await SWClient(with: defaults).delete(eventId: event.id) {
-                            onDelete(event.id)
-                        }
+                        try await SWClient(with: defaults).delete(eventId: event.id)
+                        onDelete(event.id)
                     } catch {
                         SWAlert.shared.presentDefaultUIKit(error)
                     }
@@ -247,16 +246,13 @@ private extension EventDetailsScreen {
             isLoading = true
             goingToEventTask = Task {
                 do {
-                    if try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id) {
-                        // Чтобы не делать лишнее обновление данных мероприятия,
-                        // локально изменяем список участников
-                        if newValue, let userInfo = defaults.mainUserInfo {
-                            event.participants.append(userInfo)
-                        } else {
-                            event.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
-                        }
+                    try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id)
+                    // Чтобы не делать лишнее обновление данных мероприятия,
+                    // локально изменяем список участников
+                    if newValue, let userInfo = defaults.mainUserInfo {
+                        event.participants.append(userInfo)
                     } else {
-                        event.trainHere = oldValue
+                        event.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                     }
                 } catch {
                     SWAlert.shared.presentDefaultUIKit(error)
@@ -376,9 +372,8 @@ private extension EventDetailsScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                if try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryId: id) {
-                    event.comments.removeAll(where: { $0.id == id })
-                }
+                try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryId: id)
+                event.comments.removeAll(where: { $0.id == id })
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }
@@ -391,11 +386,10 @@ private extension EventDetailsScreen {
         isLoading = true
         deletePhotoTask = Task {
             do {
-                if try await SWClient(with: defaults).deletePhoto(
+                try await SWClient(with: defaults).deletePhoto(
                     from: .event(.init(containerId: event.id, photoId: id))
-                ) {
-                    event.photos = event.removePhotoById(id)
-                }
+                )
+                event.photos = event.removePhotoById(id)
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }

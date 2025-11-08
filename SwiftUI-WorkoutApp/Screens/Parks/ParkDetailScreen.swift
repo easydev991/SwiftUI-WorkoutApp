@@ -119,10 +119,9 @@ private extension ParkDetailScreen {
                 isLoading = true
                 deleteParkTask = Task {
                     do {
-                        if try await SWClient(with: defaults).delete(parkId: park.id) {
-                            defaults.setUserNeedUpdate(true)
-                            onDelete(park.id)
-                        }
+                        try await SWClient(with: defaults).delete(parkId: park.id)
+                        defaults.setUserNeedUpdate(true)
+                        onDelete(park.id)
                     } catch {
                         process(error)
                     }
@@ -235,18 +234,15 @@ private extension ParkDetailScreen {
             isLoading = true
             changeTrainHereTask = Task {
                 do {
-                    if try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: park.id) {
-                        // Чтобы не делать лишнее обновление данных площадки,
-                        // локально изменяем список тренирующихся
-                        if newValue, let userInfo = defaults.mainUserInfo {
-                            park.participants.append(userInfo)
-                        } else {
-                            park.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
-                        }
-                        defaults.setUserNeedUpdate(true)
+                    try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: park.id)
+                    // Чтобы не делать лишнее обновление данных площадки,
+                    // локально изменяем список тренирующихся
+                    if newValue, let userInfo = defaults.mainUserInfo {
+                        park.participants.append(userInfo)
                     } else {
-                        park.trainHere = oldValue
+                        park.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                     }
+                    defaults.setUserNeedUpdate(true)
                 } catch {
                     process(error)
                     park.trainHere = oldValue
@@ -357,9 +353,8 @@ private extension ParkDetailScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                if try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryId: id) {
-                    park.comments.removeAll(where: { $0.id == id })
-                }
+                try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryId: id)
+                park.comments.removeAll(where: { $0.id == id })
             } catch {
                 process(error)
             }
@@ -372,11 +367,10 @@ private extension ParkDetailScreen {
         isLoading = true
         deletePhotoTask = Task {
             do {
-                if try await SWClient(with: defaults).deletePhoto(
+                try await SWClient(with: defaults).deletePhoto(
                     from: .park(.init(containerId: park.id, photoId: id))
-                ) {
-                    park.photos = park.removePhotoById(id)
-                }
+                )
+                park.photos = park.removePhotoById(id)
             } catch {
                 process(error)
             }
