@@ -23,10 +23,18 @@
 			remoteGlobalIDString = 6798AA39280AEDC900DB76F1;
 			remoteInfo = "SwiftUI-WorkoutApp";
 		};
+		671F16F72EC073C800B7465A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6798AA32280AEDC900DB76F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6798AA39280AEDC900DB76F1;
+			remoteInfo = "SwiftUI-WorkoutApp";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		671F16F32EC073C800B7465A /* WorkoutAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkoutAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -57,6 +65,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		671F16F42EC073C800B7465A /* WorkoutAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WorkoutAppTests;
+			sourceTree = "<group>";
+		};
 		674BADD02D89DA0600547410 /* WorkoutAppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = WorkoutAppUITests;
@@ -75,6 +88,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		67138D81297311BD00BBF450 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		671F16F02EC073C800B7465A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -102,6 +122,7 @@
 			children = (
 				674BAED72D89DA9200547410 /* SwiftUI-WorkoutApp */,
 				674BADD02D89DA0600547410 /* WorkoutAppUITests */,
+				671F16F42EC073C800B7465A /* WorkoutAppTests */,
 				6798AA3B280AEDC900DB76F1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,6 +132,7 @@
 			children = (
 				6798AA3A280AEDC900DB76F1 /* WorkoutApp.app */,
 				67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */,
+				671F16F32EC073C800B7465A /* WorkoutAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -138,6 +160,29 @@
 			productName = WorkoutAppUITests;
 			productReference = 67138D84297311BD00BBF450 /* WorkoutAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		671F16F22EC073C800B7465A /* WorkoutAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 671F16FB2EC073C800B7465A /* Build configuration list for PBXNativeTarget "WorkoutAppTests" */;
+			buildPhases = (
+				671F16EF2EC073C800B7465A /* Sources */,
+				671F16F02EC073C800B7465A /* Frameworks */,
+				671F16F12EC073C800B7465A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				671F16F82EC073C800B7465A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				671F16F42EC073C800B7465A /* WorkoutAppTests */,
+			);
+			name = WorkoutAppTests;
+			packageProductDependencies = (
+			);
+			productName = WorkoutAppTests;
+			productReference = 671F16F32EC073C800B7465A /* WorkoutAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		6798AA39280AEDC900DB76F1 /* SwiftUI-WorkoutApp */ = {
 			isa = PBXNativeTarget;
@@ -174,11 +219,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					67138D83297311BD00BBF450 = {
 						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 6798AA39280AEDC900DB76F1;
+					};
+					671F16F22EC073C800B7465A = {
+						CreatedOnToolsVersion = 26.1;
 						TestTargetID = 6798AA39280AEDC900DB76F1;
 					};
 					6798AA39280AEDC900DB76F1 = {
@@ -204,12 +253,20 @@
 			targets = (
 				6798AA39280AEDC900DB76F1 /* SwiftUI-WorkoutApp */,
 				67138D83297311BD00BBF450 /* WorkoutAppUITests */,
+				671F16F22EC073C800B7465A /* WorkoutAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		67138D82297311BD00BBF450 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		671F16F12EC073C800B7465A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -233,6 +290,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		671F16EF2EC073C800B7465A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6798AA36280AEDC900DB76F1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,6 +311,11 @@
 			isa = PBXTargetDependency;
 			target = 6798AA39280AEDC900DB76F1 /* SwiftUI-WorkoutApp */;
 			targetProxy = 67138D8A297311BD00BBF450 /* PBXContainerItemProxy */;
+		};
+		671F16F82EC073C800B7465A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6798AA39280AEDC900DB76F1 /* SwiftUI-WorkoutApp */;
+			targetProxy = 671F16F72EC073C800B7465A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -293,6 +362,56 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "SwiftUI-WorkoutApp";
+			};
+			name = Release;
+		};
+		671F16F92EC073C800B7465A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3PHS45582J;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oleg991.WorkoutAppTests.WorkoutAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WorkoutApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WorkoutApp";
+			};
+			name = Debug;
+		};
+		671F16FA2EC073C800B7465A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3PHS45582J;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oleg991.WorkoutAppTests.WorkoutAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WorkoutApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WorkoutApp";
 			};
 			name = Release;
 		};
@@ -544,6 +663,15 @@
 			buildConfigurations = (
 				67138D8C297311BD00BBF450 /* Debug */,
 				67138D8D297311BD00BBF450 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		671F16FB2EC073C800B7465A /* Build configuration list for PBXNativeTarget "WorkoutAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				671F16F92EC073C800B7465A /* Debug */,
+				671F16FA2EC073C800B7465A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

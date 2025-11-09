@@ -16,8 +16,7 @@ struct ParksMapScreen: View {
     @State private var sheetItem: SheetItem?
 
     // MARK: - Кэшированные данные для оптимизации производительности
-    @State private var cachedFilteredParks: [Park] = []
-    @State private var cachedFilteredParksCount = 0
+    @StateObject private var parksCache = ParksCacheManager()
     @State private var cachedAnnotations: [any MKAnnotation] = []
     @State private var cachedCities: [City]?
     @State private var annotationsTask: Task<Void, Never>?
@@ -80,7 +79,7 @@ struct ParksMapScreen: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(cachedFilteredParksCount))")
+            .navigationTitle("Площадки (\(parksCache.count))")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -166,7 +165,7 @@ private extension ParksMapScreen {
     var parksContent: some View {
         switch presentation {
         case .list:
-            List(cachedFilteredParks) { park in
+            List(parksCache.parks) { park in
                 ParkRowItemView(
                     imageURL: park.previewImageURL,
                     title: park.longTitle,
@@ -185,7 +184,7 @@ private extension ParksMapScreen {
                 hideTrackingButton: viewModel.ignoreUserLocation,
                 annotations: cachedAnnotations,
                 didSelect: { annotation in
-                    if let park = cachedFilteredParks.first(
+                    if let park = parksCache.parks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
                         sheetItem = .parkDetails(park)
@@ -209,7 +208,7 @@ private extension ParksMapScreen {
                 openFilter: { sheetItem = .filters },
                 model: .init(
                     isFilterEdited: defaults.parksFilter.isEdited,
-                    isFilteredParksEmpty: cachedFilteredParks.isEmpty,
+                    isFilteredParksEmpty: parksCache.parks.isEmpty,
                     didParksManagerLoad: parksManager.didLoad,
                     isLoading: isLoading
                 )
@@ -237,7 +236,7 @@ private extension ParksMapScreen {
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
-        if !cachedFilteredParks.isEmpty, !refresh { return }
+        if !parksCache.parks.isEmpty, !refresh { return }
         guard parksManager.fullList.isEmpty else {
             updateFilteredParks()
             return
@@ -376,11 +375,8 @@ private extension ParksMapScreen {
             filtered = regularParks
         }
         // Обновляем кэш только если данные изменились
-        let newIdentifiers = Set(filtered.map(\.id))
-        let oldIdentifiers = Set(cachedFilteredParks.map(\.id))
-        if newIdentifiers != oldIdentifiers || cachedFilteredParks.count != filtered.count {
-            cachedFilteredParks = filtered
-            cachedFilteredParksCount = filtered.count
+        if parksCache.shouldUpdate(with: filtered) {
+            parksCache.update(with: filtered)
             updateAnnotations()
         }
     }
@@ -388,7 +384,7 @@ private extension ParksMapScreen {
     /// Обновляет кэшированные аннотации из отфильтрованных площадок
     /// Создание аннотаций выполняется в фоновом потоке для больших списков
     private func updateAnnotations() {
-        let parks = cachedFilteredParks
+        let parks = parksCache.parks
         // Отменяем предыдущую задачу, если она еще выполняется
         annotationsTask?.cancel()
         // Для больших списков создаем аннотации в фоновом потоке, чтобы не блокировать UI
