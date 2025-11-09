@@ -14,7 +14,7 @@ final class ParksManager: ObservableObject {
     @AppStorage("lastGroundsUpdateDateString")
     private(set) var lastParksUpdateDateString = "2025-10-25T00:00:00"
     /// Хранилище файла с площадками
-    private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
+    private let storage: SWFileManager
     /// Все площадки, доступные для отображения на карте
     @Published private(set) var fullList = [Park]()
     /// Загружены ли данные
@@ -27,7 +27,8 @@ final class ParksManager: ObservableObject {
         DateFormatterService.days(from: lastParksUpdateDateString, to: .now) > 1
     }
 
-    init() {
+    init(storage: SWFileManager = SWFileManagerImp(fileName: "SportsGrounds.json")) {
+        self.storage = storage
         $fullList
             .map { !$0.isEmpty }
             .assign(to: &$didLoad)
@@ -38,7 +39,7 @@ final class ParksManager: ObservableObject {
     /// Достает список площадок из `JSON-файла` в памяти приложения
     /// Выполняется асинхронно, чтобы не блокировать главный поток
     func makeDefaultList() async throws {
-        let storage = swStorage
+        let storage = storage
         let parks: [Park] = try await Task.detached(priority: .userInitiated) {
             let exists = storage.documentExists
             if exists {
@@ -116,6 +117,6 @@ private extension ParksManager {
 
     /// Сохраняем площадки в памяти
     func saveParksInMemory() throws {
-        try swStorage.save(fullList)
+        try storage.save(fullList)
     }
 }

@@ -4,7 +4,7 @@ import SWUtils
 
 /// Обертка над хранилищем прошедших мероприятий
 struct PastEventStorage {
-    private let storage = SWFileManager(fileName: "OldEvents.json")
+    private let storage = SWFileManagerImp(fileName: "OldEvents.json")
 
     /// Прошедшие мероприятия в памяти приложения
     var savedPastEvents: [EventResponse] {

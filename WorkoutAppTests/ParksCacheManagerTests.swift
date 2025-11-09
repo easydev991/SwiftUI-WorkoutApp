@@ -82,7 +82,7 @@ struct ParksCacheManagerTests {
 
     @Test("Должен фильтровать по размеру и типу")
     @MainActor
-    func updateIfNeeded_filtersBySizeAndGrade() {
+    func updateIfNeeded_filtersBySizeAndGrade() throws {
         let manager = ParksCacheManager()
         let allParks = [
             makePark(id: 1, sizeId: 1, typeId: 1),
@@ -92,9 +92,10 @@ struct ParksCacheManagerTests {
         ]
         let filter = ParkFilterModel(size: [.small], grade: [.soviet])
         let result = manager.updateIfNeeded(allParks: allParks, filter: filter, selectedCityId: nil)
+        let firstPark = try #require(manager.parks.first)
         #expect(result)
         #expect(manager.parks.count == 1)
-        #expect(manager.parks.first?.id == 1)
+        #expect(firstPark.id == 1)
     }
 
     @Test("Должен фильтровать по городу если передан selectedCityId")

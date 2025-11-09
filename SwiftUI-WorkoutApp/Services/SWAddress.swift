@@ -8,7 +8,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
-    private static let storage = SWFileManager(fileName: "CountriesAndCities.json")
+    private static let storage = SWFileManagerImp(fileName: "CountriesAndCities.json")
     private let countryId: Int
     private let cityId: Int
 

@@ -1,7 +1,19 @@
 import Foundation
 
+/// Протокол для работы с хранилищем файлов
+public protocol SWFileManager: Sendable {
+    /// Проверяет существование файла
+    var documentExists: Bool { get }
+
+    /// Сохраняет `Encodable`-объект
+    func save(_ object: some Encodable) throws
+
+    /// Загружает данные из хранилища
+    func get<T: Decodable>() throws -> T
+}
+
 /// Обертка над `FileManager`
-public struct SWFileManager: Sendable {
+public struct SWFileManagerImp: Sendable, SWFileManager {
     private var documentDirectoryURL: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }

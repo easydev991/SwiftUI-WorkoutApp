@@ -7,7 +7,7 @@ struct SWFileManagerTests {
 
     @Test
     func getFromMissingFile_shouldThrowError() throws {
-        let sut = SWFileManager(fileName: uniqueFileName)
+        let sut = SWFileManagerImp(fileName: uniqueFileName)
         try #require(!sut.documentExists)
         #expect(throws: Error.self) {
             let _: TestModel = try sut.get()
@@ -16,7 +16,7 @@ struct SWFileManagerTests {
 
     @Test
     func removeNonExistentFile_shouldThrowError() throws {
-        let sut = SWFileManager(fileName: uniqueFileName)
+        let sut = SWFileManagerImp(fileName: uniqueFileName)
         try #require(!sut.documentExists)
         #expect(throws: Error.self) {
             try sut.removeFile()
@@ -25,7 +25,7 @@ struct SWFileManagerTests {
 
     @Test
     func allFeaturesInOneTest() {
-        let sut = SWFileManager(fileName: uniqueFileName)
+        let sut = SWFileManagerImp(fileName: uniqueFileName)
         #expect(!sut.documentExists)
         let testModel = TestModel(title: "Demo file")
         do {
