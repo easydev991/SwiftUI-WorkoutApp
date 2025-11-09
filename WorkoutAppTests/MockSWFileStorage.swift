@@ -6,8 +6,8 @@ import Testing
 /// Мок-реализация SWFileManager для тестирования
 final class MockSWFileManagerImp: @unchecked Sendable, SWFileManager {
     var documentExists = false
-    var savedData: [Park]?
-    var dataToReturn: [Park] = []
+    var savedData: Any?
+    var dataToReturn: Any?
     var errorToThrow: Error?
     var saveCallCount = 0
     var getCallCount = 0
@@ -17,7 +17,7 @@ final class MockSWFileManagerImp: @unchecked Sendable, SWFileManager {
         if let error = errorToThrow {
             throw error
         }
-        savedData = object as? [Park]
+        savedData = object
     }
 
     func get<T: Decodable>() throws -> T {

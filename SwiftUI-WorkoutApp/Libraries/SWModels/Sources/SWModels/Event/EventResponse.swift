@@ -257,3 +257,14 @@ public extension EventResponse {
         )
     }
 }
+
+public extension [EventResponse] {
+    /// Сортирует события по дате начала в порядке убывания (новые события с более поздней датой идут первыми)
+    var sortedByDate: [EventResponse] {
+        sorted { event1, event2 in
+            let date1 = DateFormatterService.dateFromIsoString(event1.beginDate)
+            let date2 = DateFormatterService.dateFromIsoString(event2.beginDate)
+            return date1 > date2
+        }
+    }
+}

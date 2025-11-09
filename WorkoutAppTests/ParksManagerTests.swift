@@ -214,7 +214,7 @@ struct ParksManagerTests {
         let updatedPark = makePark(id: 1, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(updatedPark)
 
-        let savedData = try #require(mockStorage.savedData)
+        let savedData = try #require(mockStorage.savedData as? [Park])
         #expect(savedData.count == 1)
         let savedPark = try #require(savedData.first)
         #expect(savedPark.id == 1)
@@ -266,7 +266,7 @@ struct ParksManagerTests {
 
         try manager.deletePark(with: 1)
 
-        let savedData = try #require(mockStorage.savedData)
+        let savedData = try #require(mockStorage.savedData as? [Park])
         #expect(savedData.count == 1)
         let savedPark = try #require(savedData.first)
         #expect(savedPark.id == 2)
