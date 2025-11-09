@@ -362,19 +362,12 @@ private extension ParksMapScreen {
 
     /// Обновляет кэшированные отфильтрованные площадки и аннотации
     private func updateFilteredParks() {
-        let allowedSizeIds = Set(defaults.parksFilter.size.map(\.rawValue))
-        let allowedTypeIds = Set(defaults.parksFilter.grade.map(\.rawValue))
-        let regularParks = parksManager.fullList.filter { park in
-            allowedSizeIds.contains(park.sizeId) && allowedTypeIds.contains(park.typeId)
-        }
-        let filtered: [Park]
-        if let selectedCity = viewModel.selectedCity {
-            let cityId = Int(selectedCity.id)
-            filtered = regularParks.filter { $0.cityId == cityId }
-        } else {
-            filtered = regularParks
-        }
-        if parksCache.updateIfNeeded(with: filtered) {
+        let cityId = viewModel.selectedCity.flatMap { Int($0.id) }
+        if parksCache.updateIfNeeded(
+            allParks: parksManager.fullList,
+            filter: defaults.parksFilter,
+            selectedCityId: cityId
+        ) {
             updateAnnotations()
         }
     }
