@@ -188,14 +188,6 @@ public struct SWClient: Sendable {
         return try await makeResult(for: endpoint)
     }
 
-    /// Загружает список всех площадок, обновленных после указанной даты
-    /// - Parameter stringDate: дата отсечки для поиска обновленных площадок
-    /// - Returns: Список обновленных площадок
-    public func getUpdatedParks(from stringDate: String) async throws -> [Park] {
-        let endpoint = Endpoint.getUpdatedParks(from: stringDate)
-        return try await makeResult(for: endpoint)
-    }
-
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
@@ -490,7 +482,7 @@ public struct SWClient: Sendable {
 
 // MARK: - Обертки для SWNetworkService
 
-private extension SWClient {
+extension SWClient {
     func makeStatus(for endpoint: Endpoint) async throws {
         do {
             let finalComponents = try await makeComponents(for: endpoint)

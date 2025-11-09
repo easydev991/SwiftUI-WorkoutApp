@@ -195,7 +195,11 @@ private extension ParkDetailScreen {
         case let .parkParticipants(users):
             ParticipantsScreen(mode: .park(list: users))
         case let .editPark(park):
-            ParkFormScreen(.editExisting(park)) { refreshAction() }
+            ParkFormScreen(.editExisting(park)) { newPark in
+                self.park = newPark
+                onEdit(newPark)
+                sheetItem = nil
+            }
         case let .createEvent(parkId, parkLongTitle):
             EventFormScreen(mode: .createForSelected(parkId, parkLongTitle))
         }

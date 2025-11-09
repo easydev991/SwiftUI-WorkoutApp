@@ -12,7 +12,7 @@ final class ParksManager: ObservableObject {
     /// При обновлении справочника вручную необходимо обновить тут дату -
     /// это необходимо, чтобы избежать ошибок на сервере (код 500)
     @AppStorage("lastGroundsUpdateDateString")
-    private var lastParksUpdateDateString = "2025-10-25T00:00:00"
+    private(set) var lastParksUpdateDateString = "2025-10-25T00:00:00"
     /// Хранилище файла с площадками
     private let swStorage = SWFileManager(fileName: "SportsGrounds.json")
     /// Все площадки, доступные для отображения на карте
@@ -56,25 +56,26 @@ final class ParksManager: ObservableObject {
 
     /// Загружает обновленный список площадок
     /// - Parameters:
-    ///   - authHelper: Содержит токен авторизации и умеет делать логаут
+    ///   - client: Клиент для загрузки обновленных площадок
     ///   - dateString: Дата, с которой нужно загрузить обновленные площадки.
     ///   Если передать `nil`, использует дефолтную дату (предыдущее ручное обновление площадок)
-    func getUpdatedParks(with authHelper: AuthHelper, from dateString: String? = nil) async throws {
+    func getUpdatedParks(client: ParksUpdaterClient, from dateString: String? = nil) async throws {
         isLoading = true
         defer { isLoading = false }
-        let updatedParks = try await SWClient(with: authHelper).getUpdatedParks(
+        let updatedParks = try await client.getUpdatedParks(
             from: dateString ?? lastParksUpdateDateString
         )
         try updateDefaultList(with: updatedParks)
     }
 
-    /// Обновляет выбранную площадку
+    /// Обновляет выбранную площадку или добавляет новую
     /// - Parameter park: Площадка с новыми данными
     func manuallyUpdatePark(_ park: Park) throws {
-        guard let parkIndex = fullList.firstIndex(where: { $0.id == park.id }) else {
-            return
+        if let parkIndex = fullList.firstIndex(where: { $0.id == park.id }) {
+            fullList[parkIndex] = park
+        } else {
+            fullList.append(park)
         }
-        fullList[parkIndex] = park
         try saveParksInMemory()
     }
 

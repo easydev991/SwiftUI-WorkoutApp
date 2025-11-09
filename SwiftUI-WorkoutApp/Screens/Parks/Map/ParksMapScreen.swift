@@ -269,17 +269,12 @@ private extension ParksMapScreen {
         }
     }
 
-    /// Проверяем недавние обновления списка площадок
-    ///
-    /// Запрашиваем обновление за прошедшие 5 минут
-    func checkForRecentUpdates() async {
-        defaults.setUserNeedUpdate(true)
-        await getUpdatedParks(from: DateFormatterService.fiveMinutesAgoDateString)
-    }
-
     func getUpdatedParks(from dateString: String? = nil) async {
         do {
-            try await parksManager.getUpdatedParks(with: defaults, from: dateString)
+            try await parksManager.getUpdatedParks(
+                client: SWClient(with: defaults),
+                from: dateString
+            )
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {
@@ -307,14 +302,7 @@ private extension ParksMapScreen {
             ParkFilterScreen(filter: $defaults.parksFilter)
         case let .createNewPark(model):
             ContentInSheet(title: "Новая площадка", spacing: 0) {
-                ParkFormScreen(
-                    .createNew(model),
-                    refreshClbk: {
-                        Task {
-                            await checkForRecentUpdates()
-                        }
-                    }
-                )
+                ParkFormScreen(.createNew(model), refreshClbk: updatePark)
             }
             .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
