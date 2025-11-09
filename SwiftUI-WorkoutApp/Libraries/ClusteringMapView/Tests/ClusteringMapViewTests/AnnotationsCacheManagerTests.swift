@@ -90,6 +90,66 @@ struct AnnotationsCacheManagerTests {
         ]
         #expect(!sut.shouldUpdate(with: newAnnotations))
     }
+
+    @Test("Должен обновлять кэш при первом обновлении")
+    @MainActor
+    func shouldUpdateCacheOnFirstUpdate() {
+        let sut = AnnotationsCacheManager()
+        let annotations = [
+            TestAnnotation(title: "1", lat: 0, lon: 0),
+            TestAnnotation(title: "2", lat: 0, lon: 0)
+        ]
+        sut.updateIfNeeded(with: annotations)
+        #expect(sut.annotations.count == 2)
+    }
+
+    @Test("Должен не обновлять кэш если аннотации не изменились")
+    @MainActor
+    func shouldNotUpdateCacheWhenAnnotationsNotChanged() {
+        let sut = AnnotationsCacheManager()
+        let annotations = [
+            TestAnnotation(title: "1", lat: 0, lon: 0),
+            TestAnnotation(title: "2", lat: 0, lon: 0)
+        ]
+        sut.updateIfNeeded(with: annotations)
+        let initialCount = sut.annotations.count
+        sut.updateIfNeeded(with: annotations)
+        #expect(sut.annotations.count == initialCount)
+    }
+
+    @Test("Должен обновлять кэш если аннотации изменились")
+    @MainActor
+    func shouldUpdateCacheWhenAnnotationsChanged() throws {
+        let sut = AnnotationsCacheManager()
+        let initialAnnotations = [
+            TestAnnotation(title: "1", lat: 0, lon: 0),
+            TestAnnotation(title: "2", lat: 0, lon: 0)
+        ]
+        sut.updateIfNeeded(with: initialAnnotations)
+        let newAnnotations = [
+            TestAnnotation(title: "1", lat: 0, lon: 0),
+            TestAnnotation(title: "3", lat: 0, lon: 0)
+        ]
+        sut.updateIfNeeded(with: newAnnotations)
+        #expect(sut.annotations.count == 2)
+        let firstAnnotation = try #require(sut.annotations.first as? TestAnnotation)
+        #expect(firstAnnotation.title == "1")
+        let lastAnnotation = try #require(sut.annotations.last as? TestAnnotation)
+        #expect(lastAnnotation.title == "3")
+    }
+
+    @Test("Должен обновлять кэш пустым массивом если кэш был не пуст")
+    @MainActor
+    func shouldUpdateCacheWithEmptyArrayWhenCacheWasNotEmpty() {
+        let sut = AnnotationsCacheManager()
+        let annotations = [
+            TestAnnotation(title: "1", lat: 0, lon: 0)
+        ]
+        sut.updateIfNeeded(with: annotations)
+        #expect(sut.annotations.count == 1)
+        sut.updateIfNeeded(with: [])
+        #expect(sut.annotations.isEmpty)
+    }
 }
 
 private final class TestAnnotation: NSObject, MKAnnotation {

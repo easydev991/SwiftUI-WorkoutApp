@@ -385,9 +385,7 @@ private extension ParksMapScreen {
             // Обновляем кэш на главном потоке
             await MainActor.run {
                 guard !Task.isCancelled else { return }
-                if annotationsCache.shouldUpdate(with: newAnnotations) {
-                    annotationsCache.update(with: newAnnotations)
-                }
+                annotationsCache.updateIfNeeded(with: newAnnotations)
             }
         }
     }
