@@ -38,25 +38,9 @@ struct AnnotationsOrganizer {
     ///
     /// Фильтрует точку с пользователем и кластеры, затем сравнивает идентификаторы
     var hasDifferences: Bool {
-        let filteredOld = old.filter {
-            type(of: $0) != MKClusterAnnotation.self && type(of: $0) != MKUserLocation.self
-        }
-        let filteredOldCount = filteredOld.count
-        let newCount = new.count
-
-        // Быстрая проверка по количеству
-        guard newCount == filteredOldCount else {
-            logger.debug("Количество аннотаций изменилось: old=\(filteredOldCount), new=\(newCount)")
-            return true
-        }
-
-        // Сравнение по идентификаторам (title для ParkAnnotation)
-        let oldIdentifiers = Set(filteredOld.compactMap(\.title))
-        let newIdentifiers = Set(new.compactMap(\.title))
-
-        let hasDiff = oldIdentifiers != newIdentifiers
+        let hasDiff = AnnotationsComparison.hasDifferences(old: old, new: new)
         if hasDiff {
-            logger.debug("Идентификаторы аннотаций изменились")
+            logger.debug("Аннотации изменились")
         } else {
             logger.debug("Аннотации идентичны, обновление не требуется")
         }

@@ -17,7 +17,7 @@ struct ParksMapScreen: View {
 
     // MARK: - Кэшированные данные для оптимизации производительности
     @StateObject private var parksCache = ParksCacheManager()
-    @State private var cachedAnnotations: [any MKAnnotation] = []
+    @StateObject private var annotationsCache = AnnotationsCacheManager()
     @State private var cachedCities: [City]?
     @State private var annotationsTask: Task<Void, Never>?
 
@@ -182,7 +182,7 @@ private extension ParksMapScreen {
                 shouldUpdateRegion: viewModel.shouldUpdateRegion,
                 onRegionUpdated: viewModel.resetRegionUpdateFlag,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: cachedAnnotations,
+                annotations: annotationsCache.annotations,
                 didSelect: { annotation in
                     if let park = parksCache.parks.first(
                         where: { $0.annotation.title == annotation.title }
@@ -374,9 +374,7 @@ private extension ParksMapScreen {
         } else {
             filtered = regularParks
         }
-        // Обновляем кэш только если данные изменились
-        if parksCache.shouldUpdate(with: filtered) {
-            parksCache.update(with: filtered)
+        if parksCache.updateIfNeeded(with: filtered) {
             updateAnnotations()
         }
     }
@@ -391,14 +389,11 @@ private extension ParksMapScreen {
         annotationsTask = Task.detached(priority: .userInitiated) { [parks] in
             let newAnnotations = parks.map(\.annotation)
             guard !Task.isCancelled else { return }
-            let newIdentifiers = Set(newAnnotations.compactMap(\.title))
             // Обновляем кэш на главном потоке
             await MainActor.run {
                 guard !Task.isCancelled else { return }
-
-                let oldIdentifiers = Set(self.cachedAnnotations.compactMap(\.title))
-                if newIdentifiers != oldIdentifiers || self.cachedAnnotations.count != newAnnotations.count {
-                    self.cachedAnnotations = newAnnotations
+                if annotationsCache.shouldUpdate(with: newAnnotations) {
+                    annotationsCache.update(with: newAnnotations)
                 }
             }
         }

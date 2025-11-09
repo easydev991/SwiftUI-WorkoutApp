@@ -1,119 +1,79 @@
 import SwiftUI
-@testable import SwiftUI_WorkoutApp
 import SWModels
 import Testing
+@testable import WorkoutApp
 
 struct ParksCacheManagerTests {
-    // MARK: - Тесты для shouldUpdate
+    // MARK: - Тесты для updateIfNeeded
 
-    @Test("Должен возвращать true при первом обновлении (кэш пустой)")
+    @Test("Должен возвращать true и обновлять кэш при первом обновлении")
     @MainActor
-    func shouldUpdate_returnsTrue_whenCacheIsEmpty() {
+    func updateIfNeeded_returnsTrueAndUpdatesCache_onFirstUpdate() {
         let manager = ParksCacheManager()
         let parks = makeParks(ids: [1, 2, 3])
-        let result = manager.shouldUpdate(with: parks)
+        let result = manager.updateIfNeeded(with: parks)
         #expect(result)
+        #expect(manager.parks.count == 3)
+        #expect(manager.parks.map(\.id) == [1, 2, 3])
     }
 
-    @Test("Должен возвращать false если идентификаторы не изменились")
+    @Test("Должен возвращать false если данные не изменились")
     @MainActor
-    func shouldUpdate_returnsFalse_whenIdentifiersNotChanged() {
+    func updateIfNeeded_returnsFalse_whenDataNotChanged() {
         let manager = ParksCacheManager()
         let parks = makeParks(ids: [1, 2, 3])
-        manager.update(with: parks)
-        let result = manager.shouldUpdate(with: parks)
+        _ = manager.updateIfNeeded(with: parks)
+        let result = manager.updateIfNeeded(with: parks)
         #expect(!result)
+        #expect(manager.parks.count == 3)
     }
 
-    @Test("Должен возвращать true если изменились идентификаторы (добавлены новые)")
+    @Test("Должен возвращать true и обновлять кэш если данные изменились")
     @MainActor
-    func shouldUpdate_returnsTrue_whenNewIdentifiersAdded() {
+    func updateIfNeeded_returnsTrueAndUpdatesCache_whenDataChanged() {
         let manager = ParksCacheManager()
         let initialParks = makeParks(ids: [1, 2, 3])
-        manager.update(with: initialParks)
+        _ = manager.updateIfNeeded(with: initialParks)
         let newParks = makeParks(ids: [1, 2, 3, 4])
-        let result = manager.shouldUpdate(with: newParks)
+        let result = manager.updateIfNeeded(with: newParks)
         #expect(result)
+        #expect(manager.parks.count == 4)
+        #expect(manager.parks.map(\.id) == [1, 2, 3, 4])
     }
 
-    @Test("Должен возвращать true если изменились идентификаторы (удалены старые)")
+    @Test("Должен возвращать true и обновлять кэш пустым массивом если кэш был не пуст")
     @MainActor
-    func shouldUpdate_returnsTrue_whenIdentifiersRemoved() {
+    func updateIfNeeded_returnsTrueAndUpdatesCacheWithEmptyArray_whenCacheWasNotEmpty() {
         let manager = ParksCacheManager()
         let initialParks = makeParks(ids: [1, 2, 3])
-        manager.update(with: initialParks)
-        let newParks = makeParks(ids: [1, 2])
-        let result = manager.shouldUpdate(with: newParks)
+        _ = manager.updateIfNeeded(with: initialParks)
+        let emptyParks: [Park] = []
+        let result = manager.updateIfNeeded(with: emptyParks)
         #expect(result)
-    }
-
-    @Test("Должен возвращать true если изменилось количество при тех же идентификаторах")
-    @MainActor
-    func shouldUpdate_returnsTrue_whenCountChangedWithSameIdentifiers() {
-        let manager = ParksCacheManager()
-        let initialParks = makeParks(ids: [1, 2, 3])
-        manager.update(with: initialParks)
-        let newParks = makeParks(ids: [1, 2, 3, 1, 2])
-        let result = manager.shouldUpdate(with: newParks)
-        #expect(result)
-    }
-
-    @Test("Должен возвращать true если изменились идентификаторы при том же количестве")
-    @MainActor
-    func shouldUpdate_returnsTrue_whenIdentifiersChangedWithSameCount() {
-        let manager = ParksCacheManager()
-        let initialParks = makeParks(ids: [1, 2, 3])
-        manager.update(with: initialParks)
-        let newParks = makeParks(ids: [4, 5, 6])
-        let result = manager.shouldUpdate(with: newParks)
-        #expect(result)
-    }
-
-    // MARK: - Тесты для update
-
-    @Test("Должен обновлять кэш новыми данными")
-    @MainActor
-    func update_updatesCacheWithNewData() {
-        let manager = ParksCacheManager()
-        let parks = makeParks(ids: [1, 2, 3])
-        manager.update(with: parks)
-        let cachedParks = manager.parks
-        #expect(cachedParks.count == 3)
-        #expect(cachedParks.map(\.id) == [1, 2, 3])
-    }
-
-    @Test("Должен обновлять count после обновления")
-    @MainActor
-    func update_updatesCountAfterUpdate() {
-        let manager = ParksCacheManager()
-        let parks = makeParks(ids: [1, 2, 3, 4, 5])
-        manager.update(with: parks)
-        let count = manager.count
-        #expect(count == 5)
+        #expect(manager.parks.isEmpty)
+        #expect(manager.count == 0)
     }
 
     // MARK: - Тесты для граничных случаев
 
     @Test("Должен корректно обрабатывать пустой массив")
     @MainActor
-    func shouldUpdate_handlesEmptyArray() {
+    func updateIfNeeded_handlesEmptyArray() {
         let manager = ParksCacheManager()
         let emptyParks: [Park] = []
-        let result = manager.shouldUpdate(with: emptyParks)
+        let result = manager.updateIfNeeded(with: emptyParks)
         #expect(result)
-        manager.update(with: emptyParks)
         let count = manager.count
         #expect(count == 0)
     }
 
     @Test("Должен корректно обрабатывать большие массивы (9000+ элементов)")
     @MainActor
-    func shouldUpdate_handlesLargeArrays() {
+    func updateIfNeeded_handlesLargeArrays() {
         let manager = ParksCacheManager()
         let largeParks = makeParks(ids: Array(1 ... 9000))
-        let result = manager.shouldUpdate(with: largeParks)
+        let result = manager.updateIfNeeded(with: largeParks)
         #expect(result)
-        manager.update(with: largeParks)
         let count = manager.count
         #expect(count == 9000)
     }
