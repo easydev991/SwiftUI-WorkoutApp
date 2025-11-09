@@ -8,7 +8,8 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Модель для работы с адресами и справочником стран/городов
 struct SWAddress {
-    private static let storage = SWFileManagerImp(fileName: "CountriesAndCities.json")
+    private static let defaultStorage = SWFileManagerImp(fileName: "CountriesAndCities.json")
+    private let storage: SWFileManager
     private let countryId: Int
     private let cityId: Int
 
@@ -16,26 +17,31 @@ struct SWAddress {
     /// - Parameters:
     ///   - countryId: `id` страны
     ///   - cityId: `id` города
-    init(_ countryId: Int, _ cityId: Int) {
+    ///   - storage: Хранилище для справочника стран/городов
+    init(_ countryId: Int, _ cityId: Int, storage: SWFileManager = defaultStorage) {
         self.countryId = countryId
         self.cityId = cityId
+        self.storage = storage
     }
 
     /// `Failable`-инициализатор
     /// - Parameters:
     ///   - countryId: `id` страны
     ///   - cityId: `id` города
-    init?(_ countryId: Int?, _ cityId: Int?) {
+    ///   - storage: Хранилище для справочника стран/городов
+    init?(_ countryId: Int?, _ cityId: Int?, storage: SWFileManager = defaultStorage) {
         guard let countryId, let cityId else {
             return nil
         }
-        self.init(countryId, cityId)
+        self.init(countryId, cityId, storage: storage)
     }
 
     /// Инициализатор для обращения к справочнику стран/городов
-    init() {
+    /// - Parameter storage: Хранилище для справочника стран/городов
+    init(storage: SWFileManager = defaultStorage) {
         self.countryId = 0
         self.cityId = 0
+        self.storage = storage
     }
 }
 
@@ -43,7 +49,7 @@ extension SWAddress {
     /// Страна и город
     var address: String {
         guard countryId != 0, cityId != 0,
-              let country = try? Self.countries().first(where: { $0.id == String(countryId) })
+              let country = try? Self.countries(storage: storage).first(where: { $0.id == String(countryId) })
         else { return "" }
         if let cityName = country.cities.first(where: { $0.id == String(cityId) })?.name {
             return country.name + ", " + cityName
@@ -55,7 +61,7 @@ extension SWAddress {
     /// Координаты для страны/города (широта, долгота)
     var coordinate: (lat: Double, lon: Double)? {
         guard countryId != 0, cityId != 0,
-              let city = try? Self.city(with: cityId, in: countryId),
+              let city = try? Self.city(with: cityId, in: countryId, storage: storage),
               let lat = Double(city.lat),
               let lon = Double(city.lon)
         else { return nil }
@@ -65,7 +71,7 @@ extension SWAddress {
     /// Название города
     var cityName: String? {
         do {
-            return try Self.city(with: cityId, in: countryId)?.name
+            return try Self.city(with: cityId, in: countryId, storage: storage)?.name
         } catch {
             logger.error("Не смогли получить название города, \(error.localizedDescription, privacy: .public)")
             return nil
@@ -76,7 +82,7 @@ extension SWAddress {
     ///
     /// - Parameter countries: Страны/города для сохранения
     func save(_ countries: [Country]) throws {
-        try Self.storage.save(countries)
+        try storage.save(countries)
         logger.debug("Успешно сохранили список стран (\(countries.count) шт.)")
     }
 }
@@ -92,7 +98,8 @@ extension SWAddress {
     }
 
     /// Возвращает сохраненный в памяти справочник стран/городов
-    static func countries() throws -> [Country] {
+    /// - Parameter storage: Хранилище для справочника стран/городов
+    static func countries(storage: SWFileManager = defaultStorage) throws -> [Country] {
         if storage.documentExists {
             try storage.get()
         } else {
@@ -105,12 +112,17 @@ extension SWAddress {
     }
 
     /// Возвращает сохраненный в памяти список всех городов
-    static func cities() throws -> [City] {
-        try countries().flatMap(\.cities)
+    /// - Parameter storage: Хранилище для справочника стран/городов
+    static func cities(storage: SWFileManager = defaultStorage) throws -> [City] {
+        try countries(storage: storage).flatMap(\.cities)
     }
 
-    static func findCity(with name: String) throws -> City {
-        let storedCities = try cities()
+    /// Находит город по названию
+    /// - Parameters:
+    ///   - name: Название города
+    ///   - storage: Хранилище для справочника стран/городов
+    static func findCity(with name: String, storage: SWFileManager = defaultStorage) throws -> City {
+        let storedCities = try cities(storage: storage)
         guard let storedCity = storedCities.first(where: { $0.name.lowercased() == name.lowercased() }) else {
             throw AddressError.failedToFindCityByName(name)
         }
@@ -119,7 +131,7 @@ extension SWAddress {
 }
 
 extension SWAddress {
-    enum AddressError: Error, LocalizedError {
+    enum AddressError: Error, LocalizedError, Equatable {
         case failedToFindCityByName(String)
 
         var errorDescription: String? {
@@ -157,11 +169,13 @@ extension SWAddress {
     }
 
     /// Пытается создать идентификатор города по точке на карте
-    /// - Parameter placemarkLocality: Точка на карте
+    /// - Parameters:
+    ///   - placemarkLocality: Точка на карте
+    ///   - storage: Хранилище для справочника стран/городов
     /// - Returns: Идентификатор города в случае успеха или `nil`
-    static func makeCityId(with placemarkLocality: String?) -> Int? {
+    static func makeCityId(with placemarkLocality: String?, storage: SWFileManager = defaultStorage) -> Int? {
         guard let placemarkLocality,
-              let city = try? findCity(with: placemarkLocality),
+              let city = try? findCity(with: placemarkLocality, storage: storage),
               let cityId = Int(city.id)
         else {
             logger.error("Не смогли найти город в справочнике с названием \(placemarkLocality ?? "неизвестно")")
@@ -172,8 +186,8 @@ extension SWAddress {
 }
 
 private extension SWAddress {
-    static func city(with id: Int, in countryId: Int) throws -> City? {
-        let country = try countries().first(where: { $0.id == String(countryId) })
+    static func city(with id: Int, in countryId: Int, storage: SWFileManager = defaultStorage) throws -> City? {
+        let country = try countries(storage: storage).first(where: { $0.id == String(countryId) })
         return country?.cities.first(where: { $0.id == String(id) })
     }
 }
