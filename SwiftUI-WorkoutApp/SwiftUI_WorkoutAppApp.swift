@@ -58,7 +58,7 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(dialogsViewModel)
             .environmentObject(profileViewModel)
             .preferredColorScheme(colorScheme)
-            .environment(\.isNetworkConnected, network.isConnected)
+            .environment(\.isNetworkConnected, network.isStatusInitialized ? network.isConnected : true)
             .environment(\.userFlags, defaults.userFlags)
             .task(id: defaults.isAuthorized) {
                 await dialogsViewModel.getDialogs(defaults: defaults)

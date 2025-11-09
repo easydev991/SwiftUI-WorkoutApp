@@ -8,6 +8,7 @@ import SWUtils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
     @StateObject private var viewModel = ViewModel()
@@ -237,16 +238,26 @@ private extension ParksMapScreen {
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
         if !parksCache.parks.isEmpty, !refresh { return }
+        // Если refresh и данные уже загружены - загружаем с сервера
+        if refresh, !parksManager.fullList.isEmpty {
+            guard isNetworkConnected else {
+                SWAlert.shared.presentNoConnection(false)
+                return
+            }
+            await getUpdatedParks()
+            return
+        }
         guard parksManager.fullList.isEmpty else {
             updateFilteredParks()
             return
         }
+        // Если данные не загружены - загружаем дефолтный список из локального хранилища
         do {
             try await parksManager.makeDefaultList()
-            updateFilteredParks()
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
+        // Если нужно автоматическое обновление - загружаем с сервера
         if parksManager.needUpdateDefaultList {
             await askForParks(refresh: true)
         }
@@ -269,12 +280,9 @@ private extension ParksMapScreen {
         }
     }
 
-    func getUpdatedParks(from dateString: String? = nil) async {
+    func getUpdatedParks() async {
         do {
-            try await parksManager.getUpdatedParks(
-                client: SWClient(with: defaults),
-                from: dateString
-            )
+            try await parksManager.getUpdatedParks(client: SWClient(with: defaults))
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {

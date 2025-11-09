@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftUI
 import SWModels
 import SWNetworkClient
@@ -7,6 +8,7 @@ import SWUtils
 /// Держит актуальный список всех площадок и умеет его обновлять
 @MainActor
 final class ParksManager: ObservableObject {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ParksManager")
     /// Дефолтная дата - предыдущее ручное обновление файла `oldParks.json`
     ///
     /// При обновлении справочника вручную необходимо обновить тут дату -
@@ -40,31 +42,45 @@ final class ParksManager: ObservableObject {
     /// Выполняется асинхронно, чтобы не блокировать главный поток
     func makeDefaultList() async throws {
         let storage = storage
+        let documentExists = storage.documentExists
+
         let parks: [Park] = try await Task.detached(priority: .userInitiated) {
-            let exists = storage.documentExists
-            if exists {
-                return try storage.get() as [Park]
-            } else {
-                return try Bundle.main.decodeJson(
-                    [Park].self,
-                    fileName: "oldParks",
-                    extension: "json"
-                )
+            if documentExists {
+                do {
+                    let loadedParks: [Park] = try storage.get()
+                    if !loadedParks.isEmpty {
+                        return loadedParks
+                    }
+                    self.logger.warning("makeDefaultList: файл существует, но пустой, загружаем из Bundle")
+                } catch {
+                    self.logger.error(
+                        "makeDefaultList: ошибка при чтении файла: \(error.localizedDescription, privacy: .public), загружаем из Bundle"
+                    )
+                }
             }
+            // Файла нет, или он пустой, или была ошибка - загружаем из Bundle
+            return try Bundle.main.decodeJson(
+                [Park].self,
+                fileName: "oldParks",
+                extension: "json"
+            )
         }.value
+        guard !parks.isEmpty else {
+            logger.error("makeDefaultList: не удалось загрузить площадки ни из файла, ни из Bundle!")
+            throw ServiceError.failedToLoadParks
+        }
         fullList = parks
     }
 
     /// Загружает обновленный список площадок
-    /// - Parameters:
-    ///   - client: Клиент для загрузки обновленных площадок
-    ///   - dateString: Дата, с которой нужно загрузить обновленные площадки.
-    ///   Если передать `nil`, использует дефолтную дату (предыдущее ручное обновление площадок)
-    func getUpdatedParks(client: ParksUpdaterClient, from dateString: String? = nil) async throws {
+    ///
+    /// Использует `lastParksUpdateDateString` как дату для запроса обновленных площадок
+    /// - Parameter client: Клиент для загрузки обновленных площадок
+    func getUpdatedParks(client: ParksUpdaterClient) async throws {
         isLoading = true
         defer { isLoading = false }
         let updatedParks = try await client.getUpdatedParks(
-            from: dateString ?? lastParksUpdateDateString
+            from: lastParksUpdateDateString
         )
         try updateDefaultList(with: updatedParks)
     }
@@ -97,6 +113,19 @@ final class ParksManager: ObservableObject {
     func deletePark(with id: Int) throws {
         fullList.removeAll(where: { $0.id == id })
         try saveParksInMemory()
+    }
+}
+
+extension ParksManager {
+    enum ServiceError: Error, LocalizedError {
+        case failedToLoadParks
+
+        var errorDescription: String? {
+            switch self {
+            case .failedToLoadParks:
+                "Не удалось загрузить список площадок"
+            }
+        }
     }
 }
 
