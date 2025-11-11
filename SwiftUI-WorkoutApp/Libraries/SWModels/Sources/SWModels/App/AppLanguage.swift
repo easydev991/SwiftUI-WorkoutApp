@@ -7,8 +7,8 @@ public enum AppLanguage: CaseIterable, Identifiable {
 
     public var title: String {
         switch self {
-        case .russian: NSLocalizedString("Russian", bundle: .module, comment: "")
-        case .english: NSLocalizedString("English", bundle: .module, comment: "")
+        case .russian: String(localized: .russian)
+        case .english: String(localized: .english)
         }
     }
 

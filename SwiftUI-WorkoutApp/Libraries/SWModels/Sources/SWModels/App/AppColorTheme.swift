@@ -8,9 +8,9 @@ public enum AppColorTheme: Int, CaseIterable, CustomStringConvertible, Identifia
 
     public var description: String {
         switch self {
-        case .dark: NSLocalizedString("AppTheme.Dark", bundle: .module, comment: "")
-        case .light: NSLocalizedString("AppTheme.Light", bundle: .module, comment: "")
-        case .system: NSLocalizedString("AppTheme.System", bundle: .module, comment: "")
+        case .dark: String(localized: .appThemeDark)
+        case .light: String(localized: .appThemeLight)
+        case .system: String(localized: .appThemeSystem)
         }
     }
 }

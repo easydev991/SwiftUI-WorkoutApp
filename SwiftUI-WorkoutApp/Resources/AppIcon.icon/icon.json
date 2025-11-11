@@ -16,15 +16,15 @@
     {
       "blur-material-specializations" : [
         {
-          "value" : 0.5
+          "value" : null
         },
         {
           "appearance" : "dark",
-          "value" : 0.5
+          "value" : null
         },
         {
           "appearance" : "tinted",
-          "value" : 0.5
+          "value" : null
         }
       ],
       "layers" : [
@@ -67,7 +67,7 @@
       ],
       "specular-specializations" : [
         {
-          "value" : true
+          "value" : false
         },
         {
           "appearance" : "dark",
@@ -81,14 +81,14 @@
       "translucency-specializations" : [
         {
           "value" : {
-            "enabled" : true,
+            "enabled" : false,
             "value" : 0.5
           }
         },
         {
           "appearance" : "dark",
           "value" : {
-            "enabled" : true,
+            "enabled" : false,
             "value" : 0.5
           }
         },
@@ -155,7 +155,7 @@
       ],
       "specular-specializations" : [
         {
-          "value" : true
+          "value" : false
         },
         {
           "appearance" : "dark",
@@ -176,8 +176,8 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "enabled" : false,
-            "value" : 0.5
+            "enabled" : true,
+            "value" : 1
           }
         }
       ]

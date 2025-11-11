@@ -92,6 +92,7 @@
     },
     "Alert.DeleteDialog" : {
       "comment" : "Удалить диалог?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -109,6 +110,7 @@
     },
     "Alert.DeleteEvent" : {
       "comment" : "Удалить мероприятие?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -126,6 +128,7 @@
     },
     "Alert.DeleteJournal" : {
       "comment" : "Удалить дневник?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -143,6 +146,7 @@
     },
     "Alert.DeleteJournalEntry" : {
       "comment" : "Удалить запись из дневника?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -160,6 +164,7 @@
     },
     "Alert.DeletePark" : {
       "comment" : "Удалить площадку?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -177,6 +182,7 @@
     },
     "Alert.EventCreationRule" : {
       "comment" : "Чтобы создать мероприятие, нужно указать хотя бы одну площадку, где ты тренируешься",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -194,6 +200,7 @@
     },
     "Alert.ForgotPassword" : {
       "comment" : "Для восстановления пароля введите логин или email",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -211,6 +218,7 @@
     },
     "Alert.FriendRequestSent" : {
       "comment" : "Запрос отправлен!",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -228,6 +236,7 @@
     },
     "Alert.LocationPermissionDenied" : {
       "comment" : "Запрещен доступ к геолокации",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -245,6 +254,7 @@
     },
     "Alert.Logout" : {
       "comment" : "Выйти из учетной записи?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -262,6 +272,7 @@
     },
     "Alert.NeedLocationPermission" : {
       "comment" : "Для отображения твоего местоположения необходимо разрешить доступ к геолокации в настройках",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -279,6 +290,7 @@
     },
     "Alert.ParkFeedback" : {
       "comment" : "Нужно обновить данные о площадке?",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -296,6 +308,7 @@
     },
     "Alert.ResetSuccessful" : {
       "comment" : "Инструкция для восстановления пароля выслана на email, указанный при регистрации",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -313,6 +326,7 @@
     },
     "Alert.UserNotFound" : {
       "comment" : "Не удалось найти такого пользователя",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -329,6 +343,7 @@
       }
     },
     "AppTheme.Dark" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -345,6 +360,7 @@
       }
     },
     "AppTheme.Light" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -361,6 +377,7 @@
       }
     },
     "AppTheme.System" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -378,6 +395,7 @@
     },
     "Auth.Invitation" : {
       "comment" : "Авторизуйтесь, чтобы иметь доступ ко всем возможностям",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -394,6 +412,7 @@
       }
     },
     "BlacklistOption.Block.dialogMessage" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -410,6 +429,7 @@
       }
     },
     "BlacklistOption.Block.dialogTitle" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -426,6 +446,7 @@
       }
     },
     "BlacklistOption.Block.result" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -442,6 +463,7 @@
       }
     },
     "BlacklistOption.Block.title" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -458,6 +480,7 @@
       }
     },
     "BlacklistOption.Unblock.dialogMessage" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -474,6 +497,7 @@
       }
     },
     "BlacklistOption.Unblock.dialogTitle" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -490,6 +514,7 @@
       }
     },
     "BlacklistOption.Unblock.result" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -506,6 +531,7 @@
       }
     },
     "BlacklistOption.Unblock.title" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -523,6 +549,7 @@
     },
     "Done" : {
       "comment" : "Готово",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -540,6 +567,7 @@
     },
     "English" : {
       "comment" : "Язык приложения",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -557,6 +585,7 @@
     },
     "Error" : {
       "comment" : "Ошибка",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -573,6 +602,7 @@
       }
     },
     "EventType.Future" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -589,6 +619,7 @@
       }
     },
     "EventType.Past" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -605,6 +636,7 @@
       }
     },
     "Feedback.City" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -621,6 +653,7 @@
       }
     },
     "Feedback.CommonQuestion" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -637,6 +670,7 @@
       }
     },
     "Feedback.Country" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -653,6 +687,7 @@
       }
     },
     "FriendAction.Add" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -669,6 +704,7 @@
       }
     },
     "FriendAction.Remove" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -774,6 +810,7 @@
       }
     },
     "Gender.Female" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -790,6 +827,7 @@
       }
     },
     "Gender.Female.Affiliation" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -806,6 +844,7 @@
       }
     },
     "Gender.Male" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -822,6 +861,7 @@
       }
     },
     "Gender.Male.Affiliation" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -838,6 +878,7 @@
       }
     },
     "Gender.NotSpecified.Afiliation" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -855,6 +896,7 @@
     },
     "JournalAccess.All" : {
       "comment" : "Все",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -872,6 +914,7 @@
     },
     "JournalAccess.Friends" : {
       "comment" : "Друзья",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -889,6 +932,7 @@
     },
     "JournalAccess.Nobody" : {
       "comment" : "Только я",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -984,7 +1028,7 @@
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : ""
                 }
               }
@@ -994,6 +1038,7 @@
       }
     },
     "ParkGrade.Collars" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1010,6 +1055,7 @@
       }
     },
     "ParkGrade.Legendary" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1026,6 +1072,7 @@
       }
     },
     "ParkGrade.Modern" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1042,6 +1089,7 @@
       }
     },
     "ParkGrade.Soviet" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1147,6 +1195,7 @@
       }
     },
     "ParkSize.Large" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1163,6 +1212,7 @@
       }
     },
     "ParkSize.Medium" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1179,6 +1229,7 @@
       }
     },
     "ParkSize.Small" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1374,6 +1425,7 @@
     },
     "Registration.Info" : {
       "comment" : "Регистрация доступна на сайте workout.su",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1391,6 +1443,7 @@
     },
     "Russian" : {
       "comment" : "Язык приложения",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {

@@ -23,10 +23,9 @@ public struct SWClient: Sendable {
     /// Приложение не пропускают в `appstore`, пока на бэке поля "пол" и "дата рождения" являются обязательными,
     /// поэтому этот запрос не используется
     /// - Parameter model: необходимые для регистрации данные
-    /// - Returns: Вся информация о пользователе
-    public func registration(with model: MainUserForm) async throws -> Bool {
+    public func registration(with model: MainUserForm) async throws {
         let endpoint = Endpoint.registration(form: model)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Выполняет авторизацию
@@ -92,18 +91,16 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - current: текущий пароль
     ///   - new: новый пароль
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func changePassword(current: String, new: String) async throws -> Bool {
+    public func changePassword(current: String, new: String) async throws {
         let endpoint = Endpoint.changePassword(currentPass: current, newPass: new)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     #warning("Запрос не используется, т.к. регистрация в приложении отключена")
     /// Запрашивает удаление профиля текущего пользователя приложения
-    public func deleteUser() async throws -> Bool {
+    public func deleteUser() async throws {
         let endpoint = Endpoint.deleteUser
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Загружает список друзей для выбранного пользователя
@@ -134,26 +131,22 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - userId: `id` инициатора заявки
     ///   - accept: `true` - одобрить заявку, `false` - отклонить
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func respondToFriendRequest(from userId: Int, accept: Bool) async throws -> Bool {
+    public func respondToFriendRequest(from userId: Int, accept: Bool) async throws {
         let endpoint: Endpoint = accept
             ? .acceptFriendRequest(from: userId)
             : .declineFriendRequest(from: userId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Совершает действие со статусом друга/пользователя
     /// - Parameters:
     ///   - userId: `id` пользователя, к которому применяется действие
     ///   - option: вид действия - отправить заявку на добавление в друзья или удалить из списка друзей
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func friendAction(userId: Int, option: FriendAction) async throws -> Bool {
+    public func friendAction(userId: Int, option: FriendAction) async throws {
         let endpoint: Endpoint = option == .add
             ? .sendFriendRequest(to: userId)
             : .deleteFriend(userId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Добавляет или убирает пользователя из черного списка
@@ -162,13 +155,11 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - user: Пользователь, к которому применяется действие
     ///   - option: вид действия - добавить/убрать из черного списка
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func blacklistAction(user: UserResponse, option: BlacklistOption) async throws -> Bool {
+    public func blacklistAction(user: UserResponse, option: BlacklistOption) async throws {
         let endpoint: Endpoint = option == .add
             ? .addToBlacklist(user.id)
             : .deleteFromBlacklist(user.id)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Ищет пользователей, чей логин содержит указанный текст
@@ -197,14 +188,6 @@ public struct SWClient: Sendable {
         return try await makeResult(for: endpoint)
     }
 
-    /// Загружает список всех площадок, обновленных после указанной даты
-    /// - Parameter stringDate: дата отсечки для поиска обновленных площадок
-    /// - Returns: Список обновленных площадок
-    public func getUpdatedParks(from stringDate: String) async throws -> [Park] {
-        let endpoint = Endpoint.getUpdatedParks(from: stringDate)
-        return try await makeResult(for: endpoint)
-    }
-
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
@@ -217,8 +200,8 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` площадки
     ///   - form: форма с данными о площадке
-    /// - Returns: Обновленная информация о площадке `Park`, но с ошибками, поэтому обрабатываем `ParkResult`
-    public func savePark(id: Int?, form: ParkForm) async throws -> ParkResult {
+    /// - Returns: Обновленная информация о площадке `Park`
+    public func savePark(id: Int?, form: ParkForm) async throws -> Park {
         let endpoint = if let id {
             Endpoint.editPark(id: id, form: form)
         } else {
@@ -231,8 +214,7 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - option: тип комментария (к площадке или мероприятию)
     ///   - comment: текст комментария
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func addNewEntry(to option: TextEntryOption, entryText: String) async throws -> Bool {
+    public func addNewEntry(to option: TextEntryOption, entryText: String) async throws {
         let endpoint: Endpoint = switch option {
         case let .park(id):
             .addCommentToPark(parkId: id, comment: entryText)
@@ -241,7 +223,7 @@ public struct SWClient: Sendable {
         case let .journal(ownerId, journalId):
             .saveJournalEntry(userId: ownerId, journalId: journalId, message: entryText)
         }
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Изменить свой комментарий для площадки
@@ -249,8 +231,7 @@ public struct SWClient: Sendable {
     ///   - option: тип записи
     ///   - entryId: `id` записи
     ///   - newEntryText: текст измененной записи
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func editEntry(for option: TextEntryOption, entryId: Int, newEntryText: String) async throws -> Bool {
+    public func editEntry(for option: TextEntryOption, entryId: Int, newEntryText: String) async throws {
         let endpoint: Endpoint = switch option {
         case let .park(id):
             .editParkComment(
@@ -272,16 +253,14 @@ public struct SWClient: Sendable {
                 newEntryText: newEntryText
             )
         }
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Удалить запись
     /// - Parameters:
     ///   - option: тип записи
     ///   - entryId: `id` записи
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func deleteEntry(from option: TextEntryOption, entryId: Int) async throws -> Bool {
+    public func deleteEntry(from option: TextEntryOption, entryId: Int) async throws {
         let endpoint: Endpoint = switch option {
         case let .park(id):
             .deleteParkComment(id, commentId: entryId)
@@ -290,7 +269,7 @@ public struct SWClient: Sendable {
         case let .journal(ownerId, journalId):
             .deleteEntry(userId: ownerId, journalId: journalId, entryId: entryId)
         }
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Получить список площадок, где тренируется пользователь
@@ -305,10 +284,9 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - trainHere: `true` - тренируюсь здесь, `false` - не тренируюсь здесь
     ///   - parkId: `id` площадки
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func changeTrainHereStatus(_ trainHere: Bool, for parkId: Int) async throws -> Bool {
+    public func changeTrainHereStatus(_ trainHere: Bool, for parkId: Int) async throws {
         let endpoint: Endpoint = trainHere ? .postTrainHere(parkId) : .deleteTrainHere(parkId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Запрашивает список мероприятий
@@ -331,8 +309,8 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - id: `id` мероприятия
     ///   - form: форма с данными о мероприятии
-    /// - Returns: Сервер возвращает `EventResponse`, но с неправильным форматом `area_id` (строка), поэтому обрабатываем `EventResult`
-    public func saveEvent(id: Int?, form: EventForm) async throws -> EventResult {
+    /// - Returns: Обновленная информация о мероприятии `EventResponse`
+    public func saveEvent(id: Int?, form: EventForm) async throws -> EventResponse {
         let endpoint: Endpoint = if let id {
             .editEvent(id: id, form: form)
         } else {
@@ -345,26 +323,23 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - go: `true` - иду на мероприятие, `false` - не иду
     ///   - eventId: `id` мероприятия
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func changeIsGoingToEvent(_ go: Bool, for eventId: Int) async throws -> Bool {
+    public func changeIsGoingToEvent(_ go: Bool, for eventId: Int) async throws {
         let endpoint: Endpoint = go ? .postGoToEvent(eventId) : .deleteGoToEvent(eventId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Удалить мероприятие
     /// - Parameter eventId: `id` мероприятия
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func delete(eventId: Int) async throws -> Bool {
+    public func delete(eventId: Int) async throws {
         let endpoint = Endpoint.deleteEvent(eventId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Удалить площадку
     /// - Parameter parkId: `id` площадки
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func delete(parkId: Int) async throws -> Bool {
+    public func delete(parkId: Int) async throws {
         let endpoint = Endpoint.deletePark(parkId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Запрашивает список диалогов для текущего пользователя
@@ -386,27 +361,23 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - message: отправляемое сообщение
     ///   - userId: `id` получателя сообщения
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func sendMessage(_ message: String, to userId: Int) async throws -> Bool {
+    public func sendMessage(_ message: String, to userId: Int) async throws {
         let endpoint = Endpoint.sendMessageTo(message, userId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Отмечает сообщения от выбранного пользователя как прочитанные
     /// - Parameter userId: `id` выбранного пользователя
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func markAsRead(from userId: Int) async throws -> Bool {
+    public func markAsRead(from userId: Int) async throws {
         let endpoint = Endpoint.markAsRead(from: userId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Удаляет выбранный диалог
     /// - Parameter dialogId: `id` диалога для удаления
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    public func deleteDialog(_ dialogId: Int) async throws -> Bool {
+    public func deleteDialog(_ dialogId: Int) async throws {
         let endpoint = Endpoint.deleteDialog(id: dialogId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Запрашивает список дневников для выбранного пользователя
@@ -438,15 +409,13 @@ public struct SWClient: Sendable {
     ///   - mainUserId: `id` главного пользователя
     ///   - viewAccess: доступ на просмотр
     ///   - commentAccess: доступ на комментирование
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
     public func editJournalSettings(
         with journalId: Int,
         title: String,
         for mainUserId: Int?,
         viewAccess: JournalAccess,
         commentAccess: JournalAccess
-    ) async throws -> Bool {
+    ) async throws {
         guard let mainUserId else {
             throw APIError.invalidUserId
         }
@@ -457,20 +426,19 @@ public struct SWClient: Sendable {
             viewAccess: viewAccess.rawValue,
             commentAccess: commentAccess.rawValue
         )
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
+    /// Создает новый дневник для пользователя
     /// - Parameters:
     ///   - title: название дневника
     ///   - mainUserId: `id` главного пользователя
-    /// - Returns: Создает новый дневник для пользователя
-    @discardableResult
-    public func createJournal(with title: String, for mainUserId: Int?) async throws -> Bool {
+    public func createJournal(with title: String, for mainUserId: Int?) async throws {
         guard let mainUserId else {
             throw APIError.invalidUserId
         }
         let endpoint = Endpoint.createJournal(userId: mainUserId, title: title)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
     /// Запрашивает записи из дневника пользователя
@@ -487,17 +455,15 @@ public struct SWClient: Sendable {
     /// - Parameters:
     ///   - journalId: `id` дневника для удаления
     ///   - mainUserId: `id` владельца дневника (главного пользователя)
-    /// - Returns: `true` в случае успеха, `false` при ошибках
-    @discardableResult
-    public func deleteJournal(with journalId: Int, for mainUserId: Int?) async throws -> Bool {
+    public func deleteJournal(with journalId: Int, for mainUserId: Int?) async throws {
         guard let mainUserId else {
             throw APIError.invalidUserId
         }
         let endpoint = Endpoint.deleteJournal(userId: mainUserId, journalId: journalId)
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 
-    public func deletePhoto(from container: PhotoContainer) async throws -> Bool {
+    public func deletePhoto(from container: PhotoContainer) async throws {
         let endpoint: Endpoint = switch container {
         case let .event(input):
             .deleteEventPhoto(
@@ -510,17 +476,17 @@ public struct SWClient: Sendable {
                 photoId: input.photoId
             )
         }
-        return try await makeStatus(for: endpoint)
+        try await makeStatus(for: endpoint)
     }
 }
 
 // MARK: - Обертки для SWNetworkService
 
-private extension SWClient {
-    func makeStatus(for endpoint: Endpoint) async throws -> Bool {
+extension SWClient {
+    func makeStatus(for endpoint: Endpoint) async throws {
         do {
             let finalComponents = try await makeComponents(for: endpoint)
-            return try await service.requestStatus(components: finalComponents)
+            try await service.requestStatus(components: finalComponents)
         } catch APIError.invalidCredentials {
             await authHelper.triggerLogout()
             throw ClientError.forceLogout

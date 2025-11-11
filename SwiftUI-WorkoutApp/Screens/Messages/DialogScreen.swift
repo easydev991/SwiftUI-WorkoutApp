@@ -139,9 +139,8 @@ private extension DialogScreen {
         guard dialog.hasUnreadMessages else { return }
         do {
             let userId = dialog.anotherUserId ?? 0
-            if try await SWClient(with: defaults).markAsRead(from: userId) {
-                markedAsReadClbk(dialog)
-            }
+            try await SWClient(with: defaults).markAsRead(from: userId)
+            markedAsReadClbk(dialog)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -166,10 +165,9 @@ private extension DialogScreen {
         sendMessageTask = Task(priority: .userInitiated) {
             do {
                 let userId = dialog.anotherUserId ?? 0
-                if try await SWClient(with: defaults).sendMessage(newMessage, to: userId) {
-                    newMessage = ""
-                    await askForMessages(refresh: true)
-                }
+                try await SWClient(with: defaults).sendMessage(newMessage, to: userId)
+                newMessage = ""
+                await askForMessages(refresh: true)
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }

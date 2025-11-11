@@ -27,7 +27,7 @@
         },
         {
           "appearance" : "tinted",
-          "value" : null
+          "value" : 0.5
         }
       ],
       "layers" : [
@@ -70,15 +70,22 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "kind" : "layer-color",
+            "kind" : "neutral",
             "opacity" : 0.5
           }
         }
       ],
       "specular-specializations" : [
         {
+          "value" : false
+        },
+        {
           "appearance" : "dark",
           "value" : false
+        },
+        {
+          "appearance" : "tinted",
+          "value" : true
         }
       ],
       "translucency-specializations" : [
@@ -98,7 +105,7 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "enabled" : false,
+            "enabled" : true,
             "value" : 0.5
           }
         }

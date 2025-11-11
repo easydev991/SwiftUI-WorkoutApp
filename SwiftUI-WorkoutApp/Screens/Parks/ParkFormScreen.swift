@@ -17,9 +17,9 @@ struct ParkFormScreen: View {
     @FocusState private var isFocused: Bool
     private let oldParkForm: ParkForm
     private let mode: Mode
-    private let refreshClbk: () -> Void
+    private let refreshClbk: (Park) -> Void
 
-    init(_ mode: Mode, refreshClbk: @escaping () -> Void) {
+    init(_ mode: Mode, refreshClbk: @escaping (Park) -> Void) {
         self.mode = mode
         switch mode {
         case let .createNew(model):
@@ -153,7 +153,7 @@ private extension ParkFormScreen {
                         .savePark(id: mode.parkId, form: parkForm)
                     if newPark.id != 0 {
                         dismiss()
-                        refreshClbk()
+                        refreshClbk(newPark)
                     }
                 } catch {
                     SWAlert.shared.presentDefaultUIKit(error)
@@ -193,7 +193,7 @@ private extension ParkFormScreen {
 
 #if DEBUG
 #Preview {
-    ParkFormScreen(.editExisting(.preview), refreshClbk: {})
+    ParkFormScreen(.editExisting(.preview), refreshClbk: { _ in })
         .environmentObject(DefaultsService())
 }
 #endif

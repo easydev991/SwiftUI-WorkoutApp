@@ -9,13 +9,7 @@ struct ParksAddedByUserScreen: View {
     @EnvironmentObject private var parksManager: ParksManager
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
-    private var parkList: [Park] {
-        do {
-            return try parksManager.getParks(ids: parkIds)
-        } catch {
-            return []
-        }
-    }
+    @State private var parkList: [Park] = []
 
     private let parkIds: [Int]
 
@@ -24,23 +18,23 @@ struct ParksAddedByUserScreen: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(parkList) { park in
-                    Button {
-                        selectedPark = park
-                    } label: {
-                        ParkRowView(
-                            imageURL: park.previewImageURL,
-                            title: park.longTitle,
-                            address: park.address,
-                            usersTrainHereText: park.usersTrainHereText
-                        )
-                    }
-                    .accessibilityIdentifier("ParkViewCell")
-                }
+        List(parkList) { park in
+            ParkRowItemView(
+                imageURL: park.previewImageURL,
+                title: park.longTitle,
+                address: park.address,
+                usersTrainHereText: park.usersTrainHereText,
+                action: { selectedPark = park }
+            )
+        }
+        .listStyle(.plain)
+        .padding(.vertical)
+        .task {
+            do {
+                parkList = try await parksManager.getParks(ids: parkIds)
+            } catch {
+                parkList = []
             }
-            .padding()
         }
         .onChange(of: parkList) { updatedParks in
             if updatedParks.isEmpty { dismiss() }

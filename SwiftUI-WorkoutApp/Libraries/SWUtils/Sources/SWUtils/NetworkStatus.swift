@@ -4,41 +4,44 @@ import Network
 @MainActor
 public final class NetworkStatus: ObservableObject {
     @Published public private(set) var isConnected = false
-    private let legacyMonitor = NWPathMonitor()
-    private var monitorTask: Task<Void, Never>?
+    @Published public private(set) var isStatusInitialized = false
+    private let monitor = NWPathMonitor()
 
     public init() {
         if #available(iOS 17.0, *) {
-            startModernMonitoring()
+            setupModernMonitoring()
         } else {
-            startLegacyMonitoring()
-        }
-    }
-
-    @available(iOS 17.0, *)
-    private func startModernMonitoring() {
-        let monitor = NWPathMonitor()
-        monitorTask = Task {
-            for await path in monitor {
-                await MainActor.run {
-                    self.isConnected = path.status == .satisfied
-                }
-            }
+            setupLegacyMonitoring()
         }
         monitor.start(queue: .global(qos: .background))
     }
 
-    private func startLegacyMonitoring() {
-        legacyMonitor.pathUpdateHandler = { [weak self] path in
-            DispatchQueue.main.async {
-                self?.isConnected = path.status == .satisfied
+    @available(iOS 17.0, *)
+    private func setupModernMonitoring() {
+        Task {
+            for await path in monitor {
+                await MainActor.run {
+                    self.isConnected = path.status == .satisfied
+                    if !self.isStatusInitialized {
+                        self.isStatusInitialized = true
+                    }
+                }
             }
         }
-        legacyMonitor.start(queue: .global(qos: .background))
+    }
+
+    private func setupLegacyMonitoring() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.isConnected = path.status == .satisfied
+                if let self, !self.isStatusInitialized {
+                    self.isStatusInitialized = true
+                }
+            }
+        }
     }
 
     deinit {
-        legacyMonitor.cancel()
-        monitorTask?.cancel()
+        monitor.cancel()
     }
 }

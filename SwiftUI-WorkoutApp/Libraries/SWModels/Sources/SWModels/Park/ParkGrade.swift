@@ -18,10 +18,10 @@ public enum ParkGrade: Int, CaseIterable, CustomStringConvertible, Codable {
 
     public var description: String {
         switch self {
-        case .collars: NSLocalizedString("ParkGrade.Collars", bundle: .module, comment: "")
-        case .modern: NSLocalizedString("ParkGrade.Modern", bundle: .module, comment: "")
-        case .soviet: NSLocalizedString("ParkGrade.Soviet", bundle: .module, comment: "")
-        case .legendary: NSLocalizedString("ParkGrade.Legendary", bundle: .module, comment: "")
+        case .collars: String(localized: .parkGradeCollars)
+        case .modern: String(localized: .parkGradeModern)
+        case .soviet: String(localized: .parkGradeSoviet)
+        case .legendary: String(localized: .parkGradeLegendary)
         }
     }
 }

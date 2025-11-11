@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "SWNetwork",
     defaultLocalization: "en",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v16)],
     products: [
         .library(name: "SWNetwork", targets: ["SWNetwork"])
     ],

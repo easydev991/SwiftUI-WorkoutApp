@@ -59,27 +59,27 @@ public enum APIError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .noData:
-            NSLocalizedString("Error.NoData", bundle: .module, comment: "Сервер не прислал данные для обработки ответа")
+            String(localized: .errorNoData)
         case .unknown:
-            NSLocalizedString("Error.Unknown", bundle: .module, comment: "Неизвестная ошибка")
+            String(localized: .errorUnknown)
         case .badRequest:
-            NSLocalizedString("Error.BadRequest", bundle: .module, comment: "Запрос содержит ошибку")
+            String(localized: .errorBadRequest)
         case .invalidCredentials:
-            NSLocalizedString("Error.InvalidCredentials", bundle: .module, comment: "Некорректное имя пользователя или пароль")
+            String(localized: .errorInvalidCredentials)
         case .notFound:
-            NSLocalizedString("Error.NotFound", bundle: .module, comment: "Запрашиваемый ресурс не найден")
+            String(localized: .errorNotFound)
         case .payloadTooLarge:
-            NSLocalizedString("Error.PayloadTooLarge", bundle: .module, comment: "Объем данных для загрузки на сервер превышает лимит")
+            String(localized: .errorPayloadTooLarge)
         case .serverError:
-            NSLocalizedString("Error.ServerError", bundle: .module, comment: "Внутренняя ошибка сервера")
+            String(localized: .errorServerError)
         case .invalidUserId:
-            NSLocalizedString("Error.InvalidUserID", bundle: .module, comment: "Некорректный идентификатор пользователя")
+            String(localized: .errorInvalidUserID)
         case let .customError(code, error):
             "\(code), \(error)"
         case .decodingError:
-            NSLocalizedString("Error.Decoding", bundle: .module, comment: "Не удалось декодировать ответ")
+            String(localized: .errorDecoding)
         case .notConnectedToInternet:
-            NSLocalizedString("Error.NoInternet", bundle: .module, comment: "Нет соединения с сетью")
+            String(localized: .errorNoInternet)
         }
     }
 }

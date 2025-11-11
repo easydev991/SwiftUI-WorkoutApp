@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "AppIcon1-iOS-Default-60x602x 1.png",
+      "filename" : "AppIcon1-iOS-Default-64x642x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AppIcon1-iOS-Dark-60x602x.png",
+      "filename" : "AppIcon1-iOS-Dark-64x642x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

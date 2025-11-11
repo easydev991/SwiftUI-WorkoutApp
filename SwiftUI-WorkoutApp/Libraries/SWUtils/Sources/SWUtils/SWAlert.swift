@@ -37,6 +37,10 @@ public final class SWAlert {
 
     /// Показывает стандартный алерт с сообщение об ошибке
     public func presentDefaultUIKit(_ error: Error) {
+        guard type(of: error) != CancellationError.self else {
+            // Не показываем стандартные ошибки отмены Task
+            return
+        }
         presentDefaultUIKit(message: error.localizedDescription)
     }
 

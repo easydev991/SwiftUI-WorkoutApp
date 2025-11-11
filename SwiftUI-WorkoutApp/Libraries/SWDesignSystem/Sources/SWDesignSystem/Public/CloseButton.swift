@@ -20,9 +20,7 @@ public struct CloseButton: View {
     private var contentView: some View {
         switch mode {
         case .text:
-            Button(action: action) {
-                Text("Close", bundle: .module)
-            }
+            Button(.close, action: action)
         case .xmark:
             Button(action: action) {
                 Image(systemName: Icons.Regular.xmark.rawValue)

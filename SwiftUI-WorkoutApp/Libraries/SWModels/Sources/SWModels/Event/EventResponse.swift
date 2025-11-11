@@ -47,6 +47,29 @@ public struct EventResponse: Codable, Identifiable, Equatable, Sendable, Hashabl
         case commentsOptional = "comments"
     }
 
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        self.eventDescription = try container.decodeIfPresent(String.self, forKey: .eventDescription)
+        self.fullAddress = try container.decodeIfPresent(String.self, forKey: .fullAddress)
+        self.beginDate = try container.decodeIfPresent(String.self, forKey: .beginDate)
+        self.countryId = try container.decodeIfPresent(Int.self, forKey: .countryId)
+        self.cityId = try container.decodeIfPresent(Int.self, forKey: .cityId)
+        self.commentsCount = try container.decodeIfPresent(Int.self, forKey: .commentsCount)
+        self.commentsOptional = try container.decodeIfPresent([CommentResponse].self, forKey: .commentsOptional)
+        self.previewImageStringURL = try container.decodeIfPresent(String.self, forKey: .previewImageStringURL)
+        self.parkId = container.decodeIntOrStringIfPresent(.parkId)
+        self.latitude = try container.decodeIfPresent(String.self, forKey: .latitude)
+        self.longitude = try container.decodeIfPresent(String.self, forKey: .longitude)
+        self.participantsCount = container.decodeIntOrStringIfPresent(.participantsCount)
+        self.participantsOptional = try container.decodeIfPresent([UserResponse].self, forKey: .participantsOptional)
+        self.isCurrent = try container.decodeIfPresent(Bool.self, forKey: .isCurrent)
+        self.photosOptional = try container.decodeIfPresent([Photo].self, forKey: .photosOptional)
+        self.author = try container.decodeIfPresent(UserResponse.self, forKey: .author)
+        self.trainHereOptional = try container.decodeIfPresent(Bool.self, forKey: .trainHereOptional)
+    }
+
     public init(
         id: Int,
         title: String? = nil,
@@ -232,5 +255,16 @@ public extension EventResponse {
             author: nil,
             trainHereOptional: nil
         )
+    }
+}
+
+public extension [EventResponse] {
+    /// Сортирует события по дате начала в порядке убывания (новые события с более поздней датой идут первыми)
+    var sortedByDate: [EventResponse] {
+        sorted { event1, event2 in
+            let date1 = DateFormatterService.dateFromIsoString(event1.beginDate)
+            let date2 = DateFormatterService.dateFromIsoString(event2.beginDate)
+            return date1 > date2
+        }
     }
 }

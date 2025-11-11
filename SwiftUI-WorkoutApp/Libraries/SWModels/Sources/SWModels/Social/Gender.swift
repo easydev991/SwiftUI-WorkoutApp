@@ -31,17 +31,17 @@ public enum Gender: CaseIterable, CustomStringConvertible, Codable {
 
     public var affiliation: String {
         switch self {
-        case .unspecified: NSLocalizedString("Gender.NotSpecified.Afiliation", bundle: .module, comment: "")
-        case .male: NSLocalizedString("Gender.Male.Affiliation", bundle: .module, comment: "")
-        case .female: NSLocalizedString("Gender.Female.Affiliation", bundle: .module, comment: "")
+        case .unspecified: String(localized: .genderNotSpecifiedAfiliation)
+        case .male: String(localized: .genderMaleAffiliation)
+        case .female: String(localized: .genderFemaleAffiliation)
         }
     }
 
     public var description: String {
         switch self {
         case .unspecified: ""
-        case .male: NSLocalizedString("Gender.Male", bundle: .module, comment: "")
-        case .female: NSLocalizedString("Gender.Female", bundle: .module, comment: "")
+        case .male: String(localized: .genderMale)
+        case .female: String(localized: .genderFemale)
         }
     }
 }

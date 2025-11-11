@@ -29,7 +29,7 @@
           "fill-specializations" : [
             {
               "value" : {
-                "solid" : "extended-gray:1.00000,1.00000"
+                "solid" : "extended-gray:0.00000,1.00000"
               }
             },
             {
@@ -60,21 +60,32 @@
           }
         }
       ],
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 0.5
-      },
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        }
+      ],
       "specular-specializations" : [
         {
           "value" : false
         },
         {
           "appearance" : "dark",
-          "value" : true
+          "value" : false
         },
         {
           "appearance" : "tinted",
-          "value" : true
+          "value" : false
         }
       ],
       "translucency-specializations" : [
@@ -87,14 +98,14 @@
         {
           "appearance" : "dark",
           "value" : {
-            "enabled" : true,
+            "enabled" : false,
             "value" : 0.5
           }
         },
         {
           "appearance" : "tinted",
           "value" : {
-            "enabled" : true,
+            "enabled" : false,
             "value" : 0.5
           }
         }
@@ -125,9 +136,25 @@
       ],
       "layers" : [
         {
-          "fill" : {
-            "solid" : "extended-gray:0.00000,1.00000"
-          },
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "extended-gray:0.00000,1.00000"
+              }
+            }
+          ],
+          "glass-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : true
+            }
+          ],
           "image-name" : "буквы - обводка 2 2.png",
           "name" : "буквы - обводка 2 2"
         }
@@ -170,7 +197,7 @@
       ],
       "specular-specializations" : [
         {
-          "value" : true
+          "value" : false
         },
         {
           "appearance" : "dark",
@@ -198,7 +225,7 @@
         {
           "appearance" : "tinted",
           "value" : {
-            "enabled" : false,
+            "enabled" : true,
             "value" : 0.5
           }
         }

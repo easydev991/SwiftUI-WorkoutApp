@@ -82,7 +82,14 @@
       ],
       "specular-specializations" : [
         {
+          "value" : false
+        },
+        {
           "appearance" : "dark",
+          "value" : false
+        },
+        {
+          "appearance" : "tinted",
           "value" : true
         }
       ],
@@ -96,7 +103,7 @@
         {
           "appearance" : "dark",
           "value" : {
-            "enabled" : true,
+            "enabled" : false,
             "value" : 0.5
           }
         },

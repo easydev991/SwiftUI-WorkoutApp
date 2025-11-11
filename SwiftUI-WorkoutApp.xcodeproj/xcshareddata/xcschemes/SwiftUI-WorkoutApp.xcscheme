@@ -56,7 +56,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "675083A9297C0A60008D8C52"
+               BlueprintIdentifier = "671F16F22EC073C800B7465A"
                BuildableName = "WorkoutAppTests.xctest"
                BlueprintName = "WorkoutAppTests"
                ReferencedContainer = "container:SwiftUI-WorkoutApp.xcodeproj">

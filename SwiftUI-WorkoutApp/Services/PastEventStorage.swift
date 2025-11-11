@@ -4,7 +4,11 @@ import SWUtils
 
 /// Обертка над хранилищем прошедших мероприятий
 struct PastEventStorage {
-    private let storage = SWFileManager(fileName: "OldEvents.json")
+    private let storage: SWFileManager
+
+    init(storage: SWFileManager = SWFileManagerImp(fileName: "OldEvents.json")) {
+        self.storage = storage
+    }
 
     /// Прошедшие мероприятия в памяти приложения
     var savedPastEvents: [EventResponse] {
@@ -18,11 +22,13 @@ struct PastEventStorage {
     /// Сохраняет прошедшие мероприятия, если нужно
     func saveIfNeeded(_ events: [EventResponse]) {
         if savedPastEvents.isEmpty {
-            try? storage.save(events)
+            try? storage.save(events.sortedByDate)
         } else {
-            let needToSave = !savedPastEvents.contains(events)
-            guard needToSave else { return }
-            try? storage.save(events)
+            let savedIds = Set(savedPastEvents.map(\.id))
+            let newEvents = events.filter { !savedIds.contains($0.id) }
+            guard !newEvents.isEmpty else { return }
+            let combinedEvents = newEvents + savedPastEvents
+            try? storage.save(combinedEvents.sortedByDate)
         }
     }
 

@@ -34,10 +34,9 @@ extension DialogsListScreen {
             let dialogId = dialogs[index].id
             let updatedDialogs = dialogs.filter { $0.id != dialogId }
             currentState = .deleteDialog(updatedDialogs)
-            if try await SWClient(with: defaults).deleteDialog(dialogId) {
-                currentState = .ready(updatedDialogs)
-                updateUnreadMessagesCount(with: defaults)
-            }
+            try await SWClient(with: defaults).deleteDialog(dialogId)
+            currentState = .ready(updatedDialogs)
+            updateUnreadMessagesCount(with: defaults)
         }
 
         func markAsRead(_ dialog: DialogResponse, defaults: DefaultsService) {

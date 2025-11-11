@@ -1,4 +1,5 @@
 import ClusteringMapView
+import MapKit
 import SWDesignSystem
 import SwiftUI
 import SWModels
@@ -7,6 +8,7 @@ import SWUtils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
+    @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
     @StateObject private var viewModel = ViewModel()
@@ -14,18 +16,11 @@ struct ParksMapScreen: View {
     @State private var isLoading = false
     @State private var sheetItem: SheetItem?
 
-    /// Отфильтрованные по выбранному городу и активным фильтрам площадки
-    private var filteredParks: [Park] {
-        let regularParks = parksManager.fullList.filter { park in
-            defaults.parksFilter.size.map(\.rawValue).contains(park.sizeId)
-                && defaults.parksFilter.grade.map(\.rawValue).contains(park.typeId)
-        }
-        return if let selectedCity = viewModel.selectedCity {
-            regularParks.filter { $0.cityId == Int(selectedCity.id) }
-        } else {
-            regularParks
-        }
-    }
+    // MARK: - Кэшированные данные для оптимизации производительности
+    @StateObject private var parksCache = ParksCacheManager()
+    @StateObject private var annotationsCache = AnnotationsCacheManager()
+    @State private var cachedCities: [City]?
+    @State private var annotationsTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
@@ -35,7 +30,9 @@ struct ParksMapScreen: View {
                 parksContent
                     .overlay { noParksFoundView }
             }
-            .loadingOverlay(if: isLoading || viewModel.newParkState.isProcessingNewPark)
+            .loadingOverlay(
+                if: isLoading || viewModel.newParkState.isProcessingNewPark
+            )
             .background(Color.swBackground)
             .onFirstAppear {
                 viewModel.userCityDidChange(defaults.mainUserInfo)
@@ -53,7 +50,22 @@ struct ParksMapScreen: View {
                     sheetItem = .createNewPark(model)
                 }
             }
-            .task { await askForParks() }
+            .onChange(of: parksManager.fullList) { _ in
+                updateFilteredParks()
+            }
+            .onChange(of: defaults.parksFilter) { _ in
+                updateFilteredParks()
+            }
+            .onChange(of: viewModel.selectedCity) { _ in
+                updateFilteredParks()
+            }
+            .task {
+                isLoading = true
+                await loadCities()
+                await askForParks()
+                await waitForAnnotationsTask()
+                isLoading = false
+            }
             .sheet(item: $sheetItem) { makeContentView(for: $0) }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -68,7 +80,7 @@ struct ParksMapScreen: View {
                     rightBarButton
                 }
             }
-            .navigationTitle("Площадки (\(filteredParks.count))")
+            .navigationTitle("Площадки (\(parksCache.count))")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -114,10 +126,16 @@ private extension ParksMapScreen {
 
     var refreshButton: some View {
         Button {
-            Task { await askForParks(refresh: true) }
+            Task {
+                isLoading = true
+                await askForParks(refresh: true)
+                await waitForAnnotationsTask()
+                isLoading = false
+            }
         } label: {
             Icons.Regular.refresh.view
         }
+        .disabled(parksManager.isLoading || isLoading)
     }
 
     var segmentedControl: some View {
@@ -133,11 +151,11 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var searchCityButton: some View {
-        if let storedCities = try? SWAddress.cities() {
+        if let cachedCities {
             SWTextFieldSearchButton(
                 .init(viewModel.cityFilterButtonTitle),
                 showClearButton: viewModel.canClearCityFilter,
-                mainAction: { sheetItem = .searchCity(storedCities) },
+                mainAction: { sheetItem = .searchCity(cachedCities) },
                 clearAction: { viewModel.updateSelectedCity(nil) }
             )
             .padding(.horizontal)
@@ -148,33 +166,26 @@ private extension ParksMapScreen {
     var parksContent: some View {
         switch presentation {
         case .list:
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(filteredParks) { park in
-                        Button {
-                            sheetItem = .parkDetails(park)
-                        } label: {
-                            ParkRowView(
-                                imageURL: park.previewImageURL,
-                                title: park.longTitle,
-                                address: park.address,
-                                usersTrainHereText: park.usersTrainHereText
-                            )
-                        }
-                        .accessibilityIdentifier("ParkViewCell")
-                    }
-                }
-                .padding([.horizontal, .bottom])
+            List(parksCache.parks) { park in
+                ParkRowItemView(
+                    imageURL: park.previewImageURL,
+                    title: park.longTitle,
+                    address: park.address,
+                    usersTrainHereText: park.usersTrainHereText,
+                    action: { sheetItem = .parkDetails(park) }
+                )
             }
+            .listStyle(.plain)
+            .padding(.bottom)
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
                 shouldUpdateRegion: viewModel.shouldUpdateRegion,
                 onRegionUpdated: viewModel.resetRegionUpdateFlag,
                 hideTrackingButton: viewModel.ignoreUserLocation,
-                annotations: filteredParks.map(\.annotation),
+                annotations: annotationsCache.annotations,
                 didSelect: { annotation in
-                    if let park = filteredParks.first(
+                    if let park = parksCache.parks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
                         sheetItem = .parkDetails(park)
@@ -192,13 +203,13 @@ private extension ParksMapScreen {
 
     @ViewBuilder
     var noParksFoundView: some View {
-        if let storedCities = try? SWAddress.cities() {
+        if let storedCities = cachedCities {
             NoParksFoundView(
                 openCities: { sheetItem = .searchCity(storedCities) },
                 openFilter: { sheetItem = .filters },
                 model: .init(
                     isFilterEdited: defaults.parksFilter.isEdited,
-                    isFilteredParksEmpty: filteredParks.isEmpty,
+                    isFilteredParksEmpty: parksCache.parks.isEmpty,
                     didParksManagerLoad: parksManager.didLoad,
                     isLoading: isLoading
                 )
@@ -206,21 +217,50 @@ private extension ParksMapScreen {
         }
     }
 
+    // MARK: - Загрузка данных
+
+    /// Загружает список городов асинхронно в фоновом потоке
+    private func loadCities() async {
+        guard cachedCities == nil else { return }
+        let cities = await Task.detached(priority: .userInitiated) {
+            try? SWAddress.cities()
+        }.value
+        cachedCities = cities
+    }
+
+    /// Ожидает завершения создания аннотаций, если задача запущена
+    private func waitForAnnotationsTask() async {
+        if let task = annotationsTask {
+            await task.value
+        }
+    }
+
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
-        if !filteredParks.isEmpty, !refresh { return }
-        guard !parksManager.fullList.isEmpty else {
-            do {
-                try parksManager.makeDefaultList()
-            } catch {
-                SWAlert.shared.presentDefaultUIKit(error)
+        if !parksCache.parks.isEmpty, !refresh { return }
+        // Если refresh и данные уже загружены - загружаем с сервера
+        if refresh, !parksManager.fullList.isEmpty {
+            guard isNetworkConnected else {
+                SWAlert.shared.presentNoConnection(false)
+                return
             }
-            if parksManager.needUpdateDefaultList {
-                await askForParks(refresh: true)
-            }
+            await getUpdatedParks()
             return
         }
-        await getUpdatedParks()
+        guard parksManager.fullList.isEmpty else {
+            updateFilteredParks()
+            return
+        }
+        // Если данные не загружены - загружаем дефолтный список из локального хранилища
+        do {
+            try await parksManager.makeDefaultList()
+        } catch {
+            SWAlert.shared.presentDefaultUIKit(error)
+        }
+        // Если нужно автоматическое обновление - загружаем с сервера
+        if parksManager.needUpdateDefaultList {
+            await askForParks(refresh: true)
+        }
     }
 
     func deletePark(id: Int) {
@@ -240,18 +280,9 @@ private extension ParksMapScreen {
         }
     }
 
-    /// Проверяем недавние обновления списка площадок
-    ///
-    /// Запрашиваем обновление за прошедшие 5 минут
-    func checkForRecentUpdates() async {
-        defaults.setUserNeedUpdate(true)
-        await getUpdatedParks(from: DateFormatterService.fiveMinutesAgoDateString)
-    }
-
-    func getUpdatedParks(from dateString: String? = nil) async {
-        isLoading = true
+    func getUpdatedParks() async {
         do {
-            try await parksManager.getUpdatedParks(with: defaults, from: dateString)
+            try await parksManager.getUpdatedParks(client: SWClient(with: defaults))
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {
@@ -279,14 +310,7 @@ private extension ParksMapScreen {
             ParkFilterScreen(filter: $defaults.parksFilter)
         case let .createNewPark(model):
             ContentInSheet(title: "Новая площадка", spacing: 0) {
-                ParkFormScreen(
-                    .createNew(model),
-                    refreshClbk: {
-                        Task {
-                            await checkForRecentUpdates()
-                        }
-                    }
-                )
+                ParkFormScreen(.createNew(model), refreshClbk: updatePark)
             }
             .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
@@ -328,6 +352,38 @@ private extension ParksMapScreen {
             messageBody: body,
             recipients: Constants.feedbackRecipient
         )
+    }
+
+    // MARK: - Обновление кэша
+
+    /// Обновляет кэшированные отфильтрованные площадки и аннотации
+    private func updateFilteredParks() {
+        let cityId = viewModel.selectedCity.flatMap { Int($0.id) }
+        if parksCache.updateIfNeeded(
+            allParks: parksManager.fullList,
+            filter: defaults.parksFilter,
+            selectedCityId: cityId
+        ) {
+            updateAnnotations()
+        }
+    }
+
+    /// Обновляет кэшированные аннотации из отфильтрованных площадок
+    /// Создание аннотаций выполняется в фоновом потоке для больших списков
+    private func updateAnnotations() {
+        let parks = parksCache.parks
+        // Отменяем предыдущую задачу, если она еще выполняется
+        annotationsTask?.cancel()
+        // Для больших списков создаем аннотации в фоновом потоке, чтобы не блокировать UI
+        annotationsTask = Task.detached(priority: .userInitiated) { [parks] in
+            let newAnnotations = parks.map(\.annotation)
+            guard !Task.isCancelled else { return }
+            // Обновляем кэш на главном потоке
+            await MainActor.run {
+                guard !Task.isCancelled else { return }
+                annotationsCache.updateIfNeeded(with: newAnnotations)
+            }
+        }
     }
 }
 

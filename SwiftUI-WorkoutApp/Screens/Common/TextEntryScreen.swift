@@ -89,7 +89,7 @@ private extension TextEntryScreen {
         saveEntryTask = Task {
             do {
                 let client = SWClient(with: defaults)
-                let isSuccess: Bool = switch mode {
+                switch mode {
                 case let .newForPark(id):
                     try await client.addNewEntry(
                         to: .park(id: id), entryText: entryText
@@ -122,7 +122,7 @@ private extension TextEntryScreen {
                         newEntryText: entryText
                     )
                 }
-                if isSuccess { refreshClbk() }
+                refreshClbk()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
             }

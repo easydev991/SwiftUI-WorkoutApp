@@ -47,6 +47,20 @@
   "testTargets" : [
     {
       "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
+        "identifier" : "SWNetworkTests",
+        "name" : "SWNetworkTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftUI-WorkoutApp.xcodeproj",
+        "identifier" : "671F16F22EC073C800B7465A",
+        "name" : "WorkoutAppTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWModels",
         "identifier" : "SWModelsTest",
         "name" : "SWModelsTest"
@@ -54,16 +68,16 @@
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
-        "identifier" : "SWUtilsTests",
-        "name" : "SWUtilsTests"
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/CachedAsyncImage",
+        "identifier" : "CachedAsyncImageTests",
+        "name" : "CachedAsyncImageTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWNetwork",
-        "identifier" : "SWNetworkTests",
-        "name" : "SWNetworkTests"
+        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/SWUtils",
+        "identifier" : "SWUtilsTests",
+        "name" : "SWUtilsTests"
       }
     },
     {
@@ -78,13 +92,6 @@
         "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/ClusteringMapView",
         "identifier" : "ClusteringMapViewTests",
         "name" : "ClusteringMapViewTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:SwiftUI-WorkoutApp\/Libraries\/CachedAsyncImage",
-        "identifier" : "CachedAsyncImageTests",
-        "name" : "CachedAsyncImageTests"
       }
     }
   ],

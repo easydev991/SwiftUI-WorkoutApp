@@ -40,7 +40,7 @@ struct SingleParkMapScreen: View {
                 showsUserLocation: true,
                 annotationItems: [model],
                 annotationContent: { park in
-                    MapPin(coordinate: park.coordinate2D, tint: .red)
+                    MapMarker(coordinate: park.coordinate2D, tint: .red)
                 }
             )
             .ignoresSafeArea()

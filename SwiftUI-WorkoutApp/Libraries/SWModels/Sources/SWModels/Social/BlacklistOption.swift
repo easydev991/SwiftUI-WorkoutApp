@@ -8,29 +8,29 @@ public enum BlacklistOption: Sendable {
 public extension BlacklistOption {
     var title: String {
         switch self {
-        case .add: NSLocalizedString("BlacklistOption.Block.title", bundle: .module, comment: "")
-        case .remove: NSLocalizedString("BlacklistOption.Unblock.title", bundle: .module, comment: "")
+        case .add: String(localized: .blacklistOptionBlockTitle)
+        case .remove: String(localized: .blacklistOptionUnblockTitle)
         }
     }
 
     var dialogTitle: String {
         switch self {
-        case .add: NSLocalizedString("BlacklistOption.Block.dialogTitle", bundle: .module, comment: "")
-        case .remove: NSLocalizedString("BlacklistOption.Unblock.dialogTitle", bundle: .module, comment: "")
+        case .add: String(localized: .blacklistOptionBlockDialogTitle)
+        case .remove: String(localized: .blacklistOptionUnblockDialogTitle)
         }
     }
 
     var dialogMessage: String {
         switch self {
-        case .add: NSLocalizedString("BlacklistOption.Block.dialogMessage", bundle: .module, comment: "")
-        case .remove: NSLocalizedString("BlacklistOption.Unblock.dialogMessage", bundle: .module, comment: "")
+        case .add: String(localized: .blacklistOptionBlockDialogMessage)
+        case .remove: String(localized: .blacklistOptionUnblockDialogMessage)
         }
     }
 
     var result: String {
         switch self {
-        case .add: NSLocalizedString("BlacklistOption.Block.result", bundle: .module, comment: "")
-        case .remove: NSLocalizedString("BlacklistOption.Unblock.result", bundle: .module, comment: "")
+        case .add: String(localized: .blacklistOptionBlockResult)
+        case .remove: String(localized: .blacklistOptionUnblockResult)
         }
     }
 }

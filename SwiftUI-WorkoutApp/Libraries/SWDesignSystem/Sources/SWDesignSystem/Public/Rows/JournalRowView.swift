@@ -72,12 +72,12 @@ public extension JournalRowView {
             public enum Option: Identifiable {
                 public var id: String { systemImageName }
                 case edit, setup, report, delete
-                var title: LocalizedStringKey {
+                var localizedTitle: String {
                     switch self {
-                    case .edit: "Edit"
-                    case .setup: "Configure"
-                    case .report: "Report"
-                    case .delete: "Delete"
+                    case .edit: String(localized: .edit)
+                    case .setup: String(localized: .configure)
+                    case .report: String(localized: .report)
+                    case .delete: String(localized: .delete)
                     }
                 }
 
@@ -134,11 +134,7 @@ private extension JournalRowView {
             Menu {
                 ForEach(model.menuOptions) { model in
                     Button(role: model.option.buttonRole, action: model.action) {
-                        Label {
-                            Text(model.option.title, bundle: .module)
-                        } icon: {
-                            Image(systemName: model.option.systemImageName)
-                        }
+                        Label(model.option.localizedTitle, systemImage: model.option.systemImageName)
                     }
                 }
             } label: {
