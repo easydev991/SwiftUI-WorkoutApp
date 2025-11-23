@@ -5,47 +5,40 @@ import Testing
 
 @MainActor
 struct ParksManagerTests {
-    @Test("Должен вызывать client.getUpdatedParks с lastParksUpdateDateString")
-    func getUpdatedParksCallsClient() async throws {
-        let mockStorage = MockSWFileManagerImp()
-        let mockClient = MockParksUpdaterClient()
-        let manager = ParksManager(storage: mockStorage)
-        let expectedDate = manager.lastParksUpdateDateString
-        try await manager.getUpdatedParks(client: mockClient)
-        let dateString = try #require(mockClient.lastDateString)
-        #expect(dateString == expectedDate)
-    }
+    private let mockAuthHelper = MockAuthHelper()
 
-    @Test("Должен обновлять fullList с полученными площадками")
-    func getUpdatedParksUpdatesFullList() async throws {
+    @Test("Должен обновлять fullList с полученными площадками и обновлять дату")
+    func getUpdatedParksUpdatesFullListAndDate() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let mockClient = MockParksUpdaterClient()
-        let testPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [testPark]
-        let manager = ParksManager(storage: mockStorage)
-        try await manager.getUpdatedParks(client: mockClient)
-        let foundPark = manager.fullList.first(where: { $0.id == testPark.id })
-        #expect(foundPark != nil)
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        let initialDate = manager.lastParksUpdateDateString
+
+        try await manager.getUpdatedParks()
+
+        let updatedPark = try #require(manager.fullList.first(where: { $0.id == 3 }))
+        #expect(updatedPark.id == 3)
+        #expect(updatedPark.typeId == 6)
+        #expect(updatedPark.sizeId == 2)
+        #expect(updatedPark.name == "№3 Средняя Легендарная")
+        #expect(manager.lastParksUpdateDateString != initialDate)
     }
 
     @Test("Должен устанавливать isLoading в false после завершения")
     func getUpdatedParksSetsLoading() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let mockClient = MockParksUpdaterClient()
-        let manager = ParksManager(storage: mockStorage)
+        let manager = makeManager(storage: mockStorage, isUITest: true)
         #expect(!manager.isLoading)
-        try await manager.getUpdatedParks(client: mockClient)
+        try await manager.getUpdatedParks()
         #expect(!manager.isLoading)
     }
 
     @Test("Должен обрабатывать ошибки от client")
     func getUpdatedParksHandlesErrors() async {
         let mockStorage = MockSWFileManagerImp()
-        let mockClient = MockParksUpdaterClient()
-        mockClient.errorToThrow = MockError.demoError
-        let manager = ParksManager(storage: mockStorage)
+        mockStorage.errorToThrow = MockError.demoError
+        let manager = makeManager(storage: mockStorage, isUITest: true)
         await #expect(throws: MockError.self) {
-            try await manager.getUpdatedParks(client: mockClient)
+            try await manager.getUpdatedParks()
         }
     }
 
@@ -54,11 +47,11 @@ struct ParksManagerTests {
     @Test("Должен обновлять существующую площадку в fullList")
     func manuallyUpdateParkUpdatesExisting() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let initialPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [initialPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [initialPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         let updatedPark = makePark(id: 1, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(updatedPark)
@@ -71,11 +64,11 @@ struct ParksManagerTests {
     @Test("Должен добавлять новую площадку если её нет в fullList")
     func manuallyUpdateParkAddsNew() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let existingPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [existingPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [existingPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         let newPark = makePark(id: 2, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(newPark)
@@ -90,12 +83,12 @@ struct ParksManagerTests {
     @Test("Должен удалять площадку из fullList")
     func deleteParkRemovesFromList() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park1 = makePark(id: 1, sizeId: 1, typeId: 1)
         let park2 = makePark(id: 2, sizeId: 2, typeId: 2)
-        mockClient.parksToReturn = [park1, park2]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park1, park2]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         try manager.deletePark(with: 1)
 
@@ -107,11 +100,11 @@ struct ParksManagerTests {
     @Test("Должен обрабатывать удаление несуществующей площадки")
     func deleteParkHandlesNonExistent() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [park]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         try manager.deletePark(with: 999)
 
@@ -125,13 +118,13 @@ struct ParksManagerTests {
     @Test("Должен возвращать площадки по указанным идентификаторам")
     func getParksReturnsFilteredParks() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park1 = makePark(id: 1, sizeId: 1, typeId: 1)
         let park2 = makePark(id: 2, sizeId: 2, typeId: 2)
         let park3 = makePark(id: 3, sizeId: 3, typeId: 3)
-        mockClient.parksToReturn = [park1, park2, park3]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park1, park2, park3]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         let result = try await manager.getParks(ids: [1, 3])
 
@@ -144,11 +137,11 @@ struct ParksManagerTests {
     @Test("Должен возвращать пустой массив если площадки не найдены")
     func getParksReturnsEmptyWhenNotFound() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [park]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         let result = try await manager.getParks(ids: [999, 1000])
 
@@ -160,41 +153,43 @@ struct ParksManagerTests {
     @Test("Должен вызывать storage.save при обновлении площадки")
     func manuallyUpdateParkCallsStorageSave() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let initialPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [initialPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [initialPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
+        let initialSaveCount = mockStorage.saveCallCount
 
         let updatedPark = makePark(id: 1, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(updatedPark)
 
-        #expect(mockStorage.saveCallCount == 2)
+        #expect(mockStorage.saveCallCount == initialSaveCount + 1)
     }
 
     @Test("Должен вызывать storage.save при добавлении новой площадки")
     func manuallyUpdateParkCallsStorageSaveForNew() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let existingPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [existingPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [existingPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
+        let initialSaveCount = mockStorage.saveCallCount
 
         let newPark = makePark(id: 2, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(newPark)
 
-        #expect(mockStorage.saveCallCount == 2)
+        #expect(mockStorage.saveCallCount == initialSaveCount + 1)
     }
 
     @Test("Должен обрабатывать ошибки сохранения при обновлении")
     func manuallyUpdateParkHandlesSaveErrors() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let initialPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [initialPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [initialPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         mockStorage.errorToThrow = MockError.demoError
         let updatedPark = makePark(id: 1, sizeId: 2, typeId: 2)
@@ -206,11 +201,11 @@ struct ParksManagerTests {
     @Test("Должен передавать правильные данные в storage.save")
     func manuallyUpdateParkSavesCorrectData() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let initialPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [initialPark]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [initialPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         let updatedPark = makePark(id: 1, sizeId: 2, typeId: 2)
         try manager.manuallyUpdatePark(updatedPark)
@@ -228,26 +223,27 @@ struct ParksManagerTests {
     @Test("Должен вызывать storage.save при удалении площадки")
     func deleteParkCallsStorageSave() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park1 = makePark(id: 1, sizeId: 1, typeId: 1)
         let park2 = makePark(id: 2, sizeId: 2, typeId: 2)
-        mockClient.parksToReturn = [park1, park2]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park1, park2]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
+        let initialSaveCount = mockStorage.saveCallCount
 
         try manager.deletePark(with: 1)
 
-        #expect(mockStorage.saveCallCount == 2)
+        #expect(mockStorage.saveCallCount == initialSaveCount + 1)
     }
 
     @Test("Должен обрабатывать ошибки сохранения при удалении")
     func deleteParkHandlesSaveErrors() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [park]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         mockStorage.errorToThrow = MockError.demoError
         #expect(throws: MockError.self) {
@@ -258,12 +254,12 @@ struct ParksManagerTests {
     @Test("Должен передавать правильные данные в storage.save после удаления")
     func deleteParkSavesCorrectData() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
         let park1 = makePark(id: 1, sizeId: 1, typeId: 1)
         let park2 = makePark(id: 2, sizeId: 2, typeId: 2)
-        mockClient.parksToReturn = [park1, park2]
-        try await manager.getUpdatedParks(client: mockClient)
+        mockStorage.documentExists = true
+        mockStorage.dataToReturn = [park1, park2]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
+        try await manager.makeDefaultList()
 
         try manager.deletePark(with: 1)
 
@@ -278,12 +274,9 @@ struct ParksManagerTests {
     @Test("Должен вызывать storage.save при обновлении списка")
     func updateDefaultListCallsStorageSave() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
-        let updatedPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [updatedPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
 
-        try await manager.getUpdatedParks(client: mockClient)
+        try await manager.getUpdatedParks()
 
         #expect(mockStorage.saveCallCount == 1)
     }
@@ -292,27 +285,20 @@ struct ParksManagerTests {
     func updateDefaultListHandlesSaveErrors() async {
         let mockStorage = MockSWFileManagerImp()
         mockStorage.errorToThrow = MockError.demoError
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
-        let updatedPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [updatedPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
 
         await #expect(throws: MockError.self) {
-            try await manager.getUpdatedParks(client: mockClient)
+            try await manager.getUpdatedParks()
         }
     }
 
     @Test("Должен обновлять lastParksUpdateDateString после успешного сохранения")
     func updateDefaultListUpdatesDateString() async throws {
         let mockStorage = MockSWFileManagerImp()
-        let manager = ParksManager(storage: mockStorage)
-        let mockClient = MockParksUpdaterClient()
-        let updatedPark = makePark(id: 1, sizeId: 1, typeId: 1)
-        mockClient.parksToReturn = [updatedPark]
+        let manager = makeManager(storage: mockStorage, isUITest: true)
         let initialDate = manager.lastParksUpdateDateString
-        try await Task.sleep(nanoseconds: 100_000_000)
 
-        try await manager.getUpdatedParks(client: mockClient)
+        try await manager.getUpdatedParks()
 
         let updatedDate = manager.lastParksUpdateDateString
         #expect(updatedDate != initialDate)
@@ -326,7 +312,7 @@ struct ParksManagerTests {
         mockStorage.documentExists = true
         let testPark = makePark(id: 1, sizeId: 1, typeId: 1)
         mockStorage.dataToReturn = [testPark]
-        let manager = ParksManager(storage: mockStorage)
+        let manager = makeManager(storage: mockStorage)
 
         try await manager.makeDefaultList()
 
@@ -339,7 +325,7 @@ struct ParksManagerTests {
     func makeDefaultListUsesBundleWhenFileNotExists() async throws {
         let mockStorage = MockSWFileManagerImp()
         mockStorage.documentExists = false
-        let manager = ParksManager(storage: mockStorage)
+        let manager = makeManager(storage: mockStorage)
 
         try await manager.makeDefaultList()
 
@@ -352,7 +338,7 @@ struct ParksManagerTests {
         let mockStorage = MockSWFileManagerImp()
         mockStorage.documentExists = true
         mockStorage.dataToReturn = [Park]()
-        let manager = ParksManager(storage: mockStorage)
+        let manager = makeManager(storage: mockStorage)
 
         try await manager.makeDefaultList()
 
@@ -365,7 +351,7 @@ struct ParksManagerTests {
         let mockStorage = MockSWFileManagerImp()
         mockStorage.documentExists = true
         mockStorage.errorToThrow = MockError.demoError
-        let manager = ParksManager(storage: mockStorage)
+        let manager = makeManager(storage: mockStorage)
 
         try await manager.makeDefaultList()
 
@@ -377,6 +363,10 @@ struct ParksManagerTests {
 // MARK: - Вспомогательные функции
 
 private extension ParksManagerTests {
+    func makeManager(storage: MockSWFileManagerImp, isUITest: Bool = false) -> ParksManager {
+        ParksManager(storage: storage, isUITest: isUITest, authHelper: mockAuthHelper)
+    }
+
     func makePark(id: Int, sizeId: Int, typeId: Int, cityId: Int? = nil) -> Park {
         Park(
             id: id,

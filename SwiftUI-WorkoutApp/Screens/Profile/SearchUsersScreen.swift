@@ -108,7 +108,14 @@ private extension SearchUsersScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                try await SWClient(with: defaults).sendMessage(messagingModel.message, to: userId)
+                #if DEBUG
+                let client: MessagesClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: MessagesClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
@@ -129,7 +136,14 @@ private extension SearchUsersScreen {
         isLoading = true
         searchTask = Task {
             do {
-                let foundUsers = try await SWClient(with: defaults)
+                #if DEBUG
+                let client: FriendsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: FriendsClient = SWClient(with: defaults.authHelper)
+                #endif
+                let foundUsers = try await client
                     .findUsers(with: query.withoutSpaces)
                 users = foundUsers
                 if foundUsers.isEmpty {
@@ -150,5 +164,6 @@ private extension SearchUsersScreen {
 #if DEBUG
 #Preview {
     SearchUsersScreen()
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

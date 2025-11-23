@@ -33,8 +33,8 @@ struct RootScreen: View {
         unreadCount: 1,
         friendRequestsCount: 1
     )
-    .environmentObject(ParksManager())
-    .environmentObject(DefaultsService())
+    .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+    .environmentObject(ParksManager(isUITest: true, authHelper: MockAuthHelper()))
 }
 
 #Preview("Нет бейджей") {
@@ -43,7 +43,8 @@ struct RootScreen: View {
         unreadCount: 0,
         friendRequestsCount: 0
     )
-    .environmentObject(ParksManager())
-    .environmentObject(DefaultsService())
+    .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+    .environmentObject(ParksManager(isUITest: true, authHelper: MockAuthHelper()))
+    .networkStatus(true)
 }
 #endif

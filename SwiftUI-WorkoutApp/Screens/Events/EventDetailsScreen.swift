@@ -114,7 +114,14 @@ private extension EventDetailsScreen {
                 isLoading = true
                 deleteEventTask = Task {
                     do {
-                        try await SWClient(with: defaults).delete(eventId: event.id)
+                        #if DEBUG
+                        let client: EventsClient = Constants.isUITest
+                            ? MockSWClient(instantResponse: true)
+                            : SWClient(with: defaults.authHelper)
+                        #else
+                        let client: EventsClient = SWClient(with: defaults.authHelper)
+                        #endif
+                        try await client.delete(eventId: event.id)
                         onDelete(event.id)
                     } catch {
                         SWAlert.shared.presentDefaultUIKit(error)
@@ -246,7 +253,14 @@ private extension EventDetailsScreen {
             isLoading = true
             goingToEventTask = Task {
                 do {
-                    try await SWClient(with: defaults).changeIsGoingToEvent(newValue, for: event.id)
+                    #if DEBUG
+                    let client: EventsClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: EventsClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    try await client.changeIsGoingToEvent(newValue, for: event.id)
                     // Чтобы не делать лишнее обновление данных мероприятия,
                     // локально изменяем список участников
                     if newValue, let userInfo = defaults.mainUserInfo {
@@ -361,7 +375,14 @@ private extension EventDetailsScreen {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh { isLoading = true }
         do {
-            event = try await SWClient(with: defaults).getEvent(by: event.id)
+            #if DEBUG
+            let client: EventsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: EventsClient = SWClient(with: defaults.authHelper)
+            #endif
+            event = try await client.getEvent(by: event.id)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -372,7 +393,14 @@ private extension EventDetailsScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                try await SWClient(with: defaults).deleteEntry(from: .event(id: event.id), entryId: id)
+                #if DEBUG
+                let client: CommentsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: CommentsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.deleteEntry(from: .event(id: event.id), entryId: id)
                 event.comments.removeAll(where: { $0.id == id })
             } catch {
                 SWAlert.shared.presentDefaultUIKit(error)
@@ -386,7 +414,14 @@ private extension EventDetailsScreen {
         isLoading = true
         deletePhotoTask = Task {
             do {
-                try await SWClient(with: defaults).deletePhoto(
+                #if DEBUG
+                let client: PhotosClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: PhotosClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.deletePhoto(
                     from: .event(.init(containerId: event.id, photoId: id))
                 )
                 event.photos = event.removePhotoById(id)
@@ -439,6 +474,6 @@ private extension EventDetailsScreen {
 #if DEBUG
 #Preview {
     EventDetailsScreen(event: .preview, onDelete: { _ in })
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

@@ -141,6 +141,7 @@ private extension MainUserProfileScreen {
 #Preview {
     MainUserProfileScreen()
         .environmentObject(MainUserProfileScreen.ViewModel())
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

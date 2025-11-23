@@ -2,6 +2,7 @@ import CoreLocation
 import Foundation
 import OSLog
 import SWModels
+import SWNetworkClient
 import SWUtils
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SWAddress")
@@ -84,6 +85,23 @@ extension SWAddress {
     func save(_ countries: [Country]) throws {
         try storage.save(countries)
         logger.debug("Успешно сохранили список стран (\(countries.count) шт.)")
+    }
+
+    /// Обновляет справочник стран/городов при необходимости
+    /// - Parameters:
+    ///   - lastUpdateDate: Дата предыдущего успешного обновления
+    ///   - client: Клиент для загрузки данных со сервера
+    /// - Returns: `true` если обновление было выполнено, `false` если не требовалось
+    func updateIfNeeded(
+        lastUpdateDate: Date,
+        client: CountriesClient
+    ) async throws -> Bool {
+        guard needUpdate(lastUpdateDate) else {
+            return false
+        }
+        let countries = try await client.getCountries()
+        try save(countries)
+        return true
     }
 }
 

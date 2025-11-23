@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SWModels
 import SWNetworkClient
 
@@ -6,6 +7,15 @@ extension MainUserProfileScreen {
     @MainActor
     final class ViewModel: ObservableObject {
         @Published private(set) var currentState = CurrentState.initial
+        private let logger = Logger(
+            subsystem: Bundle.main.bundleIdentifier ?? "SwiftUI-WorkoutApp",
+            category: "MainUserProfileScreen.ViewModel"
+        )
+        private let isUITest: Bool
+
+        init(isUITest: Bool = false) {
+            self.isUITest = isUITest
+        }
 
         func getUserProfile(
             refresh: Bool = false,
@@ -22,12 +32,40 @@ extension MainUserProfileScreen {
             if !refresh || defaults.needUpdateUser {
                 currentState = .loading
             }
-            let result = try await SWClient(with: defaults).getSocialUpdates(userId: userId)
-            try defaults.saveFriendsIds(result.friends.map(\.id))
-            try defaults.saveFriendRequests(result.friendRequests)
-            try defaults.saveBlacklist(result.blacklist)
-            try defaults.saveUserInfo(result.user)
-            currentState = .ready
+            logger.info("Начинаем загрузку профиля (refresh: \(refresh), needUpdate: \(defaults.needUpdateUser))")
+
+            // Создаем новый клиент для каждого запроса, как в main-ветке
+            // Это решает проблему с параллельными запросами при pull-to-refresh
+            #if DEBUG
+            let client: ProfileClient = isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: ProfileClient = SWClient(with: defaults.authHelper)
+            #endif
+            do {
+                let result = try await client.getSocialUpdates(userId: userId)
+                try defaults.saveFriendsIds(result.friends.map(\.id))
+                try defaults.saveFriendRequests(result.friendRequests)
+                try defaults.saveBlacklist(result.blacklist)
+                try defaults.saveUserInfo(result.user)
+                currentState = .ready
+                logger.info("Профиль загружен успешно")
+            } catch {
+                guard !Task.isCancelled else {
+                    logger.info("Загрузка профиля отменена (новый запрос или закрытие экрана)")
+                    return
+                }
+                // При других ошибках сбрасываем состояние на основе наличия данных
+                if defaults.mainUserInfo != nil {
+                    currentState = .ready
+                    logger.info("Устанавливаем состояние .ready (есть кэшированные данные)")
+                } else {
+                    currentState = .initial
+                    logger.info("Устанавливаем состояние .initial (нет данных)")
+                }
+                throw error
+            }
         }
     }
 }

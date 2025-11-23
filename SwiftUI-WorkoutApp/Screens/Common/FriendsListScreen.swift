@@ -11,7 +11,6 @@ struct FriendsListScreen: View {
     @State private var currentState = CurrentState.initial
     @State private var messagingModel = MessagingModel()
     @State private var sendMessageTask: Task<Void, Never>?
-    private var client: SWClient { SWClient(with: defaults) }
     let mode: Mode
 
     var body: some View {
@@ -140,6 +139,13 @@ private extension FriendsListScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
+                #if DEBUG
+                let client: MessagesClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: MessagesClient = SWClient(with: defaults.authHelper)
+                #endif
                 try await client.sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
@@ -172,6 +178,13 @@ private extension FriendsListScreen {
             currentState = .loading
         }
         do {
+            #if DEBUG
+            let client: FriendsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: FriendsClient = SWClient(with: defaults.authHelper)
+            #endif
             let friends = try await client.getFriendsForUser(id: mode.userId)
             currentState = .ready(friends)
         } catch {
@@ -183,7 +196,7 @@ private extension FriendsListScreen {
 #if DEBUG
 #Preview {
     FriendsListScreen(mode: .user(id: .previewUserId))
-        .environmentObject(DefaultsService())
-        .environment(\.isNetworkConnected, true)
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

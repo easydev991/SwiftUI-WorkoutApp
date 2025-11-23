@@ -13,11 +13,11 @@ struct SwiftUI_WorkoutAppApp: App {
     )
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var tabViewModel = TabViewModel()
-    @StateObject private var defaults = DefaultsService()
+    @StateObject private var defaults: DefaultsService
     @StateObject private var network = NetworkStatus()
-    @StateObject private var parksManager = ParksManager()
-    @StateObject private var dialogsViewModel = DialogsListScreen.ViewModel()
-    @StateObject private var profileViewModel = MainUserProfileScreen.ViewModel()
+    @StateObject private var parksManager: ParksManager
+    @StateObject private var dialogsViewModel: DialogsListScreen.ViewModel
+    @StateObject private var profileViewModel: MainUserProfileScreen.ViewModel
     /// Используется для обновления диалогов
     @State private var lastScenePhase: ScenePhase?
     @State private var dialogsUpdateTask: Task<Void, Never>?
@@ -30,18 +30,33 @@ struct SwiftUI_WorkoutAppApp: App {
         lastScenePhase == .inactive || lastScenePhase == .background
     }
 
-    private var client: SWClient { SWClient(with: defaults) }
-    private var colorScheme: ColorScheme? {
-        switch defaults.appTheme {
-        case .light: .light
-        case .dark: .dark
-        case .system: nil
-        }
-    }
-
     init() {
+        let isUITest = Constants.isUITest
+        let authHelper: AuthHelperImp
+        #if DEBUG
+        authHelper = isUITest ? MockAuthHelper() : AuthHelperImp()
+        if isUITest {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            UIView.setAnimationsEnabled(false)
+        }
+        #else
+        authHelper = AuthHelperImp()
+        #endif
+        _defaults = .init(wrappedValue: .init(authHelper: authHelper))
+        _parksManager = .init(
+            wrappedValue: .init(
+                isUITest: isUITest,
+                authHelper: authHelper
+            )
+        )
+        _dialogsViewModel = .init(
+            wrappedValue: .init(
+                isUITest: isUITest,
+                authHelper: authHelper
+            )
+        )
+        _profileViewModel = .init(wrappedValue: .init(isUITest: isUITest))
         setupAppearance()
-        prepareForUITestIfNeeded()
     }
 
     var body: some Scene {
@@ -57,8 +72,8 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(parksManager)
             .environmentObject(dialogsViewModel)
             .environmentObject(profileViewModel)
-            .preferredColorScheme(colorScheme)
             .networkStatus(network.isOnline)
+            .preferredColorScheme(defaults.appTheme.colorScheme)
             .environment(\.userFlags, defaults.userFlags)
             .task(id: defaults.isAuthorized) {
                 await dialogsViewModel.getDialogs(defaults: defaults)
@@ -81,16 +96,27 @@ struct SwiftUI_WorkoutAppApp: App {
     }
 
     private func updateCountriesIfNeeded() {
-        guard countriesStorage.needUpdate(defaults.lastCountriesUpdateDate),
-              countriesUpdateTask == nil
-        else { return }
+        guard countriesUpdateTask == nil else { return }
         countriesUpdateTask = Task {
+            defer { countriesUpdateTask = nil }
             do {
-                let countries = try await client.getCountries()
-                try countriesStorage.save(countries)
-                defaults.didUpdateCountries()
+                #if DEBUG
+                let client: CountriesClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: CountriesClient = SWClient(with: defaults.authHelper)
+                #endif
+                let didUpdate = try await countriesStorage.updateIfNeeded(
+                    lastUpdateDate: defaults.lastCountriesUpdateDate,
+                    client: client
+                )
+                if didUpdate {
+                    defaults.didUpdateCountries()
+                    logger.info("Справочник стран успешно обновлен")
+                }
             } catch {
-                logger.error("Не смогли сохранить список стран, ошибка: \(error.localizedDescription)")
+                logger.error("Не смогли обновить список стран, ошибка: \(error.localizedDescription)")
             }
         }
     }
@@ -111,7 +137,11 @@ struct SwiftUI_WorkoutAppApp: App {
         }
         profileUpdateTask?.cancel()
         profileUpdateTask = Task {
-            try? await profileViewModel.getUserProfile(refresh: true, defaults: defaults)
+            do {
+                try await profileViewModel.getUserProfile(refresh: true, defaults: defaults)
+            } catch {
+                logger.error("Ошибка обновления профиля при разворачивании: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -167,14 +197,5 @@ private extension SwiftUI_WorkoutAppApp {
         tabBarItemAppearance.normal.iconColor = .init(.swSmallElements)
         tabBarItemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.swSmallElements)]
         return tabBarItemAppearance
-    }
-
-    func prepareForUITestIfNeeded() {
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("UITest") {
-            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-            UIView.setAnimationsEnabled(false)
-        }
-        #endif
     }
 }

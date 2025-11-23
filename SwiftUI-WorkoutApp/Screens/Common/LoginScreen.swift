@@ -16,7 +16,6 @@ struct LoginScreen: View {
     @State private var loginTask: Task<Void, Never>?
     @State private var resetPasswordTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
-    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -101,6 +100,13 @@ private extension LoginScreen {
         isLoading = true
         loginTask = Task {
             do {
+                #if DEBUG
+                let client: AllClients = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: AllClients = SWClient(with: defaults.authHelper)
+                #endif
                 let model = AuthData(login: credentials.login, password: credentials.password)
                 let userId = try await client.logIn(with: model.token)
                 defaults.saveAuthData(model)
@@ -132,7 +138,14 @@ private extension LoginScreen {
         isLoading = true
         resetPasswordTask = Task {
             do {
-                if try await SWClient(with: defaults).resetPassword(for: credentials.login) {
+                #if DEBUG
+                let client: AuthClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: AuthClient = SWClient(with: defaults.authHelper)
+                #endif
+                if try await client.resetPassword(for: credentials.login) {
                     SWAlert.shared.presentDefaultUIKit(
                         title: Strings.doneTitle,
                         message: Strings.Alert.resetSuccessful
@@ -160,6 +173,7 @@ private extension LoginScreen {
 #if DEBUG
 #Preview {
     LoginScreen()
-        .environment(\.isNetworkConnected, false)
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

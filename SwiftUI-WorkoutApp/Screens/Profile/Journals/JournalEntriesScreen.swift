@@ -197,7 +197,14 @@ private extension JournalEntriesScreen {
             currentState = .loading
         }
         do {
-            let entries = try await SWClient(with: defaults).getJournalEntries(
+            #if DEBUG
+            let client: JournalsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: JournalsClient = SWClient(with: defaults.authHelper)
+            #endif
+            let entries = try await client.getJournalEntries(
                 for: userId,
                 journalId: currentJournal.id
             )
@@ -215,7 +222,14 @@ private extension JournalEntriesScreen {
             deleteEntryTask = Task {
                 currentState = .deleteEntryAction(entries)
                 do {
-                    try await SWClient(with: defaults).deleteEntry(
+                    #if DEBUG
+                    let client: CommentsClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: CommentsClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    try await client.deleteEntry(
                         from: .journal(ownerId: userId, journalId: currentJournal.id),
                         entryId: entryId
                     )
@@ -240,6 +254,7 @@ private extension JournalEntriesScreen {
 #if DEBUG
 #Preview {
     JournalEntriesScreen(for: 30, in: .preview)
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

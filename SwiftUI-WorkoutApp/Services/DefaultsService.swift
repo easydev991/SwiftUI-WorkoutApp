@@ -1,15 +1,24 @@
+import Combine
 import SwiftUI
 import SWKeychain
 import SWModels
 import SWNetworkClient
 
 @MainActor
-final class DefaultsService: ObservableObject, AuthHelper {
-    init() {
-        migrateAuthDataFromUserDefaults()
+final class DefaultsService: ObservableObject {
+    let authHelper: AuthHelper
+    private var cancellable: AnyCancellable?
+
+    init(authHelper: AuthHelper) {
+        self.authHelper = authHelper
+        self.cancellable = authHelper.authTokenPublisher
+            .dropFirst()
+            .sink { [weak self] token in
+                guard let self, token == nil else { return }
+                triggerLogout(manually: false)
+            }
     }
 
-    var authToken: String? { authData?.token }
     var appIconBadgeCount: Int {
         unreadMessagesCount + friendRequestsList.count
     }
@@ -21,9 +30,6 @@ final class DefaultsService: ObservableObject, AuthHelper {
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
-
-    @KeychainWrapper(Key.authData.rawValue)
-    private var authData: AuthData?
 
     @AppStorage(Key.userInfo.rawValue)
     private var userInfo = Data()
@@ -94,14 +100,17 @@ final class DefaultsService: ObservableObject, AuthHelper {
     }
 
     func saveAuthData(_ model: AuthData) {
-        authData = model
+        guard let authHelperImp = authHelper as? AuthHelperImp else {
+            return
+        }
+        authHelperImp.saveAuthData(model)
     }
 
     func getUserPassword() throws -> String {
-        guard let password = authData?.password else {
+        guard let authHelperImp = authHelper as? AuthHelperImp else {
             throw StorageError.noAuthData
         }
-        return password
+        return try authHelperImp.getUserPassword()
     }
 
     func setUserNeedUpdate(_ newValue: Bool) {
@@ -158,8 +167,10 @@ final class DefaultsService: ObservableObject, AuthHelper {
         try? saveFriendsIds(newList)
     }
 
-    func triggerLogout() {
-        authData = nil
+    func triggerLogout(manually: Bool = true) {
+        if manually {
+            authHelper.triggerLogout()
+        }
         userInfo = .init()
         try? saveFriendsIds([])
         try? saveFriendRequests([])
@@ -195,35 +206,5 @@ private extension DefaultsService {
     enum Key: String {
         case appTheme, authData, userInfo, friends, friendRequests, blacklist, needUpdateUser, unreadMessagesCount, lastCountriesUpdateDate,
              parksFilter
-    }
-}
-
-private extension DefaultsService {
-    /// Старая модель, которая хранилась в `UserDefaults`
-    struct LegacyAuthData: Codable {
-        let password: String
-        let token: String?
-
-        var login: String? {
-            guard let token else { return nil }
-            guard let data = Data(base64Encoded: token),
-                  let decodedString = String(data: data, encoding: .utf8)
-            else { return nil }
-            let components = decodedString.components(separatedBy: ":")
-            guard components.count >= 2 else { return nil }
-            return components[0]
-        }
-    }
-
-    /// Переносит авторизационные данные из `UserDefaults` в `keychain`
-    func migrateAuthDataFromUserDefaults() {
-        guard authData == nil,
-              let legacyData = UserDefaults.standard.data(forKey: Key.authData.rawValue)
-        else { return }
-        UserDefaults.standard.removeObject(forKey: Key.authData.rawValue)
-        guard let oldModel = try? JSONDecoder().decode(LegacyAuthData.self, from: legacyData),
-              let login = oldModel.login
-        else { return }
-        authData = .init(login: login, password: oldModel.password)
     }
 }

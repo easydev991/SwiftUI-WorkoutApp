@@ -17,6 +17,10 @@ final class ParksManager: ObservableObject {
     private(set) var lastParksUpdateDateString = "2025-10-25T00:00:00"
     /// Хранилище файла с площадками
     private let storage: SWFileManager
+    /// Флаг режима UI-тестов
+    private let isUITest: Bool
+    /// Помощник авторизации для создания клиента
+    private let authHelper: AuthHelper
     /// Все площадки, доступные для отображения на карте
     @Published private(set) var fullList = [Park]()
     /// Загружены ли данные
@@ -29,8 +33,14 @@ final class ParksManager: ObservableObject {
         DateFormatterService.days(from: lastParksUpdateDateString, to: .now) > 1
     }
 
-    init(storage: SWFileManager = SWFileManagerImp(fileName: "SportsGrounds.json")) {
+    init(
+        storage: SWFileManager = SWFileManagerImp(fileName: "SportsGrounds.json"),
+        isUITest: Bool = false,
+        authHelper: AuthHelper
+    ) {
         self.storage = storage
+        self.isUITest = isUITest
+        self.authHelper = authHelper
         $fullList
             .map { !$0.isEmpty }
             .assign(to: &$didLoad)
@@ -75,10 +85,16 @@ final class ParksManager: ObservableObject {
     /// Загружает обновленный список площадок
     ///
     /// Использует `lastParksUpdateDateString` как дату для запроса обновленных площадок
-    /// - Parameter client: Клиент для загрузки обновленных площадок
-    func getUpdatedParks(client: ParksUpdaterClient) async throws {
+    func getUpdatedParks() async throws {
         isLoading = true
         defer { isLoading = false }
+        #if DEBUG
+        let client: ParksUpdaterClient = isUITest
+            ? MockSWClient(instantResponse: true)
+            : SWClient(with: authHelper)
+        #else
+        let client: ParksUpdaterClient = SWClient(with: authHelper)
+        #endif
         let updatedParks = try await client.getUpdatedParks(
             from: lastParksUpdateDateString
         )

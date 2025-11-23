@@ -11,7 +11,6 @@ struct BlackListScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var currentState = CurrentState.initial
     @State private var userToDelete: UserResponse?
-    private var client: SWClient { SWClient(with: defaults) }
 
     var body: some View {
         ScrollView {
@@ -132,6 +131,13 @@ private extension BlackListScreen {
             currentState = .loading
         }
         do {
+            #if DEBUG
+            let client: FriendsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: FriendsClient = SWClient(with: defaults.authHelper)
+            #endif
             let users = try await client.getBlacklist()
             try? defaults.saveBlacklist(users)
             currentState = .ready(users)
@@ -147,7 +153,14 @@ private extension BlackListScreen {
         currentState = .unblockAction(blockedUsers)
         Task {
             do {
-                try await SWClient(with: defaults).blacklistAction(
+                #if DEBUG
+                let client: FriendsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: FriendsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.blacklistAction(
                     user: user, option: .remove
                 )
                 defaults.updateBlacklist(option: .remove, user: user)
@@ -166,7 +179,8 @@ private extension BlackListScreen {
 #Preview {
     NavigationStack {
         BlackListScreen()
-            .environmentObject(DefaultsService())
+            .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+            .networkStatus(true)
     }
 }
 #endif

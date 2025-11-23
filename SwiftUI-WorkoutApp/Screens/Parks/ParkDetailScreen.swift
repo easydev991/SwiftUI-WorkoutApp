@@ -119,7 +119,14 @@ private extension ParkDetailScreen {
                 isLoading = true
                 deleteParkTask = Task {
                     do {
-                        try await SWClient(with: defaults).delete(parkId: park.id)
+                        #if DEBUG
+                        let client: ParksClient = Constants.isUITest
+                            ? MockSWClient(instantResponse: true)
+                            : SWClient(with: defaults.authHelper)
+                        #else
+                        let client: ParksClient = SWClient(with: defaults.authHelper)
+                        #endif
+                        try await client.delete(parkId: park.id)
                         defaults.setUserNeedUpdate(true)
                         onDelete(park.id)
                     } catch {
@@ -238,7 +245,14 @@ private extension ParkDetailScreen {
             isLoading = true
             changeTrainHereTask = Task {
                 do {
-                    try await SWClient(with: defaults).changeTrainHereStatus(newValue, for: park.id)
+                    #if DEBUG
+                    let client: ParksClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: ParksClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    try await client.changeTrainHereStatus(newValue, for: park.id)
                     // Чтобы не делать лишнее обновление данных площадки,
                     // локально изменяем список тренирующихся
                     if newValue, let userInfo = defaults.mainUserInfo {
@@ -342,7 +356,14 @@ private extension ParkDetailScreen {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         if !refresh { isLoading = true }
         do {
-            park = try await SWClient(with: defaults).getPark(id: park.id)
+            #if DEBUG
+            let client: ParksClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: ParksClient = SWClient(with: defaults.authHelper)
+            #endif
+            park = try await client.getPark(id: park.id)
             if refresh {
                 onEdit(park)
             }
@@ -357,7 +378,14 @@ private extension ParkDetailScreen {
         isLoading = true
         deleteCommentTask = Task {
             do {
-                try await SWClient(with: defaults).deleteEntry(from: .park(id: park.id), entryId: id)
+                #if DEBUG
+                let client: CommentsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: CommentsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.deleteEntry(from: .park(id: park.id), entryId: id)
                 park.comments.removeAll(where: { $0.id == id })
             } catch {
                 process(error)
@@ -371,7 +399,14 @@ private extension ParkDetailScreen {
         isLoading = true
         deletePhotoTask = Task {
             do {
-                try await SWClient(with: defaults).deletePhoto(
+                #if DEBUG
+                let client: PhotosClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: PhotosClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.deletePhoto(
                     from: .park(.init(containerId: park.id, photoId: id))
                 )
                 park.photos = park.removePhotoById(id)
@@ -464,6 +499,7 @@ private extension ParkDetailScreen {
 #if DEBUG
 #Preview {
     ParkDetailScreen(park: .preview, onEdit: { _ in }, onDelete: { _ in })
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

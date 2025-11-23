@@ -175,7 +175,14 @@ private extension EventsListScreen {
         { return }
         if !refresh { isLoading = true }
         do {
-            let list = try await SWClient(with: defaults).getEvents(of: selectedEventType)
+            #if DEBUG
+            let client: EventsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: EventsClient = SWClient(with: defaults.authHelper)
+            #endif
+            let list = try await client.getEvents(of: selectedEventType)
             switch selectedEventType {
             case .future: futureEvents = list
             case .past:
@@ -206,6 +213,7 @@ private extension EventsListScreen {
 #Preview {
     EventsListScreen()
         .environmentObject(TabViewModel())
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif
