@@ -213,6 +213,23 @@
         }
       }
     },
+    "SOTKA" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOTKA"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SOTKA"
+          }
+        }
+      }
+    },
     "usersCount" : {
       "comment" : "Количество людей",
       "extractionState" : "manual",
@@ -889,6 +906,29 @@
             "state" : "translated",
             "value" : "Other icons"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Другие иконки"
+          }
+        }
+      }
+    },
+    "Другие приложения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other apps"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Другие приложения"
+          }
         }
       }
     },
@@ -915,6 +955,12 @@
             "state" : "translated",
             "value" : "More"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ещё"
+          }
         }
       }
     },
@@ -924,6 +970,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Loading logs..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружаем логи..."
           }
         }
       }
@@ -2620,6 +2672,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Страна"
+          }
+        }
+      }
+    },
+    "Счётчик дней" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days counter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Счётчик дней"
           }
         }
       }

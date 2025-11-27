@@ -32,6 +32,13 @@ struct MoreScreen: View {
                         }
                     }
                     dividerView
+                    SectionView(header: "Другие приложения", mode: .regular) {
+                        VStack(spacing: 4) {
+                            sotkaButton
+                            daysCounterButton
+                        }
+                    }
+                    dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
                         VStack(spacing: 4) {
                             workoutShopButton
@@ -65,6 +72,8 @@ private extension MoreScreen {
         static let githubLink = URL(string: "https://github.com/easydev991/SwiftUI-WorkoutApp")!
         static let officialSite = URL(string: "https://workout.su")!
         static let appStoreLink = URL(string: "https://apps.apple.com/app/id6749501617")
+        static let sotkaStoreLink = URL(string: "https://apps.apple.com/app/id6753644091")!
+        static let daysCounterStoreLink = URL(string: "https://apps.apple.com/app/id6744068216")!
     }
 }
 
@@ -164,6 +173,24 @@ private extension MoreScreen {
             leadingContent: .text("Версия"),
             trailingContent: .text(.init(Constants.appVersion))
         )
+    }
+
+    var sotkaButton: some View {
+        Link(destination: Links.sotkaStoreLink) {
+            ListRowView(
+                leadingContent: .text("SOTKA"),
+                trailingContent: .chevron
+            )
+        }
+    }
+
+    var daysCounterButton: some View {
+        Link(destination: Links.daysCounterStoreLink) {
+            ListRowView(
+                leadingContent: .text("Счётчик дней"),
+                trailingContent: .chevron
+            )
+        }
     }
 
     var workoutShopButton: some View {
