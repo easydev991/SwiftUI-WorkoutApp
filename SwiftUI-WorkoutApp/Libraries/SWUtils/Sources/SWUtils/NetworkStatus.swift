@@ -3,9 +3,15 @@ import Network
 
 @MainActor
 public final class NetworkStatus: ObservableObject {
-    @Published public private(set) var isConnected = false
-    @Published public private(set) var isStatusInitialized = false
+    @Published private var isConnected = false
+    @Published private(set) var isInitialized = false
     private let monitor = NWPathMonitor()
+
+    /// `true` - есть подключение, `false` - нет подключения
+    /// Если статус не инициализирован, возвращает `true` (предполагается наличие подключения)
+    public var isOnline: Bool {
+        isInitialized ? isConnected : true
+    }
 
     public init() {
         if #available(iOS 17.0, *) {
@@ -22,8 +28,8 @@ public final class NetworkStatus: ObservableObject {
             for await path in monitor {
                 await MainActor.run {
                     self.isConnected = path.status == .satisfied
-                    if !self.isStatusInitialized {
-                        self.isStatusInitialized = true
+                    if !self.isInitialized {
+                        self.isInitialized = true
                     }
                 }
             }
@@ -34,8 +40,8 @@ public final class NetworkStatus: ObservableObject {
         monitor.pathUpdateHandler = { [weak self] path in
             DispatchQueue.main.async {
                 self?.isConnected = path.status == .satisfied
-                if let self, !self.isStatusInitialized {
-                    self.isStatusInitialized = true
+                if let self, !self.isInitialized {
+                    self.isInitialized = true
                 }
             }
         }
