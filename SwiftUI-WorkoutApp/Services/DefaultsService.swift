@@ -94,6 +94,10 @@ final class DefaultsService: ObservableObject {
         }
     }
 
+    var profileBadgeCount: Int {
+        friendRequestsList.count + (mainUserInfo?.badgeValue ?? 0)
+    }
+
     func setAppTheme(_ theme: AppColorTheme) {
         guard appTheme != theme else { return }
         appTheme = theme
