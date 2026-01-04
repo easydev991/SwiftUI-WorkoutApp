@@ -1,11 +1,17 @@
 import SwiftUI
 
 struct BadgeView: View {
-    let value: Int
+    let value: Int?
 
     var body: some View {
-        Image(systemName: "\(value).circle.fill")
-            .foregroundStyle(Color.swAccent)
+        if let value, value > 0 {
+            Text(value > 99 ? "99+" : "\(value)")
+                .font(.caption.bold())
+                .foregroundStyle(.white)
+                .padding(6)
+                .background(.red)
+                .clipShape(.circle)
+        }
     }
 }
 

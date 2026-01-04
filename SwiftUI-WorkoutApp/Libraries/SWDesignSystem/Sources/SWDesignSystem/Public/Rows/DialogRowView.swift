@@ -17,9 +17,7 @@ public struct DialogRowView: View {
                 }
                 HStack(spacing: 12) {
                     messageView
-                    if model.hasUnreadMessages {
-                        BadgeView(value: model.unreadCount)
-                    }
+                    BadgeView(value: model.unreadCount)
                 }
             }
             .lineLimit(1)
@@ -34,10 +32,6 @@ public extension DialogRowView {
         let dateText: String
         let messageText: String
         let unreadCount: Int
-
-        var hasUnreadMessages: Bool {
-            unreadCount > 0
-        }
 
         public init(
             avatarURL: URL?,
@@ -83,7 +77,20 @@ private extension DialogRowView {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Все прочитаны") {
+    DialogRowView(
+        model: .init(
+            avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,
+            authorName: "angryswan732",
+            dateText: "12:30",
+            messageText: "Привет)) Давай в 18:30?",
+            unreadCount: 0
+        )
+    )
+    .padding(.horizontal)
+}
+
+#Preview("3 непрочитанных") {
     DialogRowView(
         model: .init(
             avatarURL: .init(string: "https://workout.su/uploads/avatars/2019/10/2019-10-07-01-10-08-yow.jpg")!,

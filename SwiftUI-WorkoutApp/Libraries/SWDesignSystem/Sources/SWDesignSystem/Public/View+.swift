@@ -37,4 +37,11 @@ public extension View {
     func hapticFeedback(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
         UIImpactFeedbackGenerator(style: style).impactOccurred()
     }
+
+    /// Добавляет бейдж для любой вьюхи, похожий на стандартный
+    ///
+    /// Если передать `nil`, то бейдж не отображается
+    func swBadge(_ count: Int?) -> some View {
+        modifier(BadgeModifier(count: count))
+    }
 }

@@ -56,9 +56,7 @@ public extension FormRowView {
             case let .textWithBadgeAndChevron(text, badgeValue):
                 HStack(spacing: 12) {
                     trailingTextView(text)
-                    if badgeValue > 0 {
-                        BadgeView(value: badgeValue)
-                    }
+                    BadgeView(value: badgeValue)
                     if isEnabled { ChevronView() }
                 }
             }
