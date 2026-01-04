@@ -186,7 +186,14 @@ private extension EventFormScreen {
             isLoading = true
             saveEventTask = Task {
                 do {
-                    let savedEvent = try await SWClient(with: defaults)
+                    #if DEBUG
+                    let client: EventsClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: EventsClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    let savedEvent = try await client
                         .saveEvent(id: mode.eventId, form: eventForm)
                     if savedEvent.id != .zero {
                         refreshClbk?()
@@ -227,6 +234,6 @@ private extension EventFormScreen {
 #if DEBUG
 #Preview {
     EventFormScreen(mode: .regularCreate, refreshClbk: {})
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

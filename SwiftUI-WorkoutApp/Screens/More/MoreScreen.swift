@@ -236,6 +236,6 @@ private extension MoreScreen {
 #if DEBUG
 #Preview {
     MoreScreen()
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

@@ -5,7 +5,6 @@ import SWUtils
 
 struct ParksAddedByUserScreen: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
@@ -30,11 +29,7 @@ struct ParksAddedByUserScreen: View {
         .listStyle(.plain)
         .padding(.vertical)
         .task {
-            do {
-                parkList = try await parksManager.getParks(ids: parkIds)
-            } catch {
-                parkList = []
-            }
+            parkList = await (try? parksManager.getParks(ids: parkIds)) ?? []
         }
         .onChange(of: parkList) { updatedParks in
             if updatedParks.isEmpty { dismiss() }
@@ -75,8 +70,8 @@ private extension ParksAddedByUserScreen {
 
 #if DEBUG
 #Preview {
+    let authHelper = MockAuthHelper()
     ParksAddedByUserScreen(parks: [.preview])
-        .environmentObject(DefaultsService())
-        .environmentObject(ParksManager())
+        .environmentObject(ParksManager(isUITest: true, authHelper: authHelper))
 }
 #endif

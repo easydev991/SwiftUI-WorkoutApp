@@ -253,8 +253,15 @@ private extension EditProfileScreen {
         isLoading = true
         editUserTask = Task {
             do {
+                #if DEBUG
+                let client: ProfileClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: ProfileClient = SWClient(with: defaults.authHelper)
+                #endif
                 let userId = defaults.mainUserInfo?.id ?? 0
-                let result = try await SWClient(with: defaults).editUser(userId, model: userForm)
+                let result = try await client.editUser(userId, model: userForm)
                 try Task.checkCancellation()
                 try defaults.saveUserInfo(result)
                 let password = try defaults.getUserPassword()
@@ -308,7 +315,7 @@ private extension EditProfileScreen {
 #Preview {
     NavigationStack {
         EditProfileScreen()
-            .environmentObject(DefaultsService())
+            .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
     }
 }
 #endif

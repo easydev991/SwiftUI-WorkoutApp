@@ -163,7 +163,14 @@ private extension JournalsListScreen {
             deleteJournalTask = Task {
                 currentState = .deleteJournalAction(journals)
                 do {
-                    try await SWClient(with: defaults).deleteJournal(
+                    #if DEBUG
+                    let client: JournalsClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: JournalsClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    try await client.deleteJournal(
                         with: journalId,
                         for: defaults.mainUserInfo?.id
                     )
@@ -207,7 +214,14 @@ private extension JournalsListScreen {
             currentState = .loading
         }
         do {
-            let journals = try await SWClient(with: defaults).getJournals(for: userId)
+            #if DEBUG
+            let client: JournalsClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: JournalsClient = SWClient(with: defaults.authHelper)
+            #endif
+            let journals = try await client.getJournals(for: userId)
             currentState = .ready(journals)
         } catch {
             currentState = .error(.common(message: error.localizedDescription))
@@ -220,7 +234,14 @@ private extension JournalsListScreen {
         currentState = .saveJournalAction(journals)
         saveJournalTask = Task {
             do {
-                try await SWClient(with: defaults).createJournal(
+                #if DEBUG
+                let client: JournalsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: JournalsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.createJournal(
                     with: newJournalTitle,
                     for: defaults.mainUserInfo?.id
                 )
@@ -258,6 +279,7 @@ private extension JournalsListScreen {
 #if DEBUG
 #Preview {
     JournalsListScreen(userId: .previewUserId)
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

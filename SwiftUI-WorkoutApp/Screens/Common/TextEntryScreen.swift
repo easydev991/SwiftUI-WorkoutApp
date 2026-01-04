@@ -1,4 +1,5 @@
 import SwiftUI
+import SWModels
 import SWNetworkClient
 import SWUtils
 
@@ -88,7 +89,13 @@ private extension TextEntryScreen {
         isLoading = true
         saveEntryTask = Task {
             do {
-                let client = SWClient(with: defaults)
+                #if DEBUG
+                let client: CommentsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: CommentsClient = SWClient(with: defaults.authHelper)
+                #endif
                 switch mode {
                 case let .newForPark(id):
                     try await client.addNewEntry(
@@ -143,6 +150,5 @@ private extension TextEntryScreen {
 #if DEBUG
 #Preview {
     TextEntryScreen(mode: .newForPark(id: 0), refreshClbk: {})
-        .environmentObject(DefaultsService())
 }
 #endif

@@ -149,7 +149,14 @@ private extension ParkFormScreen {
             isLoading = true
             saveParkTask = Task {
                 do {
-                    let newPark = try await SWClient(with: defaults)
+                    #if DEBUG
+                    let client: ParksClient = Constants.isUITest
+                        ? MockSWClient(instantResponse: true)
+                        : SWClient(with: defaults.authHelper)
+                    #else
+                    let client: ParksClient = SWClient(with: defaults.authHelper)
+                    #endif
+                    let newPark = try await client
                         .savePark(id: mode.parkId, form: parkForm)
                     if newPark.id != 0 {
                         dismiss()
@@ -194,6 +201,6 @@ private extension ParkFormScreen {
 #if DEBUG
 #Preview {
     ParkFormScreen(.editExisting(.preview), refreshClbk: { _ in })
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

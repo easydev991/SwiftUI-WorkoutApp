@@ -11,3 +11,9 @@ public enum Constants {
     /// Получатели обратной связи
     public static let feedbackRecipient = ["info@workout.su", "cuties.84tilbury@icloud.com"]
 }
+
+public extension Constants {
+    static var isUITest: Bool {
+        ProcessInfo.processInfo.arguments.contains("UITest")
+    }
+}

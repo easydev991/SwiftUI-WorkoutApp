@@ -6,6 +6,13 @@ extension DialogsListScreen {
     @MainActor
     final class ViewModel: ObservableObject {
         @Published private(set) var currentState = CurrentState.initial
+        private let isUITest: Bool
+        private let authHelper: AuthHelper
+
+        init(isUITest: Bool = false, authHelper: AuthHelper) {
+            self.isUITest = isUITest
+            self.authHelper = authHelper
+        }
 
         func getDialogs(refresh: Bool = false, defaults: DefaultsService) async {
             guard defaults.isAuthorized else {
@@ -18,8 +25,15 @@ extension DialogsListScreen {
             if !refresh {
                 currentState = .loading
             }
+            #if DEBUG
+            let client: MessagesClient = isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: authHelper)
+            #else
+            let client: MessagesClient = SWClient(with: authHelper)
+            #endif
             do {
-                let dialogs = try await SWClient(with: defaults).getDialogs()
+                let dialogs = try await client.getDialogs()
                 currentState = .ready(dialogs)
                 updateUnreadMessagesCount(with: defaults)
             } catch ClientError.noConnection {
@@ -34,7 +48,14 @@ extension DialogsListScreen {
             let dialogId = dialogs[index].id
             let updatedDialogs = dialogs.filter { $0.id != dialogId }
             currentState = .deleteDialog(updatedDialogs)
-            try await SWClient(with: defaults).deleteDialog(dialogId)
+            #if DEBUG
+            let client: MessagesClient = isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: authHelper)
+            #else
+            let client: MessagesClient = SWClient(with: authHelper)
+            #endif
+            try await client.deleteDialog(dialogId)
             currentState = .ready(updatedDialogs)
             updateUnreadMessagesCount(with: defaults)
         }

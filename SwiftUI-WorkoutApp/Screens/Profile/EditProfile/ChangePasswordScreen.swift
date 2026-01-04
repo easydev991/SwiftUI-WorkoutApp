@@ -136,7 +136,14 @@ private extension ChangePasswordScreen {
         isLoading = true
         changePasswordTask = Task {
             do {
-                try await SWClient(with: defaults)
+                #if DEBUG
+                let client: ProfileClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: ProfileClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client
                     .changePassword(current: model.current, new: model.new.text)
                 try Task.checkCancellation()
                 if let login = defaults.mainUserInfo?.userName {
@@ -161,6 +168,6 @@ private extension ChangePasswordScreen {
 #if DEBUG
 #Preview {
     ChangePasswordScreen()
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

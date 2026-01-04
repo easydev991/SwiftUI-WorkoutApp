@@ -10,7 +10,6 @@ struct MainUserFriendsListScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var currentState = CurrentState.initial
-    private var client: SWClient { SWClient(with: defaults) }
     let userId: Int
 
     var body: some View {
@@ -164,6 +163,13 @@ private extension MainUserFriendsListScreen {
         currentState = .friendRequestAction(friendRequests: requests, friends: friends)
         Task {
             do {
+                #if DEBUG
+                let client: FriendsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: FriendsClient = SWClient(with: defaults.authHelper)
+                #endif
                 try await client.respondToFriendRequest(from: userId, accept: accept)
                 defaults.setUserNeedUpdate(true)
                 try await getFriendsAndRequests()
@@ -175,6 +181,13 @@ private extension MainUserFriendsListScreen {
     }
 
     func getFriendsAndRequests() async throws {
+        #if DEBUG
+        let client: FriendsClient = Constants.isUITest
+            ? MockSWClient(instantResponse: true)
+            : SWClient(with: defaults.authHelper)
+        #else
+        let client: FriendsClient = SWClient(with: defaults.authHelper)
+        #endif
         async let friendsTask = client.getFriendsForUser(id: userId)
         async let requestsTask = client.getFriendRequests()
         let (friends, requests) = try await (friendsTask, requestsTask)
@@ -191,6 +204,7 @@ private extension MainUserFriendsListScreen {
 #if DEBUG
 #Preview {
     MainUserFriendsListScreen(userId: UserResponse.preview.id)
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

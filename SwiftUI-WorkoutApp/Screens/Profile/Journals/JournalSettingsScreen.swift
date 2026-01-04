@@ -87,7 +87,14 @@ private extension JournalSettingsScreen {
         isLoading = true
         Task {
             do {
-                try await SWClient(with: defaults).editJournalSettings(
+                #if DEBUG
+                let client: JournalsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: JournalsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.editJournalSettings(
                     with: journal.id,
                     title: journal.title,
                     for: defaults.mainUserInfo?.id,
@@ -110,5 +117,6 @@ private extension JournalSettingsScreen {
 #if DEBUG
 #Preview {
     JournalSettingsScreen(with: .preview, updatedClbk: { _ in })
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

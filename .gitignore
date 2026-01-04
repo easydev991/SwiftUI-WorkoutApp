@@ -12,9 +12,10 @@ fastlane/screenshots/screenshots.html
 .build/
 buildServer.json
 
-# VSCode/Cursor settings (personal preferences)
+# IDE settings
 .vscode/
 .cursor/
+.windsurf/
 
 # Fastlane
 fastlane/builds/

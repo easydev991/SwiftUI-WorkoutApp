@@ -67,6 +67,7 @@ final class WorkoutAppUITests: XCTestCase {
         waitAndTapOrFail(element: passwordField)
         passwordField.typeText(password)
         waitAndTapOrFail(element: loginButton)
+        handlePasswordAlert()
         waitAndTapOrFail(timeout: 10, element: searchUsersButton)
         waitAndTapOrFail(timeout: 10, element: searchUserField)
         sleep(1) // иногда симулятор начинает печатать раньше времени, поэтому ждем
@@ -99,6 +100,14 @@ private extension WorkoutAppUITests {
             )
         )
         waitAndTap(timeout: 5, element: button)
+    }
+
+    func handlePasswordAlert() {
+        let ruButton = app.buttons["Сохранить"].firstMatch
+        let enButton = app.buttons["Save"].firstMatch
+        let foundRuButton = waitAndTap(timeout: 5, element: ruButton)
+        guard !foundRuButton else { return }
+        waitAndTap(timeout: 5, element: enButton)
     }
 
     var tabbar: XCUIElement { app.tabBars.firstMatch }

@@ -112,7 +112,14 @@ private extension UserDetailsScreen {
         isLoading = true
         friendActionTask = Task {
             do {
-                try await SWClient(with: defaults).friendAction(userId: user.id, option: socialActions.friend)
+                #if DEBUG
+                let client: FriendsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: FriendsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.friendAction(userId: user.id, option: socialActions.friend)
                 defaults.updateFriendIds(friendId: user.id, action: socialActions.friend)
                 switch socialActions.friend {
                 case .add:
@@ -133,7 +140,14 @@ private extension UserDetailsScreen {
         isLoading = true
         blacklistUserTask = Task {
             do {
-                try await SWClient(with: defaults).blacklistAction(
+                #if DEBUG
+                let client: FriendsClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: FriendsClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.blacklistAction(
                     user: user, option: socialActions.blacklist
                 )
                 defaults.updateBlacklist(option: socialActions.blacklist, user: user)
@@ -182,7 +196,14 @@ private extension UserDetailsScreen {
 
     func makeUserInfo() async {
         do {
-            user = try await SWClient(with: defaults).getUserById(user.id)
+            #if DEBUG
+            let client: ProfileClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: ProfileClient = SWClient(with: defaults.authHelper)
+            #endif
+            user = try await client.getUserById(user.id)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -192,7 +213,14 @@ private extension UserDetailsScreen {
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
-                try await SWClient(with: defaults).sendMessage(messagingModel.message, to: user.id)
+                #if DEBUG
+                let client: MessagesClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: MessagesClient = SWClient(with: defaults.authHelper)
+                #endif
+                try await client.sendMessage(messagingModel.message, to: user.id)
                 messagingModel.message = ""
                 messagingModel.recipient = nil
                 await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
@@ -220,7 +248,8 @@ private extension UserDetailsScreen {
 #if DEBUG
 #Preview {
     UserDetailsScreen(for: .preview)
-        .environmentObject(DefaultsService())
-        .environmentObject(DialogsListScreen.ViewModel())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(DialogsListScreen.ViewModel(isUITest: true, authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

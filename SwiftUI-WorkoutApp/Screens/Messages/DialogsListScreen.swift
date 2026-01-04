@@ -1,6 +1,7 @@
 import SWDesignSystem
 import SwiftUI
 import SWModels
+import SWNetworkClient
 import SWUtils
 
 /// Экран со списком диалогов
@@ -175,7 +176,7 @@ private extension DialogsListScreen {
 #if DEBUG
 #Preview {
     DialogsListScreen()
-        .environmentObject(DialogsListScreen.ViewModel())
-        .environmentObject(DefaultsService())
+        .environmentObject(DialogsListScreen.ViewModel(isUITest: true, authHelper: MockAuthHelper()))
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }
 #endif

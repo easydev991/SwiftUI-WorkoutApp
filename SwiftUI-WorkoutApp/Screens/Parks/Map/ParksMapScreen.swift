@@ -282,7 +282,7 @@ private extension ParksMapScreen {
 
     func getUpdatedParks() async {
         do {
-            try await parksManager.getUpdatedParks(client: SWClient(with: defaults))
+            try await parksManager.getUpdatedParks()
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {
@@ -389,8 +389,10 @@ private extension ParksMapScreen {
 
 #if DEBUG
 #Preview {
+    let authHelper = MockAuthHelper()
     ParksMapScreen()
-        .environmentObject(DefaultsService())
-        .environmentObject(ParksManager())
+        .environmentObject(DefaultsService(authHelper: authHelper))
+        .environmentObject(ParksManager(isUITest: true, authHelper: authHelper))
+        .environment(\.isNetworkConnected, true)
 }
 #endif

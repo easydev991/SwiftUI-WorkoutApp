@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public enum AppColorTheme: Int, CaseIterable, CustomStringConvertible, Identifiable {
     public var id: Int { rawValue }
@@ -11,6 +12,14 @@ public enum AppColorTheme: Int, CaseIterable, CustomStringConvertible, Identifia
         case .dark: String(localized: .appThemeDark)
         case .light: String(localized: .appThemeLight)
         case .system: String(localized: .appThemeSystem)
+        }
+    }
+
+    public var colorScheme: ColorScheme? {
+        switch self {
+        case .light: .light
+        case .dark: .dark
+        case .system: nil
         }
     }
 }

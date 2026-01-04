@@ -13,7 +13,6 @@ struct ParksListScreen: View {
     @State private var currentState = CurrentState.initial
     /// Площадка для открытия детального экрана
     @State private var selectedPark: Park?
-    private var client: SWClient { SWClient(with: defaults) }
     let mode: Mode
 
     var body: some View {
@@ -145,7 +144,14 @@ private extension ParksListScreen {
                 currentState = .loading
             }
             do {
-                let parks = try await SWClient(with: defaults).getParksForUser(userId)
+                #if DEBUG
+                let client: ParksClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: ParksClient = SWClient(with: defaults.authHelper)
+                #endif
+                let parks = try await client.getParksForUser(userId)
                 let isMainUser = userId == defaults.mainUserInfo?.id
                 if isMainUser { defaults.setUserNeedUpdate(false) }
                 currentState = .ready(parks)
@@ -188,7 +194,8 @@ private extension ParksListScreen {
 #if DEBUG
 #Preview {
     ParksListScreen(mode: .usedBy(userId: .previewUserId))
-        .environmentObject(DefaultsService())
-        .environmentObject(ParksManager())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ParksManager(isUITest: true, authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif

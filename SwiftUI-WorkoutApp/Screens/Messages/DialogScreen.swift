@@ -138,8 +138,15 @@ private extension DialogScreen {
     func markAsRead() async {
         guard dialog.hasUnreadMessages else { return }
         do {
+            #if DEBUG
+            let client: MessagesClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: MessagesClient = SWClient(with: defaults.authHelper)
+            #endif
             let userId = dialog.anotherUserId ?? 0
-            try await SWClient(with: defaults).markAsRead(from: userId)
+            try await client.markAsRead(from: userId)
             markedAsReadClbk(dialog)
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
@@ -151,7 +158,14 @@ private extension DialogScreen {
         if isLoading, !refresh { return }
         if !refresh { isLoading = true }
         do {
-            messages = try await SWClient(with: defaults).getMessages(for: dialog.id).reversed()
+            #if DEBUG
+            let client: MessagesClient = Constants.isUITest
+                ? MockSWClient(instantResponse: true)
+                : SWClient(with: defaults.authHelper)
+            #else
+            let client: MessagesClient = SWClient(with: defaults.authHelper)
+            #endif
+            messages = try await client.getMessages(for: dialog.id).reversed()
         } catch {
             SWAlert.shared.presentDefaultUIKit(error)
         }
@@ -164,8 +178,15 @@ private extension DialogScreen {
         isMessageBarFocused = false
         sendMessageTask = Task(priority: .userInitiated) {
             do {
+                #if DEBUG
+                let client: MessagesClient = Constants.isUITest
+                    ? MockSWClient(instantResponse: true)
+                    : SWClient(with: defaults.authHelper)
+                #else
+                let client: MessagesClient = SWClient(with: defaults.authHelper)
+                #endif
                 let userId = dialog.anotherUserId ?? 0
-                try await SWClient(with: defaults).sendMessage(newMessage, to: userId)
+                try await client.sendMessage(newMessage, to: userId)
                 newMessage = ""
                 await askForMessages(refresh: true)
             } catch {
@@ -179,6 +200,7 @@ private extension DialogScreen {
 #if DEBUG
 #Preview {
     DialogScreen(dialog: .preview, markedAsReadClbk: { _ in })
-        .environmentObject(DefaultsService())
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .networkStatus(true)
 }
 #endif
