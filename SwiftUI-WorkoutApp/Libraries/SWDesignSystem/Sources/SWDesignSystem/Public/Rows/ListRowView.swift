@@ -33,7 +33,7 @@ public struct ListRowView: View {
             .padding(.vertical, 10)
             if let hint {
                 Text(hint)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.swSmallElements)
                     .font(.callout)
             }
         }
