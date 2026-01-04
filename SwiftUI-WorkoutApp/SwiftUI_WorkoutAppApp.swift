@@ -64,7 +64,7 @@ struct SwiftUI_WorkoutAppApp: App {
             RootScreen(
                 selectedTab: $tabViewModel.selectedTab,
                 unreadCount: defaults.unreadMessagesCount,
-                friendRequestsCount: defaults.friendRequestsList.count
+                profileAlertsCount: defaults.profileBadgeCount
             )
             .environment(\.horizontalSizeClass, .compact)
             .environmentObject(tabViewModel)
