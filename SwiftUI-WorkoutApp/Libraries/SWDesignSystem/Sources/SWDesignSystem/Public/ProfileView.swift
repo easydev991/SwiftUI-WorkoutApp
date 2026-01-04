@@ -45,15 +45,25 @@ public struct ProfileView: View {
                             .symbolVariant(.circle)
                         Text(isLoading ? "Загрузка..." : genderWithAge)
                     }
-                    HStack(spacing: 8) {
-                        Icons.Regular.location.view
-                            .symbolVariant(.circle)
-                        Text(isLoading ? "Загрузка..." : countryAndCity)
-                            .lineLimit(2)
-                    }
+                    locationView
                 }
                 .redacted(reason: isLoading ? .placeholder : [])
                 .foregroundStyle(Color.swSmallElements)
+            }
+        }
+    }
+}
+
+private extension ProfileView {
+    @ViewBuilder
+    var locationView: some View {
+        let text = isLoading ? "Загрузка..." : countryAndCity
+        if !text.isEmpty {
+            HStack(spacing: 8) {
+                Icons.Regular.location.view
+                    .symbolVariant(.circle)
+                Text(text)
+                    .lineLimit(2)
             }
         }
     }
@@ -66,6 +76,16 @@ public struct ProfileView: View {
         login: "Beautifulbutterfly101",
         genderWithAge: "Женщина, 30 лет",
         countryAndCity: "Россия, Краснодар"
+    )
+    .padding(.horizontal, 40)
+}
+
+#Preview("Нет адреса") {
+    ProfileView(
+        imageURL: nil,
+        login: "Beautifulbutterfly101",
+        genderWithAge: "Женщина, 30 лет",
+        countryAndCity: ""
     )
     .padding(.horizontal, 40)
 }
