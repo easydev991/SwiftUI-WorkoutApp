@@ -166,6 +166,18 @@ public extension UserResponse {
             && countryId != 0
     }
 
+    /// Значение для бейджа в профиле
+    ///
+    /// Для создания площадки нужно указывать город площадки,
+    /// но приложение может не определить город, и тогда нужно
+    /// указать город из профиля пользователя, поэтому адрес пользователя обязателен,
+    /// и мы показываем бейдж в профиле, если не указан адрес
+    var badgeValue: Int {
+        let countryValue = countryId == nil ? 1 : 0
+        let cityValue = cityId == nil ? 1 : 0
+        return countryValue + cityValue
+    }
+
     static var emptyValue: UserResponse {
         .init(
             id: 0,

@@ -565,6 +565,42 @@
         }
       }
     },
+    "EditProfile.CityHint" : {
+      "comment" : "Подсказка о необходимости указать город для создания площадок",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Specify city to create parks"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Укажите город, чтобы создавать площадки"
+          }
+        }
+      }
+    },
+    "EditProfile.CountryHint" : {
+      "comment" : "Подсказка о необходимости указать страну для создания площадок",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Specify country to create parks"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Укажите страну, чтобы создавать площадки"
+          }
+        }
+      }
+    },
     "English" : {
       "comment" : "Язык приложения",
       "extractionState" : "manual",

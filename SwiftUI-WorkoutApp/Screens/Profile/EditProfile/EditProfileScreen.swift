@@ -182,7 +182,8 @@ private extension EditProfileScreen {
                     .globe,
                     userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.country.name))
+                trailingContent: .textWithChevron(.init(userForm.country.name)),
+                hint: userForm.country.hint
             )
         }
         .padding(.bottom, 6)
@@ -203,7 +204,8 @@ private extension EditProfileScreen {
                     .signPost,
                     userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.city.name))
+                trailingContent: .textWithChevron(.init(userForm.city.name)),
+                hint: userForm.city.hint
             )
         }
     }

@@ -56,6 +56,7 @@ private extension MainUserProfileScreen {
             ProfileViews.makeUserInfo(for: user)
                 .id(defaults.mainUserInfo?.avatarURL)
             editProfileButton
+                .swBadge(user.badgeValue)
             VStack(spacing: 12) {
                 ProfileViews.makeFriends(
                     for: user,

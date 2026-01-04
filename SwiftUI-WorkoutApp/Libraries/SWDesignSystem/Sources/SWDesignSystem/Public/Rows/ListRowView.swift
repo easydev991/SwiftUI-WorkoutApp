@@ -5,27 +5,38 @@ public struct ListRowView: View {
     @Environment(\.isEnabled) private var isEnabled
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
+    private let hint: String?
 
     /// Инициализирует `ListRowView`
     /// - Parameters:
     ///   - leadingContent: Контент слева
     ///   - trailingContent: Контент справа
+    ///   - hint: Подсказка для отображения под основным контентом
     public init(
         leadingContent: LeadingContent,
-        trailingContent: TrailingContent = .empty
+        trailingContent: TrailingContent = .empty,
+        hint: String? = nil
     ) {
         self.leadingContent = leadingContent
         self.trailingContent = trailingContent
+        self.hint = hint
     }
 
     public var body: some View {
-        HStack(spacing: 16) {
-            leadingContent.view
-                .frame(maxWidth: .infinity, alignment: .leading)
-            trailingContent.makeView(isEnabled: isEnabled)
-                .animation(.default, value: isEnabled)
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 16) {
+                leadingContent.view
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                trailingContent.makeView(isEnabled: isEnabled)
+                    .animation(.default, value: isEnabled)
+            }
+            .padding(.vertical, 10)
+            if let hint {
+                Text(hint)
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+            }
         }
-        .padding(.vertical, 10)
     }
 }
 
@@ -112,11 +123,18 @@ public extension ListRowView {
         (.iconWithText(.signPost, "Text"), .text("подпись")),
         (.iconWithText(.signPost, "Text"), .textWithChevron("подпись"))
     ]
-    return VStack(spacing: 0) {
-        ForEach(Array(zip(models.indices, models)), id: \.0) { _, model in
-            ListRowView(leadingContent: model.left, trailingContent: model.right)
+    return ScrollView {
+        LazyVStack(spacing: 12) {
+            ForEach(Array(zip(models.indices, models)), id: \.0) { _, model in
+                ListRowView(leadingContent: model.left, trailingContent: model.right)
+                ListRowView(
+                    leadingContent: model.left,
+                    trailingContent: model.right,
+                    hint: "Подсказка с дополнительной информацией для пользователя"
+                )
+            }
         }
+        .padding(.horizontal)
     }
-    .padding(.horizontal)
 }
 #endif
