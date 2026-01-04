@@ -235,19 +235,22 @@ private extension EditProfileScreen {
     }
 
     func selectCountry(name countryName: String) {
-        let newCountry = locations.countries
-            .first(where: { $0.name == countryName }) ?? .defaultCountry
+        let newCountry = locations.countries.first(where: { $0.name == countryName })
         userForm.country = newCountry
-        if !newCountry.cities.contains(where: { $0 == userForm.city }),
-           let firstCity = newCountry.cities.first {
-            userForm.city = firstCity
+        if let newCountry, !newCountry.cities.contains(where: { $0 == userForm.city }) {
+            userForm.city = nil
             locations.cities = newCountry.cities
         }
     }
 
     func selectCity(name cityName: String) {
-        userForm.city = locations.cities
-            .first(where: { $0.name == cityName }) ?? .defaultCity
+        let newCity = locations.cities.first(where: { $0.name == cityName })
+        userForm.city = newCity
+        if let newCity,
+           let country = locations.countries.first(where: { $0.cities.contains(newCity) }),
+           userForm.country != country {
+            selectCountry(name: country.name)
+        }
     }
 
     func saveChangesAction() {
