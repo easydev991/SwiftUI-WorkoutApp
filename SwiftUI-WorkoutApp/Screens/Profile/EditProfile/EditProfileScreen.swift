@@ -172,7 +172,7 @@ private extension EditProfileScreen {
             ItemListScreen(
                 mode: .country,
                 allItems: locations.countries.map(\.name),
-                selectedItem: userForm.country.name,
+                selectedItem: userForm.country?.name,
                 didSelectItem: { selectCountry(name: $0) },
                 didTapContactUs: sendFeedback
             )
@@ -182,8 +182,8 @@ private extension EditProfileScreen {
                     .globe,
                     userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.country.name)),
-                hint: userForm.country.hint
+                trailingContent: .textWithChevron(.init(userForm.selectedCountryName)),
+                hint: userForm.countryHint
             )
         }
         .padding(.bottom, 6)
@@ -194,7 +194,7 @@ private extension EditProfileScreen {
             ItemListScreen(
                 mode: .city,
                 allItems: locations.cities.map(\.name),
-                selectedItem: userForm.city.name,
+                selectedItem: userForm.city?.name,
                 didSelectItem: { selectCity(name: $0) },
                 didTapContactUs: sendFeedback
             )
@@ -204,8 +204,8 @@ private extension EditProfileScreen {
                     .signPost,
                     userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.city.name)),
-                hint: userForm.city.hint
+                trailingContent: .textWithChevron(.init(userForm.selectedCityName)),
+                hint: userForm.cityHint
             )
         }
     }
@@ -224,9 +224,9 @@ private extension EditProfileScreen {
             if let userInfo = defaults.mainUserInfo {
                 oldUserForm = .init(userInfo)
                 oldUserForm.country = locations.countries
-                    .first(where: { $0.id == oldUserForm.country.id }) ?? .defaultCountry
+                    .first(where: { $0.id == oldUserForm.country?.id })
                 oldUserForm.city = locations.cities
-                    .first(where: { $0.id == oldUserForm.city.id }) ?? .defaultCity
+                    .first(where: { $0.id == oldUserForm.city?.id })
                 userForm = oldUserForm
             }
         } catch {

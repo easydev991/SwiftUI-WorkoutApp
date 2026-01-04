@@ -33,13 +33,3 @@ public extension City {
         return .init(latitude: latitude, longitude: longitude)
     }
 }
-
-public extension City {
-    /// Подсказка о необходимости указать город для создания площадок
-    var hint: String? {
-        guard id != "0" else {
-            return String(localized: .editProfileCityHint)
-        }
-        return nil
-    }
-}

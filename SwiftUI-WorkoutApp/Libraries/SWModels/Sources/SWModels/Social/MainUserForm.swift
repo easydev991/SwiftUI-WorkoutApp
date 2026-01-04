@@ -6,8 +6,8 @@ public struct MainUserForm: Codable, Equatable, Sendable {
     public var userName, fullName, email, password: String
     public var birthDate: Date
     public var genderCode: Int
-    public var country: Country
-    public var city: City
+    public var country: Country?
+    public var city: City?
     public var image: MediaFile?
 
     public init(
@@ -17,8 +17,8 @@ public struct MainUserForm: Codable, Equatable, Sendable {
         password: String,
         birthDate: Date,
         gender: Int,
-        country: Country,
-        city: City,
+        country: Country?,
+        city: City?,
         image: MediaFile? = nil
     ) {
         self.userName = userName
@@ -33,6 +33,16 @@ public struct MainUserForm: Codable, Equatable, Sendable {
     }
 
     public init(_ user: UserResponse) {
+        let country: Country? = if let id = user.countryId {
+            .init(cities: [], id: id.description, name: "")
+        } else {
+            nil
+        }
+        let city: City? = if let id = user.cityId {
+            .init(id: id.description)
+        } else {
+            nil
+        }
         self.init(
             userName: user.userName ?? "",
             fullName: user.fullName ?? "",
@@ -40,8 +50,8 @@ public struct MainUserForm: Codable, Equatable, Sendable {
             password: "",
             birthDate: user.birthDate,
             gender: user.genderCode ?? 0,
-            country: .init(cities: [], id: (user.countryId ?? 0).description, name: ""),
-            city: .init(id: (user.cityId ?? 0).description)
+            country: country,
+            city: city
         )
     }
 }
@@ -90,6 +100,32 @@ public extension MainUserForm {
         return isNewFormNotEmpty && self != oldForm
     }
 
+    /// Название выбранной страны для экрана редактирования профиля
+    var selectedCountryName: String {
+        country?.name ?? ""
+    }
+
+    /// Название выбранного города для экрана редактировани профиля
+    var selectedCityName: String {
+        city?.name ?? ""
+    }
+
+    /// Подсказка о необходимости указать страну для создания площадок
+    var countryHint: String? {
+        guard country != nil else {
+            return String(localized: .editProfileCountryHint)
+        }
+        return nil
+    }
+
+    /// Подсказка о необходимости указать город для создания площадок
+    var cityHint: String? {
+        guard city != nil else {
+            return String(localized: .editProfileCityHint)
+        }
+        return nil
+    }
+
     static var emptyValue: Self {
         .init(
             userName: "",
@@ -98,8 +134,8 @@ public extension MainUserForm {
             password: "",
             birthDate: .now,
             gender: Gender.unspecified.code,
-            country: .defaultCountry,
-            city: .defaultCity
+            country: nil,
+            city: nil
         )
     }
 }

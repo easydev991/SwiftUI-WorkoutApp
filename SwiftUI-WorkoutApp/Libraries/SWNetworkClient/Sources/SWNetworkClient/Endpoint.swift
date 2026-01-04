@@ -432,26 +432,35 @@ extension Endpoint {
              .deleteEventPhoto, .deleteParkPhoto:
             return nil
         case let .registration(form):
-            return .init([
+            var parameters = [
                 ParameterKey.name.rawValue: form.userName,
                 ParameterKey.fullname.rawValue: form.fullName,
                 ParameterKey.email.rawValue: form.email,
                 ParameterKey.password.rawValue: form.password,
                 ParameterKey.genderCode.rawValue: form.genderCode.description,
-                ParameterKey.countryId.rawValue: form.country.id,
-                ParameterKey.cityId.rawValue: form.city.id,
                 ParameterKey.birthDate.rawValue: form.birthDateIsoString
-            ], nil)
+            ]
+            if let countryId = form.country?.id {
+                parameters[ParameterKey.countryId.rawValue] = countryId
+            }
+            if let cityId = form.city?.id {
+                parameters[ParameterKey.cityId.rawValue] = cityId
+            }
+            return .init(parameters, nil)
         case let .editUser(_, form):
-            let parameters = [
+            var parameters = [
                 ParameterKey.name.rawValue: form.userName,
                 ParameterKey.fullname.rawValue: form.fullName,
                 ParameterKey.email.rawValue: form.email,
                 ParameterKey.genderCode.rawValue: form.genderCode.description,
-                ParameterKey.countryId.rawValue: form.country.id,
-                ParameterKey.cityId.rawValue: form.city.id,
                 ParameterKey.birthDate.rawValue: form.birthDateIsoString
             ]
+            if let countryId = form.country?.id {
+                parameters[ParameterKey.countryId.rawValue] = countryId
+            }
+            if let cityId = form.city?.id {
+                parameters[ParameterKey.cityId.rawValue] = cityId
+            }
             let mediaFiles: [BodyMaker.MediaFile]? = if let image = form.image {
                 [
                     BodyMaker.MediaFile(

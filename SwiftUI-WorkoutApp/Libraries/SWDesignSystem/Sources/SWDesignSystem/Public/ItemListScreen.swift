@@ -8,7 +8,7 @@ public struct ItemListScreen: View {
     @State private var searchQuery = ""
     private let mode: Mode
     private let allItems: [String]
-    private let selectedItem: String
+    private let selectedItem: String?
     private let didTapContactUs: (_ mode: Mode) -> Void
     private let didSelectItem: (String) -> Void
 
@@ -22,7 +22,7 @@ public struct ItemListScreen: View {
     public init(
         mode: Mode,
         allItems: [String],
-        selectedItem: String,
+        selectedItem: String?,
         didSelectItem: @escaping (String) -> Void,
         didTapContactUs: @escaping (_ mode: Mode) -> Void
     ) {
