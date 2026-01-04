@@ -13,7 +13,7 @@ struct EditProfileScreen: View {
     /// Ранее сохраненная форма с данными пользователя
     @State private var oldUserForm = MainUserForm.emptyValue
     /// Все доступные страны и города
-    @State private var locations = Locations(countries: [])
+    @State private var locations = EditProfileLocations(countries: [])
     @State private var isLoading = false
     @State private var editUserTask: Task<Void, Never>?
     @State private var newAvatarImageModel: AvatarModel?
@@ -235,21 +235,17 @@ private extension EditProfileScreen {
     }
 
     func selectCountry(name countryName: String) {
-        let newCountry = locations.countries.first(where: { $0.name == countryName })
-        userForm.country = newCountry
-        if let newCountry, !newCountry.cities.contains(where: { $0 == userForm.city }) {
-            userForm.city = nil
-            locations.cities = newCountry.cities
-        }
+        let result = locations.selectCountry(name: countryName, city: userForm.city)
+        userForm.country = result.newCountry
+        userForm.city = result.newCity
+        locations.cities = result.newCities
     }
 
     func selectCity(name cityName: String) {
-        let newCity = locations.cities.first(where: { $0.name == cityName })
-        userForm.city = newCity
-        if let newCity,
-           let country = locations.countries.first(where: { $0.cities.contains(newCity) }),
-           userForm.country != country {
-            selectCountry(name: country.name)
+        let result = locations.selectCity(name: cityName, country: userForm.country)
+        userForm.city = result.newCity
+        if let countryName = result.countryName {
+            selectCountry(name: countryName)
         }
     }
 
@@ -292,27 +288,11 @@ private extension EditProfileScreen {
     }
 }
 
-private extension EditProfileScreen {
-    struct Locations {
-        /// Все доступные страны
-        var countries: [Country]
-        /// Все доступные города
-        var cities: [City]
-
-        init(countries: [Country]) {
-            self.countries = countries
-            self.cities = countries.flatMap(\.cities)
-        }
-
-        /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
-        init() throws {
-            let allCountries = try SWAddress.countries()
-            self.init(countries: allCountries)
-        }
-
-        var isEmpty: Bool {
-            countries.isEmpty && cities.isEmpty
-        }
+private extension EditProfileLocations {
+    /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
+    init() throws {
+        let allCountries = try SWAddress.countries()
+        self.init(countries: allCountries)
     }
 }
 
