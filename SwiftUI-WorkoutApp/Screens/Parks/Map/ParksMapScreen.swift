@@ -223,7 +223,7 @@ private extension ParksMapScreen {
     private func loadCities() async {
         guard cachedCities == nil else { return }
         let cities = await Task.detached(priority: .userInitiated) {
-            try? SWAddress.cities()
+            try? SWAddress.cities().filter(\.hasValidCoordinates)
         }.value
         cachedCities = cities
     }
