@@ -9,6 +9,7 @@ struct EditProfileScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var parksManager: ParksManager
     @State private var userForm = MainUserForm.emptyValue
     /// Ранее сохраненная форма с данными пользователя
     @State private var oldUserForm = MainUserForm.emptyValue
@@ -208,6 +209,9 @@ private extension EditProfileScreen {
                 hint: userForm.cityHint
             )
         }
+        .onAppear {
+            parksManager.setShowMissingAddressBadge(false)
+        }
     }
 
     var saveChangesButton: some View {
@@ -299,8 +303,10 @@ private extension EditProfileLocations {
 #if DEBUG
 #Preview {
     NavigationStack {
+        let mockAuthHelper = MockAuthHelper()
         EditProfileScreen()
-            .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+            .environmentObject(DefaultsService(authHelper: mockAuthHelper))
+            .environmentObject(ParksManager(authHelper: mockAuthHelper))
     }
 }
 #endif

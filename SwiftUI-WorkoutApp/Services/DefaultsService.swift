@@ -94,8 +94,10 @@ final class DefaultsService: ObservableObject {
         }
     }
 
-    var profileBadgeCount: Int {
-        friendRequestsList.count + (mainUserInfo?.badgeValue ?? 0)
+    func getProfileBadgeCount(isMissingAddress: Bool) -> Int {
+        isMissingAddress
+            ? friendRequestsList.count + (mainUserInfo?.badgeValue ?? 0)
+            : friendRequestsList.count
     }
 
     func setAppTheme(_ theme: AppColorTheme) {

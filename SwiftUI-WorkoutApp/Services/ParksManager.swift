@@ -26,6 +26,11 @@ final class ParksManager: ObservableObject {
     /// Загружены ли данные
     @Published private(set) var didLoad = false
     @Published private(set) var isLoading = false
+    /// Нужно ли показывать бейдж на вкладке профиля об отсутствии адреса в профиле
+    ///
+    /// Не сохраняем в памяти это значение, чтобы у пользователя лишний раз не вылезал бейдж,
+    /// если ему не нужно создавать площадки, например
+    @Published private(set) var showMissingAddressBadge = false
     /// Нужно ли обновить список площадок
     ///
     /// Обновляем, если прошло больше дня с момента предыдущего обновления
@@ -129,6 +134,10 @@ final class ParksManager: ObservableObject {
     func deletePark(with id: Int) throws {
         fullList.removeAll(where: { $0.id == id })
         try saveParksInMemory()
+    }
+
+    func setShowMissingAddressBadge(_ show: Bool) {
+        showMissingAddressBadge = show
     }
 }
 

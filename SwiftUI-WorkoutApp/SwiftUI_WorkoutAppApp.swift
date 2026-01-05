@@ -64,7 +64,9 @@ struct SwiftUI_WorkoutAppApp: App {
             RootScreen(
                 selectedTab: $tabViewModel.selectedTab,
                 unreadCount: defaults.unreadMessagesCount,
-                profileAlertsCount: defaults.profileBadgeCount
+                profileAlertsCount: defaults.getProfileBadgeCount(
+                    isMissingAddress: parksManager.showMissingAddressBadge
+                )
             )
             .environment(\.horizontalSizeClass, .compact)
             .environmentObject(tabViewModel)
