@@ -59,8 +59,8 @@ final class DefaultsService: ObservableObject {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
 
-    var mainUserCityId: Int {
-        mainUserInfo?.cityId ?? 0
+    var mainUserCityId: Int? {
+        mainUserInfo?.cityId
     }
 
     var blacklistedUsers: [UserResponse] {

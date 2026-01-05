@@ -78,13 +78,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to determine city ID, will use city from profile"
+            "value" : "Failed to determine city ID, will use city from profile. If the city is not specified in your profile - update your profile."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось определить идентификатор города, будет использован город из профиля"
+            "value" : "Не удалось определить идентификатор города, будет использован город из профиля. Если в профиле не указан город - обновите профиль, пожалуйста."
           }
         }
       }

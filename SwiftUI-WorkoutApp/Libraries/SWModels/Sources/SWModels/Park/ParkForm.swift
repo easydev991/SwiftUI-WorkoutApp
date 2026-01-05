@@ -3,7 +3,7 @@ public struct ParkForm: Codable, Sendable {
     public var address: String
     public var latitude: String
     public var longitude: String
-    public var cityId: Int
+    public var cityId: Int?
     public var typeId: Int
     public var sizeId: Int
     public let photosCount: Int
@@ -13,7 +13,7 @@ public struct ParkForm: Codable, Sendable {
         self.address = park.address ?? ""
         self.latitude = park.latitude
         self.longitude = park.longitude
-        self.cityId = park.cityId ?? 0
+        self.cityId = park.cityId
         self.typeId = park.typeId
         self.sizeId = park.sizeId
         self.photosCount = park.photos.count
@@ -23,7 +23,7 @@ public struct ParkForm: Codable, Sendable {
         address: String,
         latitude: Double,
         longitude: Double,
-        cityId: Int
+        cityId: Int?
     ) {
         self.address = address
         self.latitude = latitude.description
@@ -58,6 +58,7 @@ public extension ParkForm {
             && !longitude.isEmpty
             && cityId != .zero
             && !newMediaFiles.isEmpty
+            && cityId != nil
     }
 
     /// Готовность формы к отправке обновлений по площадке

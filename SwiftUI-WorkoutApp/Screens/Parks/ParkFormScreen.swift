@@ -199,7 +199,12 @@ private extension ParkFormScreen {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Создание") {
+    ParkFormScreen(.createNew(.empty), refreshClbk: { _ in })
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+}
+
+#Preview("Редактирование") {
     ParkFormScreen(.editExisting(.preview), refreshClbk: { _ in })
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
 }

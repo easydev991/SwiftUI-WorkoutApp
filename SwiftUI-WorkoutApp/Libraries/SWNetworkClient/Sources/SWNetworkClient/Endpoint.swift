@@ -523,14 +523,16 @@ extension Endpoint {
                 }
             return .init(parameters, mediaFiles)
         case let .createPark(form), let .editPark(_, form):
-            let parameters = [
+            var parameters = [
                 ParameterKey.address.rawValue: form.address,
                 ParameterKey.latitude.rawValue: form.latitude,
                 ParameterKey.longitude.rawValue: form.longitude,
-                ParameterKey.cityId.rawValue: form.cityId.description,
                 ParameterKey.typeId.rawValue: form.typeId.description,
                 ParameterKey.classId.rawValue: form.sizeId.description
             ]
+            if let cityId = form.cityId {
+                parameters[ParameterKey.cityId.rawValue] = cityId.description
+            }
             let mediaFiles: [BodyMaker.MediaFile]? = form.newMediaFiles.isEmpty
                 ? nil
                 : form.newMediaFiles.map {
