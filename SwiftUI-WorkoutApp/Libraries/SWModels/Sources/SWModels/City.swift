@@ -35,7 +35,7 @@ public extension City {
     /// Координаты города как `CLLocationCoordinate2D`
     var coordinate2D: CLLocationCoordinate2D? {
         guard let latitude = Double(lat), let longitude = Double(lon) else {
-            logger.debug("Не смогли определить координаты города \(name): lat \(lat), lon \(lon)")
+            logger.debug("Не смогли определить координаты города \(name), id: \(id). lat: \(lat), lon: \(lon)")
             return nil
         }
         return .init(latitude: latitude, longitude: longitude)
