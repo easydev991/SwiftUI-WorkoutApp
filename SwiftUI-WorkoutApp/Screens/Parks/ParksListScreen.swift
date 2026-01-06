@@ -118,7 +118,6 @@ private extension ParksListScreen {
                 )
             }
             .listStyle(.plain)
-            .padding(.vertical)
         case let .error(errorKind):
             ScrollView {
                 CommonErrorView(errorKind: errorKind)

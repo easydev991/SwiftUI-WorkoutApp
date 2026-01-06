@@ -176,7 +176,6 @@ private extension ParksMapScreen {
                 )
             }
             .listStyle(.plain)
-            .padding(.bottom)
         case .map:
             ClusteringMapView(
                 region: viewModel.region,

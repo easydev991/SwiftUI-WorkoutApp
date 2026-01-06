@@ -27,7 +27,6 @@ struct ParksAddedByUserScreen: View {
             )
         }
         .listStyle(.plain)
-        .padding(.vertical)
         .task {
             parkList = await (try? parksManager.getParks(ids: parkIds)) ?? []
         }
