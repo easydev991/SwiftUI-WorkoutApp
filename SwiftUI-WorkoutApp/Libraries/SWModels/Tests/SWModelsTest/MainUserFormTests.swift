@@ -150,6 +150,58 @@ struct MainUserFormTests {
         let newForm = makeForm()
         #expect(newForm.isReadyToSave(comparedTo: oldForm))
     }
+
+    @Test("nil IDs")
+    func init_nilIds() {
+        let userResponse = UserResponse(
+            id: 1,
+            userName: "userName",
+            fullName: "Full name",
+            email: "email@email.com",
+            birthDateIsoString: "2000-01-01",
+            cityId: nil,
+            countryId: nil,
+            genderCode: Gender.male.code
+        )
+        let form = MainUserForm(userResponse)
+
+        #expect(form.country == nil)
+        #expect(form.city == nil)
+    }
+
+    @Test("валидные IDs")
+    func init_validIds() throws {
+        let userResponse = UserResponse(
+            id: 1,
+            userName: "userName",
+            fullName: "Full name",
+            email: "email@email.com",
+            birthDateIsoString: "2000-01-01",
+            cityId: 1,
+            countryId: 17,
+            genderCode: Gender.male.code
+        )
+        let form = MainUserForm(userResponse)
+
+        let country = try #require(form.country)
+        let city = try #require(form.city)
+        #expect(country.id == "17")
+        #expect(city.id == "1")
+        #expect(form.countryHint == nil)
+        #expect(form.cityHint == nil)
+    }
+
+    @Test("подсказки при пустых значениях")
+    func hints_emptyValue() throws {
+        let form = MainUserForm.emptyValue
+
+        #expect(form.country == nil)
+        #expect(form.city == nil)
+        let cityHint = try #require(form.cityHint)
+        #expect(!cityHint.isEmpty)
+        let countryHint = try #require(form.countryHint)
+        #expect(!countryHint.isEmpty)
+    }
 }
 
 private extension MainUserFormTests {

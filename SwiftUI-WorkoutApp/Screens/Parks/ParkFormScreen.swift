@@ -10,6 +10,7 @@ struct ParkFormScreen: View {
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.updateGeocodingCache) private var updateGeocodingCache
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var parksManager: ParksManager
     @State private var isLoading = false
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
@@ -192,6 +193,9 @@ private extension ParkFormScreen {
             updateGeocodingCache(result.address, result.cityId, model.coordinate)
         } catch {
             parkForm.cityId = defaults.mainUserCityId
+            if parkForm.cityId == nil {
+                parksManager.setShowMissingAddressBadge(true)
+            }
             SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
@@ -199,8 +203,15 @@ private extension ParkFormScreen {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Создание") {
+    ParkFormScreen(.createNew(.empty), refreshClbk: { _ in })
+        .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ParksManager(authHelper: MockAuthHelper()))
+}
+
+#Preview("Редактирование") {
     ParkFormScreen(.editExisting(.preview), refreshClbk: { _ in })
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ParksManager(authHelper: MockAuthHelper()))
 }
 #endif

@@ -303,4 +303,158 @@ struct NewParkMapModelTests {
         #expect(emptyModel.isEmpty)
         #expect(emptyModel.withoutAddress().isEmpty)
     }
+
+    @Test("Проверка shouldPerformGeocode с nil cityId")
+    func shouldPerformGeocodeWithNilCityId() {
+        let model = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "Москва, Красная площадь",
+            cityId: nil
+        )
+        #expect(model.shouldPerformGeocode)
+    }
+
+    @Test("Проверка shouldPerformGeocode с cityId равным 0")
+    func shouldPerformGeocodeWithZeroCityId() {
+        let model = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "Москва, Красная площадь",
+            cityId: 0
+        )
+        #expect(model.shouldPerformGeocode)
+    }
+
+    @Test("Проверка shouldPerformGeocode с валидным cityId и адресом")
+    func shouldPerformGeocodeWithValidCityIdAndAddress() {
+        let model = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "Москва, Красная площадь",
+            cityId: 1
+        )
+        #expect(!model.shouldPerformGeocode)
+    }
+
+    @Test("Проверка shouldPerformGeocode с пустым адресом и валидным cityId")
+    func shouldPerformGeocodeWithEmptyAddressAndValidCityId() {
+        let model = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            address: "",
+            cityId: 1
+        )
+        #expect(model.shouldPerformGeocode)
+    }
+
+    @Test("Проверка метода withGeocodingData")
+    func withGeocodingData() {
+        let coordinate = CLLocationCoordinate2D(latitude: 55.7539, longitude: 37.6208)
+        let originalModel = SUT(coordinate: coordinate)
+        #expect(originalModel.cityId == nil)
+        #expect(originalModel.address.isEmpty)
+
+        let updatedModel = originalModel.withGeocodingData(address: "Москва, Красная площадь", cityId: 1)
+        #expect(updatedModel.address == "Москва, Красная площадь")
+        #expect(updatedModel.cityId == 1)
+        #expect(updatedModel.coordinate.latitude == coordinate.latitude)
+        #expect(updatedModel.coordinate.longitude == coordinate.longitude)
+    }
+
+    @Test("Проверка сохранения cityId при обновлении координат")
+    func preservesCityIdWhenUpdatingCoordinates() {
+        let originalModel = SUT(
+            coordinate: .init(latitude: 55.7297, longitude: 37.6014),
+            cityId: 5
+        )
+        let updatedModel = SUT(
+            oldModel: originalModel,
+            newLatitude: 59.9311,
+            newLongitude: 30.3609
+        )
+        #expect(updatedModel.cityId == 5)
+        #expect(updatedModel.latitude == 59.9311)
+        #expect(updatedModel.longitude == 30.3609)
+    }
+
+    @Test("Проверка сохранения nil cityId при обновлении координат")
+    func preservesNilCityIdWhenUpdatingCoordinates() {
+        let originalModel = SUT(
+            coordinate: .init(latitude: 55.7297, longitude: 37.6014),
+            cityId: nil
+        )
+        let updatedModel = SUT(
+            oldModel: originalModel,
+            newLatitude: 59.9311,
+            newLongitude: 30.3609
+        )
+        #expect(updatedModel.cityId == nil)
+        #expect(updatedModel.latitude == 59.9311)
+        #expect(updatedModel.longitude == 30.3609)
+    }
+
+    @Test("Проверка сохранения cityId в updatingLastLocationRequestDate")
+    func preservesCityIdInUpdatingLastLocationRequestDate() {
+        let originalModel = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            cityId: 3
+        )
+        let newDate = Date()
+        let updatedModel = originalModel.updatingLastLocationRequestDate(newDate)
+        #expect(updatedModel.cityId == 3)
+        #expect(updatedModel.lastLocationRequestDate == newDate)
+    }
+
+    @Test("Проверка сохранения nil cityId в updatingLastLocationRequestDate")
+    func preservesNilCityIdInUpdatingLastLocationRequestDate() {
+        let originalModel = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            cityId: nil
+        )
+        let newDate = Date()
+        let updatedModel = originalModel.updatingLastLocationRequestDate(newDate)
+        #expect(updatedModel.cityId == nil)
+        #expect(updatedModel.lastLocationRequestDate == newDate)
+    }
+
+    @Test("Проверка сохранения cityId в withoutAddress")
+    func preservesCityIdInWithoutAddress() {
+        let coordinate = CLLocationCoordinate2D(latitude: 55.7539, longitude: 37.6208)
+        let originalModel = SUT(
+            coordinate: coordinate,
+            address: "Москва, Красная площадь",
+            cityId: 7
+        )
+        let modelWithoutAddress = originalModel.withoutAddress()
+        #expect(modelWithoutAddress.cityId == 7)
+        #expect(modelWithoutAddress.address.isEmpty)
+    }
+
+    @Test("Проверка сохранения nil cityId в withoutAddress")
+    func preservesNilCityIdInWithoutAddress() {
+        let coordinate = CLLocationCoordinate2D(latitude: 55.7539, longitude: 37.6208)
+        let originalModel = SUT(
+            coordinate: coordinate,
+            address: "Москва, Красная площадь",
+            cityId: nil
+        )
+        let modelWithoutAddress = originalModel.withoutAddress()
+        #expect(modelWithoutAddress.cityId == nil)
+        #expect(modelWithoutAddress.address.isEmpty)
+    }
+
+    @Test("Проверка инициализации с опциональным cityId")
+    func initializationWithOptionalCityId() {
+        let modelWithCityId = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            cityId: 10
+        )
+        let modelWithoutCityId = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208),
+            cityId: nil
+        )
+        let modelWithDefaultCityId = SUT(
+            coordinate: .init(latitude: 55.7539, longitude: 37.6208)
+        )
+        #expect(modelWithCityId.cityId == 10)
+        #expect(modelWithoutCityId.cityId == nil)
+        #expect(modelWithDefaultCityId.cityId == nil)
+    }
 }

@@ -9,11 +9,12 @@ struct EditProfileScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var parksManager: ParksManager
     @State private var userForm = MainUserForm.emptyValue
     /// Ранее сохраненная форма с данными пользователя
     @State private var oldUserForm = MainUserForm.emptyValue
     /// Все доступные страны и города
-    @State private var locations = Locations(countries: [])
+    @State private var locations = EditProfileLocations(countries: [])
     @State private var isLoading = false
     @State private var editUserTask: Task<Void, Never>?
     @State private var newAvatarImageModel: AvatarModel?
@@ -172,7 +173,7 @@ private extension EditProfileScreen {
             ItemListScreen(
                 mode: .country,
                 allItems: locations.countries.map(\.name),
-                selectedItem: userForm.country.name,
+                selectedItem: userForm.country?.name,
                 didSelectItem: { selectCountry(name: $0) },
                 didTapContactUs: sendFeedback
             )
@@ -182,7 +183,8 @@ private extension EditProfileScreen {
                     .globe,
                     userForm.placeholder(.country)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.country.name))
+                trailingContent: .textWithChevron(.init(userForm.selectedCountryName)),
+                hint: userForm.countryHint
             )
         }
         .padding(.bottom, 6)
@@ -193,7 +195,7 @@ private extension EditProfileScreen {
             ItemListScreen(
                 mode: .city,
                 allItems: locations.cities.map(\.name),
-                selectedItem: userForm.city.name,
+                selectedItem: userForm.city?.name,
                 didSelectItem: { selectCity(name: $0) },
                 didTapContactUs: sendFeedback
             )
@@ -203,8 +205,12 @@ private extension EditProfileScreen {
                     .signPost,
                     userForm.placeholder(.city)
                 ),
-                trailingContent: .textWithChevron(.init(userForm.city.name))
+                trailingContent: .textWithChevron(.init(userForm.selectedCityName)),
+                hint: userForm.cityHint
             )
+        }
+        .onAppear {
+            parksManager.setShowMissingAddressBadge(false)
         }
     }
 
@@ -222,9 +228,9 @@ private extension EditProfileScreen {
             if let userInfo = defaults.mainUserInfo {
                 oldUserForm = .init(userInfo)
                 oldUserForm.country = locations.countries
-                    .first(where: { $0.id == oldUserForm.country.id }) ?? .defaultCountry
+                    .first(where: { $0.id == oldUserForm.country?.id })
                 oldUserForm.city = locations.cities
-                    .first(where: { $0.id == oldUserForm.city.id }) ?? .defaultCity
+                    .first(where: { $0.id == oldUserForm.city?.id })
                 userForm = oldUserForm
             }
         } catch {
@@ -233,19 +239,18 @@ private extension EditProfileScreen {
     }
 
     func selectCountry(name countryName: String) {
-        let newCountry = locations.countries
-            .first(where: { $0.name == countryName }) ?? .defaultCountry
-        userForm.country = newCountry
-        if !newCountry.cities.contains(where: { $0 == userForm.city }),
-           let firstCity = newCountry.cities.first {
-            userForm.city = firstCity
-            locations.cities = newCountry.cities
-        }
+        let result = locations.selectCountry(name: countryName, city: userForm.city)
+        userForm.country = result.newCountry
+        userForm.city = result.newCity
+        locations.cities = result.newCities
     }
 
     func selectCity(name cityName: String) {
-        userForm.city = locations.cities
-            .first(where: { $0.name == cityName }) ?? .defaultCity
+        let result = locations.selectCity(name: cityName, country: userForm.country)
+        userForm.city = result.newCity
+        if let countryName = result.countryName {
+            selectCountry(name: countryName)
+        }
     }
 
     func saveChangesAction() {
@@ -287,35 +292,21 @@ private extension EditProfileScreen {
     }
 }
 
-private extension EditProfileScreen {
-    struct Locations {
-        /// Все доступные страны
-        var countries: [Country]
-        /// Все доступные города
-        var cities: [City]
-
-        init(countries: [Country]) {
-            self.countries = countries
-            self.cities = countries.flatMap(\.cities)
-        }
-
-        /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
-        init() throws {
-            let allCountries = try SWAddress.countries()
-            self.init(countries: allCountries)
-        }
-
-        var isEmpty: Bool {
-            countries.isEmpty && cities.isEmpty
-        }
+private extension EditProfileLocations {
+    /// Инициализирует модель данными из сохраненного `JSON`, если это возможно
+    init() throws {
+        let allCountries = try SWAddress.countries()
+        self.init(countries: allCountries)
     }
 }
 
 #if DEBUG
 #Preview {
     NavigationStack {
+        let mockAuthHelper = MockAuthHelper()
         EditProfileScreen()
-            .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+            .environmentObject(DefaultsService(authHelper: mockAuthHelper))
+            .environmentObject(ParksManager(authHelper: mockAuthHelper))
     }
 }
 #endif

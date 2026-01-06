@@ -59,8 +59,8 @@ final class DefaultsService: ObservableObject {
         try? JSONDecoder().decode(UserResponse.self, from: userInfo)
     }
 
-    var mainUserCityId: Int {
-        mainUserInfo?.cityId ?? 0
+    var mainUserCityId: Int? {
+        mainUserInfo?.cityId
     }
 
     var blacklistedUsers: [UserResponse] {
@@ -92,6 +92,12 @@ final class DefaultsService: ObservableObject {
         } else {
             []
         }
+    }
+
+    func getProfileBadgeCount(isMissingAddress: Bool) -> Int {
+        isMissingAddress
+            ? friendRequestsList.count + (mainUserInfo?.badgeValue ?? 0)
+            : friendRequestsList.count
     }
 
     func setAppTheme(_ theme: AppColorTheme) {

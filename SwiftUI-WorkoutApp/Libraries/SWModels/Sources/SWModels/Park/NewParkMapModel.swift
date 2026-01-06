@@ -8,7 +8,7 @@ public struct NewParkMapModel: Sendable, Equatable {
     /// Адрес площадки, полученный при помощи геокодирования
     public var address: String
     /// Идентификатор города, полученные при помощи геокодирования
-    public var cityId: Int
+    public var cityId: Int?
 
     public var coordinate: CLLocationCoordinate2D {
         .init(latitude: latitude, longitude: longitude)
@@ -31,7 +31,7 @@ public struct NewParkMapModel: Sendable, Equatable {
 
     /// Нужно ли выполнять геокодирование
     public var shouldPerformGeocode: Bool {
-        address.isEmpty || cityId == 0
+        address.isEmpty || cityId == nil || cityId == 0
     }
 
     /// Инициализатор
@@ -44,7 +44,7 @@ public struct NewParkMapModel: Sendable, Equatable {
         coordinate: CLLocationCoordinate2D,
         lastLocationRequestDate: Date? = nil,
         address: String = "",
-        cityId: Int = 0
+        cityId: Int? = nil
     ) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
@@ -111,6 +111,6 @@ public struct NewParkMapModel: Sendable, Equatable {
         coordinate: .init(latitude: 0, longitude: 0),
         lastLocationRequestDate: nil,
         address: "",
-        cityId: 0
+        cityId: nil
     )
 }

@@ -31,8 +31,8 @@ struct GeocodingService {
             throw GeocodingError.noPlacemarkFound
         }
         logger.debug("CLGeocoder успешно завершил работу")
-        let address = try makeAddress(from: firstPlacemark)
         let cityId = try makeCityId(from: firstPlacemark)
+        let address = try makeAddress(from: firstPlacemark)
         return (address, cityId)
     }
 
@@ -71,20 +71,11 @@ extension GeocodingService {
         var errorDescription: String? {
             switch self {
             case .noPlacemarkFound:
-                NSLocalizedString(
-                    "GeocodingError.NoPlacemarkFound",
-                    comment: "Не нашли placemark при помощи геокодера"
-                )
+                String(localized: .geocodingErrorNoPlacemarkFound)
             case .failedToCreateAddress:
-                NSLocalizedString(
-                    "GeocodingError.FailedToCreateAddress",
-                    comment: "Не удалось создать адрес для placemark"
-                )
+                String(localized: .geocodingErrorFailedToCreateAddress)
             case .failedToFindCityId:
-                NSLocalizedString(
-                    "GeocodingError.FailedToFindCityId",
-                    comment: "Не удалось определить идентификатор города для placemark"
-                )
+                String(localized: .geocodingErrorFailedToFindCityId)
             }
         }
     }
