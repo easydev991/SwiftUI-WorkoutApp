@@ -11,6 +11,7 @@ struct EventFormScreen: View {
     @EnvironmentObject private var defaults: DefaultsService
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
+    @State private var showConfirmationAlert = false
     @State private var isLoading = false
     @State private var saveEventTask: Task<Void, Never>?
     @FocusState private var focus: FocusableField?
@@ -89,7 +90,28 @@ private extension EventFormScreen {
         .onDisappear { saveEventTask?.cancel() }
         .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if showTopLeadingButton {
+                ToolbarItem(placement: .topBarLeading) {
+                    backButton
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(showTopLeadingButton)
         .interactiveDismissDisabled(blockDismiss)
+        .alert(
+            .alertCloseEditScreenTitle,
+            isPresented: $showConfirmationAlert,
+            actions: {
+                Button(.cancel, role: .cancel) {}
+                CloseButton(mode: .text) {
+                    dismiss()
+                }
+            },
+            message: {
+                Text(.alertCloseEditScreenMessage)
+            }
+        )
     }
 
     var eventNameSection: some View {
@@ -216,9 +238,32 @@ private extension EventFormScreen {
         case .editExisting: eventForm.isReadyToUpdate(old: oldEventForm)
         }
     }
-    
+
     var blockDismiss: Bool {
         isFormReady || isLoading
+    }
+
+    var showTopLeadingButton: Bool {
+        switch mode {
+        case .regularCreate, .createForSelected: true
+        case .editExisting: isFormReady
+        }
+    }
+
+    var backButton: some View {
+        Group {
+            switch mode {
+            case .regularCreate, .createForSelected:
+                CloseButton(mode: .text) {
+                    showConfirmationAlert = true
+                }
+            case .editExisting:
+                Button(.back) {
+                    showConfirmationAlert = true
+                }
+            }
+        }
+        .disabled(isLoading)
     }
 
     /// Не показываем пикер площадок, если `userId` для основного пользователя отсутствует

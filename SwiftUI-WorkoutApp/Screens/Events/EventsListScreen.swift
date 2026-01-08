@@ -147,11 +147,6 @@ private extension EventsListScreen {
                             Task { await askForEvents(refresh: true) }
                         }
                     )
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton(mode: .xmark) { showEventCreationSheet = false }
-                        }
-                    }
                 }
             }
         }

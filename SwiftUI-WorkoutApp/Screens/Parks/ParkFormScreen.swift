@@ -56,7 +56,7 @@ extension ParkFormScreen {
             case let .editExisting(park): park.id
             }
         }
-        
+
         var navigationTitle: String {
             switch self {
             case .createNew: String(localized: .newParkTitle)
@@ -111,7 +111,7 @@ private extension ParkFormScreen {
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(blockDismiss)
     }
-    
+
     var backButton: some View {
         Group {
             switch mode {
@@ -223,11 +223,11 @@ private extension ParkFormScreen {
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
     }
-    
+
     var blockDismiss: Bool {
         isFormReady || isLoading
     }
-    
+
     var showTopLeadingButton: Bool {
         switch mode {
         case .createNew: true
