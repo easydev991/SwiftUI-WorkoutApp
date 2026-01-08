@@ -89,7 +89,7 @@ private extension EventFormScreen {
         .onDisappear { saveEventTask?.cancel() }
         .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled(isLoading)
+        .interactiveDismissDisabled(blockDismiss)
     }
 
     var eventNameSection: some View {
@@ -215,6 +215,10 @@ private extension EventFormScreen {
         case .regularCreate, .createForSelected: eventForm.isReadyToCreate
         case .editExisting: eventForm.isReadyToUpdate(old: oldEventForm)
         }
+    }
+    
+    var blockDismiss: Bool {
+        isFormReady || isLoading
     }
 
     /// Не показываем пикер площадок, если `userId` для основного пользователя отсутствует

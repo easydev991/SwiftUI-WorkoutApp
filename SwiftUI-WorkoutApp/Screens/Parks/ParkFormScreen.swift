@@ -109,7 +109,7 @@ private extension ParkFormScreen {
         .navigationBarBackButtonHidden(showTopLeadingButton)
         .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled(isFormReady)
+        .interactiveDismissDisabled(blockDismiss)
     }
     
     var backButton: some View {
@@ -222,6 +222,10 @@ private extension ParkFormScreen {
         mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
+    }
+    
+    var blockDismiss: Bool {
+        isFormReady || isLoading
     }
     
     var showTopLeadingButton: Bool {
