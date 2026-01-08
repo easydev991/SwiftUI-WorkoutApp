@@ -65,7 +65,7 @@ struct EventDetailsScreen: View {
                 .tint(.accent)
             }
         }
-        .navigationTitle("Мероприятие")
+        .navigationTitle(.event)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(
             for: NavigationDestination.self,
@@ -198,7 +198,7 @@ private extension EventDetailsScreen {
             "Необходимо разрешить доступ к календарю в настройках телефона",
             isPresented: $calendarManager.showSettingsAlert
         ) {
-            Button("Отмена", role: .cancel) {}
+            Button(.cancel, role: .cancel) {}
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
@@ -337,7 +337,7 @@ private extension EventDetailsScreen {
         if let url = event.shareLinkURL {
             ShareLink(
                 item: url,
-                subject: Text("Мероприятие"),
+                subject: Text(.event),
                 message: Text(event.shareLinkDescription)
             )
         }

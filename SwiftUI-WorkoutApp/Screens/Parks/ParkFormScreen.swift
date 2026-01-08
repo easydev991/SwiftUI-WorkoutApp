@@ -11,6 +11,7 @@ struct ParkFormScreen: View {
     @Environment(\.updateGeocodingCache) private var updateGeocodingCache
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
+    @State private var showConfirmationAlert = false
     @State private var isLoading = false
     @State private var parkForm: ParkForm
     @State private var newImages = [UIImage]()
@@ -55,6 +56,13 @@ extension ParkFormScreen {
             case let .editExisting(park): park.id
             }
         }
+
+        var navigationTitle: String {
+            switch self {
+            case .createNew: String(localized: .newParkTitle)
+            case .editExisting: String(localized: .park)
+            }
+        }
     }
 }
 
@@ -74,13 +82,50 @@ private extension ParkFormScreen {
         }
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
+        .alert(
+            .alertCloseEditScreenTitle,
+            isPresented: $showConfirmationAlert,
+            actions: {
+                Button(.cancel, role: .cancel) {}
+                CloseButton(mode: .text) {
+                    dismiss()
+                }
+            },
+            message: {
+                Text(.alertCloseEditScreenMessage)
+            }
+        )
         .onDisappear { saveParkTask?.cancel() }
         .task {
             await performGeocodingForNewPark()
         }
-        .navigationTitle("Площадка")
+        .toolbar {
+            if showTopLeadingButton {
+                ToolbarItem(placement: .topBarLeading) {
+                    backButton
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(showTopLeadingButton)
+        .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled(isLoading)
+        .interactiveDismissDisabled(blockDismiss)
+    }
+
+    var backButton: some View {
+        Group {
+            switch mode {
+            case .createNew:
+                CloseButton(mode: .text) {
+                    showConfirmationAlert = true
+                }
+            case .editExisting:
+                Button(.back) {
+                    showConfirmationAlert = true
+                }
+            }
+        }
+        .disabled(isLoading)
     }
 
     var addressSection: some View {
@@ -177,6 +222,17 @@ private extension ParkFormScreen {
         mode.parkId == nil
             ? parkForm.isReadyToCreate
             : parkForm.isReadyToUpdate(old: oldParkForm)
+    }
+
+    var blockDismiss: Bool {
+        isFormReady || isLoading
+    }
+
+    var showTopLeadingButton: Bool {
+        switch mode {
+        case .createNew: true
+        case .editExisting: isFormReady
+        }
     }
 
     /// Выполняет геокодирование для новой площадки
