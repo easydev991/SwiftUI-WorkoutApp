@@ -65,7 +65,7 @@ struct EventDetailsScreen: View {
                 .tint(.accent)
             }
         }
-        .navigationTitle("Мероприятие")
+        .navigationTitle(.event)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(
             for: NavigationDestination.self,
@@ -337,7 +337,7 @@ private extension EventDetailsScreen {
         if let url = event.shareLinkURL {
             ShareLink(
                 item: url,
-                subject: Text("Мероприятие"),
+                subject: Text(.event),
                 message: Text(event.shareLinkDescription)
             )
         }

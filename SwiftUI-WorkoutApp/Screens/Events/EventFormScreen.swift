@@ -58,10 +58,10 @@ extension EventFormScreen {
             }
         }
 
-        var title: LocalizedStringKey {
+        var navigationTitle: String {
             switch self {
-            case .regularCreate, .createForSelected: "Новое мероприятие"
-            case .editExisting: "Мероприятие"
+            case .regularCreate, .createForSelected: String(localized: .newEventTitle)
+            case .editExisting: String(localized: .event)
             }
         }
     }
@@ -87,7 +87,7 @@ private extension EventFormScreen {
         .loadingOverlay(if: isLoading)
         .background(Color.swBackground)
         .onDisappear { saveEventTask?.cancel() }
-        .navigationTitle(mode.title)
+        .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(isLoading)
     }
