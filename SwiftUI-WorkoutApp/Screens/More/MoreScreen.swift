@@ -117,9 +117,7 @@ private extension MoreScreen {
             )
         }
         .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
-            Button(.cancel, role: .cancel) {
-                showLanguageAlert.toggle()
-            }
+            Button(.cancel, role: .cancel) {}
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }

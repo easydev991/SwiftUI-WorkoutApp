@@ -86,9 +86,7 @@ private extension ParkFormScreen {
             .alertCloseEditScreenTitle,
             isPresented: $showConfirmationAlert,
             actions: {
-                Button(.cancel, role: .cancel) {
-                    showConfirmationAlert.toggle()
-                }
+                Button(.cancel, role: .cancel) {}
                 CloseButton(mode: .text) {
                     dismiss()
                 }
