@@ -17,6 +17,75 @@
         }
       }
     },
+    "Alert.CloseEditScreen.Message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you close this screen, all unsaved changes will be lost"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если закрыть экран, все внесённые изменения будут потеряны"
+          }
+        }
+      }
+    },
+    "Alert.CloseEditScreen.Title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsaved changes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Несохранённые изменения"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "comment" : "Текст кнопки для возврата на предыдущий экран",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена"
+          }
+        }
+      }
+    },
     "Error.Media.ImageCreation" : {
       "comment" : "PhotosPicker",
       "extractionState" : "manual",
@@ -107,6 +176,23 @@
         }
       }
     },
+    "NewPark.Title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New park"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая площадка"
+          }
+        }
+      }
+    },
     "Ok" : {
       "localizations" : {
         "en" : {
@@ -119,6 +205,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ок"
+          }
+        }
+      }
+    },
+    "Park" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Park"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Площадка"
           }
         }
       }
@@ -1701,22 +1804,6 @@
         }
       }
     },
-    "Новая площадка" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New park"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Новая площадка"
-          }
-        }
-      }
-    },
     "Новое мероприятие" : {
       "localizations" : {
         "en" : {
@@ -1878,22 +1965,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открыть список друзей"
-          }
-        }
-      }
-    },
-    "Отмена" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отмена"
           }
         }
       }
@@ -2070,12 +2141,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Park"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Площадка"
           }
         }
       }

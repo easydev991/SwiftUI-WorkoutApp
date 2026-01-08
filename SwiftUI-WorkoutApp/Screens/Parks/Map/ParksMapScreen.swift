@@ -308,10 +308,10 @@ private extension ParksMapScreen {
         case .filters:
             ParkFilterScreen(filter: $defaults.parksFilter)
         case let .createNewPark(model):
-            ContentInSheet(title: "Новая площадка", spacing: 0) {
+            NavigationStack {
                 ParkFormScreen(.createNew(model), refreshClbk: updatePark)
+                    .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
             }
-            .environment(\.updateGeocodingCache, viewModel.updateGeocodingCache)
         case let .searchCity(storedCities):
             NavigationStack {
                 ItemListScreen(
