@@ -117,7 +117,7 @@ private extension MoreScreen {
             )
         }
         .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
-            Button("Отмена", role: .cancel) {
+            Button(.cancel, role: .cancel) {
                 showLanguageAlert.toggle()
             }
             Button("Перейти") {

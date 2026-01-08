@@ -198,7 +198,7 @@ private extension EventDetailsScreen {
             "Необходимо разрешить доступ к календарю в настройках телефона",
             isPresented: $calendarManager.showSettingsAlert
         ) {
-            Button("Отмена", role: .cancel) {}
+            Button(.cancel, role: .cancel) {}
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
