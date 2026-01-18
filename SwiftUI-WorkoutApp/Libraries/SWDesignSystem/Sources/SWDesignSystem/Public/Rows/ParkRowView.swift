@@ -94,6 +94,12 @@ private extension ParkRowView {
         ParkRowView(
             imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
             title: "N° 3 Легендарная / Средняя",
+            address: " ",
+            usersTrainHereText: "Тренируются 5 человек"
+        )
+        ParkRowView(
+            imageURL: URL(string: "https://workout.su/uploads/userfiles/измайлово.jpg"),
+            title: "N° 3 Легендарная / Средняя",
             address: "м. Партизанская, улица 2-я Советская",
             usersTrainHereText: "Здесь пока никто не тренируется"
         )

@@ -1,3 +1,5 @@
+import SWUtils
+
 /// Форма для отправки при создании/изменении площадки
 public struct ParkForm: Codable, Sendable {
     public var address: String
@@ -53,9 +55,7 @@ public extension ParkForm {
 
     /// Готовность формы к созданию новой площадки
     var isReadyToCreate: Bool {
-        !address.isEmpty
-            && !latitude.isEmpty
-            && !longitude.isEmpty
+        hasValidStrings
             && cityId != .zero
             && !newMediaFiles.isEmpty
             && cityId != nil
@@ -63,7 +63,7 @@ public extension ParkForm {
 
     /// Готовность формы к отправке обновлений по площадке
     func isReadyToUpdate(old: ParkForm) -> Bool {
-        let canSaveUpdated = [address, latitude, longitude].allSatisfy { !$0.isEmpty }
+        let canSaveUpdated = hasValidStrings
         return canSaveUpdated && self != old
     }
 }
@@ -77,5 +77,11 @@ extension ParkForm: Equatable {
             && lhs.typeId == rhs.typeId
             && lhs.sizeId == rhs.sizeId
             && lhs.newMediaFiles == rhs.newMediaFiles
+    }
+}
+
+private extension ParkForm {
+    var hasValidStrings: Bool {
+        [address, latitude, longitude].allSatisfy { $0.trueCount > 0 }
     }
 }

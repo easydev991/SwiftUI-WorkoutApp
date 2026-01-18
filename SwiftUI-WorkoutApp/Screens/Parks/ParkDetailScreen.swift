@@ -156,7 +156,7 @@ private extension ParkDetailScreen {
                     latitude: park.coordinate.latitude,
                     longitude: park.coordinate.longitude
                 ),
-                address: park.address ?? "",
+                address: park.checkedAddress,
                 appleMapsURL: park.appleMapsURL
             )
             if defaults.isAuthorized {

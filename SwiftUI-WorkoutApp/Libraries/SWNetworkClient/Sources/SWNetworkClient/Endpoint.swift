@@ -506,8 +506,8 @@ extension Endpoint {
             )
         case let .createEvent(form), let .editEvent(_, form):
             let parameters = [
-                ParameterKey.title.rawValue: form.title,
-                ParameterKey.description.rawValue: form.description,
+                ParameterKey.title.rawValue: form.title.trimmingCharacters(in: .whitespacesAndNewlines),
+                ParameterKey.description.rawValue: form.description.trimmingCharacters(in: .whitespacesAndNewlines),
                 ParameterKey.date.rawValue: form.dateIsoString,
                 ParameterKey.areaId.rawValue: form.parkId.description
             ]
@@ -524,7 +524,7 @@ extension Endpoint {
             return .init(parameters, mediaFiles)
         case let .createPark(form), let .editPark(_, form):
             var parameters = [
-                ParameterKey.address.rawValue: form.address,
+                ParameterKey.address.rawValue: form.address.trimmingCharacters(in: .whitespacesAndNewlines),
                 ParameterKey.latitude.rawValue: form.latitude,
                 ParameterKey.longitude.rawValue: form.longitude,
                 ParameterKey.typeId.rawValue: form.typeId.description,

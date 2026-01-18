@@ -21,7 +21,7 @@ struct ParksAddedByUserScreen: View {
             ParkRowItemView(
                 imageURL: park.previewImageURL,
                 title: park.longTitle,
-                address: park.address,
+                address: park.checkedAddress,
                 usersTrainHereText: park.usersTrainHereText,
                 action: { selectedPark = park }
             )

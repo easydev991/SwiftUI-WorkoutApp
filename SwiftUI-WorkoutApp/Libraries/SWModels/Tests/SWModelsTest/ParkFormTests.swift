@@ -10,8 +10,10 @@ struct ParkFormTests {
 
     @Test
     func isNotReadyToCreate_address() {
-        let form = makeForm(address: "")
-        #expect(!form.isReadyToCreate)
+        let form1 = makeForm(address: "")
+        let form2 = makeForm(address: " ")
+        #expect(!form1.isReadyToCreate)
+        #expect(!form2.isReadyToCreate)
     }
 
     @Test
@@ -47,6 +49,13 @@ struct ParkFormTests {
     @Test
     func isNotReadyToUpdate_empty() {
         let oldForm = makeForm()
+        let newForm = emptyForm
+        #expect(!newForm.isReadyToUpdate(old: oldForm))
+    }
+
+    @Test
+    func isNotReadyToUpdate_spaces() {
+        let oldForm = makeForm(address: " ", latitude: " ", longitude: " ")
         let newForm = emptyForm
         #expect(!newForm.isReadyToUpdate(old: oldForm))
     }

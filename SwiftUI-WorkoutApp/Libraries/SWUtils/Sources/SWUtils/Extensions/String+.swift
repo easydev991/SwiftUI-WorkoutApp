@@ -16,7 +16,7 @@ public extension String {
 
     /// Без пробелов
     var withoutSpaces: Self {
-        replacingOccurrences(of: " ", with: "")
+        filter { !$0.isWhitespace }
     }
 }
 
