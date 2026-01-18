@@ -10,15 +10,25 @@ struct EventFormTests {
     }
 
     @Test
-    func isNotReadyToCreate_title() {
-        let form = makeForm(title: "")
+    func isNotReadyToCreate_spaces() {
+        let form = makeForm(title: " ", description: " ")
         #expect(!form.isReadyToCreate)
     }
 
     @Test
+    func isNotReadyToCreate_title() {
+        let form1 = makeForm(title: "")
+        let form2 = makeForm(title: " ")
+        #expect(!form1.isReadyToCreate)
+        #expect(!form2.isReadyToCreate)
+    }
+
+    @Test
     func isNotReadyToCreate_description() {
-        let form = makeForm(description: "")
-        #expect(!form.isReadyToCreate)
+        let form1 = makeForm(description: "")
+        let form2 = makeForm(description: " ")
+        #expect(!form1.isReadyToCreate)
+        #expect(!form2.isReadyToCreate)
     }
 
     @Test
@@ -41,17 +51,28 @@ struct EventFormTests {
     }
 
     @Test
+    func isNotReadyToUpdate_spaces() {
+        let oldForm = makeForm(title: " ", description: " ")
+        let newForm = emptyForm
+        #expect(!newForm.isReadyToUpdate(old: oldForm))
+    }
+
+    @Test
     func isNotReadyToUpdate_title() {
         let oldForm = makeForm()
-        let newForm = makeForm(title: "")
-        #expect(!newForm.isReadyToUpdate(old: oldForm))
+        let newForm1 = makeForm(title: "")
+        let newForm2 = makeForm(title: " ")
+        #expect(!newForm1.isReadyToUpdate(old: oldForm))
+        #expect(!newForm2.isReadyToUpdate(old: oldForm))
     }
 
     @Test
     func isNotReadyToUpdate_description() {
         let oldForm = makeForm()
-        let newForm = makeForm(description: "")
-        #expect(!newForm.isReadyToUpdate(old: oldForm))
+        let newForm1 = makeForm(description: "")
+        let newForm2 = makeForm(description: " ")
+        #expect(!newForm1.isReadyToUpdate(old: oldForm))
+        #expect(!newForm2.isReadyToUpdate(old: oldForm))
     }
 
     @Test

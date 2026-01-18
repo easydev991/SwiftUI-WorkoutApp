@@ -170,7 +170,7 @@ private extension ParksMapScreen {
                 ParkRowItemView(
                     imageURL: park.previewImageURL,
                     title: park.longTitle,
-                    address: park.address,
+                    address: park.checkedAddress,
                     usersTrainHereText: park.usersTrainHereText,
                     action: { sheetItem = .parkDetails(park) }
                 )

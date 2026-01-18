@@ -5,7 +5,7 @@ import SWUtils
 /// Модель данных спортивной площадки
 public struct Park: Codable, Identifiable, Hashable, Sendable {
     public let id, typeId, sizeId: Int
-    public let address: String?
+    let address: String?
     public let author: UserResponse?
     public let cityId, commentsCount: Int?
     public let createDate: String?
@@ -191,6 +191,15 @@ public struct CommentResponse: Codable, Identifiable, Hashable, Sendable {
 }
 
 public extension Park {
+    /// Проверенный адрес (плейсхолдер, если нет текста)
+    var checkedAddress: String {
+        if let address, address.trueCount > 0 {
+            address
+        } else {
+            String(localized: .addressNotSet)
+        }
+    }
+
     var hasPhotos: Bool { !photos.isEmpty }
 
     var photos: [Photo] {
