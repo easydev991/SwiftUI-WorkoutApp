@@ -8,7 +8,7 @@ BOLD=\033[1m
 RESET=\033[0m
 
 # Версия Ruby в проекте
-RUBY_VERSION=3.2.2
+RUBY_VERSION=3.3.6
 
 # Версия Swift в проекте
 SWIFT_VERSION=6.2.0
@@ -340,7 +340,7 @@ screenshots:
 		fi; \
 	fi
 	@printf "$(YELLOW)Запуск fastlane snapshot для генерации скриншотов...$(RESET)\n"
-	@$(BUNDLE_EXEC) fastlane screenshots
+	@export LANG=en_US.UTF-8 && $(BUNDLE_EXEC) fastlane screenshots
 
 ## upload_screenshots: Загрузить существующие скриншоты в App Store Connect
 upload_screenshots:
@@ -353,7 +353,7 @@ upload_screenshots:
 		fi; \
 	fi
 	@printf "$(YELLOW)Загрузка скриншотов в App Store Connect...$(RESET)\n"
-	@$(BUNDLE_EXEC) fastlane upload_screenshots
+	@export LANG=en_US.UTF-8 && $(BUNDLE_EXEC) fastlane upload_screenshots
 
 ## build: Сборка проекта в терминале
 build:
@@ -366,12 +366,12 @@ test:
 ## increment_build: Получить следующий номер сборки для TestFlight
 increment_build:
 	@printf "$(YELLOW)Информация о номерах сборки...$(RESET)\n"
-	@$(BUNDLE_EXEC) fastlane get_next_build_number
+	@export LANG=en_US.UTF-8 && $(BUNDLE_EXEC) fastlane get_next_build_number
 
 ## testflight: Собрать и отправить сборку в TestFlight через fastlane
 testflight:
 	@printf "$(YELLOW)Сборка и публикация в TestFlight...$(RESET)\n"
-	@$(BUNDLE_EXEC) fastlane build_and_upload
+	@export LANG=en_US.UTF-8 && $(BUNDLE_EXEC) fastlane build_and_upload
 
 ## fastlane: Запустить меню команд fastlane
 fastlane:
@@ -384,7 +384,7 @@ fastlane:
 		fi; \
 	fi
 	@printf "$(YELLOW)Запуск меню команд fastlane...$(RESET)\n"
-	@$(BUNDLE_EXEC) fastlane
+	@export LANG=en_US.UTF-8 && $(BUNDLE_EXEC) fastlane
 
 .DEFAULT:
 	@printf "$(RED)Неизвестная команда: 'make $@'\n$(RESET)"
