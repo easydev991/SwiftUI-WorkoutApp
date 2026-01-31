@@ -3,6 +3,7 @@
 ## Цель
 
 Мок-клиент для UI-тестов, который:
+
 - Отвечает на все запросы мгновенно (без задержек)
 - Возвращает только успешные ответы
 - Полностью заменяет сетевые запросы (никакой зависимости от сервера)
@@ -20,6 +21,7 @@
 ### Протоколы клиентов
 
 Созданы 10 протоколов для групп функциональности SWClient в папке `Libraries/SWNetworkClient/Sources/SWNetworkClient/Protocols/`:
+
 - `AuthClient` - авторизация и регистрация
 - `ProfileClient` - профиль пользователя
 - `FriendsClient` - друзья и черный список
@@ -34,6 +36,7 @@
 ### Моки для каждого протокола
 
 Все моки в `PreviewContent/Client+.swift` поддерживают параметр `instantResponse`:
+
 - `MockAuthClient`
 - `MockProfileClient`
 - `MockFriendsClient`
@@ -58,6 +61,7 @@
 ## Инициализация приложения для UI-тестов
 
 В `init()` приложения (`SwiftUI_WorkoutAppApp.swift`) используется условная инициализация:
+
 - При аргументе "UITest" (проверяется через `Constants.isUITest`): создаются `MockAuthHelper` и передается флаг `isUITest: true` в ViewModels
 - Отключаются анимации (`UIView.setAnimationsEnabled(false)`)
 - Очищаются UserDefaults для чистого состояния (`UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!))`)
@@ -65,6 +69,7 @@
 ## Использование в экранах
 
 ViewModels создают клиент локально в методах, используя флаг `isUITest` и `authHelper`:
+
 ```swift
 #if DEBUG
 let client: SomeClient = isUITest
@@ -80,6 +85,7 @@ let client: SomeClient = SWClient(with: authHelper)
 ## Поведение при запуске UI-тестов
 
 При запуске UI-тестов с аргументом "UITest":
+
 - Приложение использует мок-клиент для всех операций
 - Все запросы обрабатываются мгновенно (`instantResponse: true`)
 - Авторизация работает через `MockAuthHelper` (без Keychain)
