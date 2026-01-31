@@ -130,7 +130,9 @@ struct EventFormTests {
 }
 
 private extension EventFormTests {
-    var emptyForm: EventForm { .init(.emptyValue) }
+    var emptyForm: EventForm {
+        .init(.emptyValue)
+    }
 
     func makeForm(
         title: String = "title",

@@ -78,7 +78,9 @@ public extension EventForm {
         return isNewFormNotEmpty && self != old
     }
 
-    static var emptyValue: Self { .init(nil) }
+    static var emptyValue: Self {
+        .init(nil)
+    }
 }
 
 private extension EventForm {

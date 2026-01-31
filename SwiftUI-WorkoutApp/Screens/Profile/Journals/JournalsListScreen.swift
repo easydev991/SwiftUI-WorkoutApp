@@ -153,7 +153,9 @@ private extension JournalsListScreen {
         )
     }
 
-    var canSaveNewJournal: Bool { !currentState.isLoading && !newJournalTitle.isEmpty }
+    var canSaveNewJournal: Bool {
+        !currentState.isLoading && !newJournalTitle.isEmpty
+    }
 
     var deleteJournalButton: some View {
         Button(role: .destructive) {

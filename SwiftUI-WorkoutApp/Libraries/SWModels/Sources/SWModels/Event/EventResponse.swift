@@ -177,7 +177,9 @@ public extension EventResponse {
         set { commentsOptional = newValue }
     }
 
-    var hasPhotos: Bool { !photos.isEmpty }
+    var hasPhotos: Bool {
+        !photos.isEmpty
+    }
 
     var photos: [Photo] {
         get { photosOptional ?? [] }
@@ -188,7 +190,9 @@ public extension EventResponse {
         PhotoRemover(initialPhotos: photos, removeId: id).photosAfterRemoval
     }
 
-    var hasParticipants: Bool { !participants.isEmpty }
+    var hasParticipants: Bool {
+        !participants.isEmpty
+    }
 
     /// Список участников мероприятия
     var participants: [UserResponse] {

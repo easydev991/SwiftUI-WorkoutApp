@@ -2,7 +2,7 @@ import Foundation
 
 public struct JournalCommonInfo {
     public let authorId: Int?
-    // `URL` картинки
+    /// `URL` картинки
     public let imageURL: URL?
     /// Заголовок отображаемой записи
     public let entryTitle: String

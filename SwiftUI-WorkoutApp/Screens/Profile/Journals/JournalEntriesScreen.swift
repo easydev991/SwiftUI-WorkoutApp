@@ -95,8 +95,13 @@ private extension JournalEntriesScreen {
         }
     }
 
-    var mainUserId: Int? { defaults.mainUserInfo?.id }
-    var isMainUser: Bool { userId == mainUserId }
+    var mainUserId: Int? {
+        defaults.mainUserInfo?.id
+    }
+
+    var isMainUser: Bool {
+        userId == mainUserId
+    }
 
     @ViewBuilder
     var contentView: some View {

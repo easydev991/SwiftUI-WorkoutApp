@@ -24,5 +24,7 @@ enum StatusCodeGroup {
         }
     }
 
-    var isSuccess: Bool { self == .success }
+    var isSuccess: Bool {
+        self == .success
+    }
 }

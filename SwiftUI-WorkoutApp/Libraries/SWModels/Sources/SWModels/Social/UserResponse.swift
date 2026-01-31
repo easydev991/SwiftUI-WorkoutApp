@@ -101,7 +101,9 @@ public extension UserResponse {
         return Int(parksCountString) ?? 0
     }
 
-    var hasJournals: Bool { journalsCount ?? 0 > 0 }
+    var hasJournals: Bool {
+        journalsCount ?? 0 > 0
+    }
 
     var journalsCountString: String {
         String.localizedStringWithFormat(
@@ -110,7 +112,9 @@ public extension UserResponse {
         )
     }
 
-    var hasFriends: Bool { friendsCount ?? 0 > 0 }
+    var hasFriends: Bool {
+        friendsCount ?? 0 > 0
+    }
 
     var hasAddedParks: Bool {
         guard let addedParks, !addedParks.isEmpty else {
@@ -127,7 +131,9 @@ public extension UserResponse {
     }
 
     /// Тренируется на каких-нибудь площадках
-    var hasUsedParks: Bool { usedParksCount > 0 }
+    var hasUsedParks: Bool {
+        usedParksCount > 0
+    }
 
     var usesParksCountString: String {
         String.localizedStringWithFormat(

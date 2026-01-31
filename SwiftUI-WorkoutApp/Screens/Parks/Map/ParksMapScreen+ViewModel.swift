@@ -66,7 +66,9 @@ extension ParksMapScreen {
             }
         }
 
-        var canClearCityFilter: Bool { selectedCity != nil }
+        var canClearCityFilter: Bool {
+            selectedCity != nil
+        }
 
         /// Обрабатывает изменение данных пользователя
         ///

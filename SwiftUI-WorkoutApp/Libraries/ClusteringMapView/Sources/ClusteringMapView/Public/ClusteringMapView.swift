@@ -76,7 +76,9 @@ public struct ClusteringMapView: UIViewRepresentable {
         AnnotationsOrganizer(old: mapView.annotations, new: annotations).updateIfNeeded(for: mapView)
     }
 
-    public func makeCoordinator() -> Coordinator { .init(self) }
+    public func makeCoordinator() -> Coordinator {
+        .init(self)
+    }
 }
 
 public extension ClusteringMapView {
@@ -85,7 +87,9 @@ public extension ClusteringMapView {
         private let clusterId = "Cluster"
         private let parent: ClusteringMapView
 
-        init(_ parent: ClusteringMapView) { self.parent = parent }
+        init(_ parent: ClusteringMapView) {
+            self.parent = parent
+        }
 
         public func mapView(_: MKMapView, didSelect view: MKAnnotationView) {
             switch view.annotation {

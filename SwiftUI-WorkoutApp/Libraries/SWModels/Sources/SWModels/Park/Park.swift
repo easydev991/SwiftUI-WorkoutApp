@@ -24,14 +24,20 @@ public struct Park: Codable, Identifiable, Hashable, Sendable {
     private var commentsOptional: [CommentResponse]?
     public var usersTrainHere: [UserResponse]?
     private var trainHereOptional: Bool?
-    public var title: String? { "Площадка № \(id)" }
+    public var title: String? {
+        "Площадка № \(id)"
+    }
+
     public var subtitle: String {
         let grade = ParkGrade(rawValue: typeId)?.description
         let size = ParkSize(rawValue: sizeId)?.description
         return [grade, size].compactMap(\.self).joined(separator: " / ")
     }
 
-    public var shortTitle: String { "№ \(id)" }
+    public var shortTitle: String {
+        "№ \(id)"
+    }
+
     /// shortTitle + subtitle
     public var longTitle: String {
         shortTitle + " " + subtitle
@@ -200,7 +206,9 @@ public extension Park {
         }
     }
 
-    var hasPhotos: Bool { !photos.isEmpty }
+    var hasPhotos: Bool {
+        !photos.isEmpty
+    }
 
     var photos: [Photo] {
         get { photosOptional ?? [] }
@@ -216,7 +224,9 @@ public extension Park {
         set { commentsOptional = newValue }
     }
 
-    var hasParticipants: Bool { !participants.isEmpty }
+    var hasParticipants: Bool {
+        !participants.isEmpty
+    }
 
     /// Пользователи, которые тренируются на этой площадке
     var participants: [UserResponse] {

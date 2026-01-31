@@ -12,10 +12,6 @@ struct GeocodingService {
         category: "GeocodingService"
     )
 
-    init(coordinate: CLLocationCoordinate2D) {
-        self.coordinate = coordinate
-    }
-
     /// Выполняет геокодирование координат
     /// - Returns: Кортеж с адресом и идентификатором города
     /// - Throws: GeocodingError в случае ошибки

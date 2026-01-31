@@ -181,5 +181,7 @@ private extension SWNetworkService {
 }
 
 private extension URLRequest {
-    var urlString: String { url?.absoluteString ?? "" }
+    var urlString: String {
+        url?.absoluteString ?? ""
+    }
 }

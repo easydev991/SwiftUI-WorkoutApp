@@ -6,7 +6,9 @@ import SWModels
 final class ParksCacheManager: ObservableObject {
     @Published private(set) var parks: [Park] = []
 
-    var count: Int { parks.count }
+    var count: Int {
+        parks.count
+    }
 
     /// Обновляет кэш, если данные изменились
     /// - Parameter newParks: Новые данные для сравнения и обновления

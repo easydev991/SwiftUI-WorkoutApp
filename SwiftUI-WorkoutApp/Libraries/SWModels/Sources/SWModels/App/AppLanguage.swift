@@ -1,7 +1,10 @@
 import SwiftUI
 
 public enum AppLanguage: CaseIterable, Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
+
     case russian
     case english
 

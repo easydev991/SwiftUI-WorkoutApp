@@ -5,7 +5,9 @@ public enum LocationFeedback {
     case country
     case city
 
-    public var subject: String { CommonFeedback.subject }
+    public var subject: String {
+        CommonFeedback.subject
+    }
 
     public var body: String {
         let question = switch self {

@@ -1,6 +1,6 @@
 import Foundation
 
-// Доступ к дневнику
+/// Доступ к дневнику
 public enum JournalAccess: Int, CaseIterable, CustomStringConvertible, Sendable {
     case all = 0
     case friends = 1

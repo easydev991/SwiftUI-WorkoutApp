@@ -85,5 +85,4 @@ wrapMultilineStatementBraces
 
 # Exclude
 --exclude \
-# someFolder, \
-SnapshotHelper.swift
+WorkoutAppUITests/SnapshotHelper.swift, \

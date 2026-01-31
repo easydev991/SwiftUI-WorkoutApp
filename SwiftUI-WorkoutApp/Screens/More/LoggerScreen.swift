@@ -54,7 +54,9 @@ private final class LogStore: ObservableObject, @unchecked Sendable {
     enum State: Equatable {
         case empty, loading, ready([LogModel])
 
-        var isLoading: Bool { self == .loading }
+        var isLoading: Bool {
+            self == .loading
+        }
 
         struct LogModel: Identifiable, Equatable {
             let id = UUID()

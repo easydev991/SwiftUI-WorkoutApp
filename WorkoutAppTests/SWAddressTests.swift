@@ -461,7 +461,6 @@ private extension SWAddressTests {
             addressDict["SubThoroughfare"] = subThoroughfare
         }
         let coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: addressDict.isEmpty ? nil : addressDict)
-        return placemark
+        return MKPlacemark(coordinate: coordinate, addressDictionary: addressDict.isEmpty ? nil : addressDict)
     }
 }

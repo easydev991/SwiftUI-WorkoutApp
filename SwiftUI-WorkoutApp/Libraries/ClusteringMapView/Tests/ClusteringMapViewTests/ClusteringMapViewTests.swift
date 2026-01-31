@@ -5,7 +5,7 @@ import Testing
 struct ClusteringMapViewTests {
     @Test
     @MainActor
-    func updateAnnotations() async throws {
+    func updateAnnotations() {
         // Тестируем AnnotationsOrganizer без реального MKMapView
         // чтобы избежать проблем с инициализацией в Xcode 26
         let initialAnnotations = TestAnnotation.makeList(of: 20)

@@ -2,7 +2,10 @@ import Foundation
 import SwiftUI
 
 public enum AppColorTheme: Int, CaseIterable, CustomStringConvertible, Identifiable {
-    public var id: Int { rawValue }
+    public var id: Int {
+        rawValue
+    }
+
     case dark = 0
     case light = 1
     case system = 2

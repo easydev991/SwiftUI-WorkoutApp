@@ -6,8 +6,8 @@ extension Binding<Bool> {
             get: { bindingOptional.wrappedValue != nil },
             set: { newValue in
                 guard newValue == false else { return }
-                /// Обрабатываем только значение `false`, чтобы обнулить опционал,
-                /// потому что не можем восстановить предыдущее состояние опционала для значения `true`
+                // Обрабатываем только значение `false`, чтобы обнулить опционал,
+                // потому что не можем восстановить предыдущее состояние опционала для значения `true`
                 bindingOptional.wrappedValue = nil
             }
         )

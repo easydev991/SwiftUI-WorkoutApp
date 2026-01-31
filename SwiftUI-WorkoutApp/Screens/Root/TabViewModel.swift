@@ -4,7 +4,9 @@ import SwiftUI
 final class TabViewModel: ObservableObject {
     @Published var selectedTab = Tab.map
 
-    func selectTab(_ tab: Tab) { selectedTab = tab }
+    func selectTab(_ tab: Tab) {
+        selectedTab = tab
+    }
 }
 
 extension TabViewModel {

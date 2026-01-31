@@ -5,7 +5,7 @@ import Testing
 
 struct EventResponseSortingTests {
     @Test("Должен сортировать события по дате в порядке убывания")
-    func shouldSortEventsByDateDescending() throws {
+    func shouldSortEventsByDateDescending() {
         let event1 = EventResponse(id: 1, beginDate: "2025-01-01T00:00:00+00:00")
         let event2 = EventResponse(id: 2, beginDate: "2025-01-02T00:00:00+00:00")
         let event3 = EventResponse(id: 3, beginDate: "2025-01-03T00:00:00+00:00")
@@ -17,7 +17,7 @@ struct EventResponseSortingTests {
     }
 
     @Test("Должен правильно обрабатывать события с одинаковой датой")
-    func shouldHandleEventsWithSameDate() throws {
+    func shouldHandleEventsWithSameDate() {
         let event1 = EventResponse(id: 1, beginDate: "2025-01-01T00:00:00+00:00")
         let event2 = EventResponse(id: 2, beginDate: "2025-01-01T00:00:00+00:00")
         let event3 = EventResponse(id: 3, beginDate: "2025-01-01T00:00:00+00:00")
@@ -31,7 +31,7 @@ struct EventResponseSortingTests {
     }
 
     @Test("Должен правильно обрабатывать события без даты")
-    func shouldHandleEventsWithoutDate() throws {
+    func shouldHandleEventsWithoutDate() {
         let event1 = EventResponse(id: 1, beginDate: nil)
         let event2 = EventResponse(id: 2, beginDate: "2025-01-01T00:00:00+00:00")
         let event3 = EventResponse(id: 3, beginDate: nil)

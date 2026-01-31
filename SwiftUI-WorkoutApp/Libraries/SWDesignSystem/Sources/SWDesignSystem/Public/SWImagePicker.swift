@@ -32,7 +32,9 @@ public struct SWImagePicker: UIViewControllerRepresentable {
 
     public func updateUIViewController(_: UIImagePickerController, context _: Context) {}
 
-    public func makeCoordinator() -> Coordinator { .init(self) }
+    public func makeCoordinator() -> Coordinator {
+        .init(self)
+    }
 
     public final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         private let parent: SWImagePicker

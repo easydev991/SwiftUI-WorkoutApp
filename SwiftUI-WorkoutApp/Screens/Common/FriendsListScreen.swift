@@ -60,7 +60,10 @@ private extension FriendsListScreen {
         case ready([UserResponse])
         case error(ErrorKind)
 
-        var isLoading: Bool { self == .loading }
+        var isLoading: Bool {
+            self == .loading
+        }
+
         var shouldLoad: Bool {
             switch self {
             case .initial, .error: true

@@ -42,7 +42,10 @@ private extension ChangePasswordScreen {
     struct PassworModel {
         struct NewPassword {
             var text = ""
-            var isError: Bool { !errorMessage.isEmpty }
+            var isError: Bool {
+                !errorMessage.isEmpty
+            }
+
             var errorMessage: String {
                 text.trueCount < Constants.minPasswordSize
                     && !text.isEmpty

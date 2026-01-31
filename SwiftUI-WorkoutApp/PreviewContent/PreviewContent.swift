@@ -689,7 +689,9 @@ extension JournalEntryResponse {
 }
 
 extension Int {
-    static var previewUserId: Self { 30 }
+    static var previewUserId: Self {
+        30
+    }
 }
 
 extension NoParksFoundModel {

@@ -205,7 +205,9 @@ struct MainUserFormTests {
 }
 
 private extension MainUserFormTests {
-    var emptyForm: MainUserForm { .init(.emptyValue) }
+    var emptyForm: MainUserForm {
+        .init(.emptyValue)
+    }
 
     func makeForm(
         userName: String = "userName",

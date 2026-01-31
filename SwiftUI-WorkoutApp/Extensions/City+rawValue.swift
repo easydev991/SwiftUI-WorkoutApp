@@ -2,7 +2,9 @@ import Foundation
 import SWModels
 
 extension City: @retroactive RawRepresentable {
-    public var rawValue: String { name }
+    public var rawValue: String {
+        name
+    }
 
     public init?(rawValue: String) {
         do {

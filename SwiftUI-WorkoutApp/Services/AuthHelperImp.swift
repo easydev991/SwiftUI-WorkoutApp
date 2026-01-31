@@ -18,7 +18,9 @@ class AuthHelperImp: ObservableObject, AuthHelper {
         migrateAuthDataFromUserDefaults()
     }
 
-    var authToken: String? { authData?.token }
+    var authToken: String? {
+        authData?.token
+    }
 
     func saveAuthData(_ model: AuthData) {
         authData = model

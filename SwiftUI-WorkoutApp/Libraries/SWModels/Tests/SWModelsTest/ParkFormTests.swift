@@ -122,7 +122,9 @@ struct ParkFormTests {
 }
 
 private extension ParkFormTests {
-    var emptyForm: ParkForm { .init(.emptyValue) }
+    var emptyForm: ParkForm {
+        .init(.emptyValue)
+    }
 
     func makeForm(
         address: String = "address",

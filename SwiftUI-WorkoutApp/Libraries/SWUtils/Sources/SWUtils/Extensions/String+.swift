@@ -12,7 +12,9 @@ public extension String {
     }
 
     /// Количество символов без учета пробелов
-    var trueCount: Int { withoutSpaces.count }
+    var trueCount: Int {
+        withoutSpaces.count
+    }
 
     /// Без пробелов
     var withoutSpaces: Self {

@@ -110,14 +110,26 @@ private extension WorkoutAppUITests {
         waitAndTap(timeout: 5, element: enButton)
     }
 
-    var tabbar: XCUIElement { app.tabBars.firstMatch }
+    var tabbar: XCUIElement {
+        app.tabBars.firstMatch
+    }
+
     var parksListPickerButton: XCUIElement {
         app.segmentedControls.firstMatch.buttons.element(boundBy: 1)
     }
 
-    var profileTabButton: XCUIElement { tabbar.buttons.element(boundBy: 3) }
-    var eventsTabButton: XCUIElement { tabbar.buttons.element(boundBy: 1) }
-    var authorizeButton: XCUIElement { app.buttons["authorizeButton"] }
+    var profileTabButton: XCUIElement {
+        tabbar.buttons.element(boundBy: 3)
+    }
+
+    var eventsTabButton: XCUIElement {
+        tabbar.buttons.element(boundBy: 1)
+    }
+
+    var authorizeButton: XCUIElement {
+        app.buttons["authorizeButton"]
+    }
+
     var loginField: XCUIElement {
         let id = "loginField"
         let oldElement = app.textViews[id]
@@ -125,16 +137,39 @@ private extension WorkoutAppUITests {
         return oldElement.exists ? oldElement : modernElement
     }
 
-    var passwordField: XCUIElement { app.secureTextFields["passwordField"] }
-    var loginButton: XCUIElement { app.buttons["loginButton"] }
-    var searchUsersButton: XCUIElement { app.buttons["searchUsersButton"] }
-    var closeButton: XCUIElement { app.buttons["closeButton"] }
-    var searchUserField: XCUIElement { app.searchFields.firstMatch }
-    var firstFoundUserCell: XCUIElement { app.buttons["UserViewCell"].firstMatch }
-    var firstParkCell: XCUIElement { app.buttons["ParkViewCell"].firstMatch }
+    var passwordField: XCUIElement {
+        app.secureTextFields["passwordField"]
+    }
+
+    var loginButton: XCUIElement {
+        app.buttons["loginButton"]
+    }
+
+    var searchUsersButton: XCUIElement {
+        app.buttons["searchUsersButton"]
+    }
+
+    var closeButton: XCUIElement {
+        app.buttons["closeButton"]
+    }
+
+    var searchUserField: XCUIElement {
+        app.searchFields.firstMatch
+    }
+
+    var firstFoundUserCell: XCUIElement {
+        app.buttons["UserViewCell"].firstMatch
+    }
+
+    var firstParkCell: XCUIElement {
+        app.buttons["ParkViewCell"].firstMatch
+    }
+
     var pastEventsPickerButton: XCUIElement {
         app.segmentedControls.firstMatch.buttons.element(boundBy: 1)
     }
 
-    var firstEventViewCell: XCUIElement { app.buttons["EventViewCell"].firstMatch }
+    var firstEventViewCell: XCUIElement {
+        app.buttons["EventViewCell"].firstMatch
+    }
 }

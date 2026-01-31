@@ -5,7 +5,7 @@ import SWModels
 enum ProfileViews {}
 
 extension ProfileViews {
-    @ViewBuilder @MainActor
+    @MainActor
     static func makeUserInfo(for user: UserResponse) -> some View {
         ProfileView(
             imageURL: user.avatarURL,

@@ -50,7 +50,6 @@ private extension MainUserProfileScreen {
         }
     }
 
-    @ViewBuilder
     func makeProfileContent(for user: UserResponse) -> some View {
         VStack(spacing: 0) {
             ProfileViews.makeUserInfo(for: user)
@@ -97,7 +96,6 @@ private extension MainUserProfileScreen {
         .padding(.bottom, 24)
     }
 
-    @ViewBuilder
     var blacklistButtonIfNeeded: some View {
         ZStack {
             if !defaults.blacklistedUsers.isEmpty {

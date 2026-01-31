@@ -32,8 +32,4 @@ public struct LocationCoordinate: Sendable {
     public static let empty = Self(.init(latitude: 0, longitude: 0))
 }
 
-extension LocationCoordinate: Equatable {
-    public static func == (lhs: LocationCoordinate, rhs: LocationCoordinate) -> Bool {
-        lhs.lat == rhs.lat && lhs.lon == rhs.lon
-    }
-}
+extension LocationCoordinate: Equatable {}

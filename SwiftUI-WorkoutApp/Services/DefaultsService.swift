@@ -26,7 +26,9 @@ final class DefaultsService: ObservableObject {
     @AppStorage(Key.needUpdateUser.rawValue)
     private(set) var needUpdateUser = false
 
-    var isAuthorized: Bool { mainUserInfo != nil }
+    var isAuthorized: Bool {
+        mainUserInfo != nil
+    }
 
     @AppStorage(Key.appTheme.rawValue)
     private(set) var appTheme = AppColorTheme.system
@@ -43,9 +45,13 @@ final class DefaultsService: ObservableObject {
     @AppStorage(Key.blacklist.rawValue)
     private var blacklist = Data()
 
-    var hasParks: Bool { mainUserInfo?.hasUsedParks == true }
+    var hasParks: Bool {
+        mainUserInfo?.hasUsedParks == true
+    }
 
-    var hasFriends: Bool { !friendsIdsList.isEmpty }
+    var hasFriends: Bool {
+        !friendsIdsList.isEmpty
+    }
 
     @AppStorage(Key.unreadMessagesCount.rawValue)
     private(set) var unreadMessagesCount = 0

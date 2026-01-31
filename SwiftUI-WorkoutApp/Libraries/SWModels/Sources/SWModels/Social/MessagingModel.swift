@@ -7,7 +7,9 @@ public struct MessagingModel {
     /// Текст сообщения
     public var message: String
     /// Можно ли отправить сообщение
-    public var canSendMessage: Bool { !message.isEmpty && !isLoading }
+    public var canSendMessage: Bool {
+        !message.isEmpty && !isLoading
+    }
 
     /// Инициализатор
     /// - Parameters:

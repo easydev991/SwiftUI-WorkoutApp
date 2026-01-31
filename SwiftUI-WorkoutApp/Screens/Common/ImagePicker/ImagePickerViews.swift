@@ -26,7 +26,7 @@ extension ImagePickerViews {
             .multilineTextAlignment(.leading)
     }
 
-    @ViewBuilder @MainActor
+    @MainActor
     static func makeGridView(
         items: [PickedImageView.Model],
         action: @escaping (_ index: Int, _ action: PickedImageView.Action) -> Void

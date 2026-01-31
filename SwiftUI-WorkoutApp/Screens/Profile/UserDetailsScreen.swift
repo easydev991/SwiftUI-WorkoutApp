@@ -241,7 +241,9 @@ private extension UserDetailsScreen {
         var friend = FriendAction.add
         var isFriendRequestSent = false
         var blacklist = BlacklistOption.add
-        var isBlacklisted: Bool { blacklist == .remove }
+        var isBlacklisted: Bool {
+            blacklist == .remove
+        }
     }
 }
 

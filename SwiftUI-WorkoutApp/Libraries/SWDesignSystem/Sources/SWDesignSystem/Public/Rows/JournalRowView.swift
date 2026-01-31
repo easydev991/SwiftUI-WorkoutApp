@@ -60,7 +60,10 @@ public extension JournalRowView {
         }
 
         public struct GenericButtonModel: Identifiable {
-            public var id: String { option.id }
+            public var id: String {
+                option.id
+            }
+
             let option: Option
             let action: () -> Void
 
@@ -70,7 +73,10 @@ public extension JournalRowView {
             }
 
             public enum Option: Identifiable {
-                public var id: String { systemImageName }
+                public var id: String {
+                    systemImageName
+                }
+
                 case edit, setup, report, delete
                 var localizedTitle: String {
                     switch self {

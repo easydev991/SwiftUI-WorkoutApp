@@ -59,7 +59,9 @@ struct ModernPickedImagesGrid: View {
 }
 
 private extension ModernPickedImagesGrid {
-    var header: String { ImagePickerViews.makeHeaderString(for: images.count) }
+    var header: String {
+        ImagePickerViews.makeHeaderString(for: images.count)
+    }
 
     func loadImages(from selectedItems: [PhotosPickerItem]) async throws -> [UIImage] {
         try await withThrowingTaskGroup(of: UIImage.self) { group in

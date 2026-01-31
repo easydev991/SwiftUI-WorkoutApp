@@ -101,7 +101,9 @@ private extension EventsListScreen {
         }
     }
 
-    func goToMap() { tabViewModel.selectTab(.map) }
+    func goToMap() {
+        tabViewModel.selectTab(.map)
+    }
 
     var eventsList: some View {
         ScrollView {
