@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor setup_ssh update update_fastlane update_swiftformat format screenshots upload_screenshots testflight fastlane increment_build build test
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -126,6 +126,26 @@ setup:
 	@$(MAKE) setup_snapshot
 	@$(MAKE) setup_cursor
 	@$(MAKE) setup_ssh
+	@$(MAKE) setup_markdownlint
+
+## setup_markdownlint: Проверить и установить Node.js и markdownlint-cli для форматирования Markdown-файлов
+setup_markdownlint:
+	@printf "$(YELLOW)Проверка наличия Node.js/npm...$(RESET)\\n"
+	@if ! command -v npm >/dev/null 2>&1; then \
+		printf "$(YELLOW)Node.js/npm не установлен. Устанавливаю через Homebrew...$(RESET)\\n"; \
+		brew install node; \
+		printf "$(GREEN)Node.js/npm успешно установлен$(RESET)\\n"; \
+	else \
+		printf "$(GREEN)Node.js/npm уже установлен$(RESET)\\n"; \
+	fi
+	@printf "$(YELLOW)Проверка наличия markdownlint-cli...$(RESET)\\n"
+	@if ! command -v markdownlint >/dev/null 2>&1; then \
+		printf "$(YELLOW)markdownlint-cli не установлен. Устанавливаю...$(RESET)\\n"; \
+		npm install -g markdownlint-cli; \
+		printf "$(GREEN)markdownlint-cli успешно установлен$(RESET)\\n"; \
+	else \
+		printf "$(GREEN)markdownlint-cli уже установлен$(RESET)\\n"; \
+	fi
 
 ## setup_hook: Установить pre-push git-хук для проверки форматирования Swift-кода
 setup_hook:
@@ -328,6 +348,12 @@ format:
 	@printf "$(YELLOW)Форматирование Swift-кода...$(RESET)\n"
 	@swiftformat .
 	@printf "$(GREEN)Форматирование завершено!$(RESET)\n"
+	@if command -v markdownlint >/dev/null 2>&1; then \
+		printf "$(YELLOW)Форматирование Markdown-файлов...$(RESET)\\n"; \
+		markdownlint --fix "**/*.md" ".cursor/rules/*.mdc" && printf "$(GREEN_NORMAL)Markdown-файлы успешно отформатированы$(RESET)\\n"; \
+	else \
+		echo "$(YELLOW)markdownlint-cli не установлен. Для установки: npm install -g markdownlint-cli$(RESET)"; \
+	fi
 
 ## screenshots: Запустить fastlane snapshot для генерации скриншотов приложения
 screenshots:

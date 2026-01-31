@@ -1,0 +1,15 @@
+# Автоматически генерируемые файлы
+fastlane/README.md
+
+# Xcode и build файлы
+**/build/**/*.md
+**/DerivedData/**/*.md
+**/Durations/**/*.md
+
+# iOS системные файлы
+**/.externalNativeBuild/**/*.md
+**/captures/**/*.md
+
+# Временные файлы
+**/tmp/**/*.md
+**/temp/**/*.md
