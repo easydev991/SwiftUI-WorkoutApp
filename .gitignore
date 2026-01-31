@@ -12,10 +12,5 @@ fastlane/screenshots/screenshots.html
 .build/
 buildServer.json
 
-# IDE settings
-.vscode/
-.cursor/
-.windsurf/
-
 # Fastlane
 fastlane/builds/
