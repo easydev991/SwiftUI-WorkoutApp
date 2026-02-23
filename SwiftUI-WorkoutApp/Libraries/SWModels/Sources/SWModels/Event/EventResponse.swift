@@ -130,7 +130,7 @@ public extension EventResponse {
 
     var formattedDescription: String {
         get {
-            (eventDescription ?? "").withoutHTML
+            eventDescription.withoutHtmlOrEmpty()
         }
         set { eventDescription = newValue }
     }

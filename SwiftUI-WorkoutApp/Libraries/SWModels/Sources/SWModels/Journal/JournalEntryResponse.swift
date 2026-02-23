@@ -47,7 +47,7 @@ public extension JournalEntryResponse {
         guard let message, message.trueCount > 0 else {
             return ""
         }
-        return message.withoutHTML
+        return message.withoutHtml()
     }
 
     var messageDateString: String {

@@ -3,12 +3,58 @@ import Foundation
 import Testing
 
 struct SWUtilsTests {
+    // MARK: - withoutHtml
+
     @Test
-    func stringWithoutHTML() {
-        let htmlString = "<p>Строка с тегами html.<p>"
-        let cleanString = htmlString.withoutHTML
+    func withoutHtmlBasicTags() {
+        let htmlString = "<p>Строка с тегами html.</p>"
+        let cleanString = htmlString.withoutHtml()
         #expect(cleanString == "Строка с тегами html.")
     }
+
+    @Test
+    func withoutHtmlCompactMode() {
+        let htmlString = "<p>Параграф 1</p><p>Параграф 2</p>"
+        let cleanString = htmlString.withoutHtml(compact: true)
+        #expect(cleanString == "Параграф 1 Параграф 2")
+    }
+
+    @Test
+    func withoutHtmlFullMode() {
+        let htmlString = "<p>Параграф 1</p><p>Параграф 2</p>"
+        let cleanString = htmlString.withoutHtml(compact: false)
+        #expect(cleanString == "Параграф 1\n\nПараграф 2")
+    }
+
+    @Test
+    func withoutHtmlBrTag() {
+        let htmlString = "Строка 1<br>Строка 2<br/>Строка 3"
+        #expect(htmlString.withoutHtml(compact: true) == "Строка 1 Строка 2 Строка 3")
+        #expect(htmlString.withoutHtml(compact: false) == "Строка 1\nСтрока 2\nСтрока 3")
+    }
+
+    @Test
+    func withoutHtmlEntities() {
+        let htmlString = "&amp; &lt; &gt; &nbsp; &quot; &#39;"
+        let cleanString = htmlString.withoutHtml()
+        #expect(cleanString == "& < >   \" '")
+    }
+
+    @Test
+    func withoutHtmlOrEmpty() {
+        let htmlString: String? = "<p>Test</p>"
+        let nilString: String? = nil
+        #expect(htmlString.withoutHtmlOrEmpty() == "Test")
+        #expect(nilString.withoutHtmlOrEmpty() == "")
+    }
+
+    @Test
+    func withoutHtmlEmptyString() {
+        let emptyString = ""
+        #expect(emptyString.withoutHtml() == "")
+    }
+
+    // MARK: - Other tests
 
     @Test
     func trueCountIsOne() {

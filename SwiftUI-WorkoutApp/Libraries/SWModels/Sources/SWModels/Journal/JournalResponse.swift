@@ -63,7 +63,7 @@ public extension JournalResponse {
         guard let lastMessageText, lastMessageText.trueCount > 0 else {
             return ""
         }
-        return lastMessageText.withoutHTML
+        return lastMessageText.withoutHtml(compact: true)
     }
 
     var lastMessageDateString: String {
