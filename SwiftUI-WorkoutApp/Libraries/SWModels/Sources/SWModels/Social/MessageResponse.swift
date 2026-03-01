@@ -15,7 +15,7 @@ public struct MessageResponse: Codable, Identifiable, Hashable, Sendable {
 
 public extension MessageResponse {
     var formattedMessage: String {
-        (message ?? "").withoutHTML
+        message.withoutHtmlOrEmpty()
     }
 
     var messageDateString: String {
