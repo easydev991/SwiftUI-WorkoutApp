@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_cursor setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -11,7 +11,7 @@ RESET=\033[0m
 RUBY_VERSION=3.3.6
 
 # Версия Swift в проекте
-SWIFT_VERSION=6.2.0
+SWIFT_VERSION=6.3.0
 
 # Глобальные настройки шелла
 SHELL := /bin/bash
@@ -124,7 +124,6 @@ setup:
 	@$(MAKE) setup_hook
 	@$(MAKE) setup_fastlane
 	@$(MAKE) setup_snapshot
-	@$(MAKE) setup_cursor
 	@$(MAKE) setup_ssh
 	@$(MAKE) setup_markdownlint
 
@@ -180,53 +179,6 @@ setup_fastlane:
 	else \
 		printf "$(GREEN)fastlane уже инициализирован$(RESET)\n"; \
 	fi
-
-## setup_cursor: Настроить языковой сервер Swift для работы в Cursor
-setup_cursor:
-	@printf "$(YELLOW)🔧 Настройка языкового сервера Swift для Cursor...$(RESET)\n"
-	
-	@printf "$(YELLOW)Проверка наличия Xcode Command Line Tools...$(RESET)\n"
-	@if ! xcode-select -p >/dev/null 2>&1; then \
-		printf "$(RED)❌ Xcode Command Line Tools не установлены$(RESET)\n"; \
-		printf "$(YELLOW)Установите их командой:$(RESET)\n"; \
-		printf "  xcode-select --install\n"; \
-		exit 1; \
-	else \
-		printf "$(GREEN)Xcode Command Line Tools установлены$(RESET)\n"; \
-	fi
-	
-	@printf "$(YELLOW)Проверка наличия xcode-build-server...$(RESET)\n"
-	@if ! command -v xcode-build-server >/dev/null 2>&1; then \
-		printf "$(YELLOW)xcode-build-server не установлен. Устанавливаю через Homebrew...$(RESET)\n"; \
-		brew install xcode-build-server; \
-		printf "$(GREEN)xcode-build-server успешно установлен$(RESET)\n"; \
-	else \
-		printf "$(GREEN)xcode-build-server уже установлен$(RESET)\n"; \
-	fi
-	
-	@printf "$(YELLOW)Проверка наличия sourcekit-lsp...$(RESET)\n"
-	@if ! command -v sourcekit-lsp >/dev/null 2>&1; then \
-		printf "$(RED)❌ sourcekit-lsp не найден$(RESET)\n"; \
-		printf "$(YELLOW)Обычно он устанавливается с Xcode Command Line Tools$(RESET)\n"; \
-		exit 1; \
-	else \
-		printf "$(GREEN)sourcekit-lsp найден$(RESET)\n"; \
-	fi
-	
-	@if [ -f buildServer.json ]; then \
-		printf "$(GREEN)buildServer.json уже существует — пропуск генерации$(RESET)\n"; \
-	else \
-		printf "$(YELLOW)📝 Генерация buildServer.json...$(RESET)\n"; \
-		xcode-build-server config -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp; \
-		printf "$(GREEN)buildServer.json создан$(RESET)\n"; \
-	fi
-	
-	@printf "$(YELLOW)🔨 Выполнение легкой сборки для инициализации индекса...$(RESET)\n"
-	@xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -destination "platform=iOS Simulator,name=iPhone 13 Pro,OS=18.6" -quiet clean build CODE_SIGNING_ALLOWED=NO || printf "$(YELLOW)Сборка завершилась с предупреждениями, но это нормально$(RESET)\n"
-	
-	@printf "$(GREEN)✅ Готово!$(RESET)\n"
-	@printf "$(YELLOW)💡 Перезапустите Cursor для активации подсказок Swift$(RESET)\n"
-	@printf "$(YELLOW)   Больше никаких действий не требуется!$(RESET)\n"
 
 ## setup_ssh: Настраивает SSH-доступ к GitHub (интерактивно: создаст ключ при необходимости, добавит в агент, опционально добавит ключ в аккаунт GitHub)
 setup_ssh:

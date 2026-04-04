@@ -81,7 +81,8 @@ markTypes, \
 organizeDeclarations, \
 numberFormatting, \
 sortDeclarations, \
-wrapMultilineStatementBraces
+wrapMultilineStatementBraces, \
+swiftTestingTestCaseNames
 
 # Exclude
 --exclude \

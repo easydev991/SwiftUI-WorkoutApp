@@ -3,7 +3,7 @@ import SWModels
 import SWNetworkClient
 
 /// Единый мок-клиент для UI-тестов, реализующий все протоколы
-struct MockSWClient: Sendable {
+struct MockSWClient {
     private let authClient: MockAuthClient
     private let profileClient: MockProfileClient
     private let friendsClient: MockFriendsClient
