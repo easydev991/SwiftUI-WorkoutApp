@@ -193,6 +193,23 @@
         }
       }
     },
+    "GitHub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        }
+      }
+    },
     "NewEvent.Title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -356,13 +373,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SOTKA"
+            "value" : "Street Workout Program"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SOTKA"
+            "value" : "Street Workout Тренировки"
           }
         }
       }
@@ -1482,23 +1499,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No logs yet"
-          }
-        }
-      }
-    },
-    "Магазин WORKOUT" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "WORKOUT shop"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Магазин WORKOUT"
           }
         }
       }
@@ -2705,23 +2705,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Способ отображения"
-          }
-        }
-      }
-    },
-    "Ссылка на GitHub" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub page"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Страница GitHub"
           }
         }
       }

@@ -41,7 +41,6 @@ struct MoreScreen: View {
                     dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
                         VStack(spacing: 4) {
-                            workoutShopButton
                             githubButton
                         }
                     }
@@ -67,7 +66,6 @@ struct MoreScreen: View {
 private extension MoreScreen {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id6749501617?action=write-review")!
-        static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
         static let developerBlog = URL(string: "https://t.me/easy_dev991")!
         static let githubLink = URL(string: "https://github.com/easydev991/SwiftUI-WorkoutApp")!
         static let officialSite = URL(string: "https://workout.su")!
@@ -191,15 +189,6 @@ private extension MoreScreen {
         }
     }
 
-    var workoutShopButton: some View {
-        Link(destination: Links.workoutShop) {
-            ListRowView(
-                leadingContent: .text("Магазин WORKOUT"),
-                trailingContent: .chevron
-            )
-        }
-    }
-
     var developerProfileButton: some View {
         Link(destination: Links.developerBlog) {
             ListRowView(
@@ -212,7 +201,7 @@ private extension MoreScreen {
     var githubButton: some View {
         Link(destination: Links.githubLink) {
             ListRowView(
-                leadingContent: .text("Ссылка на GitHub"),
+                leadingContent: .text("GitHub"),
                 trailingContent: .chevron
             )
         }
