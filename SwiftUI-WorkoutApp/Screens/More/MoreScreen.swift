@@ -15,9 +15,8 @@ struct MoreScreen: View {
                 VStack(spacing: 0) {
                     SectionView(header: "Настройки", mode: .regular) {
                         VStack(spacing: 0) {
-                            appThemeButton
+                            appThemeIconButton
                             languagePicker
-                            appIconButton
                         }
                     }
                     dividerView
@@ -41,7 +40,6 @@ struct MoreScreen: View {
                     dividerView
                     SectionView(header: "Поддержать проект", mode: .regular) {
                         VStack(spacing: 4) {
-                            workoutShopButton
                             githubButton
                         }
                     }
@@ -67,7 +65,6 @@ struct MoreScreen: View {
 private extension MoreScreen {
     enum Links {
         static let appReview = URL(string: "https://apps.apple.com/app/id6749501617?action=write-review")!
-        static let workoutShop = URL(string: "https://workoutshop.ru//SWiOS")!
         static let developerBlog = URL(string: "https://t.me/easy_dev991")!
         static let githubLink = URL(string: "https://github.com/easydev991/SwiftUI-WorkoutApp")!
         static let officialSite = URL(string: "https://workout.su")!
@@ -85,25 +82,14 @@ private extension MoreScreen {
             .padding(.horizontal, -16)
     }
 
-    var appThemeButton: some View {
-        Menu {
-            Picker(
-                "",
-                selection: .init(
-                    get: { defaults.appTheme },
-                    set: { defaults.setAppTheme($0) }
-                )
-            ) {
-                ForEach(AppColorTheme.allCases) {
-                    Text($0.description).tag($0)
-                }
-            }
-        } label: {
+    var appThemeIconButton: some View {
+        NavigationLink(destination: ThemeIconScreen()) {
             ListRowView(
-                leadingContent: .text("Тема приложения"),
-                trailingContent: .textWithChevron(defaults.appTheme.description)
+                leadingContent: .text("Тема и иконка"),
+                trailingContent: .chevron
             )
         }
+        .accessibilityIdentifier("appThemeAndIconButton")
     }
 
     var languagePicker: some View {
@@ -121,15 +107,6 @@ private extension MoreScreen {
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
-        }
-    }
-
-    var appIconButton: some View {
-        NavigationLink(destination: AppIconScreen()) {
-            ListRowView(
-                leadingContent: .text("Иконка приложения"),
-                trailingContent: .chevron
-            )
         }
     }
 
@@ -191,15 +168,6 @@ private extension MoreScreen {
         }
     }
 
-    var workoutShopButton: some View {
-        Link(destination: Links.workoutShop) {
-            ListRowView(
-                leadingContent: .text("Магазин WORKOUT"),
-                trailingContent: .chevron
-            )
-        }
-    }
-
     var developerProfileButton: some View {
         Link(destination: Links.developerBlog) {
             ListRowView(
@@ -212,7 +180,7 @@ private extension MoreScreen {
     var githubButton: some View {
         Link(destination: Links.githubLink) {
             ListRowView(
-                leadingContent: .text("Ссылка на GitHub"),
+                leadingContent: .text("GitHub"),
                 trailingContent: .chevron
             )
         }

@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-extension AppIconScreen {
+extension ThemeIconScreen {
     enum IconVariant: String, CaseIterable {
         case primary = "AppIcon"
         case one = "AppIcon1"

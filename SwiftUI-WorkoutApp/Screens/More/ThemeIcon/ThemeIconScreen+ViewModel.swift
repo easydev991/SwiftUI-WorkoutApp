@@ -2,7 +2,7 @@ import Foundation
 import OSLog
 import UIKit.UIApplication
 
-extension AppIconScreen {
+extension ThemeIconScreen {
     @MainActor
     final class ViewModel: ObservableObject {
         private let logger = Logger(
@@ -35,7 +35,7 @@ extension AppIconScreen {
     }
 }
 
-extension AppIconScreen.ViewModel {
+extension ThemeIconScreen.ViewModel {
     enum IconError: Error, LocalizedError {
         case alternateIconsNotSupported
 
