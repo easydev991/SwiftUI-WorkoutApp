@@ -2786,6 +2786,23 @@
         }
       }
     },
+    "Тема и иконка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App theme and icon"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тема и иконка"
+          }
+        }
+      }
+    },
     "Тема приложения" : {
       "extractionState" : "manual",
       "localizations" : {

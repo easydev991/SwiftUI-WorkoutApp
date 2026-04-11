@@ -15,9 +15,8 @@ struct MoreScreen: View {
                 VStack(spacing: 0) {
                     SectionView(header: "Настройки", mode: .regular) {
                         VStack(spacing: 0) {
-                            appThemeButton
+                            appThemeIconButton
                             languagePicker
-                            appIconButton
                         }
                     }
                     dividerView
@@ -83,25 +82,14 @@ private extension MoreScreen {
             .padding(.horizontal, -16)
     }
 
-    var appThemeButton: some View {
-        Menu {
-            Picker(
-                "",
-                selection: .init(
-                    get: { defaults.appTheme },
-                    set: { defaults.setAppTheme($0) }
-                )
-            ) {
-                ForEach(AppColorTheme.allCases) {
-                    Text($0.description).tag($0)
-                }
-            }
-        } label: {
+    var appThemeIconButton: some View {
+        NavigationLink(destination: ThemeIconScreen()) {
             ListRowView(
-                leadingContent: .text("Тема приложения"),
-                trailingContent: .textWithChevron(defaults.appTheme.description)
+                leadingContent: .text("Тема и иконка"),
+                trailingContent: .chevron
             )
         }
+        .accessibilityIdentifier("appThemeAndIconButton")
     }
 
     var languagePicker: some View {
@@ -119,15 +107,6 @@ private extension MoreScreen {
             Button("Перейти") {
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
-        }
-    }
-
-    var appIconButton: some View {
-        NavigationLink(destination: AppIconScreen()) {
-            ListRowView(
-                leadingContent: .text("Иконка приложения"),
-                trailingContent: .chevron
-            )
         }
     }
 
