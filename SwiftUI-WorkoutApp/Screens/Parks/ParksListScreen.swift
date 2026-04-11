@@ -41,6 +41,7 @@ struct ParksListScreen: View {
             }
             .navigationTitle(mode.title)
             .navigationBarTitleDisplayMode(.inline)
+            .trackScreen(analyticsScreen)
     }
 }
 
@@ -87,6 +88,13 @@ extension ParksListScreen {
 }
 
 private extension ParksListScreen.Mode {
+    var analyticsScreen: AnalyticsEvent.AppScreen {
+        switch self {
+        case .usedBy: .parksListUsedBy
+        case .event: .parksListEvent
+        }
+    }
+
     var title: LocalizedStringKey {
         switch self {
         case .usedBy: "Где тренируется"
@@ -96,6 +104,10 @@ private extension ParksListScreen.Mode {
 }
 
 private extension ParksListScreen {
+    var analyticsScreen: AnalyticsEvent.AppScreen {
+        mode.analyticsScreen
+    }
+
     @ViewBuilder
     var contentView: some View {
         switch currentState {

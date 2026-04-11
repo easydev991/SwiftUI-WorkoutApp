@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком мероприятий
 struct EventsListScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var tabViewModel: TabViewModel
     @EnvironmentObject private var defaults: DefaultsService
@@ -61,6 +62,7 @@ struct EventsListScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task(id: selectedEventType) { await askForEvents() }
+        .trackScreen(.eventsList)
     }
 }
 
@@ -71,6 +73,9 @@ private extension EventsListScreen {
                 Text($0.description)
                     .accessibilityIdentifier($0.description)
             }
+        }
+        .onChange(of: selectedEventType) { newValue in
+            analytics.log(.userAction(action: .selectEventType(type: newValue.rawValue)))
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
@@ -84,6 +89,7 @@ private extension EventsListScreen {
                 mode: .events,
                 action: {
                     if canAddEvent {
+                        analytics.log(.userAction(action: .createEvent))
                         showEventCreationSheet.toggle()
                     } else {
                         goToMap()
@@ -131,6 +137,7 @@ private extension EventsListScreen {
     var rightBarButton: some View {
         if defaults.isAuthorized {
             Button {
+                analytics.log(.userAction(action: .createEvent))
                 if defaults.hasParks {
                     showEventCreationSheet.toggle()
                 } else {
@@ -187,6 +194,7 @@ private extension EventsListScreen {
                 pastEvents = list
             }
         } catch {
+            analytics.log(.appError(kind: .eventLoadFailed, error: error))
             fillPastEventsWithPreviouslySaved()
             SWAlert.shared.presentDefaultUIKit(error)
         }

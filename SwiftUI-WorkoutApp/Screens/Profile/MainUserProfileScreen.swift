@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран с профилем главного пользователя
 struct MainUserProfileScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var viewModel: ViewModel
@@ -29,6 +30,7 @@ struct MainUserProfileScreen: View {
             .navigationTitle("Профиль")
         }
         .task { await askForUserInfo() }
+        .trackScreen(.profileMainUser)
     }
 }
 
@@ -74,6 +76,7 @@ private extension MainUserProfileScreen {
 
     var searchUsersButton: some View {
         Button {
+            analytics.log(.userAction(action: .searchUsers))
             showSearchUsersScreen = true
         } label: {
             Icons.Regular.magnifyingglass.view
@@ -121,6 +124,7 @@ private extension MainUserProfileScreen {
                 titleVisibility: .visible
             ) {
                 Button("Выйти", role: .destructive) {
+                    analytics.log(.userAction(action: .logout))
                     defaults.triggerLogout()
                 }
             }

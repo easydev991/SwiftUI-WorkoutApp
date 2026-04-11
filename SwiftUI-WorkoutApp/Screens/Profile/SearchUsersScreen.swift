@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для поиска других пользователей
 struct SearchUsersScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -53,6 +54,7 @@ struct SearchUsersScreen: View {
         .onDisappear(perform: cancelTasks)
         .navigationTitle("Поиск пользователей")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.searchUsers)
     }
 }
 
@@ -105,6 +107,7 @@ private extension SearchUsersScreen {
     }
 
     func sendMessage(to userId: Int) {
+        analytics.log(.userAction(action: .sendMessage))
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
@@ -118,6 +121,7 @@ private extension SearchUsersScreen {
                 try await client.sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
+                analytics.log(.appError(kind: .sendMessageFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
@@ -132,6 +136,7 @@ private extension SearchUsersScreen {
     }
 
     func performSearch() {
+        analytics.log(.userAction(action: .searchUsers))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         searchTask = Task {
@@ -150,6 +155,7 @@ private extension SearchUsersScreen {
                     SWAlert.shared.presentDefaultUIKit(message: Strings.Alert.userNotFound)
                 }
             } catch {
+                analytics.log(.appError(kind: .searchUsersFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false

@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для изменения личных данных пользователя
 struct EditProfileScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -48,6 +49,7 @@ struct EditProfileScreen: View {
         .onDisappear { editUserTask?.cancel() }
         .navigationTitle("Изменить профиль")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.editProfile)
     }
 }
 
@@ -177,6 +179,7 @@ private extension EditProfileScreen {
                 didSelectItem: { selectCountry(name: $0) },
                 didTapContactUs: sendFeedback
             )
+            .trackScreen(.countryList, source: .editProfile)
         } label: {
             ListRowView(
                 leadingContent: .iconWithText(
@@ -199,6 +202,7 @@ private extension EditProfileScreen {
                 didSelectItem: { selectCity(name: $0) },
                 didTapContactUs: sendFeedback
             )
+            .trackScreen(.cityList, source: .editProfile)
         } label: {
             ListRowView(
                 leadingContent: .iconWithText(
@@ -238,22 +242,29 @@ private extension EditProfileScreen {
         }
     }
 
-    func selectCountry(name countryName: String) {
+    func selectCountry(name countryName: String, source: AnalyticsEvent.AppScreen = .editProfile) {
         let result = locations.selectCountry(name: countryName, city: userForm.city)
         userForm.country = result.newCountry
         userForm.city = result.newCity
         locations.cities = result.newCities
+        if let country = result.newCountry {
+            analytics.log(.userAction(action: .selectCountry(countryId: "\(country.id)", source: source)))
+        }
     }
 
     func selectCity(name cityName: String) {
         let result = locations.selectCity(name: cityName, country: userForm.country)
         userForm.city = result.newCity
+        if let city = result.newCity {
+            analytics.log(.userAction(action: .selectCity(cityId: "\(city.id)", source: .editProfile)))
+        }
         if let countryName = result.countryName {
-            selectCountry(name: countryName)
+            selectCountry(name: countryName, source: .editProfile)
         }
     }
 
     func saveChangesAction() {
+        analytics.log(.userAction(action: .saveProfile))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         editUserTask = Task {
@@ -273,6 +284,7 @@ private extension EditProfileScreen {
                 defaults.saveAuthData(.init(login: userForm.userName, password: password))
                 dismiss()
             } catch {
+                analytics.log(.appError(kind: .profileSaveFailed, error: error))
                 isLoading = false
                 SWAlert.shared.presentDefaultUIKit(error)
             }
@@ -280,6 +292,11 @@ private extension EditProfileScreen {
     }
 
     func sendFeedback(mode: ItemListScreen.Mode) {
+        let source = switch mode {
+        case .city: AnalyticsEvent.AppScreen.cityList
+        case .country: AnalyticsEvent.AppScreen.countryList
+        }
+        analytics.log(.userAction(action: .sendFeedback(source: source)))
         let (subject, body) = switch mode {
         case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
         case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)

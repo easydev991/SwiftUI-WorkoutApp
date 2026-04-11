@@ -335,11 +335,11 @@ upload_screenshots:
 
 ## build: Сборка проекта в терминале
 build:
-	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=18.6' build
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' build
 
 ## test: Запускает unit-тесты в терминале
 test:
-	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=18.6' test -testPlan SwiftUI-WorkoutApp
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' test -testPlan SwiftUI-WorkoutApp
 
 ## increment_build: Получить следующий номер сборки для TestFlight
 increment_build:

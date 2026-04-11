@@ -11,6 +11,7 @@ struct SwiftUI_WorkoutAppApp: App {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "SwiftUI_WorkoutAppApp"
     )
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var tabViewModel = TabViewModel()
     @StateObject private var defaults: DefaultsService
@@ -25,6 +26,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
+    private let analyticsService: AnalyticsService
     /// Нужно ли обновить диалоги/профиль при смене фазы приложения
     private var shouldUpdateDialogsAndProfile: Bool {
         lastScenePhase == .inactive || lastScenePhase == .background
@@ -32,15 +34,20 @@ struct SwiftUI_WorkoutAppApp: App {
 
     init() {
         let isUITest = Constants.isUITest
+        let analyticsService: AnalyticsService
         let authHelper: AuthHelperImp
         #if DEBUG
         authHelper = isUITest ? MockAuthHelper() : AuthHelperImp()
+        analyticsService = isUITest
+            ? AnalyticsService(providers: [NoopAnalyticsProvider()])
+            : AnalyticsService(providers: [FirebaseAnalyticsProvider()])
         if isUITest {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
             UIView.setAnimationsEnabled(false)
         }
         #else
         authHelper = AuthHelperImp()
+        analyticsService = AnalyticsService(providers: [FirebaseAnalyticsProvider()])
         #endif
         _defaults = .init(wrappedValue: .init(authHelper: authHelper))
         _parksManager = .init(
@@ -52,10 +59,17 @@ struct SwiftUI_WorkoutAppApp: App {
         _dialogsViewModel = .init(
             wrappedValue: .init(
                 isUITest: isUITest,
-                authHelper: authHelper
+                authHelper: authHelper,
+                analytics: analyticsService
             )
         )
-        _profileViewModel = .init(wrappedValue: .init(isUITest: isUITest))
+        _profileViewModel = .init(
+            wrappedValue: .init(
+                isUITest: isUITest,
+                analytics: analyticsService
+            )
+        )
+        self.analyticsService = analyticsService
         setupAppearance()
     }
 
@@ -77,6 +91,7 @@ struct SwiftUI_WorkoutAppApp: App {
             .networkStatus(network.isOnline)
             .preferredColorScheme(defaults.appTheme.colorScheme)
             .environment(\.userFlags, defaults.userFlags)
+            .environment(\.analyticsService, analyticsService)
             .task(id: defaults.isAuthorized) {
                 await dialogsViewModel.getDialogs(defaults: defaults)
             }
@@ -118,6 +133,7 @@ struct SwiftUI_WorkoutAppApp: App {
                     logger.info("Справочник стран успешно обновлен")
                 }
             } catch {
+                analyticsService.log(.appError(kind: .countriesUpdateFailed, error: error))
                 logger.error("Не смогли обновить список стран, ошибка: \(error.localizedDescription)")
             }
         }

@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком друзей
 struct FriendsListScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var currentState = CurrentState.initial
@@ -31,6 +32,7 @@ struct FriendsListScreen: View {
         .refreshable { await askForUsers(refresh: true) }
         .navigationTitle("Друзья")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.friendsList)
     }
 }
 
@@ -139,6 +141,7 @@ private extension FriendsListScreen {
     }
 
     func sendMessage(to userId: Int) {
+        analytics.log(.userAction(action: .sendMessage))
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
@@ -152,6 +155,7 @@ private extension FriendsListScreen {
                 try await client.sendMessage(messagingModel.message, to: userId)
                 endMessaging()
             } catch {
+                analytics.log(.appError(kind: .sendMessageFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false

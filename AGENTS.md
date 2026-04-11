@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SwiftUI WorkoutApp — iOS street workout app, Swift 6.2, iOS 16+, MVVM architecture, modular structure. Xcode project (`.xcodeproj`) without SPM; local Swift Packages under `SwiftUI-WorkoutApp/Libraries/`.
+SwiftUI WorkoutApp — iOS street workout app, Swift 6.2, iOS 16+, MVVM architecture, modular structure. Xcode project (`.xcodeproj`) with local Swift Packages under `SwiftUI-WorkoutApp/Libraries/` and external SPM dependencies (e.g. Firebase).
 
 ## Build / Format / Test Commands
 
@@ -19,7 +19,7 @@ Runs `swiftformat .` using `.swiftformat` config, then `markdownlint --fix`. A p
 ```sh
 make build
 xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp \
-  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=18.6' build
+  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ### Run all tests
@@ -27,7 +27,7 @@ xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp \
 ```sh
 make test
 xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp \
-  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=18.6' \
+  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' \
   test -testPlan SwiftUI-WorkoutApp
 ```
 

@@ -30,6 +30,7 @@ struct DialogsListScreen: View {
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
         }
+        .trackScreen(.dialogsList)
     }
 }
 

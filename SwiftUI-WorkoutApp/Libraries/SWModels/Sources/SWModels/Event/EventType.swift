@@ -1,7 +1,7 @@
 import Foundation
 
 /// Тип мероприятий (планируемые/прошедшие)
-public enum EventType: CaseIterable, Equatable, CustomStringConvertible, Sendable {
+public enum EventType: String, CaseIterable, Equatable, CustomStringConvertible, Sendable {
     case future
     case past
 

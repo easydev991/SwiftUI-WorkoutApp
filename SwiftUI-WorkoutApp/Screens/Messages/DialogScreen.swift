@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для отдельного диалога
 struct DialogScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var messages = [MessageResponse]()
@@ -49,6 +50,7 @@ struct DialogScreen: View {
         .navigationDestination(isPresented: $openAnotherUserProfile) {
             UserDetailsScreen(from: dialog)
         }
+        .trackScreen(.dialog)
     }
 }
 
@@ -173,6 +175,7 @@ private extension DialogScreen {
     }
 
     func sendMessage() {
+        analytics.log(.userAction(action: .sendMessage))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         isMessageBarFocused = false
@@ -190,6 +193,7 @@ private extension DialogScreen {
                 newMessage = ""
                 await askForMessages(refresh: true)
             } catch {
+                analytics.log(.appError(kind: .sendMessageFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
