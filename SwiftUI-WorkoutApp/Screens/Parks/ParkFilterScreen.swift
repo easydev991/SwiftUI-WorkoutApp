@@ -3,6 +3,7 @@ import SwiftUI
 import SWModels
 
 struct ParkFilterScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     /// Фильтр на родительском экране
     @Binding private var filter: ParkFilterModel
@@ -47,6 +48,7 @@ struct ParkFilterScreen: View {
                 .padding([.top, .horizontal])
             }
         }
+        .trackScreen(.parkFilter)
     }
 }
 
@@ -59,6 +61,7 @@ private extension ParkFilterScreen {
             } else {
                 localFilter.size.append(size)
             }
+            analytics.log(.userAction(action: .selectParkFilterSize(size: "\(size.rawValue)")))
         } label: {
             TextWithCheckmarkRowView(
                 text: size.description,
@@ -75,6 +78,7 @@ private extension ParkFilterScreen {
             } else {
                 localFilter.grade.append(grade)
             }
+            analytics.log(.userAction(action: .selectParkFilterType(type: "\(grade.rawValue)")))
         } label: {
             TextWithCheckmarkRowView(
                 text: grade.description,

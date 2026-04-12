@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для списка заблокированных пользователей
 struct BlackListScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -43,6 +44,7 @@ struct BlackListScreen: View {
         .refreshable { await askForUsers(refresh: true) }
         .navigationTitle("Черный список")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.blackList)
     }
 }
 
@@ -147,6 +149,7 @@ private extension BlackListScreen {
     }
 
     func unblock() {
+        analytics.log(.userAction(action: .unblockUser))
         guard let user = userToDelete else { return }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         guard case let .ready(blockedUsers) = currentState else { return }
@@ -168,6 +171,7 @@ private extension BlackListScreen {
                 let updatedList = blockedUsers.filter { $0.id != user.id }
                 currentState = .ready(updatedList)
             } catch {
+                analytics.log(.appError(kind: .unblockFailed, error: error))
                 currentState = .ready(blockedUsers)
                 SWAlert.shared.presentDefaultUIKit(error)
             }

@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран с детальной информацией о мероприятии
 struct EventDetailsScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -71,6 +72,7 @@ struct EventDetailsScreen: View {
             for: NavigationDestination.self,
             destination: makeDestinationView
         )
+        .trackScreen(.eventDetail)
     }
 }
 
@@ -111,6 +113,7 @@ private extension EventDetailsScreen {
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
+                analytics.log(.userAction(action: .deleteEvent))
                 isLoading = true
                 deleteEventTask = Task {
                     do {
@@ -124,6 +127,7 @@ private extension EventDetailsScreen {
                         try await client.delete(eventId: event.id)
                         onDelete(event.id)
                     } catch {
+                        analytics.log(.appError(kind: .eventDeleteFailed, error: error))
                         SWAlert.shared.presentDefaultUIKit(error)
                     }
                     isLoading = false
@@ -269,6 +273,7 @@ private extension EventDetailsScreen {
                         event.participants.removeAll(where: { $0.id == defaults.mainUserInfo?.id })
                     }
                 } catch {
+                    analytics.log(.appError(kind: .eventSaveFailed, error: error))
                     SWAlert.shared.presentDefaultUIKit(error)
                     event.trainHere = oldValue
                 }
@@ -384,6 +389,7 @@ private extension EventDetailsScreen {
             #endif
             event = try await client.getEvent(by: event.id)
         } catch {
+            analytics.log(.appError(kind: .eventLoadFailed, error: error))
             SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
@@ -433,6 +439,7 @@ private extension EventDetailsScreen {
     }
 
     func reportPhoto() {
+        analytics.log(.userAction(action: .reportPhoto(source: .eventDetail)))
         let complaint = Complaint.eventPhoto(eventTitle: event.formattedTitle)
         FeedbackSender.sendFeedback(
             subject: complaint.subject,
@@ -442,6 +449,7 @@ private extension EventDetailsScreen {
     }
 
     func reportComment(_ comment: CommentResponse) {
+        analytics.log(.userAction(action: .reportComment(source: .eventDetail)))
         let complaint = Complaint.eventComment(
             eventTitle: event.formattedTitle,
             author: comment.user?.userName ?? "неизвестен",

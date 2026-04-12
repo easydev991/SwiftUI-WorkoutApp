@@ -14,3 +14,4 @@ buildServer.json
 
 # Fastlane
 fastlane/builds/
+SwiftUI-WorkoutApp/GoogleService-Info.plist

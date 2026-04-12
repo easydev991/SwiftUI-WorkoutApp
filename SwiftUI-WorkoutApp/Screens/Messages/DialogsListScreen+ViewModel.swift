@@ -8,10 +8,16 @@ extension DialogsListScreen {
         @Published private(set) var currentState = CurrentState.initial
         private let isUITest: Bool
         private let authHelper: AuthHelper
+        private let analytics: AnalyticsService
 
-        init(isUITest: Bool = false, authHelper: AuthHelper) {
+        init(
+            isUITest: Bool = false,
+            authHelper: AuthHelper,
+            analytics: AnalyticsService = AnalyticsService(providers: [NoopAnalyticsProvider()])
+        ) {
             self.isUITest = isUITest
             self.authHelper = authHelper
+            self.analytics = analytics
         }
 
         func getDialogs(refresh: Bool = false, defaults: DefaultsService) async {
@@ -37,8 +43,10 @@ extension DialogsListScreen {
                 currentState = .ready(dialogs)
                 updateUnreadMessagesCount(with: defaults)
             } catch ClientError.noConnection {
+                analytics.log(.appError(kind: .dialogsLoadFailed, error: ClientError.noConnection))
                 currentState = .error(.notConnected)
             } catch {
+                analytics.log(.appError(kind: .dialogsLoadFailed, error: error))
                 currentState = .error(.common(message: error.localizedDescription))
             }
         }
@@ -55,7 +63,12 @@ extension DialogsListScreen {
             #else
             let client: MessagesClient = SWClient(with: authHelper)
             #endif
-            try await client.deleteDialog(dialogId)
+            do {
+                try await client.deleteDialog(dialogId)
+            } catch {
+                analytics.log(.appError(kind: .dialogDeleteFailed, error: error))
+                throw error
+            }
             currentState = .ready(updatedDialogs)
             updateUnreadMessagesCount(with: defaults)
         }

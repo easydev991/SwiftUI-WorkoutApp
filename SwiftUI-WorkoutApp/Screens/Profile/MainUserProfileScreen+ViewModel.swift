@@ -12,9 +12,14 @@ extension MainUserProfileScreen {
             category: "MainUserProfileScreen.ViewModel"
         )
         private let isUITest: Bool
+        private let analytics: AnalyticsService
 
-        init(isUITest: Bool = false) {
+        init(
+            isUITest: Bool = false,
+            analytics: AnalyticsService = AnalyticsService(providers: [NoopAnalyticsProvider()])
+        ) {
             self.isUITest = isUITest
+            self.analytics = analytics
         }
 
         func getUserProfile(
@@ -56,6 +61,7 @@ extension MainUserProfileScreen {
                     logger.info("Загрузка профиля отменена (новый запрос или закрытие экрана)")
                     return
                 }
+                analytics.log(.appError(kind: .profileLoadFailed, error: error))
                 // При других ошибках сбрасываем состояние на основе наличия данных
                 if defaults.mainUserInfo != nil {
                     currentState = .ready

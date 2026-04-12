@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком входящих заявок и друзей основного пользователя
 struct MainUserFriendsListScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -30,6 +31,7 @@ struct MainUserFriendsListScreen: View {
         .refreshable { await askForUsers(refresh: true) }
         .navigationTitle("Друзья")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.mainUserFriendsList)
     }
 }
 
@@ -153,11 +155,13 @@ private extension MainUserFriendsListScreen {
         do {
             try await getFriendsAndRequests()
         } catch {
+            analytics.log(.appError(kind: .friendRequestFailed, error: error))
             currentState = .error(.common(message: error.localizedDescription))
         }
     }
 
     func respondToFriendRequest(from userId: Int, accept: Bool) {
+        analytics.log(.userAction(action: accept ? .respondFriendRequestAccept : .respondFriendRequestDecline))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         guard case let .ready(requests, friends) = currentState else { return }
         currentState = .friendRequestAction(friendRequests: requests, friends: friends)
@@ -174,6 +178,7 @@ private extension MainUserFriendsListScreen {
                 defaults.setUserNeedUpdate(true)
                 try await getFriendsAndRequests()
             } catch {
+                analytics.log(.appError(kind: .friendRequestFailed, error: error))
                 currentState = .ready(friendRequests: requests, friends: friends)
                 SWAlert.shared.presentDefaultUIKit(error)
             }

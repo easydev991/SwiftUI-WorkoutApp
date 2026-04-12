@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран с настройками дневника
 struct JournalSettingsScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var journal: JournalResponse
@@ -37,6 +38,7 @@ struct JournalSettingsScreen: View {
         }
         .loadingOverlay(if: isLoading)
         .interactiveDismissDisabled(isLoading)
+        .trackScreen(.journalSettings)
     }
 }
 
@@ -83,6 +85,7 @@ private extension JournalSettingsScreen {
     }
 
     func saveChanges() {
+        analytics.log(.userAction(action: .editJournal))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         Task {
@@ -103,6 +106,7 @@ private extension JournalSettingsScreen {
                 )
                 updateOnSuccess(journal)
             } catch {
+                analytics.log(.appError(kind: .journalSaveFailed, error: error))
                 isLoading = false
                 SWAlert.shared.presentDefaultUIKit(error)
             }

@@ -5,6 +5,7 @@ import SWUtils
 
 /// Экран с настройками и общей информацией о приложении
 struct MoreScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.locale) private var locale
     @State private var showLanguageAlert = false
@@ -59,6 +60,7 @@ struct MoreScreen: View {
             .navigationTitle("Ещё")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .trackScreen(.more)
     }
 }
 
@@ -94,6 +96,7 @@ private extension MoreScreen {
 
     var languagePicker: some View {
         Button {
+            analytics.log(.userAction(action: .selectLanguage))
             showLanguageAlert.toggle()
         } label: {
             let trailingText = AppLanguage.makeCurrentValue(locale.identifier).title
@@ -105,6 +108,7 @@ private extension MoreScreen {
         .alert("Язык можно поменять в настройках телефона", isPresented: $showLanguageAlert) {
             Button(.cancel, role: .cancel) {}
             Button("Перейти") {
+                analytics.log(.userAction(action: .openLanguageSettings))
                 URLOpener.open(URL(string: UIApplication.openSettingsURLString))
             }
         }
@@ -112,6 +116,7 @@ private extension MoreScreen {
 
     var feedbackButton: some View {
         Button {
+            analytics.log(.userAction(action: .sendFeedback(source: .more)))
             FeedbackSender.sendFeedback(
                 subject: CommonFeedback.subject,
                 messageBody: CommonFeedback.body,

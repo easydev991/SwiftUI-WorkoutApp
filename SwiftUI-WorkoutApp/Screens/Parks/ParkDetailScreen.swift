@@ -8,6 +8,7 @@ import SWUtils
 /// Экран с детальной информацией о площадке
 struct ParkDetailScreen: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ParkDetailScreen")
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -75,6 +76,7 @@ struct ParkDetailScreen: View {
             for: NavigationDestination.self,
             destination: makeDestinationView
         )
+        .trackScreen(.parkDetail)
     }
 }
 
@@ -116,6 +118,7 @@ private extension ParkDetailScreen {
             titleVisibility: .visible
         ) {
             Button("Удалить", role: .destructive) {
+                analytics.log(.userAction(action: .deletePark))
                 isLoading = true
                 deleteParkTask = Task {
                     do {
@@ -130,6 +133,7 @@ private extension ParkDetailScreen {
                         defaults.setUserNeedUpdate(true)
                         onDelete(park.id)
                     } catch {
+                        analytics.log(.appError(kind: .parkDeleteFailed, error: error))
                         process(error)
                     }
                     isLoading = false
@@ -262,6 +266,7 @@ private extension ParkDetailScreen {
                     }
                     defaults.setUserNeedUpdate(true)
                 } catch {
+                    analytics.log(.appError(kind: .parkSaveFailed, error: error))
                     process(error)
                     park.trainHere = oldValue
                 }
@@ -314,6 +319,7 @@ private extension ParkDetailScreen {
             titleVisibility: .visible
         ) {
             Button("Написать письмо") {
+                analytics.log(.userAction(action: .sendFeedback(source: .parkDetail)))
                 FeedbackSender.sendFeedback(
                     subject: Feedback.makeSubject(for: park.shortTitle),
                     messageBody: Feedback.body,
@@ -368,6 +374,7 @@ private extension ParkDetailScreen {
                 onEdit(park)
             }
         } catch {
+            analytics.log(.appError(kind: .parkLoadFailed, error: error))
             process(error)
         }
         isLoading = false
@@ -418,6 +425,7 @@ private extension ParkDetailScreen {
     }
 
     func reportPhoto() {
+        analytics.log(.userAction(action: .reportPhoto(source: .parkDetail)))
         let complaint = Complaint.parkPhoto(parkTitle: park.shortTitle)
         FeedbackSender.sendFeedback(
             subject: complaint.subject,
@@ -427,6 +435,7 @@ private extension ParkDetailScreen {
     }
 
     func reportComment(_ comment: CommentResponse) {
+        analytics.log(.userAction(action: .reportComment(source: .parkDetail)))
         let complaint = Complaint.parkComment(
             parkTitle: park.shortTitle,
             author: comment.user?.userName ?? "неизвестен",

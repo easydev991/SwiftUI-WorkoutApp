@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран с формой для создания/изменения площадки
 struct ParkFormScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @Environment(\.updateGeocodingCache) private var updateGeocodingCache
@@ -110,6 +111,7 @@ private extension ParkFormScreen {
         .navigationTitle(mode.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled(blockDismiss)
+        .trackScreen(.parkForm)
     }
 
     var backButton: some View {
@@ -190,6 +192,7 @@ private extension ParkFormScreen {
 
     var saveButton: some View {
         Button("Сохранить") {
+            analytics.log(.userAction(action: .savePark))
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             isFocused = false
             isLoading = true
@@ -209,6 +212,7 @@ private extension ParkFormScreen {
                         refreshClbk(newPark)
                     }
                 } catch {
+                    analytics.log(.appError(kind: .parkSaveFailed, error: error))
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
                 isLoading = false

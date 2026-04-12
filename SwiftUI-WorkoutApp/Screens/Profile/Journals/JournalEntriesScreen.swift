@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран со списком записей в дневнике
 struct JournalEntriesScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var currentState = CurrentState.initial
@@ -60,6 +61,7 @@ struct JournalEntriesScreen: View {
         .onDisappear(perform: cancelTasks)
         .navigationTitle(currentJournal.title)
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.journalEntries)
     }
 }
 
@@ -112,7 +114,10 @@ private extension JournalEntriesScreen {
                     JournalCell(
                         model: .init(journalEntryResponse: item),
                         mode: .entry(
-                            editClbk: { editEntry = item },
+                            editClbk: {
+                                analytics.log(.userAction(action: .editJournalEntry))
+                                editEntry = item
+                            },
                             reportClbk: { reportEntry(item) },
                             canDelete: checkIfCanDelete(entry: item),
                             deleteClbk: {
@@ -141,7 +146,10 @@ private extension JournalEntriesScreen {
             mainUserFriendsIds: defaults.friendsIdsList
         )
         if canCreateEntry {
-            Button { showCreateEntrySheet = true } label: {
+            Button {
+                analytics.log(.userAction(action: .createJournalEntry))
+                showCreateEntrySheet = true
+            } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
@@ -215,12 +223,14 @@ private extension JournalEntriesScreen {
             )
             currentState = .ready(entries)
         } catch {
+            analytics.log(.appError(kind: .journalLoadFailed, error: error))
             currentState = .error(.common(message: error.localizedDescription))
         }
     }
 
     var deleteEntryButton: some View {
         Button(role: .destructive) {
+            analytics.log(.userAction(action: .deleteJournalEntry))
             guard let entryId = entryIdToDelete else { return }
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             guard case let .ready(entries) = currentState else { return }
@@ -242,6 +252,7 @@ private extension JournalEntriesScreen {
                     let updatedList = entries.filter { $0.id != entryId }
                     currentState = .ready(updatedList)
                 } catch {
+                    analytics.log(.appError(kind: .journalDeleteFailed, error: error))
                     currentState = .ready(entries)
                     SWAlert.shared.presentDefaultUIKit(error)
                 }

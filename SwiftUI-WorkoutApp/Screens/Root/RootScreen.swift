@@ -15,6 +15,7 @@ struct RootScreen: View {
                     .badge(makeBadgeCount(for: tab))
             }
         }
+        .trackScreen(.root)
     }
 
     private func makeBadgeCount(for tab: TabViewModel.Tab) -> Int {

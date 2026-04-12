@@ -7,6 +7,7 @@ import SWUtils
 /// Экран с детальной информацией о пользователе
 @MainActor
 struct UserDetailsScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var dialogsViewModel: DialogsListScreen.ViewModel
@@ -54,6 +55,7 @@ struct UserDetailsScreen: View {
         .task { await askForUserInfo() }
         .navigationTitle("Профиль")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.profileOtherUser)
     }
 }
 
@@ -108,6 +110,7 @@ private extension UserDetailsScreen {
     }
 
     func performFriendAction() {
+        analytics.log(.userAction(action: socialActions.analyticsFriendAction))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         friendActionTask = Task {
@@ -129,6 +132,7 @@ private extension UserDetailsScreen {
                 }
                 defaults.setUserNeedUpdate(true)
             } catch {
+                analytics.log(.appError(kind: .friendRequestFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
@@ -136,6 +140,7 @@ private extension UserDetailsScreen {
     }
 
     func performBlacklistAction() {
+        analytics.log(.userAction(action: socialActions.analyticsBlacklistAction))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         isLoading = true
         blacklistUserTask = Task {
@@ -162,6 +167,7 @@ private extension UserDetailsScreen {
                     socialActions.blacklist = .add
                 }
             } catch {
+                analytics.log(.appError(kind: .unblockFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             isLoading = false
@@ -210,6 +216,7 @@ private extension UserDetailsScreen {
     }
 
     func sendMessage() {
+        analytics.log(.userAction(action: .sendMessage))
         messagingModel.isLoading = true
         sendMessageTask = Task {
             do {
@@ -225,6 +232,7 @@ private extension UserDetailsScreen {
                 messagingModel.recipient = nil
                 await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
             } catch {
+                analytics.log(.appError(kind: .sendMessageFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
             }
             messagingModel.isLoading = false
@@ -241,6 +249,15 @@ private extension UserDetailsScreen {
         var friend = FriendAction.add
         var isFriendRequestSent = false
         var blacklist = BlacklistOption.add
+
+        var analyticsFriendAction: AnalyticsEvent.UserAction {
+            friend == .add ? .addFriend : .removeFriend
+        }
+
+        var analyticsBlacklistAction: AnalyticsEvent.UserAction {
+            blacklist == .remove ? .unblockUser : .blockUser
+        }
+
         var isBlacklisted: Bool {
             blacklist == .remove
         }

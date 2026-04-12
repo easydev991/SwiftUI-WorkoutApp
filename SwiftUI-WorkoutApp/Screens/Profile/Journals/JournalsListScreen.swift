@@ -6,6 +6,7 @@ import SWUtils
 
 /// Список дневников
 struct JournalsListScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @State private var currentState = CurrentState.initial
@@ -52,6 +53,7 @@ struct JournalsListScreen: View {
             }
         }
         .onDisappear(perform: cancelTasks)
+        .trackScreen(.journalsList)
     }
 }
 
@@ -159,6 +161,7 @@ private extension JournalsListScreen {
 
     var deleteJournalButton: some View {
         Button(role: .destructive) {
+            analytics.log(.userAction(action: .deleteJournal))
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             guard let journalId = journalIdToDelete else { return }
             guard case let .ready(journals) = currentState else { return }
@@ -180,6 +183,7 @@ private extension JournalsListScreen {
                     let updatedList = journals.filter { $0.id != journalId }
                     currentState = .ready(updatedList)
                 } catch {
+                    analytics.log(.appError(kind: .journalDeleteFailed, error: error))
                     currentState = .ready(journals)
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
@@ -194,6 +198,7 @@ private extension JournalsListScreen {
     }
 
     func setupJournalToEdit(_ journal: JournalResponse) {
+        analytics.log(.userAction(action: .editJournal))
         journalToEdit = journal
     }
 
@@ -226,11 +231,13 @@ private extension JournalsListScreen {
             let journals = try await client.getJournals(for: userId)
             currentState = .ready(journals)
         } catch {
+            analytics.log(.appError(kind: .journalLoadFailed, error: error))
             currentState = .error(.common(message: error.localizedDescription))
         }
     }
 
     func saveNewJournal() {
+        analytics.log(.userAction(action: .createJournal))
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         guard case let .ready(journals) = currentState else { return }
         currentState = .saveJournalAction(journals)
@@ -252,6 +259,7 @@ private extension JournalsListScreen {
                 defaults.setUserNeedUpdate(true)
                 await askForJournals(refresh: true)
             } catch {
+                analytics.log(.appError(kind: .journalSaveFailed, error: error))
                 currentState = .ready(journals)
                 SWAlert.shared.presentDefaultUIKit(error)
             }

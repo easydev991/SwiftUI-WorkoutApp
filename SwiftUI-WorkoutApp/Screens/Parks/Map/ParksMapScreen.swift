@@ -8,6 +8,7 @@ import SWUtils
 
 /// Экран с картой и площадками
 struct ParksMapScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
@@ -117,6 +118,7 @@ private extension ParksMapScreen {
 
     var filterButton: some View {
         Button {
+            analytics.log(.userAction(action: .openParksFilter))
             sheetItem = .filters
         } label: {
             Icons.Regular.filter.view
@@ -126,6 +128,7 @@ private extension ParksMapScreen {
 
     var refreshButton: some View {
         Button {
+            analytics.log(.userAction(action: .refreshParks))
             Task {
                 isLoading = true
                 await askForParks(refresh: true)
@@ -155,8 +158,14 @@ private extension ParksMapScreen {
             SWTextFieldSearchButton(
                 .init(viewModel.cityFilterButtonTitle),
                 showClearButton: viewModel.canClearCityFilter,
-                mainAction: { sheetItem = .searchCity(cachedCities) },
-                clearAction: { viewModel.updateSelectedCity(nil) }
+                mainAction: {
+                    analytics.log(.userAction(action: .openCitySearch))
+                    sheetItem = .searchCity(cachedCities)
+                },
+                clearAction: {
+                    analytics.log(.userAction(action: .clearCityFilter))
+                    viewModel.updateSelectedCity(nil)
+                }
             )
             .padding(.horizontal)
         }
@@ -176,6 +185,7 @@ private extension ParksMapScreen {
                 )
             }
             .listStyle(.plain)
+            .trackScreen(.parksMapList)
         case .map:
             ClusteringMapView(
                 region: viewModel.region,
@@ -187,6 +197,7 @@ private extension ParksMapScreen {
                     if let park = parksCache.parks.first(
                         where: { $0.annotation.title == annotation.title }
                     ) {
+                        analytics.log(.userAction(action: .selectParkAnnotation(parkId: park.id)))
                         sheetItem = .parkDetails(park)
                     }
                 }
@@ -197,6 +208,7 @@ private extension ParksMapScreen {
                     isHidden: viewModel.locationErrorMessage.isEmpty
                 )
             }
+            .trackScreen(.parksMap)
         }
     }
 
@@ -204,8 +216,14 @@ private extension ParksMapScreen {
     var noParksFoundView: some View {
         if let storedCities = cachedCities {
             NoParksFoundView(
-                openCities: { sheetItem = .searchCity(storedCities) },
-                openFilter: { sheetItem = .filters },
+                openCities: {
+                    analytics.log(.userAction(action: .openCitySearchEmptyState))
+                    sheetItem = .searchCity(storedCities)
+                },
+                openFilter: {
+                    analytics.log(.userAction(action: .openFilterEmptyState))
+                    sheetItem = .filters
+                },
                 model: .init(
                     isFilterEdited: defaults.parksFilter.isEdited,
                     isFilteredParksEmpty: parksCache.parks.isEmpty,
@@ -254,6 +272,7 @@ private extension ParksMapScreen {
         do {
             try await parksManager.makeDefaultList()
         } catch {
+            analytics.log(.appError(kind: .parkLoadFailed, error: error))
             SWAlert.shared.presentDefaultUIKit(error)
         }
         // Если нужно автоматическое обновление - загружаем с сервера
@@ -267,6 +286,7 @@ private extension ParksMapScreen {
         do {
             try parksManager.deletePark(with: id)
         } catch {
+            analytics.log(.appError(kind: .parkDeleteFailed, error: error))
             SWAlert.shared.presentDefaultUIKit(error)
         }
     }
@@ -275,6 +295,7 @@ private extension ParksMapScreen {
         do {
             try parksManager.manuallyUpdatePark(park)
         } catch {
+            analytics.log(.appError(kind: .parkSaveFailed, error: error))
             SWAlert.shared.presentDefaultUIKit(error)
         }
     }
@@ -285,6 +306,7 @@ private extension ParksMapScreen {
         } catch ClientError.noConnection {
             SWAlert.shared.presentNoConnection(false)
         } catch {
+            analytics.log(.appError(kind: .parkLoadFailed, error: error))
             SWAlert.shared.presentDefaultUIKit(error)
         }
         isLoading = false
@@ -293,7 +315,10 @@ private extension ParksMapScreen {
     @ViewBuilder
     var rightBarButton: some View {
         if defaults.isAuthorized {
-            Button(action: viewModel.requestLocationForNewPark) {
+            Button {
+                analytics.log(.userAction(action: .createPark))
+                viewModel.requestLocationForNewPark()
+            } label: {
                 Icons.Regular.plus.view
                     .symbolVariant(.circle)
             }
@@ -321,9 +346,13 @@ private extension ParksMapScreen {
                     didSelectItem: { cityName in
                         let newCity = storedCities.first(where: { $0.name == cityName })
                         viewModel.updateSelectedCity(newCity)
+                        if let city = newCity {
+                            analytics.log(.userAction(action: .selectParkFilterCity(cityId: "\(city.id)")))
+                        }
                     },
                     didTapContactUs: sendFeedback
                 )
+                .trackScreen(.cityList, source: .parksMap)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         CloseButton(mode: .xmark) { sheetItem = nil }
@@ -342,6 +371,7 @@ private extension ParksMapScreen {
     }
 
     func sendFeedback(mode: ItemListScreen.Mode) {
+        analytics.log(.userAction(action: .sendFeedback(source: .parksMap)))
         let (subject, body) = switch mode {
         case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
         case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)

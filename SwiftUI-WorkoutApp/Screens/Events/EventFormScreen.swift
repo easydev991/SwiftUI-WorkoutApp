@@ -6,6 +6,7 @@ import SWUtils
 
 /// Экран для создания/изменения мероприятия
 struct EventFormScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
@@ -112,6 +113,7 @@ private extension EventFormScreen {
                 Text(.alertCloseEditScreenMessage)
             }
         )
+        .trackScreen(.eventForm)
     }
 
     var eventNameSection: some View {
@@ -203,6 +205,7 @@ private extension EventFormScreen {
 
     var saveButton: some View {
         Button("Сохранить") {
+            analytics.log(.userAction(action: .saveEvent))
             guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
             focus = nil
             isLoading = true
@@ -222,6 +225,7 @@ private extension EventFormScreen {
                         dismiss()
                     }
                 } catch {
+                    analytics.log(.appError(kind: .eventSaveFailed, error: error))
                     SWAlert.shared.presentDefaultUIKit(error)
                 }
                 isLoading = false

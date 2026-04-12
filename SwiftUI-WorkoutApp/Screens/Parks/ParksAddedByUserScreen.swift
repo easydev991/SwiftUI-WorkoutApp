@@ -45,6 +45,7 @@ struct ParksAddedByUserScreen: View {
         .background(Color.swBackground)
         .navigationTitle("Добавленные")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.parksAddedByUser)
     }
 }
 

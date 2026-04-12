@@ -7,6 +7,7 @@ import SWUtils
 
 /// Экран для авторизации / восстановления пароля
 struct LoginScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @State private var isLoading = false
@@ -36,6 +37,7 @@ struct LoginScreen: View {
         .background(Color.swBackground)
         .onChange(of: credentials) { _ in clearErrorMessages() }
         .onDisappear(perform: cancelTasks)
+        .trackScreen(.login)
     }
 }
 
@@ -94,6 +96,7 @@ private extension LoginScreen {
     }
 
     func loginAction() {
+        analytics.log(.userAction(action: .login))
         guard !isLoading else { return }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         focus = nil
@@ -116,8 +119,10 @@ private extension LoginScreen {
                 try defaults.saveBlacklist(result.blacklist)
                 try defaults.saveUserInfo(result.user)
             } catch ClientError.noConnection {
+                analytics.log(.appError(kind: .loginFailed, error: ClientError.noConnection))
                 SWAlert.shared.presentNoConnection(true)
             } catch {
+                analytics.log(.appError(kind: .loginFailed, error: error))
                 loginErrorMessage = error.localizedDescription
             }
             isLoading = false
@@ -125,6 +130,7 @@ private extension LoginScreen {
     }
 
     func forgotPasswordAction() {
+        analytics.log(.userAction(action: .resetPassword))
         guard credentials.canRestorePassword else {
             SWAlert.shared.presentDefaultUIKit(
                 message: Strings.Alert.forgotPassword,
@@ -152,8 +158,10 @@ private extension LoginScreen {
                     )
                 }
             } catch ClientError.noConnection {
+                analytics.log(.appError(kind: .passwordResetFailed, error: ClientError.noConnection))
                 SWAlert.shared.presentNoConnection(true)
             } catch {
+                analytics.log(.appError(kind: .passwordResetFailed, error: error))
                 resetErrorMessage = error.localizedDescription
             }
             isLoading = false

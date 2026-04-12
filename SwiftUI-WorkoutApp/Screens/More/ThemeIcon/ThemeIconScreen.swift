@@ -3,6 +3,7 @@ import SwiftUI
 import SWModels
 
 struct ThemeIconScreen: View {
+    @Environment(\.analyticsService) private var analytics
     @EnvironmentObject private var defaults: DefaultsService
     @StateObject private var viewModel = ViewModel()
 
@@ -21,6 +22,7 @@ struct ThemeIconScreen: View {
         .background(Color.swBackground)
         .navigationTitle("Тема и иконка")
         .navigationBarTitleDisplayMode(.inline)
+        .trackScreen(.themeIcon)
     }
 
     private var themePicker: some View {
@@ -29,7 +31,12 @@ struct ThemeIconScreen: View {
                 "",
                 selection: .init(
                     get: { defaults.appTheme },
-                    set: { defaults.setAppTheme($0) }
+                    set: {
+                        analytics.log(
+                            .userAction(action: .selectTheme(theme: $0.description))
+                        )
+                        defaults.setAppTheme($0)
+                    }
                 )
             ) {
                 ForEach(AppColorTheme.allCases) {
@@ -59,6 +66,7 @@ struct ThemeIconScreen: View {
         ) {
             ForEach(IconVariant.allCases, id: \.self) { icon in
                 Button {
+                    analytics.log(.userAction(action: .selectAppIcon(iconName: icon.rawValue)))
                     Task { await viewModel.setIcon(icon) }
                 } label: {
                     makeView(for: icon)
