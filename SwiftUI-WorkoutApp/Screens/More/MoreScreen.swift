@@ -14,13 +14,7 @@ struct MoreScreen: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    SectionView(header: "Настройки", mode: .regular) {
-                        VStack(spacing: 0) {
-                            appThemeIconButton
-                            languagePicker
-                        }
-                    }
-                    dividerView
+                    settingsSectionView
                     SectionView(header: "О приложении", mode: .regular) {
                         VStack(spacing: 4) {
                             feedbackButton
@@ -77,6 +71,19 @@ private extension MoreScreen {
 }
 
 private extension MoreScreen {
+    @ViewBuilder
+    var settingsSectionView: some View {
+        if !ProcessInfo.processInfo.isiOSAppOnMac {
+            SectionView(header: "Настройки", mode: .regular) {
+                VStack(spacing: 0) {
+                    appThemeIconButton
+                    languagePicker
+                }
+            }
+            dividerView
+        }
+    }
+
     var dividerView: some View {
         SWDivider()
             .padding(.top, 4)
