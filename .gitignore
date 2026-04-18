@@ -15,3 +15,4 @@ buildServer.json
 # Fastlane
 fastlane/builds/
 SwiftUI-WorkoutApp/GoogleService-Info.plist
+.xcodebuildmcp/config.yaml

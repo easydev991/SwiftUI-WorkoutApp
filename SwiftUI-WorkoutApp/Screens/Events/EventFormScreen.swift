@@ -10,6 +10,7 @@ struct EventFormScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var reviewService: ReviewService
     @State private var eventForm: EventForm
     @State private var newImages = [UIImage]()
     @State private var showConfirmationAlert = false
@@ -223,6 +224,7 @@ private extension EventFormScreen {
                     if savedEvent.id != .zero {
                         refreshClbk?()
                         dismiss()
+                        reviewService.requestReviewIfAppropriate()
                     }
                 } catch {
                     analytics.log(.appError(kind: .eventSaveFailed, error: error))
@@ -288,5 +290,6 @@ private extension EventFormScreen {
 #Preview {
     EventFormScreen(mode: .regularCreate, refreshClbk: {})
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
 }
 #endif

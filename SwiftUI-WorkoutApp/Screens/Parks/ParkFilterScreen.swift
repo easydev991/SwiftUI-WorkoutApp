@@ -5,6 +5,7 @@ import SWModels
 struct ParkFilterScreen: View {
     @Environment(\.analyticsService) private var analytics
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var reviewService: ReviewService
     /// Фильтр на родительском экране
     @Binding private var filter: ParkFilterModel
     /// Локальный фильтр
@@ -101,6 +102,7 @@ private extension ParkFilterScreen {
         return Button("Применить") {
             filter = localFilter
             dismiss()
+            reviewService.didApplyFilter()
         }
         .buttonStyle(SWButtonStyle(mode: .filled, size: .large))
         .disabled(!canApply)
@@ -113,11 +115,13 @@ private extension ParkFilterScreen {
 #Preview("Изначально пустой") {
     @Previewable @State var filter = ParkFilterModel()
     ParkFilterScreen(filter: $filter)
+        .environmentObject(ReviewService())
 }
 
 @available(iOS 17, *)
 #Preview("Изначально настроен") {
     @Previewable @State var filter = ParkFilterModel(size: [.large], grade: [.modern])
     ParkFilterScreen(filter: $filter)
+        .environmentObject(ReviewService())
 }
 #endif

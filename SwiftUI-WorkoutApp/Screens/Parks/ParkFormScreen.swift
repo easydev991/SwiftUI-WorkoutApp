@@ -12,6 +12,7 @@ struct ParkFormScreen: View {
     @Environment(\.updateGeocodingCache) private var updateGeocodingCache
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var parksManager: ParksManager
+    @EnvironmentObject private var reviewService: ReviewService
     @State private var showConfirmationAlert = false
     @State private var isLoading = false
     @State private var parkForm: ParkForm
@@ -210,6 +211,7 @@ private extension ParkFormScreen {
                     if newPark.id != 0 {
                         dismiss()
                         refreshClbk(newPark)
+                        reviewService.requestReviewIfAppropriate()
                     }
                 } catch {
                     analytics.log(.appError(kind: .parkSaveFailed, error: error))
@@ -267,11 +269,13 @@ private extension ParkFormScreen {
     ParkFormScreen(.createNew(.empty), refreshClbk: { _ in })
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
         .environmentObject(ParksManager(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
 }
 
 #Preview("Редактирование") {
     ParkFormScreen(.editExisting(.preview), refreshClbk: { _ in })
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
         .environmentObject(ParksManager(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
 }
 #endif

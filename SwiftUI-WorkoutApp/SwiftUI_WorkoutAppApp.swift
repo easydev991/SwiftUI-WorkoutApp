@@ -19,6 +19,7 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var parksManager: ParksManager
     @StateObject private var dialogsViewModel: DialogsListScreen.ViewModel
     @StateObject private var profileViewModel: MainUserProfileScreen.ViewModel
+    @StateObject private var reviewService = ReviewService()
     /// Используется для обновления диалогов
     @State private var lastScenePhase: ScenePhase?
     @State private var dialogsUpdateTask: Task<Void, Never>?
@@ -88,6 +89,7 @@ struct SwiftUI_WorkoutAppApp: App {
             .environmentObject(parksManager)
             .environmentObject(dialogsViewModel)
             .environmentObject(profileViewModel)
+            .environmentObject(reviewService)
             .networkStatus(network.isOnline)
             .preferredColorScheme(defaults.appTheme.colorScheme)
             .environment(\.userFlags, defaults.userFlags)
