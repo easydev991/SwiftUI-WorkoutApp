@@ -1,16 +1,32 @@
 import Foundation
+import UIKit.UIDevice
 
 /// Модель для общей обратной связи
 public enum CommonFeedback {
-    public static let subject = "\(ProcessInfo.processInfo.processName): Обратная связь"
+    private static var processInfo: ProcessInfo {
+        ProcessInfo.processInfo
+    }
+
+    public static let subject = "\(processInfo.processName): Обратная связь"
 
     public static let body = """
-        \(CommonFeedback.sysVersion)
-        \(CommonFeedback.appVersion)
-        \(CommonFeedback.question)
-        \n
+    \(CommonFeedback.sysVersion)
+    \(CommonFeedback.appVersion)
+    ---
+    \(CommonFeedback.question)
+    \n
     """
     private static let question = String(localized: .feedbackCommonQuestion)
-    static let sysVersion = "iOS: \(ProcessInfo.processInfo.operatingSystemVersionString)"
-    static let appVersion = "App version: \(Constants.appVersion)"
+    static var sysVersion: String {
+        var platformName: String {
+            let idiom = switch UIDevice.current.userInterfaceIdiom {
+            case .pad: "iPadOS"
+            default: "iOS"
+            }
+            return processInfo.isiOSAppOnMac ? "macOS" : idiom
+        }
+        return "\(platformName): \(processInfo.operatingSystemVersionString)"
+    }
+
+    static let appVersion = "Версия приложения: \(Constants.appVersion)"
 }
