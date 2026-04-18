@@ -16,6 +16,7 @@ struct RootScreen: View {
             }
         }
         .trackScreen(.root)
+        .reviewRequestHandling()
     }
 
     private func makeBadgeCount(for tab: TabViewModel.Tab) -> Int {
@@ -36,6 +37,7 @@ struct RootScreen: View {
     )
     .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
     .environmentObject(ParksManager(isUITest: true, authHelper: MockAuthHelper()))
+    .environmentObject(ReviewService())
 }
 
 #Preview("Нет бейджей") {
@@ -46,6 +48,7 @@ struct RootScreen: View {
     )
     .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
     .environmentObject(ParksManager(isUITest: true, authHelper: MockAuthHelper()))
+    .environmentObject(ReviewService())
     .networkStatus(true)
 }
 #endif

@@ -9,6 +9,7 @@ struct DialogScreen: View {
     @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var reviewService: ReviewService
     @State private var messages = [MessageResponse]()
     @State private var newMessage = ""
     @State private var isLoading = false
@@ -192,6 +193,7 @@ private extension DialogScreen {
                 try await client.sendMessage(newMessage, to: userId)
                 newMessage = ""
                 await askForMessages(refresh: true)
+                reviewService.requestReviewIfAppropriate()
             } catch {
                 analytics.log(.appError(kind: .sendMessageFailed, error: error))
                 SWAlert.shared.presentDefaultUIKit(error)
@@ -205,6 +207,7 @@ private extension DialogScreen {
 #Preview {
     DialogScreen(dialog: .preview, markedAsReadClbk: { _ in })
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
         .networkStatus(true)
 }
 #endif

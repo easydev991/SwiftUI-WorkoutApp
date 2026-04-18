@@ -9,6 +9,7 @@ struct JournalEntriesScreen: View {
     @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var reviewService: ReviewService
     @State private var currentState = CurrentState.initial
     @State private var showCreateEntrySheet = false
     @State private var entryIdToDelete: Int?
@@ -192,7 +193,10 @@ private extension JournalEntriesScreen {
         editEntry = nil
         guard case let .ready(entries) = currentState else { return }
         currentState = .saveEntryAction(entries)
-        updateEntriesTask = Task { await askForEntries(refresh: true) }
+        updateEntriesTask = Task {
+            await askForEntries(refresh: true)
+            reviewService.requestReviewIfAppropriate()
+        }
     }
 
     func askForEntries(refresh: Bool = false) async {
@@ -271,6 +275,7 @@ private extension JournalEntriesScreen {
 #Preview {
     JournalEntriesScreen(for: 30, in: .preview)
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
         .networkStatus(true)
 }
 #endif

@@ -9,6 +9,7 @@ struct JournalsListScreen: View {
     @Environment(\.analyticsService) private var analytics
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
+    @EnvironmentObject private var reviewService: ReviewService
     @State private var currentState = CurrentState.initial
     @State private var newJournalTitle = ""
     @State private var isCreatingJournal = false
@@ -258,6 +259,7 @@ private extension JournalsListScreen {
                 isCreatingJournal.toggle()
                 defaults.setUserNeedUpdate(true)
                 await askForJournals(refresh: true)
+                reviewService.requestReviewIfAppropriate()
             } catch {
                 analytics.log(.appError(kind: .journalSaveFailed, error: error))
                 currentState = .ready(journals)
@@ -273,6 +275,7 @@ private extension JournalsListScreen {
             var updatedList = journals
             updatedList[index] = journal
             currentState = .ready(updatedList)
+            reviewService.requestReviewIfAppropriate()
         }
     }
 
@@ -290,6 +293,7 @@ private extension JournalsListScreen {
 #Preview {
     JournalsListScreen(userId: .previewUserId)
         .environmentObject(DefaultsService(authHelper: MockAuthHelper()))
+        .environmentObject(ReviewService())
         .networkStatus(true)
 }
 #endif
