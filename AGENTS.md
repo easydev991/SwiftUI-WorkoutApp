@@ -6,6 +6,8 @@ SwiftUI WorkoutApp — iOS street workout app, Swift 6.2, iOS 16+, MVVM architec
 
 ## Build / Format / Test Commands
 
+For app build and tests, use `xcodebuild-mcp` first. Use `make` commands below only as fallback if MCP is unavailable and cannot be fixed.
+
 ### Format (run after every code change)
 
 ```sh
@@ -18,17 +20,12 @@ Runs `swiftformat .` using `.swiftformat` config, then `markdownlint --fix`. A p
 
 ```sh
 make build
-xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp \
-  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ### Run all tests
 
 ```sh
 make test
-xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp \
-  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' \
-  test -testPlan SwiftUI-WorkoutApp
 ```
 
 Test plan includes: `WorkoutAppTests`, `SWNetworkTests`, `SWModelsTest`, `CachedAsyncImageTests`, `SWUtilsTests`, `SWKeychainTests`, `ClusteringMapViewTests`.
