@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ -x ".git/hooks/pre-commit-readme-versions" ]; then
+  .git/hooks/pre-commit-readme-versions || exit 1
+fi

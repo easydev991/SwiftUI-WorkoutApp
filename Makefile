@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint update_readme_versions test_readme_versions format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -146,16 +146,29 @@ setup_markdownlint:
 		printf "$(GREEN)markdownlint-cli уже установлен$(RESET)\\n"; \
 	fi
 
-## setup_hook: Установить pre-push git-хук для проверки форматирования Swift-кода
+## setup_hook: Установить git-хуки (pre-commit для синхронизации версий README и pre-push для проверки SwiftFormat)
 setup_hook:
 	@mkdir -p .git/hooks
-	@if [ ! -f .git/hooks/pre-push ]; then \
-		printf "$(YELLOW)Установка pre-push git-хука для проверки форматирования Swift-кода...$(RESET)\n"; \
-		cp .githooks/pre-push .git/hooks/pre-push; \
-		chmod +x .git/hooks/pre-push; \
-		printf "$(GREEN)pre-push git-хук установлен!$(RESET)\n"; \
+	@printf "$(YELLOW)Синхронизация скрипта pre-commit-readme-versions...$(RESET)\n"; \
+	if cp .githooks/pre-commit-readme-versions .git/hooks/pre-commit-readme-versions && chmod +x .git/hooks/pre-commit-readme-versions; then \
+		printf "$(GREEN)Скрипт pre-commit-readme-versions синхронизирован$(RESET)\n"; \
 	else \
-		printf "$(GREEN)pre-push git-хук уже установлен$(RESET)\n"; \
+		printf "$(RED)Не удалось синхронизировать pre-commit-readme-versions$(RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(YELLOW)Синхронизация pre-commit git-хука...$(RESET)\n"; \
+	if cp .githooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit; then \
+		printf "$(GREEN)pre-commit git-хук синхронизирован$(RESET)\n"; \
+	else \
+		printf "$(RED)Не удалось синхронизировать pre-commit git-хук$(RESET)\n"; \
+		exit 1; \
+	fi
+	@printf "$(YELLOW)Синхронизация pre-push git-хука...$(RESET)\n"; \
+	if cp .githooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push; then \
+		printf "$(GREEN)pre-push git-хук синхронизирован$(RESET)\n"; \
+	else \
+		printf "$(RED)Не удалось синхронизировать pre-push git-хук$(RESET)\n"; \
+		exit 1; \
 	fi
 
 ## setup_snapshot: Проверить инициализацию fastlane/fastlane snapshot, при необходимости предложить варианты установки
@@ -252,12 +265,23 @@ setup_ssh:
 	@printf "$(YELLOW)Проверка соединения с github.com...$(RESET)\n"; \
 	ssh -T git@github.com || true
 
-## update: Обновить fastlane и swiftformat (вызывает update_fastlane и update_swiftformat)
+## update: Обновить fastlane, swiftformat и версии Xcode/Swift/iOS в README
 update:
-	@printf "$(YELLOW)Обновление fastlane и swiftformat...$(RESET)\n"
+	@printf "$(YELLOW)Обновление fastlane, swiftformat и README...$(RESET)\n"
 	@$(MAKE) update_fastlane
 	@$(MAKE) update_swiftformat
+	@$(MAKE) update_readme_versions
 	@printf "$(GREEN)Обновление завершено!$(RESET)\n"
+
+## update_readme_versions: Обновить бейджи версий Xcode/Swift/iOS в README.md
+update_readme_versions:
+	@printf "$(YELLOW)Обновляю версии Xcode/Swift/iOS в README.md...$(RESET)\n"
+	@python3 scripts/update_readme_versions.py --root .
+	@printf "$(GREEN)Версии в README.md обновлены$(RESET)\n"
+
+## test_readme_versions: Запустить unit-тесты утилиты обновления README
+test_readme_versions:
+	@python3 -m unittest scripts.tests.test_update_readme_versions
 
 ## update_fastlane: Обновить только fastlane и его зависимости
 update_fastlane:

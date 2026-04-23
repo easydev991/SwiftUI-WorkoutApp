@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+echo "Обновляю бейджи версий в README..."
+make update_readme_versions >/dev/null
+
+git add README.md
+echo "Бейджи версий в README актуализированы"
