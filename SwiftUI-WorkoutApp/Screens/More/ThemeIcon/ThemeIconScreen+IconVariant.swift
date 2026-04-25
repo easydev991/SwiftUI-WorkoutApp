@@ -13,6 +13,7 @@ extension ThemeIconScreen {
         case seven = "AppIcon7"
         case eight = "AppIcon8"
         case nine = "AppIcon9"
+        case ten = "AppIcon10"
 
         /// Название альтернативной иконки, для дефолтной иконки всегда `nil`
         var alternateName: String? {
