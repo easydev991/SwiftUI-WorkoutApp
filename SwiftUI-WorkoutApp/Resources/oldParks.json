@@ -4603,7 +4603,7 @@
         "country_id": 17,
         "comments_count": 6,
         "preview": "https://workout.su/uploads/userfiles/FzDwsJCXrFU.jpg",
-        "trainings": 3
+        "trainings": 2
     },
     {
         "id": 1495,
@@ -9081,7 +9081,7 @@
         "address": "м. Проспект Вернадского, парк 50-летия Октября",
         "city_id": 1,
         "country_id": 17,
-        "comments_count": 6,
+        "comments_count": 8,
         "preview": "https://workout.su/uploads/userfiles/2SUj_HEL0kI.jpg",
         "trainings": 20
     },
@@ -14151,7 +14151,7 @@
         "country_id": 5,
         "comments_count": 5,
         "preview": "https://workout.su/uploads/userfiles/0124.jpg",
-        "trainings": 11
+        "trainings": 12
     },
     {
         "id": 2681,
@@ -17567,7 +17567,7 @@
         "country_id": 7,
         "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/37aeb7fcc1d3ae4fed785bec848600a31436884653.jpg",
-        "trainings": 0
+        "trainings": 1
     },
     {
         "id": 3120,
@@ -28123,7 +28123,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/IMG_20150815_10444481.jpg",
-        "trainings": 4
+        "trainings": 5
     },
     {
         "id": 4118,
@@ -39533,7 +39533,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/xuGqbW0ENeM.jpg",
-        "trainings": 2
+        "trainings": 3
     },
     {
         "id": 5279,
@@ -49319,7 +49319,7 @@
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2017/03/2017-03-13-00-03-04-xl0.jpg",
-        "trainings": 2
+        "trainings": 3
     },
     {
         "id": 6319,
@@ -75709,7 +75709,7 @@
         "country_id": 17,
         "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/2018/08/2018-08-31-17-08-01-noy.jpg",
-        "trainings": 1
+        "trainings": 2
     },
     {
         "id": 8977,
@@ -96667,7 +96667,7 @@
         "country_id": 17,
         "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/2020/03/2020-03-28-18-03-45-mnb.jpg",
-        "trainings": 2
+        "trainings": 3
     },
     {
         "id": 10647,
@@ -101353,8 +101353,8 @@
         "longitude": "30.67568052560091",
         "latitude": "61.706025819465296",
         "address": "улица 4-я Гористая, 1",
-        "city_id": 2,
-        "country_id": 17,
+        "city_id": 697,
+        "country_id": 23,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2020/09/2020-09-14-10-09-26-skd.jpg",
         "trainings": 0
@@ -113309,7 +113309,7 @@
         "longitude": "37.449347673165256",
         "latitude": "55.80258940155683",
         "address": "Живописная улица 52 с1Е",
-        "city_id": 2,
+        "city_id": 1,
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2022/07/2022-07-31-07-07-41-zip.jpg",
@@ -113323,7 +113323,7 @@
         "longitude": "37.44904551906165",
         "latitude": "55.80220998358453",
         "address": "Живописная улица 52 с1Е",
-        "city_id": 2,
+        "city_id": 1,
         "country_id": 17,
         "comments_count": 0,
         "preview": "https://workout.su/uploads/userfiles/2022/07/2022-07-31-07-07-05-azz.jpg",
@@ -116853,7 +116853,7 @@
         "address": " ",
         "city_id": 1,
         "country_id": 17,
-        "comments_count": 0,
+        "comments_count": 2,
         "preview": "https://workout.su/uploads/userfiles/2023/02/2023-02-23-13-02-24-34f.jpg",
         "trainings": 0
     },
@@ -116867,7 +116867,7 @@
         "address": " ",
         "city_id": 1,
         "country_id": 17,
-        "comments_count": 0,
+        "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/2023/02/2023-02-23-13-02-44-73x.jpg",
         "trainings": 0
     },
@@ -126569,7 +126569,7 @@
         "address": "Бульвар Старшинова 25",
         "city_id": 546,
         "country_id": 17,
-        "comments_count": 2,
+        "comments_count": 3,
         "preview": "https://workout.su/uploads/userfiles/2025/02/2025-02-19-16-02-53-mwm.jpg",
         "trainings": 0
     },
@@ -128966,5 +128966,173 @@
         "comments_count": 1,
         "preview": "https://workout.su/uploads/userfiles/2025/10/2025-10-22-19-10-21-sfe.jpeg",
         "trainings": 1
+    },
+    {
+        "id": 13230,
+        "name": "№13230 Маленькая Современная",
+        "class_id": 1,
+        "type_id": 2,
+        "longitude": "10.14812761172124",
+        "latitude": "45.53212681121535",
+        "address": "25030 Roncadelle, Province of Brescia, Италия",
+        "city_id": 9066,
+        "country_id": 16,
+        "comments_count": 1,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-01-11-11-09-z6j.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 13231,
+        "name": "№13231 Маленькая Советская",
+        "class_id": 1,
+        "type_id": 1,
+        "longitude": "37.7876365184784",
+        "latitude": "55.8222366592969",
+        "address": "Черницынский проезд, 10 к2",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-10-14-11-24-d97.jpeg",
+        "trainings": 0
+    },
+    {
+        "id": 13232,
+        "name": "№13232 Маленькая Современная",
+        "class_id": 1,
+        "type_id": 2,
+        "longitude": "60.533938406588284",
+        "latitude": "56.770869733985386",
+        "address": "Академика Парина 4/2",
+        "city_id": 39,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-12-19-11-35-fgv.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 13233,
+        "name": "№13233 Маленькая Современная",
+        "class_id": 1,
+        "type_id": 2,
+        "longitude": "43.06714832804574",
+        "latitude": "44.05342223336618",
+        "address": "Пятигорск, пр. Калинина 11",
+        "city_id": 735,
+        "country_id": 17,
+        "comments_count": 1,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-12-20-11-18-zuw.jpg",
+        "trainings": 0
+    },
+    {
+        "id": 13234,
+        "name": "№13234 Маленькая Советская",
+        "class_id": 1,
+        "type_id": 1,
+        "longitude": "37.8205418586731",
+        "latitude": "55.79428820814542",
+        "address": "Первомайская, 121",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 1,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-14-13-11-45-hhp.jpeg",
+        "trainings": 0
+    },
+    {
+        "id": 13235,
+        "name": "№13235 Маленькая Советская",
+        "class_id": 1,
+        "type_id": 1,
+        "longitude": "37.7941918373108",
+        "latitude": "55.82331247393344",
+        "address": "Черницынский проезд, 6 к2",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 1,
+        "preview": "https://workout.su/uploads/userfiles/2025/11/2025-11-26-09-11-19-zxw.jpeg",
+        "trainings": 0
+    },
+    {
+        "id": 13236,
+        "name": "№13236 Средняя Легендарная",
+        "class_id": 2,
+        "type_id": 6,
+        "longitude": "37.773797620389075",
+        "latitude": "55.76515246693213",
+        "address": "Измайловкий парк",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2025/12/2025-12-03-12-12-09-vyb.jpg",
+        "trainings": 0
+    },
+    {
+        "id": 13237,
+        "name": "№13237 Большая Современная",
+        "class_id": 3,
+        "type_id": 2,
+        "longitude": "37.54940986633303",
+        "latitude": "55.714379984836675",
+        "address": "Лужники ул, 24с42",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2025/12/2025-12-24-08-12-21-aw_.jpeg",
+        "trainings": 0
+    },
+    {
+        "id": 13238,
+        "name": "№13238 Средняя Современная",
+        "class_id": 2,
+        "type_id": 2,
+        "longitude": "69.18995395302773",
+        "latitude": "41.2648651867551",
+        "address": "Чиланзар, квартал 20А, дом 9",
+        "city_id": 470,
+        "country_id": 21,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2026/01/2026-01-26-19-01-43-amc.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 13240,
+        "name": "№13240 Средняя Современная",
+        "class_id": 2,
+        "type_id": 2,
+        "longitude": "30.400435924530033",
+        "latitude": "59.62609199982398",
+        "address": "Бумажников 7",
+        "city_id": 62,
+        "country_id": 17,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2026/02/2026-02-17-17-02-21-qau.png",
+        "trainings": 1
+    },
+    {
+        "id": 13244,
+        "name": "№13244 Средняя Хомуты",
+        "class_id": 2,
+        "type_id": 3,
+        "longitude": "37.58888651428479",
+        "latitude": "55.72921964463056",
+        "address": "Комсомольский проспект, 15а",
+        "city_id": 1,
+        "country_id": 17,
+        "comments_count": 1,
+        "preview": "https://workout.su/uploads/userfiles/2026/03/2026-03-31-13-03-14-tfa.jpg",
+        "trainings": 1
+    },
+    {
+        "id": 13245,
+        "name": "№13245 Средняя Хомуты",
+        "class_id": 2,
+        "type_id": 3,
+        "longitude": "43.845159707223324",
+        "latitude": "40.800854470202566",
+        "address": "Гюмри",
+        "city_id": 366,
+        "country_id": 3,
+        "comments_count": 0,
+        "preview": "https://workout.su/uploads/userfiles/2026/04/2026-04-15-14-04-41-rjn.jpg",
+        "trainings": 0
     }
 ]
