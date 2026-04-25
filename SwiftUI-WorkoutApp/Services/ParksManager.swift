@@ -14,7 +14,7 @@ final class ParksManager: ObservableObject {
     /// При обновлении справочника вручную необходимо обновить тут дату -
     /// это необходимо, чтобы избежать ошибок на сервере (код 500)
     @AppStorage("lastGroundsUpdateDateString")
-    private(set) var lastParksUpdateDateString = "2025-10-25T00:00:00"
+    private(set) var lastParksUpdateDateString = "2026-04-25T00:00:00"
     /// Хранилище файла с площадками
     private let storage: SWFileManager
     /// Флаг режима UI-тестов

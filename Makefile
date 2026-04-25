@@ -1,4 +1,4 @@
-.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint update_readme_versions test_readme_versions format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
+.PHONY: help setup setup_hook setup_snapshot setup_fastlane setup_ssh setup_markdownlint update update_fastlane update_swiftformat update_markdownlint update_readme_versions test_readme_versions update_oldparks test_update_oldparks format format_swift format_markdown screenshots upload_screenshots testflight fastlane increment_build build test
 
 # Цвета и шрифт
 YELLOW=\033[1;33m
@@ -282,6 +282,16 @@ update_readme_versions:
 ## test_readme_versions: Запустить unit-тесты утилиты обновления README
 test_readme_versions:
 	@python3 -m unittest scripts.tests.test_update_readme_versions
+
+## update_oldparks: Обновить oldParks.json из API и дату lastParksUpdateDateString
+update_oldparks:
+	@printf "$(YELLOW)Обновляю oldParks.json из API...$(RESET)\n"
+	@python3 scripts/update_oldparks.py --root .
+	@printf "$(GREEN)oldParks.json и дата в ParksManager.swift обновлены$(RESET)\n"
+
+## test_update_oldparks: Запустить unit-тесты утилиты обновления oldParks.json
+test_update_oldparks:
+	@python3 -m unittest scripts.tests.test_update_oldparks
 
 ## update_fastlane: Обновить только fastlane и его зависимости
 update_fastlane:
