@@ -3,14 +3,6 @@ import SWModels
 
 /// Протокол для работы с площадками
 public protocol ParksClient: Sendable, ParksUpdaterClient {
-    /// Загружает список всех площадок
-    ///
-    /// Пока не используется, потому что:
-    /// - сервер очень часто возвращает ошибку `500` при запросе всех площадок
-    /// - справочник площадок хранится в `json`-файле и обновляется вручную
-    /// - Returns: Список всех площадок
-    func getAllParks() async throws -> [Park]
-
     /// Загружает данные по отдельной площадке
     /// - Parameter id: `id` площадки
     /// - Returns: Вся информация о площадке
@@ -40,11 +32,6 @@ public protocol ParksClient: Sendable, ParksUpdaterClient {
 }
 
 extension SWClient: ParksClient {
-    public func getAllParks() async throws -> [Park] {
-        let endpoint = Endpoint.getAllParks
-        return try await makeResult(for: endpoint)
-    }
-
     public func getPark(id: Int) async throws -> Park {
         let endpoint = Endpoint.getPark(id: id)
         return try await makeResult(for: endpoint)

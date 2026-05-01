@@ -15,16 +15,7 @@ struct SWFileManagerTests {
     }
 
     @Test
-    func removeNonExistentFile_shouldThrowError() throws {
-        let sut = SWFileManagerImp(fileName: uniqueFileName)
-        try #require(!sut.documentExists)
-        #expect(throws: Error.self) {
-            try sut.removeFile()
-        }
-    }
-
-    @Test
-    func allFeaturesInOneTest() {
+    func saveAndRead_shouldWorkCorrectly() {
         let sut = SWFileManagerImp(fileName: uniqueFileName)
         #expect(!sut.documentExists)
         let testModel = TestModel(title: "Demo file")
@@ -33,10 +24,8 @@ struct SWFileManagerTests {
             #expect(sut.documentExists, "Файл должен существовать")
             let savedModel: TestModel = try sut.get()
             #expect(testModel == savedModel, "Модели должны совпадать")
-            try sut.removeFile()
-            #expect(!sut.documentExists, "Файл должен быть удален")
         } catch {
-            Issue.record(error, "Файл должен сохраняться, читаться и удаляться без ошибок")
+            Issue.record(error, "Файл должен сохраняться и читаться без ошибок")
         }
     }
 }

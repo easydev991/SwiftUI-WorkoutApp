@@ -23,10 +23,6 @@ public protocol ProfileClient: Sendable {
     ///   - new: новый пароль
     func changePassword(current: String, new: String) async throws
 
-    /// Запрашивает удаление профиля текущего пользователя приложения
-    @available(*, deprecated, message: "Запрос не используется, т.к. регистрация в приложении отключена")
-    func deleteUser() async throws
-
     /// Запрашивает обновления для пользователя и его списков: друзья, заявки, черный список
     ///
     /// - Вызывается при авторизации и при `scenePhase = active`
@@ -39,11 +35,6 @@ public protocol ProfileClient: Sendable {
         friendRequests: [UserResponse],
         blacklist: [UserResponse]
     )
-
-    /// Ищет пользователей, чей логин содержит указанный текст
-    /// - Parameter name: текст для поиска
-    /// - Returns: Список пользователей, чей логин содержит указанный текст
-    func findUsers(with name: String) async throws -> [UserResponse]
 }
 
 extension SWClient: ProfileClient {
@@ -72,11 +63,6 @@ extension SWClient: ProfileClient {
 
     public func changePassword(current: String, new: String) async throws {
         let endpoint = Endpoint.changePassword(currentPass: current, newPass: new)
-        try await makeStatus(for: endpoint)
-    }
-
-    public func deleteUser() async throws {
-        let endpoint = Endpoint.deleteUser
         try await makeStatus(for: endpoint)
     }
 }

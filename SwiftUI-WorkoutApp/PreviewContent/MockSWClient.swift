@@ -30,10 +30,6 @@ struct MockSWClient {
 }
 
 extension MockSWClient: AuthClient {
-    func registration(with model: MainUserForm) async throws {
-        try await authClient.registration(with: model)
-    }
-
     func logIn(with token: String?) async throws -> Int {
         try await authClient.logIn(with: token)
     }
@@ -54,10 +50,6 @@ extension MockSWClient: ProfileClient {
 
     func changePassword(current: String, new: String) async throws {
         try await profileClient.changePassword(current: current, new: new)
-    }
-
-    func deleteUser() async throws {
-        try await profileClient.deleteUser()
     }
 
     func getSocialUpdates(userId: Int) async throws -> (
@@ -113,10 +105,6 @@ extension MockSWClient: ParksUpdaterClient {
 }
 
 extension MockSWClient: ParksClient {
-    func getAllParks() async throws -> [Park] {
-        try await parksClient.getAllParks()
-    }
-
     func getPark(id: Int) async throws -> Park {
         try await parksClient.getPark(id: id)
     }
@@ -199,10 +187,6 @@ extension MockSWClient: MessagesClient {
 extension MockSWClient: JournalsClient {
     func getJournals(for userId: Int) async throws -> [JournalResponse] {
         try await journalsClient.getJournals(for: userId)
-    }
-
-    func getJournal(for userId: Int, journalId: Int) async throws -> JournalResponse {
-        try await journalsClient.getJournal(for: userId, journalId: journalId)
     }
 
     func editJournalSettings(

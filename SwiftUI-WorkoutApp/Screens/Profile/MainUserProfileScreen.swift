@@ -7,7 +7,6 @@ import SWUtils
 /// Экран с профилем главного пользователя
 struct MainUserProfileScreen: View {
     @Environment(\.analyticsService) private var analytics
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject private var defaults: DefaultsService

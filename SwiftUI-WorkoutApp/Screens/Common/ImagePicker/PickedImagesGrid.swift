@@ -18,10 +18,6 @@ struct PickedImagesGrid: View {
     @Binding var images: [UIImage]
     /// Сколько еще можно выбрать фотографий
     let selectionLimit: Int
-    /// Обработать добавление лишних фотографий
-    ///
-    /// У стандартного пикера есть баг: иногда можно нажать на фото больше раз, чем позволяет лимит
-    let processExtraImages: () -> Void
 
     var body: some View {
         ModernPickedImagesGrid(
@@ -91,8 +87,7 @@ private extension PickedImagesGrid {
 #Preview("Лимит 10, есть 0") {
     PickedImagesGrid(
         images: .constant([]),
-        selectionLimit: 10,
-        processExtraImages: {}
+        selectionLimit: 10
     )
 }
 
@@ -102,8 +97,7 @@ private extension PickedImagesGrid {
     }
     return PickedImagesGrid(
         images: .constant(images),
-        selectionLimit: 7,
-        processExtraImages: {}
+        selectionLimit: 7
     )
 }
 
@@ -113,16 +107,14 @@ private extension PickedImagesGrid {
     }
     return PickedImagesGrid(
         images: .constant(images),
-        selectionLimit: 0,
-        processExtraImages: {}
+        selectionLimit: 0
     )
 }
 
 #Preview("Лимит 0, есть 0") {
     PickedImagesGrid(
         images: .constant([]),
-        selectionLimit: 0,
-        processExtraImages: {}
+        selectionLimit: 0
     )
 }
 #endif

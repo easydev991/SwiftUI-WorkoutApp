@@ -16,7 +16,6 @@ final class ReviewService: ObservableObject {
 
     private let filterApplyCountKey = "reviewFilterApplyCount"
     private let completedFilterMilestonesKey = "reviewFilterAttemptedMilestones"
-    private let filterMilestones = [2, 5, 15]
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults

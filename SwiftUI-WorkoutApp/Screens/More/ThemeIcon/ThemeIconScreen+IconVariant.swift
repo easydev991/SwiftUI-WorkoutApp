@@ -30,11 +30,6 @@ extension ThemeIconScreen {
             return Image(fullName)
         }
 
-        @MainActor
-        var isSelected: Bool {
-            alternateName == UIApplication.shared.alternateIconName
-        }
-
         init(name: String?) {
             self = IconVariant(rawValue: name ?? "") ?? .primary
         }

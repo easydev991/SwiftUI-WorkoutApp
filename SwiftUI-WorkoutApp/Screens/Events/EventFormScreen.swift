@@ -192,12 +192,7 @@ private extension EventFormScreen {
     var pickedImagesGrid: some View {
         PickedImagesGrid(
             images: $newImages,
-            selectionLimit: eventForm.imagesLimit,
-            processExtraImages: {
-                while eventForm.imagesLimit < 0 {
-                    newImages.removeLast()
-                }
-            }
+            selectionLimit: eventForm.imagesLimit
         )
         .onChange(of: newImages) { images in
             eventForm.newMediaFiles = images.toMediaFiles

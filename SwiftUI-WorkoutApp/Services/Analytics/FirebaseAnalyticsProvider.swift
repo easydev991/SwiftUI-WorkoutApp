@@ -1,7 +1,6 @@
 import FirebaseAnalytics
 import FirebaseCrashlytics
 import Foundation
-import SWModels
 
 struct FirebaseAnalyticsProvider: AnalyticsProvider {
     func log(event: AnalyticsEvent) {

@@ -1,5 +1,4 @@
 import Foundation
-import SWModels
 
 struct AnalyticsService {
     private let providers: [any AnalyticsProvider]

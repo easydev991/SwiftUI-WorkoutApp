@@ -1,5 +1,4 @@
 import Foundation
-import SWModels
 import Testing
 @testable import WorkoutApp
 

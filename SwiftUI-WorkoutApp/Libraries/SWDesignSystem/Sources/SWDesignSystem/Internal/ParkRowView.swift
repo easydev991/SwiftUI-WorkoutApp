@@ -1,13 +1,13 @@
 import SwiftUI
 
 /// Вьюшка с площадкой (в списке площадок)
-public struct ParkRowView: View {
+struct ParkRowView: View {
     private let imageURL: URL?
     private let title: String
     private let address: String?
     private let usersTrainHereText: String
 
-    public init(
+    init(
         imageURL: URL?,
         title: String,
         address: String?,
@@ -19,7 +19,7 @@ public struct ParkRowView: View {
         self.usersTrainHereText = usersTrainHereText
     }
 
-    public var body: some View {
+    var body: some View {
         HStack(alignment: .top, spacing: 12) {
             leadingImage
             VStack(alignment: .leading, spacing: 6) {

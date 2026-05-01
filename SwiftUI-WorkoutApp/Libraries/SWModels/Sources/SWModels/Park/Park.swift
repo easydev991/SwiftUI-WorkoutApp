@@ -287,7 +287,7 @@ public extension Park {
             usersTrainHereCount: 0,
             commentsOptional: nil,
             usersTrainHere: [],
-            trainHere: nil
+            trainHere: false
         )
     }
 }

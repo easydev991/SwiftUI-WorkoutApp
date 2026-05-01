@@ -21,19 +21,6 @@ struct MockAuthClient: AuthClient {
         self.instantResponse = instantResponse
     }
 
-    func registration(with _: MainUserForm) async throws {
-        print("Имитируем запрос registration")
-        if !instantResponse {
-            try await Task.sleep(for: .seconds(1))
-        }
-        switch result {
-        case .success:
-            print("Успешно зарегистрировались")
-        case let .failure(error):
-            throw error
-        }
-    }
-
     func logIn(with _: String?) async throws -> Int {
         print("Имитируем запрос logIn")
         if !instantResponse {
@@ -127,19 +114,6 @@ struct MockProfileClient: ProfileClient {
         }
     }
 
-    func deleteUser() async throws {
-        print("Имитируем запрос deleteUser")
-        if !instantResponse {
-            try await Task.sleep(for: .seconds(1))
-        }
-        switch result {
-        case .success:
-            print("Успешно удалили пользователя")
-        case let .failure(error):
-            throw error
-        }
-    }
-
     func getSocialUpdates(userId: Int) async throws -> (
         user: UserResponse,
         friends: [UserResponse],
@@ -159,20 +133,6 @@ struct MockProfileClient: ProfileClient {
                 UserResponse.previewFriendRequests,
                 []
             )
-        case let .failure(error):
-            throw error
-        }
-    }
-
-    func findUsers(with name: String) async throws -> [UserResponse] {
-        print("Имитируем запрос findUsers (name=\(name))")
-        if !instantResponse {
-            try await Task.sleep(for: .seconds(1))
-        }
-        switch result {
-        case .success:
-            print("Успешно нашли пользователей")
-            return [.previewForSearch]
         case let .failure(error):
             throw error
         }
@@ -327,20 +287,6 @@ struct MockParksClient: ParksClient {
         switch result {
         case .success:
             print("Успешно получили обновленные площадки")
-            return [.preview]
-        case let .failure(error):
-            throw error
-        }
-    }
-
-    func getAllParks() async throws -> [Park] {
-        print("Имитируем запрос getAllParks")
-        if !instantResponse {
-            try await Task.sleep(for: .seconds(1))
-        }
-        switch result {
-        case .success:
-            print("Успешно получили список всех площадок")
             return [.preview]
         case let .failure(error):
             throw error
@@ -638,20 +584,6 @@ struct MockJournalsClient: JournalsClient {
         case .success:
             print("Успешно получили список дневников")
             return [.preview]
-        case let .failure(error):
-            throw error
-        }
-    }
-
-    func getJournal(for userId: Int, journalId: Int) async throws -> JournalResponse {
-        print("Имитируем запрос getJournal (userId=\(userId), journalId=\(journalId))")
-        if !instantResponse {
-            try await Task.sleep(for: .seconds(1))
-        }
-        switch result {
-        case .success:
-            print("Успешно получили данные дневника")
-            return .preview
         case let .failure(error):
             throw error
         }

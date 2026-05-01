@@ -34,8 +34,6 @@ extension ParksMapScreen {
 
         // MARK: - Регион карты
         @Published private(set) var region = MKCoordinateRegion()
-        /// Предыдущее значение региона для отслеживания изменений
-        private var previousRegion: MKCoordinateRegion?
         private let defaultCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
 
         /// Нужно ли обновлять регион карты

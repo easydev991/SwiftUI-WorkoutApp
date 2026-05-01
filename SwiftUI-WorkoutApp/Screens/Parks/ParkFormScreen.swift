@@ -177,12 +177,7 @@ private extension ParkFormScreen {
     var pickedImagesGrid: some View {
         PickedImagesGrid(
             images: $newImages,
-            selectionLimit: parkForm.imagesLimit,
-            processExtraImages: {
-                while parkForm.imagesLimit < 0 {
-                    newImages.removeLast()
-                }
-            }
+            selectionLimit: parkForm.imagesLimit
         )
         .padding(.top, 22)
         .padding(.bottom, 42)

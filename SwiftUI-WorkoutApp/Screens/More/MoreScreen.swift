@@ -6,7 +6,6 @@ import SWUtils
 /// Экран с настройками и общей информацией о приложении
 struct MoreScreen: View {
     @Environment(\.analyticsService) private var analytics
-    @EnvironmentObject private var defaults: DefaultsService
     @Environment(\.locale) private var locale
     @State private var showLanguageAlert = false
 

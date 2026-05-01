@@ -1,7 +1,6 @@
 import Foundation
 import SWModels
 import SWNetworkClient
-@testable import WorkoutApp
 
 final class MockCountriesClient: CountriesClient, @unchecked Sendable {
     var mockedCountries: [Country] = []

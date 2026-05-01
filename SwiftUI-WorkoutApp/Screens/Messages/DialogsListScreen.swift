@@ -6,7 +6,6 @@ import SWUtils
 
 /// Экран со списком диалогов
 struct DialogsListScreen: View {
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isNetworkConnected) private var isNetworkConnected
     @EnvironmentObject private var defaults: DefaultsService
     @EnvironmentObject private var viewModel: ViewModel

@@ -1,6 +1,5 @@
 @preconcurrency import EventKit
 import Foundation
-import SWUtils
 
 final class CalendarManager: ObservableObject {
     let eventStore = EKEventStore()

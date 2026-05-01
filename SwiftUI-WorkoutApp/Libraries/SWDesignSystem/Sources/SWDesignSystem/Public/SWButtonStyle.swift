@@ -86,27 +86,11 @@ public extension SWButtonStyle {
         case filled
         /// Прозрачная
         case tinted
-
-        /// Описание для превью
-        var description: String {
-            switch self {
-            case .filled: "Filled"
-            case .tinted: "Tinted"
-            }
-        }
     }
 
     /// Размер кнопки
     enum Size: CaseIterable {
         case large, small
-
-        /// Описание для превью
-        var description: String {
-            switch self {
-            case .large: "Large"
-            case .small: "Small"
-            }
-        }
     }
 }
 
@@ -135,18 +119,18 @@ extension SWButtonStyle.Size {
         Section("Large") {
             Section("Текст без иконки") {
                 ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", only text (enabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", only text (enabled)") {}
                         .buttonStyle(SWButtonStyle(mode: mode, size: .large))
-                    Button(mode.description + ", only text (disabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", only text (disabled)") {}
                         .buttonStyle(SWButtonStyle(mode: mode, size: .large))
                         .disabled(true)
                 }
             }
             Section("Иконка с текстом") {
                 ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", icon with text (enabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", icon with text (enabled)") {}
                         .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
-                    Button(mode.description + ", icon with text (disabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", icon with text (disabled)") {}
                         .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .large))
                         .disabled(true)
                 }
@@ -157,18 +141,18 @@ extension SWButtonStyle.Size {
         Section("Small") {
             Section("Текст без иконки") {
                 ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", only text (enabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", only text (enabled)") {}
                         .buttonStyle(SWButtonStyle(mode: mode, size: .small))
-                    Button(mode.description + ", only text (disabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", only text (disabled)") {}
                         .buttonStyle(SWButtonStyle(mode: mode, size: .small))
                         .disabled(true)
                 }
             }
             Section("Иконка с текстом") {
                 ForEach(SWButtonStyle.Mode.allCases, id: \.self) { mode in
-                    Button(mode.description + ", icon with text (enabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", icon with text (enabled)") {}
                         .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
-                    Button(mode.description + ", icon with text (disabled)") {}
+                    Button((mode == .filled ? "Filled" : "Tinted") + ", icon with text (disabled)") {}
                         .buttonStyle(SWButtonStyle(icon: .message, mode: mode, size: .small))
                         .disabled(true)
                 }

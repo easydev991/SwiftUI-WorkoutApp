@@ -54,7 +54,6 @@ public struct SWTextField: View {
 
 public extension SWTextField {
     enum ErrorState: Equatable {
-        case noMessage
         case message(String)
 
         var message: String? {
@@ -116,12 +115,6 @@ private extension SWTextField {
             placeholder: "Placeholder",
             text: .constant("Text"),
             isFocused: false,
-            errorState: .noMessage
-        )
-        SWTextField(
-            placeholder: "Placeholder",
-            text: .constant("Text"),
-            isFocused: false,
             errorState: .message("Error message")
         )
     }
@@ -156,8 +149,7 @@ private extension SWTextField {
             placeholder: "Placeholder",
             text: $text,
             lineLimit: 5,
-            isFocused: false,
-            errorState: .noMessage
+            isFocused: false
         )
         SWTextField(
             placeholder: "Placeholder",

@@ -1,5 +1,4 @@
 import Foundation
-import SWModels
 import SWUtils
 import Testing
 

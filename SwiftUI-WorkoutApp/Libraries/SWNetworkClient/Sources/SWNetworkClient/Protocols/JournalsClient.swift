@@ -9,17 +9,6 @@ public protocol JournalsClient: Sendable {
     /// - Returns: Список дневников
     func getJournals(for userId: Int) async throws -> [JournalResponse]
 
-    /// Запрашивает дневник пользователя
-    ///
-    /// После обновления настроек дневника при помощи метода `editJournalSettings` нет смысла делать этот запрос,
-    /// т.к. актуальные данные уже есть на экране
-    /// - Parameters:
-    ///   - userId: `id` пользователя
-    ///   - journalId: `id` выбранного дневника
-    /// - Returns: Общая информация о дневнике
-    @available(*, deprecated, message: "Запрос не используется")
-    func getJournal(for userId: Int, journalId: Int) async throws -> JournalResponse
-
     /// Меняет настройки дневника
     /// - Parameters:
     ///   - journalId: `id` выбранного дневника
@@ -58,11 +47,6 @@ public protocol JournalsClient: Sendable {
 extension SWClient: JournalsClient {
     public func getJournals(for userId: Int) async throws -> [JournalResponse] {
         let endpoint = Endpoint.getJournals(userId: userId)
-        return try await makeResult(for: endpoint)
-    }
-
-    public func getJournal(for userId: Int, journalId: Int) async throws -> JournalResponse {
-        let endpoint = Endpoint.getJournal(userId: userId, journalId: journalId)
         return try await makeResult(for: endpoint)
     }
 

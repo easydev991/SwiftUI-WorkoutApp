@@ -18,10 +18,6 @@ public enum Icons {
         public var view: some View {
             Image(systemName: rawValue)
         }
-
-        public var imageView: Image {
-            Image(systemName: rawValue)
-        }
     }
 
     /// Названия остальных иконок

@@ -1,6 +1,5 @@
 import CoreLocation
 import SwiftUI
-import SWModels
 
 @MainActor
 struct GeocodingCacheUpdateKey: @preconcurrency EnvironmentKey {

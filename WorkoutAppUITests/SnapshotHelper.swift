@@ -13,15 +13,6 @@ func setupSnapshot(_ app: XCUIApplication, waitForAnimations: Bool = true) {
     Snapshot.setupSnapshot(app, waitForAnimations: waitForAnimations)
 }
 
-@MainActor
-func snapshot(_ name: String, waitForLoadingIndicator: Bool) {
-    if waitForLoadingIndicator {
-        Snapshot.snapshot(name)
-    } else {
-        Snapshot.snapshot(name, timeWaitingForIdle: 0)
-    }
-}
-
 /// - Parameters:
 ///   - name: The name of the snapshot
 ///   - timeout: Amount of seconds to wait until the network loading indicator disappears. Pass `0` if you don't want to wait.

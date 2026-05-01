@@ -1,7 +1,7 @@
 import MapKit
 
 /// Утилита для сравнения аннотаций по идентификаторам
-public enum AnnotationsComparison {
+enum AnnotationsComparison {
     /// Проверяет, есть ли различия между старыми и новыми аннотациями
     ///
     /// Фильтрует кластеры и пользовательскую локацию из старых и новых аннотаций,
@@ -11,7 +11,7 @@ public enum AnnotationsComparison {
     ///   - old: Старые аннотации (могут содержать кластеры и пользовательскую локацию)
     ///   - new: Новые аннотации (могут содержать кластеры и пользовательскую локацию)
     /// - Returns: `true` если есть различия, `false` если аннотации идентичны
-    public static func hasDifferences(old: [any MKAnnotation], new: [any MKAnnotation]) -> Bool {
+    static func hasDifferences(old: [any MKAnnotation], new: [any MKAnnotation]) -> Bool {
         let filteredOld = old.filter {
             !($0 is MKClusterAnnotation) && !($0 is MKUserLocation)
         }

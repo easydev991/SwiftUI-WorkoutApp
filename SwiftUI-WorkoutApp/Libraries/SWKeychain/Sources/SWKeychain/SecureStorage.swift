@@ -63,14 +63,6 @@ final class SecureStorage {
         }
     }
 
-    func updateItem(query: [CFString: Any], attributesToUpdate: [CFString: Any]) throws {
-        let status = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
-
-        if status != errSecSuccess {
-            throw KeychainError(status: status)
-        }
-    }
-
     func deleteItem(query: [CFString: Any]) throws {
         let status = SecItemDelete(query as CFDictionary)
 

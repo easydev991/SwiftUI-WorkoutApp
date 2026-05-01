@@ -2,10 +2,6 @@ import Foundation
 import SWModels
 
 extension Photo {
-    static var preview: Photo {
-        .init(id: 1, stringURL: "avatar_default")
-    }
-
     static func makePreviewList(count: Int) -> [Self] {
         (0 ..< count).map {
             .init(id: $0, stringURL: "avatar_default")
@@ -704,15 +700,6 @@ extension NoParksFoundModel {
 
     static let previewWithoutFilter = Self(
         isFilterEdited: false,
-        isFilteredParksEmpty: true,
-        didParksManagerLoad: true,
-        isLoading: false
-    )
-}
-
-extension NoParksFoundModel {
-    static let preview = Self(
-        isFilterEdited: true,
         isFilteredParksEmpty: true,
         didParksManagerLoad: true,
         isLoading: false

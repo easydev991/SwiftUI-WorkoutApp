@@ -1,7 +1,6 @@
 import CoreLocation
 import Foundation
 import OSLog
-import SWModels
 
 /// Сервис для геокодирования координат в адрес и идентификатор города
 struct GeocodingService {

@@ -1,6 +1,5 @@
 import Foundation
 import OSLog
-import SWModels
 import SWNetwork
 
 /// Сервис для обращений к серверу

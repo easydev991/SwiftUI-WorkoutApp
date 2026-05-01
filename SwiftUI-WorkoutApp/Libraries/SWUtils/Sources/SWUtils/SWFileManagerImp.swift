@@ -46,11 +46,4 @@ public struct SWFileManagerImp: Sendable, SWFileManager {
         let data = try Data(contentsOf: url)
         return try JSONDecoder().decode(T.self, from: data)
     }
-
-    /// Удаляет сохраненный файл
-    ///
-    /// Если файл не существовал перед удалением, выбросит ошибку
-    public func removeFile() throws {
-        try FileManager.default.removeItem(at: documentDirectoryURL.appendingPathComponent(fileName))
-    }
 }
