@@ -16,55 +16,39 @@
 default_platform(:ios)
 
 require 'shellwords'
+require 'fileutils'
 
-# Проектные константы
-APP_SCHEME_FOR_BUILD                  = "SwiftUI-WorkoutApp"
-ARTIFACT_OUTPUT_NAME                  = "SwiftUI-WorkoutApp"
-XCODEPROJECT_FILE_FOR_VERSION_LOOKUP  = "SwiftUI-WorkoutApp.xcodeproj"
-UITESTS_SCHEME_FOR_SCREENSHOTS        = "WorkoutAppUITests"
-APP_IDENTIFIER_FOR_BUILD_NUMBER       = "com.oleg991.SW-Parks"
+UITESTS_SCHEME_FOR_SCREENSHOTS = "WorkoutAppUITests"
 
-SECRETS_REPO = "git@github.com:easydev991/ios-fastlane-secrets.git"
-SECRETS_DIR  = "appstoreconnect"
+# Кеш-директория: хранение в постоянном месте, чтобы __FILE__ и autoload
+# в fastlane_common.rb работали корректно. Temp-директория не подходит —
+# после её удаления require ломается.
+SHARED_CACHE_DIR = File.expand_path("~/.cache/ios-fastlane-secrets")
 
-def load_app_store_connect_api_key
-  Dir.mktmpdir("asc-secrets") do |tmp|
-    sh("git clone --depth 1 #{SECRETS_REPO} #{Shellwords.escape(tmp)}")
-    secrets_path = File.join(tmp, SECRETS_DIR)
+def load_common_module
+  repo = "git@github.com:easydev991/ios-fastlane-secrets.git"
+  cache = SHARED_CACHE_DIR
+  FileUtils.mkdir_p(cache)
 
-    key_id    = File.read(File.join(secrets_path, "KEY_ID")).strip
-    issuer_id = File.read(File.join(secrets_path, "ISSUER_ID")).strip
-    p8_path   = Dir[File.join(secrets_path, "AuthKey_*.p8")].first
-    if p8_path.nil?
-      UI.user_error!("Не найден файл приватного ключа AuthKey_*.p8 в #{secrets_path}")
+  if File.directory?(File.join(cache, ".git"))
+    begin
+      sh("git -C #{Shellwords.escape(cache)} pull --ff-only")
+    rescue
+      UI.important("git pull failed, re-cloning ios-fastlane-secrets...")
+      FileUtils.rm_rf(cache)
+      sh("git clone --depth 1 #{repo} #{Shellwords.escape(cache)}")
     end
-    key_p8 = File.read(p8_path)
-
-    return app_store_connect_api_key(
-      key_id: key_id,
-      issuer_id: issuer_id,
-      key_content: key_p8,
-      duration: 1200,
-      in_house: false
-    )
+  else
+    FileUtils.rm_rf(cache) if File.exist?(cache)
+    sh("git clone --depth 1 #{repo} #{Shellwords.escape(cache)}")
   end
+
+  common_path = File.join(cache, "fastlane_common.rb")
+  UI.user_error!("fastlane_common.rb не найден в ios-fastlane-secrets") unless File.exist?(common_path)
+  require common_path
 end
 
-# Кэшируем ключ ASC один раз за запуск команды fastlane
-def asc_key
-  @asc_key ||= load_app_store_connect_api_key
-end
-
-def latest_crashlytics_upload_symbols_binary
-  candidates = Dir["#{Dir.home}/Library/Developer/Xcode/DerivedData/**/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"]
-  return nil if candidates.empty?
-
-  candidates.max_by { |path| File.mtime(path) }
-end
-
-def google_service_info_plist_path
-  File.expand_path("../SwiftUI-WorkoutApp/GoogleService-Info.plist", __dir__)
-end
+load_common_module
 
 platform :ios do
   desc "Сгенерировать новые локализованные скриншоты"
@@ -90,72 +74,21 @@ platform :ios do
 
   desc "Получить следующий номер сборки для отправки"
   lane :get_next_build_number do
-    project_version = get_version_number(
-      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP
+    compute_next_build_number(
+      app_identifier: "com.oleg991.SW-Parks",
+      xcodeproj: "SwiftUI-WorkoutApp.xcodeproj"
     )
-    latest_build_any = latest_testflight_build_number(
-      api_key: asc_key,
-      app_identifier: APP_IDENTIFIER_FOR_BUILD_NUMBER
-    )
-    latest_tf_version = lane_context[SharedValues::LATEST_TESTFLIGHT_VERSION]
-    if latest_tf_version.to_s == project_version.to_s
-      (latest_build_any.to_i + 1).to_s
-    else
-      "1"
-    end
   end
 
   desc "Собрать и отправить сборку в TestFlight"
   lane :build_and_upload do
-    # Обновляем номер сборки
-    increment_build_number(
-      build_number: get_next_build_number,
-      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP,
-      skip_info_plist: true
+    build_and_upload_app(
+      app_identifier: "com.oleg991.SW-Parks",
+      scheme: "SwiftUI-WorkoutApp",
+      xcodeproj: "SwiftUI-WorkoutApp.xcodeproj",
+      xcodeproj_for_version: "SwiftUI-WorkoutApp.xcodeproj",
+      gsp_path: File.expand_path("../SwiftUI-WorkoutApp/GoogleService-Info.plist", __dir__),
+      output_name: "SwiftUI-WorkoutApp"
     )
-
-    # Собираем приложение
-    build_app(
-      scheme: APP_SCHEME_FOR_BUILD,
-      export_method: "app-store",
-      clean: true,
-      output_directory: "fastlane/builds",
-      output_name: ARTIFACT_OUTPUT_NAME,
-      xcargs: "-allowProvisioningUpdates"
-    )
-
-    dsym_output_path = lane_context[SharedValues::DSYM_OUTPUT_PATH]
-    UI.user_error!("Не найден путь к dSYM после build_app") if dsym_output_path.to_s.empty?
-    UI.user_error!("Файл dSYM не найден: #{dsym_output_path}") unless File.exist?(dsym_output_path)
-
-    gsp_path = google_service_info_plist_path
-    UI.user_error!("Не найден GoogleService-Info.plist: #{gsp_path}") unless File.exist?(gsp_path)
-
-    upload_symbols_binary = latest_crashlytics_upload_symbols_binary
-    UI.user_error!("Не найден Crashlytics upload-symbols binary в DerivedData") if upload_symbols_binary.nil?
-
-    upload_symbols_to_crashlytics(
-      dsym_path: dsym_output_path,
-      gsp_path: gsp_path,
-      binary_path: upload_symbols_binary
-    )
-
-    # Загружаем в TestFlight
-    upload_to_testflight(
-      skip_waiting_for_build_processing: true,
-      distribute_external: false,
-      notify_external_testers: false,
-      api_key: asc_key
-    )
-    
-    # После успешной загрузки сбрасываем номер сборки до 1
-    increment_build_number(
-      build_number: "1",
-      xcodeproj: XCODEPROJECT_FILE_FOR_VERSION_LOOKUP,
-      skip_info_plist: true
-    )
-    
-    # Удаляем файлы сборки после успешной публикации
-    clean_build_artifacts
   end
 end
