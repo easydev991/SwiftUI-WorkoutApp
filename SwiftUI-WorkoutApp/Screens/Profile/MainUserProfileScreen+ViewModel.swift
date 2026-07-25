@@ -83,7 +83,11 @@ extension MainUserProfileScreen {
         case ready
 
         var isLoading: Bool {
-            if case .loading = self { true } else { false }
+            if case .loading = self {
+                true
+            } else {
+                false
+            }
         }
 
         /// Нужно ли загружать данные, когда их нет (или для рефреша)

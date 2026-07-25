@@ -158,8 +158,12 @@ private extension DialogScreen {
 
     func askForMessages(refresh: Bool = false) async {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        if isLoading, !refresh { return }
-        if !refresh { isLoading = true }
+        if isLoading, !refresh {
+            return
+        }
+        if !refresh {
+            isLoading = true
+        }
         do {
             #if DEBUG
             let client: MessagesClient = Constants.isUITest

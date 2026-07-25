@@ -111,7 +111,11 @@ extension DialogsListScreen.ViewModel {
         case error(ErrorKind)
 
         var dialogs: [DialogResponse]? {
-            if case let .ready(list) = self { list } else { nil }
+            if case let .ready(list) = self {
+                list
+            } else {
+                nil
+            }
         }
 
         var isLoading: Bool {

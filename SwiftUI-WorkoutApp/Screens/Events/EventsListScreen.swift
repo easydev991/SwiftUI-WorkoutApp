@@ -45,7 +45,9 @@ struct EventsListScreen: View {
                 Text(Strings.Alert.eventCreationRule)
             }
             .onChange(of: defaults.isAuthorized) { isAuth in
-                if !isAuth { selectedEvent = nil }
+                if !isAuth {
+                    selectedEvent = nil
+                }
             }
             .refreshable { await askForEvents(refresh: true) }
             .toolbar {
@@ -175,9 +177,12 @@ private extension EventsListScreen {
         let hasPastEvents = selectedEventType == .past && !pastEvents.isEmpty
         if isLoading && !refresh
             || (hasFutureEvents && !refresh)
-            || (hasPastEvents && !refresh)
-        { return }
-        if !refresh { isLoading = true }
+            || (hasPastEvents && !refresh) {
+            return
+        }
+        if !refresh {
+            isLoading = true
+        }
         do {
             #if DEBUG
             let client: EventsClient = Constants.isUITest

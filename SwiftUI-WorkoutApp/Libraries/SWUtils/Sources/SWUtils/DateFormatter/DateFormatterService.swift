@@ -34,7 +34,9 @@ public enum DateFormatterService {
         dateFormatter.dateFormat = format.rawValue
         dateFormatter.timeZone = timeZone
         var string = dateFormatter.string(from: date)
-        if iso { string.append("Z") }
+        if iso {
+            string.append("Z")
+        }
         return string
     }
 

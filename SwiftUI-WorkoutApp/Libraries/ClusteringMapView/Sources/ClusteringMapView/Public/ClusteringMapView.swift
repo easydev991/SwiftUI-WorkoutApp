@@ -100,7 +100,9 @@ public extension ClusteringMapView {
         }
 
         public func mapView(_: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped _: UIControl) {
-            if let annotation = view.annotation { parent.didSelect(annotation) }
+            if let annotation = view.annotation {
+                parent.didSelect(annotation)
+            }
         }
 
         public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

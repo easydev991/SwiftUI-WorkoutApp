@@ -254,7 +254,9 @@ private extension ParksMapScreen {
 
     /// Заполняем/обновляем дефолтный список площадок
     func askForParks(refresh: Bool = false) async {
-        if !parksCache.parks.isEmpty, !refresh { return }
+        if !parksCache.parks.isEmpty, !refresh {
+            return
+        }
         // Если refresh и данные уже загружены - загружаем с сервера
         if refresh, !parksManager.fullList.isEmpty {
             guard isNetworkConnected else {

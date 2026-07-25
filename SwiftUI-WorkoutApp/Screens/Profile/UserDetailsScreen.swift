@@ -179,7 +179,9 @@ private extension UserDetailsScreen {
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else {
             return
         }
-        if !refresh { isLoading = true }
+        if !refresh {
+            isLoading = true
+        }
         if refresh || !user.isFull {
             await makeUserInfo()
         }

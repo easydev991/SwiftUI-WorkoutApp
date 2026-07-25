@@ -376,9 +376,13 @@ private extension EventDetailsScreen {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if event.isFull, !refresh { return }
+        if event.isFull, !refresh {
+            return
+        }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        if !refresh { isLoading = true }
+        if !refresh {
+            isLoading = true
+        }
         do {
             #if DEBUG
             let client: EventsClient = Constants.isUITest

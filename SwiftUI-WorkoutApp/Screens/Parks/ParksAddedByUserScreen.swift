@@ -31,7 +31,9 @@ struct ParksAddedByUserScreen: View {
             parkList = await (try? parksManager.getParks(ids: parkIds)) ?? []
         }
         .onChange(of: parkList) { updatedParks in
-            if updatedParks.isEmpty { dismiss() }
+            if updatedParks.isEmpty {
+                dismiss()
+            }
         }
         .sheet(item: $selectedPark) { park in
             NavigationStack {

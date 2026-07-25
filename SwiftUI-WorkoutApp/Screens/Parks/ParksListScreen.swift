@@ -62,7 +62,11 @@ extension ParksListScreen {
         case error(ErrorKind)
 
         var isLoading: Bool {
-            if case .loading = self { true } else { false }
+            if case .loading = self {
+                true
+            } else {
+                false
+            }
         }
 
         /// Нужно ли загружать данные, когда их нет (или для рефреша)
@@ -82,7 +86,11 @@ extension ParksListScreen {
         }
 
         var isReadyAndEmpty: Bool {
-            if case let .ready(parks) = self { parks.isEmpty } else { false }
+            if case let .ready(parks) = self {
+                parks.isEmpty
+            } else {
+                false
+            }
         }
     }
 }
@@ -164,7 +172,9 @@ private extension ParksListScreen {
                 #endif
                 let parks = try await client.getParksForUser(userId)
                 let isMainUser = userId == defaults.mainUserInfo?.id
-                if isMainUser { defaults.setUserNeedUpdate(false) }
+                if isMainUser {
+                    defaults.setUserNeedUpdate(false)
+                }
                 currentState = .ready(parks)
             } catch {
                 currentState = .error(.common(message: error.localizedDescription))

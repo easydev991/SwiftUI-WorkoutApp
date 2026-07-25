@@ -44,7 +44,11 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
         @ViewBuilder content: @escaping (UIImage) -> Content,
         @ViewBuilder placeholder: () -> Placeholder = { ProgressView() }
     ) {
-        let realURL: URL? = if let url { URL(string: url) } else { nil }
+        let realURL: URL? = if let url {
+            URL(string: url)
+        } else {
+            nil
+        }
         self.init(
             url: realURL,
             transition: transition,

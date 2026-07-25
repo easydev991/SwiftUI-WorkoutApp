@@ -15,7 +15,9 @@ extension XCTestCase {
     @discardableResult
     func waitAndTap(timeout: TimeInterval, element: XCUIElement) -> Bool {
         let isElementFound = element.waitForExistence(timeout: timeout)
-        if isElementFound { element.tapElement() }
+        if isElementFound {
+            element.tapElement()
+        }
         return isElementFound
     }
 

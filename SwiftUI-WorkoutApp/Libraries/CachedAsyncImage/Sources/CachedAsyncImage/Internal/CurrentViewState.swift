@@ -7,7 +7,11 @@ enum CurrentViewState: Equatable {
     case ready(UIImage)
     case error
     var uiImage: UIImage? {
-        if case let .ready(uiImage) = self { uiImage } else { nil }
+        if case let .ready(uiImage) = self {
+            uiImage
+        } else {
+            nil
+        }
     }
 
     var shouldLoad: Bool {

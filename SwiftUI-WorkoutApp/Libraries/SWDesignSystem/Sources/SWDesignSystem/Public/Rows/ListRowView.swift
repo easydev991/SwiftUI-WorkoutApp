@@ -94,7 +94,9 @@ public extension ListRowView {
             case .empty:
                 EmptyView()
             case .chevron:
-                if isEnabled { ChevronView() }
+                if isEnabled {
+                    ChevronView()
+                }
             case let .text(text):
                 if !text.isEmpty {
                     makeTextView(with: .init(text))
@@ -104,7 +106,9 @@ public extension ListRowView {
                     if !text.isEmpty {
                         makeTextView(with: .init(text))
                     }
-                    if isEnabled { ChevronView() }
+                    if isEnabled {
+                        ChevronView()
+                    }
                 }
             }
         }

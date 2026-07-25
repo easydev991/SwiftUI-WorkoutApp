@@ -51,7 +51,9 @@ struct ParkDetailScreen: View {
         .refreshable { await askForInfo(refresh: true) }
         .sheet(item: $sheetItem, content: makeSheetContent)
         .onChange(of: defaults.isAuthorized) { isAuth in
-            if !isAuth { dismiss() }
+            if !isAuth {
+                dismiss()
+            }
         }
         .onDisappear(perform: cancelTasks)
         .toolbar {
@@ -358,9 +360,13 @@ private extension ParkDetailScreen {
     }
 
     func askForInfo(refresh: Bool = false) async {
-        if park.isFull, !refresh { return }
+        if park.isFull, !refresh {
+            return
+        }
         guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        if !refresh { isLoading = true }
+        if !refresh {
+            isLoading = true
+        }
         do {
             #if DEBUG
             let client: ParksClient = Constants.isUITest
