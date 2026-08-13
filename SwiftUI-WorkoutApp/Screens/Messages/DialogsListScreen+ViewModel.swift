@@ -13,7 +13,7 @@ extension DialogsListScreen {
         init(
             isUITest: Bool = false,
             authHelper: AuthHelper,
-            analytics: AnalyticsService = AnalyticsService(providers: [NoopAnalyticsProvider()])
+            analytics: AnalyticsService = AnalyticsService()
         ) {
             self.isUITest = isUITest
             self.authHelper = authHelper

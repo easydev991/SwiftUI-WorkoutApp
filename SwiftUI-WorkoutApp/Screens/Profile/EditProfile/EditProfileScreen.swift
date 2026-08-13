@@ -292,20 +292,11 @@ private extension EditProfileScreen {
     }
 
     func sendFeedback(mode: ItemListScreen.Mode) {
-        let source = switch mode {
-        case .city: AnalyticsEvent.AppScreen.cityList
-        case .country: AnalyticsEvent.AppScreen.countryList
+        let source: AnalyticsEvent.AppScreen = switch mode {
+        case .city: .cityList
+        case .country: .countryList
         }
-        analytics.log(.userAction(action: .sendFeedback(source: source)))
-        let (subject, body) = switch mode {
-        case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
-        case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)
-        }
-        FeedbackSender.sendFeedback(
-            subject: subject,
-            messageBody: body,
-            recipients: Constants.feedbackRecipient
-        )
+        mode.sendFeedback(source: source, analytics: analytics)
     }
 }
 

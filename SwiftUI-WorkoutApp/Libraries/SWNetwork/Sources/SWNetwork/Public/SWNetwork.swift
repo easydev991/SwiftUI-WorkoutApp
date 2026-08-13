@@ -1,14 +1,12 @@
 import Foundation
 import OSLog
 
-public protocol SWNetworkProtocol: Sendable {
-    /// Делает запрос и возвращает данные в ответе
+public protocol NetworkServicing: Sendable {
     func requestData<T: Decodable>(components: RequestComponents) async throws -> T
-    /// Делает запрос для проверки статуса операции, в случае успеха ничего не возвращает
     func requestStatus(components: RequestComponents) async throws
 }
 
-public struct SWNetworkService {
+public struct SWNetworkService: NetworkServicing {
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "SWNetworkService",
         category: String(describing: SWNetworkService.self)
@@ -27,8 +25,8 @@ public struct SWNetworkService {
     }
 }
 
-extension SWNetworkService: SWNetworkProtocol {
-    public func requestData<T: Decodable>(components: RequestComponents) async throws -> T {
+public extension SWNetworkService {
+    func requestData<T: Decodable>(components: RequestComponents) async throws -> T {
         guard let request = components.urlRequest else {
             throw APIError.badRequest
         }
@@ -60,7 +58,7 @@ extension SWNetworkService: SWNetworkProtocol {
         }
     }
 
-    public func requestStatus(components: RequestComponents) async throws {
+    func requestStatus(components: RequestComponents) async throws {
         guard let request = components.urlRequest else {
             throw APIError.badRequest
         }

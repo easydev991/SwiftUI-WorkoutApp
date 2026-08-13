@@ -6,24 +6,27 @@ import SWNetwork
 public struct SWClient: Sendable {
     let authHelper: AuthHelper
     /// Сервис для отправки запросов/получения ответов от сервера
-    let service: SWNetworkProtocol
+    let service: any NetworkServicing
 
     /// Инициализатор
     /// - Parameter authHelper: Сервис, предоставляющий токен авторизации,
     /// и выполняющий логаут при необходимости
     public init(with authHelper: AuthHelper) {
+        self.init(with: authHelper, service: SWNetworkService())
+    }
+
+    init(with authHelper: AuthHelper, service: any NetworkServicing) {
         self.authHelper = authHelper
-        self.service = SWNetworkService()
+        self.service = service
     }
 }
 
 // MARK: - Обертки для SWNetworkService
 
 extension SWClient {
-    func makeStatus(for endpoint: Endpoint) async throws {
+    private func mapErrors<T>(_ work: () async throws -> T) async throws -> T {
         do {
-            let finalComponents = try await makeComponents(for: endpoint)
-            try await service.requestStatus(components: finalComponents)
+            return try await work()
         } catch APIError.invalidCredentials {
             await authHelper.triggerLogout()
             throw ClientError.forceLogout
@@ -36,22 +39,20 @@ extension SWClient {
         }
     }
 
+    func makeStatus(for endpoint: Endpoint) async throws {
+        try await mapErrors {
+            let finalComponents = try await makeComponents(for: endpoint)
+            try await service.requestStatus(components: finalComponents)
+        }
+    }
+
     func makeResult<T: Decodable>(
         for endpoint: Endpoint,
         with token: String? = nil
     ) async throws -> T {
-        do {
+        try await mapErrors {
             let finalComponents = try await makeComponents(for: endpoint, with: token)
             return try await service.requestData(components: finalComponents)
-        } catch APIError.invalidCredentials {
-            await authHelper.triggerLogout()
-            throw ClientError.forceLogout
-        } catch APIError.notConnectedToInternet {
-            throw ClientError.noConnection
-        } catch APIError.notFound {
-            throw ClientError.notFound
-        } catch {
-            throw error
         }
     }
 

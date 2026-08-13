@@ -18,8 +18,7 @@ public protocol AuthClient: Sendable {
 extension SWClient: AuthClient {
     public func logIn(with token: String?) async throws -> Int {
         let endpoint = Endpoint.login
-        let finalComponents = try await makeComponents(for: endpoint, with: token)
-        let result: LoginResponse = try await service.requestData(components: finalComponents)
+        let result: LoginResponse = try await makeResult(for: endpoint, with: token)
         return result.userId
     }
 

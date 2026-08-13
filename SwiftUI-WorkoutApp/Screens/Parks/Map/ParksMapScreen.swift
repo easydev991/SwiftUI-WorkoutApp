@@ -373,16 +373,7 @@ private extension ParksMapScreen {
     }
 
     func sendFeedback(mode: ItemListScreen.Mode) {
-        analytics.log(.userAction(action: .sendFeedback(source: .parksMap)))
-        let (subject, body) = switch mode {
-        case .city: (LocationFeedback.city.subject, LocationFeedback.city.body)
-        case .country: (LocationFeedback.country.subject, LocationFeedback.country.body)
-        }
-        FeedbackSender.sendFeedback(
-            subject: subject,
-            messageBody: body,
-            recipients: Constants.feedbackRecipient
-        )
+        mode.sendFeedback(source: .parksMap, analytics: analytics)
     }
 
     // MARK: - Обновление кэша
