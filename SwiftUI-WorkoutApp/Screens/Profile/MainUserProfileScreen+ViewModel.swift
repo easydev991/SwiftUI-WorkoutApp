@@ -16,7 +16,7 @@ extension MainUserProfileScreen {
 
         init(
             isUITest: Bool = false,
-            analytics: AnalyticsService = AnalyticsService(providers: [NoopAnalyticsProvider()])
+            analytics: AnalyticsService = AnalyticsService()
         ) {
             self.isUITest = isUITest
             self.analytics = analytics

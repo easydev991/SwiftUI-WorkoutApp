@@ -104,11 +104,11 @@ private extension LoginScreen {
         loginTask = Task {
             do {
                 #if DEBUG
-                let client: AllClients = Constants.isUITest
+                let client: AuthClient & ProfileClient = Constants.isUITest
                     ? MockSWClient(instantResponse: true)
                     : SWClient(with: defaults.authHelper)
                 #else
-                let client: AllClients = SWClient(with: defaults.authHelper)
+                let client: AuthClient & ProfileClient = SWClient(with: defaults.authHelper)
                 #endif
                 let model = AuthData(login: credentials.login, password: credentials.password)
                 let userId = try await client.logIn(with: model.token)

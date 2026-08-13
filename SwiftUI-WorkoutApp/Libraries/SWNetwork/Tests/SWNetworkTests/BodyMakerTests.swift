@@ -3,36 +3,24 @@ import Foundation
 import Testing
 
 struct BodyMakerTests {
-    @Test
-    func parameterInitializationFromDictionaryElement() {
-        let element = ("testKey", "testValue")
-        let parameter = BodyMaker.Parameter(from: element)
-        #expect(parameter.key == "testKey")
-        #expect(parameter.value == "testValue")
-    }
-
     // MARK: - makeBody
 
     @Test
     func makeBodyWithNoParametersReturnsNil() {
-        let result = BodyMaker.makeBody(with: [])
+        let result = BodyMaker.makeBody(with: [:])
         #expect(result == nil)
     }
 
     @Test
     func makeBodyWithSingleParameter() throws {
-        let parameter = BodyMaker.Parameter(key: "name", value: "John")
-        let result = try #require(BodyMaker.makeBody(with: [parameter]))
+        let result = try #require(BodyMaker.makeBody(with: ["name": "John"]))
         let expectedString = "name=John"
         #expect(String(data: result, encoding: .utf8) == expectedString)
     }
 
     @Test
     func makeBodyWithMultipleParameters() throws {
-        let params = [
-            BodyMaker.Parameter(key: "a", value: "1"),
-            BodyMaker.Parameter(key: "b", value: "2")
-        ]
+        let params = ["a": "1", "b": "2"]
         let result = try #require(BodyMaker.makeBody(with: params))
         let expectedString = "a=1&b=2"
         #expect(String(data: result, encoding: .utf8) == expectedString)
@@ -43,7 +31,7 @@ struct BodyMakerTests {
     @Test
     func multipartFormWithNoContentReturnsNil() {
         let result = BodyMaker.makeBodyWithMultipartForm(
-            parameters: [],
+            parameters: [:],
             media: nil,
             boundary: "BOUNDARY"
         )
@@ -52,10 +40,9 @@ struct BodyMakerTests {
 
     @Test
     func multipartFormWithParametersOnly() throws {
-        let params = [BodyMaker.Parameter(key: "text", value: "Hello")]
         let boundary = "TESTBOUNDARY"
         let result = try #require(BodyMaker.makeBodyWithMultipartForm(
-            parameters: params,
+            parameters: ["text": "Hello"],
             media: nil,
             boundary: boundary
         ))
@@ -83,7 +70,7 @@ struct BodyMakerTests {
         ]
         let boundary = "MEDIA_BOUNDARY"
         let result = try #require(BodyMaker.makeBodyWithMultipartForm(
-            parameters: [],
+            parameters: [:],
             media: media,
             boundary: boundary
         ))
@@ -102,7 +89,6 @@ struct BodyMakerTests {
 
     @Test
     func multipartFormWithMixedContent() throws {
-        let params = [BodyMaker.Parameter(key: "title", value: "Document")]
         let media = [
             BodyMaker.MediaFile(
                 key: "doc",
@@ -113,7 +99,7 @@ struct BodyMakerTests {
         ]
         let boundary = "MIXEDBOUNDARY"
         let result = try #require(BodyMaker.makeBodyWithMultipartForm(
-            parameters: params,
+            parameters: ["title": "Document"],
             media: media,
             boundary: boundary
         ))

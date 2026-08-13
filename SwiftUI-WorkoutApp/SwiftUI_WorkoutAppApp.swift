@@ -40,15 +40,15 @@ struct SwiftUI_WorkoutAppApp: App {
         #if DEBUG
         authHelper = isUITest ? MockAuthHelper() : AuthHelperImp()
         analyticsService = isUITest
-            ? AnalyticsService(providers: [NoopAnalyticsProvider()])
-            : AnalyticsService(providers: [FirebaseAnalyticsProvider()])
+            ? AnalyticsService()
+            : AnalyticsService(provider: FirebaseAnalyticsProvider())
         if isUITest {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
             UIView.setAnimationsEnabled(false)
         }
         #else
         authHelper = AuthHelperImp()
-        analyticsService = AnalyticsService(providers: [FirebaseAnalyticsProvider()])
+        analyticsService = AnalyticsService(provider: FirebaseAnalyticsProvider())
         #endif
         _defaults = .init(wrappedValue: .init(authHelper: authHelper))
         _parksManager = .init(

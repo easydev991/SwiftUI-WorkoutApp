@@ -1,11 +1,6 @@
 import UIKit.UIImage
 
-protocol ImageLoaderProtocol: Sendable {
-    func loadImage(for url: URL?) async throws -> UIImage
-    func getCachedImage(for url: URL?) -> UIImage?
-}
-
-struct ImageLoader: ImageLoaderProtocol {
+struct ImageLoader: Sendable {
     private let cache: ImageCacheProtocol
     private let urlSession: URLSession
 

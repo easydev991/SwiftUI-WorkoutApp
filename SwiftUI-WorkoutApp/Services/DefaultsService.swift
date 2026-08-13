@@ -120,7 +120,7 @@ final class DefaultsService: ObservableObject {
 
     func getUserPassword() throws -> String {
         guard let authHelperImp = authHelper as? AuthHelperImp else {
-            throw StorageError.noAuthData
+            throw AuthHelperImp.StorageError.noAuthData
         }
         return try authHelperImp.getUserPassword()
     }
@@ -199,18 +199,6 @@ extension DefaultsService {
             hasParks: hasParks,
             hasFriends: hasFriends
         )
-    }
-}
-
-extension DefaultsService {
-    enum StorageError: Error, LocalizedError {
-        case noAuthData
-
-        var errorDescription: String? {
-            switch self {
-            case .noAuthData: "В keychain нет данных авторизации"
-            }
-        }
     }
 }
 

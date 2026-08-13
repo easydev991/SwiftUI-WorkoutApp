@@ -29,15 +29,13 @@ public struct SWFileManagerImp: Sendable, SWFileManager {
     /// Проверяет существование сохраненного файла
     public var documentExists: Bool {
         let path = documentDirectoryURL.appendingPathComponent(fileName).path()
-        return FileManager().fileExists(atPath: path)
+        return FileManager.default.fileExists(atPath: path)
     }
 
     /// Сохраняет `Encodable`-объект
     public func save(_ object: some Encodable) throws {
-        let encodedData = try JSONEncoder().encode(object)
-        let jsonString = String(decoding: encodedData, as: UTF8.self)
         let url = documentDirectoryURL.appendingPathComponent(fileName)
-        try jsonString.write(to: url, atomically: true, encoding: .utf8)
+        try JSONEncoder().encode(object).write(to: url, options: .atomic)
     }
 
     /// Загружает данные из ранее сохраненного файла

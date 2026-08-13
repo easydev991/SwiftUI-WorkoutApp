@@ -7,7 +7,7 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
         subsystem: Bundle.main.bundleIdentifier ?? "CachedAsyncImage",
         category: "View"
     )
-    private let loader: ImageLoaderProtocol = ImageLoader()
+    private let loader = ImageLoader()
     private let transition: AnyTransition
     private let placeholder: Placeholder
     private let content: (UIImage) -> Content

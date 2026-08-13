@@ -55,7 +55,7 @@ extension RequestComponents {
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
 
-        var allHeaders = [HTTPHeaderField]()
+        var allHeaders: [String: String] = [:]
         var httpBodyData: Data?
 
         if let bodyParts {
@@ -66,24 +66,19 @@ extension RequestComponents {
                     media: bodyParts.mediaFiles,
                     boundary: boundary
                 )
-                allHeaders.append(.init(
-                    key: "Content-Type",
-                    value: "multipart/form-data; boundary=\(boundary)"
-                ))
+                allHeaders["Content-Type"] = "multipart/form-data; boundary=\(boundary)"
             } else {
                 httpBodyData = BodyMaker.makeBody(with: parameters)
             }
             if let httpBodyData {
-                allHeaders.append(.init(key: "Content-Length", value: "\(httpBodyData.count)"))
+                allHeaders["Content-Length"] = "\(httpBodyData.count)"
             }
         }
 
         if let token, !token.isEmpty {
-            allHeaders.append(.init(key: "Authorization", value: "Basic \(token)"))
+            allHeaders["Authorization"] = "Basic \(token)"
         }
-        request.allHTTPHeaderFields = Dictionary(
-            uniqueKeysWithValues: allHeaders.map { ($0.key, $0.value) }
-        )
+        request.allHTTPHeaderFields = allHeaders
         request.httpBody = httpBodyData
         return request
     }

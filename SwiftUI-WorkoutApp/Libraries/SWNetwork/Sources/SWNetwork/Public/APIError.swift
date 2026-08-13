@@ -1,7 +1,6 @@
 import Foundation
 
 public enum APIError: Error, LocalizedError, Equatable {
-    case noData
     case unknown
     case badRequest
     case invalidCredentials
@@ -10,7 +9,6 @@ public enum APIError: Error, LocalizedError, Equatable {
     case serverError
     case invalidUserId
     case customError(code: Int, message: String)
-    case decodingError
     case notConnectedToInternet
 
     init(_ error: ErrorResponse, _ statusCode: Int?) {
@@ -58,8 +56,6 @@ public enum APIError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .noData:
-            String(localized: .errorNoData)
         case .unknown:
             String(localized: .errorUnknown)
         case .badRequest:
@@ -76,8 +72,6 @@ public enum APIError: Error, LocalizedError, Equatable {
             String(localized: .errorInvalidUserID)
         case let .customError(code, error):
             "\(code), \(error)"
-        case .decodingError:
-            String(localized: .errorDecoding)
         case .notConnectedToInternet:
             String(localized: .errorNoInternet)
         }

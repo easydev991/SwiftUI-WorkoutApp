@@ -2,43 +2,28 @@ import Foundation
 
 /// Делает `body` для запроса
 public enum BodyMaker {
-    struct Parameter {
-        let key: String
-        let value: String
-
-        init(from element: Dictionary<String, String>.Element) {
-            self.key = element.key
-            self.value = element.value
-        }
-
-        init(key: String, value: String) {
-            self.key = key
-            self.value = value
-        }
-    }
-
-    /// Делает `body` из словаря
+    /// Делает `body` из словаря (порядок стабилен — по ключу)
     static func makeBody(
-        with parameters: [Parameter]
+        with parameters: [String: String]
     ) -> Data? {
-        parameters.isEmpty
-            ? nil
-            : parameters
-                .map { $0.key + "=" + $0.value }
-                .joined(separator: "&")
-                .data(using: .utf8)
+        guard !parameters.isEmpty else { return nil }
+        return parameters
+            .sorted { $0.key < $1.key }
+            .map { "\($0.key)=\($0.value)" }
+            .joined(separator: "&")
+            .data(using: .utf8)
     }
 
-    /// Делает `body` из словаря и медиа-файлов
+    /// Делает `body` из словаря и медиа-файлов (порядок параметров стабилен — по ключу)
     static func makeBodyWithMultipartForm(
-        parameters: [Parameter],
+        parameters: [String: String],
         media: [MediaFile]?,
         boundary: String
     ) -> Data? {
         let lineBreak = "\r\n"
         var body = Data()
         if !parameters.isEmpty {
-            parameters.forEach { element in
+            parameters.sorted { $0.key < $1.key }.forEach { element in
                 body.append("--\(boundary)\(lineBreak)")
                 body.append("Content-Disposition: form-data; name=\"\(element.key)\"\(lineBreak + lineBreak)")
                 body.append("\(element.value)\(lineBreak)")
@@ -64,11 +49,11 @@ public enum BodyMaker {
 public extension BodyMaker {
     /// Модель для последующего создания тела запроса
     struct Parts {
-        let parameters: [Parameter]
+        let parameters: [String: String]
         let mediaFiles: [MediaFile]?
 
         public init(_ parameters: [String: String], _ mediaFiles: [MediaFile]?) {
-            self.parameters = parameters.map(Parameter.init)
+            self.parameters = parameters
             self.mediaFiles = mediaFiles
         }
     }

@@ -1,15 +1,13 @@
 import Foundation
 
 struct AnalyticsService {
-    private let providers: [any AnalyticsProvider]
+    private let provider: (any AnalyticsProvider)?
 
-    init(providers: [any AnalyticsProvider] = []) {
-        self.providers = providers
+    init(provider: (any AnalyticsProvider)? = nil) {
+        self.provider = provider
     }
 
     func log(_ event: AnalyticsEvent) {
-        for provider in providers {
-            provider.log(event: event)
-        }
+        provider?.log(event: event)
     }
 }

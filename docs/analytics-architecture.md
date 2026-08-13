@@ -20,8 +20,7 @@
 - Провайдерная схема:
   - `AnalyticsProvider` (протокол)
   - `FirebaseAnalyticsProvider` (отправка в Firebase)
-  - `NoopAnalyticsProvider` (тесты/превью/UITest-конфигурации)
-- `AnalyticsService` делает fan-out во все подключенные провайдеры.
+- `AnalyticsService` делегирует событие в единственный подключенный провайдер.
 
 ## 3. Интеграция и DI
 
