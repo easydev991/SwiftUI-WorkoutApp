@@ -78,6 +78,7 @@
 ## 9. Ключевые файлы
 
 - `SwiftUI-WorkoutApp/Services/Analytics/AnalyticsEvent.swift`
+- `SwiftUI-WorkoutApp/Services/Analytics/AnalyticsProvider.swift`
 - `SwiftUI-WorkoutApp/Services/Analytics/AnalyticsService.swift`
 - `SwiftUI-WorkoutApp/Services/Analytics/FirebaseAnalyticsProvider.swift`
 - `SwiftUI-WorkoutApp/EnvironmentKeys/AnalyticsServiceEnvironmentKey.swift`

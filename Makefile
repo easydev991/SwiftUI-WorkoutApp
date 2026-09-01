@@ -13,6 +13,9 @@ RUBY_VERSION=3.3.6
 # Версия Swift в проекте
 SWIFT_VERSION=6.3.0
 
+# Destination для iOS-симулятора (сборка и тесты) — единственное место, где задано имя девайса
+IOS_SIM_DEST ?= platform=iOS Simulator,name=iPhone 17
+
 # Глобальные настройки шелла
 SHELL := /bin/bash
 .ONESHELL:
@@ -352,7 +355,7 @@ format:
 	@printf "$(GREEN)Форматирование завершено!$(RESET)\n"
 	@if command -v markdownlint >/dev/null 2>&1; then \
 		printf "$(YELLOW)Форматирование Markdown-файлов...$(RESET)\\n"; \
-		markdownlint --fix "**/*.md" ".cursor/rules/*.mdc" && printf "$(GREEN_NORMAL)Markdown-файлы успешно отформатированы$(RESET)\\n"; \
+		markdownlint --fix "**/*.md" ".agents/rules/*.md" && printf "$(GREEN_NORMAL)Markdown-файлы успешно отформатированы$(RESET)\\n"; \
 	else \
 		echo "$(YELLOW)markdownlint-cli не установлен. Для установки: npm install -g markdownlint-cli$(RESET)"; \
 	fi
@@ -385,11 +388,11 @@ upload_screenshots:
 
 ## build: Сборка проекта в терминале
 build:
-	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' build
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination '$(IOS_SIM_DEST)' build
 
 ## test: Запускает unit-тесты в терминале
 test:
-	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' test -testPlan SwiftUI-WorkoutApp
+	xcodebuild -project SwiftUI-WorkoutApp.xcodeproj -scheme SwiftUI-WorkoutApp -sdk iphonesimulator -destination '$(IOS_SIM_DEST)' test -testPlan SwiftUI-WorkoutApp
 
 ## scan_unused_code: Запустить поиск неиспользуемого кода через Periphery (предварительно собери проект: make build или xcodebuild-mcp build_sim)
 scan_unused_code:

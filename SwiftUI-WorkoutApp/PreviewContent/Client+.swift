@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SWModels
 import SWNetworkClient
 
@@ -13,6 +14,8 @@ extension MockResult {
 }
 
 struct MockAuthClient: AuthClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockAuthClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -22,13 +25,13 @@ struct MockAuthClient: AuthClient {
     }
 
     func logIn(with _: String?) async throws -> Int {
-        print("Имитируем запрос logIn")
+        logger.debug("Имитируем запрос logIn")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно авторизовались")
+            logger.debug("Успешно авторизовались")
             return UserResponse.preview.id
         case let .failure(error):
             throw error
@@ -36,13 +39,13 @@ struct MockAuthClient: AuthClient {
     }
 
     func resetPassword(for _: String) async throws -> Bool {
-        print("Имитируем запрос resetPassword")
+        logger.debug("Имитируем запрос resetPassword")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно сбросили пароль")
+            logger.debug("Успешно сбросили пароль")
             return true
         case let .failure(error):
             throw error
@@ -51,6 +54,8 @@ struct MockAuthClient: AuthClient {
 }
 
 struct MockProfileClient: ProfileClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockProfileClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -60,13 +65,13 @@ struct MockProfileClient: ProfileClient {
     }
 
     func getUserById(_: Int) async throws -> UserResponse {
-        print("Имитируем запрос getUserById")
+        logger.debug("Имитируем запрос getUserById")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили данные пользователя")
+            logger.debug("Успешно получили данные пользователя")
             return .preview
         case let .failure(error):
             throw error
@@ -74,13 +79,13 @@ struct MockProfileClient: ProfileClient {
     }
 
     func editUser(_ id: Int, model: MainUserForm) async throws -> UserResponse {
-        print("Имитируем запрос editUser (id=\(id))")
+        logger.debug("Имитируем запрос editUser (id=\(id))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно обновили данные пользователя")
+            logger.debug("Успешно обновили данные пользователя")
             return .init(
                 id: id,
                 userName: model.userName,
@@ -102,13 +107,13 @@ struct MockProfileClient: ProfileClient {
     }
 
     func changePassword(current _: String, new _: String) async throws {
-        print("Имитируем запрос changePassword")
+        logger.debug("Имитируем запрос changePassword")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно изменили пароль")
+            logger.debug("Успешно изменили пароль")
         case let .failure(error):
             throw error
         }
@@ -120,13 +125,13 @@ struct MockProfileClient: ProfileClient {
         friendRequests: [UserResponse],
         blacklist: [UserResponse]
     ) {
-        print("Имитируем запрос getSocialUpdates (userId=\(userId))")
+        logger.debug("Имитируем запрос getSocialUpdates (userId=\(userId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили социальные обновления")
+            logger.debug("Успешно получили социальные обновления")
             return (
                 .preview,
                 UserResponse.previewFriends,
@@ -140,6 +145,8 @@ struct MockProfileClient: ProfileClient {
 }
 
 struct MockFriendsClient: FriendsClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockFriendsClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -149,13 +156,13 @@ struct MockFriendsClient: FriendsClient {
     }
 
     func getFriendsForUser(id: Int) async throws -> [UserResponse] {
-        print("Имитируем запрос getFriendsForUser (id=\(id))")
+        logger.debug("Имитируем запрос getFriendsForUser (id=\(id))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список друзей")
+            logger.debug("Успешно получили список друзей")
             return UserResponse.previewFriends
         case let .failure(error):
             throw error
@@ -163,13 +170,13 @@ struct MockFriendsClient: FriendsClient {
     }
 
     func getFriendRequests() async throws -> [UserResponse] {
-        print("Имитируем запрос getFriendRequests")
+        logger.debug("Имитируем запрос getFriendRequests")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список заявок в друзья")
+            logger.debug("Успешно получили список заявок в друзья")
             return UserResponse.previewFriendRequests
         case let .failure(error):
             throw error
@@ -177,52 +184,52 @@ struct MockFriendsClient: FriendsClient {
     }
 
     func respondToFriendRequest(from userId: Int, accept: Bool) async throws {
-        print("Имитируем запрос respondToFriendRequest (userId=\(userId), accept=\(accept))")
+        logger.debug("Имитируем запрос respondToFriendRequest (userId=\(userId), accept=\(accept))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно ответили на заявку в друзья")
+            logger.debug("Успешно ответили на заявку в друзья")
         case let .failure(error):
             throw error
         }
     }
 
     func friendAction(userId: Int, option: FriendAction) async throws {
-        print("Имитируем запрос friendAction (userId=\(userId), option=\(option))")
+        logger.debug("Имитируем запрос friendAction (userId=\(userId), option=\(option))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно выполнили действие с другом")
+            logger.debug("Успешно выполнили действие с другом")
         case let .failure(error):
             throw error
         }
     }
 
     func blacklistAction(user: UserResponse, option: BlacklistOption) async throws {
-        print("Имитируем запрос blacklistAction (userId=\(user.id), option=\(option))")
+        logger.debug("Имитируем запрос blacklistAction (userId=\(user.id), option=\(option))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно выполнили действие с черным списком")
+            logger.debug("Успешно выполнили действие с черным списком")
         case let .failure(error):
             throw error
         }
     }
 
     func findUsers(with name: String) async throws -> [UserResponse] {
-        print("Имитируем запрос findUsers (name=\(name))")
+        logger.debug("Имитируем запрос findUsers (name=\(name))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно нашли пользователей")
+            logger.debug("Успешно нашли пользователей")
             return [.previewForSearch]
         case let .failure(error):
             throw error
@@ -232,13 +239,13 @@ struct MockFriendsClient: FriendsClient {
 
 extension MockFriendsClient {
     func getBlacklist() async throws -> [UserResponse] {
-        print("Имитируем запрос getBlacklist")
+        logger.debug("Имитируем запрос getBlacklist")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили черный список")
+            logger.debug("Успешно получили черный список")
             return []
         case let .failure(error):
             throw error
@@ -247,6 +254,8 @@ extension MockFriendsClient {
 }
 
 struct MockCountriesClient: CountriesClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockCountriesClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -256,13 +265,13 @@ struct MockCountriesClient: CountriesClient {
     }
 
     func getCountries() async throws -> [Country] {
-        print("Имитируем запрос getCountries")
+        logger.debug("Имитируем запрос getCountries")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список стран")
+            logger.debug("Успешно получили список стран")
             return try SWAddress.countries()
         case let .failure(error):
             throw error
@@ -271,6 +280,8 @@ struct MockCountriesClient: CountriesClient {
 }
 
 struct MockParksClient: ParksClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockParksClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -280,13 +291,13 @@ struct MockParksClient: ParksClient {
     }
 
     func getUpdatedParks(from stringDate: String) async throws -> [Park] {
-        print("Имитируем запрос getUpdatedParks (from=\(stringDate))")
+        logger.debug("Имитируем запрос getUpdatedParks (from=\(stringDate))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили обновленные площадки")
+            logger.debug("Успешно получили обновленные площадки")
             return [.preview]
         case let .failure(error):
             throw error
@@ -294,13 +305,13 @@ struct MockParksClient: ParksClient {
     }
 
     func getPark(id: Int) async throws -> Park {
-        print("Имитируем запрос getPark (id=\(id))")
+        logger.debug("Имитируем запрос getPark (id=\(id))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили данные площадки")
+            logger.debug("Успешно получили данные площадки")
             return .preview
         case let .failure(error):
             throw error
@@ -308,13 +319,13 @@ struct MockParksClient: ParksClient {
     }
 
     func savePark(id: Int?, form _: ParkForm) async throws -> Park {
-        print("Имитируем запрос savePark (id=\(id?.description ?? "nil"))")
+        logger.debug("Имитируем запрос savePark (id=\(id?.description ?? "nil"))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно сохранили площадку")
+            logger.debug("Успешно сохранили площадку")
             return .preview
         case let .failure(error):
             throw error
@@ -322,26 +333,26 @@ struct MockParksClient: ParksClient {
     }
 
     func delete(parkId: Int) async throws {
-        print("Имитируем запрос delete (parkId=\(parkId))")
+        logger.debug("Имитируем запрос delete (parkId=\(parkId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили площадку")
+            logger.debug("Успешно удалили площадку")
         case let .failure(error):
             throw error
         }
     }
 
     func getParksForUser(_ userId: Int) async throws -> [Park] {
-        print("Имитируем запрос getParksForUser (userId=\(userId))")
+        logger.debug("Имитируем запрос getParksForUser (userId=\(userId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список площадок пользователя")
+            logger.debug("Успешно получили список площадок пользователя")
             return [.preview]
         case let .failure(error):
             throw error
@@ -349,13 +360,13 @@ struct MockParksClient: ParksClient {
     }
 
     func changeTrainHereStatus(_ trainHere: Bool, for parkId: Int) async throws {
-        print("Имитируем запрос changeTrainHereStatus (trainHere=\(trainHere), parkId=\(parkId))")
+        logger.debug("Имитируем запрос changeTrainHereStatus (trainHere=\(trainHere), parkId=\(parkId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно изменили статус тренировки на площадке")
+            logger.debug("Успешно изменили статус тренировки на площадке")
         case let .failure(error):
             throw error
         }
@@ -363,6 +374,8 @@ struct MockParksClient: ParksClient {
 }
 
 struct MockCommentsClient: CommentsClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockCommentsClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -372,39 +385,39 @@ struct MockCommentsClient: CommentsClient {
     }
 
     func addNewEntry(to option: TextEntryOption, entryText: String) async throws {
-        print("Имитируем запрос addNewEntry (option=\(option), entryText=\(entryText))")
+        logger.debug("Имитируем запрос addNewEntry (option=\(option), entryText=\(entryText))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно добавили запись")
+            logger.debug("Успешно добавили запись")
         case let .failure(error):
             throw error
         }
     }
 
     func editEntry(for option: TextEntryOption, entryId: Int, newEntryText _: String) async throws {
-        print("Имитируем запрос editEntry (option=\(option), entryId=\(entryId))")
+        logger.debug("Имитируем запрос editEntry (option=\(option), entryId=\(entryId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно изменили запись")
+            logger.debug("Успешно изменили запись")
         case let .failure(error):
             throw error
         }
     }
 
     func deleteEntry(from option: TextEntryOption, entryId: Int) async throws {
-        print("Имитируем запрос deleteEntry (option=\(option), entryId=\(entryId))")
+        logger.debug("Имитируем запрос deleteEntry (option=\(option), entryId=\(entryId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили запись")
+            logger.debug("Успешно удалили запись")
         case let .failure(error):
             throw error
         }
@@ -412,6 +425,8 @@ struct MockCommentsClient: CommentsClient {
 }
 
 struct MockEventsClient: EventsClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockEventsClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -421,13 +436,13 @@ struct MockEventsClient: EventsClient {
     }
 
     func getEvents(of type: EventType) async throws -> [EventResponse] {
-        print("Имитируем запрос getEvents (type=\(type))")
+        logger.debug("Имитируем запрос getEvents (type=\(type))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список мероприятий")
+            logger.debug("Успешно получили список мероприятий")
             return EventResponse.previewList
         case let .failure(error):
             throw error
@@ -435,13 +450,13 @@ struct MockEventsClient: EventsClient {
     }
 
     func getEvent(by id: Int) async throws -> EventResponse {
-        print("Имитируем запрос getEvent (id=\(id))")
+        logger.debug("Имитируем запрос getEvent (id=\(id))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили данные мероприятия")
+            logger.debug("Успешно получили данные мероприятия")
             return EventResponse.previewList.first ?? .preview
         case let .failure(error):
             throw error
@@ -449,13 +464,13 @@ struct MockEventsClient: EventsClient {
     }
 
     func saveEvent(id: Int?, form _: EventForm) async throws -> EventResponse {
-        print("Имитируем запрос saveEvent (id=\(id?.description ?? "nil"))")
+        logger.debug("Имитируем запрос saveEvent (id=\(id?.description ?? "nil"))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно сохранили мероприятие")
+            logger.debug("Успешно сохранили мероприятие")
             return .preview
         case let .failure(error):
             throw error
@@ -463,26 +478,26 @@ struct MockEventsClient: EventsClient {
     }
 
     func changeIsGoingToEvent(_ go: Bool, for eventId: Int) async throws {
-        print("Имитируем запрос changeIsGoingToEvent (go=\(go), eventId=\(eventId))")
+        logger.debug("Имитируем запрос changeIsGoingToEvent (go=\(go), eventId=\(eventId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно изменили статус участия в мероприятии")
+            logger.debug("Успешно изменили статус участия в мероприятии")
         case let .failure(error):
             throw error
         }
     }
 
     func delete(eventId: Int) async throws {
-        print("Имитируем запрос delete (eventId=\(eventId))")
+        logger.debug("Имитируем запрос delete (eventId=\(eventId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили мероприятие")
+            logger.debug("Успешно удалили мероприятие")
         case let .failure(error):
             throw error
         }
@@ -490,6 +505,8 @@ struct MockEventsClient: EventsClient {
 }
 
 struct MockMessagesClient: MessagesClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockMessagesClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -499,13 +516,13 @@ struct MockMessagesClient: MessagesClient {
     }
 
     func getDialogs() async throws -> [DialogResponse] {
-        print("Имитируем запрос getDialogs")
+        logger.debug("Имитируем запрос getDialogs")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список диалогов")
+            logger.debug("Успешно получили список диалогов")
             return [.preview]
         case let .failure(error):
             throw error
@@ -513,13 +530,13 @@ struct MockMessagesClient: MessagesClient {
     }
 
     func getMessages(for dialog: Int) async throws -> [MessageResponse] {
-        print("Имитируем запрос getMessages (dialog=\(dialog))")
+        logger.debug("Имитируем запрос getMessages (dialog=\(dialog))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили сообщения")
+            logger.debug("Успешно получили сообщения")
             return []
         case let .failure(error):
             throw error
@@ -527,39 +544,39 @@ struct MockMessagesClient: MessagesClient {
     }
 
     func sendMessage(_: String, to userId: Int) async throws {
-        print("Имитируем запрос sendMessage (to=\(userId))")
+        logger.debug("Имитируем запрос sendMessage (to=\(userId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно отправили сообщение")
+            logger.debug("Успешно отправили сообщение")
         case let .failure(error):
             throw error
         }
     }
 
     func markAsRead(from userId: Int) async throws {
-        print("Имитируем запрос markAsRead (from=\(userId))")
+        logger.debug("Имитируем запрос markAsRead (from=\(userId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно отметили сообщения как прочитанные")
+            logger.debug("Успешно отметили сообщения как прочитанные")
         case let .failure(error):
             throw error
         }
     }
 
     func deleteDialog(_ dialogId: Int) async throws {
-        print("Имитируем запрос deleteDialog (dialogId=\(dialogId))")
+        logger.debug("Имитируем запрос deleteDialog (dialogId=\(dialogId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили диалог")
+            logger.debug("Успешно удалили диалог")
         case let .failure(error):
             throw error
         }
@@ -567,6 +584,8 @@ struct MockMessagesClient: MessagesClient {
 }
 
 struct MockJournalsClient: JournalsClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockJournalsClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -576,13 +595,13 @@ struct MockJournalsClient: JournalsClient {
     }
 
     func getJournals(for userId: Int) async throws -> [JournalResponse] {
-        print("Имитируем запрос getJournals (userId=\(userId))")
+        logger.debug("Имитируем запрос getJournals (userId=\(userId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили список дневников")
+            logger.debug("Успешно получили список дневников")
             return [.preview]
         case let .failure(error):
             throw error
@@ -596,39 +615,39 @@ struct MockJournalsClient: JournalsClient {
         viewAccess _: JournalAccess,
         commentAccess _: JournalAccess
     ) async throws {
-        print("Имитируем запрос editJournalSettings (journalId=\(journalId))")
+        logger.debug("Имитируем запрос editJournalSettings (journalId=\(journalId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно изменили настройки дневника")
+            logger.debug("Успешно изменили настройки дневника")
         case let .failure(error):
             throw error
         }
     }
 
     func createJournal(with title: String, for _: Int?) async throws {
-        print("Имитируем запрос createJournal (title=\(title))")
+        logger.debug("Имитируем запрос createJournal (title=\(title))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно создали дневник")
+            logger.debug("Успешно создали дневник")
         case let .failure(error):
             throw error
         }
     }
 
     func getJournalEntries(for userId: Int, journalId: Int) async throws -> [JournalEntryResponse] {
-        print("Имитируем запрос getJournalEntries (userId=\(userId), journalId=\(journalId))")
+        logger.debug("Имитируем запрос getJournalEntries (userId=\(userId), journalId=\(journalId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно получили записи дневника")
+            logger.debug("Успешно получили записи дневника")
             return [.preview]
         case let .failure(error):
             throw error
@@ -636,13 +655,13 @@ struct MockJournalsClient: JournalsClient {
     }
 
     func deleteJournal(with journalId: Int, for _: Int?) async throws {
-        print("Имитируем запрос deleteJournal (journalId=\(journalId))")
+        logger.debug("Имитируем запрос deleteJournal (journalId=\(journalId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили дневник")
+            logger.debug("Успешно удалили дневник")
         case let .failure(error):
             throw error
         }
@@ -650,6 +669,8 @@ struct MockJournalsClient: JournalsClient {
 }
 
 struct MockPhotosClient: PhotosClient {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MockPhotosClient")
+
     let result: MockResult
     let instantResponse: Bool
 
@@ -659,13 +680,13 @@ struct MockPhotosClient: PhotosClient {
     }
 
     func deletePhoto(from container: PhotoContainer) async throws {
-        print("Имитируем запрос deletePhoto (container=\(container))")
+        logger.debug("Имитируем запрос deletePhoto (container=\(container))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
         switch result {
         case .success:
-            print("Успешно удалили фотографию")
+            logger.debug("Успешно удалили фотографию")
         case let .failure(error):
             throw error
         }
