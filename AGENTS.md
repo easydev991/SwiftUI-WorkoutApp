@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SwiftUI WorkoutApp — iOS street workout app, Swift 6.2, iOS 16+, MVVM architecture, modular structure. Xcode project (`.xcodeproj`) with local Swift Packages under `SwiftUI-WorkoutApp/Libraries/` and external SPM dependencies (e.g. Firebase).
+SwiftUI WorkoutApp — iOS street workout app, Swift 6.3, iOS 16+, MVVM architecture, modular structure. Xcode project (`.xcodeproj`) with local Swift Packages under `SwiftUI-WorkoutApp/Libraries/` and external SPM dependencies (e.g. Firebase).
 
 ## Build / Format / Test Commands
 
@@ -57,22 +57,22 @@ swift test --package-path SwiftUI-WorkoutApp/Libraries/SWNetwork
 ```
 SwiftUI-WorkoutApp/
 ├── Screens/              # All screens (Root, Parks, Events, Profile, Messages, More, Common)
-├── Services/              # Business logic (DefaultsService, ParksManager, GeocodingService, etc.)
-├── Libraries/            # Local Swift Packages
-│   ├── SWModels/         # Shared data models (Codable structs)
-│   ├── SWNetwork/        # Network layer
-│   ├── SWNetworkClient/  # API client (SWClient implementing protocol-based clients)
-│   ├── SWUtils/          # Shared utilities
-│   ├── SWKeychain/       # Keychain wrapper
-│   ├── SWDesignSystem/   # Design system (colors, fonts, components)
-│   ├── CachedAsyncImage/ # Async image caching
-│   └── ClusteringMapView/# Map clustering
-├── Extensions/           # Swift extensions
-├── EnvironmentKeys/      # Custom SwiftUI environment keys
-├── PreviewContent/       # SwiftUI preview data
-├── Resources/            # Assets and resources
-├── WorkoutAppTests/      # Unit tests
-└── WorkoutAppUITests/    # UI tests
+├── Services/               # Business logic (DefaultsService, ParksManager, GeocodingService, etc.)
+├── Libraries/              # Local Swift Packages
+│   ├── SWModels/           # Shared data models (Codable structs)
+│   ├── SWNetwork/          # Network layer
+│   ├── SWNetworkClient/    # API client (SWClient implementing protocol-based clients)
+│   ├── SWUtils/            # Shared utilities
+│   ├── SWKeychain/         # Keychain wrapper
+│   ├── SWDesignSystem/     # Design system (colors, fonts, components)
+│   ├── CachedAsyncImage/   # Async image caching
+│   └── ClusteringMapView/  # Map clustering
+├── Extensions/             # Swift extensions
+├── EnvironmentKeys/        # Custom SwiftUI environment keys
+├── PreviewContent/         # SwiftUI preview data
+├── Resources/              # Assets and resources
+WorkoutAppTests/            # Unit tests (repo root)
+WorkoutAppUITests/          # UI tests (repo root)
 ```
 
 ViewModels live as extensions in the same file or a `+ViewModel.swift` file next to their screen.
@@ -82,7 +82,7 @@ ViewModels live as extensions in the same file or a `+ViewModel.swift` file next
 - **MVVM**: Views → ViewModel (ObservableObject) → Service/Manager → Client
 - **DI**: `@EnvironmentObject` for passing services/view models down the hierarchy
 - **Single user**: Only one user at a time; logout clears all user data
-- **Network layer**: Protocol-based client interfaces in `Services/Protocols/`. `SWClient` conforms to all client protocols
+- **Network layer**: Protocol-based client interfaces in `SWNetworkClient` package (`Sources/SWNetworkClient/Protocols/`). `SWClient` conforms to all client protocols
 - **State management**: `@State` for local, `@Published` + `ObservableObject` for view models, `@AppStorage` for UserDefaults, `@KeychainWrapper` for Keychain, `SWFileManager` for JSON file storage
 
 ## Code Style Guidelines

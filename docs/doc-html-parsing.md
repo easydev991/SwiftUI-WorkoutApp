@@ -19,7 +19,7 @@ func withoutHtmlOrEmpty(compact: Bool = false) -> String  // для String?
 
 **Структурные теги:**
 
-- `<br>`, `</p>`, `</div>` → `\n` (или пробел в compact-режиме)
+- `<br>` (включая `<br/>`), `</div>` → `\n`; `</p>` → `\n\n` (в compact-режиме — пробел)
 
 **HTML-сущности:**
 
