@@ -17,19 +17,19 @@ struct LoadingOverlayModifier: ViewModifier {
     }
 }
 
+/// Вращение через `TimelineView`, а не `repeatForever`-анимацию:
+/// анимационная транзакция `repeatForever` могла подхватить изменение позиции
+/// индикатора и бесконечно «возить» его по экрану во время загрузки
 private struct LoadingIndicator: View {
-    @State private var isAnimating = false
-
     var body: some View {
-        Image(.loadingIndicator)
-            .resizable()
-            .frame(width: 50, height: 50)
-            .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
-            .animation(
-                .linear(duration: 2.0).repeatForever(autoreverses: false),
-                value: isAnimating
-            )
-            .onAppear { isAnimating = true }
+        TimelineView(.animation) { context in
+            let seconds = context.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: 2.0)
+            Image(.loadingIndicator)
+                .resizable()
+                .frame(width: 50, height: 50)
+                .rotationEffect(.degrees(seconds / 2.0 * 360))
+        }
     }
 }
 
