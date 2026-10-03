@@ -210,7 +210,7 @@ struct MockFriendsClient: FriendsClient {
     }
 
     func blacklistAction(user: UserResponse, option: BlacklistOption) async throws {
-        logger.debug("Имитируем запрос blacklistAction (userId=\(user.id), option=\(option))")
+        logger.debug("Имитируем запрос blacklistAction (userId=\(user.id), option=\(String(describing: option)))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
@@ -385,7 +385,7 @@ struct MockCommentsClient: CommentsClient {
     }
 
     func addNewEntry(to option: TextEntryOption, entryText: String) async throws {
-        logger.debug("Имитируем запрос addNewEntry (option=\(option), entryText=\(entryText))")
+        logger.debug("Имитируем запрос addNewEntry (option=\(String(describing: option)), entryText=\(entryText))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
@@ -398,7 +398,7 @@ struct MockCommentsClient: CommentsClient {
     }
 
     func editEntry(for option: TextEntryOption, entryId: Int, newEntryText _: String) async throws {
-        logger.debug("Имитируем запрос editEntry (option=\(option), entryId=\(entryId))")
+        logger.debug("Имитируем запрос editEntry (option=\(String(describing: option)), entryId=\(entryId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
@@ -411,7 +411,7 @@ struct MockCommentsClient: CommentsClient {
     }
 
     func deleteEntry(from option: TextEntryOption, entryId: Int) async throws {
-        logger.debug("Имитируем запрос deleteEntry (option=\(option), entryId=\(entryId))")
+        logger.debug("Имитируем запрос deleteEntry (option=\(String(describing: option)), entryId=\(entryId))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
@@ -680,7 +680,7 @@ struct MockPhotosClient: PhotosClient {
     }
 
     func deletePhoto(from container: PhotoContainer) async throws {
-        logger.debug("Имитируем запрос deletePhoto (container=\(container))")
+        logger.debug("Имитируем запрос deletePhoto (container=\(String(describing: container)))")
         if !instantResponse {
             try await Task.sleep(for: .seconds(1))
         }
