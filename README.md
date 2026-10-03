@@ -6,9 +6,12 @@
 [<img alt="iOS Version" src="https://img.shields.io/badge/iOS_Version-16.0-4F9153">](https://www.apple.com/ios/)
 <!-- END_VERSIONS -->
 
+> **ℹ️ Сайт `workout.su` [заморожен](https://workout.su/news/5238-sajt-workout-su-budet-zamorozhen-30-sentjabrja-2026) 30 сентября 2026 года.**  Приложение может работать нестабильно или вообще не работать, потому что все данные хранятся на сервере.
+
 ## Реализованный функционал
 
-Описание всех экранов и функций приложения доступно в [карте экранов и функционала](docs/feature-map.md).
+- Описание всех экранов и функций приложения доступно в [карте экранов и функционала](docs/feature-map.md).
+- Версия для Android [тут](https://github.com/easydev991/Jetpack-WorkoutApp).
 
 ## Помощь в разработке
 
