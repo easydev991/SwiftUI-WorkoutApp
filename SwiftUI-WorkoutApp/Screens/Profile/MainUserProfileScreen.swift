@@ -18,7 +18,6 @@ struct MainUserProfileScreen: View {
             ZStack {
                 if defaults.isAuthorized {
                     authorizedContentView
-                        .navigationBarTitleDisplayMode(.inline)
                         .transition(.move(edge: .top).combined(with: .opacity))
                 } else {
                     IncognitoProfileView()
@@ -27,6 +26,7 @@ struct MainUserProfileScreen: View {
             .animation(.spring, value: defaults.isAuthorized)
             .background(Color.swBackground)
             .navigationTitle("Профиль")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .task { await askForUserInfo() }
         .trackScreen(.profileMainUser)

@@ -19,7 +19,6 @@ struct DialogsListScreen: View {
             ZStack {
                 if defaults.isAuthorized {
                     authorizedContentView
-                        .navigationBarTitleDisplayMode(.inline)
                         .transition(.move(edge: .top).combined(with: .opacity))
                 } else {
                     IncognitoProfileView()
@@ -28,6 +27,7 @@ struct DialogsListScreen: View {
             .animation(.spring, value: defaults.isAuthorized)
             .background(Color.swBackground)
             .navigationTitle("Сообщения")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .trackScreen(.dialogsList)
     }

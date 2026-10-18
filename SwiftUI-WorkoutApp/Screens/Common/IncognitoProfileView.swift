@@ -20,7 +20,6 @@ struct IncognitoProfileView: View {
                 LoginScreen()
             }
         }
-        .navigationBarTitleDisplayMode(.large)
         .transition(
             .asymmetric(
                 insertion: .opacity,
