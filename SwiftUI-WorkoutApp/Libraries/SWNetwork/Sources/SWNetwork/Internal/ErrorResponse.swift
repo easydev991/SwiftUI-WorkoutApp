@@ -41,3 +41,13 @@ struct ErrorResponse: Codable {
         return realCode != 0 ? realCode : (statusCode ?? 0)
     }
 }
+
+/// Настоящий API-404: тело декодируется в `ErrorResponse`, где `errors` непустой
+/// или `name != nil` (пустая строка тоже считается). HTML-страница 404 от
+/// nginx-прокси и прочий не-JSON — инфраструктурная ошибка (план шага 5г)
+func isApiNotFoundBody(_ data: Data) -> Bool {
+    guard let response = try? JSONDecoder().decode(ErrorResponse.self, from: data) else {
+        return false
+    }
+    return !response.errors.isEmpty || response.name != nil
+}

@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "SWNetwork",
     defaultLocalization: "en",
-    platforms: [.iOS(.v16)],
+    // macOS — для запуска swift test на хосте; String(localized:) требует 13+
+    platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
         .library(name: "SWNetwork", targets: ["SWNetwork"])
     ],

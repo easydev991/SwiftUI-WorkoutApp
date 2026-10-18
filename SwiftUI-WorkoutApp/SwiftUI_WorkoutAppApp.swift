@@ -22,8 +22,6 @@ struct SwiftUI_WorkoutAppApp: App {
     @StateObject private var reviewService = ReviewService()
     /// Используется для обновления диалогов
     @State private var lastScenePhase: ScenePhase?
-    @State private var dialogsUpdateTask: Task<Void, Never>?
-    @State private var profileUpdateTask: Task<Void, Never>?
     @State private var countriesUpdateTask: Task<Void, Never>?
     @State private var badgeUpdateTask: Task<Void, Never>?
     private let countriesStorage = SWAddress()
@@ -145,8 +143,8 @@ struct SwiftUI_WorkoutAppApp: App {
         guard shouldUpdateDialogsAndProfile else {
             return
         }
-        dialogsUpdateTask?.cancel()
-        dialogsUpdateTask = Task {
+        // Отмену заменил in-flight guard в DialogsListScreen.ViewModel (план шаг 5б)
+        Task {
             await dialogsViewModel.getDialogs(refresh: true, defaults: defaults)
         }
     }
@@ -155,8 +153,7 @@ struct SwiftUI_WorkoutAppApp: App {
         guard shouldUpdateDialogsAndProfile else {
             return
         }
-        profileUpdateTask?.cancel()
-        profileUpdateTask = Task {
+        Task {
             do {
                 try await profileViewModel.getUserProfile(refresh: true, defaults: defaults)
             } catch {

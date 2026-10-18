@@ -41,7 +41,6 @@ private extension MainUserProfileScreen {
             }
         }
         .frame(maxWidth: .infinity)
-        .loadingOverlay(if: viewModel.currentState.isLoading)
         .background(Color.swBackground)
         .refreshable { await askForUserInfo(refresh: true) }
         .toolbar {
@@ -81,7 +80,6 @@ private extension MainUserProfileScreen {
             Icons.Regular.magnifyingglass.view
         }
         .tint(.accent)
-        .disabled(viewModel.currentState.isLoading)
         .accessibilityIdentifier("searchUsersButton")
         .sheet(isPresented: $showSearchUsersScreen) {
             NavigationStack {

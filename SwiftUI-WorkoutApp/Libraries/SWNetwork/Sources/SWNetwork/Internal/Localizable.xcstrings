@@ -163,6 +163,42 @@
         }
       }
     },
+    "Error.ServerUnavailable" : {
+      "comment" : "Инфраструктурная ошибка: сервер или прокси недоступен",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Server unavailable"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сервер недоступен"
+          }
+        }
+      }
+    },
+    "Error.TimedOut" : {
+      "comment" : "Сервер долго не отвечает",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The server is taking too long to respond, please try again later"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сервер долго не отвечает, попробуйте позже"
+          }
+        }
+      }
+    },
     "Error.Unknown" : {
       "comment" : "Неизвестная ошибка",
       "extractionState" : "manual",

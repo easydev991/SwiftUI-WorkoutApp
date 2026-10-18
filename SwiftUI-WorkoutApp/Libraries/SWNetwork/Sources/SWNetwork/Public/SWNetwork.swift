@@ -7,22 +7,22 @@ public protocol NetworkServicing: Sendable {
 }
 
 public struct SWNetworkService: NetworkServicing {
+    /// Единственная сессия на приложение: все операции переиспользуют пул
+    /// TCP/TLS-соединений и HTTP/2-мультиплексирование (план fix-api-timeout-1001, шаг 4)
+    private static let sharedSession: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 60
+        return URLSession(configuration: configuration)
+    }()
+
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "SWNetworkService",
         category: String(describing: SWNetworkService.self)
     )
-    private let session: URLSession
     private let decoder = JSONDecoder()
 
-    public init(
-        timeoutIntervalForRequest: Double = 30,
-        timeoutIntervalForResource: Double = 60
-    ) {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
-        configuration.timeoutIntervalForResource = timeoutIntervalForResource
-        self.session = URLSession(configuration: configuration)
-    }
+    public init() {}
 }
 
 public extension SWNetworkService {
@@ -91,14 +91,19 @@ public extension SWNetworkService {
 private extension SWNetworkService {
     /// Делает запрос с проверкой на ошибку авторизации (код 401)
     func make(_ request: URLRequest) async throws -> (Data, HTTPURLResponse?) {
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await Self.sharedSession.data(for: request)
         let httpURLResponse = response as? HTTPURLResponse
         if let statusCode = httpURLResponse?.statusCode,
            statusCode != 400,
            StatusCodeGroup(code: statusCode).isError {
-            throw statusCode == 401
-                ? APIError.invalidCredentials
-                : APIError(with: statusCode)
+            if statusCode == 401 {
+                throw APIError.invalidCredentials
+            }
+            // 404 различаем по телу: настоящий API-404 против HTML-страницы nginx-прокси
+            if statusCode == 404 {
+                throw isApiNotFoundBody(data) ? APIError.notFound : APIError.serverUnavailable
+            }
+            throw APIError(with: statusCode)
         }
         return (data, httpURLResponse)
     }
@@ -143,7 +148,9 @@ private extension SWNetworkService {
         )
         return error
     }
+}
 
+extension SWNetworkService {
     /// Обрабатывает ошибку `URLSession`
     ///
     /// В дебаг/стейдж сборках логирует ошибку
@@ -172,6 +179,8 @@ private extension SWNetworkService {
         switch urlError.code {
         case .notConnectedToInternet, .dataNotAllowed:
             return APIError.notConnectedToInternet
+        case .timedOut:
+            return APIError.timedOut
         default:
             return error
         }

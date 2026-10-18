@@ -10,6 +10,8 @@ public enum APIError: Error, LocalizedError, Equatable {
     case invalidUserId
     case customError(code: Int, message: String)
     case notConnectedToInternet
+    case timedOut
+    case serverUnavailable
 
     init(_ error: ErrorResponse, _ statusCode: Int?) {
         let serverCode = error.makeRealCode(statusCode: statusCode)
@@ -74,6 +76,10 @@ public enum APIError: Error, LocalizedError, Equatable {
             "\(code), \(error)"
         case .notConnectedToInternet:
             String(localized: .errorNoInternet)
+        case .timedOut:
+            String(localized: .errorTimedOut)
+        case .serverUnavailable:
+            String(localized: .errorServerUnavailable)
         }
     }
 }
