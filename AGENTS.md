@@ -117,6 +117,7 @@ ViewModels live as extensions in the same file or a `+ViewModel.swift` file next
 
 ### Testing
 
+- Соблюдай правила из `.agents/skills/unit-testing-ios-app/SKILL.md` (Swift Testing, `#expect`/`#require`, русские описания, моки). Ниже — ключевые моменты.
 - Swift Testing framework (`import Testing`, `@Test`, `#expect`, `#require`) — NOT XCTest
 - Test structs (not classes): `struct SomeTests { ... }`
 - Mocks go in `WorkoutAppTests/Mocks/` or alongside test files

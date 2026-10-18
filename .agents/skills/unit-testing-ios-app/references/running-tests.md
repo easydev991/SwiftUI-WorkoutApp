@@ -2,6 +2,8 @@
 
 Текущие правила (точечно → полный прогон один раз) — см. `.agents/rules/test-execution.md`. Здесь — справочник команд.
 
+Приоритет запуска тестов — через Xcode MCP (`GetTestList` → `RunSomeTests`/`RunAllTests`); `make test` и прямой `xcodebuild` — фоллбеки, если MCP недоступен.
+
 ## Точечный прогон (основной путь во время итераций)
 
 - xcode MCP: `GetTestList` → `RunSomeTests` (1–2 идентификатора)
