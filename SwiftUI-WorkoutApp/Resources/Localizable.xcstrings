@@ -1053,22 +1053,6 @@
         }
       }
     },
-    "Другие иконки" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Other icons"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Другие иконки"
-          }
-        }
-      }
-    },
     "Другие приложения" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1119,6 +1103,7 @@
       }
     },
     "Загружаем логи..." : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1376,6 +1361,7 @@
       }
     },
     "Категория" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1450,6 +1436,7 @@
       }
     },
     "Логи" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1494,6 +1481,7 @@
       }
     },
     "Логов пока нет" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2483,6 +2471,7 @@
       }
     },
     "С такими фильтрами логов нет" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2760,16 +2749,6 @@
         }
       }
     },
-    "Текущая иконка" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Current icon"
-          }
-        }
-      }
-    },
     "Текущий пароль" : {
       "localizations" : {
         "en" : {
@@ -2921,6 +2900,7 @@
       }
     },
     "Уровень" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2965,6 +2945,7 @@
       }
     },
     "Фильтр логов" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
