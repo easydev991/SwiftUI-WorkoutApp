@@ -150,9 +150,8 @@ private extension BlackListScreen {
 
     func unblock() {
         analytics.log(.userAction(action: .unblockUser))
-        guard let user = userToDelete else { return }
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        guard case let .ready(blockedUsers) = currentState else { return }
+        guard let user = userToDelete, !SWAlert.shared.presentNoConnection(isNetworkConnected),
+              case let .ready(blockedUsers) = currentState else { return }
         currentState = .unblockAction(blockedUsers)
         Task {
             do {

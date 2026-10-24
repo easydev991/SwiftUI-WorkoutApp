@@ -163,9 +163,8 @@ private extension JournalsListScreen {
     var deleteJournalButton: some View {
         Button(role: .destructive) {
             analytics.log(.userAction(action: .deleteJournal))
-            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-            guard let journalId = journalIdToDelete else { return }
-            guard case let .ready(journals) = currentState else { return }
+            guard !SWAlert.shared.presentNoConnection(isNetworkConnected), let journalId = journalIdToDelete,
+                  case let .ready(journals) = currentState else { return }
             deleteJournalTask = Task {
                 currentState = .deleteJournalAction(journals)
                 do {
@@ -239,8 +238,7 @@ private extension JournalsListScreen {
 
     func saveNewJournal() {
         analytics.log(.userAction(action: .createJournal))
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        guard case let .ready(journals) = currentState else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected), case let .ready(journals) = currentState else { return }
         currentState = .saveJournalAction(journals)
         saveJournalTask = Task {
             do {

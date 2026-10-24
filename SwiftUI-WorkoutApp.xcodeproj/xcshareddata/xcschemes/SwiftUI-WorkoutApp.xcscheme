@@ -106,6 +106,9 @@
          identifier = "Moscow, Russia"
          referenceType = "1">
       </LocationScenarioReference>
+      <MetalAPIValidationSettings
+         isEnabled = "No">
+      </MetalAPIValidationSettings>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

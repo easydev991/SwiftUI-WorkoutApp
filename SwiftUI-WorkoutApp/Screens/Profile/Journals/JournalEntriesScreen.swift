@@ -235,9 +235,8 @@ private extension JournalEntriesScreen {
     var deleteEntryButton: some View {
         Button(role: .destructive) {
             analytics.log(.userAction(action: .deleteJournalEntry))
-            guard let entryId = entryIdToDelete else { return }
-            guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-            guard case let .ready(entries) = currentState else { return }
+            guard let entryId = entryIdToDelete, !SWAlert.shared.presentNoConnection(isNetworkConnected),
+                  case let .ready(entries) = currentState else { return }
             deleteEntryTask = Task {
                 currentState = .deleteEntryAction(entries)
                 do {

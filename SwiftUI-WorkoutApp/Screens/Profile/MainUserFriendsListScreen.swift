@@ -162,8 +162,7 @@ private extension MainUserFriendsListScreen {
 
     func respondToFriendRequest(from userId: Int, accept: Bool) {
         analytics.log(.userAction(action: accept ? .respondFriendRequestAccept : .respondFriendRequestDecline))
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
-        guard case let .ready(requests, friends) = currentState else { return }
+        guard !SWAlert.shared.presentNoConnection(isNetworkConnected), case let .ready(requests, friends) = currentState else { return }
         currentState = .friendRequestAction(friendRequests: requests, friends: friends)
         Task {
             do {

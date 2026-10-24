@@ -4,8 +4,8 @@ import SWModels
 
 enum ProfileViews {}
 
+@MainActor
 extension ProfileViews {
-    @MainActor
     static func makeUserInfo(for user: UserResponse) -> some View {
         ProfileView(
             imageURL: user.avatarURL,
@@ -16,7 +16,7 @@ extension ProfileViews {
         .padding(24)
     }
 
-    @ViewBuilder @MainActor
+    @ViewBuilder
     static func makeFriends(
         for user: UserResponse,
         isMainUser: Bool = false,
@@ -45,7 +45,7 @@ extension ProfileViews {
         .animation(.default, value: showButton)
     }
 
-    @ViewBuilder @MainActor
+    @ViewBuilder
     static func makeUsedParks(for user: UserResponse) -> some View {
         if user.hasUsedParks {
             NavigationLink {
@@ -60,7 +60,7 @@ extension ProfileViews {
         }
     }
 
-    @ViewBuilder @MainActor
+    @ViewBuilder
     static func makeAddedParks(for user: UserResponse) -> some View {
         if user.hasAddedParks, let parks = user.addedParks {
             NavigationLink {
@@ -79,7 +79,7 @@ extension ProfileViews {
     ///   - user: Данные пользователя
     ///   - isMainUser: `true` - основной пользователь, `false` - любой другой
     /// - Returns: `NavigationLink` для перехода в дневники
-    @ViewBuilder @MainActor
+    @ViewBuilder
     static func makeJournals(
         for user: UserResponse,
         isMainUser: Bool = false

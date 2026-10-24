@@ -61,8 +61,7 @@ extension AuthHelperImp {
         let token: String?
 
         var login: String? {
-            guard let token else { return nil }
-            guard let data = Data(base64Encoded: token),
+            guard let token, let data = Data(base64Encoded: token),
                   let decodedString = String(data: data, encoding: .utf8)
             else { return nil }
             let components = decodedString.components(separatedBy: ":")

@@ -97,8 +97,7 @@ private extension LoginScreen {
 
     func loginAction() {
         analytics.log(.userAction(action: .login))
-        guard !isLoading else { return }
-        guard !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
+        guard !isLoading, !SWAlert.shared.presentNoConnection(isNetworkConnected) else { return }
         focus = nil
         isLoading = true
         loginTask = Task {
