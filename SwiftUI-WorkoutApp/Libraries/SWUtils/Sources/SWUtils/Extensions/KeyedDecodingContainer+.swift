@@ -21,9 +21,9 @@ public extension KeyedDecodingContainer {
     func decodeIntOrString(_ key: Key) throws -> Int {
         if let idString = try? decodeIfPresent(String.self, forKey: key),
            let idInt = Int(idString) {
-            return idInt
+            idInt
         } else if let idInt = try? decodeIfPresent(Int.self, forKey: key) {
-            return idInt
+            idInt
         } else {
             throw DecodingError.typeMismatch(Int.self, DecodingError.Context(
                 codingPath: codingPath + [key],
